@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viantryp - Editor de Itinerarios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1E2A38;
+            --primary-blue: #4A90E2;
+            --light-gray: #F5F7FA;
+            --white: #FFFFFF;
+            --coral: #FF6B6B;
+            --mint: #2ECC71;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-gray);
+            color: var(--primary-dark);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 20px var(--shadow);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: var(--coral);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .profile-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .profile-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            height: calc(100vh - 80px);
+            overflow: hidden;
+        }
+
+        /* Editor Page */
+        .editor-container {
+            display: flex;
+            height: 100%;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .elements-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .draggable-element {
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .draggable-element:hover {
+            background: rgba(74, 144, 226, 0.1);
+            border-color: var(--primary-blue);
+            transform: translateX(5px);
+        }
+
+        .draggable-element:active {
+            cursor: grabbing;
+            transform: rotate(5deg) scale(1.05);
+        }
+
+        .element-icon {
+            font-size: 1.2rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .element-icon.flight { color: var(--primary-blue); }
+        .element-icon.hotel { color: var(--coral); }
+        .element-icon.activity { color: var(--mint); }
+        .element-icon.transport { color: #9b59b6; }
+        .element-icon.note { color: #f39c12; }
+
+        .timeline-area {
+            flex: 1;
+            padding: 2rem;
+            background: #fafbfc;
+            overflow-y: auto;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .timeline-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Date Selector */
+        .date-selector-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 3px 15px var(--shadow);
+        }
+
+        .date-selector-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .date-input-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .date-input {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--mint);
+            color: white;
+        }
+
+        .btn-coral {
+            background: var(--coral);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-add-day {
+            background: var(--mint);
+            color: white;
+            border: 2px dashed transparent;
+            padding: 1rem 2rem;
+            margin-top: 1rem;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add-day:hover {
+            background: transparent;
+            color: var(--mint);
+            border-color: var(--mint);
+            transform: translateY(-2px);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .day-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 15px var(--shadow);
+            border: 2px dashed transparent;
+            transition: all 0.3s ease;
+            min-height: 150px;
+            position: relative;
+        }
+
+        .day-container.drag-over {
+            border-color: var(--primary-blue);
+            background: rgba(74, 144, 226, 0.05);
+            transform: scale(1.02);
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .day-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .day-date {
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .day-actions {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .day-container:hover .day-actions {
+            opacity: 1;
+        }
+
+        .day-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ddd;
+            padding: 0.3rem 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #666;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .day-btn:hover {
+            background: var(--coral);
+            color: white;
+            border-color: var(--coral);
+        }
+
+        .day-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-height: 80px;
+        }
+
+        .timeline-item {
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-blue);
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .timeline-item:hover {
+            background: white;
+            box-shadow: 0 3px 15px var(--shadow);
+            transform: translateX(5px);
+        }
+
+        .timeline-item.flight { border-left-color: var(--primary-blue); }
+        .timeline-item.hotel { border-left-color: var(--coral); }
+        .timeline-item.activity { border-left-color: var(--mint); }
+        .timeline-item.transport { border-left-color: #9b59b6; }
+        .timeline-item.note { border-left-color: #f39c12; }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .item-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .item-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .item-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--overlay);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--coral);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: var(--mint);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(46, 204, 113, 0.3);
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .editor-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: 200px;
+            }
+
+            .timeline-area {
+                height: calc(100vh - 280px);
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            .date-input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-route"></i>
+                Viantryp
+            </a>
+            <div class="nav-actions">
+                <button class="btn btn-coral" onclick="previewItinerary()">
+                    <i class="fas fa-eye"></i>
+                    Vista Previa
+                </button>
+                <button class="btn btn-success" onclick="saveItinerary()">
+                    <i class="fas fa-save"></i>
+                    Guardar
+                </button>
+                <div class="user-profile">
+                    <button class="profile-btn">
+                        <i class="fas fa-user"></i>
+                        María García
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="editor-container">
+            <aside class="sidebar">
+                <h3><i class="fas fa-puzzle-piece"></i> Elementos</h3>
+                <div class="elements-list">
+                    <div class="draggable-element" draggable="true" data-type="flight">
+                        <i class="fas fa-plane element-icon flight"></i>
+                        <div>
+                            <strong>Vuelo</strong>
+                            <div style="font-size: 0.8rem; color: #666;">Agregar vuelo</div>
+                        </div>
+                    </div>
+                    <div class="draggable-element" draggable="true" data-type="hotel">
+                        <i class="fas fa-bed element-icon hotel"></i>
+                        <div>
+                            <strong>Alojamiento</strong>
+                            <div style="font-size: 0.8rem; color: #666;">Hotel o hospedaje</div>
+                        </div>
+                    </div>
+                    <div class="draggable-element" draggable="true" data-type="activity">
+                        <i class="fas fa-map-marker-alt element-icon activity"></i>
+                        <div>
+                            <strong>Actividad</strong>
+                            <div style="font-size: 0.8rem; color: #666;">Tour o experiencia</div>
+                        </div>
+                    </div>
+                    <div class="draggable-element" draggable="true" data-type="transport">
+                        <i class="fas fa-car element-icon transport"></i>
+                        <div>
+                            <strong>Transporte</strong>
+                            <div style="font-size: 0.8rem; color: #666;">Traslados</div>
+                        </div>
+                    </div>
+                    <div class="draggable-element" draggable="true" data-type="note">
+                        <i class="fas fa-sticky-note element-icon note"></i>
+                        <div>
+                            <strong>Nota</strong>
+                            <div style="font-size: 0.8rem; color: #666;">Información adicional</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="timeline-area">
+                <div class="timeline-header">
+                    <h2 class="timeline-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Escapada Romántica a París
+                    </h2>
+                </div>
+
+                <!-- Date Selector -->
+                <div class="date-selector-container">
+                    <div class="date-selector-header">
+                        <h3><i class="fas fa-calendar-plus"></i> Configuración del Itinerario</h3>
+                    </div>
+                    <div class="date-input-group">
+                        <label for="startDate" class="form-label">Fecha de inicio:</label>
+                        <input type="date" id="startDate" class="date-input" onchange="updateItineraryDates()">
+                        <button class="btn btn-primary" onclick="updateItineraryDates()">
+                            <i class="fas fa-refresh"></i>
+                            Actualizar fechas
+                        </button>
+                    </div>
+                </div>
+
+                <div class="timeline" id="timeline">
+                    <div class="day-container" data-day="1">
+                        <div class="day-actions">
+                            <button class="day-btn" onclick="deleteDay(this)">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                        <div class="day-header">
+                            <div class="day-title">Día 1</div>
+                            <div class="day-date" data-date="">Selecciona fecha de inicio</div>
+                        </div>
+                        <div class="day-items">
+                            <div class="timeline-item flight" data-item-id="1">
+                                <i class="fas fa-plane element-icon flight"></i>
+                                <div class="item-info">
+                                    <div class="item-title">Vuelo Madrid - París</div>
+                                    <div class="item-description">UX1050 - Air Europa | Salida: 08:00 - Llegada: 10:30</div>
+                                </div>
+                                <div class="item-actions">
+                                    <button class="item-btn" onclick="editItem(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="item-btn" onclick="deleteItem(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="timeline-item hotel" data-item-id="2">
+                                <i class="fas fa-bed element-icon hotel"></i>
+                                <div class="item-info">
+                                    <div class="item-title">Hotel Le Marais Boutique</div>
+                                    <div class="item-description">Check-in: 15:00 | Suite romántica | Media pensión</div>
+                                </div>
+                                <div class="item-actions">
+                                    <button class="item-btn" onclick="editItem(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="item-btn" onclick="deleteItem(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="day-container" data-day="2">
+                        <div class="day-actions">
+                            <button class="day-btn" onclick="deleteDay(this)">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                        <div class="day-header">
+                            <div class="day-title">Día 2</div>
+                            <div class="day-date" data-date="">Selecciona fecha de inicio</div>
+                        </div>
+                        <div class="day-items">
+                            <div class="timeline-item activity" data-item-id="3">
+                                <i class="fas fa-map-marker-alt element-icon activity"></i>
+                                <div class="item-info">
+                                    <div class="item-title">Torre Eiffel y Crucero por el Sena</div>
+                                    <div class="item-description">10:00 - 14:00 | Incluye almuerzo romántico</div>
+                                </div>
+                                <div class="item-actions">
+                                    <button class="item-btn" onclick="editItem(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="item-btn" onclick="deleteItem(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="day-container" data-day="3">
+                        <div class="day-actions">
+                            <button class="day-btn" onclick="deleteDay(this)">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                        <div class="day-header">
+                            <div class="day-title">Día 3</div>
+                            <div class="day-date" data-date="">Selecciona fecha de inicio</div>
+                        </div>
+                        <div class="day-items">
+                            <div style="text-align: center; padding: 2rem; color: #666; font-style: italic;">
+                                <i class="fas fa-plus-circle" style="font-size: 2rem; margin-bottom: 1rem; display: block; color: var(--primary-blue);"></i>
+                                Arrastra elementos aquí para personalizar este día
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Day Button -->
+                <button class="btn-add-day" onclick="addNewDay()">
+                    <i class="fas fa-plus"></i>
+                    Agregar día al itinerario
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-edit"></i>
+                    <span id="modalTitle">Editar elemento</span>
+                </h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveChanges()">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <div>
+            <i class="fas fa-check-circle" style="font-size: 1.5rem;"></i>
+        </div>
+        <div class="notification-content">
+            <div class="notification-title">¡Cambios guardados!</div>
+            <div id="notificationMessage">Los cambios se han aplicado correctamente</div>
+        </div>
+        <button class="notification-close" onclick="hideNotification()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <script>
+        // State management
+        let draggedElement = null;
+        let itemCounter = 3; // Starting from 4 since we have 3 existing items
+        let dayCounter = 3; // Starting from 4 since we have 3 existing days
+        let currentEditingItem = null;
+        let startDate = null;
+        
+        let itemsData = {
+            1: { type: 'flight', title: 'Vuelo Madrid - París', flightNumber: 'UX1050', airline: 'Air Europa', departure: '08:00', arrival: '10:30' },
+            2: { type: 'hotel', title: 'Hotel Le Marais Boutique', checkin: '15:00', roomType: 'Suite romántica', mealPlan: 'Media pensión' },
+            3: { type: 'activity', title: 'Torre Eiffel y Crucero por el Sena', description: '10:00 - 14:00 | Incluye almuerzo romántico' }
+        };
+
+        // Initialize drag and drop functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDragAndDrop();
+            setDefaultStartDate();
+        });
+
+        function setDefaultStartDate() {
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('startDate').value = formattedDate;
+            updateItineraryDates();
+        }
+
+        function updateItineraryDates() {
+            const startDateInput = document.getElementById('startDate').value;
+            if (!startDateInput) {
+                showNotification('Error', 'Por favor selecciona una fecha de inicio');
+                return;
+            }
+
+            startDate = new Date(startDateInput + 'T00:00:00');
+            const dayContainers = document.querySelectorAll('.day-container');
+            
+            dayContainers.forEach((container, index) => {
+                const currentDate = new Date(startDate);
+                currentDate.setDate(startDate.getDate() + index);
+                
+                const dateElement = container.querySelector('.day-date');
+                const formattedDate = formatDate(currentDate);
+                dateElement.textContent = formattedDate;
+                dateElement.setAttribute('data-date', currentDate.toISOString().split('T')[0]);
+            });
+
+            showNotification('¡Fechas actualizadas!', 'Las fechas del itinerario se han actualizado correctamente');
+        }
+
+        function formatDate(date) {
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                weekday: 'long'
+            };
+            return date.toLocaleDateString('es-ES', options);
+        }
+
+        function addNewDay() {
+            dayCounter++;
+            const timeline = document.getElementById('timeline');
+            
+            // Create new day container
+            const newDayContainer = document.createElement('div');
+            newDayContainer.className = 'day-container';
+            newDayContainer.setAttribute('data-day', dayCounter);
+            newDayContainer.style.opacity = '0';
+            newDayContainer.style.transform = 'translateY(20px)';
+            
+            // Calculate the date for the new day
+            let dayDate = 'Selecciona fecha de inicio';
+            if (startDate) {
+                const currentDate = new Date(startDate);
+                currentDate.setDate(startDate.getDate() + (dayCounter - 1));
+                dayDate = formatDate(currentDate);
+            }
+            
+            newDayContainer.innerHTML = `
+                <div class="day-actions">
+                    <button class="day-btn" onclick="deleteDay(this)">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </div>
+                <div class="day-header">
+                    <div class="day-title">Día ${dayCounter}</div>
+                    <div class="day-date" data-date="">${dayDate}</div>
+                </div>
+                <div class="day-items">
+                    <div style="text-align: center; padding: 2rem; color: #666; font-style: italic;">
+                        <i class="fas fa-plus-circle" style="font-size: 2rem; margin-bottom: 1rem; display: block; color: var(--primary-blue);"></i>
+                        Arrastra elementos aquí para personalizar este día
+                    </div>
+                </div>
+            `;
+            
+            timeline.appendChild(newDayContainer);
+            
+            // Make the new day container droppable
+            newDayContainer.addEventListener('dragover', handleDragOver);
+            newDayContainer.addEventListener('drop', handleDrop);
+            newDayContainer.addEventListener('dragenter', handleDragEnter);
+            newDayContainer.addEventListener('dragleave', handleDragLeave);
+            
+            // Add entrance animation
+            setTimeout(() => {
+                newDayContainer.style.opacity = '1';
+                newDayContainer.style.transform = 'translateY(0)';
+            }, 100);
+            
+            // Scroll to the new day
+            newDayContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            showNotification('¡Día añadido!', `Se ha agregado el Día ${dayCounter} al itinerario`);
+        }
+
+        function deleteDay(button) {
+            const dayContainer = button.closest('.day-container');
+            const dayNumber = dayContainer.getAttribute('data-day');
+            
+            // Don't allow deleting if it's the only day
+            const totalDays = document.querySelectorAll('.day-container').length;
+            if (totalDays <= 1) {
+                showNotification('Error', 'No puedes eliminar el último día del itinerario');
+                return;
+            }
+            
+            if (confirm(`¿Estás seguro de que quieres eliminar el Día ${dayNumber} y todos sus elementos?`)) {
+                // Delete all items in this day from itemsData
+                const items = dayContainer.querySelectorAll('.timeline-item[data-item-id]');
+                items.forEach(item => {
+                    const itemId = item.getAttribute('data-item-id');
+                    delete itemsData[itemId];
+                });
+                
+                // Remove with animation
+                dayContainer.style.opacity = '0';
+                dayContainer.style.transform = 'translateX(-50px) scale(0.95)';
+                
+                setTimeout(() => {
+                    dayContainer.remove();
+                    renumberDays();
+                    updateItineraryDates(); // Recalculate dates
+                }, 300);
+                
+                showNotification('Día eliminado', `El Día ${dayNumber} ha sido eliminado del itinerario`);
+            }
+        }
+
+        function renumberDays() {
+            const dayContainers = document.querySelectorAll('.day-container');
+            dayContainers.forEach((container, index) => {
+                const dayNumber = index + 1;
+                container.setAttribute('data-day', dayNumber);
+                container.querySelector('.day-title').textContent = `Día ${dayNumber}`;
+            });
+            dayCounter = dayContainers.length;
+        }
+
+        function initializeDragAndDrop() {
+            // Make elements draggable
+            document.querySelectorAll('.draggable-element').forEach(element => {
+                element.addEventListener('dragstart', handleDragStart);
+                element.addEventListener('dragend', handleDragEnd);
+            });
+
+            // Make day containers droppable
+            document.querySelectorAll('.day-container').forEach(container => {
+                container.addEventListener('dragover', handleDragOver);
+                container.addEventListener('drop', handleDrop);
+                container.addEventListener('dragenter', handleDragEnter);
+                container.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.style.opacity = '0.5';
+            e.target.style.transform = 'rotate(5deg) scale(1.05)';
+            
+            e.dataTransfer.setData('text/plain', JSON.stringify({
+                type: e.target.dataset.type,
+                text: e.target.querySelector('strong').textContent
+            }));
+        }
+
+        function handleDragEnd(e) {
+            e.target.style.opacity = '1';
+            e.target.style.transform = '';
+            draggedElement = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+                e.currentTarget.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+            const dayContainer = e.currentTarget;
+            const dayItems = dayContainer.querySelector('.day-items');
+            
+            // Remove placeholder if exists
+            const placeholder = dayItems.querySelector('[style*="text-align: center"]');
+            if (placeholder) placeholder.remove();
+            
+            // Create new timeline item
+            const newItem = createTimelineItem(data.type, data.text);
+            dayItems.appendChild(newItem);
+            
+            // Add entrance animation
+            newItem.style.opacity = '0';
+            newItem.style.transform = 'translateX(50px)';
+            setTimeout(() => {
+                newItem.style.opacity = '1';
+                newItem.style.transform = 'translateX(0)';
+            }, 100);
+            
+            showNotification('¡Elemento añadido!', 'Elemento añadido correctamente al itinerario');
+        }
+
+        function createTimelineItem(type, text) {
+            itemCounter++;
+            const item = document.createElement('div');
+            item.className = `timeline-item ${type}`;
+            item.setAttribute('data-item-id', itemCounter);
+            item.style.transition = 'all 0.3s ease';
+            
+            const iconMap = {
+                flight: 'fa-plane',
+                hotel: 'fa-bed',
+                activity: 'fa-map-marker-alt',
+                transport: 'fa-car',
+                note: 'fa-sticky-note'
+            };
+            
+            const defaultDescriptions = {
+                flight: 'Configurar horarios y detalles del vuelo',
+                hotel: 'Añadir información de check-in y habitación',
+                activity: 'Describir la actividad y horarios',
+                transport: 'Detalles del transporte y recogida',
+                note: 'Añadir información importante'
+            };
+            
+            // Initialize data for new item
+            itemsData[itemCounter] = {
+                type: type,
+                title: text,
+                description: defaultDescriptions[type]
+            };
+            
+            item.innerHTML = `
+                <i class="fas ${iconMap[type]} element-icon ${type}"></i>
+                <div class="item-info">
+                    <div class="item-title">${text}</div>
+                    <div class="item-description">${defaultDescriptions[type]}</div>
+                </div>
+                <div class="item-actions">
+                    <button class="item-btn" onclick="editItem(this)">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="item-btn" onclick="deleteItem(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            return item;
+        }
+
+        function editItem(button) {
+            const item = button.closest('.timeline-item');
+            const itemId = item.getAttribute('data-item-id');
+            const itemData = itemsData[itemId];
+            
+            currentEditingItem = { element: item, id: itemId, data: itemData };
+            
+            const modal = document.getElementById('editModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            let formHTML = '';
+            
+            if (itemData.type === 'flight') {
+                modalTitle.innerHTML = '<i class="fas fa-plane"></i> Editar Vuelo';
+                formHTML = `
+                    <div class="form-group">
+                        <label class="form-label">Título del vuelo</label>
+                        <input type="text" class="form-control" id="flightTitle" value="${itemData.title || ''}" placeholder="Ej: Vuelo Madrid - París">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">Número de vuelo</label>
+                            <input type="text" class="form-control" id="flightNumber" value="${itemData.flightNumber || ''}" placeholder="Ej: UX1050">
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">Aerolínea</label>
+                            <input type="text" class="form-control" id="airline" value="${itemData.airline || ''}" placeholder="Ej: Air Europa">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">Hora de salida</label>
+                            <input type="time" class="form-control" id="departure" value="${itemData.departure || ''}">
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">Hora de llegada</label>
+                            <input type="time" class="form-control" id="arrival" value="${itemData.arrival || ''}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Información adicional</label>
+                        <textarea class="form-control" id="flightNotes" rows="3" placeholder="Equipaje, asientos, comidas especiales, etc.">${itemData.notes || ''}</textarea>
+                    </div>
+                `;
+            } else if (itemData.type === 'hotel') {
+                modalTitle.innerHTML = '<i class="fas fa-bed"></i> Editar Alojamiento';
+                formHTML = `
+                    <div class="form-group">
+                        <label class="form-label">Nombre del hotel</label>
+                        <input type="text" class="form-control" id="hotelName" value="${itemData.title || ''}" placeholder="Ej: Hotel Le Marais Boutique">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">Hora de check-in</label>
+                            <input type="time" class="form-control" id="checkin" value="${itemData.checkin || '15:00'}">
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">Hora de check-out</label>
+                            <input type="time" class="form-control" id="checkout" value="${itemData.checkout || '11:00'}">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">Tipo de habitación</label>
+                            <select class="form-control" id="roomType">
+                                <option value="Habitación estándar" ${itemData.roomType === 'Habitación estándar' ? 'selected' : ''}>Habitación estándar</option>
+                                <option value="Habitación superior" ${itemData.roomType === 'Habitación superior' ? 'selected' : ''}>Habitación superior</option>
+                                <option value="Habitación deluxe" ${itemData.roomType === 'Habitación deluxe' ? 'selected' : ''}>Habitación deluxe</option>
+                                <option value="Suite" ${itemData.roomType === 'Suite' ? 'selected' : ''}>Suite</option>
+                                <option value="Suite romántica" ${itemData.roomType === 'Suite romántica' ? 'selected' : ''}>Suite romántica</option>
+                                <option value="Suite presidencial" ${itemData.roomType === 'Suite presidencial' ? 'selected' : ''}>Suite presidencial</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">Tipo de alimentación</label>
+                            <select class="form-control" id="mealPlan">
+                                <option value="Sin alimentación" ${itemData.mealPlan === 'Sin alimentación' ? 'selected' : ''}>Sin alimentación</option>
+                                <option value="Solo desayuno" ${itemData.mealPlan === 'Solo desayuno' ? 'selected' : ''}>Solo desayuno</option>
+                                <option value="Media pensión" ${itemData.mealPlan === 'Media pensión' ? 'selected' : ''}>Media pensión</option>
+                                <option value="Pensión completa" ${itemData.mealPlan === 'Pensión completa' ? 'selected' : ''}>Pensión completa</option>
+                                <option value="Todo incluido" ${itemData.mealPlan === 'Todo incluido' ? 'selected' : ''}>Todo incluido</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Información adicional</label>
+                        <textarea class="form-control" id="hotelNotes" rows="3" placeholder="Servicios especiales, ubicación, contacto, etc.">${itemData.notes || ''}</textarea>
+                    </div>
+                `;
+            } else if (itemData.type === 'activity') {
+                modalTitle.innerHTML = '<i class="fas fa-map-marker-alt"></i> Editar Actividad';
+                formHTML = `
+                    <div class="form-group">
+                        <label class="form-label">Nombre de la actividad</label>
+                        <input type="text" class="form-control" id="activityTitle" value="${itemData.title || ''}" placeholder="Ej: Torre Eiffel y Crucero por el Sena">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">Hora de inicio</label>
+                            <input type="time" class="form-control" id="startTime" value="${itemData.startTime || ''}">
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">Hora de fin</label>
+                            <input type="time" class="form-control" id="endTime" value="${itemData.endTime || ''}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" id="activityDescription" rows="4" placeholder="Describe la actividad, qué incluye, punto de encuentro, etc.">${itemData.description || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ubicación</label>
+                        <input type="text" class="form-control" id="location" value="${itemData.location || ''}" placeholder="Dirección o punto de encuentro">
+                    </div>
+                `;
+            } else if (itemData.type === 'transport') {
+                modalTitle.innerHTML = '<i class="fas fa-car"></i> Editar Transporte';
+                formHTML = `
+                    <div class="form-group">
+                        <label class="form-label">Tipo de transporte</label>
+                        <input type="text" class="form-control" id="transportTitle" value="${itemData.title || ''}" placeholder="Ej: Traslado aeropuerto - hotel">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">Hora de recogida</label>
+                            <input type="time" class="form-control" id="pickupTime" value="${itemData.pickupTime || ''}">
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">Duración estimada</label>
+                            <input type="text" class="form-control" id="duration" value="${itemData.duration || ''}" placeholder="Ej: 45 minutos">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">Punto de recogida</label>
+                            <input type="text" class="form-control" id="pickupLocation" value="${itemData.pickupLocation || ''}" placeholder="Dirección de recogida">
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">Destino</label>
+                            <input type="text" class="form-control" id="destination" value="${itemData.destination || ''}" placeholder="Dirección de destino">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Información adicional</label>
+                        <textarea class="form-control" id="transportNotes" rows="3" placeholder="Contacto del conductor, instrucciones especiales, etc.">${itemData.notes || ''}</textarea>
+                    </div>
+                `;
+            } else if (itemData.type === 'note') {
+                modalTitle.innerHTML = '<i class="fas fa-sticky-note"></i> Editar Nota';
+                formHTML = `
+                    <div class="form-group">
+                        <label class="form-label">Título de la nota</label>
+                        <input type="text" class="form-control" id="noteTitle" value="${itemData.title || ''}" placeholder="Ej: Información importante">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contenido</label>
+                        <textarea class="form-control" id="noteContent" rows="6" placeholder="Escribe aquí la información que quieres compartir con el cliente...">${itemData.content || itemData.description || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de nota</label>
+                        <select class="form-control" id="noteType">
+                            <option value="info" ${itemData.noteType === 'info' ? 'selected' : ''}>Información general</option>
+                            <option value="warning" ${itemData.noteType === 'warning' ? 'selected' : ''}>Advertencia importante</option>
+                            <option value="tip" ${itemData.noteType === 'tip' ? 'selected' : ''}>Consejo útil</option>
+                            <option value="contact" ${itemData.noteType === 'contact' ? 'selected' : ''}>Información de contacto</option>
+                        </select>
+                    </div>
+                `;
+            }
+            
+            modalBody.innerHTML = formHTML;
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('editModal');
+            modal.classList.remove('show');
+            currentEditingItem = null;
+        }
+
+        function saveChanges() {
+            if (!currentEditingItem) return;
+            
+            const { element, id, data } = currentEditingItem;
+            const titleElement = element.querySelector('.item-title');
+            const descElement = element.querySelector('.item-description');
+            
+            let newTitle = '';
+            let newDescription = '';
+            
+            if (data.type === 'flight') {
+                const flightTitle = document.getElementById('flightTitle').value;
+                const flightNumber = document.getElementById('flightNumber').value;
+                const airline = document.getElementById('airline').value;
+                const departure = document.getElementById('departure').value;
+                const arrival = document.getElementById('arrival').value;
+                const notes = document.getElementById('flightNotes').value;
+                
+                newTitle = flightTitle;
+                newDescription = `${flightNumber} - ${airline} | Salida: ${departure} - Llegada: ${arrival}`;
+                
+                // Update data
+                itemsData[id] = {
+                    ...itemsData[id],
+                    title: flightTitle,
+                    flightNumber,
+                    airline,
+                    departure,
+                    arrival,
+                    notes
+                };
+                
+            } else if (data.type === 'hotel') {
+                const hotelName = document.getElementById('hotelName').value;
+                const checkin = document.getElementById('checkin').value;
+                const checkout = document.getElementById('checkout').value;
+                const roomType = document.getElementById('roomType').value;
+                const mealPlan = document.getElementById('mealPlan').value;
+                const notes = document.getElementById('hotelNotes').value;
+                
+                newTitle = hotelName;
+                newDescription = `Check-in: ${checkin} | ${roomType} | ${mealPlan}`;
+                
+                // Update data
+                itemsData[id] = {
+                    ...itemsData[id],
+                    title: hotelName,
+                    checkin,
+                    checkout,
+                    roomType,
+                    mealPlan,
+                    notes
+                };
+                
+            } else if (data.type === 'activity') {
+                const activityTitle = document.getElementById('activityTitle').value;
+                const startTime = document.getElementById('startTime').value;
+                const endTime = document.getElementById('endTime').value;
+                const description = document.getElementById('activityDescription').value;
+                const location = document.getElementById('location').value;
+                
+                newTitle = activityTitle;
+                newDescription = `${startTime} - ${endTime} | ${description}`;
+                
+                // Update data
+                itemsData[id] = {
+                    ...itemsData[id],
+                    title: activityTitle,
+                    startTime,
+                    endTime,
+                    description,
+                    location
+                };
+                
+            } else if (data.type === 'transport') {
+                const transportTitle = document.getElementById('transportTitle').value;
+                const pickupTime = document.getElementById('pickupTime').value;
+                const duration = document.getElementById('duration').value;
+                const pickupLocation = document.getElementById('pickupLocation').value;
+                const destination = document.getElementById('destination').value;
+                const notes = document.getElementById('transportNotes').value;
+                
+                newTitle = transportTitle;
+                newDescription = `Recogida: ${pickupTime} | ${pickupLocation} → ${destination}`;
+                
+                // Update data
+                itemsData[id] = {
+                    ...itemsData[id],
+                    title: transportTitle,
+                    pickupTime,
+                    duration,
+                    pickupLocation,
+                    destination,
+                    notes
+                };
+                
+            } else if (data.type === 'note') {
+                const noteTitle = document.getElementById('noteTitle').value;
+                const noteContent = document.getElementById('noteContent').value;
+                const noteType = document.getElementById('noteType').value;
+                
+                newTitle = noteTitle;
+                newDescription = noteContent.length > 80 ? noteContent.substring(0, 80) + '...' : noteContent;
+                
+                // Update data
+                itemsData[id] = {
+                    ...itemsData[id],
+                    title: noteTitle,
+                    content: noteContent,
+                    noteType
+                };
+            }
+            
+            // Update UI
+            titleElement.textContent = newTitle;
+            descElement.textContent = newDescription;
+            
+            // Add update animation
+            element.style.background = 'rgba(46, 204, 113, 0.1)';
+            element.style.transform = 'scale(1.02)';
+            setTimeout(() => {
+                element.style.background = '';
+                element.style.transform = '';
+            }, 1000);
+            
+            closeModal();
+            showNotification('¡Cambios guardados!', 'El elemento se ha actualizado correctamente');
+        }
+
+        function deleteItem(button) {
+            const item = button.closest('.timeline-item');
+            const itemId = item.getAttribute('data-item-id');
+            
+            if (confirm('¿Estás seguro de que quieres eliminar este elemento?')) {
+                item.style.transform = 'translateX(50px)';
+                item.style.opacity = '0';
+                setTimeout(() => {
+                    item.remove();
+                    delete itemsData[itemId];
+                    
+                    // Check if day is empty and add placeholder
+                    const dayItems = item.closest('.day-items');
+                    if (dayItems.children.length === 0) {
+                        dayItems.innerHTML = `
+                            <div style="text-align: center; padding: 2rem; color: #666; font-style: italic;">
+                                <i class="fas fa-plus-circle" style="font-size: 2rem; margin-bottom: 1rem; display: block; color: var(--primary-blue);"></i>
+                                Arrastra elementos aquí para personalizar este día
+                            </div>
+                        `;
+                    }
+                }, 300);
+                
+                showNotification('Elemento eliminado', 'El elemento se ha eliminado del itinerario');
+            }
+        }
+
+        function saveItinerary() {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            // Show loading state
+            button.innerHTML = '<div class="loading"></div> Guardando...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.innerHTML = '<i class="fas fa-check"></i> Guardado';
+                button.style.background = 'var(--mint)';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = '';
+                    button.disabled = false;
+                }, 2000);
+                
+                showNotification('¡Itinerario guardado!', 'Todos los cambios se han guardado correctamente');
+            }, 1500);
+        }
+
+        function previewItinerary() {
+            // Create a simple preview in a modal or new tab
+            showNotification('Vista previa', 'Generando vista previa del itinerario...');
+            
+            setTimeout(() => {
+                // Here you could open a new window or modal with the preview
+                console.log('Preview data:', itemsData);
+                showNotification('¡Vista previa lista!', 'El itinerario está listo para compartir');
+            }, 1000);
+        }
+
+        function showNotification(title, message) {
+            const notification = document.getElementById('notification');
+            const notificationTitle = notification.querySelector('.notification-title');
+            const notificationMessage = document.getElementById('notificationMessage');
+            
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            
+            notification.classList.add('show');
+            
+            // Auto hide after 4 seconds
+            setTimeout(() => {
+                hideNotification();
+            }, 4000);
+        }
+
+        function hideNotification() {
+            const notification = document.getElementById('notification');
+            notification.classList.remove('show');
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('editModal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
