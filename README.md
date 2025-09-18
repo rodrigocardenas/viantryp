@@ -1,2 +1,0 @@
-# viantryp
-first web app
