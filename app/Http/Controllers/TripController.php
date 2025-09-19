@@ -6,6 +6,7 @@ use App\Models\Trip;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
 
 class TripController extends Controller
 {
@@ -14,7 +15,7 @@ class TripController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Trip::query();
+        $query = Trip::with('user')->where('user_id', Auth::id());
 
         // Apply status filter
         $filter = $request->get('filter', 'all');
@@ -59,13 +60,16 @@ class TripController extends Controller
             'title' => 'required|string|max:255',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'travelers' => 'required|integer|min:1',
+            'travelers' => 'nullable|integer|min:1',
             'destination' => 'nullable|string|max:255',
             'summary' => 'nullable|string',
             'items_data' => 'nullable|array'
         ]);
 
+        // Set default values for optional fields
+        $validated['travelers'] = $validated['travelers'] ?? 1;
         $validated['status'] = Trip::STATUS_DRAFT;
+        $validated['user_id'] = Auth::id();
 
         $trip = Trip::create($validated);
 
@@ -81,8 +85,14 @@ class TripController extends Controller
      */
     public function show(Trip $trip): View
     {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para ver este viaje.');
+        }
+
         return view('trips.preview', [
-            'trip' => $trip
+            'trip' => $trip->load('user'),
+            'isPublicPreview' => false
         ]);
     }
 
@@ -91,8 +101,13 @@ class TripController extends Controller
      */
     public function edit(Trip $trip): View
     {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para editar este viaje.');
+        }
+
         return view('trips.editor', [
-            'trip' => $trip
+            'trip' => $trip->load('user')
         ]);
     }
 
@@ -101,15 +116,26 @@ class TripController extends Controller
      */
     public function update(Request $request, Trip $trip): JsonResponse
     {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para actualizar este viaje.'
+            ], 403);
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'travelers' => 'required|integer|min:1',
+            'travelers' => 'nullable|integer|min:1',
             'destination' => 'nullable|string|max:255',
             'summary' => 'nullable|string',
             'items_data' => 'nullable|array'
         ]);
+
+        // Set default values for optional fields
+        $validated['travelers'] = $validated['travelers'] ?? 1;
 
         $trip->update($validated);
 
@@ -125,6 +151,14 @@ class TripController extends Controller
      */
     public function destroy(Trip $trip): JsonResponse
     {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para eliminar este viaje.'
+            ], 403);
+        }
+
         $trip->delete();
 
         return response()->json([
@@ -138,6 +172,14 @@ class TripController extends Controller
      */
     public function updateStatus(Request $request, Trip $trip): JsonResponse
     {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para actualizar este viaje.'
+            ], 403);
+        }
+
         $validated = $request->validate([
             'status' => 'required|in:draft,sent,approved,completed'
         ]);
@@ -152,7 +194,7 @@ class TripController extends Controller
     }
 
     /**
-     * Preview trip (for temporary trips)
+     * Preview trip (public access for clients)
      */
     public function preview(Request $request): View
     {
@@ -170,11 +212,19 @@ class TripController extends Controller
                 'items_data' => []
             ]);
         } else {
-            $trip = Trip::findOrFail($tripId);
+            // Load existing trip with user relationship
+            $trip = Trip::with('user')->findOrFail($tripId);
+
+            // For public preview, ensure the trip is in a shareable state
+            if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
+                // Only allow preview for trips that have been sent or approved
+                abort(404, 'Vista previa no disponible para este viaje.');
+            }
         }
 
         return view('trips.preview', [
-            'trip' => $trip
+            'trip' => $trip,
+            'isPublicPreview' => !Auth::check()
         ]);
     }
 
@@ -183,9 +233,18 @@ class TripController extends Controller
      */
     public function duplicate(Trip $trip): JsonResponse
     {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para duplicar este viaje.'
+            ], 403);
+        }
+
         $newTrip = $trip->replicate();
         $newTrip->title = $trip->title . ' (Copia)';
         $newTrip->status = Trip::STATUS_DRAFT;
+        $newTrip->user_id = Auth::id(); // Ensure the duplicate belongs to the current user
         $newTrip->save();
 
         return response()->json([
@@ -205,7 +264,20 @@ class TripController extends Controller
             'trip_ids.*' => 'integer|exists:trips,id'
         ]);
 
-        $deletedCount = Trip::whereIn('id', $validated['trip_ids'])->delete();
+        // Ensure all trips belong to the authenticated user
+        $userTrips = Trip::whereIn('id', $validated['trip_ids'])
+                        ->where('user_id', Auth::id())
+                        ->pluck('id')
+                        ->toArray();
+
+        if (count($userTrips) !== count($validated['trip_ids'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para eliminar algunos de los viajes seleccionados.'
+            ], 403);
+        }
+
+        $deletedCount = Trip::whereIn('id', $userTrips)->delete();
 
         return response()->json([
             'success' => true,
@@ -223,13 +295,25 @@ class TripController extends Controller
             'trip_ids.*' => 'integer|exists:trips,id'
         ]);
 
-        $trips = Trip::whereIn('id', $validated['trip_ids'])->get();
+        // Ensure all trips belong to the authenticated user
+        $trips = Trip::whereIn('id', $validated['trip_ids'])
+                    ->where('user_id', Auth::id())
+                    ->get();
+
+        if ($trips->count() !== count($validated['trip_ids'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para duplicar algunos de los viajes seleccionados.'
+            ], 403);
+        }
+
         $duplicatedCount = 0;
 
         foreach ($trips as $trip) {
             $newTrip = $trip->replicate();
             $newTrip->title = $trip->title . ' (Copia)';
             $newTrip->status = Trip::STATUS_DRAFT;
+            $newTrip->user_id = Auth::id(); // Ensure the duplicate belongs to the current user
             $newTrip->save();
             $duplicatedCount++;
         }

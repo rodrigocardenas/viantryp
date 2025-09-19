@@ -3,10 +3,58 @@
 @section('title', 'Viantryp - Vista Previa del Itinerario')
 
 @section('content')
-    <x-header :showActions="true" :backUrl="route('trips.index')" :actions="[
-        ['url' => '#', 'text' => 'Imprimir', 'class' => 'btn-secondary', 'icon' => 'fas fa-print', 'onclick' => 'window.print()'],
-        ['url' => '#', 'text' => 'Descargar PDF', 'class' => 'btn-primary', 'icon' => 'fas fa-download', 'onclick' => 'downloadPDF()']
-    ]" />
+    @auth
+        <!-- Header for authenticated users -->
+        <x-header :showActions="true" :backUrl="route('trips.index')" :actions="[
+            ['url' => '#', 'text' => 'Imprimir', 'class' => 'btn-secondary', 'icon' => 'fas fa-print', 'onclick' => 'window.print()'],
+            ['url' => '#', 'text' => 'Descargar PDF', 'class' => 'btn-primary', 'icon' => 'fas fa-download', 'onclick' => 'downloadPDF()']
+        ]" />
+    @else
+        <!-- Simple header for public preview -->
+        <div class="public-preview-header">
+            <div class="public-header-content">
+                <div class="public-logo">
+                    <h1 class="public-logo-text">Viantryp</h1>
+                    <p class="public-subtitle">Vista Previa del Itinerario</p>
+                </div>
+                <div class="public-actions">
+                    <button onclick="window.print()" class="public-btn-print">
+                        <i class="fas fa-print"></i>
+                        Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endauth
+
+@extends('layouts.app')
+
+@section('title', 'Viantryp - Vista Previa del Itinerario')
+
+@section('content')
+    @auth
+        <!-- Header for authenticated users -->
+        <x-header :showActions="true" :backUrl="route('trips.index')" :actions="[
+            ['url' => '#', 'text' => 'Imprimir', 'class' => 'btn-secondary', 'icon' => 'fas fa-print', 'onclick' => 'window.print()'],
+            ['url' => '#', 'text' => 'Descargar PDF', 'class' => 'btn-primary', 'icon' => 'fas fa-download', 'onclick' => 'downloadPDF()']
+        ]" />
+    @else
+        <!-- Simple header for public preview -->
+        <div class="public-preview-header">
+            <div class="public-header-content">
+                <div class="public-logo">
+                    <h1 class="public-logo-text">Viantryp</h1>
+                    <p class="public-subtitle">Vista Previa del Itinerario</p>
+                </div>
+                <div class="public-actions">
+                    <button onclick="window.print()" class="public-btn-print">
+                        <i class="fas fa-print"></i>
+                        Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endauth
 
     <!-- Main Container -->
     <div class="main-container">
@@ -19,6 +67,9 @@
                 <div>
                     <h1 class="trip-title">{{ $trip->title ?? 'Viaje sin título' }}</h1>
                     <p class="trip-subtitle">{{ $trip->getFormattedDates() ?? 'Fechas por definir' }}</p>
+                    @if(isset($trip->user) && !$isPublicPreview ?? false)
+                        <p class="trip-author">Creado por: {{ $trip->user->name }}</p>
+                    @endif
                 </div>
             </div>
 
@@ -218,9 +269,17 @@
         margin-bottom: 0.5rem;
     }
 
-    .trip-subtitle {
-        color: var(--text-gray);
-        font-size: 1.1rem;
+        .trip-subtitle {
+        color: #666;
+        font-size: 0.9rem;
+        margin: 0.25rem 0 0 0;
+    }
+
+    .trip-author {
+        color: #888;
+        font-size: 0.8rem;
+        margin: 0.25rem 0 0 0;
+        font-style: italic;
     }
 
     .timeline-container { background: transparent; position: relative; }
@@ -687,6 +746,73 @@
         font-style: italic;
     }
 
+    /* Public Preview Header Styles */
+    .public-preview-header {
+        background: linear-gradient(135deg, #1f2a44 0%, #0ea5e9 100%);
+        color: white;
+        padding: 1.5rem 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .public-header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .public-logo {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .public-logo-text {
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 0;
+        background: linear-gradient(45deg, #fff, #e0f2fe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .public-subtitle {
+        font-size: 0.9rem;
+        margin: 0.25rem 0 0 0;
+        opacity: 0.9;
+        font-weight: 300;
+    }
+
+    .public-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .public-btn-print {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 0.85rem;
+    }
+
+    .public-btn-print:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+    }
+
     @media (max-width: 768px) {
         .main-container {
             padding: 1rem;
@@ -704,6 +830,25 @@
 
         .contact-text {
             display: none;
+        }
+
+        .public-header-content {
+            padding: 0 1rem;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .public-logo-text {
+            font-size: 1.5rem;
+        }
+
+        .public-subtitle {
+            font-size: 0.8rem;
+        }
+
+        .public-actions {
+            width: 100%;
+            justify-content: center;
         }
     }
 </style>

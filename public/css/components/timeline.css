@@ -1,0 +1,95 @@
+/* Timeline Component Styles */
+/* Ubicación: resources/css/components/timeline.css */
+
+/* Days Container */
+.days-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.day-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+    overflow: hidden;
+}
+
+.day-header {
+    background: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.day-header h3 {
+    color: #495057;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+}
+
+.day-date {
+    color: #007bff;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.day-content {
+    padding: 2rem;
+    text-align: center;
+    min-height: 200px;
+    position: relative;
+}
+
+.add-element-btn {
+    width: 80px;
+    height: 80px;
+    background: #007bff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem auto;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.add-element-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+.drag-instruction {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Add Day Section */
+.add-day-section {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.btn-add-day {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+}
+
+.btn-add-day:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}

@@ -10,194 +10,21 @@
         ['url' => '#', 'text' => 'Descarga versión PDF', 'class' => 'btn-pdf', 'icon' => 'fas fa-file-pdf', 'onclick' => 'downloadPDF()']
     ]" />
 
-    <!-- New Trip Modal -->
-    <div id="new-trip-modal" class="modal">
-        <div class="modal-content new-trip-modal">
-            <div class="modal-header">
-                <div class="modal-title">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>Nuevo Viaje</span>
-                </div>
-                <button class="modal-close" onclick="cancelNewTrip()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="welcome-section">
-                    <div class="airplane-icon">✈️</div>
-                    <h2>¡Bienvenido a tu nuevo viaje!</h2>
-                    <p>Dale un nombre especial a tu aventura</p>
-                </div>
-                <div class="input-section">
-                    <label for="new-trip-name">Nombre del viaje</label>
-                    <input type="text" id="new-trip-name" class="trip-name-input" placeholder="Ej: Aventura en París, Vacaciones en la playa..." autofocus>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="cancelNewTrip()">Cancelar</button>
-                <button class="btn-create" onclick="createNewTrip()">
-                    <i class="fas fa-check"></i>
-                    Crear Viaje
-                </button>
-            </div>
-        </div>
-    </div>
+    <!-- New Trip Modal Component -->
+    <x-new-trip-modal />
 
     <div class="editor-container" id="editor-container">
-        <!-- Left Sidebar -->
-        <div class="editor-sidebar">
-            <div class="sidebar-content">
-                <div class="sidebar-section">
-                    <h4>Elementos del Viaje</h4>
-                    <div class="element-categories">
-                        <div class="element-category" draggable="true" data-type="flight" ondragstart="drag(event)">
-                            <div class="category-icon flight-icon">
-                                <i class="fas fa-plane"></i>
-                            </div>
-                            <div class="category-info">
-                                <h5>Vuelo</h5>
-                                <p>Aerolínea y horarios</p>
-                            </div>
-                        </div>
-
-                        <div class="element-category" draggable="true" data-type="hotel" ondragstart="drag(event)">
-                            <div class="category-icon hotel-icon">
-                                <i class="fas fa-bed"></i>
-                            </div>
-                            <div class="category-info">
-                                <h5>Alojamiento</h5>
-                                <p>Hotel o hospedaje</p>
-                            </div>
-                        </div>
-
-                        <div class="element-category" draggable="true" data-type="activity" ondragstart="drag(event)">
-                            <div class="category-icon activity-icon">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
-                            <div class="category-info">
-                                <h5>Actividad</h5>
-                                <p>Tour o experiencia</p>
-                            </div>
-                        </div>
-
-                        <div class="element-category" draggable="true" data-type="transport" ondragstart="drag(event)">
-                            <div class="category-icon transport-icon">
-                                <i class="fas fa-car"></i>
-                            </div>
-                            <div class="category-info">
-                                <h5>Traslado</h5>
-                                <p>Tren, autobús, barco, taxi, van</p>
-                            </div>
-                        </div>
-
-                        <div class="element-category" draggable="true" data-type="note" ondragstart="drag(event)">
-                            <div class="category-icon note-icon">
-                                <i class="fas fa-sticky-note"></i>
-                            </div>
-                            <div class="category-info">
-                                <h5>Nota</h5>
-                                <p>Información adicional</p>
-                            </div>
-                        </div>
-
-                        <div class="element-category" draggable="true" data-type="summary" ondragstart="drag(event)">
-                            <div class="category-icon summary-icon">
-                                <i class="fas fa-list-check"></i>
-                            </div>
-                            <div class="category-info">
-                                <h5>Resumen de Itinerario</h5>
-                                <p>Resumen automático del viaje</p>
-                            </div>
-                        </div>
-
-                        <div class="element-category" draggable="true" data-type="total" ondragstart="drag(event)">
-                            <div class="category-icon total-icon">
-                                <i class="fas fa-dollar-sign"></i>
-                            </div>
-                            <div class="category-info">
-                                <h5>Valor Total</h5>
-                                <p>Precio total del viaje</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Sidebar Component -->
+        <x-sidebar />
 
         <!-- Main Content Area -->
         <div class="editor-main">
             <div class="main-content">
-                <!-- Trip Title -->
-                <div class="trip-title-section">
-                    <div class="trip-icon">
-                        <i class="fas fa-plane"></i>
-                    </div>
-                    <input type="text" id="trip-title" class="trip-title-input" placeholder="Nombre del viaje" value="{{ $trip->title ?? '' }}">
-                </div>
+                <!-- Trip Header Component -->
+                <x-trip-header :trip="$trip ?? null" />
 
-                <!-- Trip Information Card -->
-                <div class="info-card">
-                    <div class="card-header">
-                        <i class="fas fa-calendar-alt"></i>
-                        <h3>Información de Itinerario</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Fecha de inicio:</label>
-                                <input type="date" id="start-date" class="form-input" value="{{ $trip->start_date ? $trip->start_date->format('Y-m-d') : '' }}">
-                            </div>
-                            <button class="btn-update-dates" onclick="updateItineraryDates()">
-                                <i class="fas fa-sync-alt"></i>
-                                Actualizar fechas
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Days Container -->
-                <div class="days-container" id="days-container">
-                    @if(isset($trip) && $trip->days && count($trip->days) > 0)
-                        @foreach($trip->days as $day)
-                            <div class="day-card" data-day="{{ $day->day }}">
-                                <div class="day-header">
-                                    <h3>Día {{ $day->day }}</h3>
-                                    <p class="day-date">{{ $day->getFormattedDate() }}</p>
-                                </div>
-                                <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                                    <div class="add-element-btn" onclick="addElementToDay({{ $day->day }})">
-                                        <i class="fas fa-plus"></i>
-                                    </div>
-                                    <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
-
-                                    @if($day->items && count($day->items) > 0)
-                                        @foreach($day->items as $item)
-                                            <x-trip-item :item="$item" :day="$day->day" />
-                                        @endforeach
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-                    @else
-                        {{-- Always show at least one day for editing --}}
-                        <div class="day-card" data-day="1">
-                            <div class="day-header">
-                                <h3>Día 1</h3>
-                                <p class="day-date" id="day-1-date">
-                                    @if(isset($trip) && $trip->start_date)
-                                        {{ $trip->start_date->format('l, d \d\e F \d\e Y') }}
-                                    @else
-                                        martes, 16 de septiembre de 2025
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                                <div class="add-element-btn" onclick="addElementToDay(1)">
-                                    <i class="fas fa-plus"></i>
-                                </div>
-                                <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
-                            </div>
-                        </div>
-                    @endif
-                </div>
+                <!-- Timeline Component -->
+                <x-timeline :trip="$trip ?? null" />
 
                 <!-- Add Day Button -->
                 <div class="add-day-section">
@@ -210,57 +37,11 @@
         </div>
     </div>
 
-    <!-- Element Modal -->
-    <div id="element-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-title">Agregar Elemento</h3>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="modal-body" id="modal-body">
-                <!-- Dynamic content will be inserted here -->
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-                <button class="btn btn-primary" onclick="saveElement()">Guardar</button>
-            </div>
-        </div>
-    </div>
+    <!-- Element Modal Component -->
+    <x-element-modal />
 
-    <!-- Unsaved Changes Modal -->
-    <div id="unsaved-changes-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-exclamation-triangle" style="color: #ffc107;"></i> Cambios sin Guardar</h3>
-                <button class="modal-close" onclick="closeUnsavedModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p style="color: var(--text-gray); font-size: 0.9rem;">Tienes cambios sin guardar. Al salir volverás al index principal.</p>
-                <div class="changes-summary" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
-                    <h5 style="margin: 0 0 0.5rem 0; color: var(--primary-dark);">
-                        <i class="fas fa-list"></i> Resumen de cambios:
-                    </h5>
-                    <div id="changesSummary" style="font-size: 0.9rem; color: var(--text-gray);">
-                        <!-- Se llenará dinámicamente -->
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeUnsavedModal()">
-                    <i class="fas fa-times"></i>
-                    Cancelar
-                </button>
-                <button class="btn btn-danger" onclick="exitWithoutSaving()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Salir sin guardar
-                </button>
-                <button class="btn btn-primary" onclick="saveAndExit()">
-                    <i class="fas fa-save"></i>
-                    Guardar y salir
-                </button>
-            </div>
-        </div>
-    </div>
+    <!-- Unsaved Changes Modal Component -->
+    <x-unsaved-changes-modal />
 @endsection
 
 @push('styles')
@@ -1548,7 +1329,7 @@
         let elementToUpdate = null;
 
         allItems.forEach(item => {
-            const itemData = extractItemData(item);
+            const itemData = extractItemDataForDisplay(item);
             if (itemData && itemData.title === currentElementData.title && itemData.type === currentElementData.type) {
                 elementToUpdate = item;
             }
@@ -1764,7 +1545,7 @@
         const itemElement = button.closest('.timeline-item');
         if (!itemElement) return;
 
-        const itemData = extractItemData(itemElement);
+        const itemData = extractItemDataForDisplay(itemElement);
         if (!itemData) return;
 
         // Set current element data for editing
@@ -2227,7 +2008,7 @@
 
             timelineItems.forEach(item => {
                 if (!item.classList.contains('summary')) {
-                    const itemData = extractItemData(item);
+                    const itemData = extractItemDataForDisplay(item);
                     if (itemData) {
                         itemsByDay[dayNumber].push(itemData);
                     }
@@ -2279,7 +2060,7 @@
         const totalElements = document.querySelectorAll('.timeline-item.total');
         if (totalElements.length > 0) {
             const totalElement = totalElements[0];
-            const totalData = extractItemData(totalElement);
+            const totalData = extractItemDataForDisplay(totalElement);
             if (totalData && totalData.total_amount && totalData.currency) {
                 const price = parseFloat(totalData.total_amount);
                 if (!isNaN(price)) {
@@ -2303,7 +2084,7 @@
         return summary;
     }
 
-    function extractItemData(itemElement) {
+    function extractItemDataForDisplay(itemElement) {
         if (!itemElement) return null;
 
         const baseData = {
@@ -2426,7 +2207,7 @@
 
     function updateTotalElement(totalElement) {
         if (totalElement && totalElement.classList.contains('total')) {
-            const itemData = extractItemData(totalElement);
+            const itemData = extractItemDataForDisplay(totalElement);
 
             // If total has manual data, use it
             if (itemData && itemData.total_amount && itemData.currency) {

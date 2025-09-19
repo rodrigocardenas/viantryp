@@ -10,6 +10,7 @@ class Trip extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'title',
         'start_date',
         'end_date',
@@ -27,6 +28,14 @@ class Trip extends Model
         'end_date' => 'date',
         'items_data' => 'array',
     ];
+
+    /**
+     * Get the user that owns the trip
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     // Status constants
     const STATUS_DRAFT = 'draft';

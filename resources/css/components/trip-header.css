@@ -1,0 +1,142 @@
+/* Trip Header Component Styles */
+/* Ubicación: resources/css/components/trip-header.css */
+
+/* Trip Title */
+.trip-title-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.trip-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.trip-title-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #495057;
+    outline: none;
+    padding: 0.5rem 0;
+}
+
+.trip-title-input::placeholder {
+    color: #adb5bd;
+}
+
+/* Info Card */
+.info-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.card-header {
+    background: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-header i {
+    color: #007bff;
+    font-size: 1.2rem;
+}
+
+.card-header h3 {
+    color: #495057;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.card-content {
+    padding: 1.5rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: end;
+}
+
+.form-row:last-child {
+    margin-bottom: 0;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    color: #495057;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.btn-update-dates {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.btn-update-dates:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .btn-update-dates {
+        width: 100%;
+        justify-content: center;
+    }
+}

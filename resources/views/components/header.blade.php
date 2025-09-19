@@ -60,10 +60,21 @@
                     </div>
                 @else
                     <!-- User is not logged in -->
-                    <a href="{{ route('auth.google') }}" class="btn btn-google-login">
-                        <i class="fab fa-google"></i>
-                        Iniciar con Google
-                    </a>
+                    <div class="auth-buttons">
+                        <a href="{{ route('login') }}" class="btn btn-login">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Iniciar Sesión
+                        </a>
+                        <a href="{{ route('register') }}" class="btn btn-register">
+                            <i class="fas fa-user-plus"></i>
+                            Registrarse
+                        </a>
+                        <div class="auth-divider">o</div>
+                        <a href="{{ route('auth.google') }}" class="btn btn-google-login">
+                            <i class="fab fa-google"></i>
+                            Google
+                        </a>
+                    </div>
                 @endauth
             </div>
         </div>
@@ -265,6 +276,61 @@
         font-size: 0.8rem;
     }
 
+    /* New Authentication Buttons */
+    .auth-buttons {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .btn-login {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+
+    .btn-login:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+    }
+
+    .btn-register {
+        background: #28a745;
+        color: white;
+        border: 1px solid #28a745;
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+
+    .btn-register:hover {
+        background: #218838;
+        border-color: #218838;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+
+    .auth-divider {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.8rem;
+        font-weight: 300;
+    }
+
     @media (max-width: 768px) {
         .header-content {
             padding: 0 1rem;
@@ -280,6 +346,20 @@
         .btn {
             padding: 0.5rem 1rem;
             font-size: 0.8rem;
+        }
+
+        .auth-buttons {
+            gap: 0.5rem;
+        }
+
+        .btn-login,
+        .btn-register {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+        }
+
+        .auth-divider {
+            font-size: 0.7rem;
         }
     }
 
@@ -370,6 +450,20 @@
         .btn-logout {
             padding: 0.3rem 0.6rem;
             font-size: 0.75rem;
+        }
+
+        .auth-buttons {
+            gap: 0.5rem;
+        }
+
+        .btn-login,
+        .btn-register {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+        }
+
+        .auth-divider {
+            font-size: 0.7rem;
         }
     }
 </style>

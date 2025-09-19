@@ -19,6 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // No necesitamos configuración adicional para componentes Blade anónimos
     }
 }

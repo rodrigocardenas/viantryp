@@ -1,0 +1,33 @@
+/* Editor Layout Styles */
+/* Ubicación: resources/css/components/editor-layout.css */
+
+/* Main Editor Container */
+.editor-container {
+    display: flex;
+    height: calc(100vh - 80px);
+    background: #f8f9fa;
+}
+
+/* Main Content */
+.editor-main {
+    flex: 1;
+    overflow-y: auto;
+    background: white;
+}
+
+.main-content {
+    padding: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .editor-container {
+        flex-direction: column;
+    }
+
+    .main-content {
+        padding: 1rem;
+    }
+}

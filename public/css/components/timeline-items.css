@@ -1,0 +1,133 @@
+/* Timeline Items Styles */
+/* Ubicación: resources/css/components/timeline-items.css */
+
+/* Trip Item Styles */
+.timeline-item {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.item-header {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.item-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+}
+
+.icon-flight { background: #007bff; }
+.icon-hotel { background: #dc3545; }
+.icon-activity { background: #28a745; }
+.icon-transport { background: #6f42c1; }
+.icon-note { background: #fd7e14; }
+.icon-summary { background: #28a745; }
+.icon-total { background: #dc3545; }
+
+.item-info {
+    flex: 1;
+}
+
+.item-type {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.item-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.25rem;
+}
+
+.item-subtitle {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.item-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.action-btn:hover {
+    background: #f8f9fa;
+    border-color: #007bff;
+    color: #007bff;
+}
+
+/* Special styling for summary and total elements */
+.timeline-item.summary {
+    background: linear-gradient(135deg, #f8fff8 0%, #ffffff 100%);
+    border: 2px solid #28a745;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.1);
+}
+
+.timeline-item.summary .item-icon {
+    background: #28a745;
+}
+
+.timeline-item.total {
+    background: linear-gradient(135deg, #fff8f8 0%, #ffffff 100%);
+    border: 2px solid #dc3545;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.1);
+}
+
+.timeline-item.total .item-icon {
+    background: #dc3545;
+}
+
+.summary-update-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 0.5rem;
+}
+
+.summary-update-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.action-btn.btn-danger:hover {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #dc3545;
+}

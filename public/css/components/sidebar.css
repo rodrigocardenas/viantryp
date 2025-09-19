@@ -1,0 +1,116 @@
+/* Sidebar Component Styles */
+/* Ubicación: resources/css/components/sidebar.css */
+
+/* Left Sidebar */
+.editor-sidebar {
+    width: 280px;
+    background: #e9ecef;
+    border-right: 1px solid #dee2e6;
+    overflow-y: auto;
+}
+
+.sidebar-content {
+    padding: 1.5rem;
+}
+
+.sidebar-section h4 {
+    color: #495057;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.element-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.element-category {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    cursor: grab;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.element-category:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #007bff;
+}
+
+.element-category:active {
+    cursor: grabbing;
+}
+
+.category-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.flight-icon { background: #007bff; }
+.hotel-icon { background: #dc3545; }
+.activity-icon { background: #28a745; }
+.transport-icon { background: #6f42c1; }
+.note-icon { background: #fd7e14; }
+.summary-icon { background: #28a745; }
+.total-icon { background: #dc3545; }
+
+.category-info {
+    flex: 1;
+}
+
+.category-info h5 {
+    color: #495057;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.category-info p {
+    color: #6c757d;
+    font-size: 0.8rem;
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Special styles for summary and total elements */
+.element-category[data-type="summary"],
+.element-category[data-type="total"] {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.element-category[data-type="summary"]:hover,
+.element-category[data-type="total"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border-color: #007bff;
+}
+
+.element-category[data-type="summary"]:active,
+.element-category[data-type="total"]:active {
+    transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .editor-sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 200px;
+    }
+}

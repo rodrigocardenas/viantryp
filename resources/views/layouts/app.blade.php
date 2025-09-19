@@ -7,6 +7,14 @@
     <title>@yield('title', 'Viantryp - Gestión de Viajes')</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/components/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/trip-header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/timeline.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/modals.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/editor-layout.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/timeline-items.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+    @vite(['resources/js/app.js'])
     @stack('styles')
     <style>
         :root {
