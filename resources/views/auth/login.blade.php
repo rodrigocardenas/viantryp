@@ -2,6 +2,14 @@
 
 @section('title', 'Iniciar Sesión - Viantryp')
 
+@section('styles')
+<style>
+body {
+    background: linear-gradient(to bottom right, #eff6ff, #e0e7ff) !important;
+}
+</style>
+@endsection
+
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
@@ -50,7 +58,7 @@
                             type="email"
                             value="{{ old('email') }}"
                             required
-                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('email') border-red-500 @enderror"
+                            class="block w-full pl-12 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('email') border-red-500 @enderror"
                             placeholder="tu@email.com"
                         >
                     </div>
@@ -73,7 +81,7 @@
                             name="password"
                             type="password"
                             required
-                            class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('password') border-red-500 @enderror"
+                            class="block w-full pl-12 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('password') border-red-500 @enderror"
                             placeholder="••••••••"
                         >
                         <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword()">
@@ -142,12 +150,7 @@
             </div>
 
             <!-- Register Link -->
-            <div class="mt-6 text-center space-y-2">
-                <p class="text-sm text-gray-600">
-                    <a href="{{ route('password.request') }}" class="font-medium text-orange-600 hover:text-orange-500">
-                        ¿Olvidaste tu contraseña?
-                    </a>
-                </p>
+            <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">
                     ¿No tienes cuenta?
                     <a href="{{ route('register') }}" class="font-medium text-blue-600 hover:text-blue-500">
