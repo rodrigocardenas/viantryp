@@ -79,10 +79,10 @@
                             </div>
                             <div class="trip-actions">
                                 <button class="action-btn btn-primary" onclick="event.stopPropagation(); previewTrip({{ $trip->id }})">
-                                    Vista Previa
+                                    <i class="fas fa-eye"></i>
                                 </button>
                                 <button class="action-btn btn-secondary" onclick="event.stopPropagation(); editTrip({{ $trip->id }})">
-                                    Editar
+                                    <i class="fas fa-edit"></i>
                                 </button>
                                 <button class="action-btn btn-danger" onclick="event.stopPropagation(); deleteTrip({{ $trip->id }})">
                                     <i class="fas fa-trash"></i>
