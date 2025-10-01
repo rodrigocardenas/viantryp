@@ -3,58 +3,79 @@
 @section('title', 'Viantryp - Vista Previa del Itinerario')
 
 @section('content')
-    @auth
-        <!-- Header for authenticated users -->
-        <x-header :showActions="true" :backUrl="route('trips.index')" :actions="[
-            ['url' => '#', 'text' => 'Imprimir', 'class' => 'btn-secondary', 'icon' => 'fas fa-print', 'onclick' => 'window.print()'],
-            ['url' => '#', 'text' => 'Descargar PDF', 'class' => 'btn-primary', 'icon' => 'fas fa-download', 'onclick' => 'downloadPDF()']
-        ]" />
-    @else
-        <!-- Simple header for public preview -->
-        <div class="public-preview-header">
-            <div class="public-header-content">
-                <div class="public-logo">
-                    <h1 class="public-logo-text">Viantryp</h1>
-                    <p class="public-subtitle">Vista Previa del Itinerario</p>
-                </div>
-                <div class="public-actions">
-                    <button onclick="window.print()" class="public-btn-print">
-                        <i class="fas fa-print"></i>
-                        Imprimir
-                    </button>
+    <!-- Sticky Header that hides on scroll -->
+    <div class="preview-sticky-header" id="previewStickyHeader">
+        @auth
+            <!-- Header for authenticated users -->
+            <div class="header">
+                <div class="header-content">
+                    <div class="logo-container">
+                        <a href="{{ route('trips.index') }}" class="viantryp-logo">
+                            <i class="fas fa-route"></i>
+                            Viantryp
+                        </a>
+                    </div>
+                    <div class="header-right">
+                        <div class="nav-actions">
+                            <a href="#" class="btn btn-back" onclick="showUnsavedChangesModal()">
+                                <i class="fas fa-arrow-left"></i>
+                                Volver
+                            </a>
+                            <button type="button" class="btn btn-save" onclick="saveTrip()">
+                                <i class="fas fa-save"></i>
+                                Guardar
+                            </button>
+                            <button type="button" class="btn btn-preview" onclick="previewTrip()">
+                                <i class="fas fa-eye"></i>
+                                Vista Previa
+                            </button>
+                            <button type="button" class="btn btn-pdf" onclick="downloadPDF()">
+                                <i class="fas fa-file-pdf"></i>
+                                Descarga versión PDF
+                            </button>
+                        </div>
+
+                        <!-- Authentication Section -->
+                        <div class="auth-section">
+                            <div class="user-profile">
+                                @if(Auth::user()->avatar)
+                                    <img src="{{ Auth::user()->avatar }}" alt="Avatar" class="user-avatar">
+                                @else
+                                    <div class="user-avatar-placeholder">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                @endif
+                                <span class="user-name">{{ Auth::user()->name }}</span>
+                                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                                    @csrf
+                                    <button type="submit" class="btn btn-logout">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Cerrar Sesión
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    @endauth
-
-@extends('layouts.app')
-
-@section('title', 'Viantryp - Vista Previa del Itinerario')
-
-@section('content')
-    @auth
-        <!-- Header for authenticated users -->
-        <x-header :showActions="true" :backUrl="route('trips.index')" :actions="[
-            ['url' => '#', 'text' => 'Imprimir', 'class' => 'btn-secondary', 'icon' => 'fas fa-print', 'onclick' => 'window.print()'],
-            ['url' => '#', 'text' => 'Descargar PDF', 'class' => 'btn-primary', 'icon' => 'fas fa-download', 'onclick' => 'downloadPDF()']
-        ]" />
-    @else
-        <!-- Simple header for public preview -->
-        <div class="public-preview-header">
-            <div class="public-header-content">
-                <div class="public-logo">
-                    <h1 class="public-logo-text">Viantryp</h1>
-                    <p class="public-subtitle">Vista Previa del Itinerario</p>
-                </div>
-                <div class="public-actions">
-                    <button onclick="window.print()" class="public-btn-print">
-                        <i class="fas fa-print"></i>
-                        Imprimir
-                    </button>
+        @else
+            <!-- Simple header for public preview -->
+            <div class="public-preview-header">
+                <div class="public-header-content">
+                    <div class="public-logo">
+                        <h1 class="public-logo-text">Viantryp</h1>
+                        <p class="public-subtitle">Vista Previa del Itinerario</p>
+                    </div>
+                    <div class="public-actions">
+                        <button onclick="window.print()" class="public-btn-print">
+                            <i class="fas fa-print"></i>
+                            Imprimir
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    @endauth
+        @endauth
+    </div>
 
     <!-- Main Container -->
     <div class="main-container">
@@ -746,15 +767,188 @@
         font-style: italic;
     }
 
+    /* Sticky Header Styles */
+    .preview-sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: transform 0.3s ease;
+    }
+
+    .preview-sticky-header.hidden {
+        transform: translateY(-100%);
+    }
+
+    /* Header for authenticated users */
+    .header {
+        background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 60%, #93c5fd 100%);
+        color: white;
+        padding: 1.25rem 2rem;
+        box-shadow: var(--shadow-soft);
+    }
+
+    .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .viantryp-logo {
+        color: white;
+        text-decoration: none;
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .viantryp-logo i {
+        font-size: 1.8rem;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .nav-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+
+    .btn-back {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-back:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+    }
+
+    .btn-save {
+        background: #28a745;
+        color: white;
+    }
+
+    .btn-save:hover {
+        background: #218838;
+        transform: translateY(-1px);
+    }
+
+    .btn-preview {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-preview:hover {
+        background: #c82333;
+        transform: translateY(-1px);
+    }
+
+    .btn-pdf {
+        background: #fd7e14;
+        color: white;
+    }
+
+    .btn-pdf:hover {
+        background: #e8650e;
+        transform: translateY(-1px);
+    }
+
+    .auth-section {
+        display: flex;
+        align-items: center;
+    }
+
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .user-avatar-placeholder {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.9rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .user-name {
+        color: white;
+        font-weight: 500;
+        font-size: 0.9rem;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .btn-logout {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .btn-logout:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+    }
+
     /* Public Preview Header Styles */
     .public-preview-header {
         background: linear-gradient(135deg, #1f2a44 0%, #0ea5e9 100%);
         color: white;
         padding: 1.5rem 0;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        position: sticky;
-        top: 0;
-        z-index: 100;
     }
 
     .public-header-content {
@@ -814,6 +1008,36 @@
     }
 
     @media (max-width: 768px) {
+        .header-content {
+            padding: 0 1rem;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .nav-actions {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .user-profile {
+            padding: 0.4rem 0.8rem;
+        }
+
+        .user-name {
+            display: none;
+        }
+
+        .btn-logout {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.75rem;
+        }
+
         .main-container {
             padding: 1rem;
         }
@@ -875,5 +1099,23 @@
             icon.className = 'fas fa-chevron-down';
         }
     }
+
+    // Header hide on scroll functionality
+    let lastScrollTop = 0;
+    const header = document.getElementById('previewStickyHeader');
+
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // Scrolling down and past 100px
+            header.classList.add('hidden');
+        } else {
+            // Scrolling up or at top
+            header.classList.remove('hidden');
+        }
+
+        lastScrollTop = scrollTop;
+    });
 </script>
 @endpush
