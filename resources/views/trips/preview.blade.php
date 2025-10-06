@@ -21,39 +21,10 @@
                                 <i class="fas fa-arrow-left"></i>
                                 Volver
                             </a>
-                            <button type="button" class="btn btn-save" onclick="saveTrip()">
-                                <i class="fas fa-save"></i>
-                                Guardar
-                            </button>
-                            <button type="button" class="btn btn-preview" onclick="previewTrip()">
-                                <i class="fas fa-eye"></i>
-                                Vista Previa
-                            </button>
                             <button type="button" class="btn btn-pdf" onclick="downloadPDF()">
                                 <i class="fas fa-file-pdf"></i>
                                 Descarga versión PDF
                             </button>
-                        </div>
-
-                        <!-- Authentication Section -->
-                        <div class="auth-section">
-                            <div class="user-profile">
-                                @if(Auth::user()->avatar)
-                                    <img src="{{ Auth::user()->avatar }}" alt="Avatar" class="user-avatar">
-                                @else
-                                    <div class="user-avatar-placeholder">
-                                        <i class="fas fa-user"></i>
-                                    </div>
-                                @endif
-                                <span class="user-name">{{ Auth::user()->name }}</span>
-                                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-                                    @csrf
-                                    <button type="submit" class="btn btn-logout">
-                                        <i class="fas fa-sign-out-alt"></i>
-                                        Cerrar Sesión
-                                    </button>
-                                </form>
-                            </div>
                         </div>
                     </div>
                 </div>
