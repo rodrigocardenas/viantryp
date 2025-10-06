@@ -216,8 +216,10 @@ class TripController extends Controller
             $trip = Trip::with('user')->findOrFail($tripId);
 
             // For public preview, ensure the trip is in a shareable state
-            if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
-                // Only allow preview for trips that have been sent or approved
+            // Allow preview for drafts if the user is authenticated and owns the trip
+            $isOwner = Auth::check() && $trip->user_id === Auth::id();
+            if (!$isOwner && !in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
+                // Only allow preview for trips that have been sent or approved, or for owners in draft
                 abort(404, 'Vista previa no disponible para este viaje.');
             }
         }
