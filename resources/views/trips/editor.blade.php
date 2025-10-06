@@ -30,7 +30,7 @@
                 <div class="add-day-section">
                     <button class="btn-add-day" onclick="addNewDay()">
                         <i class="fas fa-plus"></i>
-                        Agregar Día
+                        Agregar día al itinerario
                     </button>
                 </div>
             </div>
@@ -44,7 +44,36 @@
     <x-unsaved-changes-modal />
 @endsection
 
+@push('scripts')
+<script>
+    // Pass PHP variables to JavaScript
+    window.tripData = {
+        isNewTrip: {{ isset($trip) ? 'false' : 'true' }},
+        tripId: {{ isset($trip) ? $trip->id : 'null' }},
+        tripTitle: {{ isset($trip) ? json_encode($trip->title) : 'null' }}
+    };
+</script>
+<!-- Load editor modules -->
+<script src="{{ asset('js/modules/global-state.js') }}"></script>
+<script src="{{ asset('js/modules/drag-drop.js') }}"></script>
+<script src="{{ asset('js/modules/date-utils.js') }}"></script>
+<script src="{{ asset('js/modules/ui-utils.js') }}"></script>
+<script src="{{ asset('js/modules/trip-manager.js') }}"></script>
+<script src="{{ asset('js/modules/day-manager.js') }}"></script>
+<script src="{{ asset('js/modules/persistence.js') }}"></script>
+<script src="{{ asset('js/modules/element-manager.js') }}"></script>
+<script src="{{ asset('js/editor-main.js') }}"></script>
+<script src="{{ asset('js/modules/persistence.js') }}"></script>
+<script src="{{ asset('js/modules/day-manager.js') }}"></script>
+<script src="{{ asset('js/modules/trip-manager.js') }}"></script>
+<script src="{{ asset('js/modules/element-manager.js') }}"></script>
+<script src="{{ asset('js/modules/autocomplete.js') }}"></script>
+@endpush
+
+@vite(['resources/js/editor-main.js'])
+
 @push('styles')
+<link rel="stylesheet" href="{{ asset('css/components/autocomplete.css') }}">
 <style>
     .editor-container {
         display: flex;
@@ -909,10 +938,10 @@
 
     // Initialize the page
     document.addEventListener('DOMContentLoaded', function() {
-        // Check if we're on the create route
-        const isNewTrip = window.location.pathname.includes('/create');
-        console.log('DOM loaded, current path:', window.location.pathname);
-        console.log('Is new trip:', isNewTrip);
+        // Check if we're creating a new trip or editing existing
+        const isNewTrip = window.tripData.isNewTrip;
+        console.log('DOM loaded, isNewTrip:', isNewTrip);
+        console.log('Trip data:', window.tripData);
 
         const modal = document.getElementById('new-trip-modal');
         const editor = document.getElementById('editor-container');
@@ -1603,9 +1632,7 @@
                 <p class="day-date">${dayDate}</p>
             </div>
             <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="add-element-btn" onclick="addElementToDay(${newDayNumber})">
-                    <i class="fas fa-plus"></i>
-                </div>
+
                 <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
             </div>
         `;
@@ -1869,7 +1896,7 @@
         }
     }
 
-    function createNewTrip() {
+    function handleCreateNewTrip() {
         const tripName = document.getElementById('new-trip-name').value.trim();
 
         if (!tripName) {
@@ -2359,3 +2386,5 @@
     }
 </script>
 @endpush
+
+@vite(['resources/js/editor-main.js'])

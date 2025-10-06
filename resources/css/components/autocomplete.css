@@ -1,0 +1,136 @@
+/* Autocomplete Styles for Viantryp Editor */
+
+.autocomplete-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    line-height: 1.4;
+    background: white;
+    border-radius: 4px;
+    margin: 2px 0;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.selected {
+    background-color: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    padding-left: 11px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transform: translateX(2px);
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item strong {
+    color: #1976d2;
+    font-weight: 600;
+}
+
+.autocomplete-item .airport-code {
+    font-weight: bold;
+    color: #1565c0;
+    margin-right: 8px;
+    font-size: 13px;
+}
+
+.autocomplete-item .airport-name {
+    color: #424242;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.autocomplete-item .airport-location {
+    color: #757575;
+    font-size: 12px;
+    font-style: italic;
+}
+
+/* Form input focus styles for autocomplete */
+.form-input:focus {
+    position: relative;
+    border-color: #2196f3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+/* Ensure autocomplete containers are properly positioned */
+.form-group {
+    position: relative;
+}
+
+/* Autocomplete container styles */
+[id$="-autocomplete"] {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #2196f3;
+    border-top: none;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 10000;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border-radius: 0 0 8px 8px;
+    margin-top: -1px;
+}
+
+/* Make sure autocomplete containers are visible */
+#departure-airport-autocomplete,
+#arrival-airport-autocomplete,
+#airlineAutocomplete {
+    border: 2px solid #2196f3 !important;
+    border-top: none !important;
+    background: white !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+    z-index: 99999 !important;
+    position: absolute !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Force visibility for autocomplete items */
+.autocomplete-item {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Highlight selected item */
+.autocomplete-item.selected {
+    background-color: #bbdefb;
+    color: #0d47a1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .autocomplete-item {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    [id$="-autocomplete"] {
+        max-height: 200px;
+    }
+}
+
+/* Loading state */
+.autocomplete-loading {
+    padding: 12px 15px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+/* No results state */
+.autocomplete-no-results {
+    padding: 12px 15px;
+    text-align: center;
+    color: #999;
+    font-style: italic;
+}

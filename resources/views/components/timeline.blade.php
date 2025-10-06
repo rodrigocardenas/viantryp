@@ -16,9 +16,7 @@
                     <p class="day-date">{{ $day->getFormattedDate() }}</p>
                 </div>
                 <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <div class="add-element-btn" onclick="addElementToDay({{ $day->day }})">
-                        <i class="fas fa-plus"></i>
-                    </div>
+
                     <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
 
                     @if($day->items && count($day->items) > 0)
@@ -43,9 +41,7 @@
                 </p>
             </div>
             <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="add-element-btn" onclick="addElementToDay(1)">
-                    <i class="fas fa-plus"></i>
-                </div>
+
                 <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
             </div>
         </div>
