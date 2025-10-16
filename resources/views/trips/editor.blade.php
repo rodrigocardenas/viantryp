@@ -7,7 +7,7 @@
     <x-header :showActions="true" :backUrl="'#'" :backOnclick="'showUnsavedChangesModal()'" :actions="[
         ['url' => '#', 'text' => 'Guardar', 'class' => 'btn-save', 'icon' => 'fas fa-save', 'onclick' => 'saveTrip()'],
         ['url' => '#', 'text' => 'Vista Previa', 'class' => 'btn-preview', 'icon' => 'fas fa-eye', 'onclick' => 'previewTrip()'],
-        ['url' => '#', 'text' => 'Descarga versión PDF', 'class' => 'btn-pdf', 'icon' => 'fas fa-file-pdf', 'onclick' => 'downloadPDF()']
+        ['url' => '#', 'text' => 'Descarga PDF', 'class' => 'btn-pdf', 'icon' => 'fas fa-file-pdf', 'onclick' => 'downloadPDF()']
     ]" />
 
     <!-- New Trip Modal Component -->
@@ -1798,11 +1798,53 @@
     }
 
     function previewTrip() {
-        window.open('{{ url("trips/temp/preview") }}', '_blank');
+        const tripId = {{ $trip->id ?? 'null' }};
+
+        if (!tripId) {
+            showNotification('Error', 'Primero guarda el viaje para ver la vista previa.', 'error');
+            return;
+        }
+
+        const previewUrl = `/trips/${tripId}/preview`;
+        window.open(previewUrl, '_blank');
     }
 
     function downloadPDF() {
-        showNotification('PDF', 'Funcionalidad de descarga PDF en desarrollo.');
+        const tripId = {{ $trip->id ?? 'null' }};
+
+        if (!tripId) {
+            showNotification('Error', 'Primero guarda el viaje para descargar el PDF.', 'error');
+            return;
+        }
+
+        // Show loading state
+        const pdfBtn = document.querySelector('.btn-pdf');
+        const originalText = pdfBtn.innerHTML;
+        pdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando PDF...';
+        pdfBtn.disabled = true;
+
+        try {
+            // Create a temporary link to trigger download
+            const link = document.createElement('a');
+            link.href = `/trips/${tripId}/pdf`;
+            link.download = 'itinerario.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showNotification('PDF generado', 'El PDF del itinerario se está descargando.', 'success');
+
+            // Reset button
+            pdfBtn.innerHTML = originalText;
+            pdfBtn.disabled = false;
+        } catch (error) {
+            console.error('PDF download error:', error);
+            showNotification('Error', 'No se pudo generar el PDF.', 'error');
+
+            // Reset button
+            pdfBtn.innerHTML = originalText;
+            pdfBtn.disabled = false;
+        }
     }
 
     function saveTrip() {
