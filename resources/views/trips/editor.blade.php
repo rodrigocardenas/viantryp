@@ -326,6 +326,93 @@
         box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
     }
 
+    /* Select2 custom styles */
+    .select2-container--default .select2-selection--single {
+        height: 2.75rem;
+        border: 1px solid var(--border-gray);
+        border-radius: 10px;
+        background: white;
+        padding: 0 0.75rem;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #374151;
+        line-height: 2.5rem;
+        padding-left: 0;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #adb5bd;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 2.5rem;
+        right: 0.75rem;
+    }
+
+    .select2-container--default.select2-container--open .select2-selection--single {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+
+    .select2-dropdown {
+        border: 1px solid var(--border-gray);
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .select2-container--default .select2-results__option {
+        padding: 0.5rem 0.75rem;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: var(--primary-blue);
+        color: white;
+    }
+
+    /* Fix for Select2 dropdown in modals */
+    .select2-dropdown {
+        z-index: 10001 !important;
+    }
+
+    .select2-container {
+        z-index: 10000 !important;
+    }
+
+    /* Flight lookup button styles */
+    .btn-lookup-flight {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        border: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-left: 0.5rem;
+        font-family: 'Poppins', sans-serif;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-lookup-flight:hover {
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+    }
+
+    .btn-lookup-flight:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
     .btn-update-dates {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         color: white;
@@ -1048,6 +1135,9 @@
         display: block;
     }
 </style>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endpush
 
 @push('scripts')
@@ -1058,6 +1148,8 @@
 
     // Initialize the page
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded - initializing page');
+
         // Check if we're on the create route
         const isNewTrip = window.location.pathname.includes('/create');
         console.log('DOM loaded, current path:', window.location.pathname);
@@ -1189,6 +1281,20 @@
         modalTitle.textContent = `Agregar ${getTypeLabel(elementType)}`;
         modalBody.innerHTML = getElementForm(elementType);
 
+        // Initialize Select2 for the modal form
+        initializeSelect2();
+
+        // Add event listener for flight lookup button
+        setTimeout(() => {
+            const lookupBtn = document.getElementById('lookup-flight');
+            if (lookupBtn) {
+                lookupBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    lookupFlightInfo();
+                });
+            }
+        }, 100);
+
         document.getElementById('element-modal').style.display = 'block';
     }
 
@@ -1272,6 +1378,34 @@
 
         modalTitle.textContent = `Agregar ${getTypeLabel(type)}`;
         modalBody.innerHTML = getElementForm(type);
+
+        // Initialize Select2 for the modal form
+        initializeSelect2();
+
+        // Add event listener for flight lookup button
+        setTimeout(() => {
+            const lookupBtn = document.getElementById('lookup-flight');
+            if (lookupBtn) {
+                lookupBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    lookupFlightInfo();
+                });
+            }
+        }, 100);
+
+        // Add event listener for flight lookup
+        const lookupBtn = document.getElementById('lookup-flight');
+        console.log('Setting up flight lookup button listener, button found:', !!lookupBtn);
+        if (lookupBtn) {
+            lookupBtn.addEventListener('click', function(e) {
+                console.log('Flight lookup button clicked!');
+                e.preventDefault();
+                lookupFlightInfo();
+            });
+            console.log('Flight lookup button listener added');
+        } else {
+            console.error('Flight lookup button not found in modal');
+        }
     }
 
     function getTypeLabel(type) {
@@ -1292,11 +1426,16 @@
             'flight': `
                 <div class="form-group">
                     <label for="airline">Aerolínea</label>
-                    <input type="text" id="airline" class="form-input" placeholder="Ej: Iberia">
+                    <select id="airline" class="form-input airline-select" placeholder="Ej: Iberia">
+                        <option value="">Seleccionar aerolínea</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="flight-number">Número de Vuelo</label>
                     <input type="text" id="flight-number" class="form-input" placeholder="Ej: IB1234">
+                    <button type="button" id="lookup-flight" class="btn-lookup-flight" title="Buscar información del vuelo">
+                        <i class="fas fa-search"></i> Buscar vuelo
+                    </button>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -1311,11 +1450,15 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="departure-airport">Aeropuerto de Salida</label>
-                        <input type="text" id="departure-airport" class="form-input" placeholder="Ej: Madrid Barajas">
+                        <select id="departure-airport" class="form-input airport-select" placeholder="Ej: Madrid Barajas">
+                            <option value="">Seleccionar aeropuerto</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="arrival-airport">Aeropuerto de Llegada</label>
-                        <input type="text" id="arrival-airport" class="form-input" placeholder="Ej: París Charles de Gaulle">
+                        <select id="arrival-airport" class="form-input airport-select" placeholder="Ej: París Charles de Gaulle">
+                            <option value="">Seleccionar aeropuerto</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -1711,6 +1854,20 @@
 
         // Fill form with existing data
         fillFormWithData(itemData);
+
+        // Initialize Select2 for the modal form
+        initializeSelect2();
+
+        // Add event listener for flight lookup button
+        setTimeout(() => {
+            const lookupBtn = document.getElementById('lookup-flight');
+            if (lookupBtn) {
+                lookupBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    lookupFlightInfo();
+                });
+            }
+        }, 100);
 
         document.getElementById('element-modal').style.display = 'block';
     }
@@ -2547,6 +2704,398 @@
         `;
 
         return elementDiv;
+    }
+
+    // Flight lookup functionality using AviationStack API
+    async function lookupFlightInfo() {
+        console.log('lookupFlightInfo called');
+
+        const flightNumber = document.getElementById('flight-number').value.trim();
+        const airline = document.getElementById('airline').value;
+
+        console.log('Flight number:', flightNumber);
+        console.log('Airline:', airline);
+
+        if (!flightNumber) {
+            showNotification('Error', 'Por favor ingresa un número de vuelo.', 'error');
+            return;
+        }
+
+        // Show loading state
+        const lookupBtn = document.getElementById('lookup-flight');
+        console.log('Lookup button found:', !!lookupBtn);
+
+        if (!lookupBtn) {
+            console.error('Lookup button not found');
+            return;
+        }
+
+        const originalText = lookupBtn.innerHTML;
+        lookupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        lookupBtn.disabled = true;
+
+        try {
+            // Using AviationStack API (free tier available)
+            const apiKey = 'e6d8484a12f10b6190fda08b826479c9'; // You'll need to get a free API key from aviationstack.com
+            const url = `https://api.aviationstack.com/v1/flights?access_key=${apiKey}&flight_iata=${flightNumber}`;
+            console.log('API URL:', url);
+
+            const response = await fetch(url);
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+                throw new Error(`API request failed with status ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('API response data:', data);
+
+            if (data.data && data.data.length > 0) {
+                const flight = data.data[0];
+                console.log('Flight data:', flight);
+
+                // Auto-fill form fields
+                if (flight.departure && flight.departure.scheduled) {
+                    const departureTime = formatTime(flight.departure.scheduled);
+                    console.log('Setting departure time:', departureTime);
+                    document.getElementById('departure-time').value = departureTime;
+                }
+                if (flight.arrival && flight.arrival.scheduled) {
+                    const arrivalTime = formatTime(flight.arrival.scheduled);
+                    console.log('Setting arrival time:', arrivalTime);
+                    document.getElementById('arrival-time').value = arrivalTime;
+                }
+                if (flight.departure && flight.departure.iata) {
+                    // Try to match with our airport list
+                    const departureAirport = findAirportByIATA(flight.departure.iata);
+                    console.log('Departure airport found:', departureAirport);
+                    if (departureAirport) {
+                        $('#departure-airport').val(departureAirport.id).trigger('change');
+                    }
+                }
+                if (flight.arrival && flight.arrival.iata) {
+                    // Try to match with our airport list
+                    const arrivalAirport = findAirportByIATA(flight.arrival.iata);
+                    console.log('Arrival airport found:', arrivalAirport);
+                    if (arrivalAirport) {
+                        $('#arrival-airport').val(arrivalAirport.id).trigger('change');
+                    }
+                }
+
+                showNotification('Información encontrada', 'Los datos del vuelo han sido completados automáticamente.');
+            } else {
+                console.log('No flight data found');
+                showNotification('Vuelo no encontrado', 'No se encontró información para este número de vuelo.', 'warning');
+            }
+        } catch (error) {
+            console.error('Flight lookup error:', error);
+            showNotification('Error', `No se pudo obtener la información del vuelo: ${error.message}`, 'error');
+        } finally {
+            // Reset button
+            lookupBtn.innerHTML = originalText;
+            lookupBtn.disabled = false;
+        }
+    }
+
+    function formatTime(dateString) {
+        try {
+            const date = new Date(dateString);
+            return date.toTimeString().slice(0, 5); // HH:MM format
+        } catch (e) {
+            return '';
+        }
+    }
+
+    function findAirportByIATA(iataCode) {
+        // Extended IATA codes for major airports worldwide
+        const iataMap = {
+            // Europe
+            'MAD': 'Madrid Barajas (MAD)',
+            'BCN': 'Barcelona El Prat (BCN)',
+            'CDG': 'París Charles de Gaulle (CDG)',
+            'ORY': 'París Orly (ORY)',
+            'FRA': 'Fráncfort (FRA)',
+            'MUC': 'Múnich (MUC)',
+            'LHR': 'Londres Heathrow (LHR)',
+            'LGW': 'Londres Gatwick (LGW)',
+            'LTN': 'Londres Luton (LTN)',
+            'STN': 'Londres Stansted (STN)',
+            'LCY': 'Londres City (LCY)',
+            'AMS': 'Ámsterdam Schiphol (AMS)',
+            'FCO': 'Roma Fiumicino (FCO)',
+            'MXP': 'Milán Malpensa (MXP)',
+            'BER': 'Berlín Brandenburg (BER)',
+            'VIE': 'Viena (VIE)',
+            'ZRH': 'Zúrich (ZRH)',
+            'GVA': 'Ginebra (GVA)',
+            'CPH': 'Copenhague (CPH)',
+            'ARN': 'Estocolmo Arlanda (ARN)',
+            'OSL': 'Oslo Gardermoen (OSL)',
+            'HEL': 'Helsinki (HEL)',
+            'PRG': 'Praga (PRG)',
+            'BUD': 'Budapest (BUD)',
+            'WAW': 'Varsovia Chopin (WAW)',
+            'LIS': 'Lisboa Humberto Delgado (LIS)',
+            'OPO': 'Oporto (OPO)',
+            'ATH': 'Atenas (ATH)',
+            'TLV': 'Tel Aviv Ben Gurión (TLV)',
+            'CAI': 'El Cairo (CAI)',
+            'IST': 'Estambul (IST)',
+            'DME': 'Moscú Domodédovo (DME)',
+            'SVO': 'Moscú Sheremétievo (SVO)',
+            'LED': 'San Petersburgo Púlkovo (LED)',
+
+            // North America
+            'JFK': 'Nueva York JFK (JFK)',
+            'EWR': 'Nueva York Newark (EWR)',
+            'LAX': 'Los Ángeles (LAX)',
+            'ORD': 'Chicago O\'Hare (ORD)',
+            'MIA': 'Miami (MIA)',
+            'YYZ': 'Toronto Pearson (YYZ)',
+            'YVR': 'Vancouver (YVR)',
+            'YUL': 'Montreal Trudeau (YUL)',
+            'MEX': 'México City (MEX)',
+            'CUN': 'Cancún (CUN)',
+            'GDL': 'Guadalajara (GDL)',
+            'MTY': 'Monterrey (MTY)',
+            'TIJ': 'Tijuana (TIJ)',
+            'SJD': 'Los Cabos (SJD)',
+            'HAV': 'La Habana (HAV)',
+            'NAS': 'Nassau (NAS)',
+
+            // South America
+            'SCL': 'Santiago de Chile (SCL)',
+            'BOG': 'Bogotá (BOG)',
+            'LIM': 'Lima (LIM)',
+            'EZE': 'Buenos Aires Ezeiza (EZE)',
+            'GRU': 'São Paulo Guarulhos (GRU)',
+            'BSB': 'Brasilia (BSB)',
+            'GIG': 'Río de Janeiro Galeão (GIG)',
+            'BOG': 'Bogotá (BOG)',
+            'UIO': 'Quito (UIO)',
+            'GYE': 'Guayaquil (GYE)',
+            'ASU': 'Asunción (ASU)',
+            'MVD': 'Montevideo (MVD)',
+            'LPB': 'La Paz (LPB)',
+            'VVI': 'Santa Cruz (VVI)',
+
+            // Asia
+            'DXB': 'Dubái (DXB)',
+            'DOH': 'Doha (DOH)',
+            'HKG': 'Hong Kong (HKG)',
+            'NRT': 'Tokio Narita (NRT)',
+            'HND': 'Tokio Haneda (HND)',
+            'ICN': 'Seúl Incheon (ICN)',
+            'PEK': 'Pekín Capital (PEK)',
+            'PVG': 'Shanghái Pudong (PVG)',
+            'CAN': 'Cantón (CAN)',
+            'CTU': 'Chengdú (CTU)',
+            'CGK': 'Yakarta Soekarno-Hatta (CGK)',
+            'BKK': 'Bangkok Suvarnabhumi (BKK)',
+            'SIN': 'Singapur Changi (SIN)',
+            'KUL': 'Kuala Lumpur (KUL)',
+            'DEL': 'Delhi (DEL)',
+            'BOM': 'Bombay (BOM)',
+            'BLR': 'Bangalore (BLR)',
+
+            // Oceania
+            'SYD': 'Sídney (SYD)',
+            'MEL': 'Melbourne (MEL)',
+            'AKL': 'Auckland (AKL)',
+            'PER': 'Perth (PER)',
+            'BNE': 'Brisbane (BNE)',
+
+            // Africa
+            'JNB': 'Johannesburgo (JNB)',
+            'CPT': 'Ciudad del Cabo (CPT)',
+            'ADD': 'Adís Abeba (ADD)',
+            'NBO': 'Nairobi (NBO)',
+            'LOS': 'Lagos (LOS)',
+            'CMN': 'Casablanca (CMN)',
+            'TUN': 'Túnez (TUN)',
+
+            // Middle East
+            'AUH': 'Abu Dhabi (AUH)',
+            'RUH': 'Riad (RUH)',
+            'AMM': 'Amán (AMM)',
+            'BEY': 'Beirut (BEY)',
+            'KWI': 'Kuwait (KWI)'
+        };
+
+        const airportName = iataMap[iataCode];
+        if (airportName) {
+            return { id: airportName, text: airportName };
+        }
+
+        // If not found in our list, return a generic entry with the IATA code
+        return {
+            id: `${iataCode} - ${iataCode}`,
+            text: `${iataCode} - ${iataCode}`
+        };
+    }
+
+    // Initialize Select2 for autocomplete selects
+    function initializeSelect2() {
+        // Airlines data
+        const airlines = [
+            { id: 'Iberia', text: 'Iberia' },
+            { id: 'Air France', text: 'Air France' },
+            { id: 'Lufthansa', text: 'Lufthansa' },
+            { id: 'British Airways', text: 'British Airways' },
+            { id: 'KLM', text: 'KLM' },
+            { id: 'Delta', text: 'Delta' },
+            { id: 'American Airlines', text: 'American Airlines' },
+            { id: 'United Airlines', text: 'United Airlines' },
+            { id: 'Emirates', text: 'Emirates' },
+            { id: 'Qatar Airways', text: 'Qatar Airways' },
+            { id: 'Turkish Airlines', text: 'Turkish Airlines' },
+            { id: 'LATAM', text: 'LATAM' },
+            { id: 'Avianca', text: 'Avianca' },
+            { id: 'Aeroméxico', text: 'Aeroméxico' },
+            { id: 'Aerolineas Argentinas', text: 'Aerolineas Argentinas' },
+            { id: 'Sky Airline', text: 'Sky Airline' },
+            { id: 'JetSmart', text: 'JetSmart' },
+            { id: 'Ryanair', text: 'Ryanair' },
+            { id: 'Vueling', text: 'Vueling' },
+            { id: 'EasyJet', text: 'EasyJet' },
+            { id: 'Norwegian', text: 'Norwegian' },
+            { id: 'Volotea', text: 'Volotea' },
+            { id: 'Eurowings', text: 'Eurowings' },
+            { id: 'Transavia', text: 'Transavia' },
+            { id: 'Pegasus', text: 'Pegasus' },
+            { id: 'Wizz Air', text: 'Wizz Air' },
+            { id: 'Level', text: 'Level' }
+        ];
+
+        // Airports data - expanded list
+        const airports = [
+            // Europe
+            { id: 'Madrid Barajas (MAD)', text: 'Madrid Barajas (MAD)' },
+            { id: 'Barcelona El Prat (BCN)', text: 'Barcelona El Prat (BCN)' },
+            { id: 'París Charles de Gaulle (CDG)', text: 'París Charles de Gaulle (CDG)' },
+            { id: 'París Orly (ORY)', text: 'París Orly (ORY)' },
+            { id: 'Fráncfort (FRA)', text: 'Fráncfort (FRA)' },
+            { id: 'Múnich (MUC)', text: 'Múnich (MUC)' },
+            { id: 'Londres Heathrow (LHR)', text: 'Londres Heathrow (LHR)' },
+            { id: 'Londres Gatwick (LGW)', text: 'Londres Gatwick (LGW)' },
+            { id: 'Londres Luton (LTN)', text: 'Londres Luton (LTN)' },
+            { id: 'Londres Stansted (STN)', text: 'Londres Stansted (STN)' },
+            { id: 'Londres City (LCY)', text: 'Londres City (LCY)' },
+            { id: 'Ámsterdam Schiphol (AMS)', text: 'Ámsterdam Schiphol (AMS)' },
+            { id: 'Roma Fiumicino (FCO)', text: 'Roma Fiumicino (FCO)' },
+            { id: 'Milán Malpensa (MXP)', text: 'Milán Malpensa (MXP)' },
+            { id: 'Berlín Brandenburg (BER)', text: 'Berlín Brandenburg (BER)' },
+            { id: 'Viena (VIE)', text: 'Viena (VIE)' },
+            { id: 'Zúrich (ZRH)', text: 'Zúrich (ZRH)' },
+            { id: 'Ginebra (GVA)', text: 'Ginebra (GVA)' },
+            { id: 'Copenhague (CPH)', text: 'Copenhague (CPH)' },
+            { id: 'Estocolmo Arlanda (ARN)', text: 'Estocolmo Arlanda (ARN)' },
+            { id: 'Oslo Gardermoen (OSL)', text: 'Oslo Gardermoen (OSL)' },
+            { id: 'Helsinki (HEL)', text: 'Helsinki (HEL)' },
+            { id: 'Praga (PRG)', text: 'Praga (PRG)' },
+            { id: 'Budapest (BUD)', text: 'Budapest (BUD)' },
+            { id: 'Varsovia Chopin (WAW)', text: 'Varsovia Chopin (WAW)' },
+            { id: 'Lisboa Humberto Delgado (LIS)', text: 'Lisboa Humberto Delgado (LIS)' },
+            { id: 'Oporto (OPO)', text: 'Oporto (OPO)' },
+            { id: 'Atenas (ATH)', text: 'Atenas (ATH)' },
+            { id: 'Tel Aviv Ben Gurión (TLV)', text: 'Tel Aviv Ben Gurión (TLV)' },
+            { id: 'El Cairo (CAI)', text: 'El Cairo (CAI)' },
+            { id: 'Estambul (IST)', text: 'Estambul (IST)' },
+            { id: 'Moscú Domodédovo (DME)', text: 'Moscú Domodédovo (DME)' },
+            { id: 'Moscú Sheremétievo (SVO)', text: 'Moscú Sheremétievo (SVO)' },
+            { id: 'San Petersburgo Púlkovo (LED)', text: 'San Petersburgo Púlkovo (LED)' },
+
+            // North America
+            { id: 'Nueva York JFK (JFK)', text: 'Nueva York JFK (JFK)' },
+            { id: 'Nueva York Newark (EWR)', text: 'Nueva York Newark (EWR)' },
+            { id: 'Los Ángeles (LAX)', text: 'Los Ángeles (LAX)' },
+            { id: 'Chicago O\'Hare (ORD)', text: 'Chicago O\'Hare (ORD)' },
+            { id: 'Miami (MIA)', text: 'Miami (MIA)' },
+            { id: 'Toronto Pearson (YYZ)', text: 'Toronto Pearson (YYZ)' },
+            { id: 'Vancouver (YVR)', text: 'Vancouver (YVR)' },
+            { id: 'Montreal Trudeau (YUL)', text: 'Montreal Trudeau (YUL)' },
+            { id: 'México City (MEX)', text: 'México City (MEX)' },
+            { id: 'Cancún (CUN)', text: 'Cancún (CUN)' },
+            { id: 'Guadalajara (GDL)', text: 'Guadalajara (GDL)' },
+            { id: 'Monterrey (MTY)', text: 'Monterrey (MTY)' },
+            { id: 'Tijuana (TIJ)', text: 'Tijuana (TIJ)' },
+            { id: 'Los Cabos (SJD)', text: 'Los Cabos (SJD)' },
+            { id: 'La Habana (HAV)', text: 'La Habana (HAV)' },
+            { id: 'Nassau (NAS)', text: 'Nassau (NAS)' },
+
+            // South America
+            { id: 'Santiago de Chile (SCL)', text: 'Santiago de Chile (SCL)' },
+            { id: 'Bogotá (BOG)', text: 'Bogotá (BOG)' },
+            { id: 'Lima (LIM)', text: 'Lima (LIM)' },
+            { id: 'Buenos Aires Ezeiza (EZE)', text: 'Buenos Aires Ezeiza (EZE)' },
+            { id: 'São Paulo Guarulhos (GRU)', text: 'São Paulo Guarulhos (GRU)' },
+            { id: 'Brasilia (BSB)', text: 'Brasilia (BSB)' },
+            { id: 'Río de Janeiro Galeão (GIG)', text: 'Río de Janeiro Galeão (GIG)' },
+            { id: 'Quito (UIO)', text: 'Quito (UIO)' },
+            { id: 'Guayaquil (GYE)', text: 'Guayaquil (GYE)' },
+            { id: 'Asunción (ASU)', text: 'Asunción (ASU)' },
+            { id: 'Montevideo (MVD)', text: 'Montevideo (MVD)' },
+            { id: 'La Paz (LPB)', text: 'La Paz (LPB)' },
+            { id: 'Santa Cruz (VVI)', text: 'Santa Cruz (VVI)' },
+
+            // Asia
+            { id: 'Dubái (DXB)', text: 'Dubái (DXB)' },
+            { id: 'Doha (DOH)', text: 'Doha (DOH)' },
+            { id: 'Hong Kong (HKG)', text: 'Hong Kong (HKG)' },
+            { id: 'Tokio Narita (NRT)', text: 'Tokio Narita (NRT)' },
+            { id: 'Tokio Haneda (HND)', text: 'Tokio Haneda (HND)' },
+            { id: 'Seúl Incheon (ICN)', text: 'Seúl Incheon (ICN)' },
+            { id: 'Pekín Capital (PEK)', text: 'Pekín Capital (PEK)' },
+            { id: 'Shanghái Pudong (PVG)', text: 'Shanghái Pudong (PVG)' },
+            { id: 'Cantón (CAN)', text: 'Cantón (CAN)' },
+            { id: 'Chengdú (CTU)', text: 'Chengdú (CTU)' },
+            { id: 'Yakarta Soekarno-Hatta (CGK)', text: 'Yakarta Soekarno-Hatta (CGK)' },
+            { id: 'Bangkok Suvarnabhumi (BKK)', text: 'Bangkok Suvarnabhumi (BKK)' },
+            { id: 'Singapur Changi (SIN)', text: 'Singapur Changi (SIN)' },
+            { id: 'Kuala Lumpur (KUL)', text: 'Kuala Lumpur (KUL)' },
+            { id: 'Delhi (DEL)', text: 'Delhi (DEL)' },
+            { id: 'Bombay (BOM)', text: 'Bombay (BOM)' },
+            { id: 'Bangalore (BLR)', text: 'Bangalore (BLR)' },
+
+            // Oceania
+            { id: 'Sídney (SYD)', text: 'Sídney (SYD)' },
+            { id: 'Melbourne (MEL)', text: 'Melbourne (MEL)' },
+            { id: 'Auckland (AKL)', text: 'Auckland (AKL)' },
+            { id: 'Perth (PER)', text: 'Perth (PER)' },
+            { id: 'Brisbane (BNE)', text: 'Brisbane (BNE)' },
+
+            // Africa
+            { id: 'Johannesburgo (JNB)', text: 'Johannesburgo (JNB)' },
+            { id: 'Ciudad del Cabo (CPT)', text: 'Ciudad del Cabo (CPT)' },
+            { id: 'Adís Abeba (ADD)', text: 'Adís Abeba (ADD)' },
+            { id: 'Nairobi (NBO)', text: 'Nairobi (NBO)' },
+            { id: 'Lagos (LOS)', text: 'Lagos (LOS)' },
+            { id: 'Casablanca (CMN)', text: 'Casablanca (CMN)' },
+            { id: 'Túnez (TUN)', text: 'Túnez (TUN)' },
+
+            // Middle East
+            { id: 'Abu Dhabi (AUH)', text: 'Abu Dhabi (AUH)' },
+            { id: 'Riad (RUH)', text: 'Riad (RUH)' },
+            { id: 'Amán (AMM)', text: 'Amán (AMM)' },
+            { id: 'Beirut (BEY)', text: 'Beirut (BEY)' },
+            { id: 'Kuwait (KWI)', text: 'Kuwait (KWI)' }
+        ];
+
+        // Initialize airline selects
+        $('.airline-select').select2({
+            data: airlines,
+            placeholder: 'Seleccionar aerolínea',
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Initialize airport selects
+        $('.airport-select').select2({
+            data: airports,
+            placeholder: 'Seleccionar aeropuerto',
+            allowClear: true,
+            width: '100%'
+        });
     }
 </script>
 @endpush
