@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TripController extends Controller
 {
@@ -231,6 +233,31 @@ class TripController extends Controller
     }
 
     /**
+     * Share trip preview (public access via token)
+     */
+    public function share(Request $request): View
+    {
+        $token = $request->route('token');
+
+        $trip = Trip::findByShareToken($token);
+
+        if (!$trip) {
+            abort(404, 'Enlace de compartición no válido o expirado.');
+        }
+
+        // Only allow sharing for trips that have been sent or approved
+        if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
+            abort(404, 'Este viaje no está disponible para compartir.');
+        }
+
+        return view('trips.preview', [
+            'trip' => $trip->load('user'),
+            'isPublicPreview' => true,
+            'isSharedPreview' => true
+        ]);
+    }
+
+    /**
      * Duplicate trip
      */
     public function duplicate(Trip $trip): JsonResponse
@@ -290,39 +317,104 @@ class TripController extends Controller
     /**
      * Bulk duplicate trips
      */
-    public function bulkDuplicate(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'trip_ids' => 'required|array',
-            'trip_ids.*' => 'integer|exists:trips,id'
-        ]);
+     public function bulkDuplicate(Request $request): JsonResponse
+     {
+         $validated = $request->validate([
+             'trip_ids' => 'required|array',
+             'trip_ids.*' => 'integer|exists:trips,id'
+         ]);
 
-        // Ensure all trips belong to the authenticated user
-        $trips = Trip::whereIn('id', $validated['trip_ids'])
-                    ->where('user_id', Auth::id())
-                    ->get();
+         // Ensure all trips belong to the authenticated user
+         $trips = Trip::whereIn('id', $validated['trip_ids'])
+                     ->where('user_id', Auth::id())
+                     ->get();
 
-        if ($trips->count() !== count($validated['trip_ids'])) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No tienes permiso para duplicar algunos de los viajes seleccionados.'
-            ], 403);
-        }
+         if ($trips->count() !== count($validated['trip_ids'])) {
+             return response()->json([
+                 'success' => false,
+                 'message' => 'No tienes permiso para duplicar algunos de los viajes seleccionados.'
+             ], 403);
+         }
 
-        $duplicatedCount = 0;
+         $duplicatedCount = 0;
 
-        foreach ($trips as $trip) {
-            $newTrip = $trip->replicate();
-            $newTrip->title = $trip->title . ' (Copia)';
-            $newTrip->status = Trip::STATUS_DRAFT;
-            $newTrip->user_id = Auth::id(); // Ensure the duplicate belongs to the current user
-            $newTrip->save();
-            $duplicatedCount++;
-        }
+         foreach ($trips as $trip) {
+             $newTrip = $trip->replicate();
+             $newTrip->title = $trip->title . ' (Copia)';
+             $newTrip->status = Trip::STATUS_DRAFT;
+             $newTrip->user_id = Auth::id(); // Ensure the duplicate belongs to the current user
+             $newTrip->save();
+             $duplicatedCount++;
+         }
 
-        return response()->json([
-            'success' => true,
-            'message' => "{$duplicatedCount} viajes duplicados exitosamente"
-        ]);
-    }
+         return response()->json([
+             'success' => true,
+             'message' => "{$duplicatedCount} viajes duplicados exitosamente"
+         ]);
+     }
+
+     /**
+      * Generate share token for trip
+      */
+     public function generateShareToken(Trip $trip): JsonResponse
+     {
+         // Ensure the trip belongs to the authenticated user
+         if ($trip->user_id !== Auth::id()) {
+             return response()->json([
+                 'success' => false,
+                 'message' => 'No tienes permiso para compartir este viaje.'
+             ], 403);
+         }
+
+         // Only allow sharing for trips that have been sent or approved
+         if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
+             return response()->json([
+                 'success' => false,
+                 'message' => 'Solo puedes compartir viajes que han sido enviados o aprobados.'
+             ], 400);
+         }
+
+         $shareUrl = $trip->getShareUrl();
+
+         return response()->json([
+             'success' => true,
+             'message' => 'Enlace de compartición generado exitosamente',
+             'share_url' => $shareUrl,
+             'share_token' => $trip->share_token
+         ]);
+     }
+
+     /**
+      * Generate PDF for trip
+      */
+     public function generatePdf(Request $request, Trip $trip)
+     {
+         // Check if this is a shared access (via token)
+         $token = $request->get('token');
+         $isShared = $token && $trip->share_token === $token;
+
+         // Ensure the trip belongs to the authenticated user or is shared
+         $isOwner = Auth::check() && $trip->user_id === Auth::id();
+
+         if (!$isOwner && !$isShared) {
+             abort(403, 'No tienes permiso para descargar este viaje.');
+         }
+
+         // Only allow PDF generation for trips that have been sent or approved
+         if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
+             abort(403, 'Solo puedes descargar viajes que han sido enviados o aprobados.');
+         }
+
+         $trip->load('user');
+
+         $pdf = Pdf::loadView('trips.pdf', [
+             'trip' => $trip,
+             'isPublicPreview' => !$isOwner
+         ]);
+
+         $startDate = $trip->start_date ? $trip->start_date->format('d-m-Y') : 'sin-fecha';
+         $filename = 'itinerario-' . Str::slug($trip->title) . '-' . $startDate . '.pdf';
+
+         return $pdf->download($filename);
+     }
 }

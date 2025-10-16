@@ -43,9 +43,14 @@ Route::middleware('auth')->group(function () {
     // Additional trip routes
     Route::post('trips/{trip}/status', [TripController::class, 'updateStatus'])->name('trips.update-status');
     Route::post('trips/{trip}/duplicate', [TripController::class, 'duplicate'])->name('trips.duplicate');
+    Route::post('trips/{trip}/generate-share-token', [TripController::class, 'generateShareToken'])->name('trips.generate-share-token');
+    Route::get('trips/{trip}/pdf', [TripController::class, 'generatePdf'])->name('trips.pdf')->withoutMiddleware('auth');
     Route::post('trips/bulk-delete', [TripController::class, 'bulkDelete'])->name('trips.bulk-delete');
     Route::post('trips/bulk-duplicate', [TripController::class, 'bulkDuplicate'])->name('trips.bulk-duplicate');
 });
 
 // Public preview route (no authentication required)
 Route::get('trips/{trip}/preview', [TripController::class, 'preview'])->name('trips.preview');
+
+// Shared trip preview route (no authentication required)
+Route::get('trips/share/{token}', [TripController::class, 'share'])->name('trips.share');

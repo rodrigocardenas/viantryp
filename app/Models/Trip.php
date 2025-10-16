@@ -19,6 +19,7 @@ class Trip extends Model
         'status',
         'summary',
         'items_data',
+        'share_token',
         'created_at',
         'updated_at'
     ];
@@ -147,14 +148,49 @@ class Trip extends Model
     /**
      * Scope for searching by title
      */
-    public function scopeSearch($query, $search)
-    {
-        if (empty($search)) {
-            return $query;
-        }
+     public function scopeSearch($query, $search)
+     {
+         if (empty($search)) {
+             return $query;
+         }
 
-        return $query->where('title', 'like', "%{$search}%");
-    }
+         return $query->where('title', 'like', "%{$search}%");
+     }
+
+     /**
+      * Generate a unique share token for the trip
+      */
+     public function generateShareToken(): string
+     {
+         do {
+             $token = hash('sha256', $this->id . time() . rand());
+         } while (self::where('share_token', $token)->exists());
+
+         $this->share_token = $token;
+         $this->save();
+
+         return $token;
+     }
+
+     /**
+      * Get the share URL for the trip
+      */
+     public function getShareUrl(): string
+     {
+         if (!$this->share_token) {
+             $this->generateShareToken();
+         }
+
+         return route('trips.share', ['token' => $this->share_token]);
+     }
+
+     /**
+      * Find trip by share token
+      */
+     public static function findByShareToken(string $token): ?self
+     {
+         return self::where('share_token', $token)->first();
+     }
 }
 
 /**
