@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Mail\SendTripLink;
 
 class TripController extends Controller
 {
@@ -417,4 +420,46 @@ class TripController extends Controller
 
          return $pdf->download($filename);
      }
-}
+
+     /**
+      * Send trip link via email
+      */
+     public function sendEmail(Request $request, Trip $trip): JsonResponse
+     {
+         // Ensure the trip belongs to the authenticated user
+         if ($trip->user_id !== Auth::id()) {
+             return response()->json([
+                 'success' => false,
+                 'message' => 'No tienes permiso para enviar este viaje.'
+             ], 403);
+         }
+
+         // Only allow sending for trips that have been sent or approved
+         if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
+             return response()->json([
+                 'success' => false,
+                 'message' => 'Solo puedes enviar viajes que han sido enviados o aprobados.'
+             ], 400);
+         }
+
+         $validated = $request->validate([
+             'email' => 'required|email',
+             'message' => 'nullable|string|max:1000'
+         ]);
+
+         try {
+             Mail::to($validated['email'])->send(new SendTripLink($trip, $validated['message'] ?? null));
+
+             return response()->json([
+                 'success' => true,
+                 'message' => 'El enlace del viaje ha sido enviado exitosamente.'
+             ]);
+         } catch (\Exception $e) {
+             Log::error('Error sending trip email: ' . $e->getMessage());
+             return response()->json([
+                 'success' => false,
+                 'message' => 'No se pudo enviar el correo. Por favor intenta de nuevo.'
+             ], 500);
+         }
+     }
+ }

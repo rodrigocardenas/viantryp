@@ -84,6 +84,9 @@
                                 <button class="action-btn btn-secondary" onclick="event.stopPropagation(); editTrip({{ $trip->id }})">
                                     <i class="fas fa-edit"></i>
                                 </button>
+                                <button class="action-btn btn-info" onclick="event.stopPropagation(); openEmailModal({{ $trip->id }}, '{{ $trip->title }}')">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
                                 <button class="action-btn btn-danger" onclick="event.stopPropagation(); deleteTrip({{ $trip->id }})">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -99,6 +102,36 @@
             </div>
         </div>
     </main>
+
+    <!-- Email Modal -->
+    <div id="email-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Enviar viaje por correo</h3>
+                <button class="modal-close" onclick="closeEmailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="email-modal-trip-title"></p>
+                <form id="email-form">
+                    <div class="form-group">
+                        <label for="email-address">Dirección de correo electrónico:</label>
+                        <input type="email" id="email-address" name="email" required placeholder="cliente@ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="email-message">Mensaje opcional:</label>
+                        <textarea id="email-message" name="message" rows="3" placeholder="Mensaje personalizado (opcional)"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeEmailModal()">Cancelar</button>
+                <button class="btn-primary" onclick="sendEmail()" id="send-email-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Enviar
+                </button>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('styles')
@@ -468,6 +501,37 @@
         font-size: 0.9rem;
     }
 
+    .btn-info {
+        background: #06b6d4;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 40px;
+        justify-content: center;
+    }
+
+    .btn-info:hover {
+        background: #0891b2;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+    }
+
+    .btn-info:active {
+        transform: translateY(0);
+    }
+
+    .btn-info i {
+        font-size: 0.9rem;
+    }
+
     .status-select {
         padding: 4px 8px;
         border: 1px solid var(--stone-300);
@@ -507,6 +571,112 @@
         font-size: 3rem;
         margin-bottom: 1rem;
         opacity: 0.5;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-hover);
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--stone-300);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        color: var(--ink);
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--slate-500);
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+    }
+
+    .modal-close:hover {
+        background: var(--stone-100);
+        color: var(--ink);
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .modal-body p {
+        margin: 0 0 1rem 0;
+        color: var(--slate-600);
+        font-weight: 500;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--slate-600);
+        font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--stone-300);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--blue-700);
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+
+    .modal-footer {
+        padding: 1.5rem;
+        border-top: 1px solid var(--stone-300);
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
     }
 
     @media (max-width: 768px) {
@@ -551,6 +721,23 @@
             padding: 6px 10px;
             font-size: 0.8rem;
             min-width: 35px;
+        }
+
+        .btn-info {
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            min-width: 35px;
+        }
+
+        .modal-content {
+            width: 95%;
+            margin: 1rem;
+        }
+
+        .modal-header,
+        .modal-body,
+        .modal-footer {
+            padding: 1rem;
         }
     }
 </style>
@@ -748,5 +935,89 @@
         showNotification('Duplicando', 'Duplicando viajes seleccionados...');
         // Add actual implementation here
     }
+
+    // Email modal functions
+    let currentTripId = null;
+
+    function openEmailModal(tripId, tripTitle) {
+        currentTripId = tripId;
+        document.getElementById('email-modal-trip-title').textContent = `Enviar "${tripTitle}" por correo`;
+        document.getElementById('email-modal').style.display = 'flex';
+        document.getElementById('email-address').focus();
+        document.getElementById('email-form').reset();
+    }
+
+    function closeEmailModal() {
+        document.getElementById('email-modal').style.display = 'none';
+        currentTripId = null;
+    }
+
+    function sendEmail() {
+        const email = document.getElementById('email-address').value.trim();
+        const message = document.getElementById('email-message').value.trim();
+
+        if (!email) {
+            showNotification('Error', 'Por favor ingresa una dirección de correo válida.');
+            return;
+        }
+
+        if (!currentTripId) {
+            showNotification('Error', 'No se pudo identificar el viaje.');
+            return;
+        }
+
+        const sendBtn = document.getElementById('send-email-btn');
+        const originalText = sendBtn.innerHTML;
+        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+        sendBtn.disabled = true;
+
+        fetch(`{{ url('trips') }}/${currentTripId}/send-email`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                email: email,
+                message: message
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Correo Enviado', 'El enlace del viaje ha sido enviado exitosamente.');
+                closeEmailModal();
+            } else {
+                showNotification('Error', data.message || 'No se pudo enviar el correo.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error', 'Ocurrió un error al enviar el correo.');
+        })
+        .finally(() => {
+            sendBtn.innerHTML = originalText;
+            sendBtn.disabled = false;
+        });
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('email-modal');
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeEmailModal();
+                }
+            });
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+                closeEmailModal();
+            }
+        });
+    });
 </script>
 @endpush

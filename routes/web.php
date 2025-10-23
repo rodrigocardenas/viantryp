@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/{trip}/status', [TripController::class, 'updateStatus'])->name('trips.update-status');
     Route::post('trips/{trip}/duplicate', [TripController::class, 'duplicate'])->name('trips.duplicate');
     Route::post('trips/{trip}/generate-share-token', [TripController::class, 'generateShareToken'])->name('trips.generate-share-token');
+    Route::post('trips/{trip}/send-email', [TripController::class, 'sendEmail'])->name('trips.send-email');
     Route::get('trips/{trip}/pdf', [TripController::class, 'generatePdf'])->name('trips.pdf')->withoutMiddleware('auth');
     Route::post('trips/bulk-delete', [TripController::class, 'bulkDelete'])->name('trips.bulk-delete');
     Route::post('trips/bulk-duplicate', [TripController::class, 'bulkDuplicate'])->name('trips.bulk-duplicate');
