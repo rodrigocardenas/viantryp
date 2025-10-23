@@ -413,6 +413,131 @@
         box-shadow: none;
     }
 
+    /* Hotel search button styles */
+    .btn-search-hotels {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        color: white;
+        border: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-left: 0.5rem;
+        font-family: 'Poppins', sans-serif;
+        box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+    }
+
+    .btn-search-hotels:hover {
+        background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(5, 150, 105, 0.4);
+    }
+
+    .btn-search-hotels:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Hotel results styles */
+    .hotel-results {
+        margin-top: 1rem;
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid var(--border-gray);
+        border-radius: 10px;
+        background: var(--white);
+    }
+
+    .hotel-list {
+        padding: 1rem;
+    }
+
+    .hotel-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        border: 1px solid var(--border-gray);
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--white);
+    }
+
+    .hotel-item:hover {
+        border-color: var(--primary-blue);
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .hotel-item.selected {
+        border-color: var(--primary-blue);
+        background: rgba(14, 165, 233, 0.05);
+    }
+
+    .hotel-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .hotel-info {
+        flex: 1;
+    }
+
+    .hotel-name {
+        font-weight: 600;
+        color: var(--primary-dark);
+        margin-bottom: 0.25rem;
+        font-size: 1rem;
+    }
+
+    .hotel-address {
+        color: var(--text-gray);
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+    }
+
+    .hotel-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .hotel-stars {
+        color: #fbbf24;
+        font-size: 0.9rem;
+    }
+
+    .hotel-price {
+        font-weight: 600;
+        color: var(--primary-blue);
+        font-size: 0.9rem;
+    }
+
+    .no-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-gray);
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
     .btn-update-dates {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         color: white;
@@ -1142,9 +1267,21 @@
 
 @push('scripts')
 <script>
+    // Pass trip data to JavaScript
+    @if(isset($trip))
+        window.existingTripData = @json($trip->toArray());
+    @else
+        window.existingTripData = null;
+    @endif
+</script>
+@endpush
+
+@push('scripts')
+<script>
     let currentElementType = null;
     let currentElementData = {};
     let currentDay = null;
+    let selectedHotelData = null; // Store complete hotel data
 
     // Initialize the page
     document.addEventListener('DOMContentLoaded', function() {
@@ -1179,6 +1316,12 @@
             }
             if (editor) {
                 editor.style.display = 'flex';
+            }
+
+            // Load existing trip data if available
+            if (window.existingTripData) {
+                console.log('Loading existing trip data:', window.existingTripData);
+                loadExistingTripData(window.existingTripData);
             }
         }
 
@@ -1250,6 +1393,67 @@
         });
     });
 
+    function loadExistingTripData(tripData) {
+        console.log('Loading trip data:', tripData);
+
+        // Set trip title
+        if (tripData.title) {
+            document.getElementById('trip-title').value = tripData.title;
+        }
+
+        // Set start date
+        if (tripData.start_date) {
+            document.getElementById('start-date').value = tripData.start_date;
+        }
+
+        // Load trip items
+        if (tripData.items_data) {
+            // Group items by day
+            const itemsByDay = {};
+            tripData.items_data.forEach(item => {
+                const day = item.day || 1;
+                if (!itemsByDay[day]) {
+                    itemsByDay[day] = [];
+                }
+                itemsByDay[day].push(item);
+            });
+
+            // Create days and add items
+            Object.keys(itemsByDay).forEach(dayNum => {
+                const dayNumber = parseInt(dayNum);
+
+                // Ensure the day exists
+                while (document.querySelectorAll('.day-card').length < dayNumber) {
+                    addDay();
+                }
+
+                // Add items to the day
+                const dayCard = document.querySelectorAll('.day-card')[dayNumber - 1];
+                if (dayCard) {
+                    itemsByDay[dayNum].forEach(item => {
+                        // Create element data for the item
+                        const elementData = {
+                            type: item.type,
+                            day: dayNumber,
+                            ...item
+                        };
+
+                        // Add the element to the day
+                        const elementDiv = createElementDiv(elementData);
+                        const timelineItems = dayCard.querySelector('.timeline-items');
+                        if (timelineItems) {
+                            timelineItems.appendChild(elementDiv);
+                        }
+                    });
+                }
+            });
+        }
+
+        // Update summaries and totals
+        updateAllSummaries();
+        hasUnsavedChanges = false;
+    }
+
     // Drag and Drop functionality
     function allowDrop(ev) {
         ev.preventDefault();
@@ -1291,6 +1495,15 @@
                 lookupBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     lookupFlightInfo();
+                });
+            }
+
+            // Add event listener for hotel search button
+            const hotelSearchBtn = document.getElementById('search-hotels');
+            if (hotelSearchBtn) {
+                hotelSearchBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    searchHotels();
                 });
             }
         }, 100);
@@ -1391,6 +1604,15 @@
                     lookupFlightInfo();
                 });
             }
+
+            // Add event listener for hotel search button
+            const hotelSearchBtn = document.getElementById('search-hotels');
+            if (hotelSearchBtn) {
+                hotelSearchBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    searchHotels();
+                });
+            }
         }, 100);
 
         // Add event listener for flight lookup
@@ -1469,7 +1691,15 @@
             'hotel': `
                 <div class="form-group">
                     <label for="hotel-name">Nombre del Hotel</label>
-                    <input type="text" id="hotel-name" class="form-input" placeholder="Ej: Hotel Plaza">
+                    <select id="hotel-name" class="form-input hotel-select" placeholder="Buscar hotel...">
+                        <option value="">Seleccionar hotel</option>
+                    </select>
+                    <button type="button" id="search-hotels" class="btn-search-hotels" title="Buscar hoteles en la ubicación">
+                        <i class="fas fa-search"></i> Buscar Hoteles
+                    </button>
+                </div>
+                <div id="hotel-results" class="hotel-results" style="display: none;">
+                    <div id="hotel-list" class="hotel-list"></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -1658,6 +1888,28 @@
                 }
             }
         });
+
+        // Special handling for hotel select when editing
+        if (data.type === 'hotel' && data.hotel_name && data.hotel_id) {
+            const hotelSelect = document.getElementById('hotel-name');
+            if (hotelSelect) {
+                // Create option with the saved hotel data
+                const option = document.createElement('option');
+                option.value = data.hotel_id;
+                option.text = data.hotel_name;
+                option.selected = true;
+
+                // Clear existing options and add the selected one
+                hotelSelect.innerHTML = '';
+                hotelSelect.appendChild(option);
+
+                // Update Select2
+                $(hotelSelect).trigger('change');
+
+                // Restore hotel data for later use
+                selectedHotelData = data.hotel_data || null;
+            }
+        }
     }
 
     function collectFormData() {
@@ -1672,6 +1924,13 @@
                 data[input.id.replace('-', '_')] = input.value.trim();
             }
         });
+
+        // Include selected hotel data if this is a hotel element
+        if (currentElementType === 'hotel' && selectedHotelData) {
+            data.hotel_id = selectedHotelData.id;
+            data.hotel_name = selectedHotelData.name || selectedHotelData.hotel_name;
+            data.hotel_data = selectedHotelData;
+        }
 
         return data;
     }
@@ -1725,6 +1984,28 @@
     function createElementDiv(data) {
         const elementDiv = document.createElement('div');
         elementDiv.className = `timeline-item ${data.type}`;
+
+        // Add flight data as attributes if this is a flight element
+        if (data.type === 'flight') {
+            elementDiv.setAttribute('data-airline', data.airline || '');
+            elementDiv.setAttribute('data-flight-number', data.flight_number || '');
+            elementDiv.setAttribute('data-departure-airport', data.departure_airport || '');
+            elementDiv.setAttribute('data-arrival-airport', data.arrival_airport || '');
+            elementDiv.setAttribute('data-departure-time', data.departure_time || '');
+            elementDiv.setAttribute('data-arrival-time', data.arrival_time || '');
+            elementDiv.setAttribute('data-confirmation-number', data.confirmation_number || '');
+        }
+
+        // Add hotel data as attributes if this is a hotel element
+        if (data.type === 'hotel' && data.hotel_id) {
+            elementDiv.setAttribute('data-hotel-id', data.hotel_id);
+            elementDiv.setAttribute('data-hotel-data', JSON.stringify(data.hotel_data));
+            elementDiv.setAttribute('data-check-in', data.check_in || '');
+            elementDiv.setAttribute('data-check-out', data.check_out || '');
+            elementDiv.setAttribute('data-room-type', data.room_type || '');
+            elementDiv.setAttribute('data-nights', data.nights || 1);
+        }
+
         elementDiv.innerHTML = `
             <div class="item-header">
                 <div class="item-icon icon-${data.type}">
@@ -1745,6 +2026,11 @@
                 </div>
             </div>
         `;
+
+        // Clear selected hotel data after use
+        if (data.type === 'hotel') {
+            selectedHotelData = null;
+        }
 
         return elementDiv;
     }
@@ -2013,33 +2299,37 @@
         let endDate = null;
         if (startDate) {
             const dayCards = document.querySelectorAll('.day-card');
+            const numDays = Math.max(dayCards.length, 1); // Ensure at least 1 day
             const startDateObj = new Date(startDate);
             const endDateObj = new Date(startDate);
-            endDateObj.setDate(startDateObj.getDate() + dayCards.length - 1);
+            endDateObj.setDate(startDateObj.getDate() + numDays - 1);
             endDate = endDateObj.toISOString().split('T')[0];
         }
 
         const tripData = {
-            title: document.getElementById('trip-title').value,
+            title: document.getElementById('trip-title').value?.trim(),
             start_date: startDate,
             end_date: endDate,
+            travelers: 1, // Default value
+            destination: '', // Optional field
+            summary: '', // Optional field
             items_data: itemsData
         };
 
         // Determine if this is a new trip or updating existing
         const currentPath = window.location.pathname;
-        const isEditing = currentPath.includes('/edit');
+        const urlParts = currentPath.split('/').filter(part => part !== '');
+        const isEditing = urlParts.length >= 3 && urlParts[1] === 'trips' && !isNaN(urlParts[2]) && urlParts[3] === 'edit';
         let url, method, tripId = null;
 
         console.log('Current path:', currentPath);
+        console.log('URL parts:', urlParts);
         console.log('Is editing:', isEditing);
 
         if (isEditing) {
-            // For editing, extract the trip ID from the URL and use POST with _method override
-            const urlParts = currentPath.split('/');
-            tripId = urlParts[urlParts.length - 2]; // Get the ID before /edit
+            // For editing, extract the trip ID from the URL
+            tripId = urlParts[2]; // The ID should be at index 2
             console.log('Extracted trip ID:', tripId);
-            console.log('URL parts:', urlParts);
 
             if (!tripId || isNaN(tripId)) {
                 console.error('Invalid trip ID extracted from URL');
@@ -2068,8 +2358,18 @@
 
         console.log('Final URL:', url);
         console.log('Method:', method);
+        console.log('Trip data to send:', JSON.stringify(tripData, null, 2));
 
-        console.log('Saving trip:', { url, method, tripData });
+        // Validate required fields
+        if (!tripData.title || tripData.title.trim() === '') {
+            showNotification('Error', 'El título del viaje es obligatorio.');
+            return;
+        }
+
+        if (!tripData.start_date) {
+            showNotification('Error', 'La fecha de inicio es obligatoria.');
+            return;
+        }
 
         // Get CSRF token
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -2091,21 +2391,37 @@
         })
         .then(response => {
             console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
+            console.log('Response status text:', response.statusText);
+            console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
             // Log the raw response text for debugging
             return response.text().then(text => {
-                console.log('Raw response:', text);
+                console.log('Raw response text:', text);
+                console.log('Response text length:', text.length);
 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}, response: ${text}`);
+                    console.error('HTTP error response:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        body: text
+                    });
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${text}`);
+                }
+
+                // Check if response is empty
+                if (!text || text.trim() === '') {
+                    console.error('Empty response from server');
+                    throw new Error('Empty response from server');
                 }
 
                 try {
-                    return JSON.parse(text);
+                    const jsonData = JSON.parse(text);
+                    console.log('Successfully parsed JSON:', jsonData);
+                    return jsonData;
                 } catch (e) {
                     console.error('Failed to parse JSON response:', text);
-                    throw new Error('Invalid JSON response from server');
+                    console.error('JSON parse error:', e.message);
+                    throw new Error(`Invalid JSON response from server: ${e.message}. Response: ${text.substring(0, 200)}...`);
                 }
             });
         })
@@ -2166,15 +2482,17 @@
                     arrival_airport: itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[1] || ''
                 };
 
-            case 'alojamiento':
+            case 'hotel':
                 return {
                     ...baseData,
                     type: 'hotel',
                     hotel_name: itemElement.querySelector('.item-title')?.textContent || '',
-                    check_in: '',
-                    check_out: '',
-                    room_type: '',
-                    nights: 1
+                    hotel_id: itemElement.dataset.hotelId || '',
+                    hotel_data: itemElement.dataset.hotelData ? JSON.parse(itemElement.dataset.hotelData) : null,
+                    check_in: itemElement.dataset.checkIn || '',
+                    check_out: itemElement.dataset.checkOut || '',
+                    room_type: itemElement.dataset.roomType || '',
+                    nights: parseInt(itemElement.dataset.nights) || 1
                 };
 
             case 'actividad':
@@ -2449,18 +2767,34 @@
                 return {
                     ...baseData,
                     title: itemElement.querySelector('.item-title')?.textContent || '',
-                    airline: itemElement.querySelector('.item-title')?.textContent?.split(' ')[1] || '',
-                    flight_number: itemElement.querySelector('.item-title')?.textContent?.split(' ')[2] || '',
-                    departure_airport: itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[0] || '',
-                    arrival_airport: itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[1] || ''
+                    airline: itemElement.dataset.airline || itemElement.querySelector('.item-title')?.textContent?.split(' ')[1] || '',
+                    flight_number: itemElement.dataset.flightNumber || itemElement.querySelector('.item-title')?.textContent?.split(' ')[2] || '',
+                    departure_airport: itemElement.dataset.departureAirport || itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[0] || '',
+                    arrival_airport: itemElement.dataset.arrivalAirport || itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[1] || '',
+                    departure_time: itemElement.dataset.departureTime || '',
+                    arrival_time: itemElement.dataset.arrivalTime || '',
+                    confirmation_number: itemElement.dataset.confirmationNumber || ''
                 };
 
             case 'hotel':
-                return {
+                const hotelData = {
                     ...baseData,
                     title: itemElement.querySelector('.item-title')?.textContent || '',
-                    hotel_name: itemElement.querySelector('.item-title')?.textContent || ''
+                    hotel_name: itemElement.querySelector('.item-title')?.textContent || '',
+                    hotel_id: itemElement.dataset.hotelId || '',
+                    hotel_data: itemElement.dataset.hotelData ? JSON.parse(itemElement.dataset.hotelData) : null,
+                    check_in: itemElement.dataset.checkIn || '',
+                    check_out: itemElement.dataset.checkOut || '',
+                    room_type: itemElement.dataset.roomType || '',
+                    nights: itemElement.dataset.nights || 1
                 };
+
+                // If we have hotel_data, extract additional info
+                if (hotelData.hotel_data) {
+                    hotelData.hotel_name = hotelData.hotel_data.name || hotelData.hotel_name;
+                }
+
+                return hotelData;
 
             case 'activity':
                 return {
@@ -2934,6 +3268,143 @@
         };
     }
 
+    // Hotel search functionality using Booking.com API
+    async function searchHotels() {
+        const hotelSelect = document.getElementById('hotel-name');
+        const selectedOption = hotelSelect.options[hotelSelect.selectedIndex];
+
+        if (!selectedOption || !selectedOption.value) {
+            showNotification('Error', 'Por favor selecciona una ubicación primero.', 'error');
+            return;
+        }
+
+        const destId = selectedOption.value;
+        const hotelResults = document.getElementById('hotel-results');
+        const hotelList = document.getElementById('hotel-list');
+        const searchBtn = document.getElementById('search-hotels');
+
+        // Show loading state
+        searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        searchBtn.disabled = true;
+        hotelList.innerHTML = '<div class="loading">Buscando hoteles...</div>';
+        hotelResults.style.display = 'block';
+
+        try {
+            // Get current date for search (next week)
+            const today = new Date();
+            const checkinDate = new Date(today);
+            checkinDate.setDate(today.getDate() + 7);
+            const checkoutDate = new Date(checkinDate);
+            checkoutDate.setDate(checkinDate.getDate() + 1);
+
+            const checkinStr = checkinDate.toISOString().split('T')[0];
+            const checkoutStr = checkoutDate.toISOString().split('T')[0];
+
+            const response = await fetch(`https://booking-com15.p.rapidapi.com/api/v1/hotels/searchHotels?dest_id=${destId}&search_type=city&arrival_date=${checkinStr}&departure_date=${checkoutStr}&adults=1&children_age=0%2C17&room_qty=1&page_number=1&units=metric&temperature_unit=c&languagecode=en-us&currency_code=USD`, {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-host': 'booking-com15.p.rapidapi.com',
+                    'x-rapidapi-key': '2ea32fefbamsh0dade5dedb8c255p1f80f9jsn59b5e00f47a5'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.status && data.data && data.data.hotels) {
+                displayHotelResults(data.data.hotels.slice(0, 10)); // Show first 10 results
+            } else {
+                hotelList.innerHTML = '<div class="no-results">No se encontraron hoteles para esta ubicación.</div>';
+            }
+        } catch (error) {
+            console.error('Hotel search error:', error);
+            hotelList.innerHTML = '<div class="error">Error al buscar hoteles. Inténtalo de nuevo.</div>';
+        } finally {
+            // Reset button
+            searchBtn.innerHTML = '<i class="fas fa-search"></i> Buscar Hoteles';
+            searchBtn.disabled = false;
+        }
+    }
+
+    function displayHotelResults(hotels) {
+        const hotelList = document.getElementById('hotel-list');
+        hotelList.innerHTML = '';
+
+        hotels.forEach(hotel => {
+            const hotelItem = document.createElement('div');
+            hotelItem.className = 'hotel-item';
+            hotelItem.onclick = () => selectHotel(hotel);
+
+            const imageUrl = hotel.property.photoUrls && hotel.property.photoUrls[0] ?
+                hotel.property.photoUrls[0] : 'https://via.placeholder.com/100x75?text=No+Image';
+
+            const stars = '★'.repeat(hotel.property.propertyClass || 0);
+            const rating = hotel.property.reviewScore ? `${hotel.property.reviewScore} ${hotel.property.reviewScoreWord}` : 'Sin calificación';
+
+            const price = hotel.property.priceBreakdown && hotel.property.priceBreakdown.grossPrice ?
+                `${hotel.property.priceBreakdown.grossPrice.currency} ${hotel.property.priceBreakdown.grossPrice.value.toFixed(2)}` : 'Precio no disponible';
+
+            hotelItem.innerHTML = `
+                <div class="hotel-image">
+                    <img src="${imageUrl}" alt="${hotel.property.name}" onerror="this.src='https://via.placeholder.com/100x75?text=No+Image'">
+                </div>
+                <div class="hotel-info">
+                    <div class="hotel-name">${hotel.property.name}</div>
+                    <div class="hotel-address">${hotel.property.wishlistName || 'Dirección no disponible'}</div>
+                    <div class="hotel-rating">
+                        <span class="hotel-stars">${stars}</span>
+                        <span class="hotel-score">${rating}</span>
+                    </div>
+                    <div class="hotel-price">${price} por noche</div>
+                </div>
+            `;
+
+            hotelList.appendChild(hotelItem);
+        });
+    }
+
+    function selectHotel(hotel) {
+        // Store complete hotel data for later use
+        selectedHotelData = {
+            id: hotel.hotel_id,
+            name: hotel.property.name,
+            images: hotel.property.photoUrls || [],
+            rating: hotel.property.reviewScore,
+            reviewCount: hotel.property.reviewCount,
+            reviewScoreWord: hotel.property.reviewScoreWord,
+            stars: hotel.property.propertyClass,
+            address: hotel.property.wishlistName,
+            latitude: hotel.property.latitude,
+            longitude: hotel.property.longitude,
+            currency: hotel.property.currency,
+            priceBreakdown: hotel.property.priceBreakdown,
+            checkin: hotel.property.checkin,
+            checkout: hotel.property.checkout,
+            isPreferred: hotel.property.isPreferred,
+            isPreferredPlus: hotel.property.isPreferredPlus
+        };
+
+        // Update the hotel select with the selected hotel
+        const hotelSelect = document.getElementById('hotel-name');
+
+        // Create a new option with hotel ID as value
+        const option = document.createElement('option');
+        option.value = hotel.hotel_id; // Use hotel ID instead of name
+        option.text = hotel.property.name;
+        option.selected = true;
+
+        // Clear existing options and add the selected one
+        hotelSelect.innerHTML = '';
+        hotelSelect.appendChild(option);
+
+        // Trigger change event to update Select2
+        $(hotelSelect).trigger('change');
+
+        // Hide results
+        document.getElementById('hotel-results').style.display = 'none';
+
+        showNotification('Hotel Seleccionado', `Has seleccionado: ${hotel.property.name}`);
+    }
+
     // Initialize Select2 for autocomplete selects
     function initializeSelect2() {
         // Airlines data
@@ -3095,6 +3566,57 @@
             placeholder: 'Seleccionar aeropuerto',
             allowClear: true,
             width: '100%'
+        });
+
+        // Initialize hotel selects with AJAX
+        $('.hotel-select').select2({
+            placeholder: 'Buscar hotel...',
+            allowClear: true,
+            width: '100%',
+            minimumInputLength: 2,
+            ajax: {
+                url: function(params) {
+                    // First get destination ID from location search
+                    return 'https://booking-com15.p.rapidapi.com/api/v1/hotels/searchDestination';
+                },
+                dataType: 'json',
+                delay: 300,
+                headers: {
+                    'x-rapidapi-host': 'booking-com15.p.rapidapi.com',
+                    'x-rapidapi-key': '2ea32fefbamsh0dade5dedb8c255p1f80f9jsn59b5e00f47a5'
+                },
+                data: function(params) {
+                    return {
+                        query: params.term
+                    };
+                },
+                processResults: function(data) {
+                    if (data.status && data.data) {
+                        return {
+                            results: data.data.map(function(item) {
+                                return {
+                                    id: item.dest_id,
+                                    text: item.label,
+                                    type: item.dest_type,
+                                    hotels: item.hotels || item.nr_hotels
+                                };
+                            })
+                        };
+                    }
+                    return { results: [] };
+                },
+                cache: true
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            },
+            templateResult: function(item) {
+                if (item.loading) return item.text;
+                return '<div>' + item.text + ' <small>(' + (item.hotels || 0) + ' hoteles)</small></div>';
+            },
+            templateSelection: function(item) {
+                return item.text || item.id;
+            }
         });
     }
 </script>

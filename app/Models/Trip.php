@@ -407,6 +407,75 @@ class TripItem
     {
         $html = '<div class="item-details">';
 
+        // Hotel images gallery
+        if (!empty($this->data['hotel_data']) && !empty($this->data['hotel_data']['images'])) {
+            $images = $this->data['hotel_data']['images'];
+            if (count($images) > 0) {
+                $html .= '<div class="hotel-gallery">';
+                $html .= '<div class="gallery-title">Galería de Fotos</div>';
+                $html .= '<div class="gallery-grid">';
+
+                // Show up to 6 images
+                $displayImages = array_slice($images, 0, 6);
+                foreach ($displayImages as $index => $imageUrl) {
+                    $html .= '<div class="gallery-item" onclick="openHotelGallery(' . $this->data['hotel_id'] . ', ' . $index . ')">';
+                    $html .= '<img src="' . htmlspecialchars($imageUrl) . '" alt="Hotel image" loading="lazy">';
+                    $html .= '</div>';
+                }
+
+                if (count($images) > 6) {
+                    $remaining = count($images) - 6;
+                    $html .= '<div class="gallery-item more-images" onclick="openHotelGallery(' . $this->data['hotel_id'] . ', 0)">';
+                    $html .= '<div class="more-overlay">';
+                    $html .= '<span>+' . $remaining . ' más</span>';
+                    $html .= '</div>';
+                    $html .= '<img src="' . htmlspecialchars($images[5]) . '" alt="Hotel image" loading="lazy">';
+                    $html .= '</div>';
+                }
+
+                $html .= '</div>';
+                $html .= '</div>';
+            }
+        }
+
+        // Hotel rating and reviews
+        if (!empty($this->data['hotel_data'])) {
+            $hotelData = $this->data['hotel_data'];
+            $html .= '<div class="hotel-rating-section">';
+
+            if (!empty($hotelData['rating'])) {
+                $html .= '<div class="detail-row">';
+                $html .= '<div class="detail-icon-small"><i class="fas fa-star"></i></div>';
+                $html .= '<div class="detail-text-small">';
+                $html .= '<div class="detail-label-small">Calificación</div>';
+                $html .= '<div class="detail-value-small">';
+                $html .= '<span class="rating-score">' . number_format($hotelData['rating'], 1) . '</span>';
+                $html .= '<span class="rating-word"> ' . ($hotelData['reviewScoreWord'] ?? '') . '</span>';
+                if (!empty($hotelData['reviewCount'])) {
+                    $html .= '<span class="review-count"> (' . number_format($hotelData['reviewCount']) . ' reseñas)</span>';
+                }
+                $html .= '</div>';
+                $html .= '</div>';
+                $html .= '</div>';
+            }
+
+            if (!empty($hotelData['stars'])) {
+                $html .= '<div class="detail-row">';
+                $html .= '<div class="detail-icon-small"><i class="fas fa-building"></i></div>';
+                $html .= '<div class="detail-text-small">';
+                $html .= '<div class="detail-label-small">Categoría</div>';
+                $html .= '<div class="detail-value-small">';
+                for ($i = 0; $i < $hotelData['stars']; $i++) {
+                    $html .= '<i class="fas fa-star star-filled"></i>';
+                }
+                $html .= '</div>';
+                $html .= '</div>';
+                $html .= '</div>';
+            }
+
+            $html .= '</div>';
+        }
+
         if (!empty($this->data['check_in']) || !empty($this->data['check_out'])) {
             $html .= '<div class="detail-row">';
             $html .= '<div class="detail-icon-small"><i class="fas fa-clock"></i></div>';

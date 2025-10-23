@@ -7,6 +7,7 @@
     <title>@yield('title', 'Viantryp - Gestión de Viajes')</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('css/components/sidebar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/components/trip-header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/components/timeline.css') }}">
@@ -160,6 +161,7 @@
 
     @stack('scripts')
 
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         // Notification functions
         function showNotification(title, message) {

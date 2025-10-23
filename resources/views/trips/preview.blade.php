@@ -933,6 +933,114 @@
         font-size: 0.9rem;
     }
 
+    /* Hotel Gallery Styles */
+    .hotel-gallery {
+        grid-column: 1 / -1;
+        margin-bottom: 1rem;
+    }
+
+    .gallery-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--primary-dark);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .gallery-title::before {
+        content: '📸';
+        font-size: 1.2rem;
+    }
+
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .gallery-item {
+        position: relative;
+        aspect-ratio: 4/3;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .gallery-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: var(--primary-blue);
+    }
+
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.1);
+    }
+
+    .more-images {
+        position: relative;
+    }
+
+    .more-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+    }
+
+    .more-overlay span {
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .hotel-rating-section {
+        grid-column: 1 / -1;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    .rating-score {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--success);
+    }
+
+    .rating-word {
+        font-weight: 500;
+        color: var(--primary-dark);
+    }
+
+    .review-count {
+        font-size: 0.85rem;
+        color: var(--text-gray);
+    }
+
+    .star-filled {
+        color: #fbbf24;
+        margin-right: 2px;
+    }
+
     .contact-button {
         position: fixed;
         bottom: 2rem;
@@ -1759,5 +1867,199 @@
 
         lastScrollTop = scrollTop;
     });
+
+    // Hotel Gallery Modal Functionality
+    let currentHotelImages = [];
+    let currentImageIndex = 0;
+
+    function openHotelGallery(hotelId, startIndex = 0) {
+        // Find the hotel item with the matching ID
+        const hotelItems = document.querySelectorAll('.timeline-item');
+        let hotelData = null;
+
+        hotelItems.forEach(item => {
+            if (item.classList.contains('hotel')) {
+                const itemData = JSON.parse(item.dataset.hotelData || '{}');
+                if (itemData.id == hotelId) {
+                    hotelData = itemData;
+                }
+            }
+        });
+
+        if (!hotelData || !hotelData.images || hotelData.images.length === 0) {
+            return;
+        }
+
+        currentHotelImages = hotelData.images;
+        currentImageIndex = startIndex;
+
+        showHotelGalleryModal(hotelData.name || 'Hotel');
+    }
+
+    function showHotelGalleryModal(hotelName) {
+        // Create modal HTML
+        const modalHtml = `
+            <div id="hotelGalleryModal" class="gallery-modal" style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.9);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.3s ease;
+            ">
+                <div class="gallery-modal-content" style="
+                    position: relative;
+                    max-width: 90vw;
+                    max-height: 90vh;
+                    background: white;
+                    border-radius: 12px;
+                    overflow: hidden;
+                    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+                ">
+                    <div class="gallery-modal-header" style="
+                        padding: 1rem 1.5rem;
+                        background: var(--primary-dark, #1f2a44);
+                        color: white;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    ">
+                        <h3 style="margin: 0; font-size: 1.2rem;">${hotelName} - Galería de Fotos</h3>
+                        <button onclick="closeHotelGallery()" style="
+                            background: none;
+                            border: none;
+                            color: white;
+                            font-size: 1.5rem;
+                            cursor: pointer;
+                            padding: 0.25rem;
+                            border-radius: 4px;
+                            transition: background 0.3s ease;
+                        " onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="gallery-modal-body" style="
+                        position: relative;
+                        background: black;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        min-height: 400px;
+                    ">
+                        <img id="galleryMainImage" src="${currentHotelImages[currentImageIndex]}" alt="Hotel image" style="
+                            max-width: 100%;
+                            max-height: 70vh;
+                            object-fit: contain;
+                        ">
+                        ${currentHotelImages.length > 1 ? `
+                            <button onclick="prevHotelImage()" class="gallery-nav-btn" style="
+                                position: absolute;
+                                left: 1rem;
+                                top: 50%;
+                                transform: translateY(-50%);
+                                background: rgba(0, 0, 0, 0.7);
+                                color: white;
+                                border: none;
+                                width: 50px;
+                                height: 50px;
+                                border-radius: 50%;
+                                cursor: pointer;
+                                font-size: 1.2rem;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                transition: background 0.3s ease;
+                            " onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button onclick="nextHotelImage()" class="gallery-nav-btn" style="
+                                position: absolute;
+                                right: 1rem;
+                                top: 50%;
+                                transform: translateY(-50%);
+                                background: rgba(0, 0, 0, 0.7);
+                                color: white;
+                                border: none;
+                                width: 50px;
+                                height: 50px;
+                                border-radius: 50%;
+                                cursor: pointer;
+                                font-size: 1.2rem;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                transition: background 0.3s ease;
+                            " onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                    <div class="gallery-modal-footer" style="
+                        padding: 1rem 1.5rem;
+                        background: #f8f9fa;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        gap: 0.5rem;
+                    ">
+                        <span id="galleryImageCounter" style="
+                            font-size: 0.9rem;
+                            color: #6c757d;
+                        ">${currentImageIndex + 1} de ${currentHotelImages.length}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', handleGalleryKeydown);
+    }
+
+    function closeHotelGallery() {
+        const modal = document.getElementById('hotelGalleryModal');
+        if (modal) {
+            modal.remove();
+        }
+        document.removeEventListener('keydown', handleGalleryKeydown);
+    }
+
+    function nextHotelImage() {
+        currentImageIndex = (currentImageIndex + 1) % currentHotelImages.length;
+        updateGalleryImage();
+    }
+
+    function prevHotelImage() {
+        currentImageIndex = currentImageIndex === 0 ? currentHotelImages.length - 1 : currentImageIndex - 1;
+        updateGalleryImage();
+    }
+
+    function updateGalleryImage() {
+        const mainImage = document.getElementById('galleryMainImage');
+        const counter = document.getElementById('galleryImageCounter');
+
+        if (mainImage) {
+            mainImage.src = currentHotelImages[currentImageIndex];
+        }
+        if (counter) {
+            counter.textContent = `${currentImageIndex + 1} de ${currentHotelImages.length}`;
+        }
+    }
+
+    function handleGalleryKeydown(e) {
+        if (e.key === 'Escape') {
+            closeHotelGallery();
+        } else if (e.key === 'ArrowRight') {
+            nextHotelImage();
+        } else if (e.key === 'ArrowLeft') {
+            prevHotelImage();
+        }
+    }
 </script>
 @endpush
