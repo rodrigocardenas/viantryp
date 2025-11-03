@@ -53,75 +53,163 @@
     </div>
 
     <!-- Main Container -->
-    <div class="main-container">
-        <!-- Trip Info Card -->
-        <div class="trip-info-card" id="tripInfo">
-            <div class="trip-header">
-                <div class="trip-icon">
-                    <i class="fas fa-map-marked-alt"></i>
-                </div>
-                <div>
-                    <h1 class="trip-title">{{ $trip->title ?? 'Viaje sin título' }}</h1>
-                    <p class="trip-subtitle">{{ $trip->getFormattedDates() ?? 'Fechas por definir' }}</p>
-                    @if(isset($trip->user) && !$isPublicPreview ?? false)
-                        <p class="trip-author">Creado por: {{ $trip->user->name }}</p>
-                    @endif
-                </div>
+    <div class="container">
+        <header>
+            <h1>{{ $trip->title ?? 'Viaje sin título' }}</h1>
+            <div class="trip-code">{{ $trip->code ?? 'YATPKYEQTQ' }}</div>
+            <div class="price-section">
+                <span class="price-label">Precio Total</span>
+                <span class="price-amount">{{ $trip->price ?? '0.00' }} USD $</span>
             </div>
+        </header>
 
-            @if($trip->summary ?? false)
-                <div class="trip-summary">
-                    <div class="summary-content">
-                        <strong>Resumen de tu Viaje</strong><br>
-                        {{ $trip->summary }}
+        <div class="help-section">
+            <div class="help-title">¿Necesitas ayuda?</div>
+            <div class="contact-info">
+                <i class="fas fa-user"></i>
+                <div>
+                    <div style="font-size: 12px; color: #999;">TU CONTACTO</div>
+                    <strong>Camilo Gutierrez</strong>
+                    <div class="contact-detail">
+                        <i class="fas fa-map-marker-alt"></i> GPS Planeación de Viajes
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-envelope"></i> info@viajesgps.com
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-phone"></i> +34 657 22 18 38
                     </div>
                 </div>
-            @endif
+            </div>
         </div>
 
-        <!-- Timeline Container -->
-        <div class="timeline-container">
-            <div class="timeline" id="timeline">
-                @if(isset($trip) && $trip->days && count($trip->days) > 0)
-                    @foreach($trip->days as $day)
-                        <div class="day-section">
-                            <div class="day-marker">{{ $day->day }}</div>
-                            <div class="day-header">
-                                <div class="day-date">{{ $day->getFormattedDate() }}</div>
-                                <h2 class="day-title">Día {{ $day->day }}</h2>
-                                <p class="day-subtitle">{{ $day->getFullDate() }}</p>
-                            </div>
-                            <div class="timeline-items">
-                                @if($day->items && count($day->items) > 0)
-                                    @foreach($day->items as $item)
-                                        <x-preview-item :item="$item" />
-                                    @endforeach
-                                @else
-                                    <div class="timeline-item">
-                                        <div class="item-header">
-                                            <div class="item-icon icon-note">
-                                                <i class="fas fa-info-circle"></i>
+        @if(isset($trip) && $trip->days && count($trip->days) > 0)
+            @foreach($trip->days as $day)
+                <div class="day-section">
+                    <div class="day-title">DIA {{ $day->day }}</div>
+
+                    @if($day->items && count($day->items) > 0)
+                        @foreach($day->items as $item)
+                            @if($item->type === 'flight')
+                                <div class="flight-card">
+                                    <div class="flight-header">
+                                        <div class="flight-route">Vuelo {{ $item->getTitle() }}</div>
+                                        <div class="airline-info">
+                                            <div>
+                                                <div style="font-size: 11px; color: #999;">{{ $item->airline ?? 'Aerolínea' }}</div>
+                                                <div style="font-weight: 600;">{{ $item->flight_number ?? 'FL123' }}</div>
                                             </div>
-                                            <div class="item-info">
-                                                <div class="item-type">Información</div>
-                                                <div class="item-title">Día libre</div>
-                                                <div class="item-subtitle">No hay actividades programadas para este día</div>
-                                            </div>
+                                            <div class="airline-logo"></div>
                                         </div>
                                     </div>
-                                @endif
+                                    <div class="flight-details">
+                                        <div class="flight-point">
+                                            <div class="airport-code">{{ $item->departure_code ?? 'MAD' }}</div>
+                                            <div class="city-name">{{ $item->departure_city ?? 'Madrid, España' }}</div>
+                                            <div class="flight-time">{{ $item->departure_time ?? '30 Oct - 23:59' }}</div>
+                                        </div>
+                                        <div class="flight-icon">
+                                            <i class="fas fa-plane" style="font-size: 24px;"></i>
+                                            <div class="flight-duration">{{ $item->duration ?? '12H 44M' }}</div>
+                                        </div>
+                                        <div class="flight-point">
+                                            <div class="airport-code">{{ $item->arrival_code ?? 'MVD' }}</div>
+                                            <div class="city-name">{{ $item->arrival_city ?? 'Montevideo, Uruguay' }}</div>
+                                            <div class="flight-time">{{ $item->arrival_time ?? '31 Oct - 08:55' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($item->type === 'hotel')
+                                <div class="activity-card">
+                                    <img src="{{ $item->image ?? 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=300&h=300&fit=crop' }}" alt="{{ $item->getTitle() }}" class="activity-image">
+                                    <div class="activity-content">
+                                        <div class="activity-title">{{ $item->getTitle() ?? 'Alojamiento' }}</div>
+                                        <div class="activity-time">
+                                            <span><i class="fas fa-calendar-alt"></i> {{ $item->check_in ?? '12/12/2025 - 10:00' }}</span>
+                                            <span><i class="fas fa-arrow-right"></i></span>
+                                            <span>{{ $item->check_out ?? '15/12/2025 - 12:00' }}</span>
+                                        </div>
+                                        <div class="activity-subtitle">{{ $item->location ?? 'Hilton Head Island' }}</div>
+                                        <div>
+                                            <span class="badge"><i class="fas fa-globe"></i> Web</span>
+                                            <span class="badge"><i class="fas fa-map-marker-alt"></i> Ver dirección</span>
+                                        </div>
+                                        <div class="amenities">
+                                            <span><i class="fas fa-bed"></i> {{ $item->room_type ?? 'Doble' }}</span>
+                                            <span><i class="fas fa-utensils"></i> Desayuno incluido</span>
+                                            <span><i class="fas fa-moon"></i> {{ $item->nights ?? '3' }} noches</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($item->type === 'activity')
+                                <div class="activity-card">
+                                    <img src="{{ $item->image ?? 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=300&h=300&fit=crop' }}" alt="{{ $item->getTitle() }}" class="activity-image">
+                                    <div class="activity-content">
+                                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                                            <div class="activity-title">{{ $item->getTitle() ?? 'Actividad' }}</div>
+                                            <span class="badge oficial">OFICIAL</span>
+                                        </div>
+                                        <div class="activity-subtitle">{{ $item->subtitle ?? 'Descripción' }}</div>
+                                        <div>
+                                            <span class="badge"><i class="fas fa-globe"></i> Web</span>
+                                            <span class="badge"><i class="fas fa-euro-sign"></i> {{ $item->price ?? '669.95' }}</span>
+                                            <span class="badge"><i class="fas fa-map-marker-alt"></i> Ver dirección</span>
+                                        </div>
+                                        <div class="rating">
+                                            @for($i = 0; $i < 5; $i++)
+                                                <i class="fas fa-star" style="color: #ffc107;"></i>
+                                            @endfor
+                                            <span>{{ $item->reviews ?? '12' }} reseñas de Google</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($item->type === 'transport')
+                                <div class="train-card">
+                                    <div style="font-weight: 600; margin-bottom: 15px;">{{ $item->transport_type ?? 'Tren' }}</div>
+                                    <div class="train-route">
+                                        <div class="train-point">
+                                            <div class="train-time">{{ $item->departure_time ?? '12 Dic - 10:10' }}</div>
+                                            <div class="train-location">{{ $item->departure_location ?? 'Venecia' }}</div>
+                                        </div>
+                                        <div class="train-icon">
+                                            <i class="fas fa-train" style="font-size: 24px;"></i>
+                                            <div class="train-duration">{{ $item->duration ?? '01H 52M' }}</div>
+                                        </div>
+                                        <div class="train-point">
+                                            <div class="train-time">{{ $item->arrival_time ?? '12 Dic - 12:02' }}</div>
+                                            <div class="train-location">{{ $item->arrival_location ?? 'Venecia Santa Lucia' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="activity-card">
+                                    <div class="activity-content">
+                                        <div class="activity-title">{{ $item->getTitle() }}</div>
+                                        <div class="activity-subtitle">{{ $item->getSubtitle() }}</div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    @else
+                        <div class="activity-card">
+                            <div class="activity-content">
+                                <div class="activity-title">Día libre</div>
+                                <div class="activity-subtitle">No hay actividades programadas para este día</div>
                             </div>
                         </div>
-                    @endforeach
-                @else
-                    <div class="error">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>No hay días en el itinerario</h3>
-                        <p>Agrega días y elementos a tu viaje en el editor.</p>
+                    @endif
+                </div>
+            @endforeach
+        @else
+            <div class="day-section">
+                <div class="activity-card">
+                    <div class="activity-content">
+                        <div class="activity-title">No hay días en el itinerario</div>
+                        <div class="activity-subtitle">Agrega días y elementos a tu viaje en el editor.</div>
                     </div>
-                @endif
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 
     <!-- Contact Button -->
@@ -145,6 +233,712 @@
 @endsection
 
 @push('styles')
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    header {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        font-size: 28px;
+        margin-bottom: 5px;
+    }
+
+    .trip-code {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .price-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-top: 1px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .price-label {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .price-amount {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .help-section {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .help-title {
+        font-size: 14px;
+        margin-bottom: 15px;
+        color: #666;
+    }
+
+    .contact-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .contact-info strong {
+        font-size: 16px;
+    }
+
+    .contact-detail {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+        color: #666;
+        font-size: 14px;
+    }
+
+    .day-section {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .day-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #0066cc;
+    }
+
+    .flight-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .flight-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .flight-route {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .airline-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .airline-logo {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+        border-radius: 4px;
+    }
+
+    .flight-details {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 30px;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .flight-point {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .airport-code {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #1a1a1a;
+    }
+
+    .city-name {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 8px;
+    }
+
+    .flight-time {
+        font-size: 14px;
+        color: #1a1a1a;
+        margin-top: 5px;
+        font-weight: 500;
+    }
+
+    .flight-icon {
+        text-align: center;
+        color: #999;
+    }
+
+    .flight-duration {
+        font-size: 12px;
+        color: #999;
+        text-align: center;
+    }
+
+    .activity-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 15px;
+        display: flex;
+        gap: 15px;
+    }
+
+    .activity-image {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .activity-content {
+        padding: 15px;
+        flex: 1;
+    }
+
+    .activity-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .activity-subtitle {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .activity-time {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        border: 1px solid #ddd;
+        background: white;
+    }
+
+    .badge.oficial {
+        background: #e3f2fd;
+        color: #1976d2;
+        border-color: #1976d2;
+    }
+
+    .amenities {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+        font-size: 13px;
+        color: #666;
+    }
+
+    .stars {
+        color: #ffc107;
+        margin-right: 5px;
+    }
+
+    .rating {
+        font-size: 13px;
+        color: #666;
+    }
+
+    .train-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .train-route {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 30px;
+        align-items: center;
+    }
+
+    .train-point {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .train-time {
+        font-size: 14px;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .train-location {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .train-icon {
+        text-align: center;
+        padding: 10px;
+    }
+
+    .train-duration {
+        font-size: 12px;
+        color: #999;
+    }
+
+    .contact-button {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(229, 231, 235, 0.8);
+        border-radius: 16px;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.06);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+    }
+
+    .contact-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 1);
+    }
+
+    .contact-icon {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .contact-text {
+        text-align: left;
+    }
+
+    .contact-title {
+        font-weight: 600;
+        color: #333;
+        font-size: 0.9rem;
+    }
+
+    .contact-subtitle {
+        color: #666;
+        font-size: 0.8rem;
+    }
+
+    /* Floating decorative shapes */
+    .floating-shapes {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .shape {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(16, 185, 129, 0.1));
+        animation: float 20s ease-in-out infinite;
+    }
+
+    .shape:nth-child(1) {
+        width: 80px;
+        height: 80px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .shape:nth-child(2) {
+        width: 60px;
+        height: 60px;
+        top: 60%;
+        right: 15%;
+        animation-delay: 5s;
+    }
+
+    .shape:nth-child(3) {
+        width: 100px;
+        height: 100px;
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 10s;
+    }
+
+    .shape:nth-child(4) {
+        width: 40px;
+        height: 40px;
+        top: 30%;
+        right: 30%;
+        animation-delay: 15s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        25% { transform: translateY(-20px) rotate(90deg); }
+        50% { transform: translateY(-10px) rotate(180deg); }
+        75% { transform: translateY(-30px) rotate(270deg); }
+    }
+
+    /* Header styles */
+    .preview-sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: transform 0.3s ease;
+    }
+
+    .preview-sticky-header.hidden {
+        transform: translateY(-100%);
+    }
+
+    .header {
+        background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 60%, #93c5fd 100%);
+        color: white;
+        padding: 1.25rem 2rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .viantryp-logo {
+        color: white;
+        text-decoration: none;
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .viantryp-logo i {
+        font-size: 1.8rem;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .nav-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .btn {
+        padding: 0.625rem 1.25rem;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid transparent;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-family: 'Inter', sans-serif;
+        letter-spacing: 0.025em;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-back {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-back:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-share {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-share:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-pdf {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-pdf:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+    }
+
+    .public-preview-header {
+        background: linear-gradient(135deg, #1f2a44 0%, #0ea5e9 100%);
+        color: white;
+        padding: 1.5rem 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .public-header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .public-logo {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .public-logo-text {
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 0;
+        background: linear-gradient(45deg, #fff, #e0f2fe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .public-subtitle {
+        font-size: 0.9rem;
+        margin: 0.25rem 0 0 0;
+        opacity: 0.9;
+        font-weight: 300;
+    }
+
+    .public-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .public-btn-print {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        padding: 0.625rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-family: 'Inter', sans-serif;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .public-btn-print:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 10px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .flight-details {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .flight-icon {
+            transform: rotate(90deg);
+        }
+
+        .airport-code {
+            font-size: 20px;
+        }
+
+        .activity-card {
+            flex-direction: column;
+        }
+
+        .activity-image {
+            width: 100%;
+            height: 200px;
+        }
+
+        .train-route {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .train-icon {
+            transform: rotate(90deg);
+            padding: 15px 0;
+        }
+
+        .price-section {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .header-content {
+            padding: 0 1rem;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .nav-actions {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 8px;
+        }
+
+        .public-header-content {
+            padding: 0 1rem;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .public-logo-text {
+            font-size: 1.5rem;
+        }
+
+        .public-subtitle {
+            font-size: 0.8rem;
+        }
+
+        .public-actions {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .contact-button {
+            bottom: 1rem;
+            right: 1rem;
+            padding: 0.75rem 1rem;
+        }
+
+        .contact-text {
+            display: none;
+        }
+
+        .floating-shapes {
+            display: none;
+        }
+    }
+</style>
 <style>
     :root {
         --primary-dark: #1f2a44;
