@@ -38,6 +38,14 @@ class Trip extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Get the persons associated with the trip
+     */
+    public function persons()
+    {
+        return $this->belongsToMany(Person::class);
+    }
+
     // Status constants
     const STATUS_DRAFT = 'draft';
     const STATUS_SENT = 'sent';
@@ -190,6 +198,22 @@ class Trip extends Model
      public static function findByShareToken(string $token): ?self
      {
          return self::where('share_token', $token)->first();
+     }
+
+     /**
+      * Get the documents for the trip
+      */
+     public function documents()
+     {
+         return $this->hasMany(TripDocument::class);
+     }
+
+     /**
+      * Get documents by type
+      */
+     public function getDocumentsByType(string $type)
+     {
+         return $this->documents()->where('type', $type)->get();
      }
 }
 

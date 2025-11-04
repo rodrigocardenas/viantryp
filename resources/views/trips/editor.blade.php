@@ -1484,6 +1484,11 @@
 
         modalTitle.textContent = `Agregar ${getTypeLabel(elementType)}`;
         modalBody.innerHTML = getElementForm(elementType);
+        
+        // Clear previously uploaded documents for this type
+        uploadedDocuments[elementType] = [];
+        
+        setupFileUploadListeners();
 
         // Initialize Select2 for the modal form
         initializeSelect2();
@@ -1591,6 +1596,11 @@
 
         modalTitle.textContent = `Agregar ${getTypeLabel(type)}`;
         modalBody.innerHTML = getElementForm(type);
+        
+        // Clear previously uploaded documents for this type
+        uploadedDocuments[type] = [];
+        
+        setupFileUploadListeners();
 
         // Initialize Select2 for the modal form
         initializeSelect2();
@@ -1687,6 +1697,11 @@
                     <label for="confirmation-number">Número de Confirmación</label>
                     <input type="text" id="confirmation-number" class="form-input" placeholder="Ej: ABC123">
                 </div>
+                <div class="form-group">
+                    <label for="flight-documents">Documentos</label>
+                    <input type="file" id="flight-documents" class="form-input" multiple accept=".pdf,.doc,.docx,.txt">
+                    <small class="form-text">Sube archivos PDF, DOC, DOCX o TXT relacionados con el vuelo</small>
+                </div>
             `,
             'hotel': `
                 <div class="form-group">
@@ -1718,6 +1733,11 @@
                 <div class="form-group">
                     <label for="nights">Noches</label>
                     <input type="number" id="nights" class="form-input" min="1" placeholder="2">
+                </div>
+                <div class="form-group">
+                    <label for="hotel-documents">Documentos</label>
+                    <input type="file" id="hotel-documents" class="form-input" multiple accept=".pdf,.doc,.docx,.txt">
+                    <small class="form-text">Sube archivos PDF, DOC, DOCX o TXT relacionados con el hotel</small>
                 </div>
             `,
             'activity': `
@@ -1760,6 +1780,11 @@
                 <div class="form-group">
                     <label for="destination">Destino</label>
                     <input type="text" id="destination" class="form-input" placeholder="Ej: Aeropuerto">
+                </div>
+                <div class="form-group">
+                    <label for="transport-documents">Documentos</label>
+                    <input type="file" id="transport-documents" class="form-input" multiple accept=".pdf,.doc,.docx,.txt">
+                    <small class="form-text">Sube archivos PDF, DOC, DOCX o TXT relacionados con el traslado</small>
                 </div>
             `,
             'note': `
@@ -1807,6 +1832,78 @@
         };
 
         return forms[type] || '<p>Formulario no disponible</p>';
+    }
+
+    // Track uploaded documents for each element type
+    let uploadedDocuments = {
+        flight: [],
+        hotel: [],
+        transport: []
+    };
+
+    async function uploadDocument(file, type) {
+        const tripId = getCurrentTripId();
+        if (!tripId) {
+            showNotification('Error', 'No se pudo determinar el ID del viaje.');
+            return false;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', type);
+        formData.append('item_id', 'temp_' + Date.now()); // Temporary ID until element is saved
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+        try {
+            const response = await fetch(`/trips/${tripId}/documents/upload`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                uploadedDocuments[type].push(result.document);
+                showNotification('Documento Subido', 'El documento se ha subido exitosamente.');
+                return true;
+            } else {
+                showNotification('Error', result.message || 'Error al subir el documento.');
+                return false;
+            }
+        } catch (error) {
+            console.error('Error uploading document:', error);
+            showNotification('Error', 'Error al subir el documento.');
+            return false;
+        }
+    }
+
+    function getCurrentTripId() {
+        const currentPath = window.location.pathname;
+        const urlParts = currentPath.split('/').filter(part => part !== '');
+        if (urlParts.length >= 3 && urlParts[1] === 'trips' && !isNaN(urlParts[2])) {
+            return urlParts[2];
+        }
+        return null;
+    }
+
+    function setupFileUploadListeners() {
+        // Setup listeners for file inputs
+        const fileInputs = document.querySelectorAll('#modal-body input[type="file"]');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', async function(e) {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    const type = currentElementType; // flight, hotel, transport
+                    for (let file of files) {
+                        await uploadDocument(file, type);
+                    }
+                }
+            });
+        });
     }
 
     function saveElement() {
@@ -1920,10 +2017,17 @@
         inputs.forEach(input => {
             if (input.type === 'checkbox') {
                 data[input.id.replace('-', '_')] = input.checked;
+            } else if (input.type === 'file') {
+                // Skip file inputs, handled separately
             } else if (input.value.trim()) {
                 data[input.id.replace('-', '_')] = input.value.trim();
             }
         });
+
+        // Include uploaded documents for this element type
+        if (uploadedDocuments[currentElementType] && uploadedDocuments[currentElementType].length > 0) {
+            data.documents = uploadedDocuments[currentElementType].map(doc => doc.id);
+        }
 
         // Include selected hotel data if this is a hotel element
         if (currentElementType === 'hotel' && selectedHotelData) {
@@ -2137,6 +2241,7 @@
 
         modalTitle.textContent = `Editar ${getTypeLabel(itemData.type)}`;
         modalBody.innerHTML = getElementForm(itemData.type);
+        setupFileUploadListeners();
 
         // Fill form with existing data
         fillFormWithData(itemData);

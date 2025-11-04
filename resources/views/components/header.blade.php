@@ -6,6 +6,18 @@
                 Viantryp
             </a>
         </div>
+        @auth
+            <nav class="main-nav">
+                <a href="{{ route('trips.index') }}" class="nav-link {{ request()->routeIs('trips.*') ? 'active' : '' }}">
+                    <i class="fas fa-suitcase"></i>
+                    Viajes
+                </a>
+                <a href="{{ route('persons.index') }}" class="nav-link {{ request()->routeIs('persons.*') ? 'active' : '' }}">
+                    <i class="fas fa-users"></i>
+                    Personas
+                </a>
+            </nav>
+        @endauth
         <div class="header-right">
             @if(isset($showActions) && $showActions)
                 <div class="nav-actions">
@@ -465,5 +477,35 @@
         .auth-divider {
             font-size: 0.7rem;
         }
+
+    .main-nav {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .nav-link {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-link.active {
+        background: rgba(255, 255, 255, 0.2);
+        font-weight: 600;
+    }
+
+    .nav-link i {
+        font-size: 1rem;
     }
 </style>

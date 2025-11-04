@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TripController;
+use App\Http\Controllers\PersonController;
+use App\Http\Controllers\AirlineController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
@@ -40,6 +42,12 @@ Route::middleware('auth')->group(function () {
     // Trip routes
     Route::resource('trips', TripController::class);
 
+    // Person routes
+    Route::resource('persons', PersonController::class);
+
+    // Airline routes
+    Route::resource('airlines', AirlineController::class);
+
     // Additional trip routes
     Route::post('trips/{trip}/status', [TripController::class, 'updateStatus'])->name('trips.update-status');
     Route::post('trips/{trip}/duplicate', [TripController::class, 'duplicate'])->name('trips.duplicate');
@@ -48,6 +56,12 @@ Route::middleware('auth')->group(function () {
     Route::get('trips/{trip}/pdf', [TripController::class, 'generatePdf'])->name('trips.pdf')->withoutMiddleware('auth');
     Route::post('trips/bulk-delete', [TripController::class, 'bulkDelete'])->name('trips.bulk-delete');
     Route::post('trips/bulk-duplicate', [TripController::class, 'bulkDuplicate'])->name('trips.bulk-duplicate');
+
+    // Document routes
+    Route::post('trips/{trip}/documents/upload', [\App\Http\Controllers\TripDocumentController::class, 'upload'])->name('trips.documents.upload');
+    Route::get('trips/{trip}/documents', [\App\Http\Controllers\TripDocumentController::class, 'getByItem'])->name('trips.documents.get');
+    Route::delete('documents/{document}', [\App\Http\Controllers\TripDocumentController::class, 'destroy'])->name('documents.destroy');
+    Route::get('documents/{document}/download', [\App\Http\Controllers\TripDocumentController::class, 'download'])->name('documents.download');
 });
 
 // Public preview route (no authentication required)
