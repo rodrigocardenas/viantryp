@@ -1484,10 +1484,10 @@
 
         modalTitle.textContent = `Agregar ${getTypeLabel(elementType)}`;
         modalBody.innerHTML = getElementForm(elementType);
-        
+
         // Clear previously uploaded documents for this type
         uploadedDocuments[elementType] = [];
-        
+
         setupFileUploadListeners();
 
         // Initialize Select2 for the modal form
@@ -1596,10 +1596,10 @@
 
         modalTitle.textContent = `Agregar ${getTypeLabel(type)}`;
         modalBody.innerHTML = getElementForm(type);
-        
+
         // Clear previously uploaded documents for this type
         uploadedDocuments[type] = [];
-        
+
         setupFileUploadListeners();
 
         // Initialize Select2 for the modal form
