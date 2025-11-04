@@ -71,6 +71,19 @@ class TripController extends Controller
             'items_data' => 'nullable|array'
         ]);
 
+        // Check for duplicate trips (same title and start_date, max 2 per user)
+        $existingCount = Trip::where('user_id', Auth::id())
+            ->where('title', $validated['title'])
+            ->where('start_date', $validated['start_date'])
+            ->count();
+
+        if ($existingCount >= 2) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ya tienes 2 viajes con el mismo nombre y fecha de inicio. No puedes crear más viajes duplicados.'
+            ], 422);
+        }
+
         // Set default values for optional fields
         $validated['travelers'] = $validated['travelers'] ?? 1;
         $validated['status'] = Trip::STATUS_DRAFT;
