@@ -61,10 +61,8 @@
     flex-shrink: 0;
 }
 
-.flight-icon { background: #007bff; }
 .hotel-icon { background: #dc3545; }
 .activity-icon { background: #28a745; }
-.transport-icon { background: #6f42c1; }
 .note-icon { background: #fd7e14; }
 .summary-icon { background: #28a745; }
 .total-icon { background: #dc3545; }

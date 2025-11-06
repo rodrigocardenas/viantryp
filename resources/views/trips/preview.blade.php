@@ -63,129 +63,125 @@
             </div>
         </header>
 
-        <div class="help-section">
-            <div class="help-title">¿Necesitas ayuda?</div>
-            <div class="contact-info">
-                <i class="fas fa-user"></i>
-                <div>
-                    <div style="font-size: 12px; color: #999;">TU CONTACTO</div>
-                    <strong>Camilo Gutierrez</strong>
-                    <div class="contact-detail">
-                        <i class="fas fa-map-marker-alt"></i> GPS Planeación de Viajes
-                    </div>
-                    <div class="contact-detail">
-                        <i class="fas fa-envelope"></i> info@viajesgps.com
-                    </div>
-                    <div class="contact-detail">
-                        <i class="fas fa-phone"></i> +34 657 22 18 38
-                    </div>
-                </div>
-            </div>
-        </div>
+        @if(isset($trip) && $trip->items_data && count($trip->items_data) > 0)
+            @php
+                // Group items by day
+                $itemsByDay = [];
+                foreach($trip->items_data as $item) {
+                    $day = $item['day'] ?? 1;
+                    if (!isset($itemsByDay[$day])) {
+                        $itemsByDay[$day] = [];
+                    }
+                    $itemsByDay[$day][] = $item;
+                }
+            @endphp
 
-        @if(isset($trip) && $trip->days && count($trip->days) > 0)
-            @foreach($trip->days as $day)
+            @foreach($itemsByDay as $dayNumber => $dayItems)
                 <div class="day-section">
-                    <div class="day-title">DIA {{ $day->day }}</div>
+                    <div class="day-title">DIA {{ $dayNumber }}</div>
 
-                    @if($day->items && count($day->items) > 0)
-                        @foreach($day->items as $item)
-                            @if($item->type === 'flight')
+                    @if(count($dayItems) > 0)
+                        @foreach($dayItems as $item)
+                            @if($item['type'] === 'flight')
                                 <div class="flight-card">
                                     <div class="flight-header">
-                                        <div class="flight-route">Vuelo {{ $item->getTitle() }}</div>
+                                        <div class="flight-route">Vuelo {{ $item['title'] ?? 'Sin título' }}</div>
                                         <div class="airline-info">
                                             <div>
-                                                <div style="font-size: 11px; color: #999;">{{ $item->airline ?? 'Aerolínea' }}</div>
-                                                <div style="font-weight: 600;">{{ $item->flight_number ?? 'FL123' }}</div>
+                                                <div style="font-size: 11px; color: #999;">{{ $item['airline'] ?? 'Aerolínea no especificada' }}</div>
+                                                <div style="font-weight: 600;">{{ $item['flight_number'] ?? 'Número no disponible' }}</div>
                                             </div>
                                             <div class="airline-logo"></div>
                                         </div>
                                     </div>
                                     <div class="flight-details">
                                         <div class="flight-point">
-                                            <div class="airport-code">{{ $item->departure_code ?? 'MAD' }}</div>
-                                            <div class="city-name">{{ $item->departure_city ?? 'Madrid, España' }}</div>
-                                            <div class="flight-time">{{ $item->departure_time ?? '30 Oct - 23:59' }}</div>
+                                            <div class="flight-label">Origen</div>
+                                            <div class="airport-code">{{ $item['departure_airport'] ?? 'Código no disponible' }}</div>
+                                            <div class="city-name">{{ $item['departure_city'] ?? 'Ciudad no especificada' }}</div>
+                                            <div class="flight-time">{{ $item['departure_time'] ?? 'Hora no disponible' }}</div>
                                         </div>
                                         <div class="flight-icon">
-                                            <i class="fas fa-plane" style="font-size: 24px;"></i>
-                                            <div class="flight-duration">{{ $item->duration ?? '12H 44M' }}</div>
+                                            <i class="fas fa-plane" style="font-size: 24px; background: none;"></i>
+                                            <div class="flight-duration">{{ $item['duration'] ?? 'Duración no disponible' }}</div>
                                         </div>
                                         <div class="flight-point">
-                                            <div class="airport-code">{{ $item->arrival_code ?? 'MVD' }}</div>
-                                            <div class="city-name">{{ $item->arrival_city ?? 'Montevideo, Uruguay' }}</div>
-                                            <div class="flight-time">{{ $item->arrival_time ?? '31 Oct - 08:55' }}</div>
+                                            <div class="flight-label">Destino</div>
+                                            <div class="airport-code">{{ $item['arrival_airport'] ?? 'Código no disponible' }}</div>
+                                            <div class="city-name">{{ $item['arrival_city'] ?? 'Ciudad no especificada' }}</div>
+                                            <div class="flight-time">{{ $item['arrival_time'] ?? 'Hora no disponible' }}</div>
                                         </div>
                                     </div>
                                 </div>
-                            @elseif($item->type === 'hotel')
+                            @elseif($item['type'] === 'hotel')
                                 <div class="activity-card">
-                                    <img src="{{ $item->image ?? 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=300&h=300&fit=crop' }}" alt="{{ $item->getTitle() }}" class="activity-image">
+                                    <img src="{{ $item['image'] ?? 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=300&h=300&fit=crop' }}" alt="{{ $item['title'] ?? 'Actividad' }}" class="activity-image">
                                     <div class="activity-content">
-                                        <div class="activity-title">{{ $item->getTitle() ?? 'Alojamiento' }}</div>
+                                        <div class="activity-title">{{ $item['title'] ?? 'Alojamiento' }}</div>
                                         <div class="activity-time">
-                                            <span><i class="fas fa-calendar-alt"></i> {{ $item->check_in ?? '12/12/2025 - 10:00' }}</span>
+                                            <span><i class="fas fa-calendar-alt"></i> {{ $item['check_in'] ?? '12/12/2025 - 10:00' }}</span>
                                             <span><i class="fas fa-arrow-right"></i></span>
-                                            <span>{{ $item->check_out ?? '15/12/2025 - 12:00' }}</span>
+                                            <span>{{ $item['check_out'] ?? '15/12/2025 - 12:00' }}</span>
                                         </div>
-                                        <div class="activity-subtitle">{{ $item->location ?? 'Hilton Head Island' }}</div>
+                                        <div class="activity-subtitle">{{ $item['location'] ?? 'Hilton Head Island' }}</div>
                                         <div>
                                             <span class="badge"><i class="fas fa-globe"></i> Web</span>
                                             <span class="badge"><i class="fas fa-map-marker-alt"></i> Ver dirección</span>
                                         </div>
                                         <div class="amenities">
-                                            <span><i class="fas fa-bed"></i> {{ $item->room_type ?? 'Doble' }}</span>
+                                            <span><i class="fas fa-bed"></i> {{ $item['room_type'] ?? 'Doble' }}</span>
                                             <span><i class="fas fa-utensils"></i> Desayuno incluido</span>
-                                            <span><i class="fas fa-moon"></i> {{ $item->nights ?? '3' }} noches</span>
+                                            <span><i class="fas fa-moon"></i> {{ $item['nights'] ?? '3' }} noches</span>
                                         </div>
                                     </div>
                                 </div>
-                            @elseif($item->type === 'activity')
+                            @elseif($item['type'] === 'activity')
                                 <div class="activity-card">
-                                    <img src="{{ $item->image ?? 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=300&h=300&fit=crop' }}" alt="{{ $item->getTitle() }}" class="activity-image">
+                                    <img src="{{ $item['image'] ?? 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=300&h=300&fit=crop' }}" alt="{{ $item['title'] ?? 'Actividad' }}" class="activity-image">
                                     <div class="activity-content">
                                         <div style="display: flex; justify-content: space-between; align-items: start;">
-                                            <div class="activity-title">{{ $item->getTitle() ?? 'Actividad' }}</div>
+                                            <div class="activity-title">{{ $item['title'] ?? 'Actividad' }}</div>
                                             <span class="badge oficial">OFICIAL</span>
                                         </div>
-                                        <div class="activity-subtitle">{{ $item->subtitle ?? 'Descripción' }}</div>
+                                        <div class="activity-subtitle">{{ $item['subtitle'] ?? 'Descripción' }}</div>
                                         <div>
                                             <span class="badge"><i class="fas fa-globe"></i> Web</span>
-                                            <span class="badge"><i class="fas fa-euro-sign"></i> {{ $item->price ?? '669.95' }}</span>
+                                            <span class="badge"><i class="fas fa-euro-sign"></i> {{ $item['price'] ?? '669.95' }}</span>
                                             <span class="badge"><i class="fas fa-map-marker-alt"></i> Ver dirección</span>
                                         </div>
                                         <div class="rating">
                                             @for($i = 0; $i < 5; $i++)
                                                 <i class="fas fa-star" style="color: #ffc107;"></i>
                                             @endfor
-                                            <span>{{ $item->reviews ?? '12' }} reseñas de Google</span>
+                                            <span>{{ $item['reviews'] ?? '12' }} reseñas de Google</span>
                                         </div>
                                     </div>
                                 </div>
-                            @elseif($item->type === 'transport')
+                            @elseif($item['type'] === 'transport')
                                 <div class="train-card">
-                                    <div style="font-weight: 600; margin-bottom: 15px;">{{ $item->transport_type ?? 'Tren' }}</div>
+                                    <div style="font-weight: 600; margin-bottom: 15px;">{{ $item['transport_type'] ?? 'Transporte no especificado' }}</div>
                                     <div class="train-route">
                                         <div class="train-point">
-                                            <div class="train-time">{{ $item->departure_time ?? '12 Dic - 10:10' }}</div>
-                                            <div class="train-location">{{ $item->departure_location ?? 'Venecia' }}</div>
+                                            <div class="train-label">Origen</div>
+                                            <div class="train-time">{{ $item['pickup_time'] ?? 'Hora no disponible' }}</div>
+                                            <div class="train-location">{{ $item['pickup_location'] ?? 'Ubicación no especificada' }}</div>
                                         </div>
                                         <div class="train-icon">
                                             <i class="fas fa-train" style="font-size: 24px;"></i>
-                                            <div class="train-duration">{{ $item->duration ?? '01H 52M' }}</div>
+                                            <div class="train-duration">{{ $item['duration'] ?? 'Duración no disponible' }}</div>
                                         </div>
                                         <div class="train-point">
-                                            <div class="train-time">{{ $item->arrival_time ?? '12 Dic - 12:02' }}</div>
-                                            <div class="train-location">{{ $item->arrival_location ?? 'Venecia Santa Lucia' }}</div>
+                                            <div class="train-label">Destino</div>
+                                            <div class="train-time">{{ $item['arrival_time'] ?? 'Hora no disponible' }}</div>
+                                            <div class="train-location">{{ $item['destination'] ?? 'Ubicación no especificada' }}</div>
                                         </div>
                                     </div>
                                 </div>
                             @else
                                 <div class="activity-card">
                                     <div class="activity-content">
-                                        <div class="activity-title">{{ $item->getTitle() }}</div>
-                                        <div class="activity-subtitle">{{ $item->getSubtitle() }}</div>
+                                        <div class="activity-title">{{ $item['title'] ?? 'Elemento' }}</div>
+                                        <div class="activity-subtitle">{{ $item['subtitle'] ?? '' }}</div>
                                     </div>
                                 </div>
                             @endif
@@ -213,23 +209,29 @@
     </div>
 
     <!-- Contact Button -->
-    <div class="contact-button">
+    <div class="contact-button minimized" id="contactButton">
         <div class="contact-icon">
             <i class="fas fa-headset"></i>
         </div>
         <div class="contact-text">
-            <div class="contact-title">Contacto</div>
-            <div class="contact-subtitle">Tu experto en viajes</div>
+            <div class="contact-title">Habla con tu Agente</div>
+            <div class="contact-details">
+                <div class="contact-detail">
+                    <i class="fas fa-user" style="color: #666;"></i>
+                    <strong>Camilo Gutierrez</strong>
+                </div>
+                <div class="contact-detail">
+                    <i class="fas fa-phone" style="color: #666;"></i>
+                    +34 657 22 18 38
+                </div>
+                <div class="contact-detail">
+                    <i class="fas fa-envelope" style="color: #666;"></i>
+                    info@viajesgps.com
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Floating decorative shapes -->
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
 @endsection
 
 @push('styles')
@@ -334,10 +336,19 @@
     }
 
     .day-title {
-        font-size: 18px;
-        font-weight: bold;
+        font-size: 13px;
+        font-weight: normal;
         margin-bottom: 20px;
         color: #0066cc;
+        background: none;
+    }
+
+    .day-date {
+        font-size: 14px;
+        font-weight: normal;
+        color: #666;
+        background: none;
+        box-shadow: none;
     }
 
     .flight-card {
@@ -387,6 +398,15 @@
         text-align: center;
     }
 
+    .flight-label {
+        font-size: 12px;
+        color: #666;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+    }
+
     .airport-code {
         font-size: 24px;
         font-weight: bold;
@@ -409,7 +429,6 @@
 
     .flight-icon {
         text-align: center;
-        color: #999;
     }
 
     .flight-duration {
@@ -515,6 +534,15 @@
         text-align: center;
     }
 
+    .train-label {
+        font-size: 12px;
+        color: #666;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+    }
+
     .train-time {
         font-size: 14px;
         color: #1a1a1a;
@@ -531,6 +559,7 @@
     .train-icon {
         text-align: center;
         padding: 10px;
+        color: #1a1a1a;
     }
 
     .train-duration {
@@ -542,8 +571,8 @@
         position: fixed;
         bottom: 2rem;
         right: 2rem;
-        background: rgba(255, 255, 255, 0.95);
-        border: 1px solid rgba(229, 231, 235, 0.8);
+        background: #0066cc;
+        border: none;
         border-radius: 16px;
         padding: 1rem 1.5rem;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.06);
@@ -554,39 +583,74 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1000;
         backdrop-filter: blur(10px);
+        max-width: 300px;
+    }
+
+    .contact-button.minimized {
+        padding: 1rem;
+        max-width: 60px;
+        justify-content: center;
+    }
+
+    .contact-button.minimized .contact-text {
+        display: none;
     }
 
     .contact-button:hover {
         transform: translateY(-2px);
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
-        background: rgba(255, 255, 255, 1);
+        background: #0052a3;
     }
 
     .contact-icon {
         width: 44px;
         height: 44px;
-        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        background: #0066cc;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        flex-shrink: 0;
     }
 
     .contact-text {
         text-align: left;
+        color: white;
+        min-width: 0;
+        flex: 1;
     }
 
     .contact-title {
         font-weight: 600;
-        color: #333;
         font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    .contact-subtitle {
-        color: #666;
+    .contact-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .contact-detail {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         font-size: 0.8rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .contact-detail i {
+        width: 16px;
+        text-align: center;
+        flex-shrink: 0;
     }
 
     /* Floating decorative shapes */
@@ -854,9 +918,7 @@
             gap: 15px;
         }
 
-        .flight-icon {
-            transform: rotate(90deg);
-        }
+        
 
         .airport-code {
             font-size: 20px;
@@ -879,6 +941,18 @@
         .train-icon {
             transform: rotate(90deg);
             padding: 15px 0;
+        }
+
+        .contact-detail {
+            font-size: 0.75rem;
+        }
+
+        .contact-detail i {
+            width: 14px;
+        }
+
+        .contact-title {
+            font-size: 0.85rem;
         }
 
         .price-section {
@@ -1009,7 +1083,6 @@
     .shape {
         position: absolute;
         border-radius: 50%;
-        background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(16, 185, 129, 0.1));
         animation: float 20s ease-in-out infinite;
     }
 
@@ -1018,6 +1091,7 @@
         height: 80px;
         top: 10%;
         left: 10%;
+        background: #0066cc;
         animation-delay: 0s;
     }
 
@@ -1026,6 +1100,7 @@
         height: 60px;
         top: 60%;
         right: 15%;
+        background: #0066cc;
         animation-delay: 5s;
     }
 
@@ -1034,6 +1109,7 @@
         height: 100px;
         bottom: 20%;
         left: 20%;
+        background: #0066cc;
         animation-delay: 10s;
     }
 
@@ -1042,6 +1118,7 @@
         height: 40px;
         top: 30%;
         right: 30%;
+        background: #0066cc;
         animation-delay: 15s;
     }
 
@@ -1356,8 +1433,8 @@
         color: var(--primary-dark);
         padding: 0.75rem 1.5rem;
         border-radius: 999px;
-        font-size: 0.95rem;
-        font-weight: 700;
+        font-size: 0.75rem;
+        font-weight: 500;
         display: inline-block;
         margin-bottom: 1rem;
         box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
@@ -1371,8 +1448,8 @@
     }
 
     .day-title {
-        font-size: 1.8rem;
-        font-weight: 800;
+        font-size: 1.5rem;
+        font-weight: 500;
         color: var(--primary-dark);
         margin-bottom: 0.75rem;
         background: linear-gradient(135deg, var(--primary-dark) 0%, #374151 100%);
@@ -2855,5 +2932,21 @@
             prevHotelImage();
         }
     }
+
+    // Contact button toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const contactButton = document.getElementById('contactButton');
+
+        contactButton.addEventListener('click', function() {
+            this.classList.toggle('minimized');
+        });
+
+        // Close contact details when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!contactButton.contains(e.target)) {
+                contactButton.classList.add('minimized');
+            }
+        });
+    });
 </script>
 @endpush
