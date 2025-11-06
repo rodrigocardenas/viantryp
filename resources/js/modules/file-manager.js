@@ -25,12 +25,13 @@ class FileManager {
     }
 
     async uploadDocument(file, type) {
+        console.log('FileManager: uploadDocument called with file:', file.name, 'type:', type);
         const tripId = this.getCurrentTripId();
-        console.log('FileManager: getCurrentTripId() returned:', tripId);
+        console.log('FileManager: tripId result:', tripId);
 
         // Check if we're in create mode (no trip ID yet)
         if (!tripId) {
-            console.log('FileManager: No trip ID, uploading temporarily');
+            console.log('FileManager: No trip ID found, using temporary upload');
             return this.uploadDocumentTemporarily(file, type);
         }
 

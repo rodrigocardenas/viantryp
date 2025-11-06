@@ -8,7 +8,8 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/css/editor.css',
                 'resources/js/app.js',
-                'resources/js/editor.js'
+                'resources/js/editor.js',
+                'resources/js/modules/editor-edit-mode.js'
             ],
             refresh: true,
         }),

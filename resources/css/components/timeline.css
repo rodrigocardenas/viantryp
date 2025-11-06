@@ -93,3 +93,44 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
 }
+
+/* Timeline Item Actions */
+.item-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #6c757d;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.action-btn:hover {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.action-btn.btn-danger:hover {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.action-btn.btn-danger {
+    color: #dc3545;
+}
+
+.action-btn.btn-danger:hover {
+    background: #f8d7da;
+    color: #721c24;
+}

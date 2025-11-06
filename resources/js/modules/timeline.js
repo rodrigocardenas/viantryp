@@ -102,7 +102,7 @@ export class TimelineManager {
         // Set data attributes for the element
         Object.keys(data).forEach(key => {
             if (key !== 'type' && key !== 'day') {
-                elementDiv.setAttribute(`data-${key.replace('_', '-')}`, data[key]);
+                elementDiv.setAttribute(`data-${key.replace(/_/g, '-')}`, data[key]);
             }
         });
 
@@ -253,6 +253,24 @@ export class TimelineManager {
 
         this.daysContainer.appendChild(dayCard);
 
+        // Attach event listeners to the newly created day content so drag/drop works
+        const dayContent = dayCard.querySelector('.day-content');
+        if (dayContent) {
+            // Use bound methods so `this` inside handlers refers to TimelineManager
+            dayContent.addEventListener('dragover', (ev) => this.allowDrop(ev));
+            dayContent.addEventListener('drop', (ev) => this.drop(ev));
+        }
+
+        // Attach click listener for add-element button to open modal for the correct day
+        const addBtn = dayCard.querySelector('.add-element-btn');
+        if (addBtn) {
+            addBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const day = parseInt(addBtn.dataset.day) || newDayNumber;
+                this.showAddElementModal(day);
+            });
+        }
+
         // Emit event to update summaries
         const event = new CustomEvent('dayAdded', {
             detail: { dayNumber: newDayNumber }
@@ -312,9 +330,12 @@ export class TimelineManager {
 
         // Extract all data attributes
         Object.keys(element.dataset).forEach(key => {
-            if (key !== 'type') {
-                data[key.replace('-', '_')] = element.dataset[key];
-            }
+            if (key === 'type') return;
+
+            // element.dataset returns camelCase keys for data-attributes (e.g. departureAirport)
+            // convert camelCase to snake_case so it matches the server-side data keys (departure_airport)
+            const snake = key.replace(/([A-Z])/g, '_$1').toLowerCase();
+            data[snake] = element.dataset[key];
         });
 
         return data;

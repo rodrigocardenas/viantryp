@@ -115,7 +115,12 @@ function setupGlobalEventListeners() {
                 break;
             case 'save-trip':
                 e.preventDefault();
-                exportManager.saveTrip();
+                console.log('Save-trip action clicked — calling exportManager.saveTrip');
+                if (exportManager && typeof exportManager.saveTrip === 'function') {
+                    exportManager.saveTrip();
+                } else {
+                    console.error('exportManager not initialized or saveTrip not available');
+                }
                 break;
             case 'preview-trip':
                 e.preventDefault();
@@ -190,8 +195,8 @@ function loadExistingTripData(tripData) {
         document.getElementById('start-date').value = tripData.start_date;
     }
 
-    // Load trip items
-    if (tripData.items_data) {
+    // Load trip items - only if NOT in edit mode (Blade components handle rendering in edit mode)
+    if (tripData.items_data && window.editorMode !== 'edit') {
         // Group items by day
         const itemsByDay = {};
         tripData.items_data.forEach(item => {

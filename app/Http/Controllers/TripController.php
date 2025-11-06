@@ -185,6 +185,18 @@ class TripController extends Controller
             ], 403);
         }
 
+        // Temporary debug logging to inspect incoming payload when saving from editor
+        try {
+            Log::info('TripController@update called', [
+                'trip_id' => $trip->id,
+                'request_all' => $request->all(),
+                'user_id' => Auth::id()
+            ]);
+        } catch (\Throwable $e) {
+            // Don't break the request if logging fails
+            Log::error('Failed logging TripController@update payload: ' . $e->getMessage());
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'start_date' => 'required|date',
@@ -195,6 +207,15 @@ class TripController extends Controller
             'items_data' => 'nullable|array'
         ]);
 
+        // Log validated payload for debugging
+        try {
+            Log::info('TripController@update validated data', [
+                'trip_id' => $trip->id,
+                'validated' => $validated
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Failed logging TripController@update validated payload: ' . $e->getMessage());
+        }
         // Set default values for optional fields
         $validated['travelers'] = $validated['travelers'] ?? 1;
 

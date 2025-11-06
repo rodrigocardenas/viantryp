@@ -42,15 +42,19 @@
                     @endif
                 </p>
             </div>
-            <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="add-element-btn" data-action="add-element" data-day="1">
-                    <i class="fas fa-plus"></i>
-                </div>
-                <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
-            </div>
-        </div>
+                            <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="add-element-btn" data-action="add-element" data-day="1">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
+                </div></search>
+</search_and_replace>
     @endif
-</div>
+
+    <!-- Add Day Section -->
+    <x-editor-add-day-section />
+</div></search>
+</search_and_replace>
 
 @push('scripts')
 <script>
@@ -90,7 +94,7 @@
         // Clear previously uploaded documents for this type
         uploadedDocuments[elementType] = [];
 
-        setupFileUploadListeners();
+        setupFileUploadListeners(elementType);
 
         // Initialize Select2 for the modal form
         initializeSelect2();
@@ -340,7 +344,7 @@
 
         modalTitle.textContent = `Editar ${getTypeLabel(itemData.type)}`;
         modalBody.innerHTML = getElementForm(itemData.type);
-        setupFileUploadListeners();
+        setupFileUploadListeners(elementType);
 
         // Fill form with existing data
         fillFormWithData(itemData);

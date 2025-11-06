@@ -130,14 +130,15 @@ class ExportManager {
                 // This is an update operation
                 tripId = window.currentTripId;
                 url = '/trips/' + tripId;
-                method = 'POST'; // Use POST with _method override
-                tripData._method = 'PATCH'; // Add method override
+                method = 'PATCH'; // Use real PATCH method for updates
                 console.log('Updating existing trip with ID:', tripId);
             } else {
                 // Check URL for edit mode
                 const currentPath = window.location.pathname;
                 const urlParts = currentPath.split('/').filter(part => part !== '');
-                const isEditing = urlParts.length >= 3 && urlParts[1] === 'trips' && !isNaN(urlParts[2]) && urlParts[3] === 'edit';
+
+                // Normalize: expected edit URL is /trips/{id}/edit -> ['trips','{id}','edit']
+                const isEditing = urlParts.length >= 3 && urlParts[0] === 'trips' && !isNaN(urlParts[1]) && urlParts[2] === 'edit';
 
                 console.log('Current path:', currentPath);
                 console.log('URL parts:', urlParts);
@@ -145,7 +146,7 @@ class ExportManager {
 
                 if (isEditing) {
                     // For editing, extract the trip ID from the URL
-                    tripId = urlParts[2]; // The ID should be at index 2
+                    tripId = urlParts[1]; // The ID is at index 1
                     console.log('Extracted trip ID:', tripId);
 
                     if (!tripId || isNaN(tripId)) {
@@ -155,8 +156,7 @@ class ExportManager {
                     }
 
                     url = '/trips/' + tripId;
-                    method = 'POST'; // Use POST with _method override
-                    tripData._method = 'PATCH'; // Add method override
+                    method = 'PATCH'; // Use real PATCH method for updates
                 } else {
                     // For creating, make POST request to /trips
                     url = '/trips';
@@ -194,9 +194,11 @@ class ExportManager {
 
             const response = await fetch(url, {
                 method: method,
+                credentials: 'same-origin', // ensure cookies (session) are sent
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
                 },
                 body: JSON.stringify(tripData)
             });
@@ -372,8 +374,9 @@ class ExportManager {
         // Fallback to URL parsing
         const currentPath = window.location.pathname;
         const urlParts = currentPath.split('/').filter(part => part !== '');
-        if (urlParts.length >= 3 && urlParts[1] === 'trips' && !isNaN(urlParts[2])) {
-            return urlParts[2];
+        // Expect paths like: /trips/{id}/edit  -> ['trips','{id}','edit']
+        if (urlParts.length >= 2 && urlParts[0] === 'trips' && !isNaN(urlParts[1])) {
+            return urlParts[1];
         }
         return null;
     }

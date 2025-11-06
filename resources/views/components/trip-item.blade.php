@@ -1,4 +1,4 @@
-<div class="timeline-item">
+<div class="timeline-item" data-type="{{ $item->type }}" @foreach($item->data as $key => $value) data-{{ str_replace('_', '-', $key) }}="{{ $value }}" @endforeach>
     <div class="item-header">
         <div class="item-icon {{ $item->getIconClass() }}">
             <i class="{{ $item->getIcon() }}"></i>
@@ -9,10 +9,10 @@
             <div class="item-subtitle">{{ $item->getSubtitle() }}</div>
         </div>
         <div class="item-actions">
-            <button class="action-btn" onclick="editItem(this)" title="Editar">
+            <button class="action-btn" data-action="edit-element" title="Editar">
                 <i class="fas fa-edit"></i>
             </button>
-            <button class="action-btn btn-danger" onclick="deleteItem(this)" title="Eliminar">
+            <button class="action-btn btn-danger" data-action="delete-element" title="Eliminar">
                 <i class="fas fa-trash"></i>
             </button>
         </div>
