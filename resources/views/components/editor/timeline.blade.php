@@ -47,6 +47,10 @@
                 </div>
                 <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
             </div>
-        </div>
+                </div>
     @endif
-</div>
+
+    <!-- Add Day Section -->
+    <x-editor-add-day-section />
+</div></search>
+</search_and_replace>
