@@ -25,7 +25,7 @@
                 <label>Fecha de inicio:</label>
                 <input type="date" id="start-date" class="form-input" value="{{ $trip ? ($trip->start_date ? $trip->start_date->format('Y-m-d') : '') : '' }}">
             </div>
-            <button class="btn-update-dates" onclick="updateItineraryDates()">
+            <button class="btn-update-dates" data-action="update-dates">
                 <i class="fas fa-sync-alt"></i>
                 Actualizar fechas
             </button>

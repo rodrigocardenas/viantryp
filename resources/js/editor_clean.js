@@ -3,21 +3,11 @@
 import { TimelineManager } from './modules/timeline.js';
 import { ModalManager } from './modules/modal.js';
 import { SummaryManager } from './modules/summary.js';
-import FileManager from './modules/file-manager.js';
-import ElementManager from './modules/element-manager.js';
-import DayManager from './modules/day-manager.js';
-import ExportManager from './modules/export-manager.js';
-import Utils from './modules/utils.js';
 
 // Global managers
 let timelineManager;
 let modalManager;
 let summaryManager;
-let fileManager;
-let elementManager;
-let dayManager;
-let exportManager;
-let utils;
 
 // State management
 let currentElementType = null;
@@ -32,11 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
     timelineManager = new TimelineManager();
     modalManager = new ModalManager();
     summaryManager = new SummaryManager();
-    fileManager = new FileManager();
-    elementManager = new ElementManager(modalManager, timelineManager, summaryManager, fileManager);
-    dayManager = new DayManager(summaryManager);
-    exportManager = new ExportManager();
-    utils = new Utils(modalManager, summaryManager);
 
     timelineManager.init();
     modalManager.init();
@@ -72,103 +57,26 @@ function setupGlobalEventListeners() {
             });
         }
     });
-
-    // Listen for addElementToDay events from ModalManager
-    document.addEventListener('addElementToDay', (e) => {
-        console.log('Editor received addElementToDay event:', e.detail);
-        timelineManager.addElementToDay(e.detail.elementData);
-    });
-
-    // Listen for updateAllSummaries events
-    document.addEventListener('updateAllSummaries', () => {
-        summaryManager.updateAllSummaries();
-    });
-
-    // Add event delegation for data-action attributes
-    document.addEventListener('click', function(e) {
-        const action = e.target.closest('[data-action]');
-        if (!action) return;
-
-        const actionType = action.dataset.action;
-
-        switch (actionType) {
-            case 'add-element':
-                e.preventDefault();
-                const day = action.dataset.day;
-                timelineManager.showAddElementModal(parseInt(day));
-                break;
-            case 'add-day':
-                e.preventDefault();
-                dayManager.addNewDay();
-                break;
-            case 'edit-element':
-                e.preventDefault();
-                timelineManager.editElement(action);
-                break;
-            case 'delete-element':
-                e.preventDefault();
-                utils.deleteElement(action);
-                break;
-            case 'update-summaries':
-                e.preventDefault();
-                summaryManager.updateAllSummaries();
-                break;
-            case 'save-trip':
-                e.preventDefault();
-                exportManager.saveTrip();
-                break;
-            case 'preview-trip':
-                e.preventDefault();
-                exportManager.previewTrip();
-                break;
-            case 'download-pdf':
-                e.preventDefault();
-                exportManager.downloadPDF();
-                break;
-            case 'back':
-                e.preventDefault();
-                showUnsavedChangesModal();
-                break;
-            case 'select-hotel':
-                e.preventDefault();
-                // Need to implement selectHotel function or move it here
-                console.log('Select hotel clicked');
-                break;
-        }
-    });
 }
 
 // Global functions that need to be accessible from HTML
 window.addNewDay = function() {
-    dayManager.addNewDay();
-};
-
-window.updateItineraryDates = function() {
-    dayManager.updateItineraryDates();
-};
-
-window.allowDrop = function(ev) {
-    timelineManager.allowDrop(ev);
-};
-
-window.drag = function(ev) {
-    timelineManager.drag(ev);
-};
-
-window.drop = function(ev) {
-    timelineManager.drop(ev);
+    timelineManager.addNewDay();
 };
 
 window.saveTrip = function() {
-    exportManager.saveTrip();
+    // Implementation will be moved here
+    console.log('Saving trip');
 };
 
 window.previewTrip = function() {
-    exportManager.previewTrip();
+    // Implementation will be moved here
+    console.log('Previewing trip');
 };
 
 window.downloadPDF = function() {
-    exportManager.downloadPDF();
+    // Implementation will be moved here
+    console.log('Downloading PDF');
 };
 
 window.showUnsavedChangesModal = function() {

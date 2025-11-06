@@ -8,14 +8,14 @@
     <div class="modal-content">
         <div class="modal-header">
             <h3 id="modal-title">Agregar Elemento</h3>
-            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <button class="modal-close" data-action="close-modal">&times;</button>
         </div>
         <div class="modal-body" id="modal-body">
             <!-- Dynamic content will be inserted here -->
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-            <button class="btn btn-primary" onclick="saveElement()">Guardar</button>
+            <button class="btn btn-secondary" data-action="close-modal">Cancelar</button>
+            <button class="btn btn-primary" data-action="save-element">Guardar</button>
         </div>
     </div>
 </div>

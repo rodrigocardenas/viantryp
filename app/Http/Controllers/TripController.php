@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Mail\SendTripLink;
@@ -53,7 +54,7 @@ class TripController extends Controller
      */
     public function create(): View
     {
-        return view('trips.editor');
+        return view('trips.create');
     }
 
     /**
@@ -63,39 +64,73 @@ class TripController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
             'travelers' => 'nullable|integer|min:1',
             'destination' => 'nullable|string|max:255',
             'summary' => 'nullable|string',
             'items_data' => 'nullable|array'
         ]);
 
-        // Check for duplicate trips (same title and start_date, max 2 per user)
-        $existingCount = Trip::where('user_id', Auth::id())
-            ->where('title', $validated['title'])
-            ->where('start_date', $validated['start_date'])
-            ->count();
+        // Set default start and end dates
+        $validated['start_date'] = now();
+        $validated['end_date'] = now();
 
-        if ($existingCount >= 2) {
+        // Smart duplicate handling: update existing trips instead of rejecting
+        return DB::transaction(function() use ($validated) {
+            // Get current user ID once
+            $userId = Auth::id();
+
+            // Check for existing trips with the same title (regardless of date)
+            $existingTrip = Trip::where('user_id', $userId)
+                ->where('title', $validated['title'])
+                ->first();
+
+            if ($existingTrip) {
+                // Update the existing trip instead of creating a duplicate
+                $existingTrip->update([
+                    'start_date' => $validated['start_date'],
+                    'end_date' => $validated['end_date'],
+                    'travelers' => $validated['travelers'] ?? 1,
+                    'destination' => $validated['destination'] ?? '',
+                    'summary' => $validated['summary'] ?? '',
+                    'items_data' => $validated['items_data'] ?? []
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Viaje actualizado exitosamente',
+                    'trip' => $existingTrip->fresh(),
+                    'action' => 'updated' // Indicate this was an update, not a new creation
+                ]);
+            }
+
+            // Count trips with similar title (allow some variation, but limit excessive creation)
+            $similarTrips = Trip::where('user_id', $userId)
+                ->where('title', 'LIKE', '%' . trim($validated['title']) . '%')
+                ->where('created_at', '>=', now()->subDay())
+                ->count();
+
+            if ($similarTrips >= 5) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Has creado demasiados viajes similares hoy. Espera un poco o cambia el título.'
+                ], 422);
+            }
+
+            // Set default values for optional fields
+            $validated['travelers'] = $validated['travelers'] ?? 1;
+            $validated['status'] = Trip::STATUS_DRAFT;
+            $validated['user_id'] = $userId;
+
+            // Create the trip within the transaction
+            $trip = Trip::create($validated);
+
             return response()->json([
-                'success' => false,
-                'message' => 'Ya tienes 2 viajes con el mismo nombre y fecha de inicio. No puedes crear más viajes duplicados.'
-            ], 422);
-        }
-
-        // Set default values for optional fields
-        $validated['travelers'] = $validated['travelers'] ?? 1;
-        $validated['status'] = Trip::STATUS_DRAFT;
-        $validated['user_id'] = Auth::id();
-
-        $trip = Trip::create($validated);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Viaje creado exitosamente',
-            'trip' => $trip
-        ]);
+                'success' => true,
+                'message' => 'Viaje creado exitosamente',
+                'trip' => $trip,
+                'action' => 'created' // Indicate this was a new creation
+            ]);
+        });
     }
 
     /**
@@ -124,8 +159,8 @@ class TripController extends Controller
             abort(403, 'No tienes permiso para editar este viaje.');
         }
 
-        return view('trips.editor', [
-            'trip' => $trip->load('user')
+        return view('trips.edit', [
+            'trip' => $trip->load(['persons', 'documents'])
         ]);
     }
 

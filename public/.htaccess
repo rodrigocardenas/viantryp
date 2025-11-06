@@ -3,6 +3,9 @@
         Options -MultiViews -Indexes
     </IfModule>
 
+    # Force UTF-8 encoding
+    AddDefaultCharset UTF-8
+
     RewriteEngine On
 
     # Handle Authorization Header

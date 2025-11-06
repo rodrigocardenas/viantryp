@@ -68,6 +68,118 @@ class TripDocumentController extends Controller
     }
 
     /**
+     * Upload a document temporarily (for trips not yet saved)
+     */
+    public function tempUpload(Request $request): JsonResponse
+    {
+        $request->validate([
+            'file' => 'required|file|max:10240|mimes:pdf,doc,docx,txt,jpg,jpeg,png',
+            'type' => 'required|in:flight,hotel,transport',
+            'item_id' => 'nullable|string'
+        ]);
+
+        $file = $request->file('file');
+
+        // Generate unique filename
+        $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $path = 'temp/' . $filename;
+
+        // Store file temporarily
+        $stored = Storage::disk('public')->put($path, file_get_contents($file));
+
+        if (!$stored) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al guardar el archivo.'
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Documento subido temporalmente.',
+            'file_info' => [
+                'filename' => $filename,
+                'path' => $path,
+                'original_name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize(),
+                'type' => $request->type,
+                'item_id' => $request->item_id,
+                'is_temporary' => true
+            ]
+        ]);
+    }
+
+    /**
+     * Process temporary file and move to permanent storage
+     */
+    public function processTemp(Request $request): JsonResponse
+    {
+        $request->validate([
+            'temp_path' => 'required|string',
+            'trip_id' => 'required|integer|exists:trips,id',
+            'type' => 'required|in:flight,hotel,transport',
+            'item_id' => 'nullable|string'
+        ]);
+
+        // Get the trip to ensure user owns it
+        $trip = Trip::findOrFail($request->trip_id);
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para procesar documentos de este viaje.'
+            ], 403);
+        }
+
+        $tempPath = 'public/' . $request->temp_path;
+        $fullTempPath = storage_path('app/' . $tempPath);
+
+        // Check if temporary file exists
+        if (!file_exists($fullTempPath)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Archivo temporal no encontrado.'
+            ], 404);
+        }
+
+        // Generate new path for permanent storage
+        $filename = pathinfo($request->temp_path, PATHINFO_BASENAME);
+        $newPath = 'documents/' . $filename;
+
+        // Move file from temp to permanent storage
+        $moved = Storage::disk('public')->put($newPath, file_get_contents($fullTempPath));
+
+        if (!$moved) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al mover el archivo a almacenamiento permanente.'
+            ], 500);
+        }
+
+        // Delete the temporary file
+        Storage::disk('public')->delete($request->temp_path);
+
+        // Create document record
+        $document = TripDocument::create([
+            'trip_id' => $trip->id,
+            'user_id' => Auth::id(),
+            'type' => $request->type,
+            'item_id' => $request->item_id,
+            'original_name' => pathinfo($filename, PATHINFO_FILENAME),
+            'filename' => $filename,
+            'path' => $newPath,
+            'mime_type' => 'application/octet-stream', // Default mime type
+            'size' => filesize(storage_path('app/public/' . $newPath))
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Archivo procesado exitosamente.',
+            'document' => $document
+        ]);
+    }
+
+    /**
      * Get documents for a trip item
      */
     public function getByItem(Request $request, Trip $trip): JsonResponse

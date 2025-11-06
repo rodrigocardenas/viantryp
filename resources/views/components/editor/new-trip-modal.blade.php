@@ -11,7 +11,7 @@
                 <i class="fas fa-map-marker-alt"></i>
                 <span>Nuevo Viaje</span>
             </div>
-            <button class="modal-close" onclick="cancelNewTrip()">&times;</button>
+            <button class="modal-close" data-action="cancel-new-trip">&times;</button>
         </div>
         <div class="modal-body">
             <div class="welcome-section">
@@ -25,8 +25,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn-cancel" onclick="cancelNewTrip()">Cancelar</button>
-            <button class="btn-create" onclick="createNewTrip()">
+            <button class="btn-cancel" data-action="cancel-new-trip">Cancelar</button>
+            <button class="btn-create" data-action="create-new-trip">
                 <i class="fas fa-check"></i>
                 Crear Viaje
             </button>

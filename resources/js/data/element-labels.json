@@ -1,0 +1,11 @@
+{
+  "elementTypes": {
+    "flight": "Vuelo",
+    "hotel": "Hotel",
+    "activity": "Actividad",
+    "transport": "Transporte",
+    "note": "Nota",
+    "summary": "Resumen",
+    "total": "Total"
+  }
+}

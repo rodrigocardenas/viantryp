@@ -8,7 +8,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h3><i class="fas fa-exclamation-triangle" style="color: #ffc107;"></i> Cambios sin Guardar</h3>
-            <button class="modal-close" onclick="closeUnsavedModal()">&times;</button>
+            <button class="modal-close" data-action="close-unsaved-modal">&times;</button>
         </div>
         <div class="modal-body">
             <p style="color: var(--text-gray); font-size: 0.9rem;">Tienes cambios sin guardar. Al salir volverás al index principal.</p>
@@ -22,15 +22,15 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeUnsavedModal()">
+            <button class="btn btn-secondary" data-action="close-unsaved-modal">
                 <i class="fas fa-times"></i>
                 Cancelar
             </button>
-            <button class="btn btn-danger" onclick="exitWithoutSaving()">
+            <button class="btn btn-danger" data-action="exit-without-saving">
                 <i class="fas fa-sign-out-alt"></i>
                 Salir sin guardar
             </button>
-            <button class="btn btn-primary" onclick="saveAndExit()">
+            <button class="btn btn-primary" data-action="save-and-exit">
                 <i class="fas fa-save"></i>
                 Guardar y salir
             </button>

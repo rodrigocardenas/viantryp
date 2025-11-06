@@ -22,15 +22,22 @@
             @if(isset($showActions) && $showActions)
                 <div class="nav-actions">
                     @if(isset($backUrl))
-                        <a href="{{ $backUrl }}" class="btn btn-back">
-                            <i class="fas fa-arrow-left"></i>
-                            Volver
-                        </a>
+                        @if(isset($backOnclick))
+                            <button class="btn btn-back" data-action="back">
+                                <i class="fas fa-arrow-left"></i>
+                                Volver
+                            </button>
+                        @else
+                            <a href="{{ $backUrl }}" class="btn btn-back">
+                                <i class="fas fa-arrow-left"></i>
+                                Volver
+                            </a>
+                        @endif
                     @endif
                     @if(isset($actions))
                         @foreach($actions as $action)
                             @if(isset($action['onclick']))
-                                <button type="button" class="btn {{ $action['class'] ?? 'btn-primary' }}" onclick="{{ $action['onclick'] }}">
+                                <button type="button" class="btn {{ $action['class'] ?? 'btn-primary' }}" data-action="{{ $action['data-action'] ?? $action['onclick'] }}">
                                     @if(isset($action['icon']))
                                         <i class="{{ $action['icon'] }}"></i>
                                     @endif
