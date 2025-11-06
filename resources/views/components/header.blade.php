@@ -60,23 +60,13 @@
             <div class="auth-section">
                 @auth
                     <!-- User is logged in -->
-                    <div class="user-profile">
-                        @if(Auth::user()->avatar)
-                            <img src="{{ Auth::user()->avatar }}" alt="Avatar" class="user-avatar">
-                        @else
-                            <div class="user-avatar-placeholder">
-                                <i class="fas fa-user"></i>
-                            </div>
-                        @endif
-                        <span class="user-name">{{ Auth::user()->name }}</span>
-                        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-                            @csrf
-                            <button type="submit" class="btn btn-logout">
-                                <i class="fas fa-sign-out-alt"></i>
-                                Cerrar Sesión
-                            </button>
-                        </form>
-                    </div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Log Out
+                        </button>
+                    </form>
                 @else
                     <!-- User is not logged in -->
                     <div class="auth-buttons">
@@ -291,7 +281,30 @@
         transform: translateY(-1px);
     }
 
-    .btn-logout i {
+    .logout-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 10px 20px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        text-decoration: none;
+    }
+
+    .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+    }
+
+    .logout-btn i {
         font-size: 0.8rem;
     }
 
@@ -406,6 +419,13 @@
 
     .viantryp-logo i { margin-right: 0.6rem; }
 
+    .viantryp-logo:hover {
+        color: #ffffff;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        transform: scale(1.05) translateY(-2px);
+        transition: all 0.3s ease;
+    }
+
     .nav-actions {
         display: flex;
         align-items: center;
@@ -515,4 +535,5 @@
     .nav-link i {
         font-size: 1rem;
     }
+
 </style>

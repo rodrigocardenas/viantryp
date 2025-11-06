@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
 
     // Additional trip routes
     Route::post('trips/{trip}/status', [TripController::class, 'updateStatus'])->name('trips.update-status');
+    Route::post('trips/{trip}/code', [TripController::class, 'updateCode'])->name('trips.update-code');
     Route::post('trips/{trip}/duplicate', [TripController::class, 'duplicate'])->name('trips.duplicate');
     Route::post('trips/{trip}/generate-share-token', [TripController::class, 'generateShareToken'])->name('trips.generate-share-token');
     Route::post('trips/{trip}/send-email', [TripController::class, 'sendEmail'])->name('trips.send-email');

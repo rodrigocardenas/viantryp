@@ -124,6 +124,9 @@ class TripController extends Controller
             // Create the trip within the transaction
             $trip = Trip::create($validated);
 
+            // Generate a unique code for the new trip
+            $trip->generateCode();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Viaje creado exitosamente',
@@ -242,6 +245,32 @@ class TripController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Estado del viaje actualizado exitosamente',
+            'trip' => $trip
+        ]);
+    }
+
+    /**
+     * Update trip code
+     */
+    public function updateCode(Request $request, Trip $trip): JsonResponse
+    {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para actualizar este viaje.'
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'code' => 'required|string|max:20|unique:trips,code,' . $trip->id
+        ]);
+
+        $trip->update(['code' => strtoupper($validated['code'])]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Identificador del viaje actualizado exitosamente',
             'trip' => $trip
         ]);
     }

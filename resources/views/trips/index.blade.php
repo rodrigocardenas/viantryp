@@ -3,9 +3,7 @@
 @section('title', 'Viantryp - Gestión de Viajes')
 
 @section('content')
-    <x-header :showActions="true" :actions="[
-        ['url' => route('trips.create'), 'text' => 'Nuevo Viaje', 'class' => 'btn-success', 'icon' => 'fas fa-plus']
-    ]" />
+    <x-header />
 
     <x-navigation :activeTab="$activeTab ?? 'all'" />
 
@@ -15,12 +13,12 @@
         <div class="search-section">
             <div class="search-container">
                 <div class="search-bar">
-                    <span class="search-icon">🔍</span>
+                    <span class="search-icon"><i class="fas fa-search"></i></span>
                     <input type="text" class="search-input" placeholder="Buscar viajes..." oninput="searchTrips(this.value)">
                 </div>
                 <a href="{{ route('trips.create') }}" class="new-trip-btn-search">
-                    <span>+</span>
-                    Nuevo Viaje
+                    <i class="fas fa-plus"></i>
+                    Crear Viaje
                 </a>
             </div>
         </div>
@@ -51,23 +49,32 @@
 
         <!-- Trips List -->
         <div class="trips-container">
-            <div class="trips-header" id="trips-header-title">
-                <span>{{ $headerTitle ?? 'Todos los Viajes' }}</span>
-                <div class="select-all-container">
+            <!-- Column Headers -->
+            <div class="trips-column-headers">
+                <div class="header-checkbox">
                     <input type="checkbox" id="select-all-checkbox" class="select-all-checkbox" onchange="toggleSelectAll()">
-                    <label for="select-all-checkbox" class="select-all-label">Seleccionar todos</label>
                 </div>
+                <div class="header-code">Identificador</div>
+                <div class="header-info">
+                    <div class="header-title">Nombre del Viaje</div>
+                    <div class="header-dates">Fecha del Viaje</div>
+                    <div class="header-status">Estado</div>
+                </div>
+                <div class="header-actions">Acciones</div>
             </div>
+
             <div id="trips-list">
                 @if(count($trips) > 0)
                     @foreach($trips as $trip)
                         <div class="trip-item" onclick="openTrip({{ $trip->id }})">
                             <input type="checkbox" class="trip-checkbox" data-trip-id="{{ $trip->id }}" onclick="event.stopPropagation();" onchange="updateSelectAllState()">
-                            <div class="trip-emoji">{{ $trip->getStatusEmoji() }}</div>
+                            <div class="trip-code">
+                                <span class="code-display" onclick="editTripCode({{ $trip->id }}, '{{ $trip->code }}')">{{ $trip->code ?? 'N/A' }}</span>
+                                <input type="text" class="code-input" id="code-input-{{ $trip->id }}" style="display: none;" onblur="saveTripCode({{ $trip->id }})" onkeypress="handleCodeKeyPress(event, {{ $trip->id }})" maxlength="20">
+                            </div>
                             <div class="trip-info">
                                 <div class="trip-title">{{ $trip->title }}</div>
                                 <div class="trip-dates">{{ $trip->getFormattedDates() }}</div>
-                                <div class="trip-duration">{{ $trip->getDuration() }}</div>
                                 <div>
                                     <select class="status-select" data-status="{{ $trip->status }}" onclick="event.stopPropagation();" onchange="changeTripStatus({{ $trip->id }}, this.value)">
                                         <option value="draft" {{ $trip->status === 'draft' ? 'selected' : '' }}>En Diseño</option>
@@ -95,7 +102,7 @@
                     @endforeach
                 @else
                     <div class="empty-state">
-                        <div class="empty-icon">📋</div>
+                        <div class="empty-icon"><i class="fas fa-clipboard-list"></i></div>
                         <p>No se encontraron viajes</p>
                     </div>
                 @endif
@@ -193,7 +200,7 @@
         flex: 1;
         display: flex;
         align-items: center;
-        background: var(--sky-50);
+        background: white;
         border: 1px solid var(--stone-300);
         border-radius: 999px;
         padding: 12px 16px;
@@ -217,26 +224,44 @@
     .search-icon { color: var(--slate-500); }
 
     .new-trip-btn-search {
-        background: var(--blue-700);
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         color: white;
         border: none;
         padding: 12px 24px;
         border-radius: 999px;
         font-weight: 600;
+        font-size: 0.85rem;
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
         gap: 8px;
         white-space: nowrap;
-        box-shadow: var(--shadow-soft);
+        box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
         text-decoration: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .new-trip-btn-search::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .new-trip-btn-search:hover::before {
+        left: 100%;
     }
 
     .new-trip-btn-search:hover {
-        background: var(--blue-600);
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
         transform: translateY(-2px);
-        box-shadow: var(--shadow-hover);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
         color: white;
     }
 
@@ -344,17 +369,59 @@
         overflow: hidden;
         box-shadow: var(--shadow-soft);
         border: 1px solid var(--stone-300);
+        min-height: calc(100vh - 200px); /* Ensure it extends to near the bottom of the viewport */
     }
 
-    .trips-header {
+    .trips-column-headers {
         background: var(--sky-50);
         padding: 1rem 1.5rem;
         border-bottom: 1px solid var(--stone-300);
+        display: flex;
+        align-items: center;
         font-weight: 600;
         color: var(--slate-600);
+        font-size: 0.9rem;
+    }
+
+    .header-checkbox {
+        width: 18px;
+        margin-right: 1rem;
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: center;
+    }
+
+    .header-checkbox .select-all-checkbox {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+    }
+
+    .header-code {
+        width: 120px;
+        margin-right: 1rem;
+        font-weight: 600;
+    }
+
+    .header-info {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .header-title, .header-dates, .header-status {
+        font-weight: 600;
+        text-align: left;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 8px;
+        width: 160px;
+        justify-content: center;
+        font-weight: 600;
     }
 
     .select-all-container {
@@ -391,6 +458,39 @@
         cursor: pointer;
     }
 
+    .trip-code {
+        width: 120px;
+        margin-right: 1rem;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--slate-500);
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .code-display {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+    }
+
+    .code-display:hover {
+        background: var(--stone-100);
+    }
+
+    .code-input {
+        width: 100px;
+        padding: 0.25rem 0.5rem;
+        border: 1px solid var(--stone-300);
+        border-radius: 4px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
     .trip-item:hover {
         background: var(--sky-50);
         transform: translateX(2px);
@@ -400,22 +500,10 @@
         border-bottom: none;
     }
 
-    .trip-emoji {
-        width: 28px;
-        height: 28px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.9rem;
-        background: var(--sky-50);
-        border-radius: 8px;
-        margin-right: 1rem;
-    }
-
     .trip-info {
         flex: 1;
         display: grid;
-        grid-template-columns: 2fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         gap: 1rem;
         align-items: center;
     }
@@ -694,6 +782,16 @@
             justify-content: center;
         }
 
+        .trips-column-headers {
+            display: none;
+        }
+
+        .trip-code {
+            width: auto;
+            margin-right: 0.5rem;
+            font-size: 0.8rem;
+        }
+
         .trip-info {
             grid-template-columns: 1fr;
             gap: 0.5rem;
@@ -918,9 +1016,27 @@
             : `¿Estás seguro de que quieres eliminar ${selectedTripIds.length} viajes seleccionados?`;
 
         if (confirm(message)) {
-            // Implement bulk delete
-            showNotification('Eliminando', 'Eliminando viajes seleccionados...');
-            // Add actual implementation here
+            fetch(`{{ url('trips/bulk-delete') }}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ trip_ids: selectedTripIds })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Viajes Eliminados', `${selectedTripIds.length} viaje(s) eliminado(s) exitosamente.`);
+                    location.reload();
+                } else {
+                    showNotification('Error', data.message || 'No se pudieron eliminar los viajes.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error', 'Ocurrió un error al eliminar los viajes.');
+            });
         }
     }
 
@@ -932,8 +1048,93 @@
             return;
         }
 
-        showNotification('Duplicando', 'Duplicando viajes seleccionados...');
-        // Add actual implementation here
+        fetch(`{{ url('trips/bulk-duplicate') }}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ trip_ids: selectedTripIds })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Viajes Duplicados', `${selectedTripIds.length} viaje(s) duplicado(s) exitosamente.`);
+                location.reload();
+            } else {
+                showNotification('Error', data.message || 'No se pudieron duplicar los viajes.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error', 'Ocurrió un error al duplicar los viajes.');
+        });
+    }
+
+    function editTripCode(tripId, currentCode) {
+        const displaySpan = document.querySelector(`.code-display[onclick*="${tripId}"]`);
+        const inputField = document.getElementById(`code-input-${tripId}`);
+
+        if (displaySpan && inputField) {
+            displaySpan.style.display = 'none';
+            inputField.style.display = 'inline-block';
+            inputField.value = currentCode;
+            inputField.focus();
+            inputField.select();
+        }
+    }
+
+    function saveTripCode(tripId) {
+        const inputField = document.getElementById(`code-input-${tripId}`);
+        const displaySpan = document.querySelector(`.code-display[onclick*="${tripId}"]`);
+        const newCode = inputField.value.trim().toUpperCase();
+
+        if (displaySpan && inputField) {
+            // Hide input and show display
+            inputField.style.display = 'none';
+            displaySpan.style.display = 'inline';
+
+            // If code changed, save it
+            if (newCode !== displaySpan.textContent.trim()) {
+                fetch(`{{ url('trips') }}/${tripId}/code`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ code: newCode })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displaySpan.textContent = newCode;
+                        showNotification('Identificador Actualizado', 'El identificador del viaje ha sido actualizado.');
+                    } else {
+                        showNotification('Error', data.message || 'No se pudo actualizar el identificador.');
+                        inputField.value = displaySpan.textContent.trim();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Error', 'Ocurrió un error al actualizar el identificador.');
+                    inputField.value = displaySpan.textContent.trim();
+                });
+            }
+        }
+    }
+
+    function handleCodeKeyPress(event, tripId) {
+        if (event.key === 'Enter') {
+            saveTripCode(tripId);
+        } else if (event.key === 'Escape') {
+            const inputField = document.getElementById(`code-input-${tripId}`);
+            const displaySpan = document.querySelector(`.code-display[onclick*="${tripId}"]`);
+            if (inputField && displaySpan) {
+                inputField.style.display = 'none';
+                displaySpan.style.display = 'inline';
+                inputField.value = displaySpan.textContent.trim();
+            }
+        }
     }
 
     // Email modal functions

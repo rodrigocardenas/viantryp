@@ -11,6 +11,7 @@ class Trip extends Model
 
     protected $fillable = [
         'user_id',
+        'code',
         'title',
         'start_date',
         'end_date',
@@ -190,6 +191,21 @@ class Trip extends Model
          }
 
          return route('trips.share', ['token' => $this->share_token]);
+     }
+
+     /**
+      * Generate a unique random code for the trip
+      */
+     public function generateCode(): string
+     {
+         do {
+             $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
+         } while (self::where('code', $code)->exists());
+
+         $this->code = $code;
+         $this->save();
+
+         return $code;
      }
 
      /**
