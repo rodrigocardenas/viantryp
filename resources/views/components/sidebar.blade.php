@@ -30,16 +30,16 @@
                     <x-sidebar.items.flight-item />
                 @endif
 
+                @if($showTransport)
+                    <x-sidebar.items.transport-item />
+                @endif
+
                 @if($showHotel)
                     <x-sidebar.items.hotel-item />
                 @endif
 
                 @if($showActivity)
                     <x-sidebar.items.activity-item />
-                @endif
-
-                @if($showTransport)
-                    <x-sidebar.items.transport-item />
                 @endif
 
                 @if($showNote)

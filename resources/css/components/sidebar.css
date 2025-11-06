@@ -56,16 +56,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: inherit;
     font-size: 1.1rem;
     flex-shrink: 0;
+    background: none;
 }
 
-.hotel-icon { background: #dc3545; }
-.activity-icon { background: #28a745; }
-.note-icon { background: #fd7e14; }
-.summary-icon { background: #28a745; }
-.total-icon { background: #dc3545; }
+.hotel-icon { color: #f59e0b; background: none; }
+.activity-icon { color: #10b981; background: none; }
+.note-icon { color: #fbbf24; background: none; }
+.summary-icon { color: #87ceeb; background: none; }
+.total-icon { color: #22c55e; background: none; }
 
 .category-info {
     flex: 1;

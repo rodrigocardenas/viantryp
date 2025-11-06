@@ -9,6 +9,6 @@
     type="transport"
     icon="fas fa-car"
     title="Traslado"
-    description="Tren, autobús, barco, taxi, van"
+    description="tren, autobus, barco u otro"
     :disabled="$disabled"
 />

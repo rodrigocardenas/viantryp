@@ -8,7 +8,7 @@
 <x-sidebar.items.base
     type="hotel"
     icon="fas fa-bed"
-    title="Alojamiento"
+    title="Agregar Hospedaje"
     description="Hotel o hospedaje"
     :disabled="$disabled"
 />

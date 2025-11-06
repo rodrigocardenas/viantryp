@@ -105,13 +105,13 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .flight-icon { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-    .hotel-icon { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-    .activity-icon { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-    .transport-icon { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
-    .note-icon { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
-    .summary-icon { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-    .total-icon { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+    .flight-icon { color: #3b82f6; background: none; }
+    .hotel-icon { color: #f59e0b; background: none; }
+    .activity-icon { color: #10b981; background: none; }
+    .transport-icon { color: #8b5cf6; background: none; }
+    .note-icon { color: #fbbf24; background: none; }
+    .summary-icon { color: #87ceeb; background: none; }
+    .total-icon { color: #22c55e; background: none; }
 
     .category-info {
         flex: 1;
@@ -901,13 +901,13 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .icon-flight { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-    .icon-hotel { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-    .icon-activity { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-    .icon-transport { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
-    .icon-note { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
-    .icon-summary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-    .icon-total { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+    .icon-flight { color: #3b82f6; background: none; }
+    .icon-hotel { color: #f59e0b; background: none; }
+    .icon-activity { color: #10b981; background: none; }
+    .icon-transport { color: #8b5cf6; background: none; }
+    .icon-note { color: #fbbf24; background: none; }
+    .icon-summary { color: #87ceeb; background: none; }
+    .icon-total { color: #22c55e; background: none; }
 
     .item-info {
         flex: 1;
@@ -1071,9 +1071,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: inherit;
         font-size: 1.25rem;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        background: none;
     }
 
     .element-type-btn span {

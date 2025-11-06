@@ -301,6 +301,7 @@ class TripController extends Controller
         ]);
     }
 
+
     /**
      * Preview trip (public access for clients)
      */

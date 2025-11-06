@@ -8,7 +8,7 @@
 <x-sidebar.items.base
     type="activity"
     icon="fas fa-map-marker-alt"
-    title="Actividad"
+    title="Agregar Actividad, tour o experiencia"
     description="Tour o experiencia"
     :disabled="$disabled"
 />

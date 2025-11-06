@@ -69,7 +69,7 @@
                         <div class="trip-item" onclick="openTrip({{ $trip->id }})">
                             <input type="checkbox" class="trip-checkbox" data-trip-id="{{ $trip->id }}" onclick="event.stopPropagation();" onchange="updateSelectAllState()">
                             <div class="trip-code">
-                                <span class="code-display" onclick="editTripCode({{ $trip->id }}, '{{ $trip->code }}')">{{ $trip->code ?? 'N/A' }}</span>
+                                <span class="code-display" onclick="event.stopPropagation(); editTripCode({{ $trip->id }}, '{{ $trip->code }}')">{{ $trip->code ?? 'N/A' }}</span>
                                 <input type="text" class="code-input" id="code-input-{{ $trip->id }}" style="display: none;" onblur="saveTripCode({{ $trip->id }})" onkeypress="handleCodeKeyPress(event, {{ $trip->id }})" maxlength="20">
                             </div>
                             <div class="trip-info">
@@ -482,12 +482,6 @@
         border-radius: 4px;
     }
 
-    .trip-title:hover {
-        background: white;
-        border: 1px solid var(--stone-300);
-        border-radius: 4px;
-        padding: 2px 4px;
-    }
 
     .code-input {
         width: 100px;
@@ -1156,6 +1150,7 @@
             }
         }
     }
+
 
     // Email modal functions
     let currentTripId = null;

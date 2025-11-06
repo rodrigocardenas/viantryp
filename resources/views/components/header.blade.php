@@ -420,12 +420,6 @@
 
     .viantryp-logo i { margin-right: 0.6rem; }
 
-    .viantryp-logo:hover {
-        color: #ffffff;
-        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-        transform: scale(1.05) translateY(-2px);
-        transition: all 0.3s ease;
-    }
 
     .nav-actions {
         display: flex;

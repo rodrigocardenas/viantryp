@@ -8,7 +8,7 @@
 <x-sidebar.items.base
     type="flight"
     icon="fas fa-plane"
-    title="Vuelo"
+    title="Agregar vuelo"
     description="Aerolinea y horarios"
     :disabled="$disabled"
 />
