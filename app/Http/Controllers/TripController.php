@@ -95,6 +95,11 @@ class TripController extends Controller
                     'items_data' => $validated['items_data'] ?? []
                 ]);
 
+                // Generate a code if the trip doesn't have one
+                if (!$existingTrip->code) {
+                    $existingTrip->generateCode();
+                }
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Viaje actualizado exitosamente',
@@ -354,7 +359,11 @@ class TripController extends Controller
         $newTrip->title = $trip->title . ' (Copia)';
         $newTrip->status = Trip::STATUS_DRAFT;
         $newTrip->user_id = Auth::id(); // Ensure the duplicate belongs to the current user
+        $newTrip->code = null; // Clear the unique code to avoid constraint violation
         $newTrip->save();
+        
+        // Generate a new unique code for the duplicated trip
+        $newTrip->generateCode();
 
         return response()->json([
             'success' => true,
@@ -394,9 +403,9 @@ class TripController extends Controller
         ]);
     }
 
-    /**
-     * Bulk duplicate trips
-     */
+     /**
+      * Bulk duplicate trips
+      */
      public function bulkDuplicate(Request $request): JsonResponse
      {
          $validated = $request->validate([
@@ -423,7 +432,12 @@ class TripController extends Controller
              $newTrip->title = $trip->title . ' (Copia)';
              $newTrip->status = Trip::STATUS_DRAFT;
              $newTrip->user_id = Auth::id(); // Ensure the duplicate belongs to the current user
+             $newTrip->code = null; // Clear the unique code to avoid constraint violation
              $newTrip->save();
+             
+             // Generate a new unique code for the duplicated trip
+             $newTrip->generateCode();
+             
              $duplicatedCount++;
          }
 

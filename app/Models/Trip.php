@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 
 class Trip extends Model
 {
@@ -198,14 +199,39 @@ class Trip extends Model
       */
      public function generateCode(): string
      {
+         $maxAttempts = 10; // Prevent infinite loops
+         $attempts = 0;
+
          do {
              $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
-         } while (self::where('code', $code)->exists());
+             $attempts++;
 
-         $this->code = $code;
-         $this->save();
+             try {
+                 // Attempt to save the code - database will enforce uniqueness
+                 $this->code = $code;
+                 $this->save();
 
-         return $code;
+                 // If we get here, the save was successful
+                 return $code;
+             } catch (QueryException $e) {
+                 // Check if it's a unique constraint violation
+                 $errorCode = $e->getCode();
+                 $errorMessage = $e->getMessage();
+                 
+                 if ($errorCode == 23000 || 
+                     str_contains($errorMessage, 'Duplicate entry') || 
+                     str_contains($errorMessage, 'UNIQUE constraint') ||
+                     str_contains($errorMessage, '1062')) { // MySQL duplicate entry error code
+                     // Code collision occurred due to race condition, retry with a new code
+                     continue;
+                 }
+                 // If it's a different database error, rethrow it
+                 throw $e;
+             }
+         } while ($attempts < $maxAttempts);
+
+         // If we've exhausted all attempts, throw an exception
+         throw new \RuntimeException('Failed to generate a unique code after ' . $maxAttempts . ' attempts.');
      }
 
      /**

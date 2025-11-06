@@ -54,7 +54,7 @@
                 <div class="header-checkbox">
                     <input type="checkbox" id="select-all-checkbox" class="select-all-checkbox" onchange="toggleSelectAll()">
                 </div>
-                <div class="header-code">Identificador</div>
+                <div class="header-code">ID</div>
                 <div class="header-info">
                     <div class="header-title">Nombre del Viaje</div>
                     <div class="header-dates">Fecha del Viaje</div>
@@ -477,7 +477,16 @@
     }
 
     .code-display:hover {
-        background: var(--stone-100);
+        background: white;
+        border: 1px solid var(--stone-300);
+        border-radius: 4px;
+    }
+
+    .trip-title:hover {
+        background: white;
+        border: 1px solid var(--stone-300);
+        border-radius: 4px;
+        padding: 2px 4px;
     }
 
     .code-input {
@@ -1088,38 +1097,49 @@
         const inputField = document.getElementById(`code-input-${tripId}`);
         const displaySpan = document.querySelector(`.code-display[onclick*="${tripId}"]`);
         const newCode = inputField.value.trim().toUpperCase();
+        const currentCode = displaySpan.textContent.trim();
 
         if (displaySpan && inputField) {
-            // Hide input and show display
-            inputField.style.display = 'none';
-            displaySpan.style.display = 'inline';
-
-            // If code changed, save it
-            if (newCode !== displaySpan.textContent.trim()) {
-                fetch(`{{ url('trips') }}/${tripId}/code`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({ code: newCode })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        displaySpan.textContent = newCode;
-                        showNotification('Identificador Actualizado', 'El identificador del viaje ha sido actualizado.');
-                    } else {
-                        showNotification('Error', data.message || 'No se pudo actualizar el identificador.');
-                        inputField.value = displaySpan.textContent.trim();
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showNotification('Error', 'Ocurrió un error al actualizar el identificador.');
-                    inputField.value = displaySpan.textContent.trim();
-                });
+            // If code hasn't changed, just hide input and show display
+            if (newCode === currentCode) {
+                inputField.style.display = 'none';
+                displaySpan.style.display = 'inline';
+                return;
             }
+
+            // If code changed, save it first, then update UI only on success
+            fetch(`{{ url('trips') }}/${tripId}/code`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ code: newCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Only hide input and show display after successful API response
+                    inputField.style.display = 'none';
+                    displaySpan.style.display = 'inline';
+                    displaySpan.textContent = newCode;
+                    showNotification('Identificador Actualizado', 'El identificador del viaje ha sido actualizado.');
+                } else {
+                    // Keep input visible on error so user can retry
+                    showNotification('Error', data.message || 'No se pudo actualizar el identificador.');
+                    inputField.value = currentCode;
+                    inputField.focus();
+                    inputField.select();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Keep input visible on error so user can retry
+                showNotification('Error', 'Ocurrió un error al actualizar el identificador.');
+                inputField.value = currentCode;
+                inputField.focus();
+                inputField.select();
+            });
         }
     }
 
