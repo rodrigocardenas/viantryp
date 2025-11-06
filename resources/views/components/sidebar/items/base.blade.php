@@ -23,9 +23,6 @@
      @if(!$disabled) ondragstart="drag(event)" @endif
      @if($disabled) style="opacity: 0.5; cursor: not-allowed;" @endif>
 
-    <div class="category-icon {{ $type }}-icon">
-        <i class="{{ $icon }}"></i>
-    </div>
 
     <div class="category-info">
         <h5>{{ $title }}</h5>

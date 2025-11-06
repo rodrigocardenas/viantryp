@@ -7,8 +7,8 @@
 
 <x-sidebar.items.base
     type="activity"
-    icon="fas fa-map-marker-alt"
-    title="Agregar Actividad, tour o experiencia"
-    description="Tour o experiencia"
+    icon="{{ asset('images/icons/activity.svg') }}"
+    title="Actividad"
+    description="Agregar tour o experiencia"
     :disabled="$disabled"
 />

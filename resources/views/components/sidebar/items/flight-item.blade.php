@@ -7,8 +7,8 @@
 
 <x-sidebar.items.base
     type="flight"
-    icon="fas fa-plane"
-    title="Agregar vuelo"
-    description="Aerolinea y horarios"
+    icon="{{ asset('images/icons/flight.svg') }}"
+    title="Vuelo"
+    description="Agregar vuelo"
     :disabled="$disabled"
 />

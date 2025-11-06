@@ -1,0 +1,191 @@
+/* Vertical Menu Component Styles */
+/* Ubicación: resources/css/components/vertical-menu.css */
+
+.vertical-menu {
+    width: 300px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 1rem;
+}
+
+.vertical-menu-header {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.vertical-menu-header h3 {
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.vertical-menu-items {
+    padding: 0;
+}
+
+.vertical-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 1.2rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.vertical-menu-item:last-child {
+    border-bottom: none;
+}
+
+.vertical-menu-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(8px);
+}
+
+.vertical-menu-item.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-left: 4px solid #fff;
+    transform: translateX(4px);
+}
+
+.vertical-menu-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #fff;
+}
+
+.menu-item-icon {
+    font-size: 1.8rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.menu-icon-svg {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
+}
+
+.menu-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.menu-item-title {
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.3rem 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.menu-item-description {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.3;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.menu-item-arrow {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    margin-left: 1rem;
+}
+
+.vertical-menu-item:hover .menu-item-arrow,
+.vertical-menu-item.active .menu-item-arrow {
+    color: white;
+    transform: translateX(4px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .vertical-menu {
+        width: 100%;
+        max-width: 400px;
+        margin: 1rem auto;
+    }
+
+    .vertical-menu-item {
+        padding: 1rem 1.2rem;
+    }
+
+    .menu-item-icon {
+        font-size: 1.5rem;
+        margin-right: 0.8rem;
+    }
+
+    .menu-item-title {
+        font-size: 0.95rem;
+    }
+
+    .menu-item-description {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .vertical-menu {
+        margin: 0.5rem;
+        border-radius: 12px;
+    }
+
+    .vertical-menu-header {
+        padding: 1rem;
+    }
+
+    .vertical-menu-header h3 {
+        font-size: 1.2rem;
+    }
+
+    .vertical-menu-item {
+        padding: 0.8rem 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: center;
+    }
+
+    .menu-item-icon {
+        font-size: 1.8rem;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .menu-item-content {
+        text-align: center;
+    }
+
+    .menu-item-arrow {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        margin-left: 0;
+    }
+
+    .vertical-menu-item:hover {
+        transform: none;
+    }
+
+    .vertical-menu-item.active {
+        transform: none;
+    }
+}
