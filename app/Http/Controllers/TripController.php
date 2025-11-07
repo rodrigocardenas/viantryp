@@ -322,7 +322,7 @@ class TripController extends Controller
             ]);
         } else {
             // Load existing trip with user relationship
-            $trip = Trip::with('user')->findOrFail($tripId);
+            $trip = Trip::with('user', 'documents')->findOrFail($tripId);
 
             // For public preview, ensure the trip is in a shareable state
             // Allow preview for drafts if the user is authenticated and owns the trip
@@ -358,7 +358,7 @@ class TripController extends Controller
         }
 
         return view('trips.preview', [
-            'trip' => $trip->load('user'),
+            'trip' => $trip->load('user', 'documents'),
             'isPublicPreview' => true,
             'isSharedPreview' => true
         ]);
@@ -383,7 +383,7 @@ class TripController extends Controller
         $newTrip->user_id = Auth::id(); // Ensure the duplicate belongs to the current user
         $newTrip->code = null; // Clear the unique code to avoid constraint violation
         $newTrip->save();
-        
+
         // Generate a new unique code for the duplicated trip
         $newTrip->generateCode();
 
@@ -456,10 +456,10 @@ class TripController extends Controller
              $newTrip->user_id = Auth::id(); // Ensure the duplicate belongs to the current user
              $newTrip->code = null; // Clear the unique code to avoid constraint violation
              $newTrip->save();
-             
+
              // Generate a new unique code for the duplicated trip
              $newTrip->generateCode();
-             
+
              $duplicatedCount++;
          }
 

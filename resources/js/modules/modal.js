@@ -28,6 +28,8 @@ export class ModalManager {
         this.currentElementData = {};
         this.currentDay = null;
         this.selectedHotelData = null;
+        this.isEditing = false;
+        this.existingDocuments = [];
         this.uploadedDocuments = {
             flight: [],
             hotel: [],
@@ -61,6 +63,8 @@ export class ModalManager {
         this.currentElementType = elementType;
         this.currentDay = dayNumber;
         this.currentElementData = { type: elementType, day: dayNumber };
+        this.isEditing = false;
+        this.existingDocuments = [];
 
         const modal = document.getElementById('element-modal');
         const modalTitle = document.getElementById('modal-title');
@@ -86,18 +90,22 @@ export class ModalManager {
         this.currentDay = elementData.day;
         this.currentElementData = elementData;
         this.editingElement = element; // Store reference to element being edited
+        this.isEditing = true;
+
+        // Load existing documents for this element type
+        this.loadExistingDocuments(elementData.type);
 
         const modal = document.getElementById('element-modal');
         const modalTitle = document.getElementById('modal-title');
         const modalBody = document.getElementById('modal-body');
 
-    modalTitle.textContent = `Editar ${this.getTypeLabel(elementData.type)}`;
-    modalBody.innerHTML = this.getElementForm(elementData.type);
+        modalTitle.textContent = `Editar ${this.getTypeLabel(elementData.type)}`;
+        modalBody.innerHTML = this.getElementForm(elementData.type);
 
-    // Clear previously uploaded documents
-    this.uploadedDocuments[elementData.type] = [];
+        // Clear previously uploaded documents
+        this.uploadedDocuments[elementData.type] = [];
 
-    this.setupFileUploadListeners();
+        this.setupFileUploadListeners();
     // Initialize Select2 first so selects are ready when we populate values
     this.initializeSelect2();
 
@@ -210,7 +218,47 @@ export class ModalManager {
     }
 
     getElementForm(type) {
-        return elementFormsData[type] || '<p>Formulario no disponible</p>';
+        let formHtml = elementFormsData[type] || '<p>Formulario no disponible</p>';
+
+        // Add existing documents section if editing and there are documents
+        if (this.isEditing && this.existingDocuments.length > 0) {
+            const documentsHtml = this.existingDocuments.map(doc => `
+                <div class="existing-document" data-document-id="${doc.id}">
+                    <div class="document-info">
+                        <i class="fas fa-file"></i>
+                        <span class="document-name">${doc.original_name}</span>
+                        <span class="document-size">(${this.formatFileSize(doc.size)})</span>
+                    </div>
+                    <div class="document-actions">
+                        <a href="/documents/${doc.id}/download" target="_blank" class="btn-document-view" title="Ver documento">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <button type="button" class="btn-document-delete" data-document-id="${doc.id}" title="Eliminar documento">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            formHtml += `
+                <div class="form-group">
+                    <label>Documentos existentes</label>
+                    <div class="existing-documents-list">
+                        ${documentsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        return formHtml;
+    }
+
+    formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
     setupFileUploadListeners() {
@@ -227,6 +275,50 @@ export class ModalManager {
                 }
             });
         });
+
+        // Setup listeners for delete document buttons
+        const deleteButtons = document.querySelectorAll('#modal-body .btn-document-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const documentId = e.currentTarget.dataset.documentId;
+                if (confirm('¿Estás seguro de que quieres eliminar este documento?')) {
+                    await this.deleteDocument(documentId);
+                }
+            });
+        });
+    }
+
+    async deleteDocument(documentId) {
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            const response = await fetch(`/documents/${documentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                // Remove from existing documents
+                this.existingDocuments = this.existingDocuments.filter(doc => doc.id != documentId);
+
+                // Remove from DOM
+                const documentElement = document.querySelector(`[data-document-id="${documentId}"]`);
+                if (documentElement) {
+                    documentElement.remove();
+                }
+
+                this.showNotification('Documento Eliminado', 'El documento ha sido eliminado exitosamente.');
+            } else {
+                const result = await response.json();
+                this.showNotification('Error', result.message || 'Error al eliminar el documento.');
+            }
+        } catch (error) {
+            console.error('Error deleting document:', error);
+            this.showNotification('Error', 'Error al eliminar el documento.');
+        }
     }
 
     async uploadDocument(file, type) {
@@ -269,7 +361,23 @@ export class ModalManager {
         }
     }
 
+    loadExistingDocuments(elementType) {
+        // Load existing documents for the current trip and element type
+        if (window.existingTripData && window.existingTripData.documents) {
+            this.existingDocuments = window.existingTripData.documents.filter(doc => doc.type === elementType);
+        } else {
+            this.existingDocuments = [];
+        }
+        console.log('Loaded existing documents for', elementType, ':', this.existingDocuments);
+    }
+
     getCurrentTripId() {
+        // First try to get from existing trip data
+        if (window.existingTripData && window.existingTripData.id) {
+            return window.existingTripData.id;
+        }
+
+        // Fallback to URL parsing
         const currentPath = window.location.pathname;
         const urlParts = currentPath.split('/').filter(part => part !== '');
         // Expect paths like: /trips/{id}/edit  -> ['trips','{id}','edit']

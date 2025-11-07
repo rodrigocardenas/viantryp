@@ -315,3 +315,75 @@
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* Existing Documents Styles */
+.existing-documents-list {
+    margin-top: 10px;
+}
+
+.existing-document {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    background-color: #f8f9fa;
+}
+
+.document-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.document-info i {
+    color: #6c757d;
+    font-size: 16px;
+}
+
+.document-name {
+    font-weight: 500;
+    color: #495057;
+    font-size: 14px;
+}
+
+.document-size {
+    color: #6c757d;
+    font-size: 12px;
+}
+
+.document-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-document-view,
+.btn-document-delete {
+    padding: 6px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.btn-document-view {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-document-view:hover {
+    background-color: #0056b3;
+}
+
+.btn-document-delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-document-delete:hover {
+    background-color: #c82333;
+}

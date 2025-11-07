@@ -112,6 +112,19 @@
                                             <div class="flight-time">{{ $item['arrival_time'] ?? 'Hora no disponible' }}</div>
                                         </div>
                                     </div>
+                                    @php
+                                        $documents = $trip->documents->where('type', 'flight');
+                                    @endphp
+                                    @if($documents->count() > 0)
+                                        <div class="documents-section">
+                                            <h5>Documentos adjuntos:</h5>
+                                            @foreach($documents as $document)
+                                                <a href="{{ $document->url }}" target="_blank" class="document-link">
+                                                    <i class="fas fa-file"></i> {{ $document->original_name }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </div>
                             @elseif($item['type'] === 'hotel')
                                 <div class="activity-card">
@@ -134,6 +147,19 @@
                                             <span><i class="fas fa-moon"></i> {{ $item['nights'] ?? '3' }} noches</span>
                                         </div>
                                     </div>
+                                    @php
+                                        $documents = $trip->documents->where('type', 'hotel');
+                                    @endphp
+                                    @if($documents->count() > 0)
+                                        <div class="documents-section">
+                                            <h5>Documentos adjuntos:</h5>
+                                            @foreach($documents as $document)
+                                                <a href="{{ $document->url }}" target="_blank" class="document-link">
+                                                    <i class="fas fa-file"></i> {{ $document->original_name }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </div>
                             @elseif($item['type'] === 'activity')
                                 <div class="activity-card">
@@ -176,6 +202,19 @@
                                             <div class="train-location">{{ $item['destination'] ?? 'Ubicación no especificada' }}</div>
                                         </div>
                                     </div>
+                                    @php
+                                        $documents = $trip->documents->where('type', 'transport');
+                                    @endphp
+                                    @if($documents->count() > 0)
+                                        <div class="documents-section">
+                                            <h5>Documentos adjuntos:</h5>
+                                            @foreach($documents as $document)
+                                                <a href="{{ $document->url }}" target="_blank" class="document-link">
+                                                    <i class="fas fa-file"></i> {{ $document->original_name }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </div>
                             @else
                                 <div class="activity-card">
@@ -918,7 +957,7 @@
             gap: 15px;
         }
 
-        
+
 
         .airport-code {
             font-size: 20px;
@@ -2439,6 +2478,50 @@
             width: 100%;
             justify-content: center;
         }
+    }
+
+    /* Documents section styles */
+    .documents-section {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+    }
+
+    .documents-section h5 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        margin-top: 0;
+    }
+
+    .document-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        margin: 2px 4px 2px 0;
+        background-color: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #007bff;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .document-link:hover {
+        background-color: #f8f9fa;
+        border-color: #007bff;
+        color: #0056b3;
+        text-decoration: none;
+    }
+
+    .document-link i {
+        font-size: 12px;
     }
 </style>
 @endpush
