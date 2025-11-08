@@ -1,5 +1,6 @@
 // Modal Module - Handles element creation/editing modals
 import selectorsData from '../data/selectors.json';
+import GooglePlacesAutocomplete from './autocomplete.js';
 
 // Temporary hardcoded element labels and forms until JSON import is fixed
 const elementLabelsData = {
@@ -14,7 +15,7 @@ const elementLabelsData = {
 
 const elementFormsData = {
   "flight": "<div class=\"form-group\"><label for=\"airline\">Aerolínea</label><select id=\"airline\" class=\"form-input airline-select\" placeholder=\"Ej: Iberia\"><option value=\"\">Seleccionar aerolínea</option></select></div><div class=\"form-group\"><label for=\"flight-number\">Número de Vuelo</label><input type=\"text\" id=\"flight-number\" class=\"form-input\" placeholder=\"Ej: IB1234\"><button type=\"button\" id=\"lookup-flight\" class=\"btn-lookup-flight\" title=\"Buscar información del vuelo\"><i class=\"fas fa-search\"></i> Buscar vuelo</button></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-time\">Hora de Salida</label><input type=\"time\" id=\"departure-time\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"arrival-time\">Hora de Llegada</label><input type=\"time\" id=\"arrival-time\" class=\"form-input\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-airport\">Aeropuerto de Salida</label><select id=\"departure-airport\" class=\"form-input airport-select\" placeholder=\"Ej: Madrid Barajas\"><option value=\"\">Seleccionar aeropuerto</option></select></div><div class=\"form-group\"><label for=\"arrival-airport\">Aeropuerto de Llegada</label><select id=\"arrival-airport\" class=\"form-input airport-select\" placeholder=\"Ej: París Charles de Gaulle\"><option value=\"\">Seleccionar aeropuerto</option></select></div></div><div class=\"form-group\"><label for=\"confirmation-number\">Número de Confirmación</label><input type=\"text\" id=\"confirmation-number\" class=\"form-input\" placeholder=\"Ej: ABC123\"></div><div class=\"form-group\"><label for=\"flight-documents\">Documentos</label><input type=\"file\" id=\"flight-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el vuelo</small></div>",
-  "hotel": "<div class=\"form-group\"><label for=\"hotel-name\">Nombre del Hotel</label><input type=\"text\" id=\"hotel-name\" class=\"form-input\" placeholder=\"Ej: Hotel Central\"></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"check-in\">Check-in</label><input type=\"time\" id=\"check-in\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"check-out\">Check-out</label><input type=\"time\" id=\"check-out\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"room-type\">Tipo de Habitación</label><input type=\"text\" id=\"room-type\" class=\"form-input\" placeholder=\"Ej: Habitación doble\"></div><div class=\"form-group\"><label for=\"nights\">Noches</label><input type=\"number\" id=\"nights\" class=\"form-input\" min=\"1\" placeholder=\"2\"></div><div class=\"form-group\"><label for=\"hotel-documents\">Documentos</label><input type=\"file\" id=\"hotel-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el hotel</small></div>",
+  "hotel": "<div class=\"form-group\"><label for=\"hotel-name\">Nombre del Hotel</label><div class=\"autocomplete-input\"><input type=\"text\" id=\"hotel-name\" class=\"form-input hotel-autocomplete\" placeholder=\"Ej: Hotel Central\" autocomplete=\"off\"></div><div id=\"selected-place-info\" class=\"selected-place-info\" style=\"display: none;\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"check-in\">Check-in</label><input type=\"time\" id=\"check-in\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"check-out\">Check-out</label><input type=\"time\" id=\"check-out\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"room-type\">Tipo de Habitación</label><input type=\"text\" id=\"room-type\" class=\"form-input\" placeholder=\"Ej: Habitación doble\"></div><div class=\"form-group\"><label for=\"nights\">Noches</label><input type=\"number\" id=\"nights\" class=\"form-input\" min=\"1\" placeholder=\"2\"></div><div class=\"form-group\"><label for=\"hotel-documents\">Documentos</label><input type=\"file\" id=\"hotel-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el hotel</small></div>",
   "activity": "<div class=\"form-group\"><label for=\"activity-title\">Título de la Actividad</label><input type=\"text\" id=\"activity-title\" class=\"form-input\" placeholder=\"Ej: Visita al Louvre\"></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"start-time\">Hora de Inicio</label><input type=\"time\" id=\"start-time\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"end-time\">Hora de Fin</label><input type=\"time\" id=\"end-time\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"location\">Ubicación</label><input type=\"text\" id=\"location\" class=\"form-input\" placeholder=\"Ej: Museo del Louvre, París\"></div><div class=\"form-group\"><label for=\"description\">Descripción</label><textarea id=\"description\" class=\"form-input\" rows=\"3\" placeholder=\"Detalles de la actividad...\"></textarea></div>",
   "transport": "<div class=\"form-group\"><label for=\"transport-type\">Tipo de Transporte</label><input type=\"text\" id=\"transport-type\" class=\"form-input\" placeholder=\"Ej: Taxi, Metro, Bus\"></div><div class=\"form-group\"><label for=\"pickup-time\">Hora de Recogida</label><input type=\"time\" id=\"pickup-time\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"pickup-location\">Punto de Recogida</label><input type=\"text\" id=\"pickup-location\" class=\"form-input\" placeholder=\"Ej: Hotel Plaza\"></div><div class=\"form-group\"><label for=\"destination\">Destino</label><input type=\"text\" id=\"destination\" class=\"form-input\" placeholder=\"Ej: Aeropuerto\"></div><div class=\"form-group\"><label for=\"transport-documents\">Documentos</label><input type=\"file\" id=\"transport-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el traslado</small></div>",
   "note": "<div class=\"form-group\"><label for=\"note-title\">Título de la Nota</label><input type=\"text\" id=\"note-title\" class=\"form-input\" placeholder=\"Ej: Recordatorios importantes\"></div><div class=\"form-group\"><label for=\"note-content\">Contenido</label><textarea id=\"note-content\" class=\"form-input\" rows=\"4\" placeholder=\"Escribe tu nota aquí...\"></textarea></div>",
@@ -35,6 +36,7 @@ export class ModalManager {
             hotel: [],
             transport: []
         };
+        this.hotelAutocomplete = null;
     }
 
     init() {
@@ -79,6 +81,14 @@ export class ModalManager {
         this.setupFileUploadListeners();
         this.initializeSelect2();
         this.setupModalButtons();
+
+        // Initialize hotel autocomplete if this is a hotel modal
+        if (this.currentElementType === 'hotel') {
+            // Delay initialization to ensure DOM is ready
+            setTimeout(() => {
+                this.initializeHotelAutocomplete();
+            }, 100);
+        }
 
         modal.style.display = 'block';
         console.log('Modal displayed');
@@ -209,6 +219,12 @@ export class ModalManager {
             if (data.hotel_name) {
                 const hotelInput = document.querySelector('#modal-body #hotel-name');
                 if (hotelInput) hotelInput.value = data.hotel_name;
+            }
+
+            // Load hotel data for autocomplete
+            if (data.hotel_data) {
+                this.selectedHotelData = data.hotel_data;
+                this.displaySelectedPlaceInfo(data.hotel_data);
             }
         }
     }
@@ -514,9 +530,19 @@ export class ModalManager {
 
         // Include selected hotel data if this is a hotel element
         if (this.currentElementType === 'hotel' && this.selectedHotelData) {
-            data.hotel_id = this.selectedHotelData.id;
-            data.hotel_name = this.selectedHotelData.name || this.selectedHotelData.hotel_name;
+            data.hotel_id = this.selectedHotelData.place_id;
+            data.hotel_name = this.selectedHotelData.name;
             data.hotel_data = this.selectedHotelData;
+            // Include additional Google Places data
+            data.place_id = this.selectedHotelData.place_id;
+            data.formatted_address = this.selectedHotelData.formatted_address;
+            data.rating = this.selectedHotelData.rating;
+            data.website = this.selectedHotelData.website;
+            data.phone_number = this.selectedHotelData.international_phone_number;
+            if (this.selectedHotelData.geometry && this.selectedHotelData.geometry.location) {
+                data.latitude = this.selectedHotelData.geometry.location.lat;
+                data.longitude = this.selectedHotelData.geometry.location.lng;
+            }
         }
 
         return data;
@@ -630,12 +656,139 @@ export class ModalManager {
         // You can implement a more sophisticated notification system here
     }
 
+    /**
+     * Initialize Google Places autocomplete for hotel input
+     */
+    async initializeHotelAutocomplete() {
+        const hotelInput = document.querySelector('#modal-body #hotel-name');
+        if (!hotelInput) return;
+
+        // Destroy existing instance if any
+        if (this.hotelAutocomplete) {
+            this.hotelAutocomplete.destroy();
+        }
+
+        // Create new autocomplete instance
+        this.hotelAutocomplete = new GooglePlacesAutocomplete();
+
+        // Set callbacks
+        this.hotelAutocomplete.setCallbacks({
+            onPlaceSelect: (placeData) => {
+                this.handleHotelPlaceSelect(placeData);
+            },
+            onError: (error) => {
+                console.error('Hotel autocomplete error:', error);
+                this.showNotification('Error', 'Error al cargar sugerencias de hoteles', 'error');
+            }
+        });
+
+        // Initialize with lodging types
+        const success = await this.hotelAutocomplete.init(hotelInput, {
+            types: ['lodging']
+        });
+
+        if (!success) {
+            console.warn('Failed to initialize hotel autocomplete');
+        }
+    }
+
+    /**
+     * Handle hotel place selection from autocomplete
+     */
+    handleHotelPlaceSelect(placeData) {
+        console.log('Hotel selected:', placeData);
+
+        // Store selected hotel data
+        this.selectedHotelData = placeData;
+
+        // Update input value
+        const hotelInput = document.querySelector('#modal-body #hotel-name');
+        if (hotelInput) {
+            hotelInput.value = placeData.name;
+        }
+
+        // Display selected place information
+        this.displaySelectedPlaceInfo(placeData);
+    }
+
+    /**
+     * Display information about the selected place
+     */
+    displaySelectedPlaceInfo(placeData) {
+        const infoContainer = document.getElementById('selected-place-info');
+        if (!infoContainer) return;
+
+        // Generate star rating HTML
+        const ratingHtml = placeData.rating ? this.generateStarRating(placeData.rating) : '';
+
+        // Generate price level HTML
+        const priceHtml = placeData.price_level ? this.generatePriceLevel(placeData.price_level) : '';
+
+        infoContainer.innerHTML = `
+            <div class="place-name">${placeData.name}</div>
+            <div class="place-address">${placeData.formatted_address || ''}</div>
+            <div class="place-details">
+                ${ratingHtml ? `<span class="place-rating">${ratingHtml} <span class="rating-text">(${placeData.rating})</span></span>` : ''}
+                ${priceHtml ? `<span class="place-price">${priceHtml}</span>` : ''}
+            </div>
+        `;
+
+        infoContainer.style.display = 'block';
+    }
+
+    /**
+     * Generate star rating HTML
+     */
+    generateStarRating(rating) {
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+        let stars = '';
+
+        // Full stars
+        for (let i = 0; i < fullStars; i++) {
+            stars += '<i class="fas fa-star star"></i>';
+        }
+
+        // Half star
+        if (hasHalfStar) {
+            stars += '<i class="fas fa-star-half-alt star"></i>';
+        }
+
+        // Empty stars
+        for (let i = 0; i < emptyStars; i++) {
+            stars += '<i class="far fa-star star"></i>';
+        }
+
+        return stars;
+    }
+
+    /**
+     * Generate price level HTML
+     */
+    generatePriceLevel(priceLevel) {
+        let price = '';
+        for (let i = 0; i < priceLevel; i++) {
+            price += '$';
+        }
+        return price;
+    }
+
     closeModal() {
         const modal = document.getElementById('element-modal');
         modal.style.display = 'none';
+
+        // Clean up hotel autocomplete
+        if (this.hotelAutocomplete) {
+            this.hotelAutocomplete.destroy();
+            this.hotelAutocomplete = null;
+        }
+
         this.currentElementType = null;
         this.currentElementData = {};
         this.currentDay = null;
         this.editingElement = null; // Reset editing element reference
+        this.selectedHotelData = null;
     }
 }
