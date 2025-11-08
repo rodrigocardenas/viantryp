@@ -65,6 +65,8 @@ export class GooglePlacesAutocomplete {
             return window.Laravel.services.google.places_api_key;
         }
 
+        console.warn('Google Places API key not found in meta tag or global config');
+
         return null;
     }
 
@@ -122,13 +124,9 @@ export class GooglePlacesAutocomplete {
         if (!this.isLoaded || !this.currentInput) return;
 
         try {
-            // Try to use the new PlaceAutocompleteElement if available
-            if (google.maps.places.PlaceAutocompleteElement) {
-                this.setupNewAutocomplete();
-            } else {
-                // Fallback to legacy Autocomplete
-                this.setupLegacyAutocomplete();
-            }
+            // For now, use only the legacy Autocomplete as the new API might not be available
+            // The new PlaceAutocompleteElement requires specific conditions to be available
+            this.setupLegacyAutocomplete();
         } catch (error) {
             console.error('Error setting up autocomplete:', error);
             this.showError('Failed to setup autocomplete');
@@ -136,47 +134,29 @@ export class GooglePlacesAutocomplete {
     }
 
     /**
-     * Setup new PlaceAutocompleteElement (recommended)
+     * Setup new PlaceAutocompleteElement (recommended) - Currently disabled
+     * This method is kept for future use when the new API becomes more widely available
      */
     setupNewAutocomplete() {
-        try {
-            // Create container for the new autocomplete element
-            const container = document.createElement('div');
-            container.className = 'place-autocomplete-container';
-            this.currentInput.parentNode.insertBefore(container, this.currentInput);
-
-            // Hide the original input
-            this.currentInput.style.display = 'none';
-
-            // Create the new autocomplete element
-            this.autocomplete = new google.maps.places.PlaceAutocompleteElement({
-                inputElement: this.currentInput,
-                locationRestriction: null // Can be set later
-                // Note: includedTypes/includedPrimaryTypes are not available in PlaceAutocompleteElement
-                // The new API doesn't support type filtering in the same way
-            });
-
-            container.appendChild(this.autocomplete);
-
-            // Listen for place selection
-            this.autocomplete.addEventListener('gmp-placeselect', (event) => {
-                this.handleNewPlaceSelect(event);
-            });
-
-        } catch (error) {
-            console.warn('New PlaceAutocompleteElement failed, falling back to legacy:', error);
-            this.setupLegacyAutocomplete();
-        }
+        // Temporarily disabled - the new API is not consistently available
+        // Will fall back to legacy autocomplete
+        this.setupLegacyAutocomplete();
     }
 
     /**
-     * Setup legacy Autocomplete (deprecated but still works)
+     * Setup legacy Autocomplete (current working solution)
      */
     setupLegacyAutocomplete() {
         try {
+            // Set types to lodging for hotels
+            const autocompleteOptions = {
+                ...this.options,
+                types: ['lodging'] // This works with the legacy API
+            };
+
             this.autocomplete = new google.maps.places.Autocomplete(
                 this.currentInput,
-                this.options
+                autocompleteOptions
             );
 
             // Add place_changed listener
@@ -411,21 +391,8 @@ export class GooglePlacesAutocomplete {
      */
     destroy() {
         if (this.autocomplete) {
-            // Handle cleanup for both new and legacy autocomplete
-            if (this.autocomplete instanceof google.maps.places.PlaceAutocompleteElement) {
-                // New PlaceAutocompleteElement cleanup
-                const container = this.currentInput?.parentNode?.querySelector('.place-autocomplete-container');
-                if (container) {
-                    container.remove();
-                }
-                // Show the original input again
-                if (this.currentInput) {
-                    this.currentInput.style.display = '';
-                }
-            } else {
-                // Legacy Autocomplete cleanup
-                google.maps.event.clearInstanceListeners(this.autocomplete);
-            }
+            // Legacy Autocomplete cleanup
+            google.maps.event.clearInstanceListeners(this.autocomplete);
             this.autocomplete = null;
         }
 
