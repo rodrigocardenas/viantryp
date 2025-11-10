@@ -676,6 +676,9 @@ export class ModalManager {
             onPlaceSelect: (placeData) => {
                 this.handleHotelPlaceSelect(placeData);
             },
+            onPlaceDetails: (details) => {
+                this.handleHotelPlaceDetails(details);
+            },
             onError: (error) => {
                 console.error('Hotel autocomplete error:', error);
                 this.showNotification('Error', 'Error al cargar sugerencias de hoteles', 'error');
@@ -712,6 +715,19 @@ export class ModalManager {
     }
 
     /**
+     * Handle detailed hotel place information from backend
+     */
+    handleHotelPlaceDetails(details) {
+        console.log('Hotel details received:', details);
+
+        // Store detailed hotel data
+        this.selectedHotelDetails = details;
+
+        // Update display with additional information
+        this.displaySelectedPlaceDetails(details);
+    }
+
+    /**
      * Display information about the selected place
      */
     displaySelectedPlaceInfo(placeData) {
@@ -734,6 +750,33 @@ export class ModalManager {
         `;
 
         infoContainer.style.display = 'block';
+    }
+
+    /**
+     * Display detailed information about the selected place
+     */
+    displaySelectedPlaceDetails(details) {
+        const detailsContainer = document.getElementById('selected-place-details');
+        if (!detailsContainer) return;
+
+        // Generate reviews HTML
+        const reviewsHtml = details.reviews ? this.generateReviewsHtml(details.reviews) : '';
+
+        // Generate photos HTML
+        const photosHtml = details.photos ? this.generatePhotosHtml(details.photos) : '';
+
+        detailsContainer.innerHTML = `
+            <div class="place-website">
+                ${details.website ? `<a href="${details.website}" target="_blank" class="website-link"><i class="fas fa-globe"></i> Sitio web</a>` : ''}
+            </div>
+            <div class="place-phone">
+                ${details.international_phone_number ? `<i class="fas fa-phone"></i> ${details.international_phone_number}` : ''}
+            </div>
+            ${reviewsHtml ? `<div class="place-reviews">${reviewsHtml}</div>` : ''}
+            ${photosHtml ? `<div class="place-photos">${photosHtml}</div>` : ''}
+        `;
+
+        detailsContainer.style.display = 'block';
     }
 
     /**
@@ -773,6 +816,49 @@ export class ModalManager {
             price += '$';
         }
         return price;
+    }
+
+    /**
+     * Generate reviews HTML
+     */
+    generateReviewsHtml(reviews) {
+        if (!reviews || reviews.length === 0) return '';
+
+        const recentReviews = reviews.slice(0, 3); // Show only first 3 reviews
+        let html = '<h4>Reseñas recientes:</h4>';
+
+        recentReviews.forEach(review => {
+            const rating = this.generateStarRating(review.rating);
+            html += `
+                <div class="review">
+                    <div class="review-header">
+                        <strong>${review.author_name}</strong>
+                        <span class="review-rating">${rating}</span>
+                    </div>
+                    <p class="review-text">${review.text}</p>
+                    <small class="review-date">${new Date(review.time * 1000).toLocaleDateString()}</small>
+                </div>
+            `;
+        });
+
+        return html;
+    }
+
+    /**
+     * Generate photos HTML
+     */
+    generatePhotosHtml(photos) {
+        if (!photos || photos.length === 0) return '';
+
+        let html = '<h4>Fotos:</h4><div class="photos-grid">';
+
+        photos.slice(0, 6).forEach(photo => { // Show only first 6 photos
+            const photoUrl = photo.getUrl ? photo.getUrl({ maxWidth: 200, maxHeight: 200 }) : photo.photo_reference;
+            html += `<img src="${photoUrl}" alt="Hotel photo" class="place-photo">`;
+        });
+
+        html += '</div>';
+        return html;
     }
 
     closeModal() {

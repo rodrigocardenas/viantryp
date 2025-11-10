@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\AirlineController;
+use App\Http\Controllers\GooglePlacesController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
@@ -47,6 +48,9 @@ Route::middleware('auth')->group(function () {
 
     // Airline routes
     Route::resource('airlines', AirlineController::class);
+
+    // Google Places API routes
+    Route::post('api/places/details', [GooglePlacesController::class, 'getPlaceDetails'])->name('places.details');
 
     // Additional trip routes
     Route::post('trips/{trip}/status', [TripController::class, 'updateStatus'])->name('trips.update-status');

@@ -11,6 +11,7 @@ export class GooglePlacesAutocomplete {
         this.isLoaded = false;
         this.callbacks = {
             onPlaceSelect: null,
+            onPlaceDetails: null,
             onError: null
         };
     }
@@ -224,11 +225,48 @@ export class GooglePlacesAutocomplete {
 
         const placeData = this.extractPlaceData(place);
 
+        // Call onPlaceSelect callback with basic data
         if (this.callbacks.onPlaceSelect) {
             this.callbacks.onPlaceSelect(placeData);
         }
 
+        // Fetch additional details from backend
+        this.fetchPlaceDetails(placeData.place_id);
+
         this.hideLoading();
+    }
+
+    /**
+     * Fetch additional place details from backend
+     * @param {string} placeId - The Google Places place_id
+     */
+    async fetchPlaceDetails(placeId) {
+        try {
+            const response = await fetch('/api/places/details', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
+                body: JSON.stringify({ place_id: placeId })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const details = await response.json();
+
+            // Call onPlaceDetails callback with full details
+            if (this.callbacks.onPlaceDetails) {
+                this.callbacks.onPlaceDetails(details);
+            }
+        } catch (error) {
+            console.error('Error fetching place details:', error);
+            if (this.callbacks.onError) {
+                this.callbacks.onError('Failed to fetch place details');
+            }
+        }
     }
 
     /**
