@@ -213,6 +213,101 @@
     margin-right: 4px;
 }
 
+/* Selected place details styles */
+.selected-place-details {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.selected-place-details .place-website,
+.selected-place-details .place-phone {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.selected-place-details .place-website a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.selected-place-details .place-website a:hover {
+    text-decoration: underline;
+}
+
+.selected-place-details .place-reviews {
+    margin-top: 15px;
+}
+
+.selected-place-details .place-reviews h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.selected-place-details .review {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.selected-place-details .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.selected-place-details .review-header strong {
+    color: #333;
+}
+
+.selected-place-details .review-rating {
+    font-size: 14px;
+}
+
+.selected-place-details .review-text {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.selected-place-details .review-date {
+    color: #999;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.selected-place-details .place-photos {
+    margin-top: 15px;
+}
+
+.selected-place-details .place-photos h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.selected-place-details .photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.selected-place-details .place-photo {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .pac-container {
