@@ -142,21 +142,30 @@ export class GooglePlacesAutocomplete {
                 throw new Error('Google Maps Places Autocomplete not available - check API key permissions');
             }
 
+            console.log('Setting up autocomplete with options:', this.options);
+
             // Set types to lodging for hotels
             const autocompleteOptions = {
                 ...this.options,
-                types: ['lodging'] // This works with the legacy API
+                types: ['establishment'] // Changed from lodging to establishment
             };
+
+            console.log('Creating autocomplete with options:', autocompleteOptions);
 
             this.autocomplete = new google.maps.places.Autocomplete(
                 this.currentInput,
                 autocompleteOptions
             );
 
+            console.log('Autocomplete created successfully');
+
             // Add place_changed listener
             this.autocomplete.addListener('place_changed', () => {
+                console.log('Place changed event triggered');
                 this.handlePlaceSelect();
             });
+
+            console.log('Autocomplete setup completed');
 
         } catch (error) {
             console.error('Error setting up legacy autocomplete:', error);

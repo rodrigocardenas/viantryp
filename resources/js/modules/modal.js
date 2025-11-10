@@ -661,10 +661,16 @@ export class ModalManager {
      */
     async initializeHotelAutocomplete() {
         const hotelInput = document.querySelector('#modal-body #hotel-name');
-        if (!hotelInput) return;
+        if (!hotelInput) {
+            console.error('Hotel input not found');
+            return;
+        }
+
+        console.log('Initializing hotel autocomplete for input:', hotelInput);
 
         // Destroy existing instance if any
         if (this.hotelAutocomplete) {
+            console.log('Destroying existing autocomplete instance');
             this.hotelAutocomplete.destroy();
         }
 
@@ -674,9 +680,11 @@ export class ModalManager {
         // Set callbacks
         this.hotelAutocomplete.setCallbacks({
             onPlaceSelect: (placeData) => {
+                console.log('Hotel place selected:', placeData);
                 this.handleHotelPlaceSelect(placeData);
             },
             onPlaceDetails: (details) => {
+                console.log('Hotel details received:', details);
                 this.handleHotelPlaceDetails(details);
             },
             onError: (error) => {
@@ -686,12 +694,15 @@ export class ModalManager {
         });
 
         // Initialize with lodging types
+        console.log('Initializing autocomplete with lodging types...');
         const success = await this.hotelAutocomplete.init(hotelInput, {
-            types: ['lodging']
+            types: ['establishment'] // Try establishment instead of lodging
         });
 
-        if (!success) {
-            console.warn('Failed to initialize hotel autocomplete');
+        if (success) {
+            console.log('Hotel autocomplete initialized successfully');
+        } else {
+            console.error('Failed to initialize hotel autocomplete');
         }
     }
 
@@ -699,15 +710,21 @@ export class ModalManager {
      * Handle hotel place selection from autocomplete
      */
     handleHotelPlaceSelect(placeData) {
-        console.log('Hotel selected:', placeData);
+        console.log('Hotel selected - placeData:', placeData);
+        console.log('Hotel name:', placeData.name);
 
         // Store selected hotel data
         this.selectedHotelData = placeData;
 
         // Update input value
         const hotelInput = document.querySelector('#modal-body #hotel-name');
+        console.log('Hotel input element:', hotelInput);
         if (hotelInput) {
+            console.log('Setting input value to:', placeData.name);
             hotelInput.value = placeData.name;
+            console.log('Input value after setting:', hotelInput.value);
+        } else {
+            console.error('Hotel input not found when trying to update value');
         }
 
         // Display selected place information
