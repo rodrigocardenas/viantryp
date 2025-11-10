@@ -194,7 +194,7 @@ function loadExistingTripData(tripData) {
     if (tripData.start_date) {
         const startDateInput = document.getElementById('start-date');
         if (startDateInput) {
-            startDateInput.value = tripData.start_date;
+            startDateInput.value = tripData.start_date ? new Date(tripData.start_date).toISOString().split('T')[0] : '';
             // Trigger date update to populate day dates
             if (typeof updateItineraryDates === 'function') {
                 updateItineraryDates();
