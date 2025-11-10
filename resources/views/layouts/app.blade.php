@@ -10,6 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    {{-- Google Maps API --}}
+    @if(config('services.google.places_api_key'))
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.places_api_key') }}&libraries=places&v=weekly" async defer></script>
+    @endif
     <link rel="stylesheet" href="{{ asset('css/components/sidebar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/components/trip-header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/components/timeline.css') }}">

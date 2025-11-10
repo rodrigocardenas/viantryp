@@ -53,7 +53,10 @@ export class GooglePlacesAutocomplete {
         // Try to get from meta tag first
         const metaTag = document.querySelector('meta[name="google-places-api-key"]');
         if (metaTag) {
-            return metaTag.getAttribute('content');
+            const key = metaTag.getAttribute('content');
+            if (key && key.trim()) {
+                return key.trim();
+            }
         }
 
         // Fallback to global variable if set by Laravel
@@ -66,8 +69,7 @@ export class GooglePlacesAutocomplete {
             return window.Laravel.services.google.places_api_key;
         }
 
-        console.warn('Google Places API key not found in meta tag or global config');
-
+        console.error('Google Places API key not found. Make sure GOOGLE_PLACES_API_KEY is set in your .env file');
         return null;
     }
 
@@ -76,45 +78,27 @@ export class GooglePlacesAutocomplete {
      */
     async loadGoogleMapsAPI() {
         return new Promise((resolve, reject) => {
+            // Check if already loaded
             if (window.google && window.google.maps && window.google.maps.places) {
                 this.isLoaded = true;
                 resolve();
                 return;
             }
 
-            if (document.querySelector('script[src*="maps.googleapis.com"]')) {
-                // Script is already loading, wait for it
-                const checkLoaded = setInterval(() => {
-                    if (window.google && window.google.maps && window.google.maps.places) {
-                        clearInterval(checkLoaded);
-                        this.isLoaded = true;
-                        resolve();
-                    }
-                }, 100);
-
-                setTimeout(() => {
+            // Wait for the API to load (script is loaded in layout)
+            const checkLoaded = setInterval(() => {
+                if (window.google && window.google.maps && window.google.maps.places) {
                     clearInterval(checkLoaded);
-                    reject(new Error('Google Maps API loading timeout'));
-                }, 10000);
-                return;
-            }
+                    this.isLoaded = true;
+                    resolve();
+                }
+            }, 100);
 
-            // Load the script with async loading
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${this.apiKey}&libraries=places&v=weekly&loading=async`;
-            script.async = true;
-            script.defer = false; // Remove defer to avoid the warning
-
-            script.onload = () => {
-                this.isLoaded = true;
-                resolve();
-            };
-
-            script.onerror = () => {
-                reject(new Error('Failed to load Google Maps API'));
-            };
-
-            document.head.appendChild(script);
+            // Timeout after 10 seconds
+            setTimeout(() => {
+                clearInterval(checkLoaded);
+                reject(new Error('Google Maps API loading timeout - check your API key and network connection'));
+            }, 10000);
         });
     }
 
@@ -149,6 +133,15 @@ export class GooglePlacesAutocomplete {
      */
     setupLegacyAutocomplete() {
         try {
+            // Validate that Google Maps API is properly loaded
+            if (!window.google || !window.google.maps || !window.google.maps.places) {
+                throw new Error('Google Maps Places API not available');
+            }
+
+            if (!window.google.maps.places.Autocomplete) {
+                throw new Error('Google Maps Places Autocomplete not available - check API key permissions');
+            }
+
             // Set types to lodging for hotels
             const autocompleteOptions = {
                 ...this.options,
