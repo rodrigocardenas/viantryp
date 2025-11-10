@@ -49,9 +49,6 @@ Route::middleware('auth')->group(function () {
     // Airline routes
     Route::resource('airlines', AirlineController::class);
 
-    // Google Places API routes
-    Route::post('api/places/details', [GooglePlacesController::class, 'getPlaceDetails'])->name('places.details');
-
     // Additional trip routes
     Route::post('trips/{trip}/status', [TripController::class, 'updateStatus'])->name('trips.update-status');
     Route::post('trips/{trip}/code', [TripController::class, 'updateCode'])->name('trips.update-code');
@@ -70,6 +67,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('documents/{document}', [\App\Http\Controllers\TripDocumentController::class, 'destroy'])->name('documents.destroy');
     Route::get('documents/{document}/download', [\App\Http\Controllers\TripDocumentController::class, 'download'])->name('documents.download');
 });
+
+// Google Places API routes (outside auth middleware for AJAX requests)
+Route::post('api/places/details', [GooglePlacesController::class, 'getPlaceDetails'])->name('places.details');
 
 // Public preview route (no authentication required)
 Route::get('trips/{trip}/preview', [TripController::class, 'preview'])->name('trips.preview');

@@ -41,6 +41,15 @@ class GooglePlacesController extends Controller
                 ], 400);
             }
 
+            // Process photos to include full URLs
+            if (isset($data['result']['photos']) && is_array($data['result']['photos'])) {
+                foreach ($data['result']['photos'] as &$photo) {
+                    if (isset($photo['photo_reference'])) {
+                        $photo['url'] = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=300&photoreference={$photo['photo_reference']}&key={$apiKey}";
+                    }
+                }
+            }
+
             return response()->json($data['result']);
         } catch (\Exception $e) {
             return response()->json([

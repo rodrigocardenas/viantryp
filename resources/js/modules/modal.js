@@ -751,14 +751,28 @@ export class ModalManager {
         const infoContainer = document.getElementById('selected-place-info');
         if (!infoContainer) return;
 
+        console.log('Displaying place info for:', placeData);
+
         // Generate star rating HTML
         const ratingHtml = placeData.rating ? this.generateStarRating(placeData.rating) : '';
 
         // Generate price level HTML
         const priceHtml = placeData.price_level ? this.generatePriceLevel(placeData.price_level) : '';
 
+        // Generate Google Maps link
+        const mapsUrl = placeData.geometry && placeData.geometry.location ?
+            `https://www.google.com/maps/search/?api=1&query=${placeData.geometry.location.lat},${placeData.geometry.location.lng}` :
+            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeData.name + ' ' + (placeData.formatted_address || ''))}`;
+
+        console.log('Generated maps URL:', mapsUrl);
+
         infoContainer.innerHTML = `
-            <div class="place-name">${placeData.name}</div>
+            <div class="place-name">
+                ${placeData.name}
+                <a href="${mapsUrl}" target="_blank" class="maps-link" title="Ver en Google Maps">
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
             <div class="place-address">${placeData.formatted_address || ''}</div>
             <div class="place-details">
                 ${ratingHtml ? `<span class="place-rating">${ratingHtml} <span class="rating-text">(${placeData.rating})</span></span>` : ''}
@@ -767,6 +781,7 @@ export class ModalManager {
         `;
 
         infoContainer.style.display = 'block';
+        console.log('Place info displayed');
     }
 
     /**
@@ -870,8 +885,12 @@ export class ModalManager {
         let html = '<h4>Fotos:</h4><div class="photos-grid">';
 
         photos.slice(0, 6).forEach(photo => { // Show only first 6 photos
-            const photoUrl = photo.getUrl ? photo.getUrl({ maxWidth: 200, maxHeight: 200 }) : photo.photo_reference;
-            html += `<img src="${photoUrl}" alt="Hotel photo" class="place-photo">`;
+            // Use the URL provided by the backend (Google Places Photo API)
+            const photoUrl = photo.url || photo.photo_reference;
+
+            if (photoUrl) {
+                html += `<img src="${photoUrl}" alt="Hotel photo" class="place-photo" loading="lazy" onclick="window.open('${photoUrl}', '_blank')">`;
+            }
         });
 
         html += '</div>';

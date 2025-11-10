@@ -288,8 +288,12 @@ export class GooglePlacesAutocomplete {
      * @param {string} placeId - The Google Places place_id
      */
     async fetchPlaceDetails(placeId) {
+        const url = '/api/places/details';
+        console.log('Fetching place details from URL:', url);
+        console.log('Full URL:', window.location.origin + url);
+
         try {
-            const response = await fetch('/api/places/details', {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -298,11 +302,15 @@ export class GooglePlacesAutocomplete {
                 body: JSON.stringify({ place_id: placeId })
             });
 
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const details = await response.json();
+            console.log('Place details received:', details);
 
             // Call onPlaceDetails callback with full details
             if (this.callbacks.onPlaceDetails) {
