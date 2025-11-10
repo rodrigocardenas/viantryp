@@ -46,7 +46,7 @@ class TripDocument extends Model
      */
     public function getUrlAttribute(): string
     {
-        return asset('storage/documents/' . $this->path);
+        return asset('storage/' . $this->path);
     }
 
     /**

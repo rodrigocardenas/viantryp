@@ -70,9 +70,19 @@ class ElementManager {
 
         // Include selected hotel data if this is a hotel element
         if (currentElementType === 'hotel' && this.selectedHotelData) {
-            data.hotel_id = this.selectedHotelData.id;
-            data.hotel_name = this.selectedHotelData.name || this.selectedHotelData.hotel_name;
+            data.hotel_id = this.selectedHotelData.place_id;
+            data.hotel_name = this.selectedHotelData.name;
             data.hotel_data = this.selectedHotelData;
+            // Include additional Google Places data
+            data.place_id = this.selectedHotelData.place_id;
+            data.formatted_address = this.selectedHotelData.formatted_address;
+            data.rating = this.selectedHotelData.rating;
+            data.website = this.selectedHotelData.website;
+            data.phone_number = this.selectedHotelData.international_phone_number;
+            if (this.selectedHotelData.geometry && this.selectedHotelData.geometry.location) {
+                data.latitude = this.selectedHotelData.geometry.location.lat;
+                data.longitude = this.selectedHotelData.geometry.location.lng;
+            }
         }
 
         return data;

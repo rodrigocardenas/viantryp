@@ -38,7 +38,7 @@ class TripDocumentController extends Controller
         $path = 'documents/' . $filename;
 
         // Store file
-        $stored = Storage::disk('public')->put($path, file_get_contents($file));
+        $stored = Storage::disk('public')->put($path, $file->get());
 
         if (!$stored) {
             return response()->json([
@@ -85,7 +85,7 @@ class TripDocumentController extends Controller
         $path = 'temp/' . $filename;
 
         // Store file temporarily
-        $stored = Storage::disk('public')->put($path, file_get_contents($file));
+        $stored = Storage::disk('public')->put($path, $file->get());
 
         if (!$stored) {
             return response()->json([

@@ -366,9 +366,9 @@ class ExportManager {
     }
 
     getCurrentTripId() {
-        // First check the global variable set by the modal
-        if (window.currentTripId) {
-            return window.currentTripId;
+        // First try to get from existing trip data
+        if (window.existingTripData && window.existingTripData.id) {
+            return window.existingTripData.id;
         }
 
         // Fallback to URL parsing

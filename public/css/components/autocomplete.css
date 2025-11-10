@@ -1,0 +1,302 @@
+/* Google Places Autocomplete Styles */
+
+/* Base autocomplete input styles */
+.autocomplete-input {
+    position: relative;
+}
+
+/* Loading state */
+.autocomplete-loading {
+    background-image: linear-gradient(90deg, #f0f0f0 25%, transparent 25%),
+                      linear-gradient(90deg, transparent 50%, #f0f0f0 50%);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 0;
+    animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+    0% {
+        background-position: -20px 0, -10px 0;
+    }
+    100% {
+        background-position: 20px 0, 10px 0;
+    }
+}
+
+/* Loading spinner */
+.autocomplete-spinner {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.autocomplete-spinner i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error state */
+.autocomplete-error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.autocomplete-error:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+/* Success state */
+.autocomplete-success {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+}
+
+/* Google Places dropdown customization */
+.pac-container {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    font-family: inherit;
+    z-index: 1051; /* Above Bootstrap modals */
+}
+
+/* New PlaceAutocompleteElement styles */
+.place-autocomplete-container {
+    position: relative;
+    width: 100%;
+}
+
+.place-autocomplete-container gmp-place-autocomplete {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.place-autocomplete-container gmp-place-autocomplete:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.pac-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.pac-item:last-child {
+    border-bottom: none;
+}
+
+.pac-item:hover {
+    background-color: #f8f9fa;
+}
+
+.pac-item-selected {
+    background-color: #e9ecef;
+}
+
+.pac-item-query {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.pac-matched {
+    font-weight: bold;
+}
+
+/* Place details in dropdown */
+.pac-item .pac-icon {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.pac-item .pac-item-query {
+    color: #333;
+}
+
+/* Hotel specific styling */
+.hotel-autocomplete .pac-item {
+    display: flex;
+    align-items: center;
+}
+
+.hotel-autocomplete .pac-item .pac-icon {
+    color: #28a745;
+}
+
+/* Rating display in dropdown */
+.autocomplete-rating {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 8px;
+    font-size: 12px;
+    color: #ffc107;
+}
+
+.autocomplete-rating .star {
+    margin-right: 2px;
+}
+
+.autocomplete-rating .rating-text {
+    color: #666;
+    margin-left: 4px;
+}
+
+/* Address styling */
+.autocomplete-address {
+    color: #666;
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+/* Price level indicator */
+.autocomplete-price-level {
+    margin-left: 8px;
+    font-size: 12px;
+    color: #28a745;
+}
+
+/* Selected place info display */
+.selected-place-info {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+}
+
+.selected-place-info .place-name {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.selected-place-info .place-address {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.selected-place-info .place-details {
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    color: #666;
+}
+
+.selected-place-info .place-rating,
+.selected-place-info .place-price {
+    display: flex;
+    align-items: center;
+}
+
+.selected-place-info .place-rating .stars {
+    color: #ffc107;
+    margin-right: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pac-container {
+        width: calc(100vw - 40px) !important;
+        max-width: none !important;
+    }
+
+    .selected-place-info .place-details {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+    .pac-container {
+        background-color: #343a40;
+        border-color: #495057;
+        color: #fff;
+    }
+
+    .pac-item:hover {
+        background-color: #495057;
+    }
+
+    .pac-item-selected {
+        background-color: #6c757d;
+    }
+
+    .pac-item-query {
+        color: #007bff;
+    }
+
+    .autocomplete-address {
+        color: #adb5bd;
+    }
+
+    .selected-place-info {
+        background-color: #343a40;
+        border-color: #495057;
+        color: #fff;
+    }
+
+    .selected-place-info .place-name {
+        color: #fff;
+    }
+
+    .selected-place-info .place-address {
+        color: #adb5bd;
+    }
+
+    .selected-place-info .place-details {
+        color: #adb5bd;
+    }
+}
+
+/* Accessibility improvements */
+.pac-container .pac-item[aria-selected="true"] {
+    background-color: #e9ecef;
+}
+
+.autocomplete-input input[aria-expanded="true"] {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Focus management */
+.autocomplete-input input:focus + .pac-container {
+    display: block;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .pac-container {
+        border: 2px solid #000;
+    }
+
+    .pac-item {
+        border-bottom: 2px solid #000;
+    }
+
+    .pac-item:hover,
+    .pac-item-selected {
+        background-color: #000;
+        color: #fff;
+    }
+}

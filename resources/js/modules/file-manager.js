@@ -117,13 +117,13 @@ class FileManager {
 
     getCurrentTripId() {
         console.log('FileManager: getCurrentTripId() called');
-        console.log('FileManager: window.currentTripId =', window.currentTripId);
+        console.log('FileManager: window.existingTripData =', window.existingTripData);
         console.log('FileManager: current path =', window.location.pathname);
 
-        // First, try to get the ID from the global variable
-        if (window.currentTripId) {
-            console.log('FileManager: Found trip ID in window.currentTripId:', window.currentTripId);
-            return window.currentTripId;
+        // First, try to get the ID from existing trip data
+        if (window.existingTripData && window.existingTripData.id) {
+            console.log('FileManager: Found trip ID in window.existingTripData:', window.existingTripData.id);
+            return window.existingTripData.id;
         }
 
         // Fallback to URL parsing for edit mode

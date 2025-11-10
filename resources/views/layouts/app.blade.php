@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="google-places-api-key" content="{{ config('services.google.places_api_key') }}">
     <title>@yield('title', 'Viantryp - Gestión de Viajes')</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -15,6 +16,7 @@
     <link rel="stylesheet" href="{{ asset('css/components/modals.css') }}">
     <link rel="stylesheet" href="{{ asset('css/components/editor-layout.css') }}">
     <link rel="stylesheet" href="{{ asset('css/components/timeline-items.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/autocomplete.css') }}">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
     @vite(['resources/js/app.js'])
     @stack('styles')
