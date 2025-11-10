@@ -7,7 +7,7 @@
 
 <x-sidebar.items.base
     type="flight"
-    icon="{{ asset('images/icons/flight.svg') }}"
+    icon="fas fa-plane"
     title="Vuelo"
     description="Agregar vuelo"
     :disabled="$disabled"

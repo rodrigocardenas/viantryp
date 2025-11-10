@@ -192,7 +192,14 @@ function loadExistingTripData(tripData) {
 
     // Set start date
     if (tripData.start_date) {
-        document.getElementById('start-date').value = tripData.start_date;
+        const startDateInput = document.getElementById('start-date');
+        if (startDateInput) {
+            startDateInput.value = tripData.start_date;
+            // Trigger date update to populate day dates
+            if (typeof updateItineraryDates === 'function') {
+                updateItineraryDates();
+            }
+        }
     }
 
     // Load trip items - only if NOT in edit mode (Blade components handle rendering in edit mode)

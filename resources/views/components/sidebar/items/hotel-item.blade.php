@@ -7,7 +7,7 @@
 
 <x-sidebar.items.base
     type="hotel"
-    icon="{{ asset('images/icons/hotel.svg') }}"
+    icon="fas fa-hotel"
     title="Alojamiento"
     description="Agregar hospedaje"
     :disabled="$disabled"

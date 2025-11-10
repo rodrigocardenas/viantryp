@@ -7,7 +7,7 @@
 
 <x-sidebar.items.base
     type="activity"
-    icon="{{ asset('images/icons/activity.svg') }}"
+    icon="fas fa-camera"
     title="Actividad"
     description="Agregar tour o experiencia"
     :disabled="$disabled"

@@ -49,24 +49,40 @@
     cursor: grabbing;
 }
 
-.category-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.1rem;
-    flex-shrink: 0;
+.flight-icon
+{
+    color: greenyellow;
 }
 
-.hotel-icon { background: #dc3545; }
-.activity-icon { background: #28a745; }
+.hotel-icon
+{
+    color: crimson;
+}
 
-.note-icon { background: #fd7e14; }
-.summary-icon { background: #28a745; }
-.total-icon { background: #dc3545; }
+.activity-icon
+{
+    color: dodgerblue;
+}
+
+.transport-icon
+{
+    color: orange;
+}
+
+.note-icon
+{
+    color: purple;
+}
+
+.summary-icon
+{
+    color: teal;
+}
+
+.total-icon
+{
+    color: gold;
+}
 
 .category-info {
     flex: 1;

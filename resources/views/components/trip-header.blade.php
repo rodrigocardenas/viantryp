@@ -24,7 +24,7 @@
         <div class="form-row">
             <div class="form-group">
                 <label>Fecha de inicio:</label>
-                <input type="date" id="start-date" class="form-input" value="{{ $trip ? ($trip->start_date ? $trip->start_date->format('Y-m-d') : '') : '' }}">
+                <input type="date" id="start-date" class="form-input" value="{{ $trip ? ($trip->start_date ? $trip->start_date->format('Y-m-d') : '') : '' }}" {{ $trip && $trip->start_date ? 'readonly' : '' }}>
             </div>
             <button class="btn-update-dates" onclick="updateItineraryDates()">
                 <i class="fas fa-sync-alt"></i>

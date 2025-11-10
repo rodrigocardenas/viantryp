@@ -7,7 +7,7 @@
 
 <x-sidebar.items.base
     type="transport"
-    icon="{{ asset('images/icons/transport.svg') }}"
+    icon="fas fa-bus"
     title="Traslado"
     description="Tren, autobus, barco u otro"
     :disabled="$disabled"
