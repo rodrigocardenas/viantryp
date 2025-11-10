@@ -139,6 +139,10 @@ function setupGlobalEventListeners() {
                 // Need to implement selectHotel function or move it here
                 console.log('Select hotel clicked');
                 break;
+            case 'close-modal':
+                e.preventDefault();
+                modalManager.closeModal();
+                break;
         }
     });
 }
