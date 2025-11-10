@@ -1,5 +1,10 @@
 {{-- Vista: Crear Nuevo Viaje --}}
-{{-- Ubicación: resources/views/trips/create.blade.php --}}
+{{-- Ubicació@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/editor.css') }}?v={{ time() }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+@endpushurces/views/trips/create.blade.php --}}
 {{-- Propósito: Vista dedicada para la creación inicial de viajes --}}
 {{-- Contexto: Viaje nuevo, sin datos existentes --}}
 

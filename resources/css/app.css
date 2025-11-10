@@ -149,3 +149,4 @@ input[type="text"]:focus {
 @import './components/modals.css';
 @import './components/editor-layout.css';
 @import './components/timeline-items.css';
+@import './components/vertical-menu.css';
