@@ -32,7 +32,7 @@
 .vertical-menu-item {
     display: flex;
     align-items: center;
-    padding: 1.2rem 1.5rem;
+    padding: 0.8rem 1.2rem;
     cursor: pointer;
     transition: all 0.3s ease;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -65,21 +65,15 @@
 }
 
 .menu-item-icon {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     margin-right: 1rem;
     flex-shrink: 0;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     display: flex;
     align-items: center;
     justify-content: center;
     width: 32px;
     height: 32px;
-}
-
-.menu-icon-svg {
-    width: 24px;
-    height: 24px;
-    filter: brightness(0) invert(1);
+    color: white;
 }
 
 .menu-item-content {

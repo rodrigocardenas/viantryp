@@ -150,6 +150,7 @@
 
     .btn-back:hover {
         background: rgba(255, 255, 255, 0.3);
+        color: white;
         transform: translateY(-1px);
     }
 

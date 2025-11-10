@@ -523,11 +523,33 @@ export class ModalManager {
     }
 
     closeModal() {
+        // Clear form data and reset state without saving
         const modal = document.getElementById('element-modal');
         modal.style.display = 'none';
+
+        // Reset all form fields
+        const form = document.getElementById('modal-body');
+        if (form) {
+            const inputs = form.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    input.checked = false;
+                } else {
+                    input.value = '';
+                }
+            });
+        }
+
+        // Clear uploaded documents
+        Object.keys(this.uploadedDocuments).forEach(type => {
+            this.uploadedDocuments[type] = [];
+        });
+
+        // Reset state
         this.currentElementType = null;
         this.currentElementData = {};
         this.currentDay = null;
         this.editingElement = null; // Reset editing element reference
+        this.selectedHotelData = null;
     }
 }

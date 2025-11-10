@@ -20,12 +20,7 @@
 <div class="vertical-menu-item {{ $active ? 'active' : '' }}"
      @if($href !== '#') onclick="window.location.href='{{ $href }}'" @endif>
     <div class="menu-item-icon">
-        @if(str_contains($icon, '.svg') || str_contains($icon, 'fas '))
-            <img src="{{ $icon }}" alt="" class="menu-icon-svg" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';" />
-            <i class="{{ str_contains($icon, 'fas ') ? $icon : 'fas fa-circle' }}" style="display: none;"></i>
-        @else
-            {{ $icon }}
-        @endif
+        <i class="{{ $icon }}"></i>
     </div>
     <div class="menu-item-content">
         <h4 class="menu-item-title">{{ $title }}</h4>

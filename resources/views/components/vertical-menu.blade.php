@@ -14,7 +14,7 @@
 
     <div class="vertical-menu-items">
         <x-vertical-menu-item
-            icon="{{ asset('images/icons/flight.svg') }}"
+            icon="fas fa-plane"
             title="Vuelo"
             description="Agregar vuelo"
             :active="$activeItem === 'flight'"
@@ -22,7 +22,7 @@
         />
 
         <x-vertical-menu-item
-            icon="{{ asset('images/icons/transport.svg') }}"
+            icon="fas fa-route"
             title="Traslado"
             description="Tren, autobús, barco, taxi, van"
             :active="$activeItem === 'transport'"
@@ -30,7 +30,7 @@
         />
 
         <x-vertical-menu-item
-            icon="{{ asset('images/icons/hotel.svg') }}"
+            icon="fas fa-hotel"
             title="Alojamiento"
             description="Hotel o hospedaje"
             :active="$activeItem === 'hotel'"
@@ -38,7 +38,7 @@
         />
 
         <x-vertical-menu-item
-            icon="{{ asset('images/icons/activity.svg') }}"
+            icon="fas fa-map-marked-alt"
             title="Actividad"
             description="Tour o experiencia"
             :active="$activeItem === 'activity'"

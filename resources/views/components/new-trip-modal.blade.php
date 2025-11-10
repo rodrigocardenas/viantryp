@@ -120,18 +120,25 @@
 
 .form-group label {
     display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-    color: #2d3748;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1a202c;
+    font-size: 20px;
+    background-color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .form-group input,
 .form-group textarea {
     width: 100%;
-    padding: 10px 12px;
+    padding: 12px 14px;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 16px;
+    background-color: white;
     transition: border-color 0.2s;
 }
 
