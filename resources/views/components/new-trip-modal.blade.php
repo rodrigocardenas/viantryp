@@ -12,10 +12,10 @@
             </button>
         </div>
 
-        <form id="new-trip-form" class="modal-body">
+        <form id="new-trip-form" class="modal-body" onsubmit="event.preventDefault(); createTrip(); return false;">
             <div class="form-group">
-                <label for="trip-title">Título del Viaje *</label>
-                <input type="text" id="trip-title" name="title" required
+                <label for="new-trip-title">Título del Viaje *</label>
+                <input type="text" id="new-trip-title" name="title" required
                        placeholder="Ej: Viaje a Barcelona 2024">
             </div>
 
@@ -243,8 +243,13 @@ function createTrip() {
             // Mostrar editor
             document.getElementById('editor-container').style.display = 'flex';
 
-            // Actualizar título
-            document.getElementById('trip-title').textContent = title;
+            // Actualizar título después de que el DOM se actualice
+            setTimeout(() => {
+                const tripTitleInput = document.getElementById('trip-title');
+                if (tripTitleInput) {
+                    tripTitleInput.value = title;
+                }
+            }, 100);
 
             // Configurar datos del viaje
             window.currentTripId = data.trip.id;
@@ -273,7 +278,7 @@ function createTrip() {
             if (data.action === 'updated') {
                 showNotification('Viaje actualizado', 'Un viaje existente ha sido actualizado exitosamente.', 'success');
             } else {
-                showNotification('Viaje creado exitosamente', 'success');
+                showWelcomeToast();
             }
         } else {
             alert(data.message || 'Error al crear el viaje');
@@ -309,6 +314,129 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Función para mostrar toast de bienvenida
+    window.showWelcomeToast = function() {
+        // Remover toast existente si hay
+        const existingToast = document.getElementById('welcome-toast');
+        if (existingToast) {
+            existingToast.remove();
+        }
+
+        // Crear el toast
+        const toast = document.createElement('div');
+        toast.id = 'welcome-toast';
+        toast.innerHTML = `
+            <div class="welcome-toast-content">
+                <div class="welcome-toast-icon">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <div class="welcome-toast-text">
+                    <h4>¡Tu viaje ha sido creado!</h4>
+                    <p>Arrastra elementos desde la barra lateral para empezar a construir tu itinerario.</p>
+                </div>
+                <button class="welcome-toast-close" onclick="closeWelcomeToast()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+
+        // Agregar estilos
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 10000;
+            max-width: 400px;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 0.5s ease;
+        `;
+
+        // Agregar al body
+        document.body.appendChild(toast);
+
+        // Mostrar con animación
+        setTimeout(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+        }, 100);
+
+        // Auto-ocultar después de 8 segundos
+        setTimeout(() => {
+            closeWelcomeToast();
+        }, 8000);
+    }
+
+    // Función para cerrar el toast
+    window.closeWelcomeToast = function() {
+        const toast = document.getElementById('welcome-toast');
+        if (toast) {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(100px)';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 500);
+        }
+    }
 });
 </script>
+
+<style>
+.welcome-toast-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+}
+
+.welcome-toast-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.welcome-toast-text h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.welcome-toast-text p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+.welcome-toast-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+    margin-top: -4px;
+}
+
+.welcome-toast-close:hover {
+    opacity: 1;
+}
+</style>
 @endpush

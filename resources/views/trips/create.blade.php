@@ -13,10 +13,7 @@
     <!-- Modal para crear nuevo viaje -->
     <x-new-trip-modal />
 
-    <!-- Menú vertical interactivo -->
-    <div class="create-trip-container">
-        <x-vertical-menu activeItem="activity" />
-    </div>
+
 
     <!-- Contenedor del editor (inicialmente oculto) -->
     <div class="editor-container" id="editor-container" style="display: none;">
@@ -32,8 +29,8 @@
                 <!-- Timeline vacío -->
                 <x-timeline :trip="null" />
 
-                <!-- Mensaje de bienvenida -->
-                <div class="welcome-message">
+                <!-- Mensaje de bienvenida (oculto inicialmente) -->
+                <div class="welcome-message" id="welcome-message" style="display: none;">
                     <div class="welcome-icon">
                         <i class="fas fa-magic"></i>
                     </div>

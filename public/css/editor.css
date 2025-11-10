@@ -19,7 +19,8 @@
 
     .editor-container {
         display: flex;
-        height: calc(100vh - 80px);
+        min-height: calc(100vh - 80px);
+        margin-top: 80px;
         background: linear-gradient(180deg, #e6f3fb 0%, #f7fbff 60%);
     }
 

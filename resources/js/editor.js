@@ -143,6 +143,18 @@ function setupGlobalEventListeners() {
                 e.preventDefault();
                 modalManager.closeModal();
                 break;
+            case 'close-unsaved-modal':
+                e.preventDefault();
+                closeUnsavedModal();
+                break;
+            case 'exit-without-saving':
+                e.preventDefault();
+                exitWithoutSaving();
+                break;
+            case 'save-and-exit':
+                e.preventDefault();
+                saveAndExit();
+                break;
         }
     });
 }
@@ -181,9 +193,80 @@ window.downloadPDF = function() {
 };
 
 window.showUnsavedChangesModal = function() {
-    // Implementation will be moved here
-    console.log('Showing unsaved changes modal');
+    const modal = document.getElementById('unsaved-changes-modal');
+    if (modal) {
+        const changesSummary = document.getElementById('changesSummary');
+
+        // Generate changes summary
+        const changes = generateChangesSummary();
+        if (changesSummary) {
+            changesSummary.innerHTML = changes;
+        }
+
+        modal.style.display = 'block';
+    }
 };
+
+function generateChangesSummary() {
+    const currentData = collectAllTripItems ? collectAllTripItems() : {};
+    let changes = '';
+
+    // Check for new items
+    const currentItemCount = Object.keys(currentData).length;
+    if (currentItemCount > 0) {
+        changes += `• Se agregaron ${currentItemCount} elementos al itinerario<br>`;
+    }
+
+    // Check for title changes
+    const tripTitle = document.getElementById('trip-title');
+    if (tripTitle) {
+        const currentTitle = tripTitle.value;
+        const originalTitle = tripTitle.defaultValue || '';
+        if (currentTitle !== originalTitle) {
+            changes += `• Título del viaje modificado<br>`;
+        }
+    }
+
+    // Check for date changes
+    const startDate = document.getElementById('start-date');
+    if (startDate) {
+        const currentStartDate = startDate.value;
+        const originalStartDate = startDate.defaultValue || '';
+        if (currentStartDate !== originalStartDate) {
+            changes += `• Fechas del viaje modificadas<br>`;
+        }
+    }
+
+    if (!changes) {
+        changes = '• Cambios menores en el contenido<br>';
+    }
+
+    return changes;
+}
+
+function closeUnsavedModal() {
+    const modal = document.getElementById('unsaved-changes-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function exitWithoutSaving() {
+    window.location.href = '/trips';
+}
+
+function saveAndExit() {
+    // Call save trip function and then redirect
+    if (typeof saveTrip === 'function') {
+        saveTrip();
+        // After saving, redirect
+        setTimeout(() => {
+            window.location.href = '/trips';
+        }, 1000);
+    } else {
+        window.location.href = '/trips';
+    }
+}
 
 // Legacy functions for backward compatibility
 function loadExistingTripData(tripData) {

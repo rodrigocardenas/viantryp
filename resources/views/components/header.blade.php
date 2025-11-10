@@ -7,7 +7,8 @@
             </a>
         </div>
         @auth
-            <nav class="main-nav">
+            {{-- Navigation removed as requested --}}
+            {{-- <nav class="main-nav">
                 <a href="{{ route('trips.index') }}" class="nav-link {{ request()->routeIs('trips.*') ? 'active' : '' }}">
                     <i class="fas fa-suitcase"></i>
                     Viajes
@@ -16,7 +17,7 @@
                     <i class="fas fa-users"></i>
                     Personas
                 </a>
-            </nav>
+            </nav> --}}
         @endauth
         <div class="header-right">
             @if(isset($showActions) && $showActions)
@@ -97,6 +98,14 @@
         color: white;
         padding: 1.25rem 2rem;
         box-shadow: var(--shadow-soft);
+        height: 80px;
+        display: flex;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
     }
 
     .header-content {
@@ -106,6 +115,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        width: 100%;
     }
 
     .viantryp-logo {
