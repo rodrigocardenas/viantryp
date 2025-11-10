@@ -694,9 +694,9 @@ export class ModalManager {
         });
 
         // Initialize with lodging types
-        console.log('Initializing autocomplete with lodging types...');
+        console.log('Initializing autocomplete with establishment types...');
         const success = await this.hotelAutocomplete.init(hotelInput, {
-            types: ['establishment'] // Try establishment instead of lodging
+            types: [] // Try without types restriction first
         });
 
         if (success) {

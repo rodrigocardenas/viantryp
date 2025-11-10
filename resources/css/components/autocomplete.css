@@ -3,6 +3,12 @@
 /* Base autocomplete input styles */
 .autocomplete-input {
     position: relative;
+    width: 100%;
+}
+
+/* Special wrapper for modal autocomplete to prevent overflow clipping */
+.modal .autocomplete-input {
+    position: static; /* Allow absolute positioning of dropdown relative to modal */
 }
 
 /* Loading state */
@@ -308,6 +314,57 @@
     border: 1px solid #e9ecef;
 }
 
+/* Google Places Autocomplete dropdown styling */
+.pac-container {
+    z-index: 99999 !important; /* Much higher than modal z-index (10000) */
+    border-radius: 8px !important;
+    border: 1px solid #e9ecef !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    font-family: inherit !important;
+    background-color: white !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+}
+
+.pac-item {
+    padding: 12px 16px !important;
+    cursor: pointer !important;
+    border-bottom: 1px solid #f8f9fa !important;
+}
+
+.pac-item:last-child {
+    border-bottom: none !important;
+}
+
+.pac-item:hover {
+    background-color: #f8f9fa !important;
+}
+
+.pac-item-query {
+    font-weight: 600 !important;
+    color: #495057 !important;
+}
+
+.pac-matched {
+    font-weight: 700 !important;
+    color: #007bff !important;
+}
+
+/* Ensure autocomplete works within modal */
+.modal .pac-container {
+    z-index: 999999 !important; /* Extremely high z-index */
+    position: absolute !important;
+    background-color: white !important;
+    border: 1px solid #ccc !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .pac-container {
@@ -324,7 +381,7 @@
 /* Dark mode support (if needed) */
 @media (prefers-color-scheme: dark) {
     .pac-container {
-        background-color: #343a40;
+        background-color: #242424;
         border-color: #495057;
         color: #fff;
     }
@@ -346,7 +403,7 @@
     }
 
     .selected-place-info {
-        background-color: #343a40;
+        background-color: #242424;
         border-color: #495057;
         color: #fff;
     }

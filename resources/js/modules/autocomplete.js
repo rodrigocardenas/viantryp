@@ -144,10 +144,9 @@ export class GooglePlacesAutocomplete {
 
             console.log('Setting up autocomplete with options:', this.options);
 
-            // Set types to lodging for hotels
+            // Use the options as provided (no override)
             const autocompleteOptions = {
-                ...this.options,
-                types: ['establishment'] // Changed from lodging to establishment
+                ...this.options
             };
 
             console.log('Creating autocomplete with options:', autocompleteOptions);
@@ -167,6 +166,11 @@ export class GooglePlacesAutocomplete {
 
             console.log('Autocomplete setup completed');
 
+            // Add additional debugging listeners
+            this.autocomplete.addListener('place_changed_error', (error) => {
+                console.error('Place changed error:', error);
+            });
+
         } catch (error) {
             console.error('Error setting up legacy autocomplete:', error);
             this.showError('Failed to setup autocomplete');
@@ -181,14 +185,55 @@ export class GooglePlacesAutocomplete {
 
         // Add loading indicator on input focus
         this.currentInput.addEventListener('focus', () => {
+            console.log('Input focused');
             this.showLoading();
+        });
+
+        // Listen for input events
+        this.currentInput.addEventListener('input', (e) => {
+            console.log('Input value changed to:', e.target.value);
+            // Check if pac-container exists and adjust its position
+            setTimeout(() => {
+                const pacContainer = document.querySelector('.pac-container');
+                console.log('Pac container exists:', !!pacContainer);
+                if (pacContainer) {
+                    console.log('Pac container style:', pacContainer.style.cssText);
+                    console.log('Pac container position:', pacContainer.getBoundingClientRect());
+
+                    // Force the dropdown to appear on top by moving it outside the modal
+                    const inputRect = this.currentInput.getBoundingClientRect();
+                    const modal = this.currentInput.closest('.modal');
+
+                    if (modal) {
+                        const modalRect = modal.getBoundingClientRect();
+                        // Position the dropdown relative to the viewport instead of the modal
+                        pacContainer.style.position = 'fixed';
+                        pacContainer.style.left = inputRect.left + 'px';
+                        pacContainer.style.top = (inputRect.bottom + window.scrollY) + 'px';
+                        pacContainer.style.zIndex = '1000000';
+                        pacContainer.style.width = inputRect.width + 'px';
+                        console.log('Repositioned pac-container to fixed position');
+                    }
+                }
+            }, 100);
         });
 
         // Clear loading on blur if no selection made
         this.currentInput.addEventListener('blur', () => {
-            setTimeout(() => {
+            console.log('Input blur event - checking for pac-container');
+            // Check if there's an active pac-container (dropdown is open)
+            const pacContainer = document.querySelector('.pac-container');
+            if (pacContainer && pacContainer.style.display !== 'none') {
+                console.log('Pac container is visible, delaying blur handling');
+                // Delay to allow place selection
+                setTimeout(() => {
+                    console.log('Delayed blur - hiding loading');
+                    this.hideLoading();
+                }, 300);
+            } else {
+                console.log('No pac container or hidden - hiding loading immediately');
                 this.hideLoading();
-            }, 200); // Delay to allow place selection
+            }
         });
     }
 
