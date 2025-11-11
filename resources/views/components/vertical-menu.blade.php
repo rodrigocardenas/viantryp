@@ -2,7 +2,6 @@
 {{-- Ubicación: resources/views/components/vertical-menu.blade.php --}}
 {{-- Propósito: Menú vertical interactivo con elementos del viaje --}}
 {{-- Props:
-    - activeItem: string (elemento activo: flight, transport, hotel, activity, summary, total)
 --}}
 
 @props(['activeItem' => 'activity'])
