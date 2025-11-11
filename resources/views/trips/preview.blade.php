@@ -17,7 +17,7 @@
                     </div>
                     <div class="header-right">
                         <div class="nav-actions">
-                            <a href="#" class="btn btn-back" onclick="showUnsavedChangesModal()">
+                            <a href="{{ route('trips.edit', $trip->id) }}" class="btn btn-back">
                                 <i class="fas fa-arrow-left"></i>
                                 Volver
                             </a>
@@ -64,6 +64,40 @@
         </header>
 
         @if(isset($trip) && $trip->items_data && count($trip->items_data) > 0)
+            @php
+                // Check for summary items
+                $summaryItems = array_filter($trip->items_data, function($item) {
+                    return isset($item['type']) && $item['type'] === 'summary';
+                });
+            @endphp
+
+            @if(count($summaryItems) > 0)
+                @foreach($summaryItems as $summaryItem)
+                    <div class="summary-section">
+                        <div class="summary-content">
+                            <h3>{{ $summaryItem['title'] ?? 'Resumen del Itinerario' }}</h3>
+                            <div class="summary-text">
+                                {!! nl2br(e($summaryItem['content'] ?? $summaryItem['subtitle'] ?? '')) !!}
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+
+            @php
+                // Group items by day (excluding summary items)
+                $itemsByDay = [];
+                foreach($trip->items_data as $item) {
+                    if (isset($item['type']) && $item['type'] === 'summary') {
+                        continue; // Skip summary items as they're already displayed
+                    }
+                    $day = $item['day'] ?? 1;
+                    if (!isset($itemsByDay[$day])) {
+                        $itemsByDay[$day] = [];
+                    }
+                    $itemsByDay[$day][] = $item;
+                }
+            @endphp
             @php
                 // Group items by day
                 $itemsByDay = [];
@@ -767,9 +801,6 @@
         color: white;
         padding: 1.25rem 2rem;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        height: 80px;
-        display: flex;
-        align-items: center;
     }
 
     .header-content {
@@ -779,7 +810,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 100%;
     }
 
     .viantryp-logo {
@@ -1218,9 +1248,6 @@
         box-shadow: var(--shadow-soft);
         padding: 1.25rem 2rem;
         color: white;
-        height: 80px;
-        display: flex;
-        align-items: center;
     }
 
     .header-content {
@@ -1229,7 +1256,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 100%;
     }
 
     .logo {
@@ -2105,9 +2131,6 @@
         color: white;
         padding: 1.25rem 2rem;
         box-shadow: var(--shadow-soft);
-        height: 80px;
-        display: flex;
-        align-items: center;
     }
 
     .header-content {
@@ -2117,7 +2140,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 100%;
     }
 
     .viantryp-logo {
@@ -2534,6 +2556,46 @@
 
     .document-link i {
         font-size: 12px;
+    }
+
+    /* Summary section styles */
+    .summary-section {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border-left: 4px solid #0ea5e9;
+    }
+
+    .summary-content h3 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .summary-content h3::before {
+        content: '📋';
+        font-size: 28px;
+    }
+
+    .summary-text {
+        font-size: 16px;
+        line-height: 1.7;
+        color: #374151;
+        white-space: pre-line;
+    }
+
+    .summary-text p {
+        margin-bottom: 15px;
+    }
+
+    .summary-text p:last-child {
+        margin-bottom: 0;
     }
 </style>
 @endpush

@@ -3,12 +3,6 @@
 /* Base autocomplete input styles */
 .autocomplete-input {
     position: relative;
-    width: 100%;
-}
-
-/* Special wrapper for modal autocomplete to prevent overflow clipping */
-.modal .autocomplete-input {
-    position: static; /* Allow absolute positioning of dropdown relative to modal */
 }
 
 /* Loading state */
@@ -103,7 +97,6 @@
     border-bottom: 1px solid #eee;
     font-size: 14px;
     line-height: 1.4;
-    color: white !important; /* Changed to white for better visibility */
 }
 
 .pac-item:last-child {
@@ -120,12 +113,11 @@
 
 .pac-item-query {
     font-weight: bold;
-    color: #ffffff !important; /* Changed to white */
+    color: #007bff;
 }
 
 .pac-matched {
     font-weight: bold;
-    color: #ffffff !important; /* Changed to white */
 }
 
 /* Place details in dropdown */
@@ -170,7 +162,7 @@
 
 /* Address styling */
 .autocomplete-address {
-    color: #ffffff !important; /* Changed to white */
+    color: #666;
     font-size: 12px;
     margin-top: 2px;
 }
@@ -179,7 +171,7 @@
 .autocomplete-price-level {
     margin-left: 8px;
     font-size: 12px;
-    color: #90EE90 !important; /* Light green for price level */
+    color: #28a745;
 }
 
 /* Selected place info display */
@@ -195,22 +187,6 @@
     font-weight: bold;
     color: #333;
     margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.selected-place-info .place-name .maps-link {
-    color: #007bff;
-    text-decoration: none;
-    font-size: 14px;
-    margin-left: 8px;
-    transition: color 0.2s;
-}
-
-.selected-place-info .place-name .maps-link:hover {
-    color: #0056b3;
-    text-decoration: none;
 }
 
 .selected-place-info .place-address {
@@ -497,17 +473,17 @@
 /* Dark mode support (if needed) */
 @media (prefers-color-scheme: dark) {
     .pac-container {
-        background-color: #c6c6c6 !important;
-        border-color: #c6c6c6;
+        background-color: #343a40;
+        border-color: #495057;
         color: #fff;
     }
 
     .pac-item:hover {
-        background-color: #a4a4a4;
+        background-color: #495057;
     }
 
     .pac-item-selected {
-        background-color: #9fa5aa;
+        background-color: #6c757d;
     }
 
     .pac-item-query {
@@ -519,7 +495,7 @@
     }
 
     .selected-place-info {
-        background-color: #242424;
+        background-color: #343a40;
         border-color: #495057;
         color: #fff;
     }

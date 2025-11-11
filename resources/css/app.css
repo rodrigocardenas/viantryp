@@ -1,13 +1,3 @@
-/* Import existing component styles */
-@import './components/sidebar.css';
-@import './components/trip-header.css';
-@import './components/timeline.css';
-@import './components/modals.css';
-@import './components/editor-layout.css';
-@import './components/timeline-items.css';
-@import './components/vertical-menu.css';
-@import './components/autocomplete.css';
-
 /* Base styles for Viantryp */
 :root {
     --blue-50: #eff6ff;
@@ -151,3 +141,11 @@ input[type="text"]:focus {
     border-color: var(--blue-500);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
+
+/* Import existing component styles */
+@import './components/sidebar.css';
+@import './components/trip-header.css';
+@import './components/timeline.css';
+@import './components/modals.css';
+@import './components/editor-layout.css';
+@import './components/timeline-items.css';

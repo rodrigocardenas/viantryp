@@ -19,6 +19,7 @@
     background: #f8f9fa;
     padding: 1rem 1.5rem;
     border-bottom: 1px solid #dee2e6;
+    position: relative;
 }
 
 .day-header h3 {
@@ -92,4 +93,29 @@
     background: #218838;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* Delete Day Button */
+.delete-day-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.delete-day-btn:hover {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #dc3545;
 }

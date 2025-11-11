@@ -14,6 +14,11 @@
                 <div class="day-header">
                     <h3>Día {{ $day->day }}</h3>
                     <p class="day-date">{{ $day->getFormattedDate() }}</p>
+                    @if(count($trip->days) > 1)
+                        <button class="delete-day-btn" data-action="delete-day" data-day="{{ $day->day }}" title="Eliminar día">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    @endif
                 </div>
                 <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
                     <div class="add-element-btn" data-action="add-element" data-day="{{ $day->day }}">
@@ -41,6 +46,9 @@
                         martes, 16 de septiembre de 2025
                     @endif
                 </p>
+                <button class="delete-day-btn" data-action="delete-day" data-day="1" title="Eliminar día">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
                             <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
                     <div class="add-element-btn" data-action="add-element" data-day="1">

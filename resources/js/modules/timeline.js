@@ -247,6 +247,9 @@ export class TimelineManager {
             <div class="day-header">
                 <h3>Día ${newDayNumber}</h3>
                 <p class="day-date">${dayDate}</p>
+                <button class="delete-day-btn" data-action="delete-day" data-day="${newDayNumber}" title="Eliminar día">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
             <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <div class="add-element-btn" data-action="add-element" data-day="${newDayNumber}">
