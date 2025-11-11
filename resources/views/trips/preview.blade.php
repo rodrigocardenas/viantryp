@@ -193,7 +193,7 @@
                                         <!-- Conector de vuelo -->
                                         <div class="flight-connector">
                                             <div class="plane-container">
-                                                <i class="fas fa-plane flight-plane" style="color: #1e3a8a;"></i>
+                                                <i class="fas fa-plane flight-plane" style="color: #000000;"></i>
                                                 
                                             </div>
                                         </div>
