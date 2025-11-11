@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http;
 class GooglePlacesController extends Controller
 {
     /**
-     * Get detailed information about a place using its place_id
+     * Get detailed information about a place using its place_id.
      */
     public function getPlaceDetails(Request $request)
     {
