@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Mail\SendTripLink;
@@ -152,7 +153,7 @@ class TripController extends Controller
         }
 
         return view('trips.preview', [
-            'trip' => $trip->load('user'),
+            'trip' => $this->enrichHotelData($trip->load('user')),
             'isPublicPreview' => false
         ]);
     }
@@ -334,7 +335,7 @@ class TripController extends Controller
         }
 
         return view('trips.preview', [
-            'trip' => $trip,
+            'trip' => $this->enrichHotelData($trip),
             'isPublicPreview' => !Auth::check()
         ]);
     }
@@ -358,7 +359,7 @@ class TripController extends Controller
         }
 
         return view('trips.preview', [
-            'trip' => $trip->load('user', 'documents'),
+            'trip' => $this->enrichHotelData($trip->load('user', 'documents')),
             'isPublicPreview' => true,
             'isSharedPreview' => true
         ]);
@@ -574,5 +575,74 @@ class TripController extends Controller
                  'message' => 'No se pudo enviar el correo. Por favor intenta de nuevo.'
              ], 500);
          }
+     }
+
+     /**
+      * Enrich hotel data with Google Places details
+      */
+     private function enrichHotelData(Trip $trip): Trip
+     {
+         if (!$trip->items_data || !is_array($trip->items_data)) {
+             return $trip;
+         }
+
+         $apiKey = config('services.google.places_api_key');
+         if (!$apiKey) {
+             return $trip;
+         }
+
+         // Create a copy of the items_data array to avoid indirect modification issues
+         $itemsData = $trip->items_data;
+
+         foreach ($itemsData as &$item) {
+             if (isset($item['type']) && $item['type'] === 'hotel' && isset($item['hotel_id'])) {
+                 try {
+                     $response = Http::get("https://maps.googleapis.com/maps/api/place/details/json", [
+                         'place_id' => $item['hotel_id'],
+                         'fields' => 'name,formatted_address,photos,rating,reviews,opening_hours,website,international_phone_number,price_level,types',
+                         'key' => $apiKey,
+                     ]);
+
+                     $data = $response->json();
+
+                     if ($data['status'] === 'OK') {
+                         $placeDetails = $data['result'];
+
+                         // Add detailed information to the item
+                         $item['detailed_info'] = [
+                             'name' => $placeDetails['name'] ?? $item['hotel_name'] ?? '',
+                             'formatted_address' => $placeDetails['formatted_address'] ?? '',
+                             'rating' => $placeDetails['rating'] ?? null,
+                             'website' => $placeDetails['website'] ?? null,
+                             'international_phone_number' => $placeDetails['international_phone_number'] ?? null,
+                             'price_level' => $placeDetails['price_level'] ?? null,
+                             'types' => $placeDetails['types'] ?? [],
+                         ];
+
+                         // Process photos with full URLs
+                         if (isset($placeDetails['photos']) && is_array($placeDetails['photos'])) {
+                             $item['detailed_info']['photos'] = array_map(function($photo) use ($apiKey) {
+                                 return [
+                                     'url' => "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&maxheight=600&photoreference={$photo['photo_reference']}&key={$apiKey}",
+                                     'photo_reference' => $photo['photo_reference'],
+                                     'width' => $photo['width'] ?? null,
+                                     'height' => $photo['height'] ?? null,
+                                 ];
+                             }, array_slice($placeDetails['photos'], 0, 10)); // Limit to 10 photos
+                         }
+                     }
+                 } catch (\Exception $e) {
+                     // Log error but continue processing
+                     Log::warning('Failed to enrich hotel data for place_id: ' . $item['hotel_id'], [
+                         'error' => $e->getMessage()
+                     ]);
+                 }
+             }
+         }
+
+         // Update the trip with enriched data
+         $trip->items_data = $itemsData;
+
+         return $trip;
      }
  }
