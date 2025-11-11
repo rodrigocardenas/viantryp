@@ -14,8 +14,8 @@
 
         <form id="new-trip-form" class="modal-body">
             <div class="form-group">
-                <label for="trip-title">Título del Viaje *</label>
-                <input type="text" id="trip-title" name="title" required
+                <label for="new-trip-title">Título del Viaje *</label>
+                <input type="text" id="new-trip-title" name="title" required
                        placeholder="Ej: Viaje a Barcelona 2024">
             </div>
 
@@ -244,7 +244,7 @@ function createTrip() {
             document.getElementById('editor-container').style.display = 'flex';
 
             // Actualizar título
-            document.getElementById('trip-title').textContent = title;
+            document.getElementById('trip-title').value = title;
 
             // Configurar datos del viaje
             window.currentTripId = data.trip.id;
@@ -306,6 +306,17 @@ document.addEventListener('DOMContentLoaded', function() {
         endDateInput.addEventListener('change', function() {
             if (startDateInput.value && this.value < startDateInput.value) {
                 this.value = startDateInput.value;
+            }
+        });
+    }
+
+    // Add Enter key functionality to trip title input
+    const tripTitleInput = document.getElementById('new-trip-title');
+    if (tripTitleInput) {
+        tripTitleInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                createTrip();
             }
         });
     }
