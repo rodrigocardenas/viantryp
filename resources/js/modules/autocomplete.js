@@ -11,7 +11,6 @@ export class GooglePlacesAutocomplete {
         this.isLoaded = false;
         this.callbacks = {
             onPlaceSelect: null,
-            onPlaceDetails: null,
             onError: null
         };
     }
@@ -53,10 +52,7 @@ export class GooglePlacesAutocomplete {
         // Try to get from meta tag first
         const metaTag = document.querySelector('meta[name="google-places-api-key"]');
         if (metaTag) {
-            const key = metaTag.getAttribute('content');
-            if (key && key.trim()) {
-                return key.trim();
-            }
+            return metaTag.getAttribute('content');
         }
 
         // Fallback to global variable if set by Laravel
@@ -69,7 +65,8 @@ export class GooglePlacesAutocomplete {
             return window.Laravel.services.google.places_api_key;
         }
 
-        console.error('Google Places API key not found. Make sure GOOGLE_PLACES_API_KEY is set in your .env file');
+        console.warn('Google Places API key not found in meta tag or global config');
+
         return null;
     }
 
@@ -78,27 +75,45 @@ export class GooglePlacesAutocomplete {
      */
     async loadGoogleMapsAPI() {
         return new Promise((resolve, reject) => {
-            // Check if already loaded
             if (window.google && window.google.maps && window.google.maps.places) {
                 this.isLoaded = true;
                 resolve();
                 return;
             }
 
-            // Wait for the API to load (script is loaded in layout)
-            const checkLoaded = setInterval(() => {
-                if (window.google && window.google.maps && window.google.maps.places) {
-                    clearInterval(checkLoaded);
-                    this.isLoaded = true;
-                    resolve();
-                }
-            }, 100);
+            if (document.querySelector('script[src*="maps.googleapis.com"]')) {
+                // Script is already loading, wait for it
+                const checkLoaded = setInterval(() => {
+                    if (window.google && window.google.maps && window.google.maps.places) {
+                        clearInterval(checkLoaded);
+                        this.isLoaded = true;
+                        resolve();
+                    }
+                }, 100);
 
-            // Timeout after 10 seconds
-            setTimeout(() => {
-                clearInterval(checkLoaded);
-                reject(new Error('Google Maps API loading timeout - check your API key and network connection'));
-            }, 10000);
+                setTimeout(() => {
+                    clearInterval(checkLoaded);
+                    reject(new Error('Google Maps API loading timeout'));
+                }, 10000);
+                return;
+            }
+
+            // Load the script with async loading
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${this.apiKey}&libraries=places&v=weekly&loading=async`;
+            script.async = true;
+            script.defer = false; // Remove defer to avoid the warning
+
+            script.onload = () => {
+                this.isLoaded = true;
+                resolve();
+            };
+
+            script.onerror = () => {
+                reject(new Error('Failed to load Google Maps API'));
+            };
+
+            document.head.appendChild(script);
         });
     }
 
@@ -133,42 +148,20 @@ export class GooglePlacesAutocomplete {
      */
     setupLegacyAutocomplete() {
         try {
-            // Validate that Google Maps API is properly loaded
-            if (!window.google || !window.google.maps || !window.google.maps.places) {
-                throw new Error('Google Maps Places API not available');
-            }
-
-            if (!window.google.maps.places.Autocomplete) {
-                throw new Error('Google Maps Places Autocomplete not available - check API key permissions');
-            }
-
-            console.log('Setting up autocomplete with options:', this.options);
-
-            // Use the options as provided (no override)
+            // Set types to lodging for hotels
             const autocompleteOptions = {
-                ...this.options
+                ...this.options,
+                types: ['lodging'] // This works with the legacy API
             };
-
-            console.log('Creating autocomplete with options:', autocompleteOptions);
 
             this.autocomplete = new google.maps.places.Autocomplete(
                 this.currentInput,
                 autocompleteOptions
             );
 
-            console.log('Autocomplete created successfully');
-
             // Add place_changed listener
             this.autocomplete.addListener('place_changed', () => {
-                console.log('Place changed event triggered');
                 this.handlePlaceSelect();
-            });
-
-            console.log('Autocomplete setup completed');
-
-            // Add additional debugging listeners
-            this.autocomplete.addListener('place_changed_error', (error) => {
-                console.error('Place changed error:', error);
             });
 
         } catch (error) {
@@ -185,55 +178,14 @@ export class GooglePlacesAutocomplete {
 
         // Add loading indicator on input focus
         this.currentInput.addEventListener('focus', () => {
-            console.log('Input focused');
             this.showLoading();
-        });
-
-        // Listen for input events
-        this.currentInput.addEventListener('input', (e) => {
-            console.log('Input value changed to:', e.target.value);
-            // Check if pac-container exists and adjust its position
-            setTimeout(() => {
-                const pacContainer = document.querySelector('.pac-container');
-                console.log('Pac container exists:', !!pacContainer);
-                if (pacContainer) {
-                    console.log('Pac container style:', pacContainer.style.cssText);
-                    console.log('Pac container position:', pacContainer.getBoundingClientRect());
-
-                    // Force the dropdown to appear on top by moving it outside the modal
-                    const inputRect = this.currentInput.getBoundingClientRect();
-                    const modal = this.currentInput.closest('.modal');
-
-                    if (modal) {
-                        const modalRect = modal.getBoundingClientRect();
-                        // Position the dropdown relative to the viewport instead of the modal
-                        pacContainer.style.position = 'fixed';
-                        pacContainer.style.left = inputRect.left + 'px';
-                        pacContainer.style.top = (inputRect.bottom + window.scrollY) + 'px';
-                        pacContainer.style.zIndex = '1000000';
-                        pacContainer.style.width = inputRect.width + 'px';
-                        console.log('Repositioned pac-container to fixed position');
-                    }
-                }
-            }, 100);
         });
 
         // Clear loading on blur if no selection made
         this.currentInput.addEventListener('blur', () => {
-            console.log('Input blur event - checking for pac-container');
-            // Check if there's an active pac-container (dropdown is open)
-            const pacContainer = document.querySelector('.pac-container');
-            if (pacContainer && pacContainer.style.display !== 'none') {
-                console.log('Pac container is visible, delaying blur handling');
-                // Delay to allow place selection
-                setTimeout(() => {
-                    console.log('Delayed blur - hiding loading');
-                    this.hideLoading();
-                }, 300);
-            } else {
-                console.log('No pac container or hidden - hiding loading immediately');
+            setTimeout(() => {
                 this.hideLoading();
-            }
+            }, 200); // Delay to allow place selection
         });
     }
 
@@ -272,56 +224,11 @@ export class GooglePlacesAutocomplete {
 
         const placeData = this.extractPlaceData(place);
 
-        // Call onPlaceSelect callback with basic data
         if (this.callbacks.onPlaceSelect) {
             this.callbacks.onPlaceSelect(placeData);
         }
 
-        // Fetch additional details from backend
-        this.fetchPlaceDetails(placeData.place_id);
-
         this.hideLoading();
-    }
-
-    /**
-     * Fetch additional place details from backend
-     * @param {string} placeId - The Google Places place_id
-     */
-    async fetchPlaceDetails(placeId) {
-        const url = '/api/places/details';
-        console.log('Fetching place details from URL:', url);
-        console.log('Full URL:', window.location.origin + url);
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                },
-                body: JSON.stringify({ place_id: placeId })
-            });
-
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const details = await response.json();
-            console.log('Place details received:', details);
-
-            // Call onPlaceDetails callback with full details
-            if (this.callbacks.onPlaceDetails) {
-                this.callbacks.onPlaceDetails(details);
-            }
-        } catch (error) {
-            console.error('Error fetching place details:', error);
-            if (this.callbacks.onError) {
-                this.callbacks.onError('Failed to fetch place details');
-            }
-        }
     }
 
     /**

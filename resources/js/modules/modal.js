@@ -15,7 +15,7 @@ const elementLabelsData = {
 
 const elementFormsData = {
   "flight": "<div class=\"form-group\"><label for=\"airline\">Aerolínea</label><select id=\"airline\" class=\"form-input airline-select\" placeholder=\"Ej: Iberia\"><option value=\"\">Seleccionar aerolínea</option></select></div><div class=\"form-group\"><label for=\"flight-number\">Número de Vuelo</label><input type=\"text\" id=\"flight-number\" class=\"form-input\" placeholder=\"Ej: IB1234\"><button type=\"button\" id=\"lookup-flight\" class=\"btn-lookup-flight\" title=\"Buscar información del vuelo\"><i class=\"fas fa-search\"></i> Buscar vuelo</button></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-time\">Hora de Salida</label><input type=\"time\" id=\"departure-time\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"arrival-time\">Hora de Llegada</label><input type=\"time\" id=\"arrival-time\" class=\"form-input\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-airport\">Aeropuerto de Salida</label><select id=\"departure-airport\" class=\"form-input airport-select\" placeholder=\"Ej: Madrid Barajas\"><option value=\"\">Seleccionar aeropuerto</option></select></div><div class=\"form-group\"><label for=\"arrival-airport\">Aeropuerto de Llegada</label><select id=\"arrival-airport\" class=\"form-input airport-select\" placeholder=\"Ej: París Charles de Gaulle\"><option value=\"\">Seleccionar aeropuerto</option></select></div></div><div class=\"form-group\"><label for=\"confirmation-number\">Número de Confirmación</label><input type=\"text\" id=\"confirmation-number\" class=\"form-input\" placeholder=\"Ej: ABC123\"></div><div class=\"form-group\"><label for=\"flight-documents\">Documentos</label><input type=\"file\" id=\"flight-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el vuelo</small></div>",
-  "hotel": "<div class=\"form-group\"><label for=\"hotel-name\">Nombre del Hotel</label><div class=\"autocomplete-input\"><input type=\"text\" id=\"hotel-name\" class=\"form-input hotel-autocomplete\" placeholder=\"Ej: Hotel Central\" autocomplete=\"off\"></div><div id=\"selected-place-info\" class=\"selected-place-info\" style=\"display: none;\"></div><div id=\"selected-place-details\" class=\"selected-place-details\" style=\"display: none;\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"check-in\">Check-in</label><input type=\"time\" id=\"check-in\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"check-out\">Check-out</label><input type=\"time\" id=\"check-out\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"room-type\">Tipo de Habitación</label><input type=\"text\" id=\"room-type\" class=\"form-input\" placeholder=\"Ej: Habitación doble\"></div><div class=\"form-group\"><label for=\"nights\">Noches</label><input type=\"number\" id=\"nights\" class=\"form-input\" min=\"1\" placeholder=\"2\"></div><div class=\"form-group\"><label for=\"hotel-documents\">Documentos</label><input type=\"file\" id=\"hotel-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el hotel</small></div>",
+  "hotel": "<div class=\"form-group\"><label for=\"hotel-name\">Nombre del Hotel</label><div class=\"autocomplete-input\"><input type=\"text\" id=\"hotel-name\" class=\"form-input hotel-autocomplete\" placeholder=\"Ej: Hotel Central\" autocomplete=\"off\"></div><div id=\"selected-place-info\" class=\"selected-place-info\" style=\"display: none;\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"check-in\">Check-in</label><input type=\"time\" id=\"check-in\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"check-out\">Check-out</label><input type=\"time\" id=\"check-out\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"room-type\">Tipo de Habitación</label><input type=\"text\" id=\"room-type\" class=\"form-input\" placeholder=\"Ej: Habitación doble\"></div><div class=\"form-group\"><label for=\"nights\">Noches</label><input type=\"number\" id=\"nights\" class=\"form-input\" min=\"1\" placeholder=\"2\"></div><div class=\"form-group\"><label for=\"hotel-documents\">Documentos</label><input type=\"file\" id=\"hotel-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el hotel</small></div>",
   "activity": "<div class=\"form-group\"><label for=\"activity-title\">Título de la Actividad</label><input type=\"text\" id=\"activity-title\" class=\"form-input\" placeholder=\"Ej: Visita al Louvre\"></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"start-time\">Hora de Inicio</label><input type=\"time\" id=\"start-time\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"end-time\">Hora de Fin</label><input type=\"time\" id=\"end-time\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"location\">Ubicación</label><input type=\"text\" id=\"location\" class=\"form-input\" placeholder=\"Ej: Museo del Louvre, París\"></div><div class=\"form-group\"><label for=\"description\">Descripción</label><textarea id=\"description\" class=\"form-input\" rows=\"3\" placeholder=\"Detalles de la actividad...\"></textarea></div>",
   "transport": "<div class=\"form-group\"><label for=\"transport-type\">Tipo de Transporte</label><input type=\"text\" id=\"transport-type\" class=\"form-input\" placeholder=\"Ej: Taxi, Metro, Bus\"></div><div class=\"form-group\"><label for=\"pickup-time\">Hora de Recogida</label><input type=\"time\" id=\"pickup-time\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"pickup-location\">Punto de Recogida</label><input type=\"text\" id=\"pickup-location\" class=\"form-input\" placeholder=\"Ej: Hotel Plaza\"></div><div class=\"form-group\"><label for=\"destination\">Destino</label><input type=\"text\" id=\"destination\" class=\"form-input\" placeholder=\"Ej: Aeropuerto\"></div><div class=\"form-group\"><label for=\"transport-documents\">Documentos</label><input type=\"file\" id=\"transport-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el traslado</small></div>",
   "note": "<div class=\"form-group\"><label for=\"note-title\">Título de la Nota</label><input type=\"text\" id=\"note-title\" class=\"form-input\" placeholder=\"Ej: Recordatorios importantes\"></div><div class=\"form-group\"><label for=\"note-content\">Contenido</label><textarea id=\"note-content\" class=\"form-input\" rows=\"4\" placeholder=\"Escribe tu nota aquí...\"></textarea></div>",
@@ -661,16 +661,10 @@ export class ModalManager {
      */
     async initializeHotelAutocomplete() {
         const hotelInput = document.querySelector('#modal-body #hotel-name');
-        if (!hotelInput) {
-            console.error('Hotel input not found');
-            return;
-        }
-
-        console.log('Initializing hotel autocomplete for input:', hotelInput);
+        if (!hotelInput) return;
 
         // Destroy existing instance if any
         if (this.hotelAutocomplete) {
-            console.log('Destroying existing autocomplete instance');
             this.hotelAutocomplete.destroy();
         }
 
@@ -680,12 +674,7 @@ export class ModalManager {
         // Set callbacks
         this.hotelAutocomplete.setCallbacks({
             onPlaceSelect: (placeData) => {
-                console.log('Hotel place selected:', placeData);
                 this.handleHotelPlaceSelect(placeData);
-            },
-            onPlaceDetails: (details) => {
-                console.log('Hotel details received:', details);
-                this.handleHotelPlaceDetails(details);
             },
             onError: (error) => {
                 console.error('Hotel autocomplete error:', error);
@@ -694,15 +683,12 @@ export class ModalManager {
         });
 
         // Initialize with lodging types
-        console.log('Initializing autocomplete with establishment types...');
         const success = await this.hotelAutocomplete.init(hotelInput, {
-            types: [] // Try without types restriction first
+            types: ['lodging']
         });
 
-        if (success) {
-            console.log('Hotel autocomplete initialized successfully');
-        } else {
-            console.error('Failed to initialize hotel autocomplete');
+        if (!success) {
+            console.warn('Failed to initialize hotel autocomplete');
         }
     }
 
@@ -710,38 +696,19 @@ export class ModalManager {
      * Handle hotel place selection from autocomplete
      */
     handleHotelPlaceSelect(placeData) {
-        console.log('Hotel selected - placeData:', placeData);
-        console.log('Hotel name:', placeData.name);
+        console.log('Hotel selected:', placeData);
 
         // Store selected hotel data
         this.selectedHotelData = placeData;
 
         // Update input value
         const hotelInput = document.querySelector('#modal-body #hotel-name');
-        console.log('Hotel input element:', hotelInput);
         if (hotelInput) {
-            console.log('Setting input value to:', placeData.name);
             hotelInput.value = placeData.name;
-            console.log('Input value after setting:', hotelInput.value);
-        } else {
-            console.error('Hotel input not found when trying to update value');
         }
 
         // Display selected place information
         this.displaySelectedPlaceInfo(placeData);
-    }
-
-    /**
-     * Handle detailed hotel place information from backend
-     */
-    handleHotelPlaceDetails(details) {
-        console.log('Hotel details received:', details);
-
-        // Store detailed hotel data
-        this.selectedHotelDetails = details;
-
-        // Update display with additional information
-        this.displaySelectedPlaceDetails(details);
     }
 
     /**
@@ -751,28 +718,14 @@ export class ModalManager {
         const infoContainer = document.getElementById('selected-place-info');
         if (!infoContainer) return;
 
-        console.log('Displaying place info for:', placeData);
-
         // Generate star rating HTML
         const ratingHtml = placeData.rating ? this.generateStarRating(placeData.rating) : '';
 
         // Generate price level HTML
         const priceHtml = placeData.price_level ? this.generatePriceLevel(placeData.price_level) : '';
 
-        // Generate Google Maps link
-        const mapsUrl = placeData.geometry && placeData.geometry.location ?
-            `https://www.google.com/maps/search/?api=1&query=${placeData.geometry.location.lat},${placeData.geometry.location.lng}` :
-            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeData.name + ' ' + (placeData.formatted_address || ''))}`;
-
-        console.log('Generated maps URL:', mapsUrl);
-
         infoContainer.innerHTML = `
-            <div class="place-name">
-                ${placeData.name}
-                <a href="${mapsUrl}" target="_blank" class="maps-link" title="Ver en Google Maps">
-                    <i class="fas fa-external-link-alt"></i>
-                </a>
-            </div>
+            <div class="place-name">${placeData.name}</div>
             <div class="place-address">${placeData.formatted_address || ''}</div>
             <div class="place-details">
                 ${ratingHtml ? `<span class="place-rating">${ratingHtml} <span class="rating-text">(${placeData.rating})</span></span>` : ''}
@@ -781,34 +734,6 @@ export class ModalManager {
         `;
 
         infoContainer.style.display = 'block';
-        console.log('Place info displayed');
-    }
-
-    /**
-     * Display detailed information about the selected place
-     */
-    displaySelectedPlaceDetails(details) {
-        const detailsContainer = document.getElementById('selected-place-details');
-        if (!detailsContainer) return;
-
-        // Generate reviews HTML
-        const reviewsHtml = details.reviews ? this.generateReviewsHtml(details.reviews) : '';
-
-        // Generate photos HTML
-        const photosHtml = details.photos ? this.generatePhotosHtml(details.photos) : '';
-
-        detailsContainer.innerHTML = `
-            <div class="place-website">
-                ${details.website ? `<a href="${details.website}" target="_blank" class="website-link"><i class="fas fa-globe"></i> Sitio web</a>` : ''}
-            </div>
-            <div class="place-phone">
-                ${details.international_phone_number ? `<i class="fas fa-phone"></i> ${details.international_phone_number}` : ''}
-            </div>
-            ${reviewsHtml ? `<div class="place-reviews">${reviewsHtml}</div>` : ''}
-            ${photosHtml ? `<div class="place-photos">${photosHtml}</div>` : ''}
-        `;
-
-        detailsContainer.style.display = 'block';
     }
 
     /**
@@ -848,53 +773,6 @@ export class ModalManager {
             price += '$';
         }
         return price;
-    }
-
-    /**
-     * Generate reviews HTML
-     */
-    generateReviewsHtml(reviews) {
-        if (!reviews || reviews.length === 0) return '';
-
-        const recentReviews = reviews.slice(0, 3); // Show only first 3 reviews
-        let html = '<h4>Reseñas recientes:</h4>';
-
-        recentReviews.forEach(review => {
-            const rating = this.generateStarRating(review.rating);
-            html += `
-                <div class="review">
-                    <div class="review-header">
-                        <strong>${review.author_name}</strong>
-                        <span class="review-rating">${rating}</span>
-                    </div>
-                    <p class="review-text">${review.text}</p>
-                    <small class="review-date">${new Date(review.time * 1000).toLocaleDateString()}</small>
-                </div>
-            `;
-        });
-
-        return html;
-    }
-
-    /**
-     * Generate photos HTML
-     */
-    generatePhotosHtml(photos) {
-        if (!photos || photos.length === 0) return '';
-
-        let html = '<h4>Fotos:</h4><div class="photos-grid">';
-
-        photos.slice(0, 6).forEach(photo => { // Show only first 6 photos
-            // Use the URL provided by the backend (Google Places Photo API)
-            const photoUrl = photo.url || photo.photo_reference;
-
-            if (photoUrl) {
-                html += `<img src="${photoUrl}" alt="Hotel photo" class="place-photo" loading="lazy" onclick="window.open('${photoUrl}', '_blank')">`;
-            }
-        });
-
-        html += '</div>';
-        return html;
     }
 
     closeModal() {

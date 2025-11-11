@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\AirlineController;
-use App\Http\Controllers\GooglePlacesController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
@@ -67,9 +66,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('documents/{document}', [\App\Http\Controllers\TripDocumentController::class, 'destroy'])->name('documents.destroy');
     Route::get('documents/{document}/download', [\App\Http\Controllers\TripDocumentController::class, 'download'])->name('documents.download');
 });
-
-// Google Places API routes (outside auth middleware for AJAX requests)
-Route::post('api/places/details', [GooglePlacesController::class, 'getPlaceDetails'])->name('places.details');
 
 // Public preview route (no authentication required)
 Route::get('trips/{trip}/preview', [TripController::class, 'preview'])->name('trips.preview');

@@ -3,12 +3,6 @@
 /* Base autocomplete input styles */
 .autocomplete-input {
     position: relative;
-    width: 100%;
-}
-
-/* Special wrapper for modal autocomplete to prevent overflow clipping */
-.modal .autocomplete-input {
-    position: static; /* Allow absolute positioning of dropdown relative to modal */
 }
 
 /* Loading state */
@@ -103,7 +97,6 @@
     border-bottom: 1px solid #eee;
     font-size: 14px;
     line-height: 1.4;
-    color: white !important; /* Changed to white for better visibility */
 }
 
 .pac-item:last-child {
@@ -120,12 +113,11 @@
 
 .pac-item-query {
     font-weight: bold;
-    color: #ffffff !important; /* Changed to white */
+    color: #007bff;
 }
 
 .pac-matched {
     font-weight: bold;
-    color: #ffffff !important; /* Changed to white */
 }
 
 /* Place details in dropdown */
@@ -170,7 +162,7 @@
 
 /* Address styling */
 .autocomplete-address {
-    color: #ffffff !important; /* Changed to white */
+    color: #666;
     font-size: 12px;
     margin-top: 2px;
 }
@@ -179,7 +171,7 @@
 .autocomplete-price-level {
     margin-left: 8px;
     font-size: 12px;
-    color: #90EE90 !important; /* Light green for price level */
+    color: #28a745;
 }
 
 /* Selected place info display */
@@ -195,22 +187,6 @@
     font-weight: bold;
     color: #333;
     margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.selected-place-info .place-name .maps-link {
-    color: #007bff;
-    text-decoration: none;
-    font-size: 14px;
-    margin-left: 8px;
-    transition: color 0.2s;
-}
-
-.selected-place-info .place-name .maps-link:hover {
-    color: #0056b3;
-    text-decoration: none;
 }
 
 .selected-place-info .place-address {
@@ -237,213 +213,6 @@
     margin-right: 4px;
 }
 
-/* Selected place details styles */
-.selected-place-details {
-    margin-top: 20px;
-    padding: 20px;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    border-radius: 12px;
-    border: 1px solid #e9ecef;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    position: relative;
-    overflow: hidden;
-}
-
-.selected-place-details::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #007bff, #28a745, #ffc107);
-}
-
-.selected-place-details .place-website,
-.selected-place-details .place-phone {
-    margin-bottom: 15px;
-    font-size: 14px;
-    padding: 8px 12px;
-    background: white;
-    border-radius: 8px;
-    border: 1px solid #e9ecef;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.selected-place-details .place-website i,
-.selected-place-details .place-phone i {
-    color: #007bff;
-    width: 16px;
-}
-
-.selected-place-details .place-website a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.selected-place-details .place-website a:hover {
-    color: #0056b3;
-    text-decoration: underline;
-}
-
-.selected-place-details .place-reviews {
-    margin-top: 20px;
-}
-
-.selected-place-details .place-reviews h4 {
-    margin-bottom: 15px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.selected-place-details .place-reviews h4::before {
-    content: '⭐';
-    font-size: 18px;
-}
-
-.selected-place-details .review {
-    margin-bottom: 15px;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    border: 1px solid #e9ecef;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.selected-place-details .review:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.selected-place-details .review-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.selected-place-details .review-header strong {
-    color: #333;
-    font-size: 15px;
-}
-
-.selected-place-details .review-rating {
-    font-size: 14px;
-}
-
-.selected-place-details .review-text {
-    color: #666;
-    font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 8px;
-}
-
-.selected-place-details .review-date {
-    color: #999;
-    font-size: 12px;
-    font-style: italic;
-}
-
-.selected-place-details .place-photos {
-    margin-top: 20px;
-}
-
-.selected-place-details .place-photos h4 {
-    margin-bottom: 15px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.selected-place-details .place-photos h4::before {
-    content: '📸';
-    font-size: 18px;
-}
-
-.selected-place-details .photos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px;
-}
-
-.selected-place-details .place-photo {
-    width: 100%;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 2px solid #e9ecef;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    cursor: pointer;
-}
-
-.selected-place-details .place-photo:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-color: #007bff;
-}
-
-/* Google Places Autocomplete dropdown styling */
-.pac-container {
-    z-index: 99999 !important; /* Much higher than modal z-index (10000) */
-    border-radius: 8px !important;
-    border: 1px solid #e9ecef !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    font-family: inherit !important;
-    background-color: white !important;
-    max-height: 200px !important;
-    overflow-y: auto !important;
-}
-
-.pac-item {
-    padding: 12px 16px !important;
-    cursor: pointer !important;
-    border-bottom: 1px solid #f8f9fa !important;
-}
-
-.pac-item:last-child {
-    border-bottom: none !important;
-}
-
-.pac-item:hover {
-    background-color: #f8f9fa !important;
-}
-
-.pac-item-query {
-    font-weight: 600 !important;
-    color: #495057 !important;
-}
-
-.pac-matched {
-    font-weight: 700 !important;
-    color: #007bff !important;
-}
-
-/* Ensure autocomplete works within modal */
-.modal .pac-container {
-    z-index: 999999 !important; /* Extremely high z-index */
-    position: absolute !important;
-    background-color: white !important;
-    border: 1px solid #ccc !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important;
-    max-height: 200px !important;
-    overflow-y: auto !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .pac-container {
@@ -460,17 +229,17 @@
 /* Dark mode support (if needed) */
 @media (prefers-color-scheme: dark) {
     .pac-container {
-        background-color: #c6c6c6 !important;
-        border-color: #c6c6c6;
+        background-color: #343a40;
+        border-color: #495057;
         color: #fff;
     }
 
     .pac-item:hover {
-        background-color: #a4a4a4;
+        background-color: #495057;
     }
 
     .pac-item-selected {
-        background-color: #9fa5aa;
+        background-color: #6c757d;
     }
 
     .pac-item-query {
@@ -482,7 +251,7 @@
     }
 
     .selected-place-info {
-        background-color: #242424;
+        background-color: #343a40;
         border-color: #495057;
         color: #fff;
     }

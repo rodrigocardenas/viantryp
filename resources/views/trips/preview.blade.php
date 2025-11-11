@@ -767,9 +767,6 @@
         color: white;
         padding: 1.25rem 2rem;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        height: 80px;
-        display: flex;
-        align-items: center;
     }
 
     .header-content {
@@ -779,7 +776,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 100%;
     }
 
     .viantryp-logo {
@@ -1218,9 +1214,6 @@
         box-shadow: var(--shadow-soft);
         padding: 1.25rem 2rem;
         color: white;
-        height: 80px;
-        display: flex;
-        align-items: center;
     }
 
     .header-content {
@@ -1229,7 +1222,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 100%;
     }
 
     .logo {
@@ -2105,9 +2097,6 @@
         color: white;
         padding: 1.25rem 2rem;
         box-shadow: var(--shadow-soft);
-        height: 80px;
-        display: flex;
-        align-items: center;
     }
 
     .header-content {
@@ -2117,7 +2106,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 100%;
     }
 
     .viantryp-logo {

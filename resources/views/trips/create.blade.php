@@ -1,10 +1,5 @@
 {{-- Vista: Crear Nuevo Viaje --}}
-{{-- Ubicació@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/editor.css') }}?v={{ time() }}">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-@endpushurces/views/trips/create.blade.php --}}
+{{-- Ubicación: resources/views/trips/create.blade.php --}}
 {{-- Propósito: Vista dedicada para la creación inicial de viajes --}}
 {{-- Contexto: Viaje nuevo, sin datos existentes --}}
 
@@ -18,7 +13,10 @@
     <!-- Modal para crear nuevo viaje -->
     <x-new-trip-modal />
 
-
+    <!-- Menú vertical interactivo -->
+    <div class="create-trip-container">
+        <x-vertical-menu activeItem="activity" />
+    </div>
 
     <!-- Contenedor del editor (inicialmente oculto) -->
     <div class="editor-container" id="editor-container" style="display: none;">
@@ -34,8 +32,8 @@
                 <!-- Timeline vacío -->
                 <x-timeline :trip="null" />
 
-                <!-- Mensaje de bienvenida (oculto inicialmente) -->
-                <div class="welcome-message" id="welcome-message" style="display: none;">
+                <!-- Mensaje de bienvenida -->
+                <div class="welcome-message">
                     <div class="welcome-icon">
                         <i class="fas fa-magic"></i>
                     </div>
