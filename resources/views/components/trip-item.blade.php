@@ -1,4 +1,4 @@
-<div class="timeline-item" data-type="{{ $item->type }}" @foreach($item->data as $key => $value) data-{{ str_replace('_', '-', $key) }}="{{ $value }}" @endforeach>
+<div class="timeline-item" data-type="{{ $item->type }}" @foreach($item->data as $key => $value) data-{{ str_replace('_', '-', $key) }}="{{ is_array($value) ? json_encode($value) : $value }}" @endforeach>
     <div class="item-header">
         <div class="item-icon {{ $item->getIconClass() }}">
             <i class="{{ $item->getIcon() }}"></i>

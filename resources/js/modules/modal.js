@@ -791,11 +791,8 @@ export class ModalManager {
         const detailsContainer = document.getElementById('selected-place-details');
         if (!detailsContainer) return;
 
-        // Generate reviews HTML
-        const reviewsHtml = details.reviews ? this.generateReviewsHtml(details.reviews) : '';
-
-        // Generate photos HTML
-        const photosHtml = details.photos ? this.generatePhotosHtml(details.photos) : '';
+        // Generate photos HTML as carousel
+        const photosHtml = details.photos ? this.generatePhotosCarousel(details.photos) : '';
 
         detailsContainer.innerHTML = `
             <div class="place-website">
@@ -804,11 +801,19 @@ export class ModalManager {
             <div class="place-phone">
                 ${details.international_phone_number ? `<i class="fas fa-phone"></i> ${details.international_phone_number}` : ''}
             </div>
-            ${reviewsHtml ? `<div class="place-reviews">${reviewsHtml}</div>` : ''}
-            ${photosHtml ? `<div class="place-photos">${photosHtml}</div>` : ''}
+            ${photosHtml ? `<div class="place-photos-carousel">${photosHtml}</div>` : ''}
         `;
 
         detailsContainer.style.display = 'block';
+
+        // Initialize carousel if photos exist
+        if (details.photos && details.photos.length > 0) {
+            console.log('Initializing carousel with', details.photos.length, 'photos');
+            // Small delay to ensure DOM is ready
+            setTimeout(() => {
+                this.initializePhotoCarousel();
+            }, 100);
+        }
     }
 
     /**
@@ -877,24 +882,183 @@ export class ModalManager {
     }
 
     /**
-     * Generate photos HTML
+     * Generate photos carousel HTML
      */
-    generatePhotosHtml(photos) {
+    generatePhotosCarousel(photos) {
         if (!photos || photos.length === 0) return '';
 
-        let html = '<h4>Fotos:</h4><div class="photos-grid">';
+        let html = '<h4>Fotos:</h4>';
+        html += '<div class="photo-carousel-container">';
+        html += '<div class="photo-carousel-track">';
 
-        photos.slice(0, 6).forEach(photo => { // Show only first 6 photos
+        photos.slice(0, 8).forEach((photo, index) => { // Show up to 8 photos
             // Use the URL provided by the backend (Google Places Photo API)
             const photoUrl = photo.url || photo.photo_reference;
 
             if (photoUrl) {
-                html += `<img src="${photoUrl}" alt="Hotel photo" class="place-photo" loading="lazy" onclick="window.open('${photoUrl}', '_blank')">`;
+                html += `<div class="photo-carousel-slide">`;
+                html += `<img src="${photoUrl}" alt="Hotel photo ${index + 1}" class="photo-carousel-image" loading="lazy">`;
+                html += '</div>';
             }
         });
 
         html += '</div>';
+
+        if (photos.length > 1) {
+            html += `
+                <button class="photo-carousel-btn photo-carousel-prev" type="button">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="photo-carousel-btn photo-carousel-next" type="button">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="photo-carousel-indicators"></div>
+            `;
+        }
+
+        html += '</div>';
         return html;
+    }
+
+    /**
+     * Initialize photo carousel functionality
+     */
+    initializePhotoCarousel() {
+        const container = document.querySelector('.photo-carousel-container');
+        if (!container) {
+            console.log('Carousel container not found');
+            return;
+        }
+
+        const track = container.querySelector('.photo-carousel-track');
+        const slides = container.querySelectorAll('.photo-carousel-slide');
+        const prevBtn = container.querySelector('.photo-carousel-prev');
+        const nextBtn = container.querySelector('.photo-carousel-next');
+        const indicators = container.querySelector('.photo-carousel-indicators');
+
+        if (!track || slides.length === 0) {
+            console.log('Carousel track or slides not found');
+            return;
+        }
+
+        console.log('Initializing carousel with', slides.length, 'slides');
+
+        let currentIndex = 0;
+
+        // Create indicators
+        slides.forEach((_, index) => {
+            const indicator = document.createElement('button');
+            indicator.className = `photo-carousel-indicator ${index === 0 ? 'active' : ''}`;
+            indicator.setAttribute('data-slide', index);
+            indicators.appendChild(indicator);
+        });
+
+        const updateCarousel = () => {
+            console.log('Updating carousel to slide', currentIndex);
+            // Move track to show current slide
+            const translateX = -currentIndex * 100;
+            track.style.transform = `translateX(${translateX}%)`;
+
+            // Update indicators
+            const indicatorBtns = indicators.querySelectorAll('.photo-carousel-indicator');
+            indicatorBtns.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentIndex);
+            });
+        };
+
+        const goToSlide = (index) => {
+            currentIndex = Math.max(0, Math.min(index, slides.length - 1));
+            console.log('Going to slide', currentIndex);
+            updateCarousel();
+        };
+
+        const nextSlide = () => {
+            if (currentIndex < slides.length - 1) {
+                goToSlide(currentIndex + 1);
+            } else {
+                goToSlide(0); // Loop back to first slide
+            }
+        };
+
+        const prevSlide = () => {
+            if (currentIndex > 0) {
+                goToSlide(currentIndex - 1);
+            } else {
+                goToSlide(slides.length - 1); // Loop to last slide
+            }
+        };
+
+        // Event listeners
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                prevSlide();
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                nextSlide();
+            });
+        }
+
+        if (indicators) {
+            indicators.addEventListener('click', (e) => {
+                if (e.target.classList.contains('photo-carousel-indicator')) {
+                    const slideIndex = parseInt(e.target.getAttribute('data-slide'));
+                    goToSlide(slideIndex);
+                }
+            });
+        }
+
+        // Keyboard navigation
+        const handleKeydown = (e) => {
+            if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'ArrowRight') {
+                nextSlide();
+            }
+        };
+
+        container.addEventListener('keydown', handleKeydown);
+
+        // Touch/swipe support
+        let startX = 0;
+        let isDragging = false;
+
+        const handleTouchStart = (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+        };
+
+        const handleTouchMove = (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+        };
+
+        const handleTouchEnd = (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+
+            const endX = e.changedTouches[0].clientX;
+            const diffX = startX - endX;
+
+            if (Math.abs(diffX) > 50) { // Minimum swipe distance
+                if (diffX > 0) {
+                    nextSlide(); // Swipe left
+                } else {
+                    prevSlide(); // Swipe right
+                }
+            }
+        };
+
+        track.addEventListener('touchstart', handleTouchStart);
+        track.addEventListener('touchmove', handleTouchMove);
+        track.addEventListener('touchend', handleTouchEnd);
+
+        // Initialize first slide
+        updateCarousel();
     }
 
     closeModal() {

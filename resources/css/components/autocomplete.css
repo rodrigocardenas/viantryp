@@ -289,11 +289,11 @@
     text-decoration: underline;
 }
 
-.selected-place-details .place-reviews {
+.selected-place-details .place-photos-carousel {
     margin-top: 20px;
 }
 
-.selected-place-details .place-reviews h4 {
+.selected-place-details .place-photos-carousel h4 {
     margin-bottom: 15px;
     font-size: 16px;
     font-weight: 600;
@@ -303,94 +303,131 @@
     gap: 8px;
 }
 
-.selected-place-details .place-reviews h4::before {
-    content: '⭐';
-    font-size: 18px;
-}
-
-.selected-place-details .review {
-    margin-bottom: 15px;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    border: 1px solid #e9ecef;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.selected-place-details .review:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.selected-place-details .review-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.selected-place-details .review-header strong {
-    color: #333;
-    font-size: 15px;
-}
-
-.selected-place-details .review-rating {
-    font-size: 14px;
-}
-
-.selected-place-details .review-text {
-    color: #666;
-    font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 8px;
-}
-
-.selected-place-details .review-date {
-    color: #999;
-    font-size: 12px;
-    font-style: italic;
-}
-
-.selected-place-details .place-photos {
-    margin-top: 20px;
-}
-
-.selected-place-details .place-photos h4 {
-    margin-bottom: 15px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.selected-place-details .place-photos h4::before {
+.selected-place-details .place-photos-carousel h4::before {
     content: '📸';
     font-size: 18px;
 }
 
-.selected-place-details .photos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px;
-}
-
-.selected-place-details .place-photo {
+.photo-carousel-container {
+    position: relative;
     width: 100%;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 2px solid #e9ecef;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    cursor: pointer;
+    max-width: 500px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-.selected-place-details .place-photo:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-color: #007bff;
+.photo-carousel-track {
+    display: flex;
+    width: 100%;
+    transition: transform 0.3s ease-in-out;
+}
+
+.photo-carousel-slide {
+    min-width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.photo-carousel-slide.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.photo-carousel-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+    border-radius: 12px;
+}
+
+.photo-carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+.photo-carousel-btn:hover {
+    background: white;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.photo-carousel-btn i {
+    color: #333;
+    font-size: 16px;
+}
+
+.photo-carousel-prev {
+    left: 15px;
+}
+
+.photo-carousel-next {
+    right: 15px;
+}
+
+.photo-carousel-indicators {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.photo-carousel-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.photo-carousel-indicator.active {
+    background: white;
+    transform: scale(1.2);
+}
+
+.photo-carousel-indicator:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+/* Responsive carousel */
+@media (max-width: 768px) {
+    .photo-carousel-container {
+        max-width: 100%;
+    }
+
+    .photo-carousel-image {
+        height: 250px;
+    }
+
+    .photo-carousel-btn {
+        width: 35px;
+        height: 35px;
+    }
+
+    .photo-carousel-btn i {
+        font-size: 14px;
+    }
 }
 
 /* Google Places Autocomplete dropdown styling */

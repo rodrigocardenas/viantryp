@@ -102,7 +102,12 @@ export class TimelineManager {
         // Set data attributes for the element
         Object.keys(data).forEach(key => {
             if (key !== 'type' && key !== 'day') {
-                elementDiv.setAttribute(`data-${key.replace(/_/g, '-')}`, data[key]);
+                let value = data[key];
+                // Convert objects to JSON strings for data attributes
+                if (typeof value === 'object' && value !== null) {
+                    value = JSON.stringify(value);
+                }
+                elementDiv.setAttribute(`data-${key.replace(/_/g, '-')}`, value);
             }
         });
 
