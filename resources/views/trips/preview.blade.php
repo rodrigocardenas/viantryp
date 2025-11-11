@@ -17,7 +17,7 @@
                     </div>
                     <div class="header-right">
                         <div class="nav-actions">
-                            <a href="#" class="btn btn-back" onclick="showUnsavedChangesModal()">
+                            <a href="{{ route('trips.edit', $trip->id) }}" class="btn btn-back">
                                 <i class="fas fa-arrow-left"></i>
                                 Volver
                             </a>
@@ -64,6 +64,40 @@
         </header>
 
         @if(isset($trip) && $trip->items_data && count($trip->items_data) > 0)
+            @php
+                // Check for summary items
+                $summaryItems = array_filter($trip->items_data, function($item) {
+                    return isset($item['type']) && $item['type'] === 'summary';
+                });
+            @endphp
+
+            @if(count($summaryItems) > 0)
+                @foreach($summaryItems as $summaryItem)
+                    <div class="summary-section">
+                        <div class="summary-content">
+                            <h3>{{ $summaryItem['title'] ?? 'Resumen del Itinerario' }}</h3>
+                            <div class="summary-text">
+                                {!! nl2br(e($summaryItem['content'] ?? $summaryItem['subtitle'] ?? '')) !!}
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+
+            @php
+                // Group items by day (excluding summary items)
+                $itemsByDay = [];
+                foreach($trip->items_data as $item) {
+                    if (isset($item['type']) && $item['type'] === 'summary') {
+                        continue; // Skip summary items as they're already displayed
+                    }
+                    $day = $item['day'] ?? 1;
+                    if (!isset($itemsByDay[$day])) {
+                        $itemsByDay[$day] = [];
+                    }
+                    $itemsByDay[$day][] = $item;
+                }
+            @endphp
             @php
                 // Group items by day
                 $itemsByDay = [];
@@ -127,26 +161,107 @@
                                     @endif
                                 </div>
                             @elseif($item['type'] === 'hotel')
-                                <div class="activity-card">
-                                    <img src="{{ $item['image'] ?? 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=300&h=300&fit=crop' }}" alt="{{ $item['title'] ?? 'Actividad' }}" class="activity-image">
-                                    <div class="activity-content">
-                                        <div class="activity-title">{{ $item['title'] ?? 'Alojamiento' }}</div>
-                                        <div class="activity-time">
-                                            <span><i class="fas fa-calendar-alt"></i> {{ $item['check_in'] ?? '12/12/2025 - 10:00' }}</span>
-                                            <span><i class="fas fa-arrow-right"></i></span>
-                                            <span>{{ $item['check_out'] ?? '15/12/2025 - 12:00' }}</span>
+                                <div class="hotel-card">
+                                    @php
+                                        $detailedInfo = $item['detailed_info'] ?? null;
+                                        $hotelName = $detailedInfo['name'] ?? $item['hotel_name'] ?? $item['title'] ?? 'Hotel';
+                                        $hotelAddress = $detailedInfo['formatted_address'] ?? $item['location'] ?? '';
+                                        $hotelRating = $detailedInfo['rating'] ?? null;
+                                        $hotelWebsite = $detailedInfo['website'] ?? null;
+                                        $hotelPhone = $detailedInfo['international_phone_number'] ?? null;
+                                        $hotelPhotos = $detailedInfo['photos'] ?? [];
+                                        $hotelId = $item['hotel_id'] ?? 'hotel-' . $loop->index;
+                                    @endphp
+
+                                    @if(count($hotelPhotos) > 0)
+                                        <!-- Hotel Photo Carousel -->
+                                        <div class="hotel-gallery" data-hotel-id="{{ $hotelId }}">
+                                            <div class="hotel-gallery-track">
+                                                @foreach(array_slice($hotelPhotos, 0, 8) as $index => $photo)
+                                                    <div class="hotel-gallery-slide {{ $index === 0 ? 'active' : '' }}" onclick="showHotelGallery({{ json_encode(array_column($hotelPhotos, 'url')) }}, {{ $index }}, '{{ addslashes($hotelName) }}')">
+                                                        <img src="{{ $photo['url'] }}" alt="Hotel photo {{ $index + 1 }}" class="hotel-gallery-image" loading="lazy">
+                                                    </div>
+                                                @endforeach
                                         </div>
-                                        <div class="activity-subtitle">{{ $item['location'] ?? 'Hilton Head Island' }}</div>
-                                        <div>
-                                            <span class="badge"><i class="fas fa-globe"></i> Web</span>
-                                            <span class="badge"><i class="fas fa-map-marker-alt"></i> Ver dirección</span>
+
+                                            @if(count($hotelPhotos) > 1)
+                                                <button class="hotel-gallery-btn hotel-gallery-prev" type="button">
+                                                    <i class="fas fa-chevron-left"></i>
+                                                </button>
+                                                <button class="hotel-gallery-btn hotel-gallery-next" type="button">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </button>
+                                                <div class="hotel-gallery-indicators">
+                                                    @for($i = 0; $i < min(count($hotelPhotos), 8); $i++)
+                                                        <span class="hotel-gallery-indicator {{ $i === 0 ? 'active' : '' }}" data-slide="{{ $i }}"></span>
+                                                    @endfor
                                         </div>
-                                        <div class="amenities">
-                                            <span><i class="fas fa-bed"></i> {{ $item['room_type'] ?? 'Doble' }}</span>
-                                            <span><i class="fas fa-utensils"></i> Desayuno incluido</span>
-                                            <span><i class="fas fa-moon"></i> {{ $item['nights'] ?? '3' }} noches</span>
+                                            @endif
+                                    </div>
+                                    @else
+                                        <!-- Fallback image if no photos available -->
+                                        <img src="{{ $item['image'] ?? 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=400&h=300&fit=crop' }}" alt="{{ $hotelName }}" class="hotel-fallback-image">
+                                    @endif
+
+                                    <div class="hotel-content">
+                                        <div class="hotel-header">
+                                            <h3 class="hotel-title">{{ $hotelName }}</h3>
+                                            @if($hotelRating)
+                                                <div class="hotel-rating-section">
+                                                    <div class="hotel-rating">
+                                                        @for($i = 0; $i < 5; $i++)
+                                                            @if($i < floor($hotelRating))
+                                                                <i class="fas fa-star star-filled"></i>
+                                                            @elseif($i < $hotelRating)
+                                                                <i class="fas fa-star-half-alt star-filled"></i>
+                                                            @else
+                                                                <i class="far fa-star star-empty"></i>
+                                                            @endif
+                                                        @endfor
+                                                        <span class="rating-text">({{ number_format($hotelRating, 1) }})</span>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        @if($hotelAddress)
+                                            <div class="hotel-address">
+                                                <i class="fas fa-map-marker-alt"></i> {{ $hotelAddress }}
+                                            </div>
+                                        @endif
+
+                                        <div class="hotel-details">
+                                            <div class="hotel-check-dates">
+                                                <span><i class="fas fa-calendar-alt"></i> Check-in: {{ $item['check_in'] ?? 'Fecha no especificada' }}</span>
+                                                <span><i class="fas fa-calendar-check"></i> Check-out: {{ $item['check_out'] ?? 'Fecha no especificada' }}</span>
+                                            </div>
+
+                                            <div class="hotel-amenities">
+                                                @if($item['room_type'])
+                                                    <span class="amenity"><i class="fas fa-bed"></i> {{ $item['room_type'] }}</span>
+                                                @endif
+                                                @if($item['nights'])
+                                                    <span class="amenity"><i class="fas fa-moon"></i> {{ $item['nights'] }} noches</span>
+                                                @endif
+                                            </div>
+
+                                            @if($hotelWebsite || $hotelPhone)
+                                                <div class="hotel-contact">
+                                                    @if($hotelWebsite)
+                                                        <a href="{{ $hotelWebsite }}" target="_blank" class="contact-link">
+                                                            <i class="fas fa-globe"></i> Sitio web
+                                                        </a>
+                                                    @endif
+                                                    @if($hotelPhone)
+                                                        <a href="tel:{{ $hotelPhone }}" class="contact-link">
+                                                            <i class="fas fa-phone"></i> {{ $hotelPhone }}
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
+
                                     @php
                                         $documents = $trip->documents->where('type', 'hotel');
                                     @endphp
@@ -1851,112 +1966,247 @@
         font-size: 0.9rem;
     }
 
-    /* Hotel Gallery Styles */
-    .hotel-gallery {
-        grid-column: 1 / -1;
-        margin-bottom: 1rem;
-    }
-
-    .gallery-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: var(--primary-dark);
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .gallery-title::before {
-        content: '📸';
-        font-size: 1.2rem;
-    }
-
-    .gallery-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .gallery-item {
-        position: relative;
-        aspect-ratio: 4/3;
-        border-radius: 8px;
+    /* Hotel Card Styles */
+    .hotel-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 20px;
+        margin-bottom: 2rem;
         overflow: hidden;
-        cursor: pointer;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-    .gallery-item:hover {
-        transform: scale(1.05);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        border-color: var(--primary-blue);
-    }
-
-    .gallery-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-
-    .gallery-item:hover img {
-        transform: scale(1.1);
-    }
-
-    .more-images {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
         position: relative;
     }
 
-    .more-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 2;
+    .hotel-card:hover {
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
+        transform: translateY(-4px) scale(1.02);
     }
 
-    .more-overlay span {
-        color: white;
-        font-size: 1.2rem;
-        font-weight: 600;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    .hotel-fallback-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .hotel-content {
+        padding: 1.75rem;
+    }
+
+    .hotel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    .hotel-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin: 0;
+        flex: 1;
     }
 
     .hotel-rating-section {
-        grid-column: 1 / -1;
         display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .hotel-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .hotel-rating .star-filled {
+        color: #fbbf24;
+        font-size: 1rem;
+    }
+
+    .hotel-rating .star-empty {
+        color: #e5e7eb;
+        font-size: 1rem;
+    }
+
+    .hotel-rating .rating-text {
+        font-size: 0.9rem;
+        color: var(--text-gray);
+        margin-left: 0.25rem;
+    }
+
+    .hotel-address {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-gray);
+        font-size: 0.95rem;
         margin-bottom: 1rem;
     }
 
-    .rating-score {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--success);
+    .hotel-details {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
 
-    .rating-word {
-        font-weight: 500;
+    .hotel-check-dates {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        font-size: 0.9rem;
         color: var(--primary-dark);
     }
 
-    .review-count {
-        font-size: 0.85rem;
-        color: var(--text-gray);
+    .hotel-check-dates span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-    .star-filled {
-        color: #fbbf24;
-        margin-right: 2px;
+    .hotel-amenities {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .hotel-amenities .amenity {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--text-gray);
+        background: rgba(59, 130, 246, 0.1);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .hotel-contact {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .hotel-contact .contact-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--primary-blue);
+        text-decoration: none;
+        background: rgba(59, 130, 246, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .hotel-contact .contact-link:hover {
+        background: var(--primary-blue);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Hotel Gallery Carousel Styles */
+    .hotel-gallery {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        overflow: hidden;
+        border-radius: 20px 20px 0 0;
+        background: #f8fafc;
+    }
+
+    .hotel-gallery-track {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hotel-gallery-slide {
+        flex: 0 0 100%;
+        height: 100%;
+        position: relative;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .hotel-gallery-slide.active {
+        opacity: 1;
+    }
+
+    .hotel-gallery-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .hotel-gallery-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 10;
+    }
+
+    .hotel-gallery-btn:hover {
+        background: white;
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .hotel-gallery-prev {
+        left: 1rem;
+    }
+
+    .hotel-gallery-next {
+        right: 1rem;
+    }
+
+    .hotel-gallery-indicators {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.5rem;
+        z-index: 10;
+    }
+
+    .hotel-gallery-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .hotel-gallery-indicator.active {
+        background: white;
+        transform: scale(1.2);
+    }
+
+    .hotel-gallery-indicator:hover {
+        background: rgba(255, 255, 255, 0.8);
     }
 
     .contact-button {
@@ -2535,6 +2785,46 @@
     .document-link i {
         font-size: 12px;
     }
+
+    /* Summary section styles */
+    .summary-section {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border-left: 4px solid #0ea5e9;
+    }
+
+    .summary-content h3 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .summary-content h3::before {
+        content: '📋';
+        font-size: 28px;
+    }
+
+    .summary-text {
+        font-size: 16px;
+        line-height: 1.7;
+        color: #374151;
+        white-space: pre-line;
+    }
+
+    .summary-text p {
+        margin-bottom: 15px;
+    }
+
+    .summary-text p:last-child {
+        margin-bottom: 0;
+    }
 </style>
 @endpush
 
@@ -2834,38 +3124,101 @@
         lastScrollTop = scrollTop;
     });
 
-    // Hotel Gallery Modal Functionality
-    let currentHotelImages = [];
-    let currentImageIndex = 0;
+    // Hotel Gallery Carousel Functionality
+    function initializeHotelCarousels() {
+        const carousels = document.querySelectorAll('.hotel-gallery');
 
-    function openHotelGallery(hotelId, startIndex = 0) {
-        // Find the hotel item with the matching ID
-        const hotelItems = document.querySelectorAll('.timeline-item');
-        let hotelData = null;
+        carousels.forEach(carousel => {
+            const track = carousel.querySelector('.hotel-gallery-track');
+            const slides = carousel.querySelectorAll('.hotel-gallery-slide');
+            const prevBtn = carousel.querySelector('.hotel-gallery-prev');
+            const nextBtn = carousel.querySelector('.hotel-gallery-next');
+            const indicators = carousel.querySelectorAll('.hotel-gallery-indicator');
 
-        hotelItems.forEach(item => {
-            if (item.classList.contains('hotel')) {
-                const itemData = JSON.parse(item.dataset.hotelData || '{}');
-                if (itemData.id == hotelId) {
-                    hotelData = itemData;
+            if (!track || slides.length === 0) return;
+
+            let currentIndex = 0;
+
+            function updateCarousel() {
+                // Update slide positions using transform
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+                // Update active slide opacity
+                slides.forEach((slide, index) => {
+                    slide.classList.toggle('active', index === currentIndex);
+                });
+
+                // Update indicators
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === currentIndex);
+                });
+
+                // Update button states
+                if (prevBtn) prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+                if (nextBtn) nextBtn.style.opacity = currentIndex === slides.length - 1 ? '0.5' : '1';
+            }
+
+            function nextSlide() {
+                if (currentIndex < slides.length - 1) {
+                    currentIndex++;
+                    updateCarousel();
                 }
             }
+
+            function prevSlide() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateCarousel();
+                }
+            }
+
+            function goToSlide(index) {
+                if (index >= 0 && index < slides.length) {
+                    currentIndex = index;
+                    updateCarousel();
+                }
+            }
+
+            // Event listeners
+            if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+            if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => goToSlide(index));
+            });
+
+            // Touch/swipe support
+            let startX = 0;
+            let isDragging = false;
+
+            carousel.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+            });
+
+            carousel.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const currentX = e.touches[0].clientX;
+                const diff = startX - currentX;
+
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0 && currentIndex < slides.length - 1) {
+                        nextSlide();
+                    } else if (diff < 0 && currentIndex > 0) {
+                        prevSlide();
+                    }
+                    isDragging = false;
+            }
+            });
         });
-
-        if (!hotelData || !hotelData.images || hotelData.images.length === 0) {
-            return;
-        }
-
-        currentHotelImages = hotelData.images;
-        currentImageIndex = startIndex;
-
-        showHotelGalleryModal(hotelData.name || 'Hotel');
     }
 
-    function showHotelGalleryModal(hotelName) {
-        // Create modal HTML
+    function showHotelGallery(images, startIndex = 0, hotelName = 'Hotel') {
+        currentHotelImages = images;
+        currentImageIndex = startIndex;
+
         const modalHtml = `
-            <div id="hotelGalleryModal" class="gallery-modal" style="
+            <div id="hotelGalleryModal" class="hotel-gallery-modal-overlay" style="
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -2876,9 +3229,10 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                animation: fadeIn 0.3s ease;
+                z-index: 10000;
+                font-family: 'Poppins', sans-serif;
             ">
-                <div class="gallery-modal-content" style="
+                <div class="hotel-gallery-modal" style="
                     position: relative;
                     max-width: 90vw;
                     max-height: 90vh;
@@ -3028,20 +3382,11 @@
         }
     }
 
-    // Contact button toggle functionality
+
+    // Initialize carousels on page load
     document.addEventListener('DOMContentLoaded', function() {
-        const contactButton = document.getElementById('contactButton');
-
-        contactButton.addEventListener('click', function() {
-            this.classList.toggle('minimized');
-        });
-
-        // Close contact details when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!contactButton.contains(e.target)) {
-                contactButton.classList.add('minimized');
-            }
-        });
+        initializeHotelCarousels();
     });
+
 </script>
 @endpush
