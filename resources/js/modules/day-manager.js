@@ -77,6 +77,72 @@ class DayManager {
         this.summaryManager.updateAllSummaries();
     }
 
+    deleteDay(dayNumber) {
+        const dayCard = document.querySelector(`[data-day="${dayNumber}"]`);
+        if (!dayCard) return;
+
+        // Don't allow deleting the last remaining day
+        const totalDays = document.querySelectorAll('.day-card').length;
+        if (totalDays <= 1) {
+            this.showNotification('Error', 'No se puede eliminar el último día del viaje.');
+            return;
+        }
+
+        // Confirm deletion - same message as element deletion
+        if (!confirm('¿Estás seguro de que quieres eliminar este elemento?')) {
+            return;
+        }
+
+        // Remove the day
+        dayCard.remove();
+
+        // Renumber remaining days
+        this.renumberDays();
+
+        // Update dates
+        this.updateItineraryDates();
+
+        // Update summaries
+        this.summaryManager.updateAllSummaries();
+
+        this.showNotification('Elemento Eliminado', 'El elemento ha sido eliminado del itinerario.');
+    }
+
+    renumberDays() {
+        const dayCards = document.querySelectorAll('.day-card');
+        dayCards.forEach((card, index) => {
+            const newDayNumber = index + 1;
+            card.setAttribute('data-day', newDayNumber);
+
+            // Update day header
+            const dayHeader = card.querySelector('.day-header h3');
+            if (dayHeader) {
+                dayHeader.textContent = `Día ${newDayNumber}`;
+            }
+
+            // Update add element buttons
+            const addBtn = card.querySelector('.add-element-btn');
+            if (addBtn) {
+                addBtn.setAttribute('data-day', newDayNumber);
+            }
+
+            // Update delete day buttons
+            const deleteBtn = card.querySelector('.delete-day-btn');
+            if (deleteBtn) {
+                deleteBtn.setAttribute('data-day', newDayNumber);
+            }
+
+            // Update timeline items
+            const timelineItems = card.querySelectorAll('.timeline-item');
+            timelineItems.forEach(item => {
+                // Update data-day attribute if it exists
+                if (item.hasAttribute('data-day')) {
+                    item.setAttribute('data-day', newDayNumber);
+                }
+            });
+        });
+    }
+
     showNotification(title, message, type = 'success') {
         // This should be imported from a notification module
         console.log(`${type.toUpperCase()}: ${title} - ${message}`);

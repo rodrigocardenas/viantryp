@@ -101,6 +101,11 @@ function setupGlobalEventListeners() {
                 e.preventDefault();
                 dayManager.addNewDay();
                 break;
+            case 'delete-day':
+                e.preventDefault();
+                const dayToDelete = parseInt(action.dataset.day);
+                dayManager.deleteDay(dayToDelete);
+                break;
             case 'edit-element':
                 e.preventDefault();
                 timelineManager.editElement(action);
