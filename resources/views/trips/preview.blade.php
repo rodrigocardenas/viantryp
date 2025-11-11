@@ -118,35 +118,108 @@
                     @if(count($dayItems) > 0)
                         @foreach($dayItems as $item)
                             @if($item['type'] === 'flight')
-                                <div class="flight-card">
-                                    <div class="flight-header">
-                                        <div class="flight-route">Vuelo {{ $item['title'] ?? 'Sin título' }}</div>
-                                        <div class="airline-info">
-                                            <div>
-                                                <div style="font-size: 11px; color: #999;">{{ $item['airline'] ?? 'Aerolínea no especificada' }}</div>
-                                                <div style="font-weight: 600;">{{ $item['flight_number'] ?? 'Número no disponible' }}</div>
+                                @php
+                                    // Calcular duración del vuelo considerando zonas horarias
+                                    $departureTimezone = $item['departure_timezone'] ?? 'America/Bogota';
+                                    $arrivalTimezone = $item['arrival_timezone'] ?? 'America/New_York';
+                                    $departureDateTime = $item['departure_date'] ?? date('Y-m-d');
+                                    $departureTime = $item['departure_time'] ?? '00:00';
+                                    $arrivalDateTime = $item['arrival_date'] ?? date('Y-m-d');
+                                    $arrivalTime = $item['arrival_time'] ?? '00:00';
+
+                                    try {
+                                        $departureDT = new DateTime($departureDateTime . ' ' . $departureTime, new DateTimeZone($departureTimezone));
+                                        $arrivalDT = new DateTime($arrivalDateTime . ' ' . $arrivalTime, new DateTimeZone($arrivalTimezone));
+                                        $interval = $departureDT->diff($arrivalDT);
+                                        $hours = $interval->h + ($interval->days * 24);
+                                        $minutes = $interval->i;
+                                        $duration = $hours . 'h ' . $minutes . 'm';
+
+                                        // Formatear fechas largas en español
+                                        $diasEspanol = [
+                                            'Monday' => 'Lunes',
+                                            'Tuesday' => 'Martes',
+                                            'Wednesday' => 'Miércoles',
+                                            'Thursday' => 'Jueves',
+                                            'Friday' => 'Viernes',
+                                            'Saturday' => 'Sábado',
+                                            'Sunday' => 'Domingo'
+                                        ];
+                                        $mesesEspanol = [
+                                            'January' => 'Enero',
+                                            'February' => 'Febrero',
+                                            'March' => 'Marzo',
+                                            'April' => 'Abril',
+                                            'May' => 'Mayo',
+                                            'June' => 'Junio',
+                                            'July' => 'Julio',
+                                            'August' => 'Agosto',
+                                            'September' => 'Septiembre',
+                                            'October' => 'Octubre',
+                                            'November' => 'Noviembre',
+                                            'December' => 'Diciembre'
+                                        ];
+
+                                        $diaIngles = $departureDT->format('l');
+                                        $mesIngles = $departureDT->format('F');
+                                        $diaNumero = $departureDT->format('j');
+                                        $departureDateLong = $diasEspanol[$diaIngles] . ', ' . $diaNumero . ' de ' . $mesesEspanol[$mesIngles];
+
+                                        $diaIngles = $arrivalDT->format('l');
+                                        $mesIngles = $arrivalDT->format('F');
+                                        $diaNumero = $arrivalDT->format('j');
+                                        $arrivalDateLong = $diasEspanol[$diaIngles] . ', ' . $diaNumero . ' de ' . $mesesEspanol[$mesIngles];
+                                    } catch (Exception $e) {
+                                        $duration = $item['duration'] ?? 'N/A';
+                                        $departureDateLong = 'Fecha no disponible';
+                                        $arrivalDateLong = 'Fecha no disponible';
+                                    }
+                                @endphp
+
+                                <div class="flight-card-unified">
+                                    <!-- Trayecto principal -->
+                                    <div class="flight-route-main">
+                                        <!-- Bloque origen -->
+                                        <div class="airport-section">
+                                            <div class="airport-info">
+                                                <div class="airport-date">{{ $departureDateLong }}</div>
+                                                <div class="airport-time">{{ date('H:i', strtotime($item['departure_time'] ?? '00:00')) }}</div>
+                                                <div class="airport-code">{{ strtoupper($item['departure_airport'] ?? 'DEP') }}</div>
+                                                <div class="airport-name">{{ ucfirst(strtolower($item['departure_airport_name'] ?? '')) }}</div>
+                                                <div class="airport-location">{{ $item['departure_city'] ?? '' }}, {{ $item['departure_country'] ?? '' }}</div>
                                             </div>
-                                            <div class="airline-logo"></div>
+                                        </div>
+
+                                        <!-- Conector de vuelo -->
+                                        <div class="flight-connector">
+                                            <div class="plane-container">
+                                                <i class="fas fa-plane flight-plane" style="color: #000000;"></i>
+                                                
+                                            </div>
+                                        </div>
+
+                                        <!-- Bloque destino -->
+                                        <div class="airport-section">
+                                            <div class="airport-info">
+                                                <div class="airport-date">{{ $arrivalDateLong }}</div>
+                                                <div class="airport-time">{{ date('H:i', strtotime($item['arrival_time'] ?? '00:00')) }}</div>
+                                                <div class="airport-code">{{ strtoupper($item['arrival_airport'] ?? 'ARR') }}</div>
+                                                <div class="airport-name">{{ ucfirst(strtolower($item['arrival_airport_name'] ?? '')) }}</div>
+                                                <div class="airport-location">{{ $item['arrival_city'] ?? '' }}, {{ $item['arrival_country'] ?? '' }}</div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="flight-details">
-                                        <div class="flight-point">
-                                            <div class="flight-label">Origen</div>
-                                            <div class="airport-code">{{ $item['departure_airport'] ?? 'Código no disponible' }}</div>
-                                            <div class="city-name">{{ $item['departure_city'] ?? 'Ciudad no especificada' }}</div>
-                                            <div class="flight-time">{{ $item['departure_time'] ?? 'Hora no disponible' }}</div>
-                                        </div>
-                                        <div class="flight-icon">
-                                            <i class="fas fa-plane" style="font-size: 24px; background: none;"></i>
-                                            <div class="flight-duration">{{ $item['duration'] ?? 'Duración no disponible' }}</div>
-                                        </div>
-                                        <div class="flight-point">
-                                            <div class="flight-label">Destino</div>
-                                            <div class="airport-code">{{ $item['arrival_airport'] ?? 'Código no disponible' }}</div>
-                                            <div class="city-name">{{ $item['arrival_city'] ?? 'Ciudad no especificada' }}</div>
-                                            <div class="flight-time">{{ $item['arrival_time'] ?? 'Hora no disponible' }}</div>
+
+                                    <!-- Información adicional -->
+                                    <div class="flight-details-section">
+                                        <div class="flight-meta">
+                                            <span class="airline-info">{{ $item['airline'] ?? 'Aerolínea' }}</span>
+                                            @if(isset($item['layover_duration']) && $item['layover_duration'])
+                                                <span class="layover-duration">Escala: {{ $item['layover_duration'] }}</span>
+                                            @endif
                                         </div>
                                     </div>
+
                                     @php
                                         $documents = $trip->documents->where('type', 'flight');
                                     @endphp
@@ -2743,6 +2816,194 @@
         }
     }
 
+    /* Unified Flight Card Styles */
+    .flight-card-unified {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        transition: all 0.2s ease;
+    }
+
+    .flight-card-unified:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .flight-route-main {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        gap: 12px;
+    }
+
+    .airport-section {
+        flex: 1;
+        text-align: center;
+        position: relative;
+    }
+
+    .time-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #374151;
+        background: #f3f4f6;
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 8px;
+    }
+
+    .time-icon {
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+
+    .airport-info {
+        text-align: center;
+    }
+
+    .airport-date {
+        font-size: 0.75rem;
+        color: #6b7280;
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+
+    .airport-time {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 8px;
+    }
+
+    .airport-code {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #111827;
+        margin-bottom: 4px;
+        letter-spacing: 1px;
+    }
+
+    .airport-name {
+        font-size: 0.875rem;
+        color: #374151;
+        font-weight: 500;
+        margin-bottom: 2px;
+        line-height: 1.3;
+    }
+
+    .airport-location {
+        font-size: 0.75rem;
+        color: #6b7280;
+        font-weight: 400;
+    }
+
+    .flight-connector {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 16px;
+        position: relative;
+    }
+
+    .plane-container {
+        text-align: center;
+    }
+
+    .flight-plane {
+        font-size: 1.25rem;
+        color: #dc2626;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    .flight-duration {
+        font-size: 0.625rem;
+        color: #6b7280;
+        font-weight: 600;
+        background: #f9fafb;
+        padding: 3px 8px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        white-space: nowrap;
+    }
+
+    .flight-number-below {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #dc2626;
+        background: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid #dc2626;
+        margin-top: 4px;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .flight-details-section {
+        border-top: 1px solid #f3f4f6;
+        padding-top: 12px;
+    }
+
+    .flight-dates {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+
+    .departure-date,
+    .arrival-date {
+        font-weight: 500;
+    }
+
+    .date-arrow {
+        color: #dc2626;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .flight-meta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .airline-info {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .flight-number {
+        font-size: 0.75rem;
+        color: white;
+        background: #dc2626;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+
+    .layover-duration {
+        font-size: 0.75rem;
+        color: #dc2626;
+        font-weight: 600;
+    }
+
     /* Documents section styles */
     .documents-section {
         margin-top: 15px;
@@ -2785,6 +3046,100 @@
 
     .document-link i {
         font-size: 12px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .flight-card-unified {
+            padding: 12px;
+        }
+
+        .flight-route-main {
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .airport-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .airport-info {
+            text-align: left;
+            flex: 1;
+        }
+
+        .airport-date {
+            font-size: 0.7rem;
+            margin-bottom: 2px;
+        }
+
+        .airport-time {
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+        }
+
+        .airport-code {
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+
+        .airport-name {
+            font-size: 0.8rem;
+            margin-bottom: 1px;
+        }
+
+        .airport-location {
+            font-size: 0.7rem;
+        }
+
+        .flight-connector {
+            order: 2;
+            padding: 8px 0;
+        }
+
+        .flight-plane {
+            font-size: 1.1rem;
+        }
+
+        .flight-duration {
+            font-size: 0.6rem;
+            padding: 2px 6px;
+        }
+
+        .flight-number-below {
+            font-size: 0.7rem;
+            padding: 1px 4px;
+        }
+
+        .flight-details-section {
+            padding-top: 10px;
+        }
+
+        .flight-dates {
+            font-size: 0.7rem;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .flight-meta {
+            gap: 12px;
+        }
+
+        .airline-info {
+            font-size: 0.8rem;
+        }
+
+        .flight-number {
+            font-size: 0.7rem;
+            padding: 1px 6px;
+        }
+
+        .layover-duration {
+            font-size: 0.7rem;
+        }
     }
 
     /* Summary section styles */
@@ -3391,3 +3746,4 @@
 
 </script>
 @endpush
+
