@@ -57,6 +57,11 @@
         <header>
             <h1>{{ $trip->title ?? 'Viaje sin título' }}</h1>
             <div class="trip-code">{{ $trip->code ?? 'YATPKYEQTQ' }}</div>
+            @if($trip->cover_image_url)
+                <div class="trip-cover-banner">
+                    <img src="{{ $trip->cover_image_url }}" alt="Imagen de portada del viaje" class="cover-banner-image">
+                </div>
+            @endif
             <div class="price-section">
                 <span class="price-label">Precio Total</span>
                 <span class="price-amount">{{ $trip->price ?? '0.00' }} USD $</span>
@@ -261,90 +266,101 @@
                                         $hotelId = $item['hotel_id'] ?? 'hotel-' . $loop->index;
                                     @endphp
 
-                                    @if(count($hotelPhotos) > 0)
-                                        <!-- Hotel Photo Carousel -->
-                                        <div class="hotel-gallery" data-hotel-id="{{ $hotelId }}">
-                                            <div class="hotel-gallery-track">
-                                                @foreach(array_slice($hotelPhotos, 0, 8) as $index => $photo)
-                                                    <div class="hotel-gallery-slide {{ $index === 0 ? 'active' : '' }}" onclick="showHotelGallery({{ json_encode(array_column($hotelPhotos, 'url')) }}, {{ $index }}, '{{ addslashes($hotelName) }}')">
-                                                        <img src="{{ $photo['url'] }}" alt="Hotel photo {{ $index + 1 }}" class="hotel-gallery-image" loading="lazy">
-                                                    </div>
-                                                @endforeach
-                                        </div>
-
-                                            @if(count($hotelPhotos) > 1)
-                                                <button class="hotel-gallery-btn hotel-gallery-prev" type="button">
-                                                    <i class="fas fa-chevron-left"></i>
-                                                </button>
-                                                <button class="hotel-gallery-btn hotel-gallery-next" type="button">
-                                                    <i class="fas fa-chevron-right"></i>
-                                                </button>
-                                                <div class="hotel-gallery-indicators">
-                                                    @for($i = 0; $i < min(count($hotelPhotos), 8); $i++)
-                                                        <span class="hotel-gallery-indicator {{ $i === 0 ? 'active' : '' }}" data-slide="{{ $i }}"></span>
-                                                    @endfor
-                                        </div>
-                                            @endif
+                                    <!-- Hotel Header similar to flight-route-header -->
+                                    <div class="hotel-route-header">
+                                        <span class="hotel-route-text">Alojamiento en {{ $hotelName }}</span>
                                     </div>
-                                    @else
-                                        <!-- Fallback image if no photos available -->
-                                        <img src="{{ $item['image'] ?? 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=400&h=300&fit=crop' }}" alt="{{ $hotelName }}" class="hotel-fallback-image">
-                                    @endif
+
+                                    <!-- Hotel details section similar to flight-details-section -->
+                                    <div class="hotel-details-section">
+                                        <div class="hotel-meta">
+                                            @if($item['room_type'])
+                                                <span class="hotel-room-type">{{ $item['room_type'] }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
 
                                     <div class="hotel-content">
-                                        <div class="hotel-header">
-                                            <h3 class="hotel-title">{{ $hotelName }}</h3>
-                                            @if($hotelRating)
-                                                <div class="hotel-rating-section">
-                                                    <div class="hotel-rating">
-                                                        @for($i = 0; $i < 5; $i++)
-                                                            @if($i < floor($hotelRating))
-                                                                <i class="fas fa-star star-filled"></i>
-                                                            @elseif($i < $hotelRating)
-                                                                <i class="fas fa-star-half-alt star-filled"></i>
-                                                            @else
-                                                                <i class="far fa-star star-empty"></i>
-                                                            @endif
-                                                        @endfor
-                                                        <span class="rating-text">({{ number_format($hotelRating, 1) }})</span>
+                                        <!-- Left column: Photos -->
+                                        <div class="hotel-photos-column">
+                                            @if(count($hotelPhotos) > 0)
+                                                <!-- Hotel Photo Carousel -->
+                                                <div class="hotel-gallery" data-hotel-id="{{ $hotelId }}">
+                                                    <div class="hotel-gallery-track">
+                                                        @foreach(array_slice($hotelPhotos, 0, 8) as $index => $photo)
+                                                            <div class="hotel-gallery-slide {{ $index === 0 ? 'active' : '' }}" onclick="showHotelGallery({{ json_encode(array_column($hotelPhotos, 'url')) }}, {{ $index }}, '{{ addslashes($hotelName) }}')">
+                                                                <img src="{{ $photo['url'] }}" alt="Hotel photo {{ $index + 1 }}" class="hotel-gallery-image" loading="lazy">
+                                                            </div>
+                                                        @endforeach
                                                     </div>
+
+                                                    @if(count($hotelPhotos) > 1)
+                                                        <button class="hotel-gallery-btn hotel-gallery-prev" type="button">
+                                                            <i class="fas fa-chevron-left"></i>
+                                                        </button>
+                                                        <button class="hotel-gallery-btn hotel-gallery-next" type="button">
+                                                            <i class="fas fa-chevron-right"></i>
+                                                        </button>
+                                                        <div class="hotel-gallery-indicators">
+                                                            @for($i = 0; $i < min(count($hotelPhotos), 8); $i++)
+                                                                <span class="hotel-gallery-indicator {{ $i === 0 ? 'active' : '' }}" data-slide="{{ $i }}"></span>
+                                                            @endfor
+                                                        </div>
+                                                    @endif
                                                 </div>
+                                            @else
+                                                <!-- Fallback image if no photos available -->
+                                                <img src="{{ $item['image'] ?? 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=400&h=300&fit=crop' }}" alt="{{ $hotelName }}" class="hotel-fallback-image">
                                             @endif
                                         </div>
 
-                                        @if($hotelAddress)
-                                            <div class="hotel-address">
-                                                <i class="fas fa-map-marker-alt"></i> {{ $hotelAddress }}
+                                        <!-- Right column: Hotel information -->
+                                        <div class="hotel-info-column">
+                                            <!-- Hotel name and rating -->
+                                            <div class="hotel-header">
+                                                <h3 class="hotel-title">{{ $hotelName }}</h3>
+                                                @if($hotelRating)
+                                                    <div class="hotel-rating-section">
+                                                        <div class="hotel-rating">
+                                                            @for($i = 0; $i < 5; $i++)
+                                                                @if($i < floor($hotelRating))
+                                                                    <i class="fas fa-star star-filled"></i>
+                                                                @elseif($i < $hotelRating)
+                                                                    <i class="fas fa-star-half-alt star-filled"></i>
+                                                                @else
+                                                                    <i class="far fa-star star-empty"></i>
+                                                                @endif
+                                                            @endfor
+                                                            <span class="rating-text">({{ number_format($hotelRating, 1) }})</span>
+                                                        </div>
+                                                    </div>
+                                                @endif
                                             </div>
-                                        @endif
 
-                                        <div class="hotel-details">
+                                            <!-- Hotel address -->
+                                            @if($hotelAddress)
+                                                <div class="hotel-address">
+                                                    <i class="fas fa-map-marker-alt"></i> {{ $hotelAddress }}
+                                                </div>
+                                            @endif
+
+                                            <!-- Check-in and check-out dates -->
                                             <div class="hotel-check-dates">
                                                 <span><i class="fas fa-calendar-alt"></i> Check-in: {{ $item['check_in'] ?? 'Fecha no especificada' }}</span>
                                                 <span><i class="fas fa-calendar-check"></i> Check-out: {{ $item['check_out'] ?? 'Fecha no especificada' }}</span>
                                             </div>
 
+                                            <!-- Amenities -->
                                             <div class="hotel-amenities">
-                                                @if($item['room_type'])
-                                                    <span class="amenity"><i class="fas fa-bed"></i> {{ $item['room_type'] }}</span>
-                                                @endif
-                                                @if($item['nights'])
-                                                    <span class="amenity"><i class="fas fa-moon"></i> {{ $item['nights'] }} noches</span>
-                                                @endif
                                             </div>
 
-                                            @if($hotelWebsite || $hotelPhone)
-                                                <div class="hotel-contact">
-                                                    @if($hotelWebsite)
-                                                        <a href="{{ $hotelWebsite }}" target="_blank" class="contact-link">
-                                                            <i class="fas fa-globe"></i> Sitio web
-                                                        </a>
-                                                    @endif
-                                                    @if($hotelPhone)
-                                                        <a href="tel:{{ $hotelPhone }}" class="contact-link">
-                                                            <i class="fas fa-phone"></i> {{ $hotelPhone }}
-                                                        </a>
-                                                    @endif
+                                            <!-- Divider line -->
+                                            <div class="hotel-divider"></div>
+
+                                            <!-- Hotel nights at bottom -->
+                                            @if($item['nights'])
+                                                <div class="hotel-nights-bottom">
+                                                    <span class="hotel-nights-badge">{{ $item['nights'] }} noches</span>
                                                 </div>
                                             @endif
                                         </div>
@@ -503,6 +519,27 @@
         border-radius: 8px;
         margin-bottom: 20px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .trip-cover-banner {
+        width: 100%;
+        margin: 20px 0;
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+
+    .cover-banner-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+        transition: transform 0.3s ease;
+    }
+
+    .trip-cover-banner:hover .cover-banner-image {
+        transform: scale(1.02);
     }
 
     h1 {
@@ -686,6 +723,12 @@
         margin-bottom: 15px;
         display: flex;
         gap: 15px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .activity-card:hover {
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
+        transform: translateY(-4px) scale(1.02);
     }
 
     .activity-image {
@@ -760,6 +803,12 @@
         border-radius: 8px;
         padding: 20px;
         margin-top: 20px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .train-card:hover {
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
+        transform: translateY(-4px) scale(1.02);
     }
 
     .train-route {
@@ -1159,6 +1208,15 @@
             font-size: 24px;
         }
 
+        .trip-cover-banner {
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .cover-banner-image {
+            height: 180px;
+        }
+
         .flight-details {
             grid-template-columns: 1fr;
             gap: 15px;
@@ -1256,6 +1314,12 @@
 
         .floating-shapes {
             display: none;
+        }
+    }
+
+    @media (max-width: 1024px) and (min-width: 769px) {
+        .cover-banner-image {
+            height: 220px;
         }
     }
 </style>
@@ -2059,7 +2123,8 @@
         background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%);
         border: 1px solid rgba(255,255,255,0.2);
         border-radius: 20px;
-        margin-bottom: 2rem;
+        padding: 16px;
+        margin-bottom: 16px;
         overflow: hidden;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2080,22 +2145,70 @@
     }
 
     .hotel-content {
-        padding: 1.75rem;
+        padding: 0rem;
+        display: flex;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+
+    .hotel-photos-column {
+        flex: 0 0 300px;
+    }
+
+    .hotel-info-column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .hotel-divider {
+        height: 1px;
+        background: #f3f4f6;
+        margin: 1rem 0;
+        border: none;
+    }
+
+    .hotel-contact-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .hotel-contact-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: white;
+        background: var(--primary-blue);
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        border: 1px solid var(--primary-blue);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .hotel-contact-link:hover {
+        background: #0b8ce9;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
     }
 
     .hotel-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 1rem;
+        margin-bottom: 0rem;
         gap: 1rem;
     }
 
     .hotel-title {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         font-weight: 700;
         color: var(--primary-dark);
-        margin: 0;
+        margin: 0 0 0.05rem 0;
         flex: 1;
     }
 
@@ -2131,9 +2244,10 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        color: var(--text-gray);
-        font-size: 0.95rem;
-        margin-bottom: 1rem;
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: #6b7280;
+        margin-bottom: 0.5rem;
     }
 
     .hotel-details {
@@ -2199,6 +2313,43 @@
         color: white;
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Hotel Details Section Styles */
+    .hotel-details-section {
+        border-top: 1px solid #f3f4f6;
+        padding-top: 12px;
+    }
+
+    .hotel-meta {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .hotel-room-type, .hotel-nights {
+        font-size: 0.75rem;
+        color: white;
+        background: var(--primary-blue);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+
+    .hotel-nights-bottom {
+        margin-top: 1rem;
+        text-align: left;
+    }
+
+    .hotel-nights-badge {
+        font-size: 0.75rem;
+        color: white;
+        background: var(--primary-blue);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: 600;
     }
 
     /* Hotel Gallery Carousel Styles */
@@ -2842,16 +2993,17 @@
     }
 
     .flight-card-unified:hover {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        transform: translateY(-1px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
+        transform: translateY(-4px) scale(1.02);
     }
 
     .flight-route-main {
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: space-between;
         margin-bottom: 16px;
         gap: 12px;
+        position: relative;
     }
 
     .airport-section {
@@ -2936,10 +3088,29 @@
         border-bottom: 1px solid #f3f4f6;
     }
 
+    .airport-route-text {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+    }
+
+    .hotel-route-header {
+        text-align: left;
+        margin-bottom: 32px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .hotel-route-text {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+    }
+
     .airport-code {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: #111827;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary-dark);
         margin-bottom: 4px;
         letter-spacing: 1px;
     }
@@ -3123,6 +3294,10 @@
             flex: 1;
         }
 
+        .arrival-info {
+            text-align: left;
+        }
+
         .airport-time {
             font-size: 0.9rem;
         }
@@ -3204,6 +3379,30 @@
 
         .layover-duration {
             font-size: 0.7rem;
+        }
+
+        .hotel-content {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .hotel-photos-column {
+            flex: none;
+            width: 100%;
+        }
+
+        .hotel-info-column {
+            flex: none;
+            width: 100%;
+        }
+
+        .hotel-contact-section {
+            gap: 0.5rem;
+        }
+
+        .hotel-contact-link {
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
         }
     }
 
