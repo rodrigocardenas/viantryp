@@ -101,7 +101,8 @@ class ExportManager {
             const itemsData = this.collectAllTripItems();
 
             // Calculate end date based on number of days
-            const startDate = document.getElementById('start-date').value;
+            const startDateEl = document.getElementById('start-date');
+            const startDate = startDateEl ? startDateEl.value : null;
             let endDate = null;
             if (startDate) {
                 const dayCards = document.querySelectorAll('.day-card');
@@ -112,8 +113,20 @@ class ExportManager {
                 endDate = endDateObj.toISOString().split('T')[0];
             }
 
+            // Read title safely: the title may be an input or an element (h1) depending on page
+            const tripTitleEl = document.getElementById('trip-title');
+            let tripTitle = '';
+            if (tripTitleEl) {
+                // Prefer .value for inputs, fall back to textContent for headings
+                if (typeof tripTitleEl.value !== 'undefined') {
+                    tripTitle = (tripTitleEl.value || '').toString().trim();
+                } else {
+                    tripTitle = (tripTitleEl.textContent || '').toString().trim();
+                }
+            }
+
             const tripData = {
-                title: document.getElementById('trip-title').value?.trim(),
+                title: tripTitle,
                 start_date: startDate,
                 end_date: endDate,
                 travelers: 1, // Default value

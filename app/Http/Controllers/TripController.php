@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Trip;
+use App\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
@@ -65,18 +66,39 @@ class TripController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'start_date' => 'nullable|date',
             'travelers' => 'nullable|integer|min:1',
             'destination' => 'nullable|string|max:255',
             'summary' => 'nullable|string',
-            'items_data' => 'nullable|array'
+            'items_data' => 'nullable|array',
+            'client_name' => 'nullable|string|max:255',
+            'client_email' => 'nullable|email|max:255',
+            'agent_id' => 'nullable|exists:persons,id'
         ]);
 
+        // Handle client: updateOrCreate Person with type 'client'
+        $clientId = null;
+        if ($validated['client_name'] && $validated['client_email']) {
+            $client = Person::updateOrCreate(
+                ['email' => $validated['client_email']],
+                [
+                    'name' => $validated['client_name'],
+                    'type' => 'client',
+                    'phone' => null // or from request if added
+                ]
+            );
+            $clientId = $client->id;
+        }
+
+        // Remove person fields from validated data as they don't belong to trips table
+        unset($validated['client_name'], $validated['client_email'], $validated['agent_id']);
+
         // Set default start and end dates
-        $validated['start_date'] = now();
-        $validated['end_date'] = now();
+        $validated['start_date'] = $validated['start_date'] ?? now();
+        $validated['end_date'] = $validated['start_date'];
 
         // Smart duplicate handling: update existing trips instead of rejecting
-        return DB::transaction(function() use ($validated) {
+        return DB::transaction(function() use ($validated, $request, $clientId) {
             // Get current user ID once
             $userId = Auth::id();
 
@@ -96,6 +118,16 @@ class TripController extends Controller
                     'items_data' => $validated['items_data'] ?? []
                 ]);
 
+                // Sync persons: detach all and attach new ones
+                $personIds = [];
+                if ($clientId) {
+                    $personIds[] = $clientId;
+                }
+                if ($request->agent_id) {
+                    $personIds[] = $request->agent_id;
+                }
+                $existingTrip->persons()->sync($personIds);
+
                 // Generate a code if the trip doesn't have one
                 if (!$existingTrip->code) {
                     $existingTrip->generateCode();
@@ -104,7 +136,7 @@ class TripController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Viaje actualizado exitosamente',
-                    'trip' => $existingTrip->fresh(),
+                    'trip' => $existingTrip->fresh()->load('persons'),
                     'action' => 'updated' // Indicate this was an update, not a new creation
                 ]);
             }
@@ -133,10 +165,22 @@ class TripController extends Controller
             // Generate a unique code for the new trip
             $trip->generateCode();
 
+            // Associate persons to the trip
+            $personIds = [];
+            if ($clientId) {
+                $personIds[] = $clientId;
+            }
+            if ($request->agent_id) {
+                $personIds[] = $request->agent_id;
+            }
+            if (!empty($personIds)) {
+                $trip->persons()->attach($personIds);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Viaje creado exitosamente',
-                'trip' => $trip,
+                'trip' => $trip->load('persons'),
                 'action' => 'created' // Indicate this was a new creation
             ]);
         });
@@ -163,13 +207,10 @@ class TripController extends Controller
      */
     public function edit(Trip $trip): View
     {
-        // Ensure the trip belongs to the authenticated user
-        if ($trip->user_id !== Auth::id()) {
-            abort(403, 'No tienes permiso para editar este viaje.');
-        }
+        $trip->load('persons'); // Ensure persons relationship is loaded
 
-        return view('trips.edit', [
-            'trip' => $trip->load(['persons', 'documents'])
+        return view('trips.editor', [
+            'trip' => $trip
         ]);
     }
 
@@ -576,6 +617,36 @@ class TripController extends Controller
              ], 500);
          }
      }
+
+     /**
+      * Upload or update trip cover image
+      */
+    public function uploadCover(Request $request, Trip $trip): JsonResponse
+    {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'No tienes permiso para actualizar este viaje.'], 403);
+        }
+
+        $validated = $request->validate([
+            'cover' => 'required|image|max:5120' // max 5MB
+        ]);
+
+        $file = $request->file('cover');
+        if (!$file) {
+            return response()->json(['success' => false, 'message' => 'Archivo no encontrado.'], 422);
+        }
+
+        // Store in public disk under trip-covers
+        $path = $file->store('trip-covers', 'public');
+        $coverUrl = asset('storage/' . $path);
+
+        // Persist to trip
+        $trip->cover_image_url = $coverUrl;
+        $trip->save();
+
+        return response()->json(['success' => true, 'cover_url' => $coverUrl]);
+    }
 
      /**
       * Enrich hotel data with Google Places details

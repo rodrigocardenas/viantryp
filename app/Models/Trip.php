@@ -21,6 +21,7 @@ class Trip extends Model
         'status',
         'summary',
         'items_data',
+        'cover_image_url',
         'share_token',
         'created_at',
         'updated_at'
@@ -217,9 +218,9 @@ class Trip extends Model
                  // Check if it's a unique constraint violation
                  $errorCode = $e->getCode();
                  $errorMessage = $e->getMessage();
-                 
-                 if ($errorCode == 23000 || 
-                     str_contains($errorMessage, 'Duplicate entry') || 
+
+                 if ($errorCode == 23000 ||
+                     str_contains($errorMessage, 'Duplicate entry') ||
                      str_contains($errorMessage, 'UNIQUE constraint') ||
                      str_contains($errorMessage, '1062')) { // MySQL duplicate entry error code
                      // Code collision occurred due to race condition, retry with a new code
