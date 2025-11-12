@@ -322,6 +322,10 @@ class ExportManager {
                     arrival_airport: arrivalAirport,
                     departure_time: itemElement.getAttribute('data-departure-time') || '',
                     arrival_time: itemElement.getAttribute('data-arrival-time') || '',
+                    departure_date: itemElement.getAttribute('data-departure-date') || '',
+                    arrival_date: itemElement.getAttribute('data-arrival-date') || '',
+                    departure_city: itemElement.getAttribute('data-departure-city') || '',
+                    arrival_city: itemElement.getAttribute('data-arrival-city') || '',
                     confirmation_number: itemElement.getAttribute('data-confirmation-number') || ''
                 };
 

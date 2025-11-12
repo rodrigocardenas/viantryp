@@ -1,139 +1,629 @@
 {
   "airlines": [
-    { "id": "Iberia", "text": "Iberia" },
-    { "id": "Air France", "text": "Air France" },
-    { "id": "Lufthansa", "text": "Lufthansa" },
-    { "id": "British Airways", "text": "British Airways" },
-    { "id": "KLM", "text": "KLM" },
-    { "id": "Delta", "text": "Delta" },
-    { "id": "American Airlines", "text": "American Airlines" },
-    { "id": "United Airlines", "text": "United Airlines" },
-    { "id": "Emirates", "text": "Emirates" },
-    { "id": "Qatar Airways", "text": "Qatar Airways" },
-    { "id": "Turkish Airlines", "text": "Turkish Airlines" },
-    { "id": "LATAM", "text": "LATAM" },
-    { "id": "Avianca", "text": "Avianca" },
-    { "id": "Aeroméxico", "text": "Aeroméxico" },
-    { "id": "Aerolineas Argentinas", "text": "Aerolineas Argentinas" },
-    { "id": "Sky Airline", "text": "Sky Airline" },
-    { "id": "JetSmart", "text": "JetSmart" },
-    { "id": "Ryanair", "text": "Ryanair" },
-    { "id": "Vueling", "text": "Vueling" },
-    { "id": "EasyJet", "text": "EasyJet" },
-    { "id": "Norwegian", "text": "Norwegian" },
-    { "id": "Volotea", "text": "Volotea" },
-    { "id": "Eurowings", "text": "Eurowings" },
-    { "id": "Transavia", "text": "Transavia" },
-    { "id": "Pegasus", "text": "Pegasus" },
-    { "id": "Wizz Air", "text": "Wizz Air" },
-    { "id": "Level", "text": "Level" }
+    {
+      "id": "Iberia",
+      "text": "Iberia"
+    },
+    {
+      "id": "Air France",
+      "text": "Air France"
+    },
+    {
+      "id": "Lufthansa",
+      "text": "Lufthansa"
+    },
+    {
+      "id": "British Airways",
+      "text": "British Airways"
+    },
+    {
+      "id": "KLM",
+      "text": "KLM"
+    },
+    {
+      "id": "Delta",
+      "text": "Delta"
+    },
+    {
+      "id": "American Airlines",
+      "text": "American Airlines"
+    },
+    {
+      "id": "United Airlines",
+      "text": "United Airlines"
+    },
+    {
+      "id": "Emirates",
+      "text": "Emirates"
+    },
+    {
+      "id": "Qatar Airways",
+      "text": "Qatar Airways"
+    },
+    {
+      "id": "Turkish Airlines",
+      "text": "Turkish Airlines"
+    },
+    {
+      "id": "LATAM",
+      "text": "LATAM"
+    },
+    {
+      "id": "Avianca",
+      "text": "Avianca"
+    },
+    {
+      "id": "Aeroméxico",
+      "text": "Aeroméxico"
+    },
+    {
+      "id": "Aerolineas Argentinas",
+      "text": "Aerolineas Argentinas"
+    },
+    {
+      "id": "Sky Airline",
+      "text": "Sky Airline"
+    },
+    {
+      "id": "JetSmart",
+      "text": "JetSmart"
+    },
+    {
+      "id": "Ryanair",
+      "text": "Ryanair"
+    },
+    {
+      "id": "Vueling",
+      "text": "Vueling"
+    },
+    {
+      "id": "EasyJet",
+      "text": "EasyJet"
+    },
+    {
+      "id": "Norwegian",
+      "text": "Norwegian"
+    },
+    {
+      "id": "Volotea",
+      "text": "Volotea"
+    },
+    {
+      "id": "Eurowings",
+      "text": "Eurowings"
+    },
+    {
+      "id": "Transavia",
+      "text": "Transavia"
+    },
+    {
+      "id": "Pegasus",
+      "text": "Pegasus"
+    },
+    {
+      "id": "Wizz Air",
+      "text": "Wizz Air"
+    },
+    {
+      "id": "Level",
+      "text": "Level"
+    }
   ],
   "airports": [
-    { "id": "Madrid Barajas (MAD)", "text": "Madrid Barajas (MAD)" },
-    { "id": "Barcelona El Prat (BCN)", "text": "Barcelona El Prat (BCN)" },
-    { "id": "París Charles de Gaulle (CDG)", "text": "París Charles de Gaulle (CDG)" },
-    { "id": "París Orly (ORY)", "text": "París Orly (ORY)" },
-    { "id": "Fráncfort (FRA)", "text": "Fráncfort (FRA)" },
-    { "id": "Múnich (MUC)", "text": "Múnich (MUC)" },
-    { "id": "Londres Heathrow (LHR)", "text": "Londres Heathrow (LHR)" },
-    { "id": "Londres Gatwick (LGW)", "text": "Londres Gatwick (LGW)" },
-    { "id": "Londres Luton (LTN)", "text": "Londres Luton (LTN)" },
-    { "id": "Londres Stansted (STN)", "text": "Londres Stansted (STN)" },
-    { "id": "Londres City (LCY)", "text": "Londres City (LCY)" },
-    { "id": "Ámsterdam Schiphol (AMS)", "text": "Ámsterdam Schiphol (AMS)" },
-    { "id": "Roma Fiumicino (FCO)", "text": "Roma Fiumicino (FCO)" },
-    { "id": "Milán Malpensa (MXP)", "text": "Milán Malpensa (MXP)" },
-    { "id": "Berlín Brandenburg (BER)", "text": "Berlín Brandenburg (BER)" },
-    { "id": "Viena (VIE)", "text": "Viena (VIE)" },
-    { "id": "Zúrich (ZRH)", "text": "Zúrich (ZRH)" },
-    { "id": "Ginebra (GVA)", "text": "Ginebra (GVA)" },
-    { "id": "Copenhague (CPH)", "text": "Copenhague (CPH)" },
-    { "id": "Estocolmo Arlanda (ARN)", "text": "Estocolmo Arlanda (ARN)" },
-    { "id": "Oslo Gardermoen (OSL)", "text": "Oslo Gardermoen (OSL)" },
-    { "id": "Helsinki (HEL)", "text": "Helsinki (HEL)" },
-    { "id": "Praga (PRG)", "text": "Praga (PRG)" },
-    { "id": "Budapest (BUD)", "text": "Budapest (BUD)" },
-    { "id": "Varsovia Chopin (WAW)", "text": "Varsovia Chopin (WAW)" },
-    { "id": "Lisboa Humberto Delgado (LIS)", "text": "Lisboa Humberto Delgado (LIS)" },
-    { "id": "Oporto (OPO)", "text": "Oporto (OPO)" },
-    { "id": "Atenas (ATH)", "text": "Atenas (ATH)" },
-    { "id": "Tel Aviv Ben Gurión (TLV)", "text": "Tel Aviv Ben Gurión (TLV)" },
-    { "id": "El Cairo (CAI)", "text": "El Cairo (CAI)" },
-    { "id": "Estambul (IST)", "text": "Estambul (IST)" },
-    { "id": "Moscú Domodédovo (DME)", "text": "Moscú Domodédovo (DME)" },
-    { "id": "Moscú Sheremétievo (SVO)", "text": "Moscú Sheremétievo (SVO)" },
-    { "id": "San Petersburgo Púlkovo (LED)", "text": "San Petersburgo Púlkovo (LED)" },
-    { "id": "Nueva York JFK (JFK)", "text": "Nueva York JFK (JFK)" },
-    { "id": "Nueva York Newark (EWR)", "text": "Nueva York Newark (EWR)" },
-    { "id": "Los Ángeles (LAX)", "text": "Los Ángeles (LAX)" },
-    { "id": "Chicago O'Hare (ORD)", "text": "Chicago O'Hare (ORD)" },
-    { "id": "Miami (MIA)", "text": "Miami (MIA)" },
-    { "id": "Toronto Pearson (YYZ)", "text": "Toronto Pearson (YYZ)" },
-    { "id": "Vancouver (YVR)", "text": "Vancouver (YVR)" },
-    { "id": "Montreal Trudeau (YUL)", "text": "Montreal Trudeau (YUL)" },
-    { "id": "México City (MEX)", "text": "México City (MEX)" },
-    { "id": "Cancún (CUN)", "text": "Cancún (CUN)" },
-    { "id": "Guadalajara (GDL)", "text": "Guadalajara (GDL)" },
-    { "id": "Monterrey (MTY)", "text": "Monterrey (MTY)" },
-    { "id": "Tijuana (TIJ)", "text": "Tijuana (TIJ)" },
-    { "id": "Los Cabos (SJD)", "text": "Los Cabos (SJD)" },
-    { "id": "La Habana (HAV)", "text": "La Habana (HAV)" },
-    { "id": "Nassau (NAS)", "text": "Nassau (NAS)" },
-    { "id": "Santiago de Chile (SCL)", "text": "Santiago de Chile (SCL)" },
-    { "id": "Bogotá (BOG)", "text": "Bogotá (BOG)" },
-    { "id": "Lima (LIM)", "text": "Lima (LIM)" },
-    { "id": "Buenos Aires Ezeiza (EZE)", "text": "Buenos Aires Ezeiza (EZE)" },
-    { "id": "São Paulo Guarulhos (GRU)", "text": "São Paulo Guarulhos (GRU)" },
-    { "id": "Brasilia (BSB)", "text": "Brasilia (BSB)" },
-    { "id": "Río de Janeiro Galeão (GIG)", "text": "Río de Janeiro Galeão (GIG)" },
-    { "id": "Quito (UIO)", "text": "Quito (UIO)" },
-    { "id": "Guayaquil (GYE)", "text": "Guayaquil (GYE)" },
-    { "id": "Asunción (ASU)", "text": "Asunción (ASU)" },
-    { "id": "Montevideo (MVD)", "text": "Montevideo (MVD)" },
-    { "id": "La Paz (LPB)", "text": "La Paz (LPB)" },
-    { "id": "Santa Cruz (VVI)", "text": "Santa Cruz (VVI)" },
-    { "id": "Dubái (DXB)", "text": "Dubái (DXB)" },
-    { "id": "Doha (DOH)", "text": "Doha (DOH)" },
-    { "id": "Hong Kong (HKG)", "text": "Hong Kong (HKG)" },
-    { "id": "Tokio Narita (NRT)", "text": "Tokio Narita (NRT)" },
-    { "id": "Tokio Haneda (HND)", "text": "Tokio Haneda (HND)" },
-    { "id": "Seúl Incheon (ICN)", "text": "Seúl Incheon (ICN)" },
-    { "id": "Pekín Capital (PEK)", "text": "Pekín Capital (PEK)" },
-    { "id": "Shanghái Pudong (PVG)", "text": "Shanghái Pudong (PVG)" },
-    { "id": "Cantón (CAN)", "text": "Cantón (CAN)" },
-    { "id": "Chengdú (CTU)", "text": "Chengdú (CTU)" },
-    { "id": "Yakarta Soekarno-Hatta (CGK)", "text": "Yakarta Soekarno-Hatta (CGK)" },
-    { "id": "Bangkok Suvarnabhumi (BKK)", "text": "Bangkok Suvarnabhumi (BKK)" },
-    { "id": "Singapur Changi (SIN)", "text": "Singapur Changi (SIN)" },
-    { "id": "Kuala Lumpur (KUL)", "text": "Kuala Lumpur (KUL)" },
-    { "id": "Delhi (DEL)", "text": "Delhi (DEL)" },
-    { "id": "Bombay (BOM)", "text": "Bombay (BOM)" },
-    { "id": "Bangalore (BLR)", "text": "Bangalore (BLR)" },
-    { "id": "Sídney (SYD)", "text": "Sídney (SYD)" },
-    { "id": "Melbourne (MEL)", "text": "Melbourne (MEL)" },
-    { "id": "Auckland (AKL)", "text": "Auckland (AKL)" },
-    { "id": "Perth (PER)", "text": "Perth (PER)" },
-    { "id": "Brisbane (BNE)", "text": "Brisbane (BNE)" },
-    { "id": "Johannesburgo (JNB)", "text": "Johannesburgo (JNB)" },
-    { "id": "Ciudad del Cabo (CPT)", "text": "Ciudad del Cabo (CPT)" },
-    { "id": "Adís Abeba (ADD)", "text": "Adís Abeba (ADD)" },
-    { "id": "Nairobi (NBO)", "text": "Nairobi (NBO)" },
-    { "id": "Lagos (LOS)", "text": "Lagos (LOS)" },
-    { "id": "Casablanca (CMN)", "text": "Casablanca (CMN)" },
-    { "id": "Túnez (TUN)", "text": "Túnez (TUN)" },
-    { "id": "Abu Dhabi (AUH)", "text": "Abu Dhabi (AUH)" },
-    { "id": "Riad (RUH)", "text": "Riad (RUH)" },
-    { "id": "Amán (AMM)", "text": "Amán (AMM)" },
-    { "id": "Beirut (BEY)", "text": "Beirut (BEY)" },
-    { "id": "Kuwait (KWI)", "text": "Kuwait (KWI)" }
+    {
+      "id": "Madrid Barajas (MAD)",
+      "text": "Madrid Barajas (MAD)",
+      "city": "Madrid"
+    },
+    {
+      "id": "Barcelona El Prat (BCN)",
+      "text": "Barcelona El Prat (BCN)",
+      "city": "Barcelona"
+    },
+    {
+      "id": "París Charles de Gaulle (CDG)",
+      "text": "París Charles de Gaulle (CDG)",
+      "city": "París"
+    },
+    {
+      "id": "París Orly (ORY)",
+      "text": "París Orly (ORY)",
+      "city": "París"
+    },
+    {
+      "id": "Fráncfort (FRA)",
+      "text": "Fráncfort (FRA)",
+      "city": "Fráncfort"
+    },
+    {
+      "id": "Múnich (MUC)",
+      "text": "Múnich (MUC)",
+      "city": "Múnich"
+    },
+    {
+      "id": "Londres Heathrow (LHR)",
+      "text": "Londres Heathrow (LHR)",
+      "city": "Londres"
+    },
+    {
+      "id": "Londres Gatwick (LGW)",
+      "text": "Londres Gatwick (LGW)",
+      "city": "Londres"
+    },
+    {
+      "id": "Londres Luton (LTN)",
+      "text": "Londres Luton (LTN)",
+      "city": "Londres"
+    },
+    {
+      "id": "Londres Stansted (STN)",
+      "text": "Londres Stansted (STN)",
+      "city": "Londres"
+    },
+    {
+      "id": "Londres City (LCY)",
+      "text": "Londres City (LCY)",
+      "city": "Londres"
+    },
+    {
+      "id": "Ámsterdam Schiphol (AMS)",
+      "text": "Ámsterdam Schiphol (AMS)",
+      "city": "Ámsterdam"
+    },
+    {
+      "id": "Roma Fiumicino (FCO)",
+      "text": "Roma Fiumicino (FCO)",
+      "city": "Roma"
+    },
+    {
+      "id": "Milán Malpensa (MXP)",
+      "text": "Milán Malpensa (MXP)",
+      "city": "Milán"
+    },
+    {
+      "id": "Berlín Brandenburg (BER)",
+      "text": "Berlín Brandenburg (BER)",
+      "city": "Berlín"
+    },
+    {
+      "id": "Viena (VIE)",
+      "text": "Viena (VIE)",
+      "city": "Viena"
+    },
+    {
+      "id": "Zúrich (ZRH)",
+      "text": "Zúrich (ZRH)",
+      "city": "Zúrich"
+    },
+    {
+      "id": "Ginebra (GVA)",
+      "text": "Ginebra (GVA)",
+      "city": "Ginebra"
+    },
+    {
+      "id": "Copenhague (CPH)",
+      "text": "Copenhague (CPH)",
+      "city": "Copenhague"
+    },
+    {
+      "id": "Estocolmo Arlanda (ARN)",
+      "text": "Estocolmo Arlanda (ARN)",
+      "city": "Estocolmo"
+    },
+    {
+      "id": "Oslo Gardermoen (OSL)",
+      "text": "Oslo Gardermoen (OSL)",
+      "city": "Oslo"
+    },
+    {
+      "id": "Helsinki (HEL)",
+      "text": "Helsinki (HEL)",
+      "city": "Helsinki"
+    },
+    {
+      "id": "Praga (PRG)",
+      "text": "Praga (PRG)",
+      "city": "Praga"
+    },
+    {
+      "id": "Budapest (BUD)",
+      "text": "Budapest (BUD)",
+      "city": "Budapest"
+    },
+    {
+      "id": "Varsovia Chopin (WAW)",
+      "text": "Varsovia Chopin (WAW)",
+      "city": "Varsovia"
+    },
+    {
+      "id": "Lisboa Humberto Delgado (LIS)",
+      "text": "Lisboa Humberto Delgado (LIS)",
+      "city": "Lisboa"
+    },
+    {
+      "id": "Oporto (OPO)",
+      "text": "Oporto (OPO)",
+      "city": "Oporto"
+    },
+    {
+      "id": "Atenas (ATH)",
+      "text": "Atenas (ATH)",
+      "city": "Atenas"
+    },
+    {
+      "id": "Tel Aviv Ben Gurión (TLV)",
+      "text": "Tel Aviv Ben Gurión (TLV)",
+      "city": "Tel Aviv"
+    },
+    {
+      "id": "El Cairo (CAI)",
+      "text": "El Cairo (CAI)",
+      "city": "El Cairo"
+    },
+    {
+      "id": "Estambul (IST)",
+      "text": "Estambul (IST)",
+      "city": "Estambul"
+    },
+    {
+      "id": "Moscú Domodédovo (DME)",
+      "text": "Moscú Domodédovo (DME)",
+      "city": "Moscú"
+    },
+    {
+      "id": "Moscú Sheremétievo (SVO)",
+      "text": "Moscú Sheremétievo (SVO)",
+      "city": "Moscú"
+    },
+    {
+      "id": "San Petersburgo Púlkovo (LED)",
+      "text": "San Petersburgo Púlkovo (LED)",
+      "city": "San Petersburgo"
+    },
+    {
+      "id": "Nueva York JFK (JFK)",
+      "text": "Nueva York JFK (JFK)",
+      "city": "Nueva York"
+    },
+    {
+      "id": "Nueva York Newark (EWR)",
+      "text": "Nueva York Newark (EWR)",
+      "city": "Nueva York"
+    },
+    {
+      "id": "Los Ángeles (LAX)",
+      "text": "Los Ángeles (LAX)",
+      "city": "Los Ángeles"
+    },
+    {
+      "id": "Chicago O'Hare (ORD)",
+      "text": "Chicago O'Hare (ORD)",
+      "city": "Chicago"
+    },
+    {
+      "id": "Miami (MIA)",
+      "text": "Miami (MIA)",
+      "city": "Miami"
+    },
+    {
+      "id": "Toronto Pearson (YYZ)",
+      "text": "Toronto Pearson (YYZ)",
+      "city": "Toronto"
+    },
+    {
+      "id": "Vancouver (YVR)",
+      "text": "Vancouver (YVR)",
+      "city": "Vancouver"
+    },
+    {
+      "id": "Montreal Trudeau (YUL)",
+      "text": "Montreal Trudeau (YUL)",
+      "city": "Montreal"
+    },
+    {
+      "id": "México City (MEX)",
+      "text": "México City (MEX)",
+      "city": "México City"
+    },
+    {
+      "id": "Cancún (CUN)",
+      "text": "Cancún (CUN)",
+      "city": "Cancún"
+    },
+    {
+      "id": "Guadalajara (GDL)",
+      "text": "Guadalajara (GDL)",
+      "city": "Guadalajara"
+    },
+    {
+      "id": "Monterrey (MTY)",
+      "text": "Monterrey (MTY)",
+      "city": "Monterrey"
+    },
+    {
+      "id": "Tijuana (TIJ)",
+      "text": "Tijuana (TIJ)",
+      "city": "Tijuana"
+    },
+    {
+      "id": "Los Cabos (SJD)",
+      "text": "Los Cabos (SJD)",
+      "city": "Los"
+    },
+    {
+      "id": "La Habana (HAV)",
+      "text": "La Habana (HAV)",
+      "city": "La"
+    },
+    {
+      "id": "Nassau (NAS)",
+      "text": "Nassau (NAS)",
+      "city": "Nassau"
+    },
+    {
+      "id": "Santiago de Chile (SCL)",
+      "text": "Santiago de Chile (SCL)",
+      "city": "Santiago de Chile"
+    },
+    {
+      "id": "Bogotá (BOG)",
+      "text": "Bogotá (BOG)",
+      "city": "Bogotá"
+    },
+    {
+      "id": "Lima (LIM)",
+      "text": "Lima (LIM)",
+      "city": "Lima"
+    },
+    {
+      "id": "Buenos Aires Ezeiza (EZE)",
+      "text": "Buenos Aires Ezeiza (EZE)",
+      "city": "Buenos Aires"
+    },
+    {
+      "id": "São Paulo Guarulhos (GRU)",
+      "text": "São Paulo Guarulhos (GRU)",
+      "city": "São Paulo"
+    },
+    {
+      "id": "Brasilia (BSB)",
+      "text": "Brasilia (BSB)",
+      "city": "Brasilia"
+    },
+    {
+      "id": "Río de Janeiro Galeão (GIG)",
+      "text": "Río de Janeiro Galeão (GIG)",
+      "city": "Río de Janeiro"
+    },
+    {
+      "id": "Quito (UIO)",
+      "text": "Quito (UIO)",
+      "city": "Quito"
+    },
+    {
+      "id": "Guayaquil (GYE)",
+      "text": "Guayaquil (GYE)",
+      "city": "Guayaquil"
+    },
+    {
+      "id": "Asunción (ASU)",
+      "text": "Asunción (ASU)",
+      "city": "Asunción"
+    },
+    {
+      "id": "Montevideo (MVD)",
+      "text": "Montevideo (MVD)",
+      "city": "Montevideo"
+    },
+    {
+      "id": "La Paz (LPB)",
+      "text": "La Paz (LPB)",
+      "city": "La"
+    },
+    {
+      "id": "Santa Cruz (VVI)",
+      "text": "Santa Cruz (VVI)",
+      "city": "Santa"
+    },
+    {
+      "id": "Dubái (DXB)",
+      "text": "Dubái (DXB)",
+      "city": "Dubái"
+    },
+    {
+      "id": "Doha (DOH)",
+      "text": "Doha (DOH)",
+      "city": "Doha"
+    },
+    {
+      "id": "Hong Kong (HKG)",
+      "text": "Hong Kong (HKG)",
+      "city": "Hong Kong"
+    },
+    {
+      "id": "Tokio Narita (NRT)",
+      "text": "Tokio Narita (NRT)",
+      "city": "Tokio"
+    },
+    {
+      "id": "Tokio Haneda (HND)",
+      "text": "Tokio Haneda (HND)",
+      "city": "Tokio"
+    },
+    {
+      "id": "Seúl Incheon (ICN)",
+      "text": "Seúl Incheon (ICN)",
+      "city": "Seúl"
+    },
+    {
+      "id": "Pekín Capital (PEK)",
+      "text": "Pekín Capital (PEK)",
+      "city": "Pekín"
+    },
+    {
+      "id": "Shanghái Pudong (PVG)",
+      "text": "Shanghái Pudong (PVG)",
+      "city": "Shanghái"
+    },
+    {
+      "id": "Cantón (CAN)",
+      "text": "Cantón (CAN)",
+      "city": "Cantón"
+    },
+    {
+      "id": "Chengdú (CTU)",
+      "text": "Chengdú (CTU)",
+      "city": "Chengdú"
+    },
+    {
+      "id": "Yakarta Soekarno-Hatta (CGK)",
+      "text": "Yakarta Soekarno-Hatta (CGK)",
+      "city": "Yakarta"
+    },
+    {
+      "id": "Bangkok Suvarnabhumi (BKK)",
+      "text": "Bangkok Suvarnabhumi (BKK)",
+      "city": "Bangkok"
+    },
+    {
+      "id": "Singapur Changi (SIN)",
+      "text": "Singapur Changi (SIN)",
+      "city": "Singapur"
+    },
+    {
+      "id": "Kuala Lumpur (KUL)",
+      "text": "Kuala Lumpur (KUL)",
+      "city": "Kuala"
+    },
+    {
+      "id": "Delhi (DEL)",
+      "text": "Delhi (DEL)",
+      "city": "Delhi"
+    },
+    {
+      "id": "Bombay (BOM)",
+      "text": "Bombay (BOM)",
+      "city": "Bombay"
+    },
+    {
+      "id": "Bangalore (BLR)",
+      "text": "Bangalore (BLR)",
+      "city": "Bangalore"
+    },
+    {
+      "id": "Sídney (SYD)",
+      "text": "Sídney (SYD)",
+      "city": "Sídney"
+    },
+    {
+      "id": "Melbourne (MEL)",
+      "text": "Melbourne (MEL)",
+      "city": "Melbourne"
+    },
+    {
+      "id": "Auckland (AKL)",
+      "text": "Auckland (AKL)",
+      "city": "Auckland"
+    },
+    {
+      "id": "Perth (PER)",
+      "text": "Perth (PER)",
+      "city": "Perth"
+    },
+    {
+      "id": "Brisbane (BNE)",
+      "text": "Brisbane (BNE)",
+      "city": "Brisbane"
+    },
+    {
+      "id": "Johannesburgo (JNB)",
+      "text": "Johannesburgo (JNB)",
+      "city": "Johannesburgo"
+    },
+    {
+      "id": "Ciudad del Cabo (CPT)",
+      "text": "Ciudad del Cabo (CPT)",
+      "city": "Ciudad del Cabo"
+    },
+    {
+      "id": "Adís Abeba (ADD)",
+      "text": "Adís Abeba (ADD)",
+      "city": "Adís"
+    },
+    {
+      "id": "Nairobi (NBO)",
+      "text": "Nairobi (NBO)",
+      "city": "Nairobi"
+    },
+    {
+      "id": "Lagos (LOS)",
+      "text": "Lagos (LOS)",
+      "city": "Lagos"
+    },
+    {
+      "id": "Casablanca (CMN)",
+      "text": "Casablanca (CMN)",
+      "city": "Casablanca"
+    },
+    {
+      "id": "Túnez (TUN)",
+      "text": "Túnez (TUN)",
+      "city": "Túnez"
+    },
+    {
+      "id": "Abu Dhabi (AUH)",
+      "text": "Abu Dhabi (AUH)",
+      "city": "Abu"
+    },
+    {
+      "id": "Riad (RUH)",
+      "text": "Riad (RUH)",
+      "city": "Riad"
+    },
+    {
+      "id": "Amán (AMM)",
+      "text": "Amán (AMM)",
+      "city": "Amán"
+    },
+    {
+      "id": "Beirut (BEY)",
+      "text": "Beirut (BEY)",
+      "city": "Beirut"
+    },
+    {
+      "id": "Kuwait (KWI)",
+      "text": "Kuwait (KWI)",
+      "city": "Kuwait"
+    }
   ],
   "currencies": [
-    { "id": "USD", "text": "USD - Dólar Estadounidense" },
-    { "id": "EUR", "text": "EUR - Euro" },
-    { "id": "CLP", "text": "CLP - Peso Chileno" },
-    { "id": "ARS", "text": "ARS - Peso Argentino" },
-    { "id": "PEN", "text": "PEN - Sol Peruano" },
-    { "id": "COP", "text": "COP - Peso Colombiano" },
-    { "id": "MXN", "text": "MXN - Peso Mexicano" }
+    {
+      "id": "USD",
+      "text": "USD - Dólar Estadounidense"
+    },
+    {
+      "id": "EUR",
+      "text": "EUR - Euro"
+    },
+    {
+      "id": "CLP",
+      "text": "CLP - Peso Chileno"
+    },
+    {
+      "id": "ARS",
+      "text": "ARS - Peso Argentino"
+    },
+    {
+      "id": "PEN",
+      "text": "PEN - Sol Peruano"
+    },
+    {
+      "id": "COP",
+      "text": "COP - Peso Colombiano"
+    },
+    {
+      "id": "MXN",
+      "text": "MXN - Peso Mexicano"
+    }
   ]
 }
