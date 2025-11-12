@@ -177,14 +177,22 @@
                                 @endphp
 
                                 <div class="flight-card-unified">
+                                    <!-- Header con códigos de aeropuertos -->
+                                    <div class="flight-route-header">
+                                        <span class="airport-route-text">Vuelo {{ ucwords(preg_replace('/\([^)]*\)/', '', strtolower($item['departure_airport'] ?? ''))) }} → {{ ucwords(preg_replace('/\([^)]*\)/', '', strtolower($item['arrival_airport'] ?? ''))) }}</span>
+                                    </div>
+
                                     <!-- Trayecto principal -->
                                     <div class="flight-route-main">
                                         <!-- Bloque origen -->
                                         <div class="airport-section">
                                             <div class="airport-info">
-                                                <div class="airport-date">{{ $departureDateLong }}</div>
-                                                <div class="airport-time">{{ date('H:i', strtotime($item['departure_time'] ?? '00:00')) }}</div>
-                                                <div class="airport-code">{{ strtoupper($item['departure_airport'] ?? 'DEP') }}</div>
+                                                <div class="airport-time-date">
+                                                    <span class="airport-time">{{ date('H:i', strtotime($item['departure_time'] ?? '00:00')) }}</span>
+                                                    <span class="airport-date-separator"> - </span>
+                                                    <span class="airport-date">{{ $departureDateLong }}</span>
+                                                </div>
+                                                <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? strtoupper($matches[1]) : strtoupper($item['departure_airport'] ?? 'DEP') }}</div>
                                                 <div class="airport-name">{{ ucfirst(strtolower($item['departure_airport_name'] ?? '')) }}</div>
                                                 <div class="airport-location">{{ $item['departure_city'] ?? '' }}, {{ $item['departure_country'] ?? '' }}</div>
                                             </div>
@@ -200,10 +208,13 @@
 
                                         <!-- Bloque destino -->
                                         <div class="airport-section">
-                                            <div class="airport-info">
-                                                <div class="airport-date">{{ $arrivalDateLong }}</div>
-                                                <div class="airport-time">{{ date('H:i', strtotime($item['arrival_time'] ?? '00:00')) }}</div>
-                                                <div class="airport-code">{{ strtoupper($item['arrival_airport'] ?? 'ARR') }}</div>
+                                            <div class="airport-info arrival-info">
+                                                <div class="airport-time-date">
+                                                    <span class="airport-time">{{ date('H:i', strtotime($item['arrival_time'] ?? '00:00')) }}</span>
+                                                    <span class="airport-date-separator"> - </span>
+                                                    <span class="airport-date">{{ $arrivalDateLong }}</span>
+                                                </div>
+                                                <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? strtoupper($matches[1]) : strtoupper($item['arrival_airport'] ?? 'ARR') }}</div>
                                                 <div class="airport-name">{{ ucfirst(strtolower($item['arrival_airport_name'] ?? '')) }}</div>
                                                 <div class="airport-location">{{ $item['arrival_city'] ?? '' }}, {{ $item['arrival_country'] ?? '' }}</div>
                                             </div>
@@ -214,6 +225,9 @@
                                     <div class="flight-details-section">
                                         <div class="flight-meta">
                                             <span class="airline-info">{{ $item['airline'] ?? 'Aerolínea' }}</span>
+                                            @if(isset($item['flight_number']) && $item['flight_number'])
+                                                <span class="flight-number">{{ $item['flight_number'] }}</span>
+                                            @endif
                                             @if(isset($item['layover_duration']) && $item['layover_duration'])
                                                 <span class="layover-duration">Escala: {{ $item['layover_duration'] }}</span>
                                             @endif
@@ -2867,7 +2881,7 @@
     }
 
     .airport-info {
-        text-align: center;
+        text-align: left;
     }
 
     .airport-date {
@@ -2882,6 +2896,44 @@
         font-weight: 700;
         color: #374151;
         margin-bottom: 8px;
+    }
+
+    .airport-time-date {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .airport-time {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #374151;
+    }
+
+    .airport-date-separator {
+        margin: 0 4px;
+        color: #6b7280;
+    }
+
+    .airport-date {
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: #6b7280;
+    }
+
+    .arrival-info {
+        text-align: right;
+    }
+
+    .arrival-info .airport-time-date {
+        justify-content: flex-end;
+    }
+
+    .flight-route-header {
+        text-align: left;
+        margin-bottom: 32px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f3f4f6;
     }
 
     .airport-code {
@@ -2978,7 +3030,7 @@
     .flight-meta {
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
         gap: 16px;
         flex-wrap: wrap;
     }
@@ -2992,7 +3044,7 @@
     .flight-number {
         font-size: 0.75rem;
         color: white;
-        background: #dc2626;
+        background: var(--primary-blue);
         padding: 2px 8px;
         border-radius: 4px;
         font-weight: 600;
@@ -3071,6 +3123,18 @@
             flex: 1;
         }
 
+        .airport-time {
+            font-size: 0.9rem;
+        }
+
+        .airport-date {
+            font-size: 0.7rem;
+        }
+
+        .airport-date-separator {
+            margin: 0 2px;
+        }
+
         .airport-date {
             font-size: 0.7rem;
             margin-bottom: 2px;
@@ -3126,6 +3190,7 @@
 
         .flight-meta {
             gap: 12px;
+            justify-content: flex-end;
         }
 
         .airline-info {
