@@ -207,10 +207,13 @@ class TripController extends Controller
      */
     public function edit(Trip $trip): View
     {
-        $trip->load('persons'); // Ensure persons relationship is loaded
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para editar este viaje.');
+        }
 
-        return view('trips.editor', [
-            'trip' => $trip
+        return view('trips.edit', [
+            'trip' => $trip->load(['persons', 'documents'])
         ]);
     }
 
@@ -633,13 +636,74 @@ class TripController extends Controller
         ]);
 
         $file = $request->file('cover');
-        if (!$file) {
+
+        // Fallback: allow a base64 data URL in 'cover_data_url' (set by client FileReader preview)
+        $coverDataUrl = $request->input('cover_data_url');
+
+        if (!$file && !$coverDataUrl) {
             return response()->json(['success' => false, 'message' => 'Archivo no encontrado.'], 422);
         }
 
-        // Store in public disk under trip-covers
-        $path = $file->store('trip-covers', 'public');
-        $coverUrl = asset('storage/' . $path);
+        // If the client sent a data URL (preview), store that instead of relying on UploadedFile
+        if (!$file && $coverDataUrl) {
+            try {
+                if (preg_match('/^data:(image\/[^;]+);base64,(.*)$/', $coverDataUrl, $matches)) {
+                    $mime = $matches[1];
+                    $data = base64_decode($matches[2]);
+                    $extension = explode('/', $mime)[1] ?? 'png';
+                    $filename = 'cover_' . $trip->id . '_' . time() . '.' . $extension;
+                    $relativePath = 'trip-covers/' . $filename;
+                    \Illuminate\Support\Facades\Storage::disk('public')->put($relativePath, $data);
+                    $coverUrl = asset('storage/' . $relativePath);
+                } else {
+                    Log::error('Invalid cover_data_url format', ['trip_id' => $trip->id]);
+                    return response()->json(['success' => false, 'message' => 'Formato de imagen inválido.'], 422);
+                }
+            } catch (\Exception $e) {
+                Log::error('Cover upload (data URL) exception: ' . $e->getMessage(), ['trip_id' => $trip->id, 'exception' => $e]);
+                return response()->json(['success' => false, 'message' => 'Error al guardar la portada desde data URL.', 'exception' => $e->getMessage()], 500);
+            }
+        } else {
+            // Guard against missing temporary path (can happen in some PHP configs)
+            try {
+                $real = $file->getRealPath();
+            } catch (\Exception $e) {
+                $real = null;
+            }
+
+            // If real path is empty, try alternative pathname and manual storage
+            if (empty($real)) {
+                $altPath = $file->getPathname();
+                if ($altPath && file_exists($altPath)) {
+                    try {
+                        $extension = $file->getClientOriginalExtension() ?: pathinfo($altPath, PATHINFO_EXTENSION) ?: 'png';
+                        $filename = 'cover_' . $trip->id . '_' . time() . '.' . $extension;
+                        $relativePath = 'trip-covers/' . $filename;
+                        \Illuminate\Support\Facades\Storage::disk('public')->put($relativePath, fopen($altPath, 'r'));
+                        $coverUrl = asset('storage/' . $relativePath);
+                    } catch (\Exception $e) {
+                        Log::error('Cover upload manual put failed', ['trip_id' => $trip->id, 'exception' => $e->getMessage()]);
+                        return response()->json(['success' => false, 'message' => 'No se pudo guardar la imagen desde el archivo temporal.'], 500);
+                    }
+                } else {
+                    Log::error('Cover upload failed: uploaded file has no real path and no pathname', ['trip_id' => $trip->id]);
+                    return response()->json(['success' => false, 'message' => 'Archivo temporal no disponible en el servidor.'], 500);
+                }
+            } else {
+                // Store in public disk under trip-covers
+                try {
+                    $path = $file->store('trip-covers', 'public');
+                    if (!$path) {
+                        Log::error('Cover upload store returned false', ['trip_id' => $trip->id]);
+                        return response()->json(['success' => false, 'message' => 'No se pudo guardar la imagen en el disco.'], 500);
+                    }
+                    $coverUrl = asset('storage/' . $path);
+                } catch (\Exception $e) {
+                    Log::error('Cover upload exception: ' . $e->getMessage(), ['trip_id' => $trip->id, 'exception' => $e]);
+                    return response()->json(['success' => false, 'message' => 'Error al guardar la portada.', 'exception' => $e->getMessage()], 500);
+                }
+            }
+        }
 
         // Persist to trip
         $trip->cover_image_url = $coverUrl;
