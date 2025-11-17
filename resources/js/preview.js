@@ -381,6 +381,94 @@ function initializeHotelCarousels() {
     });
 }
 
+function initializeActivityCarousels() {
+    const carousels = document.querySelectorAll('.activity-gallery');
+
+    carousels.forEach(carousel => {
+        const track = carousel.querySelector('.activity-gallery-track');
+        const slides = carousel.querySelectorAll('.activity-gallery-slide');
+        const prevBtn = carousel.querySelector('.activity-gallery-prev');
+        const nextBtn = carousel.querySelector('.activity-gallery-next');
+        const indicators = carousel.querySelectorAll('.activity-gallery-indicator');
+
+        if (!track || slides.length === 0) return;
+
+        let currentIndex = 0;
+
+        function updateCarousel() {
+            // Update slide positions using transform
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+            // Update active slide opacity
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentIndex);
+            });
+
+            // Update indicators
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentIndex);
+            });
+
+            // Update button states
+            if (prevBtn) prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+            if (nextBtn) nextBtn.style.opacity = currentIndex === slides.length - 1 ? '0.5' : '1';
+        }
+
+        function nextSlide() {
+            if (currentIndex < slides.length - 1) {
+                currentIndex++;
+                updateCarousel();
+            }
+        }
+
+        function prevSlide() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCarousel();
+            }
+        }
+
+        function goToSlide(index) {
+            if (index >= 0 && index < slides.length) {
+                currentIndex = index;
+                updateCarousel();
+            }
+        }
+
+        // Event listeners
+        if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+        if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => goToSlide(index));
+        });
+
+        // Touch/swipe support
+        let startX = 0;
+        let isDragging = false;
+
+        carousel.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+        });
+
+        carousel.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const currentX = e.touches[0].clientX;
+            const diff = startX - currentX;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0 && currentIndex < slides.length - 1) {
+                    nextSlide();
+                } else if (diff < 0 && currentIndex > 0) {
+                    prevSlide();
+                }
+                isDragging = false;
+            }
+        });
+    });
+}
+
 function showHotelGallery(images, startIndex = 0, hotelName = 'Hotel') {
     currentHotelImages = images;
     currentImageIndex = startIndex;
@@ -518,6 +606,175 @@ function closeHotelGallery() {
     document.removeEventListener('keydown', handleGalleryKeydown);
 }
 
+function showActivityGallery(images, startIndex = 0, activityName = 'Actividad') {
+    currentActivityImages = images;
+    currentActivityImageIndex = startIndex;
+
+    const modalHtml = `
+        <div id="activityGalleryModal" class="activity-gallery-modal-overlay" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            font-family: 'Poppins', sans-serif;
+        ">
+            <div class="activity-gallery-modal" style="
+                position: relative;
+                max-width: 90vw;
+                max-height: 90vh;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            ">
+                <div class="gallery-modal-header" style="
+                    padding: 1rem 1.5rem;
+                    background: var(--primary-dark, #1f2a44);
+                    color: white;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                ">
+                    <h3 style="margin: 0; font-size: 1.2rem;">${activityName} - Galería de Fotos</h3>
+                    <button onclick="closeActivityGallery()" style="
+                        background: none;
+                        border: none;
+                        color: white;
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                        padding: 0.25rem;
+                        border-radius: 4px;
+                        transition: background 0.3s ease;
+                    " onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="gallery-modal-body" style="
+                    position: relative;
+                    background: black;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 400px;
+                ">
+                    <img id="activityGalleryMainImage" src="${currentActivityImages[currentActivityImageIndex]}" alt="Activity image" style="
+                        max-width: 100%;
+                        max-height: 70vh;
+                        object-fit: contain;
+                    ">
+                    ${currentActivityImages.length > 1 ? `
+                        <button onclick="prevActivityImage()" class="gallery-nav-btn" style="
+                            position: absolute;
+                            left: 1rem;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            background: rgba(0, 0, 0, 0.7);
+                            border: none;
+                            border-radius: 50%;
+                            width: 50px;
+                            height: 50px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: white;
+                            font-size: 1.2rem;
+                            cursor: pointer;
+                            transition: background 0.3s ease;
+                        " onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button onclick="nextActivityImage()" class="gallery-nav-btn" style="
+                            position: absolute;
+                            right: 1rem;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            background: rgba(0, 0, 0, 0.7);
+                            border: none;
+                            border-radius: 50%;
+                            width: 50px;
+                            height: 50px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: white;
+                            font-size: 1.2rem;
+                            cursor: pointer;
+                            transition: background 0.3s ease;
+                        " onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    ` : ''}
+                </div>
+                <div class="gallery-modal-footer" style="
+                    padding: 1rem 1.5rem;
+                    background: #f8f9fa;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 0.5rem;
+                ">
+                    <span id="activityGalleryImageCounter" style="
+                        font-size: 0.9rem;
+                        color: #6c757d;
+                    ">${currentActivityImageIndex + 1} de ${currentActivityImages.length}</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Add keyboard navigation
+    document.addEventListener('keydown', handleActivityGalleryKeydown);
+}
+
+function closeActivityGallery() {
+    const modal = document.getElementById('activityGalleryModal');
+    if (modal) {
+        modal.remove();
+    }
+    document.removeEventListener('keydown', handleActivityGalleryKeydown);
+}
+
+function nextActivityImage() {
+    currentActivityImageIndex = (currentActivityImageIndex + 1) % currentActivityImages.length;
+    updateActivityGalleryImage();
+}
+
+function prevActivityImage() {
+    currentActivityImageIndex = currentActivityImageIndex === 0 ? currentActivityImages.length - 1 : currentActivityImageIndex - 1;
+    updateActivityGalleryImage();
+}
+
+function updateActivityGalleryImage() {
+    const mainImage = document.getElementById('activityGalleryMainImage');
+    const counter = document.getElementById('activityGalleryImageCounter');
+
+    if (mainImage) {
+        mainImage.src = currentActivityImages[currentActivityImageIndex];
+    }
+    if (counter) {
+        counter.textContent = `${currentActivityImageIndex + 1} de ${currentActivityImages.length}`;
+    }
+}
+
+function handleActivityGalleryKeydown(e) {
+    if (e.key === 'Escape') {
+        closeActivityGallery();
+    } else if (e.key === 'ArrowRight') {
+        nextActivityImage();
+    } else if (e.key === 'ArrowLeft') {
+        prevActivityImage();
+    }
+}
+
 function nextHotelImage() {
     currentImageIndex = (currentImageIndex + 1) % currentHotelImages.length;
     updateGalleryImage();
@@ -554,7 +811,12 @@ function handleGalleryKeydown(e) {
 let currentHotelImages = [];
 let currentImageIndex = 0;
 
+// Global variables for activity gallery
+let currentActivityImages = [];
+let currentActivityImageIndex = 0;
+
 // Initialize carousels on page load
 document.addEventListener('DOMContentLoaded', function() {
     initializeHotelCarousels();
+    initializeActivityCarousels();
 });

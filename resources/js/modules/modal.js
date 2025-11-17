@@ -16,7 +16,7 @@ const elementLabelsData = {
 const elementFormsData = {
   "flight": "<div class=\"form-row\"><div class=\"form-group\"><label for=\"airline\">Aerolínea</label><select id=\"airline\" class=\"form-input airline-select\" placeholder=\"Ej: Iberia\"><option value=\"\">Seleccionar aerolínea</option></select></div><div class=\"form-group\"><label for=\"flight-number\">Número de Vuelo</label><input type=\"text\" id=\"flight-number\" class=\"form-input\" placeholder=\"Ej: IB1234\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-time\">Fecha y Hora de Salida</label><input type=\"datetime-local\" id=\"departure-time\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"arrival-time\">Fecha y Hora de Llegada</label><input type=\"datetime-local\" id=\"arrival-time\" class=\"form-input\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-airport\">Aeropuerto de Salida</label><select id=\"departure-airport\" class=\"form-input airport-select\" placeholder=\"Ej: Madrid Barajas\"><option value=\"\">Seleccionar aeropuerto</option></select></div><div class=\"form-group\"><label for=\"arrival-airport\">Aeropuerto de Llegada</label><select id=\"arrival-airport\" class=\"form-input airport-select\" placeholder=\"Ej: París Charles de Gaulle\"><option value=\"\">Seleccionar aeropuerto</option></select></div></div><div class=\"form-group\"><label for=\"confirmation-number\">Número de Confirmación</label><input type=\"text\" id=\"confirmation-number\" class=\"form-input\" placeholder=\"Ej: ABC123\"></div><div class=\"form-group\"><label>Tipo de Equipaje</label><div class=\"checkbox-group\"><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-personal\" value=\"personal\"><span class=\"checkmark\"></span> Equipaje personal</label><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-cabin\" value=\"cabin\"><span class=\"checkmark\"></span> Equipaje de cabina</label><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-checked\" value=\"checked\"><span class=\"checkmark\"></span> Equipaje documentado (23Kg)</label></div></div><div class=\"form-group\"><label for=\"flight-documents\">Documentos</label><input type=\"file\" id=\"flight-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el vuelo</small></div>",
   "hotel": "<div class=\"form-group\"><label for=\"hotel-name\">Nombre del Hotel</label><div class=\"autocomplete-input\"><input type=\"text\" id=\"hotel-name\" class=\"form-input hotel-autocomplete\" placeholder=\"Ej: Hotel Central\" autocomplete=\"off\"></div><div id=\"selected-place-info\" class=\"selected-place-info\" style=\"display: none;\"></div><div id=\"selected-place-details\" class=\"selected-place-details\" style=\"display: none;\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"check-in\">Check-in</label><input type=\"datetime-local\" id=\"check-in\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"check-out\">Check-out</label><input type=\"datetime-local\" id=\"check-out\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"room-type\">Tipo de Habitación</label><input type=\"text\" id=\"room-type\" class=\"form-input\" placeholder=\"Ej: Habitación doble\"></div><div class=\"form-group\"><label for=\"meal-plan\">Régimen de Alimentación</label><select id=\"meal-plan\" class=\"form-input\"><option value=\"\">Seleccionar régimen</option><option value=\"all-inclusive\">All inclusive</option><option value=\"breakfast-included\">Desayuno incluido</option><option value=\"room-only\">Solo alojamiento</option></select></div><div class=\"form-group\"><label for=\"nights\">Noches</label><input type=\"number\" id=\"nights\" class=\"form-input\" min=\"1\" placeholder=\"2\"></div><div class=\"form-group\"><label for=\"hotel-documents\">Documentos</label><input type=\"file\" id=\"hotel-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el hotel</small></div>",
-  "activity": "<div class=\"form-group\"><label for=\"activity-title\">Título de la Actividad</label><input type=\"text\" id=\"activity-title\" class=\"form-input\" placeholder=\"Ej: Visita al Louvre\"></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"start-time\">Hora de Inicio</label><input type=\"time\" id=\"start-time\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"end-time\">Hora de Fin</label><input type=\"time\" id=\"end-time\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"location\">Ubicación</label><input type=\"text\" id=\"location\" class=\"form-input\" placeholder=\"Ej: Museo del Louvre, París\"></div><div class=\"form-group\"><label for=\"description\">Descripción</label><textarea id=\"description\" class=\"form-input\" rows=\"3\" placeholder=\"Detalles de la actividad...\"></textarea></div>",
+  "activity": "<div class=\"form-group\"><label for=\"activity-title\">Título de la Actividad</label><input type=\"text\" id=\"activity-title\" class=\"form-input\" placeholder=\"Ej: Visita al Louvre\"></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"start-datetime\">Fecha y hora de inicio</label><input type=\"datetime-local\" id=\"start-datetime\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"end-datetime\">Fecha y hora de finalización</label><input type=\"datetime-local\" id=\"end-datetime\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"location\">Ubicación</label><div class=\"autocomplete-input\"><input type=\"text\" id=\"location\" class=\"form-input activity-autocomplete\" placeholder=\"Ej: Museo del Louvre, París\" autocomplete=\"off\"></div><div id=\"selected-place-info\" class=\"selected-place-info\" style=\"display: none;\"></div><div id=\"selected-place-details\" class=\"selected-place-details\" style=\"display: none;\"></div></div><div class=\"form-group\"><label for=\"description\">Descripción</label><textarea id=\"description\" class=\"form-input\" rows=\"3\" placeholder=\"Detalles de la actividad...\"></textarea></div>",
   "transport": "<div class=\"form-group\"><label for=\"transport-type\">Tipo de Transporte</label><input type=\"text\" id=\"transport-type\" class=\"form-input\" placeholder=\"Ej: Taxi, Metro, Bus\"></div><div class=\"form-group\"><label for=\"pickup-time\">Hora de Recogida</label><input type=\"time\" id=\"pickup-time\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"pickup-location\">Punto de Recogida</label><input type=\"text\" id=\"pickup-location\" class=\"form-input\" placeholder=\"Ej: Hotel Plaza\"></div><div class=\"form-group\"><label for=\"destination\">Destino</label><input type=\"text\" id=\"destination\" class=\"form-input\" placeholder=\"Ej: Aeropuerto\"></div><div class=\"form-group\"><label for=\"transport-documents\">Documentos</label><input type=\"file\" id=\"transport-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el traslado</small></div>",
   "note": "<div class=\"form-group\"><label for=\"note-title\">Título de la Nota</label><input type=\"text\" id=\"note-title\" class=\"form-input\" placeholder=\"Ej: Recordatorios importantes\"></div><div class=\"form-group\"><label for=\"note-content\">Contenido</label><textarea id=\"note-content\" class=\"form-input\" rows=\"4\" placeholder=\"Escribe tu nota aquí...\"></textarea></div>",
   "summary": "",
@@ -29,14 +29,17 @@ export class ModalManager {
         this.currentElementData = {};
         this.currentDay = null;
         this.selectedHotelData = null;
+        this.selectedActivityData = null;
         this.isEditing = false;
         this.existingDocuments = [];
         this.uploadedDocuments = {
             flight: [],
             hotel: [],
+            activity: [],
             transport: []
         };
         this.hotelAutocomplete = null;
+        this.activityAutocomplete = null;
     }
 
     init() {
@@ -87,6 +90,14 @@ export class ModalManager {
             // Delay initialization to ensure DOM is ready
             setTimeout(() => {
                 this.initializeHotelAutocomplete();
+            }, 100);
+        }
+
+        // Initialize activity autocomplete if this is an activity modal
+        if (this.currentElementType === 'activity') {
+            // Delay initialization to ensure DOM is ready
+            setTimeout(() => {
+                this.initializeActivityAutocomplete();
             }, 100);
         }
 
@@ -584,6 +595,38 @@ export class ModalManager {
             }
         }
 
+        // Handle activity datetime fields
+        if (this.currentElementType === 'activity') {
+            if (data.start_datetime) {
+                const startDateTime = new Date(data.start_datetime);
+                data.start_date = startDateTime.toISOString().split('T')[0];
+                data.start_time = startDateTime.toTimeString().split(' ')[0];
+            }
+            if (data.end_datetime) {
+                const endDateTime = new Date(data.end_datetime);
+                data.end_date = endDateTime.toISOString().split('T')[0];
+                data.end_time = endDateTime.toTimeString().split(' ')[0];
+            }
+
+            // Include selected place data if this is an activity element
+            if (this.selectedActivityData) {
+                data.place_id = this.selectedActivityData.place_id;
+                // Merge detailed information with basic place data
+                data.location_data = {
+                    ...this.selectedActivityData,
+                    ...(this.selectedActivityDetails || {})
+                };
+                data.formatted_address = this.selectedActivityData.formatted_address;
+                data.rating = this.selectedActivityData.rating;
+                data.website = this.selectedActivityData.website;
+                data.phone_number = this.selectedActivityData.international_phone_number;
+                if (this.selectedActivityData.geometry && this.selectedActivityData.geometry.location) {
+                    data.latitude = this.selectedActivityData.geometry.location.lat;
+                    data.longitude = this.selectedActivityData.geometry.location.lng;
+                }
+            }
+        }
+
         // Handle baggage checkboxes for flight
         if (this.currentElementType === 'flight') {
             const baggageCheckboxes = form.querySelectorAll('input[id^="baggage-"]:checked');
@@ -749,6 +792,90 @@ export class ModalManager {
         } else {
             console.error('Failed to initialize hotel autocomplete');
         }
+    }
+
+    /**
+     * Initialize Google Places autocomplete for activity location input
+     */
+    async initializeActivityAutocomplete() {
+        const activityInput = document.querySelector('#modal-body #location');
+        if (!activityInput) {
+            console.error('Activity location input not found');
+            return;
+        }
+
+        console.log('Initializing activity autocomplete for input:', activityInput);
+
+        // Destroy existing instance if any
+        if (this.activityAutocomplete) {
+            console.log('Destroying existing activity autocomplete instance');
+            this.activityAutocomplete.destroy();
+        }
+
+        // Create new autocomplete instance
+        this.activityAutocomplete = new GooglePlacesAutocomplete();
+
+        // Set callbacks
+        this.activityAutocomplete.setCallbacks({
+            onPlaceSelect: (placeData) => {
+                console.log('Activity place selected:', placeData);
+                this.handleActivityPlaceSelect(placeData);
+            },
+            onPlaceDetails: (details) => {
+                console.log('Activity details received:', details);
+                this.handleActivityPlaceDetails(details);
+            },
+            onError: (error) => {
+                console.error('Activity autocomplete error:', error);
+                this.showNotification('Error', 'Error al cargar sugerencias de lugares', 'error');
+            }
+        });
+
+        // Initialize without types restriction for general places
+        console.log('Initializing autocomplete for general places...');
+        const success = await this.activityAutocomplete.init(activityInput, {
+            types: [] // Allow all place types
+        });
+
+        if (success) {
+            console.log('Activity autocomplete initialized successfully');
+        } else {
+            console.error('Failed to initialize activity autocomplete');
+        }
+    }
+
+    /**
+     * Handle activity place selection from autocomplete
+     */
+    handleActivityPlaceSelect(placeData) {
+        console.log('Activity place selected - placeData:', placeData);
+
+        // Store selected activity data
+        this.selectedActivityData = placeData;
+
+        // Update input value
+        const activityInput = document.querySelector('#modal-body #location');
+        if (activityInput) {
+            activityInput.value = placeData.formatted_address || placeData.name;
+        } else {
+            console.error('Activity input not found when trying to update value');
+        }
+
+        // Display selected place information
+        this.displaySelectedPlaceInfo(placeData);
+    }
+
+    /**
+     * Handle detailed activity place information from backend
+     */
+    handleActivityPlaceDetails(details) {
+        console.log('Activity details received:', details);
+
+        // Store detailed activity data
+        this.selectedActivityDetails = details;
+
+        // Update display with additional information
+        this.displaySelectedPlaceDetails(details);
     }
 
     /**
@@ -1117,10 +1244,16 @@ export class ModalManager {
             this.hotelAutocomplete = null;
         }
 
+        if (this.activityAutocomplete) {
+            this.activityAutocomplete.destroy();
+            this.activityAutocomplete = null;
+        }
+
         this.currentElementType = null;
         this.currentElementData = {};
         this.currentDay = null;
         this.editingElement = null; // Reset editing element reference
         this.selectedHotelData = null;
+        this.selectedActivityData = null;
     }
 }

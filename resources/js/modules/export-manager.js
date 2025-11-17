@@ -348,11 +348,23 @@ class ExportManager {
                 return {
                     ...baseData,
                     type: 'activity',
-                    activity_title: itemElement.querySelector('.item-title')?.textContent || '',
-                    location: itemElement.querySelector('.item-subtitle')?.textContent || '',
-                    start_time: '',
-                    end_time: '',
-                    description: ''
+                    activity_title: itemElement.getAttribute('data-activity-title') || itemElement.querySelector('.item-title')?.textContent || '',
+                    location: itemElement.getAttribute('data-location') || itemElement.querySelector('.item-subtitle')?.textContent || '',
+                    start_datetime: itemElement.getAttribute('data-start-datetime') || '',
+                    end_datetime: itemElement.getAttribute('data-end-datetime') || '',
+                    start_date: itemElement.getAttribute('data-start-date') || '',
+                    start_time: itemElement.getAttribute('data-start-time') || '',
+                    end_date: itemElement.getAttribute('data-end-date') || '',
+                    end_time: itemElement.getAttribute('data-end-time') || '',
+                    description: itemElement.getAttribute('data-description') || '',
+                    place_id: itemElement.getAttribute('data-place-id') || '',
+                    location_data: itemElement.getAttribute('data-location-data') ? JSON.parse(itemElement.getAttribute('data-location-data')) : null,
+                    formatted_address: itemElement.getAttribute('data-formatted-address') || '',
+                    rating: itemElement.getAttribute('data-rating') || null,
+                    website: itemElement.getAttribute('data-website') || '',
+                    phone_number: itemElement.getAttribute('data-phone-number') || '',
+                    latitude: itemElement.getAttribute('data-latitude') || '',
+                    longitude: itemElement.getAttribute('data-longitude') || ''
                 };
 
             case 'traslado':
