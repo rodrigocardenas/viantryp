@@ -20,6 +20,7 @@ class Trip extends Model
         'destination',
         'status',
         'summary',
+        'price',
         'items_data',
         'cover_image_url',
         'share_token',
