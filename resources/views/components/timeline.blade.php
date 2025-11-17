@@ -190,6 +190,7 @@
             elementDiv.setAttribute('data-check-in', data.check_in || '');
             elementDiv.setAttribute('data-check-out', data.check_out || '');
             elementDiv.setAttribute('data-room-type', data.room_type || '');
+            elementDiv.setAttribute('data-meal-plan', data.meal_plan || '');
             elementDiv.setAttribute('data-nights', data.nights || 1);
         }
 
@@ -514,6 +515,7 @@
                     check_in: itemElement.getAttribute('data-check-in') || '',
                     check_out: itemElement.getAttribute('data-check-out') || '',
                     room_type: itemElement.getAttribute('data-room-type') || '',
+                    meal_plan: itemElement.getAttribute('data-meal-plan') || '',
                     nights: parseInt(itemElement.getAttribute('data-nights')) || 1
                 };
 

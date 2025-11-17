@@ -326,7 +326,8 @@ class ExportManager {
                     arrival_date: itemElement.getAttribute('data-arrival-date') || '',
                     departure_city: itemElement.getAttribute('data-departure-city') || '',
                     arrival_city: itemElement.getAttribute('data-arrival-city') || '',
-                    confirmation_number: itemElement.getAttribute('data-confirmation-number') || ''
+                    confirmation_number: itemElement.getAttribute('data-confirmation-number') || '',
+                    baggage_types: itemElement.getAttribute('data-baggage-types') ? JSON.parse(itemElement.getAttribute('data-baggage-types')) : []
                 };
 
             case 'hotel':
@@ -339,6 +340,7 @@ class ExportManager {
                     check_in: itemElement.getAttribute('data-check-in') || '',
                     check_out: itemElement.getAttribute('data-check-out') || '',
                     room_type: itemElement.getAttribute('data-room-type') || '',
+                    meal_plan: itemElement.getAttribute('data-meal-plan') || '',
                     nights: parseInt(itemElement.getAttribute('data-nights')) || 1
                 };
 
