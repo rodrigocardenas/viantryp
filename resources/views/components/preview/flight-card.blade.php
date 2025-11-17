@@ -76,7 +76,7 @@
                 </div>
                 <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? strtoupper($matches[1]) : strtoupper($item['departure_airport'] ?? 'DEP') }}</div>
                 <div class="airport-name">{{ ucfirst(strtolower($item['departure_airport_name'] ?? '')) }}</div>
-                <div class="airport-location">{{ $item['departure_city'] ?? '' }}, {{ $item['departure_country'] ?? '' }}</div>
+                <div class="airport-location">{{ $item['departure_city'] ?? '' }}, {{ getCountryFromCity($item['departure_city'] ?? '') }}</div>
             </div>
         </div>
 
@@ -98,7 +98,7 @@
                 </div>
                 <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? strtoupper($matches[1]) : strtoupper($item['arrival_airport'] ?? 'ARR') }}</div>
                 <div class="airport-name">{{ ucfirst(strtolower($item['arrival_airport_name'] ?? '')) }}</div>
-                <div class="airport-location">{{ $item['arrival_city'] ?? '' }}, {{ $item['arrival_country'] ?? '' }}</div>
+                <div class="airport-location">{{ $item['arrival_city'] ?? '' }}, {{ getCountryFromCity($item['arrival_city'] ?? '') }}</div>
             </div>
         </div>
     </div>

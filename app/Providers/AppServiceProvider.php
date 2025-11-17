@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // No necesitamos configuración adicional para componentes Blade anónimos
+        // Cargar datos de aeropuertos para lookup de países
+        $selectorsPath = resource_path('js/data/selectors.json');
+        if (file_exists($selectorsPath)) {
+            $selectorsData = json_decode(file_get_contents($selectorsPath), true);
+            View::share('airportSelectors', $selectorsData['airports'] ?? []);
+        }
     }
 }

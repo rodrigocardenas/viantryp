@@ -2,628 +2,759 @@
   "airlines": [
     {
       "id": "Iberia",
-      "text": "Iberia"
+      "text": "Iberia",
+      "country": "España"
     },
     {
       "id": "Air France",
-      "text": "Air France"
+      "text": "Air France",
+      "country": "Francia"
     },
     {
       "id": "Lufthansa",
-      "text": "Lufthansa"
+      "text": "Lufthansa",
+      "country": "Alemania"
     },
     {
       "id": "British Airways",
-      "text": "British Airways"
+      "text": "British Airways",
+      "country": "Reino Unido"
     },
     {
       "id": "KLM",
-      "text": "KLM"
+      "text": "KLM",
+      "country": "Países Bajos"
     },
     {
       "id": "Delta",
-      "text": "Delta"
+      "text": "Delta",
+      "country": "Estados Unidos"
     },
     {
       "id": "American Airlines",
-      "text": "American Airlines"
+      "text": "American Airlines",
+      "country": "Estados Unidos"
     },
     {
       "id": "United Airlines",
-      "text": "United Airlines"
+      "text": "United Airlines",
+      "country": "Estados Unidos"
     },
     {
       "id": "Emirates",
-      "text": "Emirates"
+      "text": "Emirates",
+      "country": "Emiratos Árabes Unidos"
     },
     {
       "id": "Qatar Airways",
-      "text": "Qatar Airways"
+      "text": "Qatar Airways",
+      "country": "Qatar"
     },
     {
       "id": "Turkish Airlines",
-      "text": "Turkish Airlines"
+      "text": "Turkish Airlines",
+      "country": "Turquía"
     },
     {
       "id": "LATAM",
-      "text": "LATAM"
+      "text": "LATAM",
+      "country": "Chile"
     },
     {
       "id": "Avianca",
-      "text": "Avianca"
+      "text": "Avianca",
+      "country": "Colombia"
     },
     {
       "id": "Aeroméxico",
-      "text": "Aeroméxico"
+      "text": "Aeroméxico",
+      "country": "México"
     },
     {
       "id": "Aerolineas Argentinas",
-      "text": "Aerolineas Argentinas"
+      "text": "Aerolineas Argentinas",
+      "country": "Argentina"
     },
     {
       "id": "Sky Airline",
-      "text": "Sky Airline"
+      "text": "Sky Airline",
+      "country": "Chile"
     },
     {
       "id": "JetSmart",
-      "text": "JetSmart"
+      "text": "JetSmart",
+      "country": "Chile"
     },
     {
       "id": "Ryanair",
-      "text": "Ryanair"
+      "text": "Ryanair",
+      "country": "Irlanda"
     },
     {
       "id": "Vueling",
-      "text": "Vueling"
+      "text": "Vueling",
+      "country": "España"
     },
     {
       "id": "EasyJet",
-      "text": "EasyJet"
+      "text": "EasyJet",
+      "country": "Reino Unido"
     },
     {
       "id": "Norwegian",
-      "text": "Norwegian"
+      "text": "Norwegian",
+      "country": "Noruega"
     },
     {
       "id": "Volotea",
-      "text": "Volotea"
+      "text": "Volotea",
+      "country": "España"
     },
     {
       "id": "Eurowings",
-      "text": "Eurowings"
+      "text": "Eurowings",
+      "country": "Alemania"
     },
     {
       "id": "Transavia",
-      "text": "Transavia"
+      "text": "Transavia",
+      "country": "Países Bajos"
     },
     {
       "id": "Pegasus",
-      "text": "Pegasus"
+      "text": "Pegasus",
+      "country": "Turquía"
     },
     {
       "id": "Wizz Air",
-      "text": "Wizz Air"
+      "text": "Wizz Air",
+      "country": "Hungría"
     },
     {
       "id": "Level",
-      "text": "Level"
+      "text": "Level",
+      "country": "España"
     }
   ],
   "airports": [
     {
       "id": "Madrid Barajas (MAD)",
       "text": "Madrid Barajas (MAD)",
-      "city": "Madrid"
+      "city": "Madrid",
+      "country": "España"
     },
     {
       "id": "Barcelona El Prat (BCN)",
       "text": "Barcelona El Prat (BCN)",
-      "city": "Barcelona"
+      "city": "Barcelona",
+      "country": "España"
     },
     {
       "id": "París Charles de Gaulle (CDG)",
       "text": "París Charles de Gaulle (CDG)",
-      "city": "París"
+      "city": "París",
+      "country": "Francia"
     },
     {
       "id": "París Orly (ORY)",
       "text": "París Orly (ORY)",
-      "city": "París"
+      "city": "París",
+      "country": "Francia"
     },
     {
       "id": "Fráncfort (FRA)",
       "text": "Fráncfort (FRA)",
-      "city": "Fráncfort"
+      "city": "Fráncfort",
+      "country": "Alemania"
     },
     {
       "id": "Múnich (MUC)",
       "text": "Múnich (MUC)",
-      "city": "Múnich"
+      "city": "Múnich",
+      "country": "Alemania"
     },
     {
       "id": "Londres Heathrow (LHR)",
       "text": "Londres Heathrow (LHR)",
-      "city": "Londres"
+      "city": "Londres",
+      "country": "Reino Unido"
     },
     {
       "id": "Londres Gatwick (LGW)",
       "text": "Londres Gatwick (LGW)",
-      "city": "Londres"
+      "city": "Londres",
+      "country": "Reino Unido"
     },
     {
       "id": "Londres Luton (LTN)",
       "text": "Londres Luton (LTN)",
-      "city": "Londres"
+      "city": "Londres",
+      "country": "Reino Unido"
     },
     {
       "id": "Londres Stansted (STN)",
       "text": "Londres Stansted (STN)",
-      "city": "Londres"
+      "city": "Londres",
+      "country": "Reino Unido"
     },
     {
       "id": "Londres City (LCY)",
       "text": "Londres City (LCY)",
-      "city": "Londres"
+      "city": "Londres",
+      "country": "Reino Unido"
     },
     {
       "id": "Ámsterdam Schiphol (AMS)",
       "text": "Ámsterdam Schiphol (AMS)",
-      "city": "Ámsterdam"
+      "city": "Ámsterdam",
+      "country": "Países Bajos"
     },
     {
       "id": "Roma Fiumicino (FCO)",
       "text": "Roma Fiumicino (FCO)",
-      "city": "Roma"
+      "city": "Roma",
+      "country": "Italia"
     },
     {
       "id": "Milán Malpensa (MXP)",
       "text": "Milán Malpensa (MXP)",
-      "city": "Milán"
+      "city": "Milán",
+      "country": "Italia"
     },
     {
       "id": "Berlín Brandenburg (BER)",
       "text": "Berlín Brandenburg (BER)",
-      "city": "Berlín"
+      "city": "Berlín",
+      "country": "Alemania"
     },
     {
       "id": "Viena (VIE)",
       "text": "Viena (VIE)",
-      "city": "Viena"
+      "city": "Viena",
+      "country": "Austria"
     },
     {
       "id": "Zúrich (ZRH)",
       "text": "Zúrich (ZRH)",
-      "city": "Zúrich"
+      "city": "Zúrich",
+      "country": "Suiza"
     },
     {
       "id": "Ginebra (GVA)",
       "text": "Ginebra (GVA)",
-      "city": "Ginebra"
+      "city": "Ginebra",
+      "country": "Suiza"
     },
     {
       "id": "Copenhague (CPH)",
       "text": "Copenhague (CPH)",
-      "city": "Copenhague"
+      "city": "Copenhague",
+      "country": "Dinamarca"
     },
     {
       "id": "Estocolmo Arlanda (ARN)",
       "text": "Estocolmo Arlanda (ARN)",
-      "city": "Estocolmo"
+      "city": "Estocolmo",
+      "country": "Suecia"
     },
     {
       "id": "Oslo Gardermoen (OSL)",
       "text": "Oslo Gardermoen (OSL)",
-      "city": "Oslo"
+      "city": "Oslo",
+      "country": "Noruega"
     },
     {
       "id": "Helsinki (HEL)",
       "text": "Helsinki (HEL)",
-      "city": "Helsinki"
+      "city": "Helsinki",
+      "country": "Finlandia"
     },
     {
       "id": "Praga (PRG)",
       "text": "Praga (PRG)",
-      "city": "Praga"
+      "city": "Praga",
+      "country": "República Checa"
     },
     {
       "id": "Budapest (BUD)",
       "text": "Budapest (BUD)",
-      "city": "Budapest"
+      "city": "Budapest",
+      "country": "Hungría"
     },
     {
       "id": "Varsovia Chopin (WAW)",
       "text": "Varsovia Chopin (WAW)",
-      "city": "Varsovia"
+      "city": "Varsovia",
+      "country": "Polonia"
     },
     {
       "id": "Lisboa Humberto Delgado (LIS)",
       "text": "Lisboa Humberto Delgado (LIS)",
-      "city": "Lisboa"
+      "city": "Lisboa",
+      "country": "Portugal"
     },
     {
       "id": "Oporto (OPO)",
       "text": "Oporto (OPO)",
-      "city": "Oporto"
+      "city": "Oporto",
+      "country": "Portugal"
     },
     {
       "id": "Atenas (ATH)",
       "text": "Atenas (ATH)",
-      "city": "Atenas"
+      "city": "Atenas",
+      "country": "Grecia"
     },
     {
       "id": "Tel Aviv Ben Gurión (TLV)",
       "text": "Tel Aviv Ben Gurión (TLV)",
-      "city": "Tel Aviv"
+      "city": "Tel Aviv",
+      "country": "Israel"
     },
     {
       "id": "El Cairo (CAI)",
       "text": "El Cairo (CAI)",
-      "city": "El Cairo"
+      "city": "El Cairo",
+      "country": "Egipto"
     },
     {
       "id": "Estambul (IST)",
       "text": "Estambul (IST)",
-      "city": "Estambul"
+      "city": "Estambul",
+      "country": "Turquía"
     },
     {
       "id": "Moscú Domodédovo (DME)",
       "text": "Moscú Domodédovo (DME)",
-      "city": "Moscú"
+      "city": "Moscú",
+      "country": "Rusia"
     },
     {
       "id": "Moscú Sheremétievo (SVO)",
       "text": "Moscú Sheremétievo (SVO)",
-      "city": "Moscú"
+      "city": "Moscú",
+      "country": "Rusia"
     },
     {
       "id": "San Petersburgo Púlkovo (LED)",
       "text": "San Petersburgo Púlkovo (LED)",
-      "city": "San Petersburgo"
+      "city": "San Petersburgo",
+      "country": "Rusia"
     },
     {
       "id": "Nueva York JFK (JFK)",
       "text": "Nueva York JFK (JFK)",
-      "city": "Nueva York"
+      "city": "Nueva York",
+      "country": "Estados Unidos"
     },
     {
       "id": "Nueva York Newark (EWR)",
       "text": "Nueva York Newark (EWR)",
-      "city": "Nueva York"
+      "city": "Nueva York",
+      "country": "Estados Unidos"
     },
     {
       "id": "Los Ángeles (LAX)",
       "text": "Los Ángeles (LAX)",
-      "city": "Los Ángeles"
+      "city": "Los Ángeles",
+      "country": "Estados Unidos"
     },
     {
       "id": "Chicago O'Hare (ORD)",
       "text": "Chicago O'Hare (ORD)",
-      "city": "Chicago"
+      "city": "Chicago",
+      "country": "Estados Unidos"
     },
     {
       "id": "Miami (MIA)",
       "text": "Miami (MIA)",
-      "city": "Miami"
+      "city": "Miami",
+      "country": "Estados Unidos"
     },
     {
       "id": "Toronto Pearson (YYZ)",
       "text": "Toronto Pearson (YYZ)",
-      "city": "Toronto"
+      "city": "Toronto",
+      "country": "Canadá"
     },
     {
       "id": "Vancouver (YVR)",
       "text": "Vancouver (YVR)",
-      "city": "Vancouver"
+      "city": "Vancouver",
+      "country": "Canadá"
     },
     {
       "id": "Montreal Trudeau (YUL)",
       "text": "Montreal Trudeau (YUL)",
-      "city": "Montreal"
+      "city": "Montreal",
+      "country": "Canadá"
     },
     {
       "id": "México City (MEX)",
       "text": "México City (MEX)",
-      "city": "México City"
+      "city": "México City",
+      "country": "México"
     },
     {
       "id": "Cancún (CUN)",
       "text": "Cancún (CUN)",
-      "city": "Cancún"
+      "city": "Cancún",
+      "country": "México"
     },
     {
       "id": "Guadalajara (GDL)",
       "text": "Guadalajara (GDL)",
-      "city": "Guadalajara"
+      "city": "Guadalajara",
+      "country": "México"
     },
     {
       "id": "Monterrey (MTY)",
       "text": "Monterrey (MTY)",
-      "city": "Monterrey"
+      "city": "Monterrey",
+      "country": "México"
     },
     {
       "id": "Tijuana (TIJ)",
       "text": "Tijuana (TIJ)",
-      "city": "Tijuana"
+      "city": "Tijuana",
+      "country": "México"
     },
     {
       "id": "Los Cabos (SJD)",
       "text": "Los Cabos (SJD)",
-      "city": "Los"
+      "city": "Los Cabos",
+      "country": "México"
     },
     {
       "id": "La Habana (HAV)",
       "text": "La Habana (HAV)",
-      "city": "La"
+      "city": "La Habana",
+      "country": "Cuba"
     },
     {
       "id": "Nassau (NAS)",
       "text": "Nassau (NAS)",
-      "city": "Nassau"
+      "city": "Nassau",
+      "country": "Bahamas"
     },
     {
       "id": "Santiago de Chile (SCL)",
       "text": "Santiago de Chile (SCL)",
-      "city": "Santiago de Chile"
+      "city": "Santiago de Chile",
+      "country": "Chile"
     },
     {
       "id": "Bogotá (BOG)",
       "text": "Bogotá (BOG)",
-      "city": "Bogotá"
+      "city": "Bogotá",
+      "country": "Colombia"
     },
     {
       "id": "Lima (LIM)",
       "text": "Lima (LIM)",
-      "city": "Lima"
+      "city": "Lima",
+      "country": "Perú"
     },
     {
       "id": "Buenos Aires Ezeiza (EZE)",
       "text": "Buenos Aires Ezeiza (EZE)",
-      "city": "Buenos Aires"
+      "city": "Buenos Aires",
+      "country": "Argentina"
     },
     {
       "id": "São Paulo Guarulhos (GRU)",
       "text": "São Paulo Guarulhos (GRU)",
-      "city": "São Paulo"
+      "city": "São Paulo",
+      "country": "Brasil"
     },
     {
       "id": "Brasilia (BSB)",
       "text": "Brasilia (BSB)",
-      "city": "Brasilia"
+      "city": "Brasilia",
+      "country": "Brasil"
     },
     {
       "id": "Río de Janeiro Galeão (GIG)",
       "text": "Río de Janeiro Galeão (GIG)",
-      "city": "Río de Janeiro"
+      "city": "Río de Janeiro",
+      "country": "Brasil"
     },
     {
       "id": "Quito (UIO)",
       "text": "Quito (UIO)",
-      "city": "Quito"
+      "city": "Quito",
+      "country": "Ecuador"
     },
     {
       "id": "Guayaquil (GYE)",
       "text": "Guayaquil (GYE)",
-      "city": "Guayaquil"
+      "city": "Guayaquil",
+      "country": "Ecuador"
     },
     {
       "id": "Asunción (ASU)",
       "text": "Asunción (ASU)",
-      "city": "Asunción"
+      "city": "Asunción",
+      "country": "Paraguay"
     },
     {
       "id": "Montevideo (MVD)",
       "text": "Montevideo (MVD)",
-      "city": "Montevideo"
+      "city": "Montevideo",
+      "country": "Uruguay"
     },
     {
       "id": "La Paz (LPB)",
       "text": "La Paz (LPB)",
-      "city": "La"
+      "city": "La Paz",
+      "country": "Bolivia"
     },
     {
       "id": "Santa Cruz (VVI)",
       "text": "Santa Cruz (VVI)",
-      "city": "Santa"
+      "city": "Santa Cruz",
+      "country": "Bolivia"
     },
     {
       "id": "Dubái (DXB)",
       "text": "Dubái (DXB)",
-      "city": "Dubái"
+      "city": "Dubái",
+      "country": "Emiratos Árabes Unidos"
     },
     {
       "id": "Doha (DOH)",
       "text": "Doha (DOH)",
-      "city": "Doha"
+      "city": "Doha",
+      "country": "Qatar"
     },
     {
       "id": "Hong Kong (HKG)",
       "text": "Hong Kong (HKG)",
-      "city": "Hong Kong"
+      "city": "Hong Kong",
+      "country": "China"
     },
     {
       "id": "Tokio Narita (NRT)",
       "text": "Tokio Narita (NRT)",
-      "city": "Tokio"
+      "city": "Tokio",
+      "country": "Japón"
     },
     {
       "id": "Tokio Haneda (HND)",
       "text": "Tokio Haneda (HND)",
-      "city": "Tokio"
+      "city": "Tokio",
+      "country": "Japón"
     },
     {
       "id": "Seúl Incheon (ICN)",
       "text": "Seúl Incheon (ICN)",
-      "city": "Seúl"
+      "city": "Seúl",
+      "country": "Corea del Sur"
     },
     {
       "id": "Pekín Capital (PEK)",
       "text": "Pekín Capital (PEK)",
-      "city": "Pekín"
+      "city": "Pekín",
+      "country": "China"
     },
     {
       "id": "Shanghái Pudong (PVG)",
       "text": "Shanghái Pudong (PVG)",
-      "city": "Shanghái"
+      "city": "Shanghái",
+      "country": "China"
     },
     {
       "id": "Cantón (CAN)",
       "text": "Cantón (CAN)",
-      "city": "Cantón"
+      "city": "Cantón",
+      "country": "China"
     },
     {
       "id": "Chengdú (CTU)",
       "text": "Chengdú (CTU)",
-      "city": "Chengdú"
+      "city": "Chengdú",
+      "country": "China"
     },
     {
       "id": "Yakarta Soekarno-Hatta (CGK)",
       "text": "Yakarta Soekarno-Hatta (CGK)",
-      "city": "Yakarta"
+      "city": "Yakarta",
+      "country": "Indonesia"
     },
     {
       "id": "Bangkok Suvarnabhumi (BKK)",
       "text": "Bangkok Suvarnabhumi (BKK)",
-      "city": "Bangkok"
+      "city": "Bangkok",
+      "country": "Tailandia"
     },
     {
       "id": "Singapur Changi (SIN)",
       "text": "Singapur Changi (SIN)",
-      "city": "Singapur"
+      "city": "Singapur",
+      "country": "Singapur"
     },
     {
       "id": "Kuala Lumpur (KUL)",
       "text": "Kuala Lumpur (KUL)",
-      "city": "Kuala"
+      "city": "Kuala Lumpur",
+      "country": "Malasia"
     },
     {
       "id": "Delhi (DEL)",
       "text": "Delhi (DEL)",
-      "city": "Delhi"
+      "city": "Delhi",
+      "country": "India"
     },
     {
       "id": "Bombay (BOM)",
       "text": "Bombay (BOM)",
-      "city": "Bombay"
+      "city": "Bombay",
+      "country": "India"
     },
     {
       "id": "Bangalore (BLR)",
       "text": "Bangalore (BLR)",
-      "city": "Bangalore"
+      "city": "Bangalore",
+      "country": "India"
     },
     {
       "id": "Sídney (SYD)",
       "text": "Sídney (SYD)",
-      "city": "Sídney"
+      "city": "Sídney",
+      "country": "Australia"
     },
     {
       "id": "Melbourne (MEL)",
       "text": "Melbourne (MEL)",
-      "city": "Melbourne"
+      "city": "Melbourne",
+      "country": "Australia"
     },
     {
       "id": "Auckland (AKL)",
       "text": "Auckland (AKL)",
-      "city": "Auckland"
+      "city": "Auckland",
+      "country": "Nueva Zelanda"
     },
     {
       "id": "Perth (PER)",
       "text": "Perth (PER)",
-      "city": "Perth"
+      "city": "Perth",
+      "country": "Australia"
     },
     {
       "id": "Brisbane (BNE)",
       "text": "Brisbane (BNE)",
-      "city": "Brisbane"
+      "city": "Brisbane",
+      "country": "Australia"
     },
     {
       "id": "Johannesburgo (JNB)",
       "text": "Johannesburgo (JNB)",
-      "city": "Johannesburgo"
+      "city": "Johannesburgo",
+      "country": "Sudáfrica"
     },
     {
       "id": "Ciudad del Cabo (CPT)",
       "text": "Ciudad del Cabo (CPT)",
-      "city": "Ciudad del Cabo"
+      "city": "Ciudad del Cabo",
+      "country": "Sudáfrica"
     },
     {
       "id": "Adís Abeba (ADD)",
       "text": "Adís Abeba (ADD)",
-      "city": "Adís"
+      "city": "Adís Abeba",
+      "country": "Etiopía"
     },
     {
       "id": "Nairobi (NBO)",
       "text": "Nairobi (NBO)",
-      "city": "Nairobi"
+      "city": "Nairobi",
+      "country": "Kenia"
     },
     {
       "id": "Lagos (LOS)",
       "text": "Lagos (LOS)",
-      "city": "Lagos"
+      "city": "Lagos",
+      "country": "Nigeria"
     },
     {
       "id": "Casablanca (CMN)",
       "text": "Casablanca (CMN)",
-      "city": "Casablanca"
+      "city": "Casablanca",
+      "country": "Marruecos"
     },
     {
       "id": "Túnez (TUN)",
       "text": "Túnez (TUN)",
-      "city": "Túnez"
+      "city": "Túnez",
+      "country": "Túnez"
     },
     {
       "id": "Abu Dhabi (AUH)",
       "text": "Abu Dhabi (AUH)",
-      "city": "Abu"
+      "city": "Abu Dhabi",
+      "country": "Emiratos Árabes Unidos"
     },
     {
       "id": "Riad (RUH)",
       "text": "Riad (RUH)",
-      "city": "Riad"
+      "city": "Riad",
+      "country": "Arabia Saudita"
     },
     {
       "id": "Amán (AMM)",
       "text": "Amán (AMM)",
-      "city": "Amán"
+      "city": "Amán",
+      "country": "Jordania"
     },
     {
       "id": "Beirut (BEY)",
       "text": "Beirut (BEY)",
-      "city": "Beirut"
+      "city": "Beirut",
+      "country": "Líbano"
     },
     {
       "id": "Kuwait (KWI)",
       "text": "Kuwait (KWI)",
-      "city": "Kuwait"
+      "city": "Kuwait",
+      "country": "Kuwait"
     }
   ],
   "currencies": [
     {
       "id": "USD",
-      "text": "USD - Dólar Estadounidense"
+      "text": "USD - Dólar Estadounidense",
+      "country": "Estados Unidos"
     },
     {
       "id": "EUR",
-      "text": "EUR - Euro"
+      "text": "EUR - Euro",
+      "country": "Unión Europea"
     },
     {
       "id": "CLP",
-      "text": "CLP - Peso Chileno"
+      "text": "CLP - Peso Chileno",
+      "country": "Chile"
     },
     {
       "id": "ARS",
-      "text": "ARS - Peso Argentino"
+      "text": "ARS - Peso Argentino",
+      "country": "Argentina"
     },
     {
       "id": "PEN",
-      "text": "PEN - Sol Peruano"
+      "text": "PEN - Sol Peruano",
+      "country": "Perú"
     },
     {
       "id": "COP",
-      "text": "COP - Peso Colombiano"
+      "text": "COP - Peso Colombiano",
+      "country": "Colombia"
     },
     {
       "id": "MXN",
-      "text": "MXN - Peso Mexicano"
+      "text": "MXN - Peso Mexicano",
+      "country": "México"
     }
   ]
 }
