@@ -11,16 +11,16 @@
     @if(isset($trip) && $trip->days && count($trip->days) > 0)
         @foreach($trip->days as $day)
             <div class="day-card" data-day="{{ $day->day }}">
+                <button class="btn-delete-day-absolute" data-action="delete-day" data-day="{{ $day->day }}" title="Eliminar día">
+                    <i class="fas fa-trash"></i>
+                </button>
                 <div class="day-header">
                     <div class="day-title-section">
-                        <h3>Día {{ $day->day }}</h3>
-                        <button class="btn-delete-day" data-action="delete-day" data-day="{{ $day->day }}" title="Eliminar día">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                    <div class="day-date-section">
-                        <label for="day-{{ $day->day }}-date">Fecha:</label>
-                        <input type="date" id="day-{{ $day->day }}-date" class="day-date-input" value="{{ $day->getDateInputValue() }}" data-day="{{ $day->day }}">
+                        <div class="day-title-row">
+                            <h3>DÍA {{ $day->day }}</h3>
+                            <span class="day-separator">|</span>
+                            <input type="date" id="day-{{ $day->day }}-date" class="day-date-input-large" value="{{ $day->getDateInputValue() }}" data-day="{{ $day->day }}">
+                        </div>
                         <p class="day-date-display">{{ $day->getFormattedDate() }}</p>
                     </div>
                 </div>
@@ -38,16 +38,16 @@
     @else
         {{-- Always show at least one day for editing --}}
         <div class="day-card" data-day="1">
+            <button class="btn-delete-day-absolute" data-action="delete-day" data-day="1" title="Eliminar día" style="display: none;">
+                <i class="fas fa-trash"></i>
+            </button>
             <div class="day-header">
                 <div class="day-title-section">
-                    <h3>Día 1</h3>
-                    <button class="btn-delete-day" data-action="delete-day" data-day="1" title="Eliminar día" style="display: none;">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-                <div class="day-date-section">
-                    <label for="day-1-date">Fecha:</label>
-                    <input type="date" id="day-1-date" class="day-date-input" value="{{ isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '' }}" data-day="1">
+                    <div class="day-title-row">
+                        <h3>DÍA 1</h3>
+                        <span class="day-separator">|</span>
+                        <input type="date" id="day-1-date" class="day-date-input-large" value="{{ isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '' }}" data-day="1">
+                    </div>
                     <p class="day-date-display" id="day-1-date-display">
                         @php
                             $inputValue = isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '';
@@ -951,7 +951,8 @@
 
         const typeLabel = typeLabels[elementType] || 'elemento';
 
-        alert(`Advertencia: El ${typeLabel} en el Día ${dayNumber} tiene fechas que no coinciden con la fecha asignada al día. Por favor, corrige las fechas del elemento.`);
+        // Removed warning dialog as requested
+        // alert(`Advertencia: El ${typeLabel} en el Día ${dayNumber} tiene fechas que no coinciden con la fecha asignada al día. Por favor, corrige las fechas del elemento.`);
     }
 
     function deleteDay(dayNumber) {
@@ -990,7 +991,7 @@
 <style>
     .day-header {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: flex-start;
         margin-bottom: 1rem;
         padding: 1rem;
@@ -999,60 +1000,69 @@
         border: 1px solid var(--stone-200);
     }
 
+    .day-card {
+        position: relative;
+    }
+
     .day-title-section {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .day-title-row {
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }
 
-    .day-title-section h3 {
+    .day-title-row h3 {
         margin: 0;
         color: var(--ink);
         font-size: 1.25rem;
         font-weight: 600;
     }
 
-    .btn-delete-day {
-        background: var(--red-500);
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 0.25rem 0.5rem;
-        cursor: pointer;
-        font-size: 0.875rem;
-        transition: background-color 0.2s;
+    .day-separator {
+        font-weight: bold;
+        color: var(--slate-400);
+        font-size: 1.1rem;
     }
 
-    .btn-delete-day:hover {
-        background: var(--red-600);
-    }
-
-    .day-date-section {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 0.25rem;
-    }
-
-    .day-date-section label {
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: var(--slate-600);
-    }
-
-    .day-date-input {
+    .day-date-input-large {
         padding: 0.5rem;
         border: 1px solid var(--stone-300);
         border-radius: 6px;
-        font-size: 0.875rem;
-        width: 140px;
+        font-size: 1rem;
+        width: 160px;
     }
 
     .day-date-display {
         font-size: 0.875rem;
         color: var(--slate-500);
         margin: 0;
-        text-align: right;
+        text-align: left;
+    }
+
+    .btn-delete-day-absolute {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--red-500);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0.8rem 0.8rem;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: background-color 0.2s;
+        z-index: 10;
+    }
+
+    .btn-delete-day-absolute:hover {
+        background: var(--red-600);
     }
 
     .timeline-item.date-mismatch {
@@ -1060,7 +1070,8 @@
         background: var(--red-50);
     }
 
-    .timeline-item.date-mismatch::before {
+    /* Removed warning logo as requested */
+    /* .timeline-item.date-mismatch::before {
         content: '⚠️';
         position: absolute;
         top: -5px;
@@ -1074,7 +1085,7 @@
         align-items: center;
         justify-content: center;
         font-size: 0.75rem;
-    }
+    } */
 
     @media (max-width: 768px) {
         .day-header {
@@ -1084,19 +1095,33 @@
         }
 
         .day-title-section {
-            justify-content: space-between;
+            gap: 1rem;
         }
 
-        .day-date-section {
+        .day-title-row {
+            flex-direction: column;
             align-items: flex-start;
+            gap: 0.5rem;
         }
 
-        .day-date-input {
+        .day-separator {
+            display: none;
+        }
+
+        .day-date-input-large {
             width: 100%;
+            margin-left: 0;
         }
 
         .day-date-display {
             text-align: left;
+        }
+
+        .btn-delete-day-absolute {
+            top: 0.25rem;
+            right: 0.25rem;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.8rem;
         }
     }
 </style>
