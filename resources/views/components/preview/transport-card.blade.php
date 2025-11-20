@@ -1,21 +1,40 @@
 @props(['item', 'trip', 'documents' => null])
 
-<div class="train-card">
-    <div style="font-weight: 600; margin-bottom: 15px;">{{ $item['transport_type'] ?? 'Transporte no especificado' }}</div>
-    <div class="train-route">
-        <div class="train-point">
-            <div class="train-label">Origen</div>
-            <div class="train-time">{{ $item['pickup_time'] ?? 'Hora no disponible' }}</div>
-            <div class="train-location">{{ $item['pickup_location'] ?? 'Ubicación no especificada' }}</div>
+<div class="flight-card-unified">
+    <!-- Header similar to flight-route-header -->
+    <div class="flight-route-header">
+        <span class="airport-route-text">Transporte en Tren</span>
+    </div>
+
+    <!-- Route section similar to flight-route-main -->
+    <div class="flight-route-main">
+        <!-- Departure section -->
+        <div class="airport-section">
+            <div class="airport-info">
+                <div class="airport-time-date">
+                    <span class="airport-time">{{ $item['departure_time'] ?? 'Hora no disponible' }}</span>
+                </div>
+                <div class="airport-name">{{ $item['pickup_location'] ?? 'Ubicación no especificada' }}</div>
+                <div class="airport-location">Salida</div>
+            </div>
         </div>
-        <div class="train-icon">
-            <i class="fas fa-train" style="font-size: 24px;"></i>
-            <div class="train-duration">{{ $item['duration'] ?? 'Duración no disponible' }}</div>
+
+        <!-- Train connector -->
+        <div class="flight-connector">
+            <div class="plane-container">
+                <i class="fas fa-train flight-plane" style="color: #000000;"></i>
+            </div>
         </div>
-        <div class="train-point">
-            <div class="train-label">Destino</div>
-            <div class="train-time">{{ $item['arrival_time'] ?? 'Hora no disponible' }}</div>
-            <div class="train-location">{{ $item['destination'] ?? 'Ubicación no especificada' }}</div>
+
+        <!-- Return section -->
+        <div class="airport-section">
+            <div class="airport-info arrival-info">
+                <div class="airport-time-date">
+                    <span class="airport-time">{{ $item['return_time'] ?? 'Hora no disponible' }}</span>
+                </div>
+                <div class="airport-name">{{ $item['drop_off_location'] ?? 'Ubicación no especificada' }}</div>
+                <div class="airport-location">Regreso</div>
+            </div>
         </div>
     </div>
     @php

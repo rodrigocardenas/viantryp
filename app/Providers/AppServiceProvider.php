@@ -20,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Cargar helpers
+        require_once app_path('Helpers/AirportHelper.php');
+
         // Cargar datos de aeropuertos para lookup de países
         $selectorsPath = resource_path('js/data/selectors.json');
         if (file_exists($selectorsPath)) {

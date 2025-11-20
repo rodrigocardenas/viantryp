@@ -196,6 +196,9 @@ class TripController extends Controller
             abort(403, 'No tienes permiso para ver este viaje.');
         }
 
+        // Load related data
+        $trip->load(['documents', 'persons']);
+
         return view('trips.preview', [
             'trip' => $this->enrichHotelData($trip->load('user')),
             'isPublicPreview' => false
