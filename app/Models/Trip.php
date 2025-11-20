@@ -22,6 +22,7 @@ class Trip extends Model
         'summary',
         'price',
         'items_data',
+        'days_dates',
         'cover_image_url',
         'share_token',
         'created_at',
@@ -32,6 +33,7 @@ class Trip extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'items_data' => 'array',
+        'days_dates' => 'array',
     ];
 
     /**
@@ -121,9 +123,13 @@ class Trip extends Model
         // Convert to Day objects
         $days = [];
         foreach ($itemsByDay as $dayNumber => $items) {
-            $dayDate = $this->start_date ?
-                $this->start_date->copy()->addDays($dayNumber - 1) :
-                null;
+            $dayDate = null;
+            if ($this->days_dates && isset($this->days_dates[$dayNumber])) {
+                $dayDate = \Carbon\Carbon::parse($this->days_dates[$dayNumber]);
+            } elseif ($this->start_date) {
+                // Fallback to calculated date if no manual date set
+                $dayDate = $this->start_date->copy()->addDays($dayNumber - 1);
+            }
 
             $days[] = new TripDay($dayNumber, $dayDate, $items);
         }
@@ -293,6 +299,15 @@ class TripDay
         }
 
         return $this->date->format('l, d \d\e F \d\e Y');
+    }
+
+    public function getDateInputValue(): string
+    {
+        if (!$this->date) {
+            return '';
+        }
+
+        return $this->date->format('Y-m-d');
     }
 }
 

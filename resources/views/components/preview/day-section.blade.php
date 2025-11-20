@@ -1,7 +1,7 @@
-@props(['dayNumber', 'dayItems', 'trip'])
+@props(['dayNumber', 'dayItems', 'trip', 'dayDate', 'formattedDate'])
 
 <div class="day-section">
-    <div class="day-title">DIA {{ $dayNumber }}</div>
+    <div class="day-title">{{ $formattedDate ?: 'DIA ' . $dayNumber }}</div>
 
     @if(count($dayItems) > 0)
         @foreach($dayItems as $item)

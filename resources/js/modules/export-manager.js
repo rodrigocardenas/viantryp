@@ -100,6 +100,9 @@ class ExportManager {
             // Collect all trip elements from the days
             const itemsData = this.collectAllTripItems();
 
+            // Collect days dates
+            const daysDates = this.collectDaysDates();
+
             // Calculate end date based on number of days
             const startDateEl = document.getElementById('start-date');
             const startDate = startDateEl ? startDateEl.value : null;
@@ -132,7 +135,8 @@ class ExportManager {
                 travelers: 1, // Default value
                 destination: '', // Optional field
                 summary: '', // Optional field
-                items_data: itemsData
+                items_data: itemsData,
+                days_dates: daysDates
             };
 
             // Determine if this is a new trip or updating existing
@@ -292,6 +296,21 @@ class ExportManager {
         });
 
         return items;
+    }
+
+    collectDaysDates() {
+        const daysDates = {};
+        const dayCards = document.querySelectorAll('.day-card');
+
+        dayCards.forEach(dayCard => {
+            const dayNumber = parseInt(dayCard.dataset.day);
+            const dateInput = dayCard.querySelector('.day-date-input');
+            if (dateInput && dateInput.value) {
+                daysDates[dayNumber] = dateInput.value;
+            }
+        });
+
+        return daysDates;
     }
 
     extractItemData(itemElement, dayNumber) {

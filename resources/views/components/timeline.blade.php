@@ -12,8 +12,17 @@
         @foreach($trip->days as $day)
             <div class="day-card" data-day="{{ $day->day }}">
                 <div class="day-header">
-                    <h3>Día {{ $day->day }}</h3>
-                    <p class="day-date">{{ $day->getFormattedDate() }}</p>
+                    <div class="day-title-section">
+                        <h3>Día {{ $day->day }}</h3>
+                        <button class="btn-delete-day" data-action="delete-day" data-day="{{ $day->day }}" title="Eliminar día">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="day-date-section">
+                        <label for="day-{{ $day->day }}-date">Fecha:</label>
+                        <input type="date" id="day-{{ $day->day }}-date" class="day-date-input" value="{{ $day->getDateInputValue() }}" data-day="{{ $day->day }}">
+                        <p class="day-date-display">{{ $day->getFormattedDate() }}</p>
+                    </div>
                 </div>
                 <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
                     <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
@@ -30,26 +39,39 @@
         {{-- Always show at least one day for editing --}}
         <div class="day-card" data-day="1">
             <div class="day-header">
-                <h3>Día 1</h3>
-                <p class="day-date" id="day-1-date">
-                    @if(isset($trip) && $trip->start_date)
-                        {{ $trip->start_date->format('l, d \d\e F \d\e Y') }}
-                    @else
-                        martes, 16 de septiembre de 2025
-                    @endif
-                </p>
+                <div class="day-title-section">
+                    <h3>Día 1</h3>
+                    <button class="btn-delete-day" data-action="delete-day" data-day="1" title="Eliminar día" style="display: none;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="day-date-section">
+                    <label for="day-1-date">Fecha:</label>
+                    <input type="date" id="day-1-date" class="day-date-input" value="{{ isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '' }}" data-day="1">
+                    <p class="day-date-display" id="day-1-date-display">
+                        @php
+                            $inputValue = isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '';
+                            if ($inputValue) {
+                                $date = \Carbon\Carbon::parse($inputValue);
+                                echo $date->format('l, d \d\e F \d\e Y');
+                            } else {
+                                echo 'Sin fecha';
+                            }
+                        @endphp
+                    </p>
+                </div>
             </div>
-                            <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <div class="add-element-btn btn-sm" data-action="add-element" data-day="1">
-                        <i class="fas fa-plus"></i>
-                    </div>
-                </div></search>
-</search_and_replace>
+            <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="add-element-btn btn-sm" data-action="add-element" data-day="1">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </div>
+        </div>
     @endif
 
 
-</div></search>
-</search_and_replace>
+</div>
+
 <!-- Add Day Section -->
     <x-editor-add-day-section />
 
@@ -393,6 +415,7 @@
 
         const startDate = document.getElementById('start-date').value;
         let dayDate = 'Sin fecha';
+        let defaultDate = '';
         if (startDate) {
             const date = new Date(startDate);
             date.setDate(date.getDate() + newDayNumber - 1);
@@ -402,19 +425,72 @@
                 month: 'long',
                 year: 'numeric'
             });
+            defaultDate = date.toISOString().split('T')[0];
         }
 
-        dayCard.innerHTML = `
-            <div class="day-header">
-                <h3>Día ${newDayNumber}</h3>
-                <p class="day-date">${dayDate}</p>
-            </div>
-            <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="add-element-btn btn-sm" data-action="add-element" data-day="${newDayNumber}">
-                    <i class="fas fa-plus"></i>
-                </div>
-            </div>
-        `;
+        // Create day header
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-header';
+
+        // Create title section
+        const titleSection = document.createElement('div');
+        titleSection.className = 'day-title-section';
+
+        const title = document.createElement('h3');
+        title.textContent = `Día ${newDayNumber}`;
+        titleSection.appendChild(title);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn-delete-day';
+        deleteBtn.setAttribute('data-action', 'delete-day');
+        deleteBtn.setAttribute('data-day', newDayNumber);
+        deleteBtn.title = 'Eliminar día';
+        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        titleSection.appendChild(deleteBtn);
+
+        dayHeader.appendChild(titleSection);
+
+        // Create date section
+        const dateSection = document.createElement('div');
+        dateSection.className = 'day-date-section';
+
+        const label = document.createElement('label');
+        label.setAttribute('for', `day-${newDayNumber}-date`);
+        label.textContent = 'Fecha:';
+        dateSection.appendChild(label);
+
+        const input = document.createElement('input');
+        input.type = 'date';
+        input.id = `day-${newDayNumber}-date`;
+        input.className = 'day-date-input';
+        input.value = defaultDate;
+        input.setAttribute('data-day', newDayNumber);
+        dateSection.appendChild(input);
+
+        const display = document.createElement('p');
+        display.className = 'day-date-display';
+        display.id = `day-${newDayNumber}-date-display`;
+        display.textContent = dayDate;
+        dateSection.appendChild(display);
+
+        dayHeader.appendChild(dateSection);
+
+        dayCard.appendChild(dayHeader);
+
+        // Create day content
+        const dayContent = document.createElement('div');
+        dayContent.className = 'day-content';
+        dayContent.setAttribute('ondrop', 'drop(event)');
+        dayContent.setAttribute('ondragover', 'allowDrop(event)');
+
+        const addBtn = document.createElement('div');
+        addBtn.className = 'add-element-btn btn-sm';
+        addBtn.setAttribute('data-action', 'add-element');
+        addBtn.setAttribute('data-day', newDayNumber);
+        addBtn.innerHTML = '<i class="fas fa-plus"></i>';
+        dayContent.appendChild(addBtn);
+
+        dayCard.appendChild(dayContent);
 
         daysContainer.appendChild(dayCard);
 
@@ -776,5 +852,251 @@
 
         return summary;
     }
+
+    // Handle day date changes
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('day-date-input')) {
+            const dayNumber = e.target.dataset.day;
+            const newDate = e.target.value;
+            const displayElement = document.getElementById(`day-${dayNumber}-date-display`);
+
+            if (newDate) {
+                const date = new Date(newDate + 'T00:00:00');
+                const formattedDate = date.toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                displayElement.textContent = formattedDate;
+            } else {
+                displayElement.textContent = 'Sin fecha';
+            }
+
+            // Validate elements in this day
+            validateDayElements(dayNumber, newDate);
+        }
+    });
+
+    // Handle day deletion
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('[data-action="delete-day"]')) {
+            const button = e.target.closest('[data-action="delete-day"]');
+            const dayNumber = button.dataset.day;
+
+            if (confirm(`¿Estás seguro de que quieres eliminar el Día ${dayNumber}? Se eliminarán todos los elementos contenidos en este día.`)) {
+                deleteDay(dayNumber);
+            }
+        }
+    });
+
+    function validateDayElements(dayNumber, dayDate) {
+        if (!dayDate) return; // No validation if no date set
+
+        const dayCard = document.querySelector(`[data-day="${dayNumber}"]`);
+        const elements = dayCard.querySelectorAll('.timeline-item');
+
+        elements.forEach(element => {
+            const elementData = extractItemData(element, dayNumber);
+            if (elementData) {
+                const elementDates = getElementDates(elementData);
+                const hasMismatch = elementDates.some(date => date && date !== dayDate);
+
+                if (hasMismatch) {
+                    showDateMismatchDialog(dayNumber, elementData.type);
+                    element.classList.add('date-mismatch');
+                } else {
+                    element.classList.remove('date-mismatch');
+                }
+            }
+        });
+    }
+
+    function getElementDates(elementData) {
+        const dates = [];
+
+        switch (elementData.type) {
+            case 'flight':
+                if (elementData.departure_time) {
+                    dates.push(elementData.departure_time.split(' ')[0]);
+                }
+                break;
+            case 'hotel':
+                if (elementData.check_in) dates.push(elementData.check_in);
+                if (elementData.check_out) dates.push(elementData.check_out);
+                break;
+            case 'activity':
+                // Activities might not have dates, skip validation
+                break;
+            case 'transport':
+                if (elementData.pickup_datetime) {
+                    dates.push(elementData.pickup_datetime.split(' ')[0]);
+                }
+                if (elementData.arrival_datetime) {
+                    dates.push(elementData.arrival_datetime.split(' ')[0]);
+                }
+                break;
+        }
+
+        return dates;
+    }
+
+    function showDateMismatchDialog(dayNumber, elementType) {
+        const typeLabels = {
+            'flight': 'vuelo',
+            'hotel': 'hotel',
+            'activity': 'actividad',
+            'transport': 'transporte'
+        };
+
+        const typeLabel = typeLabels[elementType] || 'elemento';
+
+        alert(`Advertencia: El ${typeLabel} en el Día ${dayNumber} tiene fechas que no coinciden con la fecha asignada al día. Por favor, corrige las fechas del elemento.`);
+    }
+
+    function deleteDay(dayNumber) {
+        const dayCard = document.querySelector(`[data-day="${dayNumber}"]`);
+        if (dayCard) {
+            dayCard.remove();
+
+            // Renumber remaining days
+            const remainingDays = document.querySelectorAll('.day-card');
+            remainingDays.forEach((card, index) => {
+                const newDayNumber = index + 1;
+                card.dataset.day = newDayNumber;
+                card.querySelector('h3').textContent = `Día ${newDayNumber}`;
+                card.querySelector('.day-date-input').dataset.day = newDayNumber;
+                card.querySelector('.day-date-input').id = `day-${newDayNumber}-date`;
+                card.querySelector('.day-date-display').id = `day-${newDayNumber}-date-display`;
+                card.querySelector('.btn-delete-day').dataset.day = newDayNumber;
+                card.querySelector('.add-element-btn').dataset.day = newDayNumber;
+
+                // Update elements in this day
+                const elements = card.querySelectorAll('.timeline-item');
+                elements.forEach(element => {
+                    if (element.dataset.day) {
+                        element.dataset.day = newDayNumber;
+                    }
+                });
+            });
+
+            updateAllSummaries();
+            showNotification('Día Eliminado', `Día ${dayNumber} y todos sus elementos han sido eliminados.`);
+        }
+    }
 </script>
 @endpush
+
+<style>
+    .day-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: var(--stone-50);
+        border-radius: 12px;
+        border: 1px solid var(--stone-200);
+    }
+
+    .day-title-section {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .day-title-section h3 {
+        margin: 0;
+        color: var(--ink);
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .btn-delete-day {
+        background: var(--red-500);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0.25rem 0.5rem;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: background-color 0.2s;
+    }
+
+    .btn-delete-day:hover {
+        background: var(--red-600);
+    }
+
+    .day-date-section {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.25rem;
+    }
+
+    .day-date-section label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--slate-600);
+    }
+
+    .day-date-input {
+        padding: 0.5rem;
+        border: 1px solid var(--stone-300);
+        border-radius: 6px;
+        font-size: 0.875rem;
+        width: 140px;
+    }
+
+    .day-date-display {
+        font-size: 0.875rem;
+        color: var(--slate-500);
+        margin: 0;
+        text-align: right;
+    }
+
+    .timeline-item.date-mismatch {
+        border-color: var(--red-400);
+        background: var(--red-50);
+    }
+
+    .timeline-item.date-mismatch::before {
+        content: '⚠️';
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: var(--red-500);
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+    }
+
+    @media (max-width: 768px) {
+        .day-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+
+        .day-title-section {
+            justify-content: space-between;
+        }
+
+        .day-date-section {
+            align-items: flex-start;
+        }
+
+        .day-date-input {
+            width: 100%;
+        }
+
+        .day-date-display {
+            text-align: left;
+        }
+    }
+</style>

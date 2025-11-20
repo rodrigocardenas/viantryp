@@ -252,7 +252,8 @@ class TripController extends Controller
             'travelers' => 'nullable|integer|min:1',
             'destination' => 'nullable|string|max:255',
             'summary' => 'nullable|string',
-            'items_data' => 'nullable|array'
+            'items_data' => 'nullable|array',
+            'days_dates' => 'nullable|array'
         ]);
 
         // Log validated payload for debugging
