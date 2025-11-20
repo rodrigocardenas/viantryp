@@ -51,10 +51,61 @@
         $mesIngles = $arrivalDT->format('F');
         $diaNumero = $arrivalDT->format('j');
         $arrivalDateLong = $diasEspanol[$diaIngles] . ', ' . $diaNumero . ' de ' . $mesesEspanol[$mesIngles];
+
+        // Abbreviated dates for mobile
+        $diasAbrev = [
+            'Mon' => 'lun.',
+            'Tue' => 'mar.',
+            'Wed' => 'mié.',
+            'Thu' => 'jue.',
+            'Fri' => 'vie.',
+            'Sat' => 'sáb.',
+            'Sun' => 'dom.'
+        ];
+        $mesesAbrev = [
+            'Jan' => 'ene.',
+            'Feb' => 'feb.',
+            'Mar' => 'mar.',
+            'Apr' => 'abr.',
+            'May' => 'may.',
+            'Jun' => 'jun.',
+            'Jul' => 'jul.',
+            'Aug' => 'ago.',
+            'Sep' => 'sept.',
+            'Oct' => 'oct.',
+            'Nov' => 'nov.',
+            'Dec' => 'dic.'
+        ];
+
+        $diaInglesAbrev = $departureDT->format('D');
+        $mesInglesAbrev = $departureDT->format('M');
+        $departureDateAbrev = $diasAbrev[$diaInglesAbrev] . ' ' . $diaNumero . ' de ' . $mesesAbrev[$mesInglesAbrev];
+
+        $diaInglesAbrev = $arrivalDT->format('D');
+        $mesInglesAbrev = $arrivalDT->format('M');
+        $diaNumeroArrival = $arrivalDT->format('j');
+        $arrivalDateAbrev = $diasAbrev[$diaInglesAbrev] . ' ' . $diaNumeroArrival . ' de ' . $mesesAbrev[$mesInglesAbrev];
+
+        // Return flight if available
+        if (isset($item['return_date']) && $item['return_date']) {
+            try {
+                $returnDT = new DateTime($item['return_date'] . ' ' . ($item['return_time'] ?? '00:00'), new DateTimeZone($arrivalTimezone));
+                $diaInglesAbrev = $returnDT->format('D');
+                $mesInglesAbrev = $returnDT->format('M');
+                $diaNumeroReturn = $returnDT->format('j');
+                $returnDateAbrev = $diasAbrev[$diaInglesAbrev] . ' ' . $diaNumeroReturn . ' de ' . $mesesAbrev[$mesInglesAbrev];
+                $returnTime = date('H:i', strtotime($item['return_time'] ?? '00:00'));
+            } catch (Exception $e) {
+                $returnDateAbrev = 'Fecha no disponible';
+                $returnTime = 'Hora no disponible';
+            }
+        }
     } catch (Exception $e) {
         $duration = $item['duration'] ?? 'N/A';
         $departureDateLong = 'Fecha no disponible';
         $arrivalDateLong = 'Fecha no disponible';
+        $departureDateAbrev = 'Fecha no disponible';
+        $arrivalDateAbrev = 'Fecha no disponible';
     }
 @endphp
 
@@ -69,14 +120,17 @@
         <!-- Bloque origen -->
         <div class="airport-section">
             <div class="airport-info">
-                <div class="airport-time-date">
+                <div class="airport-date mobile-only">{{ $departureDateAbrev }}</div>
+                <div class="airport-time mobile-only">{{ date('H:i', strtotime($item['departure_time'] ?? '00:00')) }}</div>
+                <div class="airport-location mobile-only">{{ $item['departure_city'] ?? '' }}, {{ getCountryFromCity($item['departure_city'] ?? '') }}</div>
+                <div class="airport-time-date desktop-only">
                     <span class="airport-time">{{ date('H:i', strtotime($item['departure_time'] ?? '00:00')) }}</span>
                     <span class="airport-date-separator"> - </span>
                     <span class="airport-date">{{ $departureDateLong }}</span>
                 </div>
                 <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? $matches[1] : $item['departure_airport'] ?? 'DEP' }}</div>
                 <div class="airport-name">{{ ucfirst(strtolower($item['departure_airport_name'] ?? '')) }}</div>
-                <div class="airport-location">{{ $item['departure_city'] ?? '' }}, {{ getCountryFromCity($item['departure_city'] ?? '') }}</div>
+                <div class="airport-location desktop-only">{{ $item['departure_city'] ?? '' }}, {{ getCountryFromCity($item['departure_city'] ?? '') }}</div>
             </div>
         </div>
 
@@ -91,16 +145,25 @@
         <!-- Bloque destino -->
         <div class="airport-section">
             <div class="airport-info arrival-info">
-                <div class="airport-time-date">
+                <div class="airport-location mobile-only">{{ $item['arrival_city'] ?? '' }}, {{ getCountryFromCity($item['arrival_city'] ?? '') }}</div>
+                <div class="airport-time-date desktop-only">
                     <span class="airport-time">{{ date('H:i', strtotime($item['arrival_time'] ?? '00:00')) }}</span>
                     <span class="airport-date-separator"> - </span>
                     <span class="airport-date">{{ $arrivalDateLong }}</span>
                 </div>
                 <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? $matches[1] : $item['arrival_airport'] ?? 'ARR' }}</div>
                 <div class="airport-name">{{ ucfirst(strtolower($item['arrival_airport_name'] ?? '')) }}</div>
-                <div class="airport-location">{{ $item['arrival_city'] ?? '' }}, {{ getCountryFromCity($item['arrival_city'] ?? '') }}</div>
+                <div class="airport-location desktop-only">{{ $item['arrival_city'] ?? '' }}, {{ getCountryFromCity($item['arrival_city'] ?? '') }}</div>
             </div>
         </div>
+
+        @if(isset($returnDateAbrev))
+        <div class="return-section mobile-only">
+            <div class="airport-date">{{ $returnDateAbrev }}</div>
+            <div class="airport-time">{{ $returnTime }}</div>
+            <div class="airport-location">{{ $item['arrival_city'] ?? '' }}, {{ getCountryFromCity($item['arrival_city'] ?? '') }}</div>
+        </div>
+        @endif
     </div>
 
     <!-- Información adicional -->

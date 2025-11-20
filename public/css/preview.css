@@ -545,7 +545,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border-radius: 20px 20px 0 0;
+        border-radius: 20px 20px 20px 20px;
     }
 
     .activity-gallery-btn {
@@ -636,11 +636,11 @@
         opacity: 1;
     }
 
-    .hotel-gallery-image {
+    .c {
         width: 100%;
         height: 100%;
-        object-fit: cover;
-        border-radius: 20px 20px 0 0;
+        object-fit: cover;  
+        border-radius: 20px 20px 20px 20px;
     }
 
     .hotel-gallery-btn {
@@ -1140,6 +1140,9 @@
     }
 
     @media (max-width: 768px) {
+        .mobile-only { display: block; }
+        .desktop-only { display: none; }
+
         .container {
             padding: 10px;
         }
@@ -1170,6 +1173,29 @@
 
         .activity-card {
             flex-direction: column;
+        }
+
+        .activity-content {
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .activity-photos-column {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .activity-info-column {
+            width: 100%;
+        }
+
+        .activity-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .activity-rating-section {
+            order: 2;
         }
 
         .activity-image {
@@ -2141,7 +2167,7 @@
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 0rem;
         padding: 1rem;
     }
 
@@ -2159,6 +2185,7 @@
         color: var(--primary-dark);
         margin: 0 0 0.05rem 0;
         flex: 1;
+        margin-bottom: 15px;
     }
 
     .hotel-rating-section {
@@ -2440,7 +2467,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border-radius: 20px 20px 0 0;
+        border-radius: 20px 20px 20px 20px;
     }
 
     .hotel-gallery-btn {
@@ -3036,6 +3063,10 @@
         }
     }
 
+    /* Mobile/Desktop visibility classes */
+    .mobile-only { display: none; }
+    .desktop-only { display: block; }
+
     /* Unified Flight Card Styles */
     .flight-card-unified {
         background: white;
@@ -3048,8 +3079,8 @@
     }
 
     .flight-card-unified:hover {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        transform: translateY(-1px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
+        transform: translateY(-4px) scale(1.02);
     }
 
     .flight-route-main {
@@ -3137,7 +3168,7 @@
 
     .flight-route-header {
         text-align: left;
-        margin-bottom: 32px;
+        margin-bottom: 16px;
         padding-bottom: 8px;
         border-bottom: 1px solid #f3f4f6;
     }
@@ -3332,19 +3363,46 @@
 
         .flight-route-main {
             flex-direction: column;
-            gap: 16px;
+            align-items: center;
+            gap: 8px;
         }
 
         .airport-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-align: left;
+            display: contents;
         }
 
         .airport-info {
-            text-align: left;
-            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .airport-name {
+            display: none;
+        }
+
+        .airport-info .airport-date { order: 1; }
+        .airport-info .airport-time { order: 2; }
+        .airport-info .airport-code { order: 3; }
+        .airport-info .airport-location { order: 4; }
+        .flight-connector { order: 5; }
+        .arrival-info .airport-location { order: 6; }
+        .arrival-info .airport-code { order: 7; }
+
+        .flight-plane { display: none; }
+        .flight-connector::before {
+            content: '↓';
+            font-size: 24px;
+            color: #6b7280;
+        }
+
+        .return-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            order: 6;
         }
 
         .airport-time {
@@ -3507,6 +3565,15 @@
         flex-direction: column;
         gap: 8px;
         align-items: flex-start;
+    }
+
+    .hotel-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .hotel-rating-section {
+        order: 2;
     }
 
     .hotel-meta .room-type {
