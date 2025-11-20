@@ -247,6 +247,12 @@ class ExportManager {
                     window.currentTripId = data.trip.id; // Update global state
                 }
 
+                // Process any temporary uploaded files
+                if (this.fileManager && typeof this.fileManager.processTempFiles === 'function') {
+                    console.log('Processing temporary files for trip ID:', data.trip.id);
+                    await this.fileManager.processTempFiles(data.trip.id);
+                }
+
                 // Show appropriate message based on action
                 if (data.action === 'updated') {
                     this.showNotification('Viaje Actualizado', 'El viaje existente ha sido actualizado exitosamente.', 'success');
@@ -298,6 +304,8 @@ class ExportManager {
             day: dayNumber
         };
 
+        console.log('Extracting item data for type:', baseData.type, 'from element:', itemElement);
+
         // Extract data based on item type
         switch (baseData.type) {
             case 'vuelo':
@@ -331,6 +339,7 @@ class ExportManager {
                 };
 
             case 'hotel':
+            case 'alojamiento':
                 return {
                     ...baseData,
                     type: 'hotel',
@@ -345,6 +354,7 @@ class ExportManager {
                 };
 
             case 'actividad':
+            case 'activity':
                 return {
                     ...baseData,
                     type: 'activity',

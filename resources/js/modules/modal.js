@@ -107,6 +107,7 @@ export class ModalManager {
 
     showEditElementModal(element, elementData) {
         console.log('Showing edit element modal for:', elementData);
+        console.log('Element type from elementData:', elementData.type);
         this.currentElementType = elementData.type;
         this.currentDay = elementData.day;
         this.currentElementData = elementData;

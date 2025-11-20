@@ -340,7 +340,7 @@ class TripItem
     {
         $labelMap = [
             'flight' => 'Vuelo',
-            'hotel' => 'Alojamiento',
+            'hotel' => 'Hotel',
             'activity' => 'Actividad',
             'transport' => 'Transporte',
             'note' => 'Nota'

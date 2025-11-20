@@ -27,7 +27,7 @@ class TripDocumentController extends Controller
 
         $request->validate([
             'file' => 'required|file|max:10240|mimes:pdf,doc,docx,txt,jpg,jpeg,png',
-            'type' => 'required|in:flight,hotel,transport',
+            'type' => 'required|in:flight,hotel,transport,activity',
             'item_id' => 'nullable|string'
         ]);
 
@@ -74,7 +74,7 @@ class TripDocumentController extends Controller
     {
         $request->validate([
             'file' => 'required|file|max:10240|mimes:pdf,doc,docx,txt,jpg,jpeg,png',
-            'type' => 'required|in:flight,hotel,transport',
+            'type' => 'required|in:flight,hotel,transport,activity',
             'item_id' => 'nullable|string'
         ]);
 

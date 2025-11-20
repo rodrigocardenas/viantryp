@@ -49,7 +49,7 @@
     </div>
 
     <!-- Banner below the top section -->
-    <div id="trip-banner" class="trip-card-banner" style="background-image: url('{{ $trip->cover_image_url ?? '/images/default-cover.png' }}')">
+    <div id="trip-banner" class="trip-card-banner" style="background-image: url('{{ $trip->cover_image_url ?? '/images/default-cover.jpeg' }}')">
         <div class="banner-overlay">
             <div class="banner-actions">
                 <button type="button" id="change-cover-btn" class="change-cover-btn" title="Cambiar portada">
