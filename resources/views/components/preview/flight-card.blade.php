@@ -74,7 +74,7 @@
                     <span class="airport-date-separator"> - </span>
                     <span class="airport-date">{{ $departureDateLong }}</span>
                 </div>
-                <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? strtoupper($matches[1]) : strtoupper($item['departure_airport'] ?? 'DEP') }}</div>
+                <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? $matches[1] : $item['departure_airport'] ?? 'DEP' }}</div>
                 <div class="airport-name">{{ ucfirst(strtolower($item['departure_airport_name'] ?? '')) }}</div>
                 <div class="airport-location">{{ $item['departure_city'] ?? '' }}, {{ getCountryFromCity($item['departure_city'] ?? '') }}</div>
             </div>
@@ -96,7 +96,7 @@
                     <span class="airport-date-separator"> - </span>
                     <span class="airport-date">{{ $arrivalDateLong }}</span>
                 </div>
-                <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? strtoupper($matches[1]) : strtoupper($item['arrival_airport'] ?? 'ARR') }}</div>
+                <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? $matches[1] : $item['arrival_airport'] ?? 'ARR' }}</div>
                 <div class="airport-name">{{ ucfirst(strtolower($item['arrival_airport_name'] ?? '')) }}</div>
                 <div class="airport-location">{{ $item['arrival_city'] ?? '' }}, {{ getCountryFromCity($item['arrival_city'] ?? '') }}</div>
             </div>
