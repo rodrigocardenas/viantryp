@@ -191,6 +191,15 @@
             elementDiv.setAttribute('data-nights', data.nights || 1);
         }
 
+        // Add transport data as attributes if this is a transport element
+        if (data.type === 'transport') {
+            elementDiv.setAttribute('data-transport-type', data.transport_type || '');
+            elementDiv.setAttribute('data-pickup-location', data.pickup_location || '');
+            elementDiv.setAttribute('data-destination', data.destination || '');
+            elementDiv.setAttribute('data-pickup-datetime', data.pickup_datetime || '');
+            elementDiv.setAttribute('data-arrival-datetime', data.arrival_datetime || '');
+        }
+
         elementDiv.innerHTML = `
             <div class="item-header">
                 <div class="item-icon icon-${data.type}">
@@ -531,10 +540,11 @@
                 return {
                     ...baseData,
                     type: 'transport',
-                    transport_type: itemElement.querySelector('.item-title')?.textContent || '',
-                    pickup_location: itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[0] || '',
-                    destination: itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[1] || '',
-                    pickup_time: ''
+                    transport_type: itemElement.getAttribute('data-transport-type') || '',
+                    pickup_location: itemElement.getAttribute('data-pickup-location') || '',
+                    destination: itemElement.getAttribute('data-destination') || '',
+                    pickup_datetime: itemElement.getAttribute('data-pickup-datetime') || '',
+                    arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || ''
                 };
 
             case 'nota':

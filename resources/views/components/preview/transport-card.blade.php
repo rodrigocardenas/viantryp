@@ -3,7 +3,7 @@
 <div class="flight-card-unified">
     <!-- Header similar to flight-route-header -->
     <div class="flight-route-header">
-        <span class="airport-route-text">Transporte en Tren</span>
+        <span class="airport-route-text">Transporte en {{ $item['transport_type'] ?? 'Traslado' }}</span>
     </div>
 
     <!-- Route section similar to flight-route-main -->
@@ -12,28 +12,40 @@
         <div class="airport-section">
             <div class="airport-info">
                 <div class="airport-time-date">
-                    <span class="airport-time">{{ $item['departure_time'] ?? 'Hora no disponible' }}</span>
+                    <span class="airport-time">{{ $item['pickup_datetime'] ? \Carbon\Carbon::parse($item['pickup_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
+                    <span class="airport-date">{{ $item['pickup_datetime'] ? \Carbon\Carbon::parse($item['pickup_datetime'])->format('d/m/Y') : '' }}</span>
                 </div>
                 <div class="airport-name">{{ $item['pickup_location'] ?? 'Ubicación no especificada' }}</div>
                 <div class="airport-location">Salida</div>
             </div>
         </div>
 
-        <!-- Train connector -->
+        <!-- Transport connector -->
         <div class="flight-connector">
             <div class="plane-container">
-                <i class="fas fa-train flight-plane" style="color: #000000;"></i>
+                @php
+                    $icon = 'fas fa-car';
+                    if ($item['transport_type'] === 'Tren') {
+                        $icon = 'fas fa-train';
+                    } elseif ($item['transport_type'] === 'Bus') {
+                        $icon = 'fas fa-bus';
+                    } elseif ($item['transport_type'] === 'Barco/Ferry') {
+                        $icon = 'fas fa-ship';
+                    }
+                @endphp
+                <i class="{{ $icon }} flight-plane" style="color: #000000;"></i>
             </div>
         </div>
 
-        <!-- Return section -->
+        <!-- Arrival section -->
         <div class="airport-section">
             <div class="airport-info arrival-info">
                 <div class="airport-time-date">
-                    <span class="airport-time">{{ $item['return_time'] ?? 'Hora no disponible' }}</span>
+                    <span class="airport-time">{{ $item['arrival_datetime'] ? \Carbon\Carbon::parse($item['arrival_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
+                    <span class="airport-date">{{ $item['arrival_datetime'] ? \Carbon\Carbon::parse($item['arrival_datetime'])->format('d/m/Y') : '' }}</span>
                 </div>
-                <div class="airport-name">{{ $item['drop_off_location'] ?? 'Ubicación no especificada' }}</div>
-                <div class="airport-location">Regreso</div>
+                <div class="airport-name">{{ $item['destination'] ?? 'Ubicación no especificada' }}</div>
+                <div class="airport-location">Llegada</div>
             </div>
         </div>
     </div>
