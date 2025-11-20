@@ -12,20 +12,6 @@
         $hotelId = $item['hotel_id'] ?? 'hotel-' . $loop->index;
     @endphp
 
-    <!-- Hotel Header similar to flight-route-header -->
-    <div class="hotel-route-header">
-        <span class="hotel-route-text">Alojamiento en {{ $hotelName }}</span>
-    </div>
-
-    <!-- Hotel details section similar to flight-details-section -->
-    <div class="hotel-details-section">
-        <div class="hotel-meta">
-            @if(isset($item['room_type']) && $item['room_type'])
-                <span class="hotel-room-type">{{ $item['room_type'] }}</span>
-            @endif
-        </div>
-    </div>
-
     <div class="hotel-content">
         <!-- Left column: Photos -->
         <div class="hotel-photos-column">
@@ -62,9 +48,9 @@
 
         <!-- Right column: Hotel information -->
         <div class="hotel-info-column">
-            <!-- Hotel name and rating -->
+            <!-- Title: Alojamiento en "Hotel Name" -->
             <div class="hotel-header">
-                <h3 class="hotel-title">{{ $hotelName }}</h3>
+                <h3 class="hotel-title">Alojamiento en {{ $hotelName }}</h3>
                 @if($hotelRating)
                     <div class="hotel-rating-section">
                         <div class="hotel-rating">
@@ -83,6 +69,20 @@
                 @endif
             </div>
 
+            <!-- Check-in and check-out dates -->
+            @if(isset($item['check_in']) || isset($item['check_out']))
+            <div class="hotel-times">
+                <i class="fas fa-calendar-alt"></i>
+                @if(isset($item['check_in']) && isset($item['check_out']))
+                    Check-in: {{ $item['check_in'] }} - Check-out: {{ $item['check_out'] }}
+                @elseif(isset($item['check_in']))
+                    Check-in: {{ $item['check_in'] }}
+                @elseif(isset($item['check_out']))
+                    Check-out: {{ $item['check_out'] }}
+                @endif
+            </div>
+            @endif
+
             <!-- Hotel address -->
             @if($hotelAddress)
                 <div class="hotel-address">
@@ -90,29 +90,42 @@
                 </div>
             @endif
 
-            <!-- Check-in and check-out dates -->
-            <div class="hotel-check-dates">
-                <span><i class="fas fa-calendar-alt"></i> Check-in: {{ $item['check_in'] ?? 'Fecha no especificada' }}</span>
-                <span><i class="fas fa-calendar-check"></i> Check-out: {{ $item['check_out'] ?? 'Fecha no especificada' }}</span>
-            </div>
-
-            <!-- Amenities -->
-            <div class="hotel-amenities">
-                @if($item['nights'])
-                    <span class="amenity"><i class="fas fa-moon"></i> {{ $item['nights'] }} noches</span>
+            <!-- Room type and main details -->
+            @if(isset($item['room_type']) && $item['room_type'] || isset($item['nights']) && $item['nights'])
+            <div class="hotel-description">
+                @if(isset($item['room_type']) && $item['room_type'])
+                    Tipo de habitación: {{ $item['room_type'] }}
+                @endif
+                @if(isset($item['nights']) && $item['nights'])
+                    @if(isset($item['room_type']))<br>@endif
+                    {{ $item['nights'] }} noches
                 @endif
             </div>
+            @endif
 
-            <!-- Divider line -->
-            <div class="hotel-divider"></div>
-
-            <!-- Hotel nights at bottom -->
-            @if($item['nights'])
-                <div class="hotel-nights-bottom">
-                    <span class="hotel-nights-badge">{{ $item['nights'] }} noches</span>
+            <!-- Additional notes or comments -->
+            @if(isset($item['notes']) && $item['notes'])
+                <div class="hotel-notes">
+                    <i class="fas fa-sticky-note"></i> {{ $item['notes'] }}
                 </div>
             @endif
 
+            <!-- Attached files -->
+            @php
+                $documents = $trip->documents->where('type', 'hotel');
+            @endphp
+            @if($documents->count() > 0)
+                <div class="hotel-documents">
+                    <h5>Documentos adjuntos:</h5>
+                    @foreach($documents as $document)
+                        <a href="{{ $document->url }}" target="_blank" class="document-link">
+                            <i class="fas fa-file"></i> {{ $document->original_name }}
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+
+            <!-- Contact section -->
             @if($hotelWebsite || $hotelPhone)
                 <div class="hotel-contact-section">
                     @if($hotelWebsite)
@@ -129,18 +142,4 @@
             @endif
         </div>
     </div>
-
-    @php
-        $documents = $trip->documents->where('type', 'hotel');
-    @endphp
-    @if($documents->count() > 0)
-        <div class="documents-section">
-            <h5>Documentos adjuntos:</h5>
-            @foreach($documents as $document)
-                <a href="{{ $document->url }}" target="_blank" class="document-link">
-                    <i class="fas fa-file"></i> {{ $document->original_name }}
-                </a>
-            @endforeach
-        </div>
-    @endif
 </div>
