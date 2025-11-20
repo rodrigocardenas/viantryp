@@ -112,14 +112,15 @@ export class TimelineManager {
         });
 
         // Create the HTML structure
-        const iconClass = this.getIconForType(data.type);
+        const iconClass = this.getIconClass(data.type);
+        const icon = this.getIcon(data.type);
         const title = this.getElementTitle(data);
         const subtitle = this.getElementSubtitle(data);
 
         elementDiv.innerHTML = `
             <div class="item-header">
-                <div class="item-icon ${data.type}-icon">
-                    <i class="fas fa-${iconClass}"></i>
+                <div class="item-icon ${iconClass}">
+                    <i class="${icon}"></i>
                 </div>
                 <div class="item-info">
                     <div class="item-type">${this.getTypeLabel(data.type)}</div>
@@ -151,6 +152,32 @@ export class TimelineManager {
             'total': 'dollar-sign'
         };
         return icons[type] || 'circle';
+    }
+
+    getIconClass(type) {
+        const iconMap = {
+            'flight': 'icon-flight',
+            'hotel': 'icon-hotel',
+            'activity': 'icon-activity',
+            'transport': 'icon-transport',
+            'note': 'icon-note',
+            'summary': 'icon-summary',
+            'total': 'icon-total'
+        };
+        return iconMap[type] || 'icon-note';
+    }
+
+    getIcon(type) {
+        const iconMap = {
+            'flight': 'fas fa-plane',
+            'hotel': 'fas fa-bed',
+            'activity': 'fas fa-map-marker-alt',
+            'transport': 'fas fa-car',
+            'note': 'fas fa-sticky-note',
+            'summary': 'fas fa-list-check',
+            'total': 'fas fa-dollar-sign'
+        };
+        return iconMap[type] || 'fas fa-sticky-note';
     }
 
     getTypeLabel(type) {
