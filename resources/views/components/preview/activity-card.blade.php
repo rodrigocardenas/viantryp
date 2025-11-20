@@ -19,8 +19,8 @@
                 <!-- Activity Photo Carousel -->
                 <div class="activity-gallery" data-activity-id="{{ $activityId }}">
                     <div class="activity-gallery-track">
-                        @foreach(array_slice($activityPhotos, 0, 8) as $index => $photo)
-                            <div class="activity-gallery-slide {{ $index === 0 ? 'active' : '' }}" onclick="showActivityGallery({{ json_encode(array_column($activityPhotos, 'url')) }}, {{ $index }}, '{{ addslashes($activityTitle) }}')">
+                        @foreach(array_slice($activityPhotos, 0, 6) as $index => $photo)
+                            <div class="activity-gallery-slide {{ $index === 0 ? 'active' : '' }}" onclick="if(window.showActivityGallery) window.showActivityGallery({{ json_encode(array_column($activityPhotos, 'url')) }}, {{ $index }}, '{{ addslashes($activityTitle) }}')">
                                 <img src="{{ $photo['url'] }}" alt="Activity photo {{ $index + 1 }}" class="activity-gallery-image" loading="lazy">
                             </div>
                         @endforeach
@@ -34,7 +34,7 @@
                             <i class="fas fa-chevron-right"></i>
                         </button>
                         <div class="activity-gallery-indicators">
-                            @for($i = 0; $i < min(count($activityPhotos), 8); $i++)
+                            @for($i = 0; $i < min(count($activityPhotos), 6); $i++)
                                 <span class="activity-gallery-indicator {{ $i === 0 ? 'active' : '' }}" data-slide="{{ $i }}"></span>
                             @endfor
                         </div>

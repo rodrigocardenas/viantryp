@@ -19,8 +19,8 @@
                 <!-- Hotel Photo Carousel -->
                 <div class="hotel-gallery" data-hotel-id="{{ $hotelId }}">
                     <div class="hotel-gallery-track">
-                        @foreach(array_slice($hotelPhotos, 0, 8) as $index => $photo)
-                            <div class="hotel-gallery-slide {{ $index === 0 ? 'active' : '' }}" onclick="showHotelGallery({{ json_encode(array_column($hotelPhotos, 'url')) }}, {{ $index }}, '{{ addslashes($hotelName) }}')">
+                        @foreach(array_slice($hotelPhotos, 0, 6) as $index => $photo)
+                            <div class="hotel-gallery-slide {{ $index === 0 ? 'active' : '' }}" onclick="if(window.showHotelGallery) window.showHotelGallery({{ json_encode(array_column($hotelPhotos, 'url')) }}, {{ $index }}, '{{ addslashes($hotelName) }}')">
                                 <img src="{{ $photo['url'] }}" alt="Hotel photo {{ $index + 1 }}" class="hotel-gallery-image" loading="lazy">
                             </div>
                         @endforeach
@@ -34,7 +34,7 @@
                             <i class="fas fa-chevron-right"></i>
                         </button>
                         <div class="hotel-gallery-indicators">
-                            @for($i = 0; $i < min(count($hotelPhotos), 8); $i++)
+                            @for($i = 0; $i < min(count($hotelPhotos), 6); $i++)
                                 <span class="hotel-gallery-indicator {{ $i === 0 ? 'active' : '' }}" data-slide="{{ $i }}"></span>
                             @endfor
                 </div>

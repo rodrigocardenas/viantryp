@@ -469,126 +469,84 @@ function initializeActivityCarousels() {
     });
 }
 
-function showHotelGallery(images, startIndex = 0, hotelName = 'Hotel') {
-    currentHotelImages = images;
-    currentImageIndex = startIndex;
+window.showHotelGallery = function(images, startIndex = 0, hotelName = 'Hotel') {
+    // Limit to first 6 images only
+    currentHotelImages = images.slice(0, 6);
+    currentImageIndex = Math.min(startIndex, currentHotelImages.length - 1);
 
     const modalHtml = `
-        <div id="hotelGalleryModal" class="hotel-gallery-modal-overlay" style="
+        <div id="hotelGalleryModal" style="
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
+            background: black;
             z-index: 10000;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 10000;
-            font-family: 'Poppins', sans-serif;
         ">
-            <div class="hotel-gallery-modal" style="
-                position: relative;
-                max-width: 90vw;
-                max-height: 90vh;
-                background: white;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            <img id="galleryMainImage" src="${currentHotelImages[currentImageIndex]}" alt="Hotel image" style="
+                max-width: 100%;
+                max-height: 100vh;
+                object-fit: contain;
             ">
-                <div class="gallery-modal-header" style="
-                    padding: 1rem 1.5rem;
-                    background: var(--primary-dark, #1f2a44);
+            ${currentHotelImages.length > 1 ? `
+                <button onclick="if(window.prevHotelImage) window.prevHotelImage()" style="
+                    position: absolute;
+                    left: 1rem;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: none;
                     color: white;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                ">
-                    <h3 style="margin: 0; font-size: 1.2rem;">${hotelName} - Galería de Fotos</h3>
-                    <button onclick="closeHotelGallery()" style="
-                        background: none;
-                        border: none;
-                        color: white;
-                        font-size: 1.5rem;
-                        cursor: pointer;
-                        padding: 0.25rem;
-                        border-radius: 4px;
-                        transition: background 0.3s ease;
-                    " onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="gallery-modal-body" style="
-                    position: relative;
-                    background: black;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 2rem;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    min-height: 400px;
-                ">
-                    <img id="galleryMainImage" src="${currentHotelImages[currentImageIndex]}" alt="Hotel image" style="
-                        max-width: 100%;
-                        max-height: 70vh;
-                        object-fit: contain;
-                    ">
-                    ${currentHotelImages.length > 1 ? `
-                        <button onclick="prevHotelImage()" class="gallery-nav-btn" style="
-                            position: absolute;
-                            left: 1rem;
-                            top: 50%;
-                            transform: translateY(-50%);
-                            background: rgba(0, 0, 0, 0.7);
-                            color: white;
-                            border: none;
-                            width: 50px;
-                            height: 50px;
-                            border-radius: 50%;
-                            cursor: pointer;
-                            font-size: 1.2rem;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            transition: background 0.3s ease;
-                        " onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button onclick="nextHotelImage()" class="gallery-nav-btn" style="
-                            position: absolute;
-                            right: 1rem;
-                            top: 50%;
-                            transform: translateY(-50%);
-                            background: rgba(0, 0, 0, 0.7);
-                            color: white;
-                            border: none;
-                            width: 50px;
-                            height: 50px;
-                            border-radius: 50%;
-                            cursor: pointer;
-                            font-size: 1.2rem;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            transition: background 0.3s ease;
-                        " onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    ` : ''}
-                </div>
-                <div class="gallery-modal-footer" style="
-                    padding: 1rem 1.5rem;
-                    background: #f8f9fa;
+                    transition: opacity 0.3s ease;
+                " onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button onclick="if(window.nextHotelImage) window.nextHotelImage()" style="
+                    position: absolute;
+                    right: 1rem;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: none;
+                    color: white;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 2rem;
                     display: flex;
-                    justify-content: center;
                     align-items: center;
-                    gap: 0.5rem;
-                ">
-                    <span id="galleryImageCounter" style="
-                        font-size: 0.9rem;
-                        color: #6c757d;
-                    ">${currentImageIndex + 1} de ${currentHotelImages.length}</span>
-                </div>
-            </div>
+                    justify-content: center;
+                    transition: opacity 0.3s ease;
+                " onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            ` : ''}
+            <button onclick="if(window.closeHotelGallery) window.closeHotelGallery()" style="
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                background: rgba(0, 0, 0, 0.5);
+                color: white;
+                border: none;
+                cursor: pointer;
+                font-size: 1.5rem;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.3s ease;
+            " onmouseover="this.style.background='rgba(0,0,0,0.8)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
     `;
 
@@ -598,7 +556,7 @@ function showHotelGallery(images, startIndex = 0, hotelName = 'Hotel') {
     document.addEventListener('keydown', handleGalleryKeydown);
 }
 
-function closeHotelGallery() {
+window.closeHotelGallery = function() {
     const modal = document.getElementById('hotelGalleryModal');
     if (modal) {
         modal.remove();
@@ -606,126 +564,84 @@ function closeHotelGallery() {
     document.removeEventListener('keydown', handleGalleryKeydown);
 }
 
-function showActivityGallery(images, startIndex = 0, activityName = 'Actividad') {
-    currentActivityImages = images;
-    currentActivityImageIndex = startIndex;
+window.showActivityGallery = function(images, startIndex = 0, activityName = 'Actividad') {
+    // Limit to first 6 images only
+    currentActivityImages = images.slice(0, 6);
+    currentActivityImageIndex = Math.min(startIndex, currentActivityImages.length - 1);
 
     const modalHtml = `
-        <div id="activityGalleryModal" class="activity-gallery-modal-overlay" style="
+        <div id="activityGalleryModal" style="
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
+            background: black;
             z-index: 10000;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 10000;
-            font-family: 'Poppins', sans-serif;
         ">
-            <div class="activity-gallery-modal" style="
-                position: relative;
-                max-width: 90vw;
-                max-height: 90vh;
-                background: white;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            <img id="activityGalleryMainImage" src="${currentActivityImages[currentActivityImageIndex]}" alt="Activity image" style="
+                max-width: 100%;
+                max-height: 100vh;
+                object-fit: contain;
             ">
-                <div class="gallery-modal-header" style="
-                    padding: 1rem 1.5rem;
-                    background: var(--primary-dark, #1f2a44);
+            ${currentActivityImages.length > 1 ? `
+                <button onclick="if(window.prevActivityImage) window.prevActivityImage()" style="
+                    position: absolute;
+                    left: 1rem;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: none;
                     color: white;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                ">
-                    <h3 style="margin: 0; font-size: 1.2rem;">${activityName} - Galería de Fotos</h3>
-                    <button onclick="closeActivityGallery()" style="
-                        background: none;
-                        border: none;
-                        color: white;
-                        font-size: 1.5rem;
-                        cursor: pointer;
-                        padding: 0.25rem;
-                        border-radius: 4px;
-                        transition: background 0.3s ease;
-                    " onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="gallery-modal-body" style="
-                    position: relative;
-                    background: black;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 2rem;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    min-height: 400px;
-                ">
-                    <img id="activityGalleryMainImage" src="${currentActivityImages[currentActivityImageIndex]}" alt="Activity image" style="
-                        max-width: 100%;
-                        max-height: 70vh;
-                        object-fit: contain;
-                    ">
-                    ${currentActivityImages.length > 1 ? `
-                        <button onclick="prevActivityImage()" class="gallery-nav-btn" style="
-                            position: absolute;
-                            left: 1rem;
-                            top: 50%;
-                            transform: translateY(-50%);
-                            background: rgba(0, 0, 0, 0.7);
-                            border: none;
-                            border-radius: 50%;
-                            width: 50px;
-                            height: 50px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            color: white;
-                            font-size: 1.2rem;
-                            cursor: pointer;
-                            transition: background 0.3s ease;
-                        " onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button onclick="nextActivityImage()" class="gallery-nav-btn" style="
-                            position: absolute;
-                            right: 1rem;
-                            top: 50%;
-                            transform: translateY(-50%);
-                            background: rgba(0, 0, 0, 0.7);
-                            border: none;
-                            border-radius: 50%;
-                            width: 50px;
-                            height: 50px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            color: white;
-                            font-size: 1.2rem;
-                            cursor: pointer;
-                            transition: background 0.3s ease;
-                        " onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    ` : ''}
-                </div>
-                <div class="gallery-modal-footer" style="
-                    padding: 1rem 1.5rem;
-                    background: #f8f9fa;
+                    transition: opacity 0.3s ease;
+                " onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button onclick="if(window.nextActivityImage) window.nextActivityImage()" style="
+                    position: absolute;
+                    right: 1rem;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: none;
+                    color: white;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 2rem;
                     display: flex;
-                    justify-content: center;
                     align-items: center;
-                    gap: 0.5rem;
-                ">
-                    <span id="activityGalleryImageCounter" style="
-                        font-size: 0.9rem;
-                        color: #6c757d;
-                    ">${currentActivityImageIndex + 1} de ${currentActivityImages.length}</span>
-                </div>
-            </div>
+                    justify-content: center;
+                    transition: opacity 0.3s ease;
+                " onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            ` : ''}
+            <button onclick="if(window.closeActivityGallery) window.closeActivityGallery()" style="
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                background: rgba(0, 0, 0, 0.5);
+                color: white;
+                border: none;
+                cursor: pointer;
+                font-size: 1.5rem;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.3s ease;
+            " onmouseover="this.style.background='rgba(0,0,0,0.8)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
     `;
 
@@ -735,7 +651,7 @@ function showActivityGallery(images, startIndex = 0, activityName = 'Actividad')
     document.addEventListener('keydown', handleActivityGalleryKeydown);
 }
 
-function closeActivityGallery() {
+window.closeActivityGallery = function() {
     const modal = document.getElementById('activityGalleryModal');
     if (modal) {
         modal.remove();
@@ -743,12 +659,12 @@ function closeActivityGallery() {
     document.removeEventListener('keydown', handleActivityGalleryKeydown);
 }
 
-function nextActivityImage() {
+window.nextActivityImage = function() {
     currentActivityImageIndex = (currentActivityImageIndex + 1) % currentActivityImages.length;
     updateActivityGalleryImage();
 }
 
-function prevActivityImage() {
+window.prevActivityImage = function() {
     currentActivityImageIndex = currentActivityImageIndex === 0 ? currentActivityImages.length - 1 : currentActivityImageIndex - 1;
     updateActivityGalleryImage();
 }
@@ -775,12 +691,12 @@ function handleActivityGalleryKeydown(e) {
     }
 }
 
-function nextHotelImage() {
+window.nextHotelImage = function() {
     currentImageIndex = (currentImageIndex + 1) % currentHotelImages.length;
     updateGalleryImage();
 }
 
-function prevHotelImage() {
+window.prevHotelImage = function() {
     currentImageIndex = currentImageIndex === 0 ? currentHotelImages.length - 1 : currentImageIndex - 1;
     updateGalleryImage();
 }

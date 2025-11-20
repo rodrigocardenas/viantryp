@@ -57,4 +57,15 @@
     // Make trip data available globally for JavaScript
     window.tripId = {{ $trip->id ?? 'null' }};
     window.shareToken = '{{ request()->route("token") ?? "" }}';
+
+    // Ensure gallery functions are available globally
+    window.showHotelGallery = window.showHotelGallery || function(images, startIndex, hotelName) {
+        // Fallback implementation if Vite build fails
+        console.log('showHotelGallery called with', images.length, 'images');
+    };
+
+    window.showActivityGallery = window.showActivityGallery || function(images, startIndex, activityName) {
+        // Fallback implementation if Vite build fails
+        console.log('showActivityGallery called with', images.length, 'images');
+    };
 </script>
