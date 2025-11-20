@@ -12,19 +12,19 @@
         $hotelId = $item['hotel_id'] ?? 'hotel-' . $loop->index;
     @endphp
 
-    {{-- <!-- Hotel Header similar to flight-route-header -->
+    <!-- Hotel Header similar to flight-route-header -->
     <div class="hotel-route-header">
         <span class="hotel-route-text">Alojamiento en {{ $hotelName }}</span>
-    </div> --}}
+    </div>
 
     <!-- Hotel details section similar to flight-details-section -->
-    {{-- <div class="hotel-details-section">
+    <div class="hotel-details-section">
         <div class="hotel-meta">
             @if(isset($item['room_type']) && $item['room_type'])
                 <span class="hotel-room-type">{{ $item['room_type'] }}</span>
             @endif
         </div>
-    </div> --}}
+    </div>
 
     <div class="hotel-content">
         <!-- Left column: Photos -->

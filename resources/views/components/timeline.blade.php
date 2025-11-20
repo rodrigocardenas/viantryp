@@ -16,10 +16,9 @@
                     <p class="day-date">{{ $day->getFormattedDate() }}</p>
                 </div>
                 <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <div class="add-element-btn" data-action="add-element" data-day="{{ $day->day }}">
+                    <div class="add-element-btn btn-sm" data-action="add-element" data-day="{{ $day->day }}">
                         <i class="fas fa-plus"></i>
                     </div>
-                    <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
 
                     @if($day->items && count($day->items) > 0)
                         @foreach($day->items as $item)
@@ -43,18 +42,18 @@
                 </p>
             </div>
                             <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <div class="add-element-btn" data-action="add-element" data-day="1">
+                    <div class="add-element-btn btn-sm" data-action="add-element" data-day="1">
                         <i class="fas fa-plus"></i>
                     </div>
-                    <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
                 </div></search>
 </search_and_replace>
     @endif
 
-    <!-- Add Day Section -->
-    <x-editor-add-day-section />
+
 </div></search>
 </search_and_replace>
+<!-- Add Day Section -->
+    <x-editor-add-day-section />
 
 @push('scripts')
 <script>
@@ -404,10 +403,9 @@
                 <p class="day-date">${dayDate}</p>
             </div>
             <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="add-element-btn" data-action="add-element" data-day="${newDayNumber}">
+                <div class="add-element-btn btn-sm" data-action="add-element" data-day="${newDayNumber}">
                     <i class="fas fa-plus"></i>
                 </div>
-                <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
             </div>
         `;
 

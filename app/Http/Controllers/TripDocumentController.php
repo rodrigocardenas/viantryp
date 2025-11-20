@@ -118,7 +118,7 @@ class TripDocumentController extends Controller
         $request->validate([
             'temp_path' => 'required|string',
             'trip_id' => 'required|integer|exists:trips,id',
-            'type' => 'required|in:flight,hotel,transport',
+            'type' => 'required|in:flight,hotel,transport,activity',
             'item_id' => 'nullable|string'
         ]);
 

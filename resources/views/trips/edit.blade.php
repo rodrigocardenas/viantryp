@@ -32,7 +32,7 @@
                 <div class="drop-zone" id="drop-zone">
                     <div class="drop-zone-content">
                         <i class="fas fa-plus-circle"></i>
-                        <p>Suelta elementos aquí para añadirlos al itinerario</p>
+                        {{-- <p>Suelta elementos aquí para añadirlos al itinerario</p> --}}
                     </div>
                 </div>
             </div>
