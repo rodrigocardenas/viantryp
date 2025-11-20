@@ -6,13 +6,25 @@
     @if(count($dayItems) > 0)
         @foreach($dayItems as $item)
             @if($item['type'] === 'flight')
-                <x-preview.flight-card :item="$item" :trip="$trip" />
+                @php
+                    $flightDocuments = $trip ? $trip->documents->where('type', 'flight') : collect();
+                @endphp
+                <x-preview.flight-card :item="$item" :trip="$trip" :documents="$flightDocuments" />
             @elseif($item['type'] === 'hotel')
-                <x-preview.hotel-card :item="$item" :trip="$trip" :loop="$loop" />
+                @php
+                    $hotelDocuments = $trip ? $trip->documents->where('type', 'hotel') : collect();
+                @endphp
+                <x-preview.hotel-card :item="$item" :trip="$trip" :loop="$loop" :documents="$hotelDocuments" />
             @elseif($item['type'] === 'activity')
-                <x-preview.activity-card :item="$item" />
+                @php
+                    $activityDocuments = $trip ? $trip->documents->where('type', 'activity') : collect();
+                @endphp
+                <x-preview.activity-card :item="$item" :documents="$activityDocuments" />
             @elseif($item['type'] === 'transport')
-                <x-preview.transport-card :item="$item" :trip="$trip" />
+                @php
+                    $transportDocuments = $trip ? $trip->documents->where('type', 'transport') : collect();
+                @endphp
+                <x-preview.transport-card :item="$item" :trip="$trip" :documents="$transportDocuments" />
             @else
                 <x-preview.activity-card :item="$item" :showBadges="false" />
             @endif

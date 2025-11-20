@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
 
     // Airline routes
     Route::resource('airlines', AirlineController::class);
+    Route::get('api/airlines', [AirlineController::class, 'apiIndex'])->name('api.airlines.index');
 
     // Additional trip routes
     Route::post('trips/{trip}/status', [TripController::class, 'updateStatus'])->name('trips.update-status');

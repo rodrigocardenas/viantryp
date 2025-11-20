@@ -1,4 +1,4 @@
-@props(['item', 'trip', 'loop'])
+@props(['item', 'trip', 'loop', 'documents' => null])
 
 <div class="hotel-card">
     @php
@@ -131,7 +131,7 @@
     </div>
 
     @php
-        $documents = $trip->documents->where('type', 'hotel');
+        $documents = $documents ?? collect();
     @endphp
     @if($documents->count() > 0)
         <div class="documents-section">

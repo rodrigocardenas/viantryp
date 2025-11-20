@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Airline extends Model
 {
-    protected $fillable = ['name', 'carrier_code', 'logo_path'];
+    protected $fillable = ['name', 'carrier_code', 'logo_path', 'country'];
 }

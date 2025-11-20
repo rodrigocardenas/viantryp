@@ -1,4 +1,4 @@
-@props(['item', 'trip'])
+@props(['item', 'trip', 'documents' => null])
 
 <div class="train-card">
     <div style="font-weight: 600; margin-bottom: 15px;">{{ $item['transport_type'] ?? 'Transporte no especificado' }}</div>
@@ -19,7 +19,7 @@
         </div>
     </div>
     @php
-        $documents = $trip->documents->where('type', 'transport');
+        $documents = $documents ?? collect();
     @endphp
     @if($documents->count() > 0)
         <div class="documents-section">

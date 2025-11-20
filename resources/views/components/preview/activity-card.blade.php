@@ -1,4 +1,4 @@
-@props(['item' => null, 'title' => null, 'subtitle' => null, 'image' => null, 'price' => null, 'reviews' => null, 'showBadges' => true])
+@props(['item' => null, 'title' => null, 'subtitle' => null, 'image' => null, 'price' => null, 'reviews' => null, 'showBadges' => true, 'documents' => null])
 
 <div class="activity-card">
     @php
@@ -122,7 +122,7 @@
     </div>
 
     @php
-        $documents = isset($trip) ? $trip->documents->where('type', 'activity') : collect();
+        $documents = $documents ?? collect();
     @endphp
     @if($documents->count() > 0)
         <div class="documents-section">

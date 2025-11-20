@@ -1,4 +1,4 @@
-@props(['item', 'trip'])
+@props(['item', 'trip', 'documents' => null])
 
 @php
     // Calcular duración del vuelo considerando zonas horarias
@@ -117,7 +117,7 @@
     </div>
 
     @php
-        $documents = $trip->documents->where('type', 'flight');
+        $documents = $documents ?? collect();
     @endphp
     @if($documents->count() > 0)
         <div class="documents-section">

@@ -32,7 +32,8 @@ class AirlineController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'carrier_code' => 'required|string|max:10|unique:airlines',
+            'carrier_code' => 'nullable|string|max:10|unique:airlines',
+            'country' => 'nullable|string|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -41,11 +42,20 @@ class AirlineController extends Controller
             $logoPath = $request->file('logo')->store('logos', 'public');
         }
 
-        Airline::create([
+        $airline = Airline::create([
             'name' => $request->name,
             'carrier_code' => $request->carrier_code,
+            'country' => $request->country,
             'logo_path' => $logoPath,
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'id' => $airline->id,
+                'name' => $airline->name,
+                'country' => $airline->country
+            ]);
+        }
 
         return redirect()->route('airlines.index')->with('success', 'Airline created successfully.');
     }
@@ -77,7 +87,8 @@ class AirlineController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'carrier_code' => 'required|string|max:10|unique:airlines,carrier_code,' . $id,
+            'carrier_code' => 'nullable|string|max:10|unique:airlines,carrier_code,' . $id,
+            'country' => 'nullable|string|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -93,10 +104,24 @@ class AirlineController extends Controller
         $airline->update([
             'name' => $request->name,
             'carrier_code' => $request->carrier_code,
+            'country' => $request->country,
             'logo_path' => $logoPath,
         ]);
 
         return redirect()->route('airlines.index')->with('success', 'Airline updated successfully.');
+    }
+
+    /**
+     * API endpoint for Select2 to fetch airlines.
+     */
+    public function apiIndex(Request $request)
+    {
+        $search = $request->get('q', '');
+        $airlines = Airline::where('name', 'like', '%' . $search . '%')
+            ->select('id', 'name as text', 'country')
+            ->get();
+
+        return response()->json($airlines);
     }
 
     /**

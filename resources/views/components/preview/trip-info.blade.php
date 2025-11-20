@@ -7,6 +7,11 @@
         <div class="trip-cover-banner">
             <img src="{{ $trip->cover_image_url }}" alt="Imagen de portada del viaje" class="cover-banner-image">
         </div>
+    @else
+        <div class="trip-cover-banner">
+            {{-- set default cover image --}}
+            <img src="{{ asset('images/default-cover.jpeg') }}" alt="Imagen de portada del viaje" class="cover-banner-image">
+        </div>
     @endif
     <div class="price-section">
         <span class="price-label">Precio Total</span>

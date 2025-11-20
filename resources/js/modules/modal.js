@@ -437,9 +437,32 @@ export class ModalManager {
                 $(select).select2('destroy');
             }
             $(select).select2({
-                data: selectorsData.airlines,
+                ajax: {
+                    url: '/api/airlines',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term // search term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
                 placeholder: 'Seleccionar aerolínea',
                 allowClear: true,
+                tags: true, // Allow manual input
+                createTag: function (params) {
+                    return {
+                        id: params.term,
+                        text: params.term,
+                        country: null // New airlines won't have country initially
+                    };
+                },
                 width: '100%'
             });
         });
@@ -495,12 +518,24 @@ export class ModalManager {
         }
     }
 
-    saveElement() {
+    async saveElement() {
         const formData = this.collectFormData();
 
         // Validate required fields
         if (!this.validateForm(formData)) {
             return;
+        }
+
+        // Handle new airline creation if needed
+        if (this.currentElementType === 'flight' && formData.airline && isNaN(formData.airline)) {
+            // This is a new airline entered manually
+            const airlineId = await this.createNewAirline(formData.airline);
+            if (airlineId) {
+                formData.airline = airlineId;
+            } else {
+                this.showNotification('Error', 'No se pudo crear la nueva aerolínea.', 'error');
+                return;
+            }
         }
 
         // If editing existing element
@@ -514,6 +549,36 @@ export class ModalManager {
 
         this.closeModal();
         this.showNotification('Elemento Guardado', `${this.getTypeLabel(this.currentElementType)} guardado correctamente.`);
+    }
+
+    async createNewAirline(airlineName) {
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const response = await fetch('/airlines', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: airlineName,
+                    carrier_code: null,
+                    country: null
+                })
+            });
+
+            const result = await response.json();
+            if (response.ok && result.id) {
+                return result.id;
+            } else {
+                console.error('Error creating airline:', result);
+                return null;
+            }
+        } catch (error) {
+            console.error('Error creating airline:', error);
+            return null;
+        }
     }
 
     validateForm(data) {
