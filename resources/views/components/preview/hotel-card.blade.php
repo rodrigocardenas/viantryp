@@ -16,9 +16,9 @@
         <span class="airport-route-text">Alojamiento</span>
     </div>
 
-    <div class="hotel-content">
+    <div class="activity-content">
         <!-- Left column: Photos -->
-        <div class="hotel-photos-column">
+        <div class="activity-photos-column">
             @if(count($hotelPhotos) > 0)
                 <!-- Hotel Photo Carousel -->
                 <div class="hotel-gallery" data-hotel-id="{{ $hotelId }}">
