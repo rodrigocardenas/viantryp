@@ -1,6 +1,6 @@
 @props(['item' => null, 'title' => null, 'subtitle' => null, 'image' => null, 'price' => null, 'reviews' => null, 'showBadges' => true, 'documents' => null])
 
-<div class="activity-card">
+<div class="activity-card" style="padding:16px">
     @php
         $detailedInfo = $item['detailed_info'] ?? null;
         $activityTitle = $detailedInfo['name'] ?? $item['activity_title'] ?? $item['title'] ?? $title ?? 'Actividad';
@@ -12,7 +12,11 @@
         $activityId = $item['place_id'] ?? 'activity-' . ($item['id'] ?? 'default');
     @endphp
 
+    <div class="flight-route-header">
+        <span class="airport-route-text">Actividad </span>
+    </div>
     <div class="activity-content">
+  
         <!-- Left column: Photos -->
         <div class="activity-photos-column">
             @if(count($activityPhotos) > 0)

@@ -1,5 +1,60 @@
 @props(['item', 'trip', 'documents' => null])
 
+@php
+    // Formatear fechas largas en español como en flight-card
+    $diasEspanol = [
+        'Monday' => 'Lunes',
+        'Tuesday' => 'Martes',
+        'Wednesday' => 'Miércoles',
+        'Thursday' => 'Jueves',
+        'Friday' => 'Viernes',
+        'Saturday' => 'Sábado',
+        'Sunday' => 'Domingo'
+    ];
+    $mesesEspanol = [
+        'January' => 'Enero',
+        'February' => 'Febrero',
+        'March' => 'Marzo',
+        'April' => 'Abril',
+        'May' => 'Mayo',
+        'June' => 'Junio',
+        'July' => 'Julio',
+        'August' => 'Agosto',
+        'September' => 'Septiembre',
+        'October' => 'Octubre',
+        'November' => 'Noviembre',
+        'December' => 'Diciembre'
+    ];
+
+    // Formatear fecha de recogida
+    $pickupDateLong = 'Fecha no disponible';
+    if ($item['pickup_datetime']) {
+        try {
+            $pickupDT = \Carbon\Carbon::parse($item['pickup_datetime']);
+            $diaIngles = $pickupDT->format('l');
+            $mesIngles = $pickupDT->format('F');
+            $diaNumero = $pickupDT->format('j');
+            $pickupDateLong = $diasEspanol[$diaIngles] . ', ' . $diaNumero . ' de ' . $mesesEspanol[$mesIngles];
+        } catch (Exception $e) {
+            $pickupDateLong = 'Fecha no disponible';
+        }
+    }
+
+    // Formatear fecha de llegada
+    $arrivalDateLong = 'Fecha no disponible';
+    if ($item['arrival_datetime']) {
+        try {
+            $arrivalDT = \Carbon\Carbon::parse($item['arrival_datetime']);
+            $diaIngles = $arrivalDT->format('l');
+            $mesIngles = $arrivalDT->format('F');
+            $diaNumero = $arrivalDT->format('j');
+            $arrivalDateLong = $diasEspanol[$diaIngles] . ', ' . $diaNumero . ' de ' . $mesesEspanol[$mesIngles];
+        } catch (Exception $e) {
+            $arrivalDateLong = 'Fecha no disponible';
+        }
+    }
+@endphp
+
 <div class="flight-card-unified">
     <!-- Header similar to flight-route-header -->
     <div class="flight-route-header">
@@ -13,7 +68,8 @@
             <div class="airport-info">
                 <div class="airport-time-date">
                     <span class="airport-time">{{ $item['pickup_datetime'] ? \Carbon\Carbon::parse($item['pickup_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
-                    <span class="airport-date">{{ $item['pickup_datetime'] ? \Carbon\Carbon::parse($item['pickup_datetime'])->format('d/m/Y') : '' }}</span>
+                    <span class="airport-date-separator"> - </span>
+                    <span class="airport-date">{{ $pickupDateLong }}</span>
                 </div>
                 <div class="airport-name">{{ $item['pickup_location'] ?? 'Ubicación no especificada' }}</div>
                 <div class="airport-location">Salida</div>
@@ -42,7 +98,8 @@
             <div class="airport-info arrival-info">
                 <div class="airport-time-date">
                     <span class="airport-time">{{ $item['arrival_datetime'] ? \Carbon\Carbon::parse($item['arrival_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
-                    <span class="airport-date">{{ $item['arrival_datetime'] ? \Carbon\Carbon::parse($item['arrival_datetime'])->format('d/m/Y') : '' }}</span>
+                    <span class="airport-date-separator"> - </span>
+                    <span class="airport-date">{{ $arrivalDateLong }}</span>
                 </div>
                 <div class="airport-name">{{ $item['destination'] ?? 'Ubicación no especificada' }}</div>
                 <div class="airport-location">Llegada</div>
