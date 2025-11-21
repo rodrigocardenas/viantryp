@@ -116,6 +116,11 @@
         border-radius: 8px;
         margin-bottom: 20px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .day-section:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     .day-title {
@@ -258,14 +263,14 @@
         width: 100%;
         height: 250px;
         object-fit: cover;
-        border-radius: 20px 20px 0 0;
+        border-radius: 20px 20px 20px 20px;
     }
 
     .hotel-fallback-image {
         width: 100%;
         height: 250px;
         object-fit: cover;
-        border-radius: 20px 20px 0 0;
+        border-radius: 20px 20px 20px 20px;
     }
 
     .activity-content {
@@ -748,7 +753,7 @@
 
     .train-card:hover {
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
-        transform: translateY(-4px) scale(1.02);
+        transform: translateY(-4px) scale(0.80);
     }
 
     .train-route {
@@ -1705,8 +1710,8 @@
     }
 
     .day-section:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        transform: translateY(-4px) scale(0.80);
     }
 
     .day-section::before {
@@ -1819,7 +1824,7 @@
 
     .timeline-item:hover {
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
-        transform: translateY(-4px) scale(1.02);
+        transform: translateY(-4px) scale(0.80);
     }
 
     .timeline-item:hover::before {
@@ -2149,7 +2154,7 @@
         width: 100%;
         height: 250px;
         object-fit: cover;
-        border-radius: 20px 20px 0 0;
+        border-radius: 20px 20px 20px 20px;
     }
 
     .hotel-content {
@@ -3132,19 +3137,20 @@
         font-size: 0.875rem;
         font-weight: 700;
         color: #374151;
-        margin-bottom: 8px;
+        margin-bottom: 0px;
     }
 
     .airport-time-date {
         display: flex;
         align-items: center;
-        margin-bottom: 8px;
+        margin-bottom: 0px;
     }
 
     .airport-time {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #374151;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #1f2a44;
+        margin-bottom: -8px;
     }
 
     .airport-date-separator {
@@ -3153,8 +3159,8 @@
     }
 
     .airport-date {
-        font-size: 0.75rem;
-        font-weight: 400;
+        font-size: 0.65rem;
+        font-weight: 300;
         color: #6b7280;
     }
 
@@ -3193,11 +3199,10 @@
     }
 
     .airport-code {
-        font-size: 1.20rem;
+        font-size: 1.4rem;
         font-weight: 700;
-        color: #374151;
+        color: #1f2a44;
         margin-bottom: 4px;
-        letter-spacing: 1px;
     }
 
     .airport-name {
@@ -3208,9 +3213,9 @@
     }
 
     .airport-location {
-        font-size: 0.75rem;
+        font-size: 0.95rem;
         color: #6b7280;
-        font-weight: 300;
+        font-weight: 500;
     }
 
     .flight-connector {
@@ -3582,4 +3587,51 @@
 
     .hotel-meta .nights-count {
         font-size: 14px;
+    }
+
+    /* Baggage section styles - matching flight-details-section */
+    .baggage-section {
+        border-top: 1px solid #f3f4f6;
+        padding-top: 12px;
+    }
+
+    .baggage-section h5 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 8px;
+        margin-top: 0;
+    }
+
+    .baggage-types {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .baggage-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .baggage-icon {
+        color: #28a745;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .baggage-types {
+            gap: 12px;
+            justify-content: flex-start;
+        }
+
+        .baggage-item {
+            font-size: 0.8rem;
+        }
     }

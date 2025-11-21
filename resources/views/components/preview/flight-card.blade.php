@@ -120,17 +120,17 @@
         <!-- Bloque origen -->
         <div class="airport-section">
             <div class="airport-info">
-                <div class="airport-date mobile-only">{{ $departureDateAbrev }}</div>
                 <div class="airport-time mobile-only">{{ date('H:i', strtotime($item['departure_time'] ?? '00:00')) }}</div>
                 <div class="airport-location mobile-only">{{ $item['departure_city'] ?? '' }}, {{ getCountryFromCity($item['departure_city'] ?? '') }}</div>
+                <div class="airport-date mobile-only">{{ $departureDateAbrev }}</div>
                 <div class="airport-time-date desktop-only">
                     <span class="airport-time">{{ date('H:i', strtotime($item['departure_time'] ?? '00:00')) }}</span>
-                    <span class="airport-date-separator"> - </span>
-                    <span class="airport-date">{{ $departureDateLong }}</span>
                 </div>
                 <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? $matches[1] : $item['departure_airport'] ?? 'DEP' }}</div>
                 <div class="airport-name">{{ ucfirst(strtolower($item['departure_airport_name'] ?? '')) }}</div>
                 <div class="airport-location desktop-only">{{ $item['departure_city'] ?? '' }}, {{ getCountryFromCity($item['departure_city'] ?? '') }}</div>
+                <span class="airport-date">{{ $departureDateLong }}</span>
+
             </div>
         </div>
 
@@ -148,12 +148,12 @@
                 <div class="airport-location mobile-only">{{ $item['arrival_city'] ?? '' }}, {{ getCountryFromCity($item['arrival_city'] ?? '') }}</div>
                 <div class="airport-time-date desktop-only">
                     <span class="airport-time">{{ date('H:i', strtotime($item['arrival_time'] ?? '00:00')) }}</span>
-                    <span class="airport-date-separator"> - </span>
-                    <span class="airport-date">{{ $arrivalDateLong }}</span>
                 </div>
                 <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? $matches[1] : $item['arrival_airport'] ?? 'ARR' }}</div>
                 <div class="airport-name">{{ ucfirst(strtolower($item['arrival_airport_name'] ?? '')) }}</div>
                 <div class="airport-location desktop-only">{{ $item['arrival_city'] ?? '' }}, {{ getCountryFromCity($item['arrival_city'] ?? '') }}</div>
+                <span class="airport-date">{{ $arrivalDateLong }}</span>
+
             </div>
         </div>
 
@@ -178,6 +178,33 @@
             @endif
         </div>
     </div>
+
+    <!-- Información de equipaje -->
+    @if(isset($item['carry_on_included']) || isset($item['checked_baggage_included']) || isset($item['personal_item_included']))
+    <div class="baggage-section">
+        <h5>Equipaje incluido:</h5>
+        <div class="baggage-types">
+            @if(isset($item['personal_item_included']) && $item['personal_item_included'])
+                <div class="baggage-item">
+                    <i class="fas fa-check-circle baggage-icon"></i>
+                    <span>Artículo personal</span>
+                </div>
+            @endif
+            @if(isset($item['carry_on_included']) && $item['carry_on_included'])
+                <div class="baggage-item">
+                    <i class="fas fa-check-circle baggage-icon"></i>
+                    <span>Equipaje de mano</span>
+                </div>
+            @endif
+            @if(isset($item['checked_baggage_included']) && $item['checked_baggage_included'])
+                <div class="baggage-item">
+                    <i class="fas fa-check-circle baggage-icon"></i>
+                    <span>Equipaje facturado</span>
+                </div>
+            @endif
+        </div>
+    </div>
+    @endif
 
     @php
         $documents = $documents ?? collect();
