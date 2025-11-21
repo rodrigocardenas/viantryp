@@ -68,11 +68,11 @@
             <div class="airport-info">
                 <div class="airport-time-date">
                     <span class="airport-time">{{ $item['pickup_datetime'] ? \Carbon\Carbon::parse($item['pickup_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
-                    <span class="airport-date-separator"> - </span>
-                    <span class="airport-date">{{ $pickupDateLong }}</span>
                 </div>
                 <div class="airport-name">{{ $item['pickup_location'] ?? 'Ubicación no especificada' }}</div>
                 <div class="airport-location">Salida</div>
+                <span class="airport-date">{{ $pickupDateLong }}</span>
+
             </div>
         </div>
 
@@ -98,11 +98,11 @@
             <div class="airport-info arrival-info">
                 <div class="airport-time-date">
                     <span class="airport-time">{{ $item['arrival_datetime'] ? \Carbon\Carbon::parse($item['arrival_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
-                    <span class="airport-date-separator"> - </span>
-                    <span class="airport-date">{{ $arrivalDateLong }}</span>
                 </div>
                 <div class="airport-name">{{ $item['destination'] ?? 'Ubicación no especificada' }}</div>
                 <div class="airport-location">Llegada</div>
+                <span class="airport-date">{{ $arrivalDateLong }}</span>
+
             </div>
         </div>
     </div>

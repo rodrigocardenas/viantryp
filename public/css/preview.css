@@ -316,7 +316,7 @@
         justify-content: space-between;
         align-items: flex-start;
         margin-bottom: 0rem;
-        gap: 1rem;
+
     }
 
     .activity-title {
@@ -325,7 +325,7 @@
         color: var(--primary-dark);
         margin: 0 0 0.05rem 0;
         flex: 1;
-        margin-bottom: 15px;
+        margin-bottom: 0px;
     }
 
     .activity-rating-section {
@@ -360,10 +360,10 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        font-size: 0.9rem;
+        font-size: 0.75rem;
         font-weight: 400;
         color: #6b7280;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1.8rem;
     }
 
     .activity-times {
@@ -372,7 +372,7 @@
         gap: 0.5rem;
         font-size: 0.9rem;
         font-weight: 400;
-        color: #6b7280;
+        color: #1f2a44;
         margin-bottom: 0.5rem;
     }
 
@@ -429,6 +429,7 @@
         color: var(--primary-dark);
         margin: 0 0 0.05rem 0;
         flex: 1;
+        margin-bottom: 15px;
     }
 
     .hotel-rating-section {
@@ -471,7 +472,6 @@
 
     .hotel-times {
         display: flex;
-        align-items: center;
         gap: 0.5rem;
         font-size: 0.9rem;
         font-weight: 400;
@@ -2265,24 +2265,48 @@
         font-size: 0.75rem;
         font-weight: 400;
         color: #6b7280;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1.8rem;
     }
 
     .hotel-times {
         display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        flex-direction: column;
+        gap: 0.25rem;
         font-size: 0.9rem;
         font-weight: 400;
-        color: #6b7280;
+        color: #1f2a44;
         margin-bottom: 0.5rem;
     }
 
-    .hotel-description {
+    .hotel-times i {
+        align-self: flex-start;
+        margin-bottom: 0.25rem;
+    }
+
+    .check-in-time,
+    .check-out-time {
+        /* Left aligned with other info */
+    }
+
+    .hotel-room-info,
+    .hotel-nights-info,
+    .hotel-meal-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         font-size: 0.9rem;
         color: #374151;
-        line-height: 1.5;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .hotel-room-info i,
+    .hotel-meal-info i {
+        color: #1f2a44;
+    }
+
+    .hotel-nights-info {
+        font-weight: 400;
+        color: #6b7280;
     }
 
     .hotel-notes {
@@ -3150,7 +3174,7 @@
         font-size: 1.2rem;
         font-weight: 600;
         color: #1f2a44;
-        margin-bottom: -8px;
+        margin-bottom: 0px;
     }
 
     .airport-date-separator {
@@ -3206,8 +3230,8 @@
     }
 
     .airport-name {
-        font-size: 1.20rem;
-        color: #374151;
+        font-size: 1.40rem;
+        color: #1f2a44;
         font-weight: 700;
         margin-bottom: 4px;
     }

@@ -51,13 +51,13 @@
         </div>
 
         <!-- Right column: Hotel information -->
-        <div class="hotel-info-column">
+        <div class="activity-info-column">
             <!-- Hotel name and rating -->
-            <div class="hotel-header">
-                <h3 class="hotel-title">{{ $hotelName }}</h3>
+            <div class="activity-header">
+                <h3 class="activity-title">{{ $hotelName }}</h3>
                 @if($hotelRating)
-                    <div class="hotel-rating-section">
-                        <div class="hotel-rating">
+                    <div class="activity-rating-section">
+                        <div class="activity-rating">
                             @for($i = 0; $i < 5; $i++)
                                 @if($i < floor($hotelRating))
                                     <i class="fas fa-star star-filled"></i>
@@ -82,28 +82,102 @@
 
             <!-- Check-in and check-out dates -->
             @if(isset($item['check_in']) || isset($item['check_out']))
+            @php
+                // Formatear fechas en español abreviado
+                $diasAbrev = [
+                    'Mon' => 'lun.',
+                    'Tue' => 'mar.',
+                    'Wed' => 'mié.',
+                    'Thu' => 'jue.',
+                    'Fri' => 'vie.',
+                    'Sat' => 'sáb.',
+                    'Sun' => 'dom.'
+                ];
+                $mesesAbrev = [
+                    'Jan' => 'ene.',
+                    'Feb' => 'feb.',
+                    'Mar' => 'mar.',
+                    'Apr' => 'abr.',
+                    'May' => 'may.',
+                    'Jun' => 'jun.',
+                    'Jul' => 'jul.',
+                    'Aug' => 'ago.',
+                    'Sep' => 'sept.',
+                    'Oct' => 'oct.',
+                    'Nov' => 'nov.',
+                    'Dec' => 'dic.'
+                ];
+
+                $checkInFormatted = '';
+                $checkOutFormatted = '';
+
+                if (isset($item['check_in']) && !empty($item['check_in'])) {
+                    try {
+                        $checkInDateTime = new DateTime($item['check_in']);
+                        $dia = $checkInDateTime->format('d');
+                        $mes = $checkInDateTime->format('m');
+                        $ano = $checkInDateTime->format('y');
+                        $hora = $checkInDateTime->format('H:i');
+                        $checkInFormatted = $dia . '/' . $mes . '/' . $ano . ' - ' . $hora;
+                    } catch (Exception $e) {
+                        $checkInFormatted = $item['check_in'];
+                    }
+                }
+
+                if (isset($item['check_out']) && !empty($item['check_out'])) {
+                    try {
+                        $checkOutDateTime = new DateTime($item['check_out']);
+                        $dia = $checkOutDateTime->format('d');
+                        $mes = $checkOutDateTime->format('m');
+                        $ano = $checkOutDateTime->format('y');
+                        $hora = $checkOutDateTime->format('H:i');
+                        $checkOutFormatted = $dia . '/' . $mes . '/' . $ano . ' - ' . $hora;
+                    } catch (Exception $e) {
+                        $checkOutFormatted = $item['check_out'];
+                    }
+                }
+            @endphp
             <div class="hotel-times">
-                <i class="fas fa-calendar-alt"></i>
-                @if(isset($item['check_in']) && isset($item['check_out']))
-                    Check-in: {{ $item['check_in'] }} - Check-out: {{ $item['check_out'] }}
-                @elseif(isset($item['check_in']))
-                    Check-in: {{ $item['check_in'] }}
-                @elseif(isset($item['check_out']))
-                    Check-out: {{ $item['check_out'] }}
+                @if($checkInFormatted)
+                    <div class="check-in-time"><strong>Check-in:</strong> {{ $checkInFormatted }}</div>
+                @endif
+                @if($checkOutFormatted)
+                    <div class="check-out-time"><strong>Check-out:</strong> {{ $checkOutFormatted }}</div>
                 @endif
             </div>
             @endif
 
-            <!-- Room type and main details -->
-            @if(isset($item['room_type']) && $item['room_type'] || isset($item['nights']) && $item['nights'])
-            <div class="hotel-description">
-                @if(isset($item['room_type']) && $item['room_type'])
-                    Tipo de habitación: {{ $item['room_type'] }}
-                @endif
-                @if(isset($item['nights']) && $item['nights'])
-                    @if(isset($item['room_type']))<br>@endif
-                    {{ $item['nights'] }} noches
-                @endif
+               <!-- Nights -->
+               @if(isset($item['nights']) && $item['nights'])
+            <div class="hotel-nights-info">
+                <span>{{ $item['nights'] }} noches</span>
+            </div>
+            @endif
+
+            <!-- Room type -->
+            @if(isset($item['room_type']) && $item['room_type'])
+            <div class="hotel-room-info">
+                <i class="fas fa-bed"></i>
+                <span>{{ $item['room_type'] }}</span>
+            </div>
+            @endif
+
+         
+
+            <!-- Meal plan / Alimentation -->
+            @if(isset($item['meal_plan']) && $item['meal_plan'])
+            @php
+                // Translate meal plan values to Spanish
+                $mealPlanTranslations = [
+                    'all-inclusive' => 'Todo incluido',
+                    'breakfast-included' => 'Desayuno incluido',
+                    'room-only' => 'Solo alojamiento'
+                ];
+                $translatedMealPlan = $mealPlanTranslations[$item['meal_plan']] ?? $item['meal_plan'];
+            @endphp
+            <div class="hotel-meal-info">
+                <i class="fas fa-utensils"></i>
+                <span>{{ $translatedMealPlan }}</span>
             </div>
             @endif
 
