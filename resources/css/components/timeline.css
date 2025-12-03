@@ -126,6 +126,110 @@
     color: #721c24;
 }
 
+/* Global Notes Editor */
+.global-notes-section {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 24px rgba(18, 24, 38, 0.06);
+    display: block;
+}
+
+.global-notes-section h3 {
+    margin: 0 0 0.75rem 0;
+}
+
+.notes-editor-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.quill-container {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    max-height: 50px;
+    background: white;
+    z-index: 1000;
+    flex: 1 1 auto; /* Allow the editor to take remaining space */
+    width: 100%;
+    box-sizing: border-box;
+}
+.ql-container.ql-snow {
+    min-height: 150px !important; /* approx 7-8 lines */
+    max-height: 200px !important;
+    overflow-y: auto;
+}
+.quill-container .ql-toolbar {
+    z-index: 2000;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.notes-actions { display:flex; align-items:flex-start; width: 140px; justify-content: flex-end; }
+.notes-actions .btn { min-width: 110px; }
+.global-notes-section .notes-editor-row .quill-container:focus { box-shadow: 0 6px 16px rgba(14, 165, 233, 0.12); }
+.global-notes-section .note-card .item-title { max-width: 100%; }
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+    .notes-editor-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .notes-actions { width: 100%; justify-content: flex-end; }
+    .notes-actions .btn { width: 100%; }
+}
+.notes-container { margin-top: 1rem; display:flex; flex-direction:column; gap: 0.75rem; }
+
+/* Global notes card styles (ensures editor in a card and smaller height) */
+.global-notes-card {
+    margin-bottom: 1.25rem;
+}
+
+.global-notes-card .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.global-notes-card .card-content {
+    padding: 0.75rem 1rem 1rem 1rem;
+}
+
+.global-notes-card .notes-editor-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.global-notes-card .quill-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-height: 110px; /* override default larger editor height for the global notes */
+}
+
+.global-notes-card .quill-container .ql-container,
+.global-notes-card .quill-container .ql-editor {
+    min-height: 110px; /* approx 5 lines */
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.global-notes-card .notes-actions {
+    display: flex;
+    align-items: flex-start;
+}
+
+.global-notes-card .notes-actions .btn {
+    margin-top: 0.4rem;
+}
+
 .action-btn.btn-danger {
     color: #dc3545;
 }

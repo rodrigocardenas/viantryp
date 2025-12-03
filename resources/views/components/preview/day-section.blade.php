@@ -26,7 +26,7 @@
                 @endphp
                 <x-preview.transport-card :item="$item" :trip="$trip" :documents="$transportDocuments" />
             @else
-                <x-preview.activity-card :item="$item" :showBadges="false" />
+                {{-- <x-preview.activity-card :item="$item" :showBadges="false" /> --}}
             @endif
         @endforeach
     @else

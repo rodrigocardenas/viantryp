@@ -54,6 +54,19 @@ export class TimelineManager {
         // If data is an object, create the element directly
         console.log('Creating element div for data:', data);
         const elementDiv = this.createElementDiv(data);
+
+        // If this is a global note (day null) append to global notes list
+        if (data.type === 'note' && (typeof data.day === 'undefined' || data.day === null)) {
+            const globalNotesList = document.getElementById('global-notes-list');
+            if (globalNotesList) {
+                globalNotesList.appendChild(elementDiv);
+                const event = new CustomEvent('elementAdded', {
+                    detail: { elementData: data }
+                });
+                document.dispatchEvent(event);
+                return;
+            }
+        }
         console.log('Element div created:', elementDiv);
 
         const dayCard = document.querySelector(`[data-day="${data.day}"]`);
@@ -244,6 +257,8 @@ export class TimelineManager {
                 return 'Resumen automático del viaje';
             case 'total':
                 return data.price_breakdown || 'Precio total del viaje';
+            case 'note':
+                return data.note_content || '';
             default:
                 return '';
         }

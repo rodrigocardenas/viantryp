@@ -13,7 +13,7 @@
                 <x-sidebar.items.hotel-item />
                 <x-sidebar.items.activity-item />
                 <x-sidebar.items.transport-item />
-                <x-sidebar.items.note-item />
+                {{-- Note item removed; use global notes editor instead --}}
                 <x-sidebar.items.summary-item />
                 <x-sidebar.items.total-item />
             </div>

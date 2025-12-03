@@ -6,6 +6,33 @@
 
 @props(['trip' => null])
 
+<!-- Global Notes Section -->
+<div class="info-card global-notes-card" id="global-notes-section">
+    <div class="card-header">
+        <i class="fas fa-sticky-note"></i>
+        <h3>Notas</h3>
+    </div>
+    <div class="card-content">
+        <div class="global-notes-section-inner">
+            <div class="notes-editor-row">
+                <div id="global-note-editor" class="quill-container" style="height: 100px !important;"></div>
+                <br>
+                <div class="notes-actions">
+                    <button class="btn btn-primary" id="btn-save-global-note" type="button">Agregar Nota</button>
+                </div>
+            </div>
+            <br>
+            <div class="notes-container" id="global-notes-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+        @if(isset($trip) && $trip->notes && count($trip->notes) > 0)
+            @foreach($trip->notes as $note)
+                <x-trip-item :item="$note" :day="null" />
+            @endforeach
+        @endif
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Days Container -->
 <div class="days-container" id="days-container">
     @if(isset($trip) && $trip->days && count($trip->days) > 0)
@@ -142,6 +169,16 @@
     }
 
     function addElementToDay(data) {
+        // Special handling for global notes (no day)
+        if (data.type === 'note' && (typeof data.day === 'undefined' || data.day === null)) {
+            const globalNotesList = document.getElementById('global-notes-list');
+            if (!globalNotesList) return;
+            const elementDiv = createElementDiv(data);
+            globalNotesList.appendChild(elementDiv);
+            updateAllSummaries();
+            return;
+        }
+
         // Special handling for total element positioning
         if (data.type === 'total') {
             const daysContainer = document.getElementById('days-container');
@@ -162,6 +199,8 @@
                     daysContainer.appendChild(elementDiv);
                 }
             }
+
+
 
             // Update summaries after adding element
             updateAllSummaries();
@@ -220,6 +259,12 @@
             elementDiv.setAttribute('data-destination', data.destination || '');
             elementDiv.setAttribute('data-pickup-datetime', data.pickup_datetime || '');
             elementDiv.setAttribute('data-arrival-datetime', data.arrival_datetime || '');
+        }
+
+        // Add note data as attributes if this is a note element
+        if (data.type === 'note') {
+            // Store note_content in the element's dataset (not as HTML attribute to preserve HTML)
+            elementDiv.dataset.noteContent = data.note_content || '';
         }
 
         elementDiv.innerHTML = `
@@ -283,6 +328,25 @@
         }
     }
 
+    function getTypeLabel(type) {
+        const labels = {
+            'flight': 'Vuelo',
+            'hotel': 'Hotel',
+            'activity': 'Actividad',
+            'transport': 'Transporte',
+            'note': 'Nota',
+            'summary': 'Resumen',
+            'total': 'Total'
+        };
+        return labels[type] || type;
+    }
+    // Expose helper functions to global scope for inline scripts and modules
+    if (typeof window !== 'undefined') {
+        window.getTypeLabel = getTypeLabel;
+        window.getIcon = getIcon;
+        window.getIconClass = getIconClass;
+    }
+
     function getElementSubtitle(data) {
         switch (data.type) {
             case 'flight':
@@ -324,6 +388,14 @@
                 return 'Resumen automático del viaje';
             case 'total':
                 return data.price_breakdown || 'Precio total del viaje';
+            case 'note':
+                // For display, strip HTML tags to show plain text in subtitle
+                const noteContent = data.note_content || '';
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = noteContent;
+                const plainText = tempDiv.textContent || tempDiv.innerText || '';
+                // Truncate if too long
+                return plainText.length > 100 ? plainText.substring(0, 100) + '...' : plainText;
             default:
                 return '';
         }
@@ -546,8 +618,90 @@
             });
         });
 
-        return items;
+    // Add global notes collected from the global notes container
+    collectGlobalNotes(items);
+    return items;
     }
+
+    // Also collect global notes that are outside of days
+    function collectGlobalNotes(itemsArray) {
+        const notesList = document.querySelectorAll('#global-notes-list .timeline-item');
+        notesList.forEach(item => {
+            const itemData = extractItemData(item, null); // day null for global
+            if (itemData) itemsArray.push(itemData);
+        });
+    }
+
+    // Global Quill editor instance for notes
+    let globalNotesQuill = null;
+
+    function initializeGlobalNotesEditor() {
+        const editorEl = document.getElementById('global-note-editor');
+        if (!editorEl) return;
+
+        // Wait for Quill to be available in window
+        if (!window.Quill) {
+            setTimeout(initializeGlobalNotesEditor, 100);
+            return;
+        }
+
+        try {
+            globalNotesQuill = new window.Quill('#global-note-editor', {
+                theme: 'snow',
+                placeholder: 'Escribe una nota global... ',
+                modules: { toolbar: [['bold','italic','underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link'], ['clean']] }
+            });
+        } catch (err) {
+            console.error('Error initializing global Quill editor:', err);
+            return;
+        }
+
+        // Attach click handler to save button
+        const saveBtn = document.getElementById('btn-save-global-note');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', function() {
+                saveGlobalNote();
+            });
+        }
+    }
+
+    // Save function exposed globally
+    function saveGlobalNote() {
+        if (!globalNotesQuill) {
+            alert('El editor no está listo aún.');
+            return;
+        }
+
+        const content = globalNotesQuill.root.innerHTML.trim();
+        if (!content.replace(/<[^>]*>/g, '').trim()) {
+            alert('Por favor ingresa contenido para la nota.');
+            return;
+        }
+
+        const noteData = { type: 'note', note_title: 'Nota', note_content: content, day: null };
+        if (typeof timelineManager !== 'undefined' && typeof timelineManager.addElementToDay === 'function') {
+            timelineManager.addElementToDay(noteData);
+        } else if (typeof addElementToDay === 'function') {
+            addElementToDay(noteData);
+        } else {
+            console.error('No method found to add note to timeline');
+            return;
+        }
+
+        // Clear editor
+        globalNotesQuill.setContents([]);
+        // Optionally show notification
+        if (typeof showNotification === 'function') showNotification('Nota agregada', 'La nota global fue agregada.');
+    }
+    // Expose globally
+    if (typeof window !== 'undefined') {
+        window.saveGlobalNote = saveGlobalNote;
+    }
+
+    // Initialize Quill after DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(initializeGlobalNotesEditor, 400);
+    });
 
     function extractItemData(itemElement, dayNumber) {
         const itemType = itemElement.querySelector('.item-type')?.textContent?.toLowerCase();

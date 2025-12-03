@@ -18,3 +18,5 @@
         <span class="price-amount">${{ number_format($trip->price ?? 0, 2) }}</span>
     </div>
 </header>
+
+<x-preview.global-notes :trip="$trip" />

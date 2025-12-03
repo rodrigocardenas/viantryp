@@ -295,6 +295,19 @@ class ExportManager {
             });
         });
 
+        // Also collect items that are in the global notes list (outside of days)
+        try {
+            const globalNotes = document.querySelectorAll('#global-notes-list .timeline-item');
+            globalNotes.forEach(item => {
+                const itemData = this.extractItemData(item, null);
+                if (itemData) {
+                    items.push(itemData);
+                }
+            });
+        } catch (err) {
+            console.warn('No global notes found or error collecting them', err);
+        }
+
         return items;
     }
 
@@ -413,7 +426,7 @@ class ExportManager {
                     ...baseData,
                     type: 'note',
                     note_title: itemElement.querySelector('.item-title')?.textContent || '',
-                    note_content: itemElement.querySelector('.item-subtitle')?.textContent || ''
+                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.textContent || ''
                 };
 
             default:
@@ -421,7 +434,7 @@ class ExportManager {
                     ...baseData,
                     type: 'note',
                     note_title: itemElement.querySelector('.item-title')?.textContent || 'Elemento',
-                    note_content: itemElement.querySelector('.item-subtitle')?.textContent || ''
+                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.textContent || ''
                 };
         }
     }

@@ -1,12 +1,16 @@
-<div class="timeline-item" data-type="{{ $item->type }}" @foreach($item->data as $key => $value) data-{{ str_replace('_', '-', $key) }}="{{ is_array($value) ? json_encode($value) : $value }}" @endforeach>
+@php
+    $itemId = 'item-' . uniqid();
+@endphp
+
+<div class="timeline-item" id="{{ $itemId }}" data-type="{{ $item->type }}" @foreach($item->data as $key => $value) @if($key !== 'note_content') data-{{ str_replace('_', '-', $key) }}="{{ is_array($value) ? json_encode($value) : $value }}" @endif @endforeach>
     <div class="item-header">
         <div class="item-icon {{ $item->getIconClass() }}">
             <i class="{{ $item->getIcon() }}"></i>
         </div>
         <div class="item-info">
             <div class="item-type">{{ $item->getTypeLabel() }}</div>
-            <div class="item-title">{{ $item->getTitle() }}</div>
-            <div class="item-subtitle">{{ $item->getSubtitle() }}</div>
+            {{-- <div class="item-title">{{ $item->getTitle() }}</div> --}}
+            <div class="item-subtitle">{!! $item->getSubtitle() !!}</div>
         </div>
         <div class="item-actions">
             <button class="action-btn" data-action="edit-element" title="Editar">
@@ -18,6 +22,18 @@
         </div>
     </div>
 </div>
+
+@if(isset($item->data['note_content']))
+<script>
+    // Set note_content via JavaScript to preserve HTML
+    (function() {
+        const element = document.getElementById('{{ $itemId }}');
+        if (element) {
+            element.dataset.noteContent = {!! json_encode($item->data['note_content']) !!};
+        }
+    })();
+</script>
+@endif
 
 <style>
     .timeline-item {

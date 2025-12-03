@@ -109,11 +109,16 @@ class Trip extends Model
         if (!$this->items_data) {
             return collect();
         }
+        $items = $this->items_data;
 
         $itemsByDay = [];
 
         foreach ($this->items_data as $item) {
-            $day = $item['day'] ?? 1;
+            // Skip items with day explicitly set to null (global notes)
+            if (!array_key_exists('day', $item) || $item['day'] === null) {
+                continue;
+            }
+            $day = $item['day'];
             if (!isset($itemsByDay[$day])) {
                 $itemsByDay[$day] = [];
             }
@@ -147,6 +152,24 @@ class Trip extends Model
         }
 
         return collect($this->items_data)->map(function ($item) {
+            return new TripItem($item);
+        });
+    }
+
+    /**
+     * Get global notes (notes outside of any day)
+     */
+    public function getNotesAttribute()
+    {
+        if (!$this->items_data) {
+            return collect();
+        }
+
+        $notes = array_filter($this->items_data, function ($item) {
+            return isset($item['type']) && $item['type'] === 'note' && (!array_key_exists('day', $item) || $item['day'] === null);
+        });
+
+        return collect($notes)->map(function ($item) {
             return new TripItem($item);
         });
     }
@@ -401,6 +424,12 @@ class TripItem
                 $pickup = $this->data['pickup_location'] ?? '';
                 $destination = $this->data['destination'] ?? '';
                 return trim("{$pickup} → {$destination}");
+            case 'note':
+                // Return plain text preview (strip HTML tags)
+                $noteContent = $this->data['note_content'] ?? '';
+                $plainText = strip_tags($noteContent);
+                // Truncate if too long
+                return strlen($plainText) > 100 ? substr($plainText, 0, 100) . '...' : $plainText;
             default:
                 return '';
         }

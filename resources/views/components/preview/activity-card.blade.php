@@ -16,7 +16,7 @@
         <span class="airport-route-text">Actividad </span>
     </div>
     <div class="activity-content">
-  
+
         <!-- Left column: Photos -->
         <div class="activity-photos-column">
             @if(count($activityPhotos) > 0)
@@ -82,8 +82,8 @@
 
             <!-- Activity times -->
             @php
-                $startTime = $item['start_datetime'] ?? ($item['start_date'] && $item['start_time'] ? $item['start_date'] . ' ' . $item['start_time'] : '');
-                $endTime = $item['end_datetime'] ?? ($item['end_date'] && $item['end_time'] ? $item['end_date'] . ' ' . $item['end_time'] : '');
+                $startTime = $item['start_datetime'] ?? (isset($item['start_date']) && isset($item['start_time']) ? $item['start_date'] . ' ' . $item['start_time'] : '');
+                $endTime = $item['end_datetime'] ?? (isset($item['end_date']) && isset($item['end_time']) ? $item['end_date'] . ' ' . $item['end_time'] : '');
             @endphp
             @if($startTime || $endTime)
                 <div class="activity-times">
