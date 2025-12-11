@@ -125,7 +125,8 @@
                 <div class="airport-time-date desktop-only">
                     <span class="airport-time">{{ date('H:i', strtotime($item['departure_time'] ?? '00:00')) }}</span>
                 </div>
-                <div class="airport-code">
+                <div class="airport-code desktop-only">{{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? $matches[1] : $item['departure_airport'] ?? 'DEP' }}</div>
+                <div class="airport-code mobile-only">
                     <i class="fa-solid fa-plane-departure"style="margin-right: 10px "></i>
                     {{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? $matches[1] : $item['departure_airport'] ?? 'DEP' }}
                 </div>
