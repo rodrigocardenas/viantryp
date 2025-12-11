@@ -6,10 +6,10 @@
             <p class="public-subtitle">Vista Previa del Itinerario</p>
         </div>
         <div class="public-actions">
-            <button onclick="downloadPDF()" class="public-btn-print">
+            {{-- <button onclick="downloadPDF()" class="public-btn-print">
                 <i class="fas fa-file-pdf"></i>
                 Descargar PDF
-            </button>
+            </button> --}}
         </div>
     </div>
 </div>

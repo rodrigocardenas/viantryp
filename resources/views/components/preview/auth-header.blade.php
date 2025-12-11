@@ -18,10 +18,10 @@
                     <i class="fas fa-share-alt"></i>
                     Compartir
                 </button>
-                <button type="button" class="btn btn-pdf" onclick="downloadPDF()">
+                {{-- <button type="button" class="btn btn-pdf" onclick="downloadPDF()">
                     <i class="fas fa-file-pdf"></i>
                     Descarga PDF
-                </button>
+                </button> --}}
             </div>
         </div>
     </div>
