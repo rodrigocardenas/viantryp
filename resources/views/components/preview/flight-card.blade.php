@@ -120,40 +120,49 @@
         <!-- Bloque origen -->
         <div class="airport-section">
             <div class="airport-info">
-                <div class="airport-time mobile-only">{{ date('H:i', strtotime($item['departure_time'] ?? '00:00')) }}</div>
-                <div class="airport-location mobile-only">{{ $item['departure_city'] ?? '' }}, {{ getCountryFromCity($item['departure_city'] ?? '') }}</div>
                 <div class="airport-date mobile-only">{{ $departureDateAbrev }}</div>
+                <div class="airport-time mobile-only">{{ date('H:i', strtotime($item['departure_time'] ?? '00:00')) }}</div>
                 <div class="airport-time-date desktop-only">
                     <span class="airport-time">{{ date('H:i', strtotime($item['departure_time'] ?? '00:00')) }}</span>
                 </div>
-                <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? $matches[1] : $item['departure_airport'] ?? 'DEP' }}</div>
+                <div class="airport-code">
+                    <i class="fa-solid fa-plane-departure"style="margin-right: 10px "></i>
+                    {{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? $matches[1] : $item['departure_airport'] ?? 'DEP' }}
+                </div>
                 <div class="airport-name">{{ ucfirst(strtolower($item['departure_airport_name'] ?? '')) }}</div>
+                <div class="airport-location mobile-only">{{ $item['departure_city'] ?? '' }}, {{ getCountryFromCity($item['departure_city'] ?? '') }}</div>
                 <div class="airport-location desktop-only">{{ $item['departure_city'] ?? '' }}, {{ getCountryFromCity($item['departure_city'] ?? '') }}</div>
-                <span class="airport-date">{{ $departureDateLong }}</span>
+                <span class="airport-date desktop-only">{{ $departureDateLong }}</span>
 
             </div>
         </div>
 
         <!-- Conector de vuelo -->
         <div class="flight-connector">
-            <div class="plane-container">
+            <div class="plane-container desktop-only">
                 <i class="fas fa-plane flight-plane" style="color: #000000;"></i>
 
             </div>
         </div>
+        <h4 class="mobile-only "><i class="fa fa-arrow-down"></i></h4>
 
         <!-- Bloque destino -->
         <div class="airport-section">
-            <div class="airport-info arrival-info">
-                <div class="airport-location mobile-only">{{ $item['arrival_city'] ?? '' }}, {{ getCountryFromCity($item['arrival_city'] ?? '') }}</div>
+        <div class="airport-info arrival-info">
+                <div class="airport-date mobile-only">{{ $arrivalDateAbrev }}</div>
+                <div class="airport-time mobile-only">{{ date('H:i', strtotime($item['arrival_time'] ?? '00:00')) }}</div>
                 <div class="airport-time-date desktop-only">
                     <span class="airport-time">{{ date('H:i', strtotime($item['arrival_time'] ?? '00:00')) }}</span>
                 </div>
-                <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? $matches[1] : $item['arrival_airport'] ?? 'ARR' }}</div>
+                <div class="airport-code desktop-only">{{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? $matches[1] : $item['arrival_airport'] ?? 'DEP' }}</div>
+                <div class="airport-code mobile-only">
+                    <i class="fa-solid fa-plane-arrival" style="margin-right: 10px "></i>
+                    {{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? $matches[1] : $item['arrival_airport'] ?? 'DEP' }}
+                </div>
                 <div class="airport-name">{{ ucfirst(strtolower($item['arrival_airport_name'] ?? '')) }}</div>
+                <div class="airport-location mobile-only">{{ $item['arrival_city'] ?? '' }}, {{ getCountryFromCity($item['arrival_city'] ?? '') }}</div>
                 <div class="airport-location desktop-only">{{ $item['arrival_city'] ?? '' }}, {{ getCountryFromCity($item['arrival_city'] ?? '') }}</div>
-                <span class="airport-date">{{ $arrivalDateLong }}</span>
-
+                <span class="airport-date desktop-only">{{ $arrivalDateLong }}</span>
             </div>
         </div>
 
@@ -161,6 +170,7 @@
         <div class="return-section mobile-only">
             <div class="airport-date">{{ $returnDateAbrev }}</div>
             <div class="airport-time">{{ $returnTime }}</div>
+            <div class="airport-code">{{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? $matches[1] : $item['arrival_airport'] ?? 'ARR' }}</div>
             <div class="airport-location">{{ $item['arrival_city'] ?? '' }}, {{ getCountryFromCity($item['arrival_city'] ?? '') }}</div>
         </div>
         @endif
@@ -220,3 +230,4 @@
         </div>
     @endif
 </div>
+

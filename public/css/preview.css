@@ -1145,8 +1145,8 @@
     }
 
     @media (max-width: 768px) {
-        .mobile-only { display: block; }
-        .desktop-only { display: none; }
+        .mobile-only { display: block !important; }
+        .desktop-only { display: none !important; }
 
         .container {
             padding: 10px;
@@ -1182,7 +1182,7 @@
 
         .activity-content {
             flex-direction: column;
-            gap: 16px;
+            gap: 1px;
         }
 
         .activity-photos-column {
@@ -1261,9 +1261,10 @@
         }
 
         .nav-actions {
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             justify-content: center;
             gap: 0.5rem;
+            align-items: center;
         }
 
         .btn {
@@ -1777,9 +1778,9 @@
 
     .day-title {
         font-size: 1.5rem;
-        font-weight: 500;
+        font-weight: 700;
         color: var(--primary-dark);
-        margin-bottom: 0.75rem;
+        margin-bottom: 1.5rem;
         background: linear-gradient(135deg, var(--primary-dark) 0%, #374151 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -3045,7 +3046,8 @@
         }
 
         .day-title {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
 
         .item-icon {
@@ -3118,6 +3120,14 @@
         justify-content: space-between;
         margin-bottom: 16px;
         gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+        .flight-route-main {
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
     }
 
     .airport-section {
@@ -3219,7 +3229,7 @@
     .airport-route-text {
         font-size: 1.1rem;
         font-weight: 700;
-        color: #38a4cb;
+        color: #0a5773;
     }
 
     .airport-code {
@@ -3393,7 +3403,7 @@
         .flight-route-main {
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 20px;
         }
 
         .airport-section {
@@ -3417,14 +3427,10 @@
         .airport-info .airport-location { order: 4; }
         .flight-connector { order: 5; }
         .arrival-info .airport-location { order: 6; }
-        .arrival-info .airport-code { order: 7; }
+        .arrival-info .airport-code { order: 3; }
 
         .flight-plane { display: none; }
-        .flight-connector::before {
-            content: '↓';
-            font-size: 24px;
-            color: #6b7280;
-        }
+
 
         .return-section {
             display: flex;

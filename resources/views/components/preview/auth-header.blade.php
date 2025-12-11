@@ -13,7 +13,6 @@
             <div class="nav-actions">
                 <a href="{{ route('trips.edit', $trip->id) }}" class="btn btn-back">
                     <i class="fas fa-arrow-left"></i>
-                    Volver
                 </a>
                 <button type="button" class="btn btn-share" onclick="shareTrip()">
                     <i class="fas fa-share-alt"></i>
@@ -21,7 +20,7 @@
                 </button>
                 <button type="button" class="btn btn-pdf" onclick="downloadPDF()">
                     <i class="fas fa-file-pdf"></i>
-                    Descarga versión PDF
+                    Descarga PDF
                 </button>
             </div>
         </div>

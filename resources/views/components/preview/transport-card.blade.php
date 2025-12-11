@@ -76,8 +76,10 @@
             </div>
         </div>
 
+        <h4 class="mobile-only "><i class="fa fa-arrow-down"></i></h4>
+
         <!-- Transport connector -->
-        <div class="flight-connector">
+        <div class="flight-connector desktop-only">
             <div class="plane-container">
                 @php
                     $icon = 'fas fa-car';
