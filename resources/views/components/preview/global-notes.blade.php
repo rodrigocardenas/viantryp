@@ -9,10 +9,7 @@
 
     @if(count($globalNotes) > 0)
         <div class="global-notes-section">
-            <div class="notes-header">
-                <i class="fas fa-sticky-note notes-icon"></i>
-                <h3>Notas</h3>
-            </div>
+           
 
             <div class="notes-list">
                 @foreach($globalNotes as $index => $note)
