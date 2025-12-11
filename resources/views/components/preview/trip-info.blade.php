@@ -13,10 +13,7 @@
             <img src="{{ asset('images/default-cover.jpeg') }}" alt="Imagen de portada del viaje" class="cover-banner-image">
         </div>
     @endif
-    <div class="price-section">
-        <span class="price-label">Precio Total</span>
-        <span class="price-amount">${{ number_format($trip->price ?? 0, 2) }}</span>
-    </div>
+   
 </header>
 
 <x-preview.global-notes :trip="$trip" />
