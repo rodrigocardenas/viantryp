@@ -80,7 +80,7 @@
                             $inputValue = isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '';
                             if ($inputValue) {
                                 $date = \Carbon\Carbon::parse($inputValue);
-                                echo $date->format('l, d \d\e F \d\e Y');
+                                echo $date->isoFormat('dddd, D [de] MMMM [de] YYYY');
                             } else {
                                 echo 'Sin fecha';
                             }

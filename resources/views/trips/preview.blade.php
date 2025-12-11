@@ -87,7 +87,7 @@
             @foreach($itemsByDay as $dayNumber => $dayItems)
                 @php
                     $dayDate = $dayDates[$dayNumber];
-                    $formattedDate = $dayDate ? $dayDate->format('l, d \d\e F \d\e Y') : 'Sin fecha';
+                    $formattedDate = $dayDate ? $dayDate->isoFormat('dddd, D [de] MMMM [de] YYYY') : 'Sin fecha';
                 @endphp
                 <x-preview.day-section :dayNumber="$dayNumber" :dayItems="$dayItems" :trip="$trip" :dayDate="$dayDate" :formattedDate="$formattedDate" />
             @endforeach

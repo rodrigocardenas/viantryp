@@ -312,7 +312,7 @@ class TripDay
             return 'Sin fecha';
         }
 
-        return $this->date->format('D, d M');
+        return $this->date->isoFormat('ddd, D MMM');
     }
 
     public function getFullDate(): string
@@ -321,7 +321,7 @@ class TripDay
             return 'Sin fecha';
         }
 
-        return $this->date->format('l, d \d\e F \d\e Y');
+        return $this->date->isoFormat('dddd, D [de] MMMM [de] YYYY');
     }
 
     public function getDateInputValue(): string

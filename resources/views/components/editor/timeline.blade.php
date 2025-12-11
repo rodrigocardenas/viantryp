@@ -57,7 +57,7 @@
                 <h3>Día 1</h3>
                 <p class="day-date" id="day-1-date">
                     @if(isset($trip) && $trip->start_date)
-                        {{ $trip->start_date->format('l, d \d\e F \d\e Y') }}
+                        {{ $trip->start_date->isoFormat('dddd, D [de] MMMM [de] YYYY') }}
                     @else
                         martes, 16 de septiembre de 2025
                     @endif
