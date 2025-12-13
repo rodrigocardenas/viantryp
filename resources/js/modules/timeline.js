@@ -209,7 +209,7 @@ export class TimelineManager {
     getElementTitle(data) {
         switch (data.type) {
             case 'flight':
-                return `${data.airline || 'Vuelo'} ${data.flight_number || ''}`.trim();
+                return `${data.airline_id || 'Vuelo'} ${data.flight_number || ''}`.trim();
             case 'hotel':
                 return data.hotel_name || 'Hotel';
             case 'activity':

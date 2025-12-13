@@ -41,7 +41,8 @@ class TripEditTest extends TestCase
                     'arrival_time' => '14:00',
                     'departure_date' => now()->format('Y-m-d'),
                     'arrival_date' => now()->format('Y-m-d'),
-                    'airline' => 'Test Airlines',
+                    'airline_id' => 1,
+                    'airline_name' => 'Test Airlines',
                     'flight_number' => 'TA123'
                 ]
             ]
@@ -146,7 +147,8 @@ class TripEditTest extends TestCase
                     'title' => 'International Flight',
                     'departure_airport' => 'MAD',
                     'arrival_airport' => 'JFK',
-                    'airline' => 'Iberia',
+                    'airline_id' => 1,
+                    'airline_name' => 'Iberia',
                     'flight_number' => 'IB3015'
                 ],
                 [

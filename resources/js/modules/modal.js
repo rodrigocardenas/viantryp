@@ -14,7 +14,7 @@ const elementLabelsData = {
 };
 
 const elementFormsData = {
-  "flight": "<div class=\"form-row\"><div class=\"form-group\"><label for=\"airline\">Aerolínea</label><select id=\"airline\" class=\"form-input airline-select\" placeholder=\"Ej: Iberia\"><option value=\"\">Seleccionar aerolínea</option></select></div><div class=\"form-group\"><label for=\"flight-number\">Número de Vuelo</label><input type=\"text\" id=\"flight-number\" class=\"form-input\" placeholder=\"Ej: IB1234\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-time\">Fecha y Hora de Salida</label><input type=\"datetime-local\" id=\"departure-time\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"arrival-time\">Fecha y Hora de Llegada</label><input type=\"datetime-local\" id=\"arrival-time\" class=\"form-input\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-airport\">Aeropuerto de Salida</label><select id=\"departure-airport\" class=\"form-input airport-select\" placeholder=\"Ej: Madrid Barajas\"><option value=\"\">Seleccionar aeropuerto</option></select></div><div class=\"form-group\"><label for=\"arrival-airport\">Aeropuerto de Llegada</label><select id=\"arrival-airport\" class=\"form-input airport-select\" placeholder=\"Ej: París Charles de Gaulle\"><option value=\"\">Seleccionar aeropuerto</option></select></div></div><div class=\"form-group\"><label for=\"confirmation-number\">Número de Confirmación</label><input type=\"text\" id=\"confirmation-number\" class=\"form-input\" placeholder=\"Ej: ABC123\"></div><div class=\"form-group\"><label>Tipo de Equipaje</label><div class=\"checkbox-group\"><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-personal\" value=\"personal\"><span class=\"checkmark\"></span> Equipaje personal</label><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-cabin\" value=\"cabin\"><span class=\"checkmark\"></span> Equipaje de cabina</label><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-checked\" value=\"checked\"><span class=\"checkmark\"></span> Equipaje documentado (23Kg)</label></div></div><div class=\"form-group\"><label for=\"flight-documents\">Documentos</label><input type=\"file\" id=\"flight-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el vuelo</small></div>",
+  "flight": "<div class=\"form-row\"><div class=\"form-group\"><label for=\"airline\">Aerolínea</label><select id=\"airline_id\" class=\"form-input airline-select\" placeholder=\"Ej: Iberia\"><option value=\"\">Seleccionar aerolínea</option></select></div><div class=\"form-group\"><label for=\"flight-number\">Número de Vuelo</label><input type=\"text\" id=\"flight-number\" class=\"form-input\" placeholder=\"Ej: IB1234\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-time\">Fecha y Hora de Salida</label><input type=\"datetime-local\" id=\"departure-time\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"arrival-time\">Fecha y Hora de Llegada</label><input type=\"datetime-local\" id=\"arrival-time\" class=\"form-input\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-airport\">Aeropuerto de Salida</label><select id=\"departure-airport\" class=\"form-input airport-select\" placeholder=\"Ej: Madrid Barajas\"><option value=\"\">Seleccionar aeropuerto</option></select></div><div class=\"form-group\"><label for=\"arrival-airport\">Aeropuerto de Llegada</label><select id=\"arrival-airport\" class=\"form-input airport-select\" placeholder=\"Ej: París Charles de Gaulle\"><option value=\"\">Seleccionar aeropuerto</option></select></div></div><div class=\"form-group\"><label for=\"confirmation-number\">Número de Confirmación</label><input type=\"text\" id=\"confirmation-number\" class=\"form-input\" placeholder=\"Ej: ABC123\"></div><div class=\"form-group\"><label>Tipo de Equipaje</label><div class=\"checkbox-group\"><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-personal\" value=\"personal\"><span class=\"checkmark\"></span> Equipaje personal</label><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-cabin\" value=\"cabin\"><span class=\"checkmark\"></span> Equipaje de cabina</label><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-checked\" value=\"checked\"><span class=\"checkmark\"></span> Equipaje documentado (23Kg)</label></div></div><div class=\"form-group\"><label for=\"flight-documents\">Documentos</label><input type=\"file\" id=\"flight-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el vuelo</small></div>",
   "hotel": "<div class=\"form-group\"><label for=\"hotel-name\">Nombre del Hotel</label><div class=\"autocomplete-input\"><input type=\"text\" id=\"hotel-name\" class=\"form-input hotel-autocomplete\" placeholder=\"Ej: Hotel Central\" autocomplete=\"off\"></div><div id=\"selected-place-info\" class=\"selected-place-info\" style=\"display: none;\"></div><div id=\"selected-place-details\" class=\"selected-place-details\" style=\"display: none;\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"check-in\">Check-in</label><input type=\"datetime-local\" id=\"check-in\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"check-out\">Check-out</label><input type=\"datetime-local\" id=\"check-out\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"room-type\">Tipo de Habitación</label><input type=\"text\" id=\"room-type\" class=\"form-input\" placeholder=\"Ej: Habitación doble\"></div><div class=\"form-group\"><label for=\"meal-plan\">Régimen de Alimentación</label><select id=\"meal-plan\" class=\"form-input\"><option value=\"\">Seleccionar régimen</option><option value=\"all-inclusive\">All inclusive</option><option value=\"breakfast-included\">Desayuno incluido</option><option value=\"room-only\">Solo alojamiento</option></select></div><div class=\"form-group\"><label for=\"nights\">Noches</label><input type=\"number\" id=\"nights\" class=\"form-input\" min=\"1\" placeholder=\"2\"></div><div class=\"form-group\"><label for=\"hotel-documents\">Documentos</label><input type=\"file\" id=\"hotel-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el hotel</small></div>",
   "activity": "<div class=\"form-group\"><label for=\"activity-title\">Título de la Actividad</label><input type=\"text\" id=\"activity-title\" class=\"form-input\" placeholder=\"Ej: Visita al Louvre\"></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"start-datetime\">Fecha y hora de inicio</label><input type=\"datetime-local\" id=\"start-datetime\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"end-datetime\">Fecha y hora de finalización</label><input type=\"datetime-local\" id=\"end-datetime\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"location\">Ubicación</label><div class=\"autocomplete-input\"><input type=\"text\" id=\"location\" class=\"form-input activity-autocomplete\" placeholder=\"Ej: Museo del Louvre, París\" autocomplete=\"off\"></div><div id=\"selected-place-info\" class=\"selected-place-info\" style=\"display: none;\"></div><div id=\"selected-place-details\" class=\"selected-place-details\" style=\"display: none;\"></div></div><div class=\"form-group\"><label for=\"description\">Descripción</label><textarea id=\"description\" class=\"form-input\" rows=\"3\" placeholder=\"Detalles de la actividad...\"></textarea></div><div class=\"form-group\"><label for=\"activity-documents\">Documentos</label><input type=\"file\" id=\"activity-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con la actividad</small></div>",
   "transport": "<div class=\"form-group\"><label for=\"pickup-location\">Punto de Recogida</label><input type=\"text\" id=\"pickup-location\" class=\"form-input\" placeholder=\"Ej: Hotel Plaza\"></div><div class=\"form-group\"><label for=\"pickup-datetime\">Fecha y Hora de Recogida</label><input type=\"datetime-local\" id=\"pickup-datetime\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"destination\">Punto de Destino</label><input type=\"text\" id=\"destination\" class=\"form-input\" placeholder=\"Ej: Aeropuerto\"></div><div class=\"form-group\"><label for=\"arrival-datetime\">Fecha y Hora de Llegada</label><input type=\"datetime-local\" id=\"arrival-datetime\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"transport-type\">Tipo de Transporte</label><select id=\"transport-type\" class=\"form-input\"><option value=\"\">Seleccionar tipo de transporte</option><option value=\"Tren\">Tren</option><option value=\"Bus\">Bus</option><option value=\"Barco/Ferry\">Barco/Ferry</option><option value=\"Traslado privado\">Traslado privado</option></select></div><div class=\"form-group\"><label for=\"transport-documents\">Documentos</label><input type=\"file\" id=\"transport-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el traslado</small></div>",
@@ -144,7 +144,7 @@ export class ModalManager {
         // Define field mappings for different element types
         const fieldMappings = {
             flight: {
-                'airline': 'airline',
+                'airline_id': 'airline',
                 'flight_number': 'flight-number',
                 'departure_time': 'departure-time',
                 'arrival_time': 'arrival-time',
@@ -206,10 +206,10 @@ export class ModalManager {
         // Handle special cases for different element types
         if (data.type === 'flight') {
             // Handle flight specific fields
-            if (data.airline) {
-                const airlineSelect = document.querySelector('#modal-body #airline');
+            if (data.airline_id) {
+                const airlineSelect = document.querySelector('#modal-body #airline_id');
                 if (airlineSelect) {
-                    airlineSelect.value = data.airline;
+                    airlineSelect.value = data.airline_id;
                     $(airlineSelect).trigger('change'); // Trigger change for select2
                 }
             }
@@ -528,11 +528,12 @@ export class ModalManager {
         }
 
         // Handle new airline creation if needed
-        if (this.currentElementType === 'flight' && formData.airline && isNaN(formData.airline)) {
+        if (this.currentElementType === 'flight' && formData.airline_id && isNaN(formData.airline_id)) {
             // This is a new airline entered manually
-            const airlineId = await this.createNewAirline(formData.airline);
+            const airlineId = await this.createNewAirline(formData.airline_id);
             if (airlineId) {
-                formData.airline = airlineId;
+                formData.airline_id = airlineId;
+                formData.airline_name = formData.airline_id; // Since it's new, name is the same as input
             } else {
                 this.showNotification('Error', 'No se pudo crear la nueva aerolínea.', 'error');
                 return;
@@ -660,6 +661,16 @@ export class ModalManager {
                     data.arrival_city = arrivalAirportData.city;
                 }
             }
+
+            // Add airline name
+            if (data.airline_id) {
+                const airlineSelect = document.getElementById('airline_id');
+                if (airlineSelect && airlineSelect.selectedOptions.length > 0) {
+                    data.airline_name = airlineSelect.selectedOptions[0].text;
+                } else {
+                    data.airline_name = data.airline_id; // Fallback for new airlines
+                }
+            }
         }
 
         // Handle activity datetime fields
@@ -753,7 +764,7 @@ export class ModalManager {
     getElementTitle(data) {
         switch (data.type) {
             case 'flight':
-                return `${data.airline || 'Vuelo'} ${data.flight_number || ''}`.trim();
+                return `${data.airline_id || 'Vuelo'} ${data.flight_number || ''}`.trim();
             case 'hotel':
                 return data.hotel_name || 'Hotel';
             case 'activity':

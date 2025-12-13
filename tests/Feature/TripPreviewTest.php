@@ -41,7 +41,8 @@ class TripPreviewTest extends TestCase
                     'arrival_time' => '14:00',
                     'departure_date' => now()->format('Y-m-d'),
                     'arrival_date' => now()->format('Y-m-d'),
-                    'airline' => 'Test Airlines',
+                    'airline_id' => 1,
+                    'airline_name' => 'Test Airlines',
                     'flight_number' => 'TA123'
                 ]
             ]

@@ -232,7 +232,7 @@
 
         // Add flight data as attributes if this is a flight element
         if (data.type === 'flight') {
-            elementDiv.setAttribute('data-airline', data.airline || '');
+            elementDiv.setAttribute('data-airline_id', data.airline_id || '');
             elementDiv.setAttribute('data-flight-number', data.flight_number || '');
             elementDiv.setAttribute('data-departure-airport', data.departure_airport || '');
             elementDiv.setAttribute('data-arrival-airport', data.arrival_airport || '');
@@ -299,7 +299,7 @@
     function getElementTitle(data) {
         switch (data.type) {
             case 'flight':
-                return `${data.airline || 'Vuelo'} ${data.flight_number || ''}`.trim();
+                return `${data.airline_id || 'Vuelo'} ${data.flight_number || ''}`.trim();
             case 'hotel':
                 return data.hotel_name || 'Hotel';
             case 'activity':
@@ -731,7 +731,7 @@
                 return {
                     ...baseData,
                     type: 'flight',
-                    airline: itemElement.getAttribute('data-airline') || '',
+                    airline_id: itemElement.getAttribute('data-airline_id') || '',
                     flight_number: itemElement.getAttribute('data-flight-number') || '',
                     departure_airport: departureAirport,
                     arrival_airport: arrivalAirport,

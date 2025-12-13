@@ -180,7 +180,7 @@
     <!-- Información adicional -->
     <div class="flight-details-section">
         <div class="flight-meta">
-            <span class="airline-info">{{ $item['airline'] ?? 'Aerolínea' }}</span>
+            <span class="airline-info">{{ $item['airline_name'] ?? 'Aerolínea' }}</span>
             @if(isset($item['flight_number']) && $item['flight_number'])
                 <span class="flight-number">{{ $item['flight_number'] }}</span>
             @endif

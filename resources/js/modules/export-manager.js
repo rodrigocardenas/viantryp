@@ -356,7 +356,7 @@ class ExportManager {
                 return {
                     ...baseData,
                     type: 'flight',
-                    airline: itemElement.getAttribute('data-airline') || itemElement.querySelector('.item-title')?.textContent?.split(' ')[0] || '',
+                    airline_id: itemElement.getAttribute('data-airline_id') || itemElement.querySelector('.item-title')?.textContent?.split(' ')[0] || '',
                     flight_number: itemElement.getAttribute('data-flight-number') || itemElement.querySelector('.item-title')?.textContent?.split(' ')[1] || '',
                     departure_airport: departureAirport,
                     arrival_airport: arrivalAirport,
