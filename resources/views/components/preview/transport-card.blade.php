@@ -66,12 +66,17 @@
         <!-- Departure section -->
         <div class="airport-section">
             <div class="airport-info">
-                <div class="airport-time-date">
-                    <span class="airport-time">{{ $item['pickup_datetime'] ? \Carbon\Carbon::parse($item['pickup_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
+                <span class="airport-date mobile-only" style="order:0 !important">{{ $pickupDateLong }}</span>
+                <div class="airport-time-date desktop-only">
+                    <span class="airport-time desktop-only">{{ $item['pickup_datetime'] ? \Carbon\Carbon::parse($item['pickup_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
                 </div>
-                <div class="airport-name">{{ $item['pickup_location'] ?? 'Ubicación no especificada' }}</div>
-                <div class="airport-location">Salida</div>
-                <span class="airport-date">{{ $pickupDateLong }}</span>
+                <div class="airport-time-date mobile-only">
+                    <span class="airport-time mobile-only">{{ $item['pickup_datetime'] ? \Carbon\Carbon::parse($item['pickup_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
+                </div>
+                <div class="airport-name desktop-only ">{{ $item['pickup_location'] ?? 'Ubicación no especificada' }}</div>
+                <div class="airport-location desktop-only">Salida</div>
+                <span class="airport-date desktop-only">{{ $pickupDateLong }}</span>
+                <div class="airport-name mobile-only">{{ $item['pickup_location'] ?? 'Ubicación no especificada' }}</div>
 
             </div>
         </div>
@@ -98,12 +103,14 @@
         <!-- Arrival section -->
         <div class="airport-section">
             <div class="airport-info arrival-info">
+                <span class="airport-date mobile-only"style="order:0 !important" >{{ $arrivalDateLong }}</span>
                 <div class="airport-time-date">
                     <span class="airport-time">{{ $item['arrival_datetime'] ? \Carbon\Carbon::parse($item['arrival_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
                 </div>
-                <div class="airport-name">{{ $item['destination'] ?? 'Ubicación no especificada' }}</div>
-                <div class="airport-location">Llegada</div>
-                <span class="airport-date">{{ $arrivalDateLong }}</span>
+                <div class="airport-name desktop-only">{{ $item['destination'] ?? 'Ubicación no especificada' }}</div>
+                <div class="airport-location desktop-only">Llegada</div>
+                <div class="airport-name mobile-only">{{ $item['destination'] ?? 'Ubicación no especificada' }}</div>
+                <span class="airport-date desktop-only">{{ $arrivalDateLong }}</span>
 
             </div>
         </div>
