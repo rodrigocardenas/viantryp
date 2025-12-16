@@ -2,8 +2,10 @@
 <div class="public-preview-header">
     <div class="public-header-content">
         <div class="public-logo">
-            <h1 class="public-logo-text">Viantryp</h1>
-            <p class="public-subtitle">Vista Previa del Itinerario</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <img src="{{ asset('images/VIANTRYP LOGO.png') }}" alt="Viantryp Logo" style="width: 20%;">
+                <img src="{{ asset('images/LOGO GPS.png') }}" alt="GPS Logo" style="width: 13%;">
+            </div>
         </div>
         <div class="public-actions">
             {{-- <button onclick="downloadPDF()" class="public-btn-print">
