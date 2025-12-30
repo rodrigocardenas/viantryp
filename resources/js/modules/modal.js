@@ -665,8 +665,18 @@ export class ModalManager {
             // Add airline name
             if (data.airline_id) {
                 const airlineSelect = document.getElementById('airline_id');
-                if (airlineSelect && airlineSelect.selectedOptions.length > 0) {
-                    data.airline_name = airlineSelect.selectedOptions[0].text;
+                if (airlineSelect) {
+                    // Try to get airline name from Select2 data
+                    const selectedData = $(airlineSelect).select2('data');
+                    if (selectedData && selectedData.length > 0 && selectedData[0].text) {
+                        data.airline_name = selectedData[0].text;
+                    } else if (airlineSelect.selectedOptions && airlineSelect.selectedOptions.length > 0) {
+                        // Fallback for native select
+                        data.airline_name = airlineSelect.selectedOptions[0].text;
+                    } else {
+                        // Last resort: use the ID value as name
+                        data.airline_name = data.airline_id;
+                    }
                 } else {
                     data.airline_name = data.airline_id; // Fallback for new airlines
                 }
