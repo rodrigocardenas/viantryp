@@ -159,7 +159,7 @@ class TripDocumentFilteringTest extends TestCase
 
         // Test the preview page
         $response = $this->get(route('trips.preview', $trip));
-        
+
         $response->assertStatus(200);
         $response->assertSee('test_boarding.pdf');
         $response->assertSee('Test Air');
@@ -259,7 +259,7 @@ class TripDocumentFilteringTest extends TestCase
         // Create documents with different temp IDs for different flights
         $tempId1 = 'temp_' . time() . '_flight1';
         $tempId2 = 'temp_' . time() . '_flight2';
-        
+
         $doc1Id = DB::table('trip_documents')->insertGetId([
             'trip_id' => $tripId,
             'user_id' => $userId,

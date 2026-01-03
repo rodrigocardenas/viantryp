@@ -93,7 +93,7 @@ class Trip extends Model
         // Update documents with temporary IDs to their real item IDs
         // Temporary IDs follow pattern: temp_<timestamp>_<random>
         // Real IDs follow pattern: day_<day>_<type>_<count>
-        
+
         foreach ($items as $item) {
             if (!isset($item['id']) || !is_string($item['id'])) {
                 continue;
@@ -111,7 +111,7 @@ class Trip extends Model
             if (!empty($item['temp_id'])) {
                 $tempId = $item['temp_id'];
                 \Log::info('Searching for documents with temp_id:', ['temp_id' => $tempId]);
-                
+
                 $tempDocuments = TripDocument::where('trip_id', $this->id)
                     ->where('item_id', $tempId)
                     ->get();
@@ -134,7 +134,7 @@ class Trip extends Model
 
     /**
      * Find an item by its ID in the items_data array
-     * 
+     *
      * @param string $itemId The item ID to search for
      * @return array|null The item array or null if not found
      */
@@ -155,7 +155,7 @@ class Trip extends Model
 
     /**
      * Get all items for a specific day
-     * 
+     *
      * @param int $day The day number
      * @return array Array of items for that day
      */
@@ -440,7 +440,7 @@ class Trip extends Model
 
      /**
       * Get documents for a specific item by item ID
-      * 
+      *
       * @param string $itemId The item ID in items_data
       * @return \Illuminate\Database\Eloquent\Collection
       */

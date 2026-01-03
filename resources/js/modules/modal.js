@@ -610,11 +610,11 @@ export class ModalManager {
     }
 
     collectFormData() {
-        const data = { 
-            type: this.currentElementType, 
+        const data = {
+            type: this.currentElementType,
             day: this.currentDay
         };
-        
+
         // Only include temp_id for NEW elements (not when editing)
         if (!this.isEditing && this.currentElementData?.id) {
             data.temp_id = this.currentElementData.id;
@@ -622,7 +622,7 @@ export class ModalManager {
         } else {
             console.log('collectFormData: NOT adding temp_id. isEditing:', this.isEditing, 'currentElementData.id:', this.currentElementData?.id);
         }
-        
+
         const form = document.getElementById('modal-body');
         const inputs = form.querySelectorAll('input, textarea, select');
 
