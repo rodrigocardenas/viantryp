@@ -7,24 +7,24 @@
         @foreach($dayItems as $item)
             @if($item['type'] === 'flight')
                 @php
-                    $flightDocuments = $trip ? $trip->documents->where('type', 'flight') : collect();
+                    $itemDocuments = isset($item['id']) ? $trip->getDocumentsByItemId($item['id']) : collect();
                 @endphp
-                <x-preview.flight-card :item="$item" :trip="$trip" :documents="$flightDocuments" />
+                <x-preview.flight-card :item="$item" :trip="$trip" :documents="$itemDocuments" />
             @elseif($item['type'] === 'hotel')
                 @php
-                    $hotelDocuments = $trip ? $trip->documents->where('type', 'hotel') : collect();
+                    $itemDocuments = isset($item['id']) ? $trip->getDocumentsByItemId($item['id']) : collect();
                 @endphp
-                <x-preview.hotel-card :item="$item" :trip="$trip" :loop="$loop" :documents="$hotelDocuments" />
+                <x-preview.hotel-card :item="$item" :trip="$trip" :loop="$loop" :documents="$itemDocuments" />
             @elseif($item['type'] === 'activity')
                 @php
-                    $activityDocuments = $trip ? $trip->documents->where('type', 'activity') : collect();
+                    $itemDocuments = isset($item['id']) ? $trip->getDocumentsByItemId($item['id']) : collect();
                 @endphp
-                <x-preview.activity-card :item="$item" :documents="$activityDocuments" />
+                <x-preview.activity-card :item="$item" :documents="$itemDocuments" />
             @elseif($item['type'] === 'transport')
                 @php
-                    $transportDocuments = $trip ? $trip->documents->where('type', 'transport') : collect();
+                    $itemDocuments = isset($item['id']) ? $trip->getDocumentsByItemId($item['id']) : collect();
                 @endphp
-                <x-preview.transport-card :item="$item" :trip="$trip" :documents="$transportDocuments" />
+                <x-preview.transport-card :item="$item" :trip="$trip" :documents="$itemDocuments" />
             @else
                 {{-- <x-preview.activity-card :item="$item" :showBadges="false" /> --}}
             @endif

@@ -37,6 +37,155 @@ class Trip extends Model
     ];
 
     /**
+     * Set items_data and add IDs to items if they don't have one
+     */
+    public function setItemsDataAttribute($value)
+    {
+        if (is_array($value)) {
+            $value = $this->addItemIds($value);
+        }
+        $this->attributes['items_data'] = json_encode($value);
+    }
+
+    /**
+     * Add descriptive IDs to items if they don't already have one
+     * Format: day_{day_number}_{type}_{count}
+     * Example: day_1_flight_1, day_1_flight_2, day_2_hotel_1
+     */
+    public function addItemIds(array $items): array
+    {
+        $typeCounters = [];
+
+        foreach ($items as &$item) {
+            // Only add ID if it doesn't already exist
+            if (!isset($item['id'])) {
+                $day = $item['day'] ?? 'global';
+                $type = $item['type'] ?? 'unknown';
+
+                // Create a counter key for this day and type combination
+                $counterKey = "day_{$day}_{$type}";
+
+                // Increment the counter for this type
+                if (!isset($typeCounters[$counterKey])) {
+                    $typeCounters[$counterKey] = 1;
+                } else {
+                    $typeCounters[$counterKey]++;
+                }
+
+                // Generate the ID
+                $item['id'] = "{$counterKey}_{$typeCounters[$counterKey]}";
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * Update documents with temporary item IDs to their real item IDs
+     * This prevents misassociation of documents when multiple items of the same type exist
+     * Documents uploaded AFTER creating items will have the correct item_id
+     */
+    private function updateTemporaryDocumentIds(array $items): void
+    {
+        // Log for debugging
+        \Log::info('updateTemporaryDocumentIds called with items:', $items);
+
+        // Update documents with temporary IDs to their real item IDs
+        // Temporary IDs follow pattern: temp_<timestamp>_<random>
+        // Real IDs follow pattern: day_<day>_<type>_<count>
+        
+        foreach ($items as $item) {
+            if (!isset($item['id']) || !is_string($item['id'])) {
+                continue;
+            }
+
+            \Log::info('Processing item:', [
+                'id' => $item['id'],
+                'type' => $item['type'] ?? '',
+                'temp_id' => $item['temp_id'] ?? '',
+                'has_temp_id' => !empty($item['temp_id'])
+            ]);
+
+            // Only process items that have a temp_id (new items that were created)
+            // Edited items won't have temp_id and shouldn't be processed here
+            if (!empty($item['temp_id'])) {
+                $tempId = $item['temp_id'];
+                \Log::info('Searching for documents with temp_id:', ['temp_id' => $tempId]);
+                
+                $tempDocuments = TripDocument::where('trip_id', $this->id)
+                    ->where('item_id', $tempId)
+                    ->get();
+
+                \Log::info('Found documents with temp_id:', ['count' => $tempDocuments->count()]);
+
+                // Update ALL documents that have this specific temp_id
+                foreach ($tempDocuments as $doc) {
+                    \Log::info('Updating document:', ['id' => $doc->id, 'from' => $tempId, 'to' => $item['id']]);
+                    $doc->update(['item_id' => $item['id']]);
+                }
+            } else {
+                // No temp_id means this is either:
+                // 1. An edited item (which should already have correct item_id for its documents)
+                // 2. An old item saved before temp_id logic was implemented
+                \Log::info('Item has no temp_id, skipping document update:', ['id' => $item['id']]);
+            }
+        }
+    }
+
+    /**
+     * Find an item by its ID in the items_data array
+     * 
+     * @param string $itemId The item ID to search for
+     * @return array|null The item array or null if not found
+     */
+    public function findItemById(string $itemId): ?array
+    {
+        if (!$this->items_data) {
+            return null;
+        }
+
+        foreach ($this->items_data as $item) {
+            if (isset($item['id']) && $item['id'] === $itemId) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get all items for a specific day
+     * 
+     * @param int $day The day number
+     * @return array Array of items for that day
+     */
+    public function getItemsByDay(int $day): array
+    {
+        if (!$this->items_data) {
+            return [];
+        }
+
+        return array_filter($this->items_data, function ($item) use ($day) {
+            return isset($item['day']) && $item['day'] == $day;
+        });
+    }
+
+    /**
+     * Boot method for model events
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // After saving a trip, update temporary document item IDs
+        static::saved(function ($trip) {
+            if ($trip->items_data) {
+                $trip->updateTemporaryDocumentIds($trip->items_data);
+            }
+        });
+    }
+
+    /**
      * Get the user that owns the trip
      */
     public function user()
@@ -287,6 +436,17 @@ class Trip extends Model
      public function getDocumentsByType(string $type)
      {
          return $this->documents()->where('type', $type)->get();
+     }
+
+     /**
+      * Get documents for a specific item by item ID
+      * 
+      * @param string $itemId The item ID in items_data
+      * @return \Illuminate\Database\Eloquent\Collection
+      */
+     public function getDocumentsByItemId(string $itemId)
+     {
+         return $this->documents()->where('item_id', $itemId)->get();
      }
 }
 

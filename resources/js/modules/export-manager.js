@@ -308,6 +308,17 @@ class ExportManager {
             console.warn('No global notes found or error collecting them', err);
         }
 
+        console.log('=== ALL ITEMS COLLECTED ===');
+        items.forEach((item, idx) => {
+            console.log(`Item ${idx}:`, {
+                type: item.type,
+                day: item.day,
+                temp_id: item.temp_id || '(no temp_id)',
+                id: item.id || '(no id)'
+            });
+        });
+        console.log('===========================');
+
         return items;
     }
 
@@ -337,6 +348,11 @@ class ExportManager {
         };
 
         console.log('Extracting item data for type:', baseData.type, 'from element:', itemElement);
+        console.log('Element data attributes:', {
+            'data-temp-id': itemElement.getAttribute('data-temp-id'),
+            'data-airline-name': itemElement.getAttribute('data-airline-name'),
+            'data-hotel-name': itemElement.getAttribute('data-hotel-name')
+        });
 
         // Extract data based on item type
         switch (baseData.type) {
@@ -368,7 +384,8 @@ class ExportManager {
                     departure_city: itemElement.getAttribute('data-departure-city') || '',
                     arrival_city: itemElement.getAttribute('data-arrival-city') || '',
                     confirmation_number: itemElement.getAttribute('data-confirmation-number') || '',
-                    baggage_types: itemElement.getAttribute('data-baggage-types') ? JSON.parse(itemElement.getAttribute('data-baggage-types')) : []
+                    baggage_types: itemElement.getAttribute('data-baggage-types') ? JSON.parse(itemElement.getAttribute('data-baggage-types')) : [],
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
             case 'hotel':
@@ -383,7 +400,8 @@ class ExportManager {
                     check_out: itemElement.getAttribute('data-check-out') || '',
                     room_type: itemElement.getAttribute('data-room-type') || '',
                     meal_plan: itemElement.getAttribute('data-meal-plan') || '',
-                    nights: parseInt(itemElement.getAttribute('data-nights')) || 1
+                    nights: parseInt(itemElement.getAttribute('data-nights')) || 1,
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
             case 'actividad':
@@ -407,7 +425,8 @@ class ExportManager {
                     website: itemElement.getAttribute('data-website') || '',
                     phone_number: itemElement.getAttribute('data-phone-number') || '',
                     latitude: itemElement.getAttribute('data-latitude') || '',
-                    longitude: itemElement.getAttribute('data-longitude') || ''
+                    longitude: itemElement.getAttribute('data-longitude') || '',
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
             case 'traslado':
@@ -419,7 +438,8 @@ class ExportManager {
                     pickup_location: itemElement.getAttribute('data-pickup-location') || '',
                     destination: itemElement.getAttribute('data-destination') || '',
                     pickup_datetime: itemElement.getAttribute('data-pickup-datetime') || '',
-                    arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || ''
+                    arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || '',
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
             case 'nota':
@@ -427,7 +447,8 @@ class ExportManager {
                     ...baseData,
                     type: 'note',
                     note_title: itemElement.querySelector('.item-title')?.textContent || '',
-                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.textContent || ''
+                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.textContent || '',
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
             default:
@@ -435,7 +456,8 @@ class ExportManager {
                     ...baseData,
                     type: 'note',
                     note_title: itemElement.querySelector('.item-title')?.textContent || 'Elemento',
-                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.textContent || ''
+                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.textContent || '',
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
         }
     }

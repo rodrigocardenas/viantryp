@@ -38,7 +38,8 @@ class FileManager {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('type', type);
-        formData.append('item_id', 'temp_' + Date.now()); // Temporary ID until element is saved
+        // Use temporary ID that will be replaced with the real ID when element is saved
+        formData.append('item_id', 'temp_' + Date.now());
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
@@ -74,7 +75,8 @@ class FileManager {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('type', type);
-        formData.append('item_id', 'temp_' + Date.now()); // Temporary ID until element is saved
+        // Use temporary ID that will be replaced with the real ID when trip is created
+        formData.append('item_id', 'temp_' + Date.now());
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         console.log('FileManager: CSRF token found:', !!csrfToken);

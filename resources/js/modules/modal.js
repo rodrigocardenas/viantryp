@@ -67,7 +67,10 @@ export class ModalManager {
         console.log('Showing element modal for:', elementType, 'day:', dayNumber);
         this.currentElementType = elementType;
         this.currentDay = dayNumber;
-        this.currentElementData = { type: elementType, day: dayNumber };
+        // Generate a temporary ID for new elements to use when uploading documents
+        // This ID will be used until the element is saved and gets a real ID
+        const tempId = 'temp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        this.currentElementData = { type: elementType, day: dayNumber, id: tempId };
         this.isEditing = false;
         this.existingDocuments = [];
 
@@ -371,7 +374,15 @@ export class ModalManager {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('type', type);
-        formData.append('item_id', 'temp_' + Date.now()); // Temporary ID until element is saved
+        // Use the temporary ID from currentElementData while the element is being created
+        // This ID will be updated to the real ID once the element is saved
+        console.log('uploadDocument: currentElementData=', this.currentElementData);
+        if (this.currentElementData?.id) {
+            console.log('uploadDocument: appending item_id =', this.currentElementData.id);
+            formData.append('item_id', this.currentElementData.id);
+        } else {
+            console.warn('uploadDocument: NO item_id found in currentElementData!');
+        }
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
@@ -599,7 +610,19 @@ export class ModalManager {
     }
 
     collectFormData() {
-        const data = { type: this.currentElementType, day: this.currentDay };
+        const data = { 
+            type: this.currentElementType, 
+            day: this.currentDay
+        };
+        
+        // Only include temp_id for NEW elements (not when editing)
+        if (!this.isEditing && this.currentElementData?.id) {
+            data.temp_id = this.currentElementData.id;
+            console.log('collectFormData: ADDING temp_id:', data.temp_id, 'isEditing:', this.isEditing);
+        } else {
+            console.log('collectFormData: NOT adding temp_id. isEditing:', this.isEditing, 'currentElementData.id:', this.currentElementData?.id);
+        }
+        
         const form = document.getElementById('modal-body');
         const inputs = form.querySelectorAll('input, textarea, select');
 
@@ -1339,6 +1362,11 @@ export class ModalManager {
         // Clear form data and reset state without saving
         const modal = document.getElementById('element-modal');
         modal.style.display = 'none';
+
+        // Clear current element data to ensure a fresh tempId is generated next time
+        this.currentElementType = null;
+        this.currentElementData = {};
+        this.currentDay = null;
 
         // Clean up hotel autocomplete
         if (this.hotelAutocomplete) {

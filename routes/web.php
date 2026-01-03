@@ -66,6 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/{trip}/documents/upload', [\App\Http\Controllers\TripDocumentController::class, 'upload'])->name('trips.documents.upload');
     Route::post('documents/temp-upload', [\App\Http\Controllers\TripDocumentController::class, 'tempUpload'])->name('documents.temp-upload');
     Route::post('documents/process-temp', [\App\Http\Controllers\TripDocumentController::class, 'processTemp'])->name('documents.process-temp');
+    Route::post('trips/{trip}/documents/update-item-id', [\App\Http\Controllers\TripDocumentController::class, 'updateItemId'])->name('trips.documents.update-item-id');
     Route::get('trips/{trip}/documents', [\App\Http\Controllers\TripDocumentController::class, 'getByItem'])->name('trips.documents.get');
     Route::delete('documents/{document}', [\App\Http\Controllers\TripDocumentController::class, 'destroy'])->name('documents.destroy');
     Route::get('documents/{document}/download', [\App\Http\Controllers\TripDocumentController::class, 'download'])->name('documents.download');
