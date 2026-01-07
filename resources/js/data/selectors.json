@@ -162,6 +162,12 @@
       "country": "Francia"
     },
     {
+      "id": "París Beauvis (BVA)",
+      "text": "París Beauvis (BVA)",
+      "city": "París",
+      "country": "Francia"
+    },
+    {
       "id": "Fráncfort (FRA)",
       "text": "Fráncfort (FRA)",
       "city": "Fráncfort",
@@ -300,10 +306,10 @@
       "country": "Portugal"
     },
     {
-      "id": "Atenas (ATH)",
-      "text": "Atenas (ATH)",
-      "city": "Atenas",
-      "country": "Grecia"
+      "id": "Puerto Montt (PMC)",
+      "text": "Puerto Montt (PMC)",
+      "city": "Puerto Montt",
+      "country": "Chile"
     },
     {
       "id": "Tel Aviv Ben Gurión (TLV)",
