@@ -150,6 +150,12 @@
       "country": "España"
     },
     {
+      "id": "Medellín (MDE)",
+      "text": "Medellín (MDE)",
+      "city": "Medellín",
+      "country": "Colombia"
+    },
+    {
       "id": "París Charles de Gaulle (CDG)",
       "text": "París Charles de Gaulle (CDG)",
       "city": "París",
