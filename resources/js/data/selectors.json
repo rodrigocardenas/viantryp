@@ -766,6 +766,240 @@
       "text": "Buenos Aires Aeroparque Jorge Newbery (AEP)",
       "city": "Buenos Aires",
       "country": "Argentina"
+    },
+    {
+      "id": "Washington Dulles (IAD)",
+      "text": "Washington Dulles (IAD)",
+      "city": "Washington",
+      "country": "Estados Unidos"
+    },
+    {
+      "id": "Washington National (DCA)",
+      "text": "Washington National (DCA)",
+      "city": "Washington",
+      "country": "Estados Unidos"
+    },
+    {
+      "id": "Washington Baltimore/Washington (BWI)",
+      "text": "Washington Baltimore/Washington (BWI)",
+      "city": "Baltimore/Washington",
+      "country": "Estados Unidos"
+    },
+    {
+      "id": "Nueva York LaGuardia (LGA)",
+      "text": "Nueva York LaGuardia (LGA)",
+      "city": "Nueva York",
+      "country": "Estados Unidos"
+    },
+    {
+      "id": "Nueva York Stewart (SWF)",
+      "text": "Nueva York Stewart (SWF)",
+      "city": "Nueva York",
+      "country": "Estados Unidos"
+    },
+    {
+      "id": "Nueva Jersey Atlantic City (ACY)",
+      "text": "Nueva Jersey Atlantic City (ACY)",
+      "city": "Atlantic City",
+      "country": "Estados Unidos"
+    },
+    {
+      "id": "Nueva Jersey Trenton Mercer (TTN)",
+      "text": "Nueva Jersey Trenton Mercer (TTN)",
+      "city": "Trenton",
+      "country": "Estados Unidos"
+    },
+    {
+      "id": "Manchester (MAN)",
+      "text": "Manchester (MAN)",
+      "city": "Manchester",
+      "country": "Reino Unido"
+    },
+    {
+      "id": "Edimburgo (EDI)",
+      "text": "Edimburgo (EDI)",
+      "city": "Edimburgo",
+      "country": "Reino Unido"
+    },
+    {
+      "id": "Palma de Mallorca (PMI)",
+      "text": "Palma de Mallorca (PMI)",
+      "city": "Palma de Mallorca",
+      "country": "España"
+    },
+    {
+      "id": "Málaga (AGP)",
+      "text": "Málaga (AGP)",
+      "city": "Málaga",
+      "country": "España"
+    },
+    {
+      "id": "Tenerife Sur (TFS)",
+      "text": "Tenerife Sur (TFS)",
+      "city": "Tenerife",
+      "country": "España"
+    },
+    {
+      "id": "Niza Côte d’Azur (NCE)",
+      "text": "Niza Côte d’Azur (NCE)",
+      "city": "Niza",
+      "country": "Francia"
+    },
+    {
+      "id": "Milán Linate (LIN)",
+      "text": "Milán Linate (LIN)",
+      "city": "Milán",
+      "country": "Italia"
+    },
+    {
+      "id": "Venecia Marco Polo (VCE)",
+      "text": "Venecia Marco Polo (VCE)",
+      "city": "Venecia",
+      "country": "Italia"
+    },
+    {
+      "id": "Pisa Galileo Galilei (PSA)",
+      "text": "Pisa Galileo Galilei (PSA)",
+      "city": "Pisa",
+      "country": "Italia"
+    },
+    {
+      "id": "Florencia Peretola (FLR)",
+      "text": "Florencia Peretola (FLR)",
+      "city": "Florencia",
+      "country": "Italia"
+    },
+    {
+      "id": "Nápoles Capodichino (NAP)",
+      "text": "Nápoles Capodichino (NAP)",
+      "city": "Nápoles",
+      "country": "Italia"
+    },
+    {
+      "id": "Varsovia Modlin (WMI)",
+      "text": "Varsovia Modlin (WMI)",
+      "city": "Varsovia",
+      "country": "Polonia"
+    },
+    {
+      "id": "Caracas Maiquetía (CCS)",
+      "text": "Caracas Maiquetía (CCS)",
+      "city": "Caracas",
+      "country": "Venezuela"
+    },
+    {
+      "id": "San Juan Luis Muñoz Marín (SJU)",
+      "text": "San Juan Luis Muñoz Marín (SJU)",
+      "city": "San Juan",
+      "country": "Puerto Rico"
+    },
+    {
+      "id": "Cartagena (CTG)",
+      "text": "Cartagena (CTG)",
+      "city": "Cartagena",
+      "country": "Colombia"
+    },
+    {
+      "id": "Santa Marta (SMR)",
+      "text": "Santa Marta (SMR)",
+      "city": "Santa Marta",
+      "country": "Colombia"
+    },
+    {
+      "id": "San Andrés (ADZ)",
+      "text": "San Andrés (ADZ)",
+      "city": "San Andrés",
+      "country": "Colombia"
+    },
+    {
+      "id": "Cali (CLO)",
+      "text": "Cali (CLO)",
+      "city": "Cali",
+      "country": "Colombia"
+    },
+    {
+      "id": "Cusco (CUZ)",
+      "text": "Cusco (CUZ)",
+      "city": "Cusco",
+      "country": "Perú"
+    },
+    {
+      "id": "Hanói Nội Bài (HAN)",
+      "text": "Hanói Nội Bài (HAN)",
+      "city": "Hanói",
+      "country": "Vietnam"
+    },
+    {
+      "id": "Ciudad Ho Chi Minh Tan Son Nhat (SGN)",
+      "text": "Ciudad Ho Chi Minh Tan Son Nhat (SGN)",
+      "city": "Ciudad Ho Chi Minh",
+      "country": "Vietnam"
+    },
+    {
+      "id": "San Carlos de Bariloche (BRC)",
+      "text": "San Carlos de Bariloche (BRC)",
+      "city": "San Carlos de Bariloche",
+      "country": "Argentina"
+    },
+    {
+      "id": "Puerto Iguazú Cataratas del Iguazú (IGR)",
+      "text": "Puerto Iguazú Cataratas del Iguazú (IGR)",
+      "city": "Puerto Iguazú",
+      "country": "Argentina"
+    },
+    {
+      "id": "Foz do Iguaçu Cataratas (IGU)",
+      "text": "Foz do Iguaçu Cataratas (IGU)",
+      "city": "Foz do Iguaçu",
+      "country": "Brasil"
+    },
+    {
+      "id": "Recife Guararapes (REC)",
+      "text": "Recife Guararapes (REC)",
+      "city": "Recife",
+      "country": "Brasil"
+    },
+    {
+      "id": "Fortaleza Pinto Martins (FOR)",
+      "text": "Fortaleza Pinto Martins (FOR)",
+      "city": "Fortaleza",
+      "country": "Brasil"
+    },
+    {
+      "id": "Salvador Deputado Luís Eduardo Magalhães (SSA)",
+      "text": "Salvador Deputado Luís Eduardo Magalhães (SSA)",
+      "city": "Salvador",
+      "country": "Brasil"
+    },
+    {
+      "id": "Belo Horizonte Confins (CNF)",
+      "text": "Belo Horizonte Confins (CNF)",
+      "city": "Belo Horizonte",
+      "country": "Brasil"
+    },
+    {
+      "id": "Porto Alegre Salgado Filho (POA)",
+      "text": "Porto Alegre Salgado Filho (POA)",
+      "city": "Porto Alegre",
+      "country": "Brasil"
+    },
+    {
+      "id": "Manila Ninoy Aquino (MNL)",
+      "text": "Manila Ninoy Aquino (MNL)",
+      "city": "Manila",
+      "country": "Filipinas"
+    },
+    {
+      "id": "Marrakech Menara (RAK)",
+      "text": "Marrakech Menara (RAK)",
+      "city": "Marrakech",
+      "country": "Marruecos"
+    },
+    {
+      "id": "Agadir Al Massira (AGA)",
+      "text": "Agadir Al Massira (AGA)",
+      "city": "Agadir",
+      "country": "Marruecos"
     }
   ],
   "currencies": [
