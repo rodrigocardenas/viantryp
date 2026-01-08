@@ -730,6 +730,42 @@
       "text": "Kuwait (KWI)",
       "city": "Kuwait",
       "country": "Kuwait"
+    },
+    {
+      "id": "Panamá Tocumen (PTY)",
+      "text": "Panamá Tocumen (PTY)",
+      "city": "Panamá",
+      "country": "Panamá"
+    },
+    {
+      "id": "San José Juan Santamaría (SJO)",
+      "text": "San José Juan Santamaría (SJO)",
+      "city": "San José",
+      "country": "Costa Rica"
+    },
+    {
+      "id": "Bruselas (BRU)",
+      "text": "Bruselas (BRU)",
+      "city": "Bruselas",
+      "country": "Bélgica"
+    },
+    {
+      "id": "Atenas Eleftherios Venizelos (ATH)",
+      "text": "Atenas Eleftherios Venizelos (ATH)",
+      "city": "Atenas",
+      "country": "Grecia"
+    },
+    {
+      "id": "Dublín (DUB)",
+      "text": "Dublín (DUB)",
+      "city": "Dublín",
+      "country": "Irlanda"
+    },
+    {
+      "id": "Buenos Aires Aeroparque Jorge Newbery (AEP)",
+      "text": "Buenos Aires Aeroparque Jorge Newbery (AEP)",
+      "city": "Buenos Aires",
+      "country": "Argentina"
     }
   ],
   "currencies": [
