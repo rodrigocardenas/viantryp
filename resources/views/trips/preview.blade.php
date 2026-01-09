@@ -8,46 +8,41 @@
     <!-- Main Container -->
     <div class="container">
         <x-preview.trip-info :trip="$trip" />
-    @php
-        // Helper function to get timestamp for sorting items chronologically
-        $getItemTimestamp = function($item) {
-            switch ($item['type']) {
-                case 'flight':
-                    if (isset($item['departure_time']) && !empty($item['departure_time'])) {
-                        return strtotime($item['departure_time']);
-                    }
-                    break;
-                case 'hotel':
-                    if (isset($item['check_in']) && !empty($item['check_in'])) {
-                        return strtotime($item['check_in']);
-                    }
-                    break;
-                case 'transport':
-                    if (isset($item['pickup_datetime']) && !empty($item['pickup_datetime'])) {
-                        return strtotime($item['pickup_datetime']);
-                    }
-                    break;
-                case 'activity':
-                    if (isset($item['start_time']) && !empty($item['start_time'])) {
-                        return strtotime($item['start_time']);
-                    }
-                    break;
-            }
-            // Default: return a high timestamp to put items without time at the end
-            return PHP_INT_MAX;
-        };
-    @endphp
         @if(isset($trip) && $trip->items_data && count($trip->items_data) > 0)
             @php
+                // Helper function to get timestamp for sorting items chronologically
+                $getItemTimestamp = function($item) {
+                    switch ($item['type']) {
+                        case 'flight':
+                            if (isset($item['departure_time']) && !empty($item['departure_time'])) {
+                                return strtotime($item['departure_time']);
+                            }
+                            break;
+                        case 'hotel':
+                            if (isset($item['check_in']) && !empty($item['check_in'])) {
+                                return strtotime($item['check_in']);
+                            }
+                            break;
+                        case 'transport':
+                            if (isset($item['pickup_datetime']) && !empty($item['pickup_datetime'])) {
+                                return strtotime($item['pickup_datetime']);
+                            }
+                            break;
+                        case 'activity':
+                            if (isset($item['start_time']) && !empty($item['start_time'])) {
+                                return strtotime($item['start_time']);
+                            }
+                            break;
+                    }
+                    // Default: return a high timestamp to put items without time at the end
+                    return PHP_INT_MAX;
+                };
+
                 // Check for summary items
                 $summaryItems = array_filter($trip->items_data, function($item) {
                     return isset($item['type']) && $item['type'] === 'summary';
                 });
-            @endphp
 
-            <x-preview.summary-section :summaryItems="$summaryItems" />
-
-            @php
                 // Group items by day (excluding summary items) and sort chronologically
                 $itemsByDay = [];
                 $dayDates = [];
@@ -83,6 +78,8 @@
                 }
                 unset($dayItems); // Break reference
             @endphp
+
+            <x-preview.summary-section :summaryItems="$summaryItems" />
 
             @foreach($itemsByDay as $dayNumber => $dayItems)
                 @php
