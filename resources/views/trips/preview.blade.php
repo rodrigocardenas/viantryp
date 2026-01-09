@@ -70,7 +70,7 @@
 
                 // Sort items within each day chronologically
                 foreach($itemsByDay as $dayNumber => &$dayItems) {
-                    usort($dayItems, function($a, $b) {
+                    usort($dayItems, function($a, $b) use ($getItemTimestamp) {
                         $timeA = $getItemTimestamp($a);
                         $timeB = $getItemTimestamp($b);
                         return $timeA <=> $timeB;
