@@ -12,7 +12,8 @@
     'deleteUrl' => null,
     'deleteText' => 'Eliminar',
     'shareUrl' => null,
-    'shareText' => 'Compartir'
+    'shareText' => 'Compartir',
+    'trip' => null
 ])
 
 <header class="editor-header">
@@ -25,7 +26,15 @@
 
     @if($showActions)
     <div class="header-center">
-        <h1 class="trip-title" id="trip-title">Sin título</h1>
+        <div class="trip-title-and-date">
+            <h1 class="trip-title" id="trip-title">{{ $trip->title ?? 'Sin título' }}</h1>
+
+            {{-- Editable start date next to title so saving finds it easily --}}
+            @php $today = date('Y-m-d'); @endphp
+            <input type="date" id="start-date" class="form-input header-start-date"
+                   value="{{ $trip && $trip->start_date ? $trip->start_date->format('Y-m-d') : $today }}"
+                   min="{{ $today }}">
+        </div>
     </div>
 
     <div class="header-right">
@@ -72,5 +81,32 @@ function showNotification(message, type = 'info') {
     // Implementar notificación
     alert(message);
 }
+</script>
+@endpush
+
+@push('scripts')
+<script>
+// Sync header start-date with global existingTripData so export-manager picks it up
+document.addEventListener('DOMContentLoaded', function() {
+    const startDateInput = document.getElementById('start-date');
+    if (!startDateInput) return;
+
+    // Ensure window.existingTripData exists
+    if (!window.existingTripData) window.existingTripData = {};
+
+    // Initialize from existingTripData if present
+    if (window.existingTripData.start_date && !startDateInput.value) {
+        startDateInput.value = window.existingTripData.start_date;
+    }
+
+    startDateInput.addEventListener('change', function() {
+        window.existingTripData = window.existingTripData || {};
+        window.existingTripData.start_date = startDateInput.value || null;
+
+        if (typeof updateItineraryDates === 'function') {
+            try { updateItineraryDates(); } catch (e) { console.warn('updateItineraryDates failed', e); }
+        }
+    });
+});
 </script>
 @endpush

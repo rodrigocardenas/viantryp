@@ -27,7 +27,7 @@ class TripDocumentController extends Controller
 
         $request->validate([
             'file' => 'required|file|max:10240|mimes:pdf,doc,docx,txt,jpg,jpeg,png',
-            'type' => 'required|in:flight,hotel,transport',
+            'type' => 'required|in:flight,hotel,transport,activity',
             'item_id' => 'nullable|string'
         ]);
 
@@ -74,7 +74,7 @@ class TripDocumentController extends Controller
     {
         $request->validate([
             'file' => 'required|file|max:10240|mimes:pdf,doc,docx,txt,jpg,jpeg,png',
-            'type' => 'required|in:flight,hotel,transport',
+            'type' => 'required|in:flight,hotel,transport,activity',
             'item_id' => 'nullable|string'
         ]);
 
@@ -118,7 +118,7 @@ class TripDocumentController extends Controller
         $request->validate([
             'temp_path' => 'required|string',
             'trip_id' => 'required|integer|exists:trips,id',
-            'type' => 'required|in:flight,hotel,transport',
+            'type' => 'required|in:flight,hotel,transport,activity',
             'item_id' => 'nullable|string'
         ]);
 
@@ -207,6 +207,48 @@ class TripDocumentController extends Controller
             'success' => true,
             'documents' => $documents
         ]);
+    }
+
+    /**
+     * Update the item_id of a document
+     */
+    public function updateItemId(Request $request, Trip $trip): JsonResponse
+    {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para actualizar documentos de este viaje.'
+            ], 403);
+        }
+
+        $request->validate([
+            'documents' => 'required|array',
+            'documents.*.id' => 'required|integer',
+            'documents.*.item_id' => 'required|string'
+        ]);
+
+        try {
+            foreach ($request->documents as $docData) {
+                $document = TripDocument::where('id', $docData['id'])
+                    ->where('trip_id', $trip->id)
+                    ->first();
+
+                if ($document && $document->user_id === Auth::id()) {
+                    $document->update(['item_id' => $docData['item_id']]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Documentos actualizados exitosamente.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar documentos: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

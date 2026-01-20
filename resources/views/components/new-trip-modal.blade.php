@@ -19,6 +19,30 @@
                        placeholder="Ej: Viaje a Barcelona 2024">
             </div>
 
+            <div class="form-group">
+                <label for="start-date">Fecha de Inicio del Viaje</label>
+                <input type="date" id="modal-start-date" name="start_date">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="client-name">Nombre del Cliente</label>
+                    <input type="text" id="client-name" name="client_name" placeholder="Nombre del cliente">
+                </div>
+                <div class="form-group">
+                    <label for="client-email">Correo del Cliente</label>
+                    <input type="email" id="client-email" name="client_email" placeholder="correo@ejemplo.com">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="agent-id">Responsable (Agente)</label>
+                <select id="agent-id" name="agent_id">
+                    <option value="">Seleccionar agente...</option>
+                    <!-- Opciones se cargarán dinámicamente -->
+                </select>
+            </div>
+
         </form>
 
         <div class="modal-footer">
@@ -132,7 +156,8 @@
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
     width: 100%;
     padding: 12px 14px;
     border: 1px solid #e2e8f0;
@@ -143,7 +168,8 @@
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
     outline: none;
     border-color: #4299e1;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
@@ -269,6 +295,112 @@ function createTrip() {
                 `;
             }
 
+            // Update start date in the header if provided
+            const startDateInput = document.getElementById('start-date');
+            if (startDateInput && data.trip.start_date) {
+                startDateInput.value = new Date(data.trip.start_date).toISOString().split('T')[0];
+            }
+
+            // Update client and agent info in the header
+            const clientAgentInfo = document.querySelector('.client-agent-info');
+            if (clientAgentInfo && data.trip.persons) {
+                const client = data.trip.persons.find(p => p.type === 'client');
+                const agent = data.trip.persons.find(p => p.type === 'agent');
+
+                let html = '';
+                if (client) {
+                    html += `<div class="info-item"><label>Cliente:</label><span>${client.name} (${client.email})</span></div>`;
+                }
+                if (agent) {
+                    html += `<div class="info-item"><label>Responsable:</label><span>${agent.name}</span></div>`;
+                }
+
+                if (html) {
+                    clientAgentInfo.innerHTML = html;
+                    clientAgentInfo.style.display = 'flex';
+                } else {
+                    clientAgentInfo.style.display = 'none';
+                }
+            }
+
+            // Also update the new compact header (title, subtitle, banner and banner chip)
+            const headerTitleInput = document.querySelector('.trip-header-block .h2-style') || document.getElementById('trip-title');
+            if (headerTitleInput) {
+                headerTitleInput.value = data.trip.title || title;
+            }
+
+            // Subtitle: client | duration | start date
+            const subtitleEl = document.querySelector('.trip-subtitle');
+            if (subtitleEl) {
+                // If subtitle already contains an editable start-date input, preserve and update it
+                const existingInput = subtitleEl.querySelector('input#start-date, input.subtitle-date-input');
+
+                // Build parts for client and duration (do NOT include the date here if we have an input)
+                const parts = [];
+                if (data.trip.persons) {
+                    const client = data.trip.persons.find(p => p.type === 'client');
+                    if (client) parts.push(`<span class="subtitle-client">${escapeHtml(client.name)}</span>`);
+                }
+
+                if (data.trip.start_date && data.trip.end_date) {
+                    try {
+                        const s = new Date(data.trip.start_date);
+                        const e = new Date(data.trip.end_date);
+                        const diffDays = Math.floor((e - s) / (24 * 3600 * 1000)) + 1;
+                        const durationText = diffDays === 1 ? '1 día' : diffDays + ' días';
+                        parts.push(`<span class="subtitle-duration">${durationText}</span>`);
+                    } catch (err) {
+                        // ignore date parse errors
+                    }
+                }
+
+                const sep = '<span class="subtitle-sep">&nbsp;|&nbsp;</span>';
+
+                if (existingInput) {
+                    // Update the input's value to the trip start date (ISO for input)
+                    if (data.trip.start_date) {
+                        const d = new Date(data.trip.start_date);
+                        const iso = d.toISOString().split('T')[0];
+                        existingInput.value = iso;
+                        existingInput.setAttribute('value', iso);
+                    }
+
+                    // Build new innerHTML with client/duration parts, then append the input HTML
+                    const inputHTML = existingInput.outerHTML;
+                    subtitleEl.innerHTML = parts.filter(Boolean).join(sep);
+                    if (subtitleEl.innerHTML && inputHTML) subtitleEl.innerHTML += sep + inputHTML;
+                    else if (inputHTML) subtitleEl.innerHTML = inputHTML;
+                } else {
+                    // No editable input present: render plain spans including formatted date
+                    if (data.trip.start_date) {
+                        const d = new Date(data.trip.start_date);
+                        const dd = String(d.getDate()).padStart(2, '0');
+                        const mm = String(d.getMonth() + 1).padStart(2, '0');
+                        const yyyy = d.getFullYear();
+                        parts.push(`<span class="subtitle-date">${dd}/${mm}/${yyyy}</span>`);
+                    }
+
+                    subtitleEl.innerHTML = parts.map(p => p).join(sep);
+                }
+            }
+
+            // Banner: update cover image (no text overlays on banner)
+            const banner = document.getElementById('trip-banner');
+            if (banner && data.trip.cover_image_url) {
+                banner.style.backgroundImage = `url('${data.trip.cover_image_url}')`;
+            }
+
+            // small helper to avoid XSS when injecting names/emails
+            function escapeHtml(str) {
+                if (!str) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
             // Show appropriate message based on action
             if (data.action === 'updated') {
                 showNotification('Viaje actualizado', 'Un viaje existente ha sido actualizado exitosamente.', 'success');
@@ -291,8 +423,34 @@ function createTrip() {
     });
 }
 
+// Función para cargar agentes
+function loadAgents() {
+    fetch('{{ route("persons.agents") }}', {
+        method: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const agentSelect = document.getElementById('agent-id');
+        agentSelect.innerHTML = '<option value="">Seleccionar agente...</option>';
+        data.forEach(agent => {
+            const option = document.createElement('option');
+            option.value = agent.id;
+            option.textContent = agent.name;
+            agentSelect.appendChild(option);
+        });
+        console.log('Agents loaded successfully');
+    })
+    .catch(error => {
+        console.error('Error loading agents:', error);
+    });
+}
+
 // Validación en tiempo real
 document.addEventListener('DOMContentLoaded', function() {
+    loadAgents();
     const startDateInput = document.getElementById('start-date');
     const endDateInput = document.getElementById('end-date');
 
@@ -319,6 +477,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 createTrip();
             }
         });
+    }
+
+    const modalStartDateInput = document.getElementById('modal-start-date');
+    if (modalStartDateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        modalStartDateInput.setAttribute('min', today);
     }
 });
 </script>

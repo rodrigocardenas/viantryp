@@ -85,10 +85,11 @@ class Utils {
                 return {
                     ...baseData,
                     title: itemElement.querySelector('.item-title')?.textContent || '',
-                    transport_type: itemElement.querySelector('.item-title')?.textContent || '',
-                    pickup_location: itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[0] || '',
-                    destination: itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[1] || '',
-                    pickup_time: itemElement.dataset.pickupTime || ''
+                    transport_type: itemElement.getAttribute('data-transport-type') || '',
+                    pickup_location: itemElement.getAttribute('data-pickup-location') || '',
+                    destination: itemElement.getAttribute('data-destination') || '',
+                    pickup_datetime: itemElement.getAttribute('data-pickup-datetime') || '',
+                    arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || ''
                 };
 
             case 'note':

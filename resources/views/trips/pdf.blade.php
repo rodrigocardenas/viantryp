@@ -343,6 +343,8 @@
     </div>
     @endif
 
+    <x-pdf.global-notes :trip="$trip" />
+
     @if(isset($trip) && $trip->days && count($trip->days) > 0)
         @foreach($trip->days as $day)
         <div class="day-section">

@@ -6,22 +6,52 @@
 
 @props(['trip' => null])
 
+<!-- Global Notes Section -->
+<div class="info-card global-notes-card" id="global-notes-section">
+    <div class="card-header">
+        <i class="fas fa-sticky-note"></i>
+        <h3>Notas</h3>
+    </div>
+    <div class="card-content">
+        <div class="global-notes-section-inner">
+            <div class="notes-editor-row">
+                <div id="global-note-editor" class="quill-container" style="height: 100px !important;"></div>
+                <br>
+                <div class="notes-actions">
+                    <button class="btn btn-primary" id="btn-save-global-note" type="button">Agregar Nota</button>
+                </div>
+            </div>
+            <br>
+            <div class="notes-container" id="global-notes-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+        @if(isset($trip) && $trip->notes && count($trip->notes) > 0)
+            @foreach($trip->notes as $note)
+                <x-trip-item :item="$note" :day="null" />
+            @endforeach
+        @endif
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Days Container -->
 <div class="days-container" id="days-container">
     @if(isset($trip) && $trip->days && count($trip->days) > 0)
         @foreach($trip->days as $day)
             <div class="day-card" data-day="{{ $day->day }}">
+                <button class="btn-delete-day-absolute" data-action="delete-day" data-day="{{ $day->day }}" title="Eliminar día">
+                    <i class="fas fa-trash"></i>
+                </button>
                 <div class="day-header">
-                    <h3>Día {{ $day->day }}</h3>
-                    <p class="day-date">{{ $day->getFormattedDate() }}</p>
-                    @if(count($trip->days) > 1)
-                        <button class="delete-day-btn" data-action="delete-day" data-day="{{ $day->day }}" title="Eliminar día">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    @endif
+                    <div class="day-title-section">
+                        <div class="day-title-row">
+                            <h3>DÍA {{ $day->day }}</h3>
+                            <span class="day-separator">|</span>
+                            <input type="date" id="day-{{ $day->day }}-date" class="day-date-input-large" value="{{ $day->getDateInputValue() }}" data-day="{{ $day->day }}">
+                        </div>
+                        <p class="day-date-display">{{ $day->getFormattedDate() }}</p>
+                    </div>
                 </div>
                 <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-
                     <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
 
                     @if($day->items && count($day->items) > 0)
@@ -35,34 +65,42 @@
     @else
         {{-- Always show at least one day for editing --}}
         <div class="day-card" data-day="1">
+            <button class="btn-delete-day-absolute" data-action="delete-day" data-day="1" title="Eliminar día" style="display: none;">
+                <i class="fas fa-trash"></i>
+            </button>
             <div class="day-header">
-                <h3>Día 1</h3>
-                <p class="day-date" id="day-1-date">
-                    @if(isset($trip) && $trip->start_date)
-                        {{ $trip->start_date->format('l, d \d\e F \d\e Y') }}
-                    @else
-                        martes, 16 de septiembre de 2025
-                    @endif
-                </p>
-                <button class="delete-day-btn" data-action="delete-day" data-day="1" title="Eliminar día">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-                            <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    {{-- <div class="add-element-btn" data-action="add-element" data-day="1">
-                        <i class="fas fa-plus"></i>
-                    </div> --}}
-                    <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
-<br>
+                <div class="day-title-section">
+                    <div class="day-title-row">
+                        <h3>DÍA 1</h3>
+                        <span class="day-separator">|</span>
+                        <input type="date" id="day-1-date" class="day-date-input-large" value="{{ isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '' }}" data-day="1">
+                    </div>
+                    <p class="day-date-display" id="day-1-date-display">
+                        @php
+                            $inputValue = isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '';
+                            if ($inputValue) {
+                                $date = \Carbon\Carbon::parse($inputValue);
+                                echo $date->isoFormat('dddd, D [de] MMMM [de] YYYY');
+                            } else {
+                                echo 'Sin fecha';
+                            }
+                        @endphp
+                    </p>
                 </div>
-</search>
-</search_and_replace>
+            </div>
+            <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="add-element-btn btn-sm" data-action="add-element" data-day="1">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </div>
+        </div>
     @endif
 
-    <!-- Add Day Section -->
+
+</div>
+
+<!-- Add Day Section -->
     <x-editor-add-day-section />
-</div></search>
-</search_and_replace>
 
 @push('scripts')
 <script>
@@ -131,6 +169,16 @@
     }
 
     function addElementToDay(data) {
+        // Special handling for global notes (no day)
+        if (data.type === 'note' && (typeof data.day === 'undefined' || data.day === null)) {
+            const globalNotesList = document.getElementById('global-notes-list');
+            if (!globalNotesList) return;
+            const elementDiv = createElementDiv(data);
+            globalNotesList.appendChild(elementDiv);
+            updateAllSummaries();
+            return;
+        }
+
         // Special handling for total element positioning
         if (data.type === 'total') {
             const daysContainer = document.getElementById('days-container');
@@ -151,6 +199,8 @@
                     daysContainer.appendChild(elementDiv);
                 }
             }
+
+
 
             // Update summaries after adding element
             updateAllSummaries();
@@ -182,7 +232,7 @@
 
         // Add flight data as attributes if this is a flight element
         if (data.type === 'flight') {
-            elementDiv.setAttribute('data-airline', data.airline || '');
+            elementDiv.setAttribute('data-airline_id', data.airline_id || '');
             elementDiv.setAttribute('data-flight-number', data.flight_number || '');
             elementDiv.setAttribute('data-departure-airport', data.departure_airport || '');
             elementDiv.setAttribute('data-arrival-airport', data.arrival_airport || '');
@@ -198,7 +248,23 @@
             elementDiv.setAttribute('data-check-in', data.check_in || '');
             elementDiv.setAttribute('data-check-out', data.check_out || '');
             elementDiv.setAttribute('data-room-type', data.room_type || '');
+            elementDiv.setAttribute('data-meal-plan', data.meal_plan || '');
             elementDiv.setAttribute('data-nights', data.nights || 1);
+        }
+
+        // Add transport data as attributes if this is a transport element
+        if (data.type === 'transport') {
+            elementDiv.setAttribute('data-transport-type', data.transport_type || '');
+            elementDiv.setAttribute('data-pickup-location', data.pickup_location || '');
+            elementDiv.setAttribute('data-destination', data.destination || '');
+            elementDiv.setAttribute('data-pickup-datetime', data.pickup_datetime || '');
+            elementDiv.setAttribute('data-arrival-datetime', data.arrival_datetime || '');
+        }
+
+        // Add note data as attributes if this is a note element
+        if (data.type === 'note') {
+            // Store note_content in the element's dataset (not as HTML attribute to preserve HTML)
+            elementDiv.dataset.noteContent = data.note_content || '';
         }
 
         elementDiv.innerHTML = `
@@ -233,7 +299,7 @@
     function getElementTitle(data) {
         switch (data.type) {
             case 'flight':
-                return `${data.airline || 'Vuelo'} ${data.flight_number || ''}`.trim();
+                return `${data.airline_id || 'Vuelo'} ${data.flight_number || ''}`.trim();
             case 'hotel':
                 return data.hotel_name || 'Hotel';
             case 'activity':
@@ -260,6 +326,25 @@
             default:
                 return 'Elemento';
         }
+    }
+
+    function getTypeLabel(type) {
+        const labels = {
+            'flight': 'Vuelo',
+            'hotel': 'Hotel',
+            'activity': 'Actividad',
+            'transport': 'Transporte',
+            'note': 'Nota',
+            'summary': 'Resumen',
+            'total': 'Total'
+        };
+        return labels[type] || type;
+    }
+    // Expose helper functions to global scope for inline scripts and modules
+    if (typeof window !== 'undefined') {
+        window.getTypeLabel = getTypeLabel;
+        window.getIcon = getIcon;
+        window.getIconClass = getIconClass;
     }
 
     function getElementSubtitle(data) {
@@ -303,6 +388,14 @@
                 return 'Resumen automático del viaje';
             case 'total':
                 return data.price_breakdown || 'Precio total del viaje';
+            case 'note':
+                // For display, strip HTML tags to show plain text in subtitle
+                const noteContent = data.note_content || '';
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = noteContent;
+                const plainText = tempDiv.textContent || tempDiv.innerText || '';
+                // Truncate if too long
+                return plainText.length > 100 ? plainText.substring(0, 100) + '...' : plainText;
             default:
                 return '';
         }
@@ -394,6 +487,7 @@
 
         const startDate = document.getElementById('start-date').value;
         let dayDate = 'Sin fecha';
+        let defaultDate = '';
         if (startDate) {
             const date = new Date(startDate);
             date.setDate(date.getDate() + newDayNumber - 1);
@@ -403,20 +497,72 @@
                 month: 'long',
                 year: 'numeric'
             });
+            defaultDate = date.toISOString().split('T')[0];
         }
 
-        dayCard.innerHTML = `
-            <div class="day-header">
-                <h3>Día ${newDayNumber}</h3>
-                <p class="day-date">${dayDate}</p>
-            </div>
-            <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="add-element-btn" data-action="add-element" data-day="${newDayNumber}">
-                    <i class="fas fa-plus"></i>
-                </div>
-                <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
-            </div>
-        `;
+        // Create day header
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-header';
+
+        // Create title section
+        const titleSection = document.createElement('div');
+        titleSection.className = 'day-title-section';
+
+        const title = document.createElement('h3');
+        title.textContent = `Día ${newDayNumber}`;
+        titleSection.appendChild(title);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn-delete-day';
+        deleteBtn.setAttribute('data-action', 'delete-day');
+        deleteBtn.setAttribute('data-day', newDayNumber);
+        deleteBtn.title = 'Eliminar día';
+        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        titleSection.appendChild(deleteBtn);
+
+        dayHeader.appendChild(titleSection);
+
+        // Create date section
+        const dateSection = document.createElement('div');
+        dateSection.className = 'day-date-section';
+
+        const label = document.createElement('label');
+        label.setAttribute('for', `day-${newDayNumber}-date`);
+        label.textContent = 'Fecha:';
+        dateSection.appendChild(label);
+
+        const input = document.createElement('input');
+        input.type = 'date';
+        input.id = `day-${newDayNumber}-date`;
+        input.className = 'day-date-input';
+        input.value = defaultDate;
+        input.setAttribute('data-day', newDayNumber);
+        dateSection.appendChild(input);
+
+        const display = document.createElement('p');
+        display.className = 'day-date-display';
+        display.id = `day-${newDayNumber}-date-display`;
+        display.textContent = dayDate;
+        dateSection.appendChild(display);
+
+        dayHeader.appendChild(dateSection);
+
+        dayCard.appendChild(dayHeader);
+
+        // Create day content
+        const dayContent = document.createElement('div');
+        dayContent.className = 'day-content';
+        dayContent.setAttribute('ondrop', 'drop(event)');
+        dayContent.setAttribute('ondragover', 'allowDrop(event)');
+
+        const addBtn = document.createElement('div');
+        addBtn.className = 'add-element-btn btn-sm';
+        addBtn.setAttribute('data-action', 'add-element');
+        addBtn.setAttribute('data-day', newDayNumber);
+        addBtn.innerHTML = '<i class="fas fa-plus"></i>';
+        dayContent.appendChild(addBtn);
+
+        dayCard.appendChild(dayContent);
 
         daysContainer.appendChild(dayCard);
 
@@ -472,8 +618,90 @@
             });
         });
 
-        return items;
+    // Add global notes collected from the global notes container
+    collectGlobalNotes(items);
+    return items;
     }
+
+    // Also collect global notes that are outside of days
+    function collectGlobalNotes(itemsArray) {
+        const notesList = document.querySelectorAll('#global-notes-list .timeline-item');
+        notesList.forEach(item => {
+            const itemData = extractItemData(item, null); // day null for global
+            if (itemData) itemsArray.push(itemData);
+        });
+    }
+
+    // Global Quill editor instance for notes
+    let globalNotesQuill = null;
+
+    function initializeGlobalNotesEditor() {
+        const editorEl = document.getElementById('global-note-editor');
+        if (!editorEl) return;
+
+        // Wait for Quill to be available in window
+        if (!window.Quill) {
+            setTimeout(initializeGlobalNotesEditor, 100);
+            return;
+        }
+
+        try {
+            globalNotesQuill = new window.Quill('#global-note-editor', {
+                theme: 'snow',
+                placeholder: 'Escribe una nota global... ',
+                modules: { toolbar: [['bold','italic','underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link'], ['clean']] }
+            });
+        } catch (err) {
+            console.error('Error initializing global Quill editor:', err);
+            return;
+        }
+
+        // Attach click handler to save button
+        const saveBtn = document.getElementById('btn-save-global-note');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', function() {
+                saveGlobalNote();
+            });
+        }
+    }
+
+    // Save function exposed globally
+    function saveGlobalNote() {
+        if (!globalNotesQuill) {
+            alert('El editor no está listo aún.');
+            return;
+        }
+
+        const content = globalNotesQuill.root.innerHTML.trim();
+        if (!content.replace(/<[^>]*>/g, '').trim()) {
+            alert('Por favor ingresa contenido para la nota.');
+            return;
+        }
+
+        const noteData = { type: 'note', note_title: 'Nota', note_content: content, day: null };
+        if (typeof timelineManager !== 'undefined' && typeof timelineManager.addElementToDay === 'function') {
+            timelineManager.addElementToDay(noteData);
+        } else if (typeof addElementToDay === 'function') {
+            addElementToDay(noteData);
+        } else {
+            console.error('No method found to add note to timeline');
+            return;
+        }
+
+        // Clear editor
+        globalNotesQuill.setContents([]);
+        // Optionally show notification
+        if (typeof showNotification === 'function') showNotification('Nota agregada', 'La nota global fue agregada.');
+    }
+    // Expose globally
+    if (typeof window !== 'undefined') {
+        window.saveGlobalNote = saveGlobalNote;
+    }
+
+    // Initialize Quill after DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(initializeGlobalNotesEditor, 400);
+    });
 
     function extractItemData(itemElement, dayNumber) {
         const itemType = itemElement.querySelector('.item-type')?.textContent?.toLowerCase();
@@ -503,7 +731,7 @@
                 return {
                     ...baseData,
                     type: 'flight',
-                    airline: itemElement.getAttribute('data-airline') || '',
+                    airline_id: itemElement.getAttribute('data-airline_id') || '',
                     flight_number: itemElement.getAttribute('data-flight-number') || '',
                     departure_airport: departureAirport,
                     arrival_airport: arrivalAirport,
@@ -522,6 +750,7 @@
                     check_in: itemElement.getAttribute('data-check-in') || '',
                     check_out: itemElement.getAttribute('data-check-out') || '',
                     room_type: itemElement.getAttribute('data-room-type') || '',
+                    meal_plan: itemElement.getAttribute('data-meal-plan') || '',
                     nights: parseInt(itemElement.getAttribute('data-nights')) || 1
                 };
 
@@ -541,10 +770,11 @@
                 return {
                     ...baseData,
                     type: 'transport',
-                    transport_type: itemElement.querySelector('.item-title')?.textContent || '',
-                    pickup_location: itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[0] || '',
-                    destination: itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[1] || '',
-                    pickup_time: ''
+                    transport_type: itemElement.getAttribute('data-transport-type') || '',
+                    pickup_location: itemElement.getAttribute('data-pickup-location') || '',
+                    destination: itemElement.getAttribute('data-destination') || '',
+                    pickup_datetime: itemElement.getAttribute('data-pickup-datetime') || '',
+                    arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || ''
                 };
 
             case 'nota':
@@ -776,5 +1006,276 @@
 
         return summary;
     }
+
+    // Handle day date changes
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('day-date-input')) {
+            const dayNumber = e.target.dataset.day;
+            const newDate = e.target.value;
+            const displayElement = document.getElementById(`day-${dayNumber}-date-display`);
+
+            if (newDate) {
+                const date = new Date(newDate + 'T00:00:00');
+                const formattedDate = date.toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                displayElement.textContent = formattedDate;
+            } else {
+                displayElement.textContent = 'Sin fecha';
+            }
+
+            // Validate elements in this day
+            validateDayElements(dayNumber, newDate);
+        }
+    });
+
+    // Handle day deletion
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('[data-action="delete-day"]')) {
+            const button = e.target.closest('[data-action="delete-day"]');
+            const dayNumber = button.dataset.day;
+
+            if (confirm(`¿Estás seguro de que quieres eliminar el Día ${dayNumber}? Se eliminarán todos los elementos contenidos en este día.`)) {
+                deleteDay(dayNumber);
+            }
+        }
+    });
+
+    function validateDayElements(dayNumber, dayDate) {
+        if (!dayDate) return; // No validation if no date set
+
+        const dayCard = document.querySelector(`[data-day="${dayNumber}"]`);
+        const elements = dayCard.querySelectorAll('.timeline-item');
+
+        elements.forEach(element => {
+            const elementData = extractItemData(element, dayNumber);
+            if (elementData) {
+                const elementDates = getElementDates(elementData);
+                const hasMismatch = elementDates.some(date => date && date !== dayDate);
+
+                if (hasMismatch) {
+                    showDateMismatchDialog(dayNumber, elementData.type);
+                    element.classList.add('date-mismatch');
+                } else {
+                    element.classList.remove('date-mismatch');
+                }
+            }
+        });
+    }
+
+    function getElementDates(elementData) {
+        const dates = [];
+
+        switch (elementData.type) {
+            case 'flight':
+                if (elementData.departure_time) {
+                    dates.push(elementData.departure_time.split(' ')[0]);
+                }
+                break;
+            case 'hotel':
+                if (elementData.check_in) dates.push(elementData.check_in);
+                if (elementData.check_out) dates.push(elementData.check_out);
+                break;
+            case 'activity':
+                // Activities might not have dates, skip validation
+                break;
+            case 'transport':
+                if (elementData.pickup_datetime) {
+                    dates.push(elementData.pickup_datetime.split(' ')[0]);
+                }
+                if (elementData.arrival_datetime) {
+                    dates.push(elementData.arrival_datetime.split(' ')[0]);
+                }
+                break;
+        }
+
+        return dates;
+    }
+
+    function showDateMismatchDialog(dayNumber, elementType) {
+        const typeLabels = {
+            'flight': 'vuelo',
+            'hotel': 'hotel',
+            'activity': 'actividad',
+            'transport': 'transporte'
+        };
+
+        const typeLabel = typeLabels[elementType] || 'elemento';
+
+        // Removed warning dialog as requested
+        // alert(`Advertencia: El ${typeLabel} en el Día ${dayNumber} tiene fechas que no coinciden con la fecha asignada al día. Por favor, corrige las fechas del elemento.`);
+    }
+
+    function deleteDay(dayNumber) {
+        const dayCard = document.querySelector(`[data-day="${dayNumber}"]`);
+        if (dayCard) {
+            dayCard.remove();
+
+            // Renumber remaining days
+            const remainingDays = document.querySelectorAll('.day-card');
+            remainingDays.forEach((card, index) => {
+                const newDayNumber = index + 1;
+                card.dataset.day = newDayNumber;
+                card.querySelector('h3').textContent = `Día ${newDayNumber}`;
+                card.querySelector('.day-date-input').dataset.day = newDayNumber;
+                card.querySelector('.day-date-input').id = `day-${newDayNumber}-date`;
+                card.querySelector('.day-date-display').id = `day-${newDayNumber}-date-display`;
+                card.querySelector('.btn-delete-day').dataset.day = newDayNumber;
+                card.querySelector('.add-element-btn').dataset.day = newDayNumber;
+
+                // Update elements in this day
+                const elements = card.querySelectorAll('.timeline-item');
+                elements.forEach(element => {
+                    if (element.dataset.day) {
+                        element.dataset.day = newDayNumber;
+                    }
+                });
+            });
+
+            updateAllSummaries();
+            showNotification('Día Eliminado', `Día ${dayNumber} y todos sus elementos han sido eliminados.`);
+        }
+    }
 </script>
 @endpush
+
+<style>
+    .day-header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: var(--stone-50);
+        border-radius: 12px;
+        border: 1px solid var(--stone-200);
+    }
+
+    .day-card {
+        position: relative;
+    }
+
+    .day-title-section {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .day-title-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .day-title-row h3 {
+        margin: 0;
+        color: var(--ink);
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .day-separator {
+        font-weight: bold;
+        color: var(--slate-400);
+        font-size: 1.1rem;
+    }
+
+    .day-date-input-large {
+        padding: 0.5rem;
+        border: 1px solid var(--stone-300);
+        border-radius: 6px;
+        font-size: 1rem;
+        width: 160px;
+    }
+
+    .day-date-display {
+        font-size: 0.875rem;
+        color: var(--slate-500);
+        margin: 0;
+        text-align: left;
+    }
+
+    .btn-delete-day-absolute {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--red-500);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0.8rem 0.8rem;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: background-color 0.2s;
+        z-index: 10;
+    }
+
+    .btn-delete-day-absolute:hover {
+        background: var(--red-600);
+    }
+
+    .timeline-item.date-mismatch {
+        border-color: var(--red-400);
+        background: var(--red-50);
+    }
+
+    /* Removed warning logo as requested */
+    /* .timeline-item.date-mismatch::before {
+        content: '⚠️';
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: var(--red-500);
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+    } */
+
+    @media (max-width: 768px) {
+        .day-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+
+        .day-title-section {
+            gap: 1rem;
+        }
+
+        .day-title-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .day-separator {
+            display: none;
+        }
+
+        .day-date-input-large {
+            width: 100%;
+            margin-left: 0;
+        }
+
+        .day-date-display {
+            text-align: left;
+        }
+
+        .btn-delete-day-absolute {
+            top: 0.25rem;
+            right: 0.25rem;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.8rem;
+        }
+    }
+</style>

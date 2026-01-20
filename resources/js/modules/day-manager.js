@@ -15,6 +15,7 @@ class DayManager {
 
         const startDate = document.getElementById('start-date').value;
         let dayDate = 'Sin fecha';
+        let defaultDate = '';
         if (startDate) {
             const date = new Date(startDate);
             date.setDate(date.getDate() + newDayNumber - 1);
@@ -24,20 +25,72 @@ class DayManager {
                 month: 'long',
                 year: 'numeric'
             });
+            defaultDate = date.toISOString().split('T')[0];
         }
 
-        dayCard.innerHTML = `
-            <div class="day-header">
-                <h3>Día ${newDayNumber}</h3>
-                <p class="day-date">${dayDate}</p>
-            </div>
-            <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="add-element-btn" data-action="add-element" data-day="${newDayNumber}">
-                    <i class="fas fa-plus"></i>
-                </div>
-                <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
-            </div>
-        `;
+        // Create day header
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-header';
+
+        // Create title section
+        const titleSection = document.createElement('div');
+        titleSection.className = 'day-title-section';
+
+        const title = document.createElement('h3');
+        title.textContent = `Día ${newDayNumber}`;
+        titleSection.appendChild(title);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn-delete-day';
+        deleteBtn.setAttribute('data-action', 'delete-day');
+        deleteBtn.setAttribute('data-day', newDayNumber);
+        deleteBtn.title = 'Eliminar día';
+        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        titleSection.appendChild(deleteBtn);
+
+        dayHeader.appendChild(titleSection);
+
+        // Create date section
+        const dateSection = document.createElement('div');
+        dateSection.className = 'day-date-section';
+
+        const label = document.createElement('label');
+        label.setAttribute('for', `day-${newDayNumber}-date`);
+        label.textContent = 'Fecha:';
+        dateSection.appendChild(label);
+
+        const input = document.createElement('input');
+        input.type = 'date';
+        input.id = `day-${newDayNumber}-date`;
+        input.className = 'day-date-input';
+        input.value = defaultDate;
+        input.setAttribute('data-day', newDayNumber);
+        dateSection.appendChild(input);
+
+        const display = document.createElement('p');
+        display.className = 'day-date-display';
+        display.id = `day-${newDayNumber}-date-display`;
+        display.textContent = dayDate;
+        dateSection.appendChild(display);
+
+        dayHeader.appendChild(dateSection);
+
+        dayCard.appendChild(dayHeader);
+
+        // Create day content
+        const dayContent = document.createElement('div');
+        dayContent.className = 'day-content';
+        dayContent.setAttribute('ondrop', 'drop(event)');
+        dayContent.setAttribute('ondragover', 'allowDrop(event)');
+
+        const addBtn = document.createElement('div');
+        addBtn.className = 'add-element-btn btn-sm';
+        addBtn.setAttribute('data-action', 'add-element');
+        addBtn.setAttribute('data-day', newDayNumber);
+        addBtn.innerHTML = '<i class="fas fa-plus"></i>';
+        dayContent.appendChild(addBtn);
+
+        dayCard.appendChild(dayContent);
 
         daysContainer.appendChild(dayCard);
 

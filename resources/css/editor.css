@@ -260,6 +260,9 @@
         margin-bottom: 0.5rem;
         font-size: 0.9rem;
         font-family: 'Poppins', sans-serif;
+        border: none;
+        background: none;
+        padding: 0;
     }
 
     .form-input {
@@ -280,7 +283,7 @@
 
     /* Select2 custom styles */
     .select2-container--default .select2-selection--single {
-        height: 2.75rem;
+        height: 3rem;
         border: 1px solid var(--border-gray);
         border-radius: 10px;
         background: white;
@@ -289,7 +292,7 @@
 
     .select2-container--default .select2-selection--single .select2-selection__rendered {
         color: #374151;
-        line-height: 2.5rem;
+        line-height: 2.75rem;
         padding-left: 0;
         font-family: 'Poppins', sans-serif;
     }
@@ -300,7 +303,7 @@
     }
 
     .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 2.5rem;
+        height: 2.75rem;
         right: 0.75rem;
     }
 
@@ -901,13 +904,13 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .icon-flight { color: #3b82f6; background: none; }
-    .icon-hotel { color: #f59e0b; background: none; }
-    .icon-activity { color: #10b981; background: none; }
-    .icon-transport { color: #8b5cf6; background: none; }
-    .icon-note { color: #fbbf24; background: none; }
-    .icon-summary { color: #87ceeb; background: none; }
-    .icon-total { color: #22c55e; background: none; }
+    .icon-flight { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+    .icon-hotel { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+    .icon-activity { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    .icon-transport { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+    .icon-note { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
+    .icon-summary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    .icon-total { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
 
     .item-info {
         flex: 1;

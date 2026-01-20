@@ -128,15 +128,297 @@
     transform: translateY(-1px);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .form-row {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
+/* Compact Trip Header - public/css/components/trip-header.css */
 
-    .btn-update-dates {
-        width: 100%;
-        justify-content: center;
-    }
+.trip-header-compact {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    background: transparent;
+}
+
+.trip-cover {
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.cover-actions {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 8px;
+    background: linear-gradient(to top, rgba(0,0,0,0.35), transparent);
+}
+
+.change-cover-btn {
+    background: rgba(255,255,255,0.9);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #111827;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.trip-main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.trip-title-input {
+    border: none;
+    padding: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+    background: transparent;
+    outline: none;
+    width: 100%;
+}
+
+.persons-compact {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+
+.person-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.06);
+    padding: 6px 8px;
+    border-radius: 999px;
+    color: white;
+    backdrop-filter: blur(4px);
+}
+
+.person-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.9);
+}
+
+.person-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.person-name {
+    font-size: 0.95rem;
+    color: #ffffff;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.person-email {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.8);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* Compact Trip Header with Full-width Banner - public/css/components/trip-header.css */
+
+.trip-header-block {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+/* Top area: title (styled as H2) and compact subtitle */
+.trip-header-top {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 6px;
+}
+
+.h2-style {
+    font-size: 1.5rem; /* h2-like on desktop */
+    font-weight: 700;
+    border: none;
+    background: transparent;
+    color: #0f172a;
+    padding: 0;
+    outline: none;
+}
+
+.trip-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #475569;
+    font-size: 0.9rem;
+}
+
+.trip-subtitle .subtitle-date {
+    font-size: 0.8rem; /* smaller for date */
+    color: #64748b;
+}
+
+.trip-subtitle .subtitle-sep { color: rgba(71,85,105,0.5); }
+
+/* Banner: full width under the top block */
+.trip-banner {
+    width: 100%;
+    height: 200px; /* desktop height */
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+}
+
+.banner-overlay {
+    position: absolute;
+    inset: 0;
+    /* Transparent overlay so banner shows clean image */
+    pointer-events: none;
+}
+
+.banner-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 8px;
+    pointer-events: auto; /* allow clicks on the button */
+}
+
+.change-cover-btn {
+    background: rgba(255,255,255,0.95);
+    border: none;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #0f172a;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.12);
+}
+
+.banner-info {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.banner-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.95);
+    padding: 6px 10px;
+    border-radius: 999px;
+}
+
+.chip-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.95);
+}
+
+.chip-meta { display: flex; flex-direction: column; min-width:0 }
+.chip-name { font-size: 0.95rem; color: #0b1220; }
+.chip-email { font-size: 0.8rem; color: #475569; }
+
+/* Trip Header Card styles - public/css/components/trip-header.css */
+
+.trip-header-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.08);
+    overflow: hidden;
+    display: block;
+    width: 100%;
+    border: 1px solid rgba(2,6,23,0.06); /* subtle border to make card visible */
+    margin: 16px 0; /* space around card */
+}
+
+.trip-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px; /* bigger padding so the title is clearly inside the card */
+    gap: 12px;
+    background: transparent; /* keep consistent */
+}
+
+.trip-header-card .h2-style {
+    font-size: 1.6rem;
+    font-weight: 700;
+    border: none;
+    background: transparent !important;
+    color: #0f172a;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    width: 100%;
+}
+
+.trip-header-card .trip-title-section,
+.trip-header-card .trip-title-input {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.trip-card-top .trip-subtitle {
+    margin-top: 6px;
+    color: #475569;
+    font-size: 0.95rem;
+}
+
+.trip-card-banner {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: block;
+}
+
+.trip-card-banner .banner-overlay { position: absolute; inset: 0; pointer-events: none; }
+.trip-card-banner .banner-actions { position: absolute; top: 10px; right: 10px; pointer-events: auto; }
+
+.trip-card-banner { border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
+
+@media (max-width: 768px) {
+    .h2-style { font-size: 1.15rem; }
+    .trip-subtitle { font-size: 0.8rem; gap: 6px; }
+    .trip-banner { height: 140px; border-radius: 6px; }
+    .change-cover-btn { width: 36px; height: 36px; }
+    .trip-card-banner, .trip-banner { height: 140px; }
+    .trip-card-top { padding: 12px; }
 }

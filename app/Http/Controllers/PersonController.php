@@ -88,4 +88,13 @@ class PersonController extends Controller
 
         return redirect()->route('persons.index')->with('success', 'Person deleted successfully.');
     }
+
+    /**
+     * Get agents for select options
+     */
+    public function getAgents()
+    {
+        $agents = Person::where('type', 'agent')->get(['id', 'name']);
+        return response()->json($agents);
+    }
 }

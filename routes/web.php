@@ -44,13 +44,16 @@ Route::middleware('auth')->group(function () {
 
     // Person routes
     Route::resource('persons', PersonController::class);
+    Route::get('persons-agents', [PersonController::class, 'getAgents'])->name('persons.agents');
 
     // Airline routes
     Route::resource('airlines', AirlineController::class);
+    Route::get('api/airlines', [AirlineController::class, 'apiIndex'])->name('api.airlines.index');
 
     // Additional trip routes
     Route::post('trips/{trip}/status', [TripController::class, 'updateStatus'])->name('trips.update-status');
     Route::post('trips/{trip}/code', [TripController::class, 'updateCode'])->name('trips.update-code');
+    Route::post('trips/{trip}/cover', [TripController::class, 'uploadCover'])->name('trips.upload-cover');
     Route::post('trips/{trip}/duplicate', [TripController::class, 'duplicate'])->name('trips.duplicate');
     Route::post('trips/{trip}/generate-share-token', [TripController::class, 'generateShareToken'])->name('trips.generate-share-token');
     Route::post('trips/{trip}/send-email', [TripController::class, 'sendEmail'])->name('trips.send-email');
@@ -62,6 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/{trip}/documents/upload', [\App\Http\Controllers\TripDocumentController::class, 'upload'])->name('trips.documents.upload');
     Route::post('documents/temp-upload', [\App\Http\Controllers\TripDocumentController::class, 'tempUpload'])->name('documents.temp-upload');
     Route::post('documents/process-temp', [\App\Http\Controllers\TripDocumentController::class, 'processTemp'])->name('documents.process-temp');
+    Route::post('trips/{trip}/documents/update-item-id', [\App\Http\Controllers\TripDocumentController::class, 'updateItemId'])->name('trips.documents.update-item-id');
     Route::get('trips/{trip}/documents', [\App\Http\Controllers\TripDocumentController::class, 'getByItem'])->name('trips.documents.get');
     Route::delete('documents/{document}', [\App\Http\Controllers\TripDocumentController::class, 'destroy'])->name('documents.destroy');
     Route::get('documents/{document}/download', [\App\Http\Controllers\TripDocumentController::class, 'download'])->name('documents.download');

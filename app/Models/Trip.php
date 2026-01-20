@@ -20,7 +20,10 @@ class Trip extends Model
         'destination',
         'status',
         'summary',
+        'price',
         'items_data',
+        'days_dates',
+        'cover_image_url',
         'share_token',
         'created_at',
         'updated_at'
@@ -30,7 +33,157 @@ class Trip extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'items_data' => 'array',
+        'days_dates' => 'array',
     ];
+
+    /**
+     * Set items_data and add IDs to items if they don't have one
+     */
+    public function setItemsDataAttribute($value)
+    {
+        if (is_array($value)) {
+            $value = $this->addItemIds($value);
+        }
+        $this->attributes['items_data'] = json_encode($value);
+    }
+
+    /**
+     * Add descriptive IDs to items if they don't already have one
+     * Format: day_{day_number}_{type}_{count}
+     * Example: day_1_flight_1, day_1_flight_2, day_2_hotel_1
+     */
+    public function addItemIds(array $items): array
+    {
+        $typeCounters = [];
+
+        foreach ($items as &$item) {
+            // Only add ID if it doesn't already exist
+            if (!isset($item['id'])) {
+                $day = $item['day'] ?? 'global';
+                $type = $item['type'] ?? 'unknown';
+
+                // Create a counter key for this day and type combination
+                $counterKey = "day_{$day}_{$type}";
+
+                // Increment the counter for this type
+                if (!isset($typeCounters[$counterKey])) {
+                    $typeCounters[$counterKey] = 1;
+                } else {
+                    $typeCounters[$counterKey]++;
+                }
+
+                // Generate the ID
+                $item['id'] = "{$counterKey}_{$typeCounters[$counterKey]}";
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * Update documents with temporary item IDs to their real item IDs
+     * This prevents misassociation of documents when multiple items of the same type exist
+     * Documents uploaded AFTER creating items will have the correct item_id
+     */
+    private function updateTemporaryDocumentIds(array $items): void
+    {
+        // Log for debugging
+        \Log::info('updateTemporaryDocumentIds called with items:', $items);
+
+        // Update documents with temporary IDs to their real item IDs
+        // Temporary IDs follow pattern: temp_<timestamp>_<random>
+        // Real IDs follow pattern: day_<day>_<type>_<count>
+
+        foreach ($items as $item) {
+            if (!isset($item['id']) || !is_string($item['id'])) {
+                continue;
+            }
+
+            \Log::info('Processing item:', [
+                'id' => $item['id'],
+                'type' => $item['type'] ?? '',
+                'temp_id' => $item['temp_id'] ?? '',
+                'has_temp_id' => !empty($item['temp_id'])
+            ]);
+
+            // Only process items that have a temp_id (new items that were created)
+            // Edited items won't have temp_id and shouldn't be processed here
+            if (!empty($item['temp_id'])) {
+                $tempId = $item['temp_id'];
+                \Log::info('Searching for documents with temp_id:', ['temp_id' => $tempId]);
+
+                $tempDocuments = TripDocument::where('trip_id', $this->id)
+                    ->where('item_id', $tempId)
+                    ->get();
+
+                \Log::info('Found documents with temp_id:', ['count' => $tempDocuments->count()]);
+
+                // Update ALL documents that have this specific temp_id
+                foreach ($tempDocuments as $doc) {
+                    \Log::info('Updating document:', ['id' => $doc->id, 'from' => $tempId, 'to' => $item['id']]);
+                    $doc->update(['item_id' => $item['id']]);
+                }
+            } else {
+                // No temp_id means this is either:
+                // 1. An edited item (which should already have correct item_id for its documents)
+                // 2. An old item saved before temp_id logic was implemented
+                \Log::info('Item has no temp_id, skipping document update:', ['id' => $item['id']]);
+            }
+        }
+    }
+
+    /**
+     * Find an item by its ID in the items_data array
+     *
+     * @param string $itemId The item ID to search for
+     * @return array|null The item array or null if not found
+     */
+    public function findItemById(string $itemId): ?array
+    {
+        if (!$this->items_data) {
+            return null;
+        }
+
+        foreach ($this->items_data as $item) {
+            if (isset($item['id']) && $item['id'] === $itemId) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get all items for a specific day
+     *
+     * @param int $day The day number
+     * @return array Array of items for that day
+     */
+    public function getItemsByDay(int $day): array
+    {
+        if (!$this->items_data) {
+            return [];
+        }
+
+        return array_filter($this->items_data, function ($item) use ($day) {
+            return isset($item['day']) && $item['day'] == $day;
+        });
+    }
+
+    /**
+     * Boot method for model events
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // After saving a trip, update temporary document item IDs
+        static::saved(function ($trip) {
+            if ($trip->items_data) {
+                $trip->updateTemporaryDocumentIds($trip->items_data);
+            }
+        });
+    }
 
     /**
      * Get the user that owns the trip
@@ -105,11 +258,16 @@ class Trip extends Model
         if (!$this->items_data) {
             return collect();
         }
+        $items = $this->items_data;
 
         $itemsByDay = [];
 
         foreach ($this->items_data as $item) {
-            $day = $item['day'] ?? 1;
+            // Skip items with day explicitly set to null (global notes)
+            if (!array_key_exists('day', $item) || $item['day'] === null) {
+                continue;
+            }
+            $day = $item['day'];
             if (!isset($itemsByDay[$day])) {
                 $itemsByDay[$day] = [];
             }
@@ -119,9 +277,13 @@ class Trip extends Model
         // Convert to Day objects
         $days = [];
         foreach ($itemsByDay as $dayNumber => $items) {
-            $dayDate = $this->start_date ?
-                $this->start_date->copy()->addDays($dayNumber - 1) :
-                null;
+            $dayDate = null;
+            if ($this->days_dates && isset($this->days_dates[$dayNumber])) {
+                $dayDate = \Carbon\Carbon::parse($this->days_dates[$dayNumber]);
+            } elseif ($this->start_date) {
+                // Fallback to calculated date if no manual date set
+                $dayDate = $this->start_date->copy()->addDays($dayNumber - 1);
+            }
 
             $days[] = new TripDay($dayNumber, $dayDate, $items);
         }
@@ -139,6 +301,24 @@ class Trip extends Model
         }
 
         return collect($this->items_data)->map(function ($item) {
+            return new TripItem($item);
+        });
+    }
+
+    /**
+     * Get global notes (notes outside of any day)
+     */
+    public function getNotesAttribute()
+    {
+        if (!$this->items_data) {
+            return collect();
+        }
+
+        $notes = array_filter($this->items_data, function ($item) {
+            return isset($item['type']) && $item['type'] === 'note' && (!array_key_exists('day', $item) || $item['day'] === null);
+        });
+
+        return collect($notes)->map(function ($item) {
             return new TripItem($item);
         });
     }
@@ -217,9 +397,9 @@ class Trip extends Model
                  // Check if it's a unique constraint violation
                  $errorCode = $e->getCode();
                  $errorMessage = $e->getMessage();
-                 
-                 if ($errorCode == 23000 || 
-                     str_contains($errorMessage, 'Duplicate entry') || 
+
+                 if ($errorCode == 23000 ||
+                     str_contains($errorMessage, 'Duplicate entry') ||
                      str_contains($errorMessage, 'UNIQUE constraint') ||
                      str_contains($errorMessage, '1062')) { // MySQL duplicate entry error code
                      // Code collision occurred due to race condition, retry with a new code
@@ -257,6 +437,17 @@ class Trip extends Model
      {
          return $this->documents()->where('type', $type)->get();
      }
+
+     /**
+      * Get documents for a specific item by item ID
+      *
+      * @param string $itemId The item ID in items_data
+      * @return \Illuminate\Database\Eloquent\Collection
+      */
+     public function getDocumentsByItemId(string $itemId)
+     {
+         return $this->documents()->where('item_id', $itemId)->get();
+     }
 }
 
 /**
@@ -281,7 +472,7 @@ class TripDay
             return 'Sin fecha';
         }
 
-        return $this->date->format('D, d M');
+        return $this->date->isoFormat('ddd, D MMM');
     }
 
     public function getFullDate(): string
@@ -290,7 +481,16 @@ class TripDay
             return 'Sin fecha';
         }
 
-        return $this->date->format('l, d \d\e F \d\e Y');
+        return $this->date->isoFormat('dddd, D [de] MMMM [de] YYYY');
+    }
+
+    public function getDateInputValue(): string
+    {
+        if (!$this->date) {
+            return '';
+        }
+
+        return $this->date->format('Y-m-d');
     }
 }
 
@@ -338,7 +538,7 @@ class TripItem
     {
         $labelMap = [
             'flight' => 'Vuelo',
-            'hotel' => 'Alojamiento',
+            'hotel' => 'Hotel',
             'activity' => 'Actividad',
             'transport' => 'Transporte',
             'note' => 'Nota'
@@ -384,6 +584,12 @@ class TripItem
                 $pickup = $this->data['pickup_location'] ?? '';
                 $destination = $this->data['destination'] ?? '';
                 return trim("{$pickup} → {$destination}");
+            case 'note':
+                // Return plain text preview (strip HTML tags)
+                $noteContent = $this->data['note_content'] ?? '';
+                $plainText = strip_tags($noteContent);
+                // Truncate if too long
+                return strlen($plainText) > 100 ? substr($plainText, 0, 100) . '...' : $plainText;
             default:
                 return '';
         }

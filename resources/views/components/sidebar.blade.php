@@ -15,7 +15,7 @@
     'showHotel' => true,
     'showActivity' => true,
     'showTransport' => true,
-    'showNote' => true,
+    'showNote' => false,
     'showSummary' => true,
     'showTotal' => true
 ])
@@ -42,9 +42,7 @@
                     <x-sidebar.items.activity-item />
                 @endif
 
-                @if($showNote)
-                    <x-sidebar.items.note-item />
-                @endif
+                {{-- Note module removed; use global notes editor instead --}}
 
                 @if($showSummary)
                     <x-sidebar.items.summary-item />

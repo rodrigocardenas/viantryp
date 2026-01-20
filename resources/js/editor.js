@@ -1,6 +1,13 @@
 ﻿
 // Editor JavaScript for Viantryp Trip Editor
 import { TimelineManager } from './modules/timeline.js';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
+
+// Make Quill globally available for inline editors
+if (typeof window !== 'undefined' && !window.Quill) {
+    window.Quill = Quill;
+}
 import { ModalManager } from './modules/modal.js';
 import { SummaryManager } from './modules/summary.js';
 import FileManager from './modules/file-manager.js';
@@ -219,7 +226,7 @@ function loadExistingTripData(tripData) {
             itemsByDay[day].push(item);
         });
 
-        // Create days and add items
+        // Create days and add items; also add global notes (day=null)
         Object.keys(itemsByDay).forEach(dayNum => {
             const dayNumber = parseInt(dayNum);
 
@@ -242,6 +249,13 @@ function loadExistingTripData(tripData) {
                     // Add the element to the day
                     timelineManager.addElementToDay(elementData);
                 });
+            }
+        });
+        // Handle items without a day (global notes)
+        tripData.items_data.forEach(item => {
+            if (typeof item.day === 'undefined' || item.day === null) {
+                const elementData = { type: item.type, day: null, ...item };
+                timelineManager.addElementToDay(elementData);
             }
         });
     }

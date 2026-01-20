@@ -100,8 +100,12 @@ class ExportManager {
             // Collect all trip elements from the days
             const itemsData = this.collectAllTripItems();
 
+            // Collect days dates
+            const daysDates = this.collectDaysDates();
+
             // Calculate end date based on number of days
-            const startDate = document.getElementById('start-date').value;
+            const startDateEl = document.getElementById('start-date');
+            const startDate = startDateEl ? startDateEl.value : null;
             let endDate = null;
             if (startDate) {
                 const dayCards = document.querySelectorAll('.day-card');
@@ -112,14 +116,27 @@ class ExportManager {
                 endDate = endDateObj.toISOString().split('T')[0];
             }
 
+            // Read title safely: the title may be an input or an element (h1) depending on page
+            const tripTitleEl = document.getElementById('trip-title');
+            let tripTitle = '';
+            if (tripTitleEl) {
+                // Prefer .value for inputs, fall back to textContent for headings
+                if (typeof tripTitleEl.value !== 'undefined') {
+                    tripTitle = (tripTitleEl.value || '').toString().trim();
+                } else {
+                    tripTitle = (tripTitleEl.textContent || '').toString().trim();
+                }
+            }
+
             const tripData = {
-                title: document.getElementById('trip-title').value?.trim(),
+                title: tripTitle,
                 start_date: startDate,
                 end_date: endDate,
                 travelers: 1, // Default value
                 destination: '', // Optional field
                 summary: '', // Optional field
-                items_data: itemsData
+                items_data: itemsData,
+                days_dates: daysDates
             };
 
             // Determine if this is a new trip or updating existing
@@ -234,6 +251,12 @@ class ExportManager {
                     window.currentTripId = data.trip.id; // Update global state
                 }
 
+                // Process any temporary uploaded files
+                if (this.fileManager && typeof this.fileManager.processTempFiles === 'function') {
+                    console.log('Processing temporary files for trip ID:', data.trip.id);
+                    await this.fileManager.processTempFiles(data.trip.id);
+                }
+
                 // Show appropriate message based on action
                 if (data.action === 'updated') {
                     this.showNotification('Viaje Actualizado', 'El viaje existente ha sido actualizado exitosamente.', 'success');
@@ -272,7 +295,46 @@ class ExportManager {
             });
         });
 
+        // Also collect items that are in the global notes list (outside of days)
+        try {
+            const globalNotes = document.querySelectorAll('#global-notes-list .timeline-item');
+            globalNotes.forEach(item => {
+                const itemData = this.extractItemData(item, null);
+                if (itemData) {
+                    items.push(itemData);
+                }
+            });
+        } catch (err) {
+            console.warn('No global notes found or error collecting them', err);
+        }
+
+        console.log('=== ALL ITEMS COLLECTED ===');
+        items.forEach((item, idx) => {
+            console.log(`Item ${idx}:`, {
+                type: item.type,
+                day: item.day,
+                temp_id: item.temp_id || '(no temp_id)',
+                id: item.id || '(no id)'
+            });
+        });
+        console.log('===========================');
+
         return items;
+    }
+
+    collectDaysDates() {
+        const daysDates = {};
+        const dayCards = document.querySelectorAll('.day-card');
+
+        dayCards.forEach(dayCard => {
+            const dayNumber = parseInt(dayCard.dataset.day);
+            const dateInput = dayCard.querySelector('.day-date-input');
+            if (dateInput && dateInput.value) {
+                daysDates[dayNumber] = dateInput.value;
+            }
+        });
+
+        return daysDates;
     }
 
     extractItemData(itemElement, dayNumber) {
@@ -284,6 +346,13 @@ class ExportManager {
             type: itemType.replace('elemento', '').trim().toLowerCase(),
             day: dayNumber
         };
+
+        console.log('Extracting item data for type:', baseData.type, 'from element:', itemElement);
+        console.log('Element data attributes:', {
+            'data-temp-id': itemElement.getAttribute('data-temp-id'),
+            'data-airline-name': itemElement.getAttribute('data-airline-name'),
+            'data-hotel-name': itemElement.getAttribute('data-hotel-name')
+        });
 
         // Extract data based on item type
         switch (baseData.type) {
@@ -303,16 +372,24 @@ class ExportManager {
                 return {
                     ...baseData,
                     type: 'flight',
-                    airline: itemElement.getAttribute('data-airline') || itemElement.querySelector('.item-title')?.textContent?.split(' ')[0] || '',
+                    airline_id: itemElement.getAttribute('data-airline-id') || itemElement.querySelector('.item-title')?.textContent?.split(' ')[0] || '',
+                    airline_name: itemElement.getAttribute('data-airline-name') || '',
                     flight_number: itemElement.getAttribute('data-flight-number') || itemElement.querySelector('.item-title')?.textContent?.split(' ')[1] || '',
                     departure_airport: departureAirport,
                     arrival_airport: arrivalAirport,
                     departure_time: itemElement.getAttribute('data-departure-time') || '',
                     arrival_time: itemElement.getAttribute('data-arrival-time') || '',
-                    confirmation_number: itemElement.getAttribute('data-confirmation-number') || ''
+                    departure_date: itemElement.getAttribute('data-departure-date') || '',
+                    arrival_date: itemElement.getAttribute('data-arrival-date') || '',
+                    departure_city: itemElement.getAttribute('data-departure-city') || '',
+                    arrival_city: itemElement.getAttribute('data-arrival-city') || '',
+                    confirmation_number: itemElement.getAttribute('data-confirmation-number') || '',
+                    baggage_types: itemElement.getAttribute('data-baggage-types') ? JSON.parse(itemElement.getAttribute('data-baggage-types')) : [],
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
             case 'hotel':
+            case 'alojamiento':
                 return {
                     ...baseData,
                     type: 'hotel',
@@ -322,18 +399,34 @@ class ExportManager {
                     check_in: itemElement.getAttribute('data-check-in') || '',
                     check_out: itemElement.getAttribute('data-check-out') || '',
                     room_type: itemElement.getAttribute('data-room-type') || '',
-                    nights: parseInt(itemElement.getAttribute('data-nights')) || 1
+                    meal_plan: itemElement.getAttribute('data-meal-plan') || '',
+                    nights: parseInt(itemElement.getAttribute('data-nights')) || 1,
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
             case 'actividad':
+            case 'activity':
                 return {
                     ...baseData,
                     type: 'activity',
-                    activity_title: itemElement.querySelector('.item-title')?.textContent || '',
-                    location: itemElement.querySelector('.item-subtitle')?.textContent || '',
-                    start_time: '',
-                    end_time: '',
-                    description: ''
+                    activity_title: itemElement.getAttribute('data-activity-title') || itemElement.querySelector('.item-title')?.textContent || '',
+                    location: itemElement.getAttribute('data-location') || itemElement.querySelector('.item-subtitle')?.textContent || '',
+                    start_datetime: itemElement.getAttribute('data-start-datetime') || '',
+                    end_datetime: itemElement.getAttribute('data-end-datetime') || '',
+                    start_date: itemElement.getAttribute('data-start-date') || '',
+                    start_time: itemElement.getAttribute('data-start-time') || '',
+                    end_date: itemElement.getAttribute('data-end-date') || '',
+                    end_time: itemElement.getAttribute('data-end-time') || '',
+                    description: itemElement.getAttribute('data-description') || '',
+                    place_id: itemElement.getAttribute('data-place-id') || '',
+                    location_data: itemElement.getAttribute('data-location-data') ? JSON.parse(itemElement.getAttribute('data-location-data')) : null,
+                    formatted_address: itemElement.getAttribute('data-formatted-address') || '',
+                    rating: itemElement.getAttribute('data-rating') || null,
+                    website: itemElement.getAttribute('data-website') || '',
+                    phone_number: itemElement.getAttribute('data-phone-number') || '',
+                    latitude: itemElement.getAttribute('data-latitude') || '',
+                    longitude: itemElement.getAttribute('data-longitude') || '',
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
             case 'traslado':
@@ -341,10 +434,12 @@ class ExportManager {
                 return {
                     ...baseData,
                     type: 'transport',
-                    transport_type: itemElement.querySelector('.item-title')?.textContent || '',
-                    pickup_location: itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[0] || '',
-                    destination: itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[1] || '',
-                    pickup_time: ''
+                    transport_type: itemElement.getAttribute('data-transport-type') || '',
+                    pickup_location: itemElement.getAttribute('data-pickup-location') || '',
+                    destination: itemElement.getAttribute('data-destination') || '',
+                    pickup_datetime: itemElement.getAttribute('data-pickup-datetime') || '',
+                    arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || '',
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
             case 'nota':
@@ -352,7 +447,8 @@ class ExportManager {
                     ...baseData,
                     type: 'note',
                     note_title: itemElement.querySelector('.item-title')?.textContent || '',
-                    note_content: itemElement.querySelector('.item-subtitle')?.textContent || ''
+                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.textContent || '',
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
             default:
@@ -360,7 +456,8 @@ class ExportManager {
                     ...baseData,
                     type: 'note',
                     note_title: itemElement.querySelector('.item-title')?.textContent || 'Elemento',
-                    note_content: itemElement.querySelector('.item-subtitle')?.textContent || ''
+                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.textContent || '',
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
         }
     }
