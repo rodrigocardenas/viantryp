@@ -21,7 +21,7 @@
                     @endphp
 
                     <div class="note-item {{ $isLongNote ? 'note-expandable' : '' }}" data-note-id="{{ $noteId }}">
-                        <div class="note-content {{ $isLongNote ? 'note-collapsed' : '' }}" id="{{ $noteId }}">
+                        <div class="note-content {{ $isLongNote ? 'note-expanded' : '' }}" id="{{ $noteId }}">
                             {!! $noteContent !!}
                         </div>
 
@@ -29,11 +29,11 @@
                             <button
                                 class="note-toggle-btn"
                                 onclick="toggleNote('{{ $noteId }}')"
-                                aria-label="Expandir nota"
+                                aria-label="Contraer nota"
                             >
-                                <span class="toggle-text-expand">Ver más</span>
-                                <span class="toggle-text-collapse" style="display: none;">Ver menos</span>
-                                <i class="fas fa-chevron-down toggle-icon"></i>
+                                <span class="toggle-text-expand" style="display: none;">Ver más</span>
+                                <span class="toggle-text-collapse">Ver menos</span>
+                                <i class="fas fa-chevron-down toggle-icon" style="transform: rotate(180deg);"></i>
                             </button>
                         @endif
                     </div>
@@ -50,18 +50,18 @@
                 const collapseText = toggleBtn.querySelector('.toggle-text-collapse');
                 const icon = toggleBtn.querySelector('.toggle-icon');
 
-                if (noteContent.classList.contains('note-collapsed')) {
-                    noteContent.classList.remove('note-collapsed');
-                    noteContent.classList.add('note-expanded');
-                    expandText.style.display = 'none';
-                    collapseText.style.display = 'inline';
-                    icon.style.transform = 'rotate(180deg)';
-                } else {
+                if (noteContent.classList.contains('note-expanded')) {
                     noteContent.classList.remove('note-expanded');
                     noteContent.classList.add('note-collapsed');
                     expandText.style.display = 'inline';
                     collapseText.style.display = 'none';
                     icon.style.transform = 'rotate(0deg)';
+                } else {
+                    noteContent.classList.remove('note-collapsed');
+                    noteContent.classList.add('note-expanded');
+                    expandText.style.display = 'none';
+                    collapseText.style.display = 'inline';
+                    icon.style.transform = 'rotate(180deg)';
                 }
             }
         </script>

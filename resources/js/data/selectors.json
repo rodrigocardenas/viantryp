@@ -372,6 +372,12 @@
       "country": "Estados Unidos"
     },
     {
+      "id": "Aeropuerto Internacional de Kansai (KIX)",
+      "text": "Aeropuerto Internacional de Kansai (KIX)",
+      "city": "Osaka",
+      "country": "Japón"
+    },
+    {
       "id": "Chicago O'Hare (ORD)",
       "text": "Chicago O'Hare (ORD)",
       "city": "Chicago",
