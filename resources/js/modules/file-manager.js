@@ -38,8 +38,17 @@ class FileManager {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('type', type);
-        // Use temporary ID that will be replaced with the real ID when element is saved
-        formData.append('item_id', 'temp_' + Date.now());
+
+        // Check if we're editing an existing element and use its real ID
+        let itemId = 'temp_' + Date.now();
+        if (window.modalManager && window.modalManager.currentElementData && window.modalManager.currentElementData.id) {
+            // For existing elements, use the real item_id
+            if (!window.modalManager.currentElementData.id.startsWith('temp_')) {
+                itemId = window.modalManager.currentElementData.id;
+                console.log('FileManager: Using real item_id for existing element:', itemId);
+            }
+        }
+        formData.append('item_id', itemId);
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 

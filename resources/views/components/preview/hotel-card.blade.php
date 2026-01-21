@@ -210,7 +210,7 @@
     </div>
 
     @php
-        $documents = isset($trip) ? $trip->documents->where('type', 'hotel') : collect();
+        $documents = $documents ?? collect();
     @endphp
     @if($documents->count() > 0)
         <div class="documents-section">
