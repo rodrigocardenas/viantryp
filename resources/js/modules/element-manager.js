@@ -62,6 +62,11 @@ class ElementManager {
             }
         });
 
+        // Include temp_id for new elements to link uploaded documents
+        if (this.modalManager.currentElementData && this.modalManager.currentElementData.id && this.modalManager.currentElementData.id.startsWith('temp_')) {
+            data.temp_id = this.modalManager.currentElementData.id;
+        }
+
         // Include uploaded documents for this element type
         const uploadedDocs = this.fileManager.getUploadedDocuments(currentElementType);
         if (uploadedDocs.length > 0) {

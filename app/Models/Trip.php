@@ -43,6 +43,8 @@ class Trip extends Model
     {
         if (is_array($value)) {
             $value = $this->addItemIds($value);
+            // Update temporary document IDs to real IDs for new items
+            $this->updateTemporaryDocumentIds($value);
         }
         $this->attributes['items_data'] = json_encode($value);
     }
