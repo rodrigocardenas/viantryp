@@ -266,8 +266,8 @@ function createTrip() {
             // Cerrar modal
             closeNewTripModal();
 
-            // Mostrar editor
-            document.getElementById('editor-container').style.display = 'flex';
+            // Redirect to edit page
+            window.location.href = `/trips/${data.trip.id}/edit`;
 
             // Actualizar título después de que el DOM se actualice
             setTimeout(() => {

@@ -5,28 +5,33 @@ class DayManager {
     }
 
     addNewDay() {
+        const dayInput = document.getElementById('new-day-number');
+        if (!dayInput || !dayInput.value) {
+            alert('Por favor ingresa un número de día');
+            return;
+        }
+        const newDayNumber = parseInt(dayInput.value);
+        if (isNaN(newDayNumber) || newDayNumber < 1) {
+            alert('Número de día inválido');
+            return;
+        }
+
         const daysContainer = document.getElementById('days-container');
         const existingDays = daysContainer.querySelectorAll('.day-card');
-        const newDayNumber = existingDays.length + 1;
+        const existingDayNumbers = Array.from(existingDays).map(card => parseInt(card.dataset.day));
+        if (existingDayNumbers.includes(newDayNumber)) {
+            alert('Ese número de día ya existe');
+            return;
+        }
 
         const dayCard = document.createElement('div');
         dayCard.className = 'day-card';
         dayCard.setAttribute('data-day', newDayNumber);
 
-        const startDate = document.getElementById('start-date').value;
         let dayDate = 'Sin fecha';
         let defaultDate = '';
-        if (startDate) {
-            const date = new Date(startDate);
-            date.setDate(date.getDate() + newDayNumber - 1);
-            dayDate = date.toLocaleDateString('es-ES', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-            defaultDate = date.toISOString().split('T')[0];
-        }
+        // Importante: NO auto-calcular fechas por "fecha inicio + día".
+        // La fecha debe quedar tal como la ingrese el usuario (o en blanco).
 
         // Create day header
         const dayHeader = document.createElement('div');
@@ -83,12 +88,10 @@ class DayManager {
         dayContent.setAttribute('ondrop', 'drop(event)');
         dayContent.setAttribute('ondragover', 'allowDrop(event)');
 
-        const addBtn = document.createElement('div');
-        addBtn.className = 'add-element-btn btn-sm';
-        addBtn.setAttribute('data-action', 'add-element');
-        addBtn.setAttribute('data-day', newDayNumber);
-        addBtn.innerHTML = '<i class="fas fa-plus"></i>';
-        dayContent.appendChild(addBtn);
+        const instruction = document.createElement('p');
+        instruction.className = 'drag-instruction';
+        instruction.textContent = 'Arrastra aquí los elementos que quieres agregar a este día';
+        dayContent.appendChild(instruction);
 
         dayCard.appendChild(dayContent);
 
@@ -101,33 +104,9 @@ class DayManager {
     }
 
     updateItineraryDates() {
-        const startDateInput = document.getElementById('start-date').value;
-        if (!startDateInput) {
-            this.showNotification('Error', 'Por favor selecciona una fecha de inicio.');
-            return;
-        }
-
-        const startDate = new Date(startDateInput + 'T00:00:00');
-        const dayCards = document.querySelectorAll('.day-card');
-
-        dayCards.forEach((card, index) => {
-            const currentDate = new Date(startDate);
-            currentDate.setDate(startDate.getDate() + index);
-
-            const dateElement = card.querySelector('.day-date');
-            const formattedDate = currentDate.toLocaleDateString('es-ES', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-            dateElement.textContent = formattedDate;
-            dateElement.setAttribute('data-date', currentDate.toISOString().split('T')[0]);
-        });
-
-        this.showNotification('Fechas Actualizadas', 'Las fechas de los días han sido actualizadas.');
-        // Update summaries after date changes
-        this.summaryManager.updateAllSummaries();
+        // Se mantiene por compatibilidad, pero ya no realiza ninguna automatización de fechas.
+        // Las fechas de los días deben permanecer tal como están registradas.
+        this.summaryManager?.updateAllSummaries?.();
     }
 
     showNotification(title, message, type = 'success') {

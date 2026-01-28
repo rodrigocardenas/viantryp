@@ -51,25 +51,30 @@ export class SummaryManager {
 
     generateItinerarySummary() {
         const tripTitle = document.getElementById('trip-title').value.trim() || 'Mi Viaje';
-        const startDate = document.getElementById('start-date').value;
         const dayContainers = document.querySelectorAll('.day-card');
 
         let summary = `<strong>${tripTitle}</strong><br>`;
 
-        if (startDate) {
-            const startDateObj = new Date(startDate);
-            const endDateObj = new Date(startDate);
-            endDateObj.setDate(startDateObj.getDate() + dayContainers.length - 1);
+        // Duración: basada en fechas ingresadas por el usuario (sin auto-calcular por fecha inicio + día).
+        const dayDateValues = Array.from(dayContainers)
+            .map((card, idx) => {
+                const dayNumber = parseInt(card.dataset.day) || (idx + 1);
+                const input = document.getElementById(`day-${dayNumber}-date`) || card.querySelector('.day-date-input');
+                return input && input.value ? input.value : null;
+            })
+            .filter(Boolean);
 
-            const formatDate = (date) => {
-                return date.toLocaleDateString('es-ES', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                });
-            };
-
-            summary += `<strong>Duración:</strong> ${dayContainers.length} días (${formatDate(startDateObj)} - ${formatDate(endDateObj)})<br><br>`;
+        if (dayContainers.length > 0) {
+            if (dayDateValues.length > 0) {
+                const sorted = [...dayDateValues].sort();
+                const startDateObj = new Date(sorted[0] + 'T00:00:00');
+                const endDateObj = new Date(sorted[sorted.length - 1] + 'T00:00:00');
+                const formatDate = (date) =>
+                    date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                summary += `<strong>Duración:</strong> ${dayContainers.length} días (${formatDate(startDateObj)} - ${formatDate(endDateObj)})<br><br>`;
+            } else {
+                summary += `<strong>Duración:</strong> ${dayContainers.length} días<br><br>`;
+            }
         }
 
         // Group items by day
@@ -82,7 +87,7 @@ export class SummaryManager {
 
         // Collect all timeline items and group by day
         dayContainers.forEach((dayCard, index) => {
-            const dayNumber = index + 1;
+            const dayNumber = parseInt(dayCard.dataset.day) || (index + 1);
             const timelineItems = dayCard.querySelectorAll('.timeline-item');
 
             timelineItems.forEach(item => {
@@ -99,11 +104,13 @@ export class SummaryManager {
         Object.keys(itemsByDay).forEach(dayNumber => {
             const dayItems = itemsByDay[dayNumber];
             if (dayItems.length > 0) {
-                const dayDate = new Date(startDate);
-                dayDate.setDate(dayDate.getDate() + parseInt(dayNumber) - 1);
+                const dayCard = document.querySelector(`.day-card[data-day="${dayNumber}"]`);
+                const dateInput = document.getElementById(`day-${dayNumber}-date`) || dayCard?.querySelector('.day-date-input');
+                const dayDateValue = dateInput && dateInput.value ? dateInput.value : null;
+                const dayDate = dayDateValue ? new Date(dayDateValue + 'T00:00:00') : null;
 
                 const formatDayDate = (date) => {
-                    return dayDate.toLocaleDateString('es-ES', {
+                    return date.toLocaleDateString('es-ES', {
                         weekday: 'long',
                         day: '2-digit',
                         month: '2-digit',
@@ -111,7 +118,7 @@ export class SummaryManager {
                     });
                 };
 
-                summary += `<strong>Día ${dayNumber} - ${formatDayDate(dayDate)}</strong><br>`;
+                summary += `<strong>Día ${dayNumber} - ${dayDate ? formatDayDate(dayDate) : 'Sin fecha'}</strong><br>`;
 
                 dayItems.forEach(item => {
                     let itemTitle = item.title || 'Sin título';

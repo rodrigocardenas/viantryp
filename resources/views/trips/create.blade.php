@@ -34,13 +34,10 @@
                 <!-- Timeline vacío -->
                 <x-timeline :trip="null" />
 
-                <!-- Mensaje de bienvenida (oculto inicialmente) -->
-                <div class="welcome-message" id="welcome-message" style="display: none;">
-                    <div class="welcome-icon">
-                        <i class="fas fa-magic"></i>
+                <!-- Área de drop para nuevos elementos -->
+                <div class="drop-zone" id="drop-zone">
+                    <div class="drop-zone-content">
                     </div>
-                    <h3>¡Tu viaje ha sido creado!</h3>
-                    <p>Arrastra elementos desde la barra lateral para empezar a construir tu itinerario.</p>
                 </div>
             </div>
         </div>

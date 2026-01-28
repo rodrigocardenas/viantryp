@@ -10,7 +10,7 @@
 <div class="info-card global-notes-card" id="global-notes-section">
     <div class="card-header">
         <i class="fas fa-sticky-note"></i>
-        <h3>Notas</h3>
+        <h3>Notas Generales</h3>
     </div>
     <div class="card-content">
         <div class="global-notes-section-inner">
@@ -46,13 +46,12 @@
                         <div class="day-title-row">
                             <h3>DÍA {{ $day->day }}</h3>
                             <span class="day-separator">|</span>
-                            <input type="date" id="day-{{ $day->day }}-date" class="day-date-input-large" value="{{ $day->getDateInputValue() }}" data-day="{{ $day->day }}">
                         </div>
                         <p class="day-date-display">{{ $day->getFormattedDate() }}</p>
                     </div>
                 </div>
                 <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <p class="drag-instruction">Arrastra elementos aquí para personalizar este día</p>
+                    <p class="drag-instruction">@if($day->items && count($day->items) > 0) arrastra para agregar más elementos @else Arrastra aquí los elementos que quieres agregar a este día @endif</p>
 
                     @if($day->items && count($day->items) > 0)
                         @foreach($day->items as $item)
@@ -73,25 +72,12 @@
                     <div class="day-title-row">
                         <h3>DÍA 1</h3>
                         <span class="day-separator">|</span>
-                        <input type="date" id="day-1-date" class="day-date-input-large" value="{{ isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '' }}" data-day="1">
                     </div>
-                    <p class="day-date-display" id="day-1-date-display">
-                        @php
-                            $inputValue = isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '';
-                            if ($inputValue) {
-                                $date = \Carbon\Carbon::parse($inputValue);
-                                echo $date->isoFormat('dddd, D [de] MMMM [de] YYYY');
-                            } else {
-                                echo 'Sin fecha';
-                            }
-                        @endphp
-                    </p>
+                    <p class="day-date-display" id="day-1-date-display">Sin fecha</p>
                 </div>
             </div>
             <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="add-element-btn btn-sm" data-action="add-element" data-day="1">
-                    <i class="fas fa-plus"></i>
-                </div>
+                <p class="drag-instruction">Arrastra aquí los elementos que quieres agregar a este día</p>
             </div>
         </div>
     @endif
@@ -212,11 +198,9 @@
 
         const dayContent = dayCard.querySelector('.day-content');
 
-        // Hide the add button and instruction
-        const addBtn = dayContent.querySelector('.add-element-btn');
+        // Change the instruction text
         const instruction = dayContent.querySelector('.drag-instruction');
-        if (addBtn) addBtn.style.display = 'none';
-        if (instruction) instruction.style.display = 'none';
+        if (instruction) instruction.textContent = 'arrastra para agregar más elementos';
 
         // Create element
         const elementDiv = createElementDiv(data);
@@ -485,20 +469,8 @@
         dayCard.className = 'day-card';
         dayCard.setAttribute('data-day', newDayNumber);
 
-        const startDate = document.getElementById('start-date').value;
         let dayDate = 'Sin fecha';
         let defaultDate = '';
-        if (startDate) {
-            const date = new Date(startDate);
-            date.setDate(date.getDate() + newDayNumber - 1);
-            dayDate = date.toLocaleDateString('es-ES', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-            defaultDate = date.toISOString().split('T')[0];
-        }
 
         // Create day header
         const dayHeader = document.createElement('div');
@@ -555,12 +527,10 @@
         dayContent.setAttribute('ondrop', 'drop(event)');
         dayContent.setAttribute('ondragover', 'allowDrop(event)');
 
-        const addBtn = document.createElement('div');
-        addBtn.className = 'add-element-btn btn-sm';
-        addBtn.setAttribute('data-action', 'add-element');
-        addBtn.setAttribute('data-day', newDayNumber);
-        addBtn.innerHTML = '<i class="fas fa-plus"></i>';
-        dayContent.appendChild(addBtn);
+        const instruction = document.createElement('p');
+        instruction.className = 'drag-instruction';
+        instruction.textContent = 'Arrastra aquí los elementos que quieres agregar a este día';
+        dayContent.appendChild(instruction);
 
         dayCard.appendChild(dayContent);
 
@@ -573,32 +543,8 @@
     }
 
     function updateItineraryDates() {
-        const startDateInput = document.getElementById('start-date').value;
-        if (!startDateInput) {
-            showNotification('Error', 'Por favor selecciona una fecha de inicio.');
-            return;
-        }
-
-        const startDate = new Date(startDateInput + 'T00:00:00');
-        const dayCards = document.querySelectorAll('.day-card');
-
-        dayCards.forEach((card, index) => {
-            const currentDate = new Date(startDate);
-            currentDate.setDate(startDate.getDate() + index);
-
-            const dateElement = card.querySelector('.day-date');
-            const formattedDate = currentDate.toLocaleDateString('es-ES', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-            dateElement.textContent = formattedDate;
-            dateElement.setAttribute('data-date', currentDate.toISOString().split('T')[0]);
-        });
-
-        showNotification('Fechas Actualizadas', 'Las fechas de los días han sido actualizadas.');
-        // Update summaries after date changes
+        // Mantener por compatibilidad, pero NO auto-calcular fechas.
+        // Las fechas de los días deben permanecer tal como se registran manualmente.
         updateAllSummaries();
     }
 
@@ -895,25 +841,30 @@
     // Automatic Itinerary Summary Generation
     function generateItinerarySummary() {
         const tripTitle = document.getElementById('trip-title').value.trim() || 'Mi Viaje';
-        const startDate = document.getElementById('start-date').value;
         const dayContainers = document.querySelectorAll('.day-card');
 
         let summary = `<strong>${tripTitle}</strong><br>`;
 
-        if (startDate) {
-            const startDateObj = new Date(startDate);
-            const endDateObj = new Date(startDate);
-            endDateObj.setDate(startDateObj.getDate() + dayContainers.length - 1);
+        // Duración: basada en fechas ingresadas por el usuario (sin auto-calcular por fecha inicio + día).
+        const dayDateValues = Array.from(dayContainers)
+            .map((card, idx) => {
+                const dayNumber = parseInt(card.dataset.day) || (idx + 1);
+                const input = document.getElementById(`day-${dayNumber}-date`) || card.querySelector('.day-date-input');
+                return input && input.value ? input.value : null;
+            })
+            .filter(Boolean);
 
-            const formatDate = (date) => {
-                return date.toLocaleDateString('es-ES', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                });
-            };
-
-            summary += `<strong>Duración:</strong> ${dayContainers.length} días (${formatDate(startDateObj)} - ${formatDate(endDateObj)})<br><br>`;
+        if (dayContainers.length > 0) {
+            if (dayDateValues.length > 0) {
+                const sorted = [...dayDateValues].sort();
+                const startDateObj = new Date(sorted[0] + 'T00:00:00');
+                const endDateObj = new Date(sorted[sorted.length - 1] + 'T00:00:00');
+                const formatDate = (date) =>
+                    date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                summary += `<strong>Duración:</strong> ${dayContainers.length} días (${formatDate(startDateObj)} - ${formatDate(endDateObj)})<br><br>`;
+            } else {
+                summary += `<strong>Duración:</strong> ${dayContainers.length} días<br><br>`;
+            }
         }
 
         // Group items by day
@@ -926,7 +877,7 @@
 
         // Collect all timeline items and group by day
         dayContainers.forEach((dayCard, index) => {
-            const dayNumber = index + 1;
+            const dayNumber = parseInt(dayCard.dataset.day) || (index + 1);
             const timelineItems = dayCard.querySelectorAll('.timeline-item');
 
             timelineItems.forEach(item => {
@@ -943,11 +894,13 @@
         Object.keys(itemsByDay).forEach(dayNumber => {
             const dayItems = itemsByDay[dayNumber];
             if (dayItems.length > 0) {
-                const dayDate = new Date(startDate);
-                dayDate.setDate(dayDate.getDate() + parseInt(dayNumber) - 1);
+                const dayCard = document.querySelector(`.day-card[data-day="${dayNumber}"]`);
+                const dateInput = document.getElementById(`day-${dayNumber}-date`) || dayCard?.querySelector('.day-date-input');
+                const dayDateValue = dateInput && dateInput.value ? dateInput.value : null;
+                const dayDate = dayDateValue ? new Date(dayDateValue + 'T00:00:00') : null;
 
                 const formatDayDate = (date) => {
-                    return dayDate.toLocaleDateString('es-ES', {
+                    return date.toLocaleDateString('es-ES', {
                         weekday: 'long',
                         day: '2-digit',
                         month: '2-digit',
@@ -955,7 +908,7 @@
                     });
                 };
 
-                summary += `<strong>Día ${dayNumber} - ${formatDayDate(dayDate)}</strong><br>`;
+                summary += `<strong>Día ${dayNumber} - ${dayDate ? formatDayDate(dayDate) : 'Sin fecha'}</strong><br>`;
 
                 dayItems.forEach(item => {
                     let itemTitle = item.title || 'Sin título';
@@ -1113,27 +1066,6 @@
         const dayCard = document.querySelector(`[data-day="${dayNumber}"]`);
         if (dayCard) {
             dayCard.remove();
-
-            // Renumber remaining days
-            const remainingDays = document.querySelectorAll('.day-card');
-            remainingDays.forEach((card, index) => {
-                const newDayNumber = index + 1;
-                card.dataset.day = newDayNumber;
-                card.querySelector('h3').textContent = `Día ${newDayNumber}`;
-                card.querySelector('.day-date-input').dataset.day = newDayNumber;
-                card.querySelector('.day-date-input').id = `day-${newDayNumber}-date`;
-                card.querySelector('.day-date-display').id = `day-${newDayNumber}-date-display`;
-                card.querySelector('.btn-delete-day').dataset.day = newDayNumber;
-                card.querySelector('.add-element-btn').dataset.day = newDayNumber;
-
-                // Update elements in this day
-                const elements = card.querySelectorAll('.timeline-item');
-                elements.forEach(element => {
-                    if (element.dataset.day) {
-                        element.dataset.day = newDayNumber;
-                    }
-                });
-            });
 
             updateAllSummaries();
             showNotification('Día Eliminado', `Día ${dayNumber} y todos sus elementos han sido eliminados.`);
