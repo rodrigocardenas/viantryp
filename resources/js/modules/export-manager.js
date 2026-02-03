@@ -330,7 +330,7 @@ class ExportManager {
 
         dayCards.forEach(dayCard => {
             const dayNumber = parseInt(dayCard.dataset.day);
-            const dateInput = dayCard.querySelector('.day-date-input');
+            const dateInput = dayCard.querySelector('.day-date-input, .day-date-input-large');
             if (dateInput && dateInput.value) {
                 daysDates[dayNumber] = dateInput.value;
             }
