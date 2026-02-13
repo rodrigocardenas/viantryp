@@ -103,17 +103,19 @@ class ExportManager {
             // Collect days dates
             const daysDates = this.collectDaysDates();
 
-            // Calculate end date based on number of days
+            // Determinar end_date SIN automatización (sin start_date + días).
             const startDateEl = document.getElementById('start-date');
             const startDate = startDateEl ? startDateEl.value : null;
             let endDate = null;
             if (startDate) {
-                const dayCards = document.querySelectorAll('.day-card');
-                const numDays = Math.max(dayCards.length, 1); // Ensure at least 1 day
-                const startDateObj = new Date(startDate);
-                const endDateObj = new Date(startDate);
-                endDateObj.setDate(startDateObj.getDate() + numDays - 1);
-                endDate = endDateObj.toISOString().split('T')[0];
+                const manualDates = Object.values(daysDates || {}).filter(Boolean);
+                if (manualDates.length > 0) {
+                    // YYYY-MM-DD se puede ordenar como string
+                    endDate = [...manualDates].sort().pop();
+                } else {
+                    // Si no hay fechas por día, no inventar una fecha final
+                    endDate = startDate;
+                }
             }
 
             // Read title safely: the title may be an input or an element (h1) depending on page

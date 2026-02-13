@@ -77,24 +77,16 @@ export class TimelineManager {
             console.log('Day content found:', dayContent);
 
             if (dayContent) {
-                // Remove the drag instruction if it exists
+                // Change the drag instruction text
                 const dragInstruction = dayContent.querySelector('.drag-instruction');
                 if (dragInstruction) {
-                    dragInstruction.remove();
-                    console.log('Drag instruction removed');
+                    dragInstruction.textContent = 'arrastra para agregar más elementos';
+                    console.log('Drag instruction updated');
                 }
 
-                // Add the element before the add-element-btn
-                const addBtn = dayContent.querySelector('.add-element-btn');
-                console.log('Add button found:', addBtn);
-
-                if (addBtn) {
-                    dayContent.insertBefore(elementDiv, addBtn);
-                    console.log('Element inserted before add button');
-                } else {
-                    dayContent.appendChild(elementDiv);
-                    console.log('Element appended to day content');
-                }
+                // Add the element
+                dayContent.appendChild(elementDiv);
+                console.log('Element appended to day content');
             }
         }
 
@@ -272,18 +264,9 @@ export class TimelineManager {
         dayCard.className = 'day-card';
         dayCard.setAttribute('data-day', newDayNumber);
 
-        const startDateInput = document.getElementById('start-date');
         let dayDate = 'Sin fecha';
-        if (startDateInput && startDateInput.value) {
-            const date = new Date(startDateInput.value);
-            date.setDate(date.getDate() + newDayNumber - 1);
-            dayDate = date.toLocaleDateString('es-ES', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-        }
+        // Importante: NO auto-calcular fechas por "fecha inicio + día".
+        // La fecha del día debe ser la ingresada por el usuario (o sin fecha).
 
         dayCard.innerHTML = `
             <div class="day-header">

@@ -1144,7 +1144,7 @@
                         </div>
                         <div class="day-header">
                             <div class="day-title">Día 1</div>
-                            <div class="day-date" data-date="">Selecciona fecha de inicio</div>
+                            <div class="day-date" data-date="">Sin fecha</div>
                         </div>
                         <div class="day-items">
                             <div style="text-align: center; padding: 2rem; color: #666; font-style: italic;">
@@ -1633,26 +1633,20 @@
             const today = new Date();
             const formattedDate = today.toISOString().split('T')[0];
             document.getElementById('startDate').value = formattedDate;
-            updateItineraryDatesSilently();
+            // No auto-calcular fechas de días a partir de la fecha de inicio.
+            // Mantener el estado tal como el usuario lo registre.
         }
 
         function updateItineraryDatesSilently() {
-            const startDateInput = document.getElementById('startDate').value;
-            if (!startDateInput) {
-                return;
-            }
-
-            startDate = new Date(startDateInput + 'T00:00:00');
+            // Sincronización silenciosa: ya no se recalculan fechas automáticamente.
             const dayContainers = document.querySelectorAll('.day-container');
-            
-            dayContainers.forEach((container, index) => {
-                const currentDate = new Date(startDate);
-                currentDate.setDate(startDate.getDate() + index);
-                
+            dayContainers.forEach(container => {
                 const dateElement = container.querySelector('.day-date');
-                const formattedDate = formatDate(currentDate);
-                dateElement.textContent = formattedDate;
-                dateElement.setAttribute('data-date', currentDate.toISOString().split('T')[0]);
+                if (!dateElement) return;
+                // Si no hay fecha registrada, mantener texto por defecto.
+                if (!dateElement.getAttribute('data-date') && !dateElement.textContent.trim()) {
+                    dateElement.textContent = 'Sin fecha';
+                }
             });
             
             // Sort items in all days after updating dates
@@ -1665,25 +1659,11 @@
         }
 
         function updateItineraryDates() {
-            const startDateInput = document.getElementById('startDate').value;
-            if (!startDateInput) {
-                return;
-            }
-
-            startDate = new Date(startDateInput + 'T00:00:00');
-            const dayContainers = document.querySelectorAll('.day-container');
-            
-            dayContainers.forEach((container, index) => {
-                const currentDate = new Date(startDate);
-                currentDate.setDate(startDate.getDate() + index);
-                
-                const dateElement = container.querySelector('.day-date');
-                const formattedDate = formatDate(currentDate);
-                dateElement.textContent = formattedDate;
-                dateElement.setAttribute('data-date', currentDate.toISOString().split('T')[0]);
-            });
+            // Ya no se recalculan fechas por "fecha inicio + día".
+            // Mantener fechas tal como se registran.
 
             // Sort items in all days after updating dates
+            const dayContainers = document.querySelectorAll('.day-container');
             dayContainers.forEach(container => {
                 sortItemsByTime(container);
             });
@@ -1712,13 +1692,8 @@
             newDayContainer.style.opacity = '0';
             newDayContainer.style.transform = 'translateY(20px)';
             
-            // Calculate the date for the new day
-            let dayDate = 'Selecciona fecha de inicio';
-            if (startDate) {
-                const currentDate = new Date(startDate);
-                currentDate.setDate(startDate.getDate() + (dayCounter - 1));
-                dayDate = formatDate(currentDate);
-            }
+            // NO auto-calcular fecha para el nuevo día.
+            let dayDate = 'Sin fecha';
             
             newDayContainer.innerHTML = `
                 <div class="day-actions">
@@ -2068,14 +2043,11 @@
 
         // Function to get the date for a specific day
         function getDateForDay(dayNumber) {
-            const startDate = document.getElementById('startDate')?.value;
-            if (!startDate || dayNumber <= 0) return null;
-            
-            const startDateObj = new Date(startDate + 'T00:00:00');
-            const dayDate = new Date(startDateObj);
-            dayDate.setDate(startDateObj.getDate() + (dayNumber - 1));
-            
-            return dayDate.toISOString().split('T')[0]; // Return YYYY-MM-DD format
+            // Sin automatización: usar la fecha registrada en el encabezado del día (data-date), si existe.
+            if (!dayNumber || dayNumber <= 0) return null;
+            const dayContainer = document.querySelector(`.day-container[data-day="${dayNumber}"]`);
+            const stored = dayContainer?.querySelector('.day-date')?.getAttribute('data-date') || '';
+            return stored || null;
         }
 
         // Function to get time value for sorting (returns minutes since midnight)
@@ -2257,25 +2229,27 @@
 
         function generateItinerarySummary() {
             const tripTitle = document.getElementById('tripTitle').value.trim() || 'Mi Viaje';
-            const startDate = document.getElementById('startDate').value;
             const dayContainers = document.querySelectorAll('.day-container');
             
             let summary = `<strong>${tripTitle}</strong><br>`;
             
-            if (startDate) {
-                const startDateObj = new Date(startDate);
-                const endDateObj = new Date(startDate);
-                endDateObj.setDate(startDateObj.getDate() + dayContainers.length - 1);
-                
-                const formatDate = (date) => {
-                    return date.toLocaleDateString('es-ES', { 
-                        day: '2-digit', 
-                        month: '2-digit', 
-                        year: 'numeric' 
+            // Duración: basada en fechas registradas en cada día (sin startDate + day).
+            const dayDateValues = Array.from(dayContainers)
+                .map(container => container.querySelector('.day-date')?.getAttribute('data-date') || null)
+                .filter(Boolean);
+
+            if (dayContainers.length > 0) {
+                if (dayDateValues.length > 0) {
+                    const sorted = [...dayDateValues].sort();
+                    const startDateObj = new Date(sorted[0] + 'T00:00:00');
+                    const endDateObj = new Date(sorted[sorted.length - 1] + 'T00:00:00');
+                    const formatDate = (date) => date.toLocaleDateString('es-ES', {
+                        day: '2-digit', month: '2-digit', year: 'numeric'
                     });
-                };
-                
-                summary += `<strong>Duración:</strong> ${dayContainers.length} días (${formatDate(startDateObj)} - ${formatDate(endDateObj)})<br><br>`;
+                    summary += `<strong>Duración:</strong> ${dayContainers.length} días (${formatDate(startDateObj)} - ${formatDate(endDateObj)})<br><br>`;
+                } else {
+                    summary += `<strong>Duración:</strong> ${dayContainers.length} días<br><br>`;
+                }
             }
             
             // Group items by day
@@ -2300,9 +2274,6 @@
             Object.keys(itemsByDay).forEach(dayNumber => {
                 const dayItems = itemsByDay[dayNumber];
                 if (dayItems.length > 0) {
-                    const dayDate = new Date(startDate);
-                    dayDate.setDate(dayDate.getDate() + parseInt(dayNumber) - 1);
-                    
                     const formatDayDate = (date) => {
                         return date.toLocaleDateString('es-ES', { 
                             weekday: 'long',
@@ -2311,8 +2282,10 @@
                             year: 'numeric' 
                         });
                     };
-                    
-                    summary += `<strong>Día ${dayNumber} - ${formatDayDate(dayDate)}</strong><br>`;
+                    const container = document.querySelector(`.day-container[data-day="${dayNumber}"]`);
+                    const dayDateValue = container?.querySelector('.day-date')?.getAttribute('data-date') || null;
+                    const dayDateObj = dayDateValue ? new Date(dayDateValue + 'T00:00:00') : null;
+                    summary += `<strong>Día ${dayNumber} - ${dayDateObj ? formatDayDate(dayDateObj) : 'Sin fecha'}</strong><br>`;
                     
                     dayItems.forEach(item => {
                         let itemTitle = item.title || 'Sin título';
@@ -2800,67 +2773,15 @@
         // Function to validate if item date matches the day it's placed in
         function validateItemDate(itemDate, itemDay) {
             if (!itemDate || !itemDay) return true; // Skip validation if no date or day
-            
-            const startDate = document.getElementById('startDate')?.value;
-            if (!startDate) return true; // Skip if no start date set
-            
-            // For debugging
-            console.log('Validating date:', { itemDate, itemDay, startDate });
-            
-            const itemDateObj = new Date(itemDate);
-            const startDateObj = new Date(startDate + 'T00:00:00');
-            const expectedDateObj = new Date(startDateObj);
-            expectedDateObj.setDate(startDateObj.getDate() + (itemDay - 1));
-            
-            // Compare only the date part (ignore time)
-            const itemDateOnly = new Date(itemDateObj.getFullYear(), itemDateObj.getMonth(), itemDateObj.getDate());
-            const expectedDateOnly = new Date(expectedDateObj.getFullYear(), expectedDateObj.getMonth(), expectedDateObj.getDate());
-            
-            const isValid = itemDateOnly.getTime() === expectedDateOnly.getTime();
-            
-            // For debugging
-            console.log('Date validation result:', {
-                itemDateOnly: itemDateOnly.toISOString().split('T')[0],
-                expectedDateOnly: expectedDateOnly.toISOString().split('T')[0],
-                isValid
-            });
-            
-            return isValid;
+            // Sin automatización: no validar contra "fecha inicio + día".
+            return true;
         }
 
         // Function to validate hotel dates (more flexible than regular date validation)
         function validateHotelDate(checkinDate, itemDay) {
             if (!checkinDate || !itemDay) return true; // Skip validation if no date or day
-            
-            const startDate = document.getElementById('startDate')?.value;
-            if (!startDate) return true; // Skip if no start date set
-            
-            // For debugging
-            console.log('Validating hotel date:', { checkinDate, itemDay, startDate });
-            
-            try {
-                // Convert dates to YYYY-MM-DD format for comparison
-                const checkinDateStr = checkinDate.split('T')[0]; // Remove time part if present
-                const startDateObj = new Date(startDate + 'T00:00:00');
-                const expectedDateObj = new Date(startDateObj);
-                expectedDateObj.setDate(startDateObj.getDate() + (itemDay - 1));
-                const expectedDateStr = expectedDateObj.toISOString().split('T')[0];
-                
-                const isValid = checkinDateStr === expectedDateStr;
-                
-                // For debugging
-                console.log('Hotel date validation result:', {
-                    checkinDateStr,
-                    expectedDateStr,
-                    isValid
-                });
-                
-                return isValid;
-            } catch (error) {
-                console.error('Error in hotel date validation:', error);
-                // If there's an error, assume the date is valid to avoid false warnings
-                return true;
-            }
+            // Sin automatización: no validar contra "fecha inicio + día".
+            return true;
         }
 
 
@@ -3279,15 +3200,7 @@
                 
                 // For activities, we'll validate based on the day placement
                 // Activities don't have a specific date field, so we validate based on placement
-                const startDate = document.getElementById('startDate')?.value;
-                if (startDate) {
-                    const startDateObj = new Date(startDate + 'T00:00:00');
-                    const expectedDateObj = new Date(startDateObj);
-                    expectedDateObj.setDate(startDateObj.getDate() + (data.day - 1));
-                    
-                    // This is a simplified validation - in a real scenario you might want to add a date field to activities
-                    // For now, we'll assume the activity is correctly placed based on the day
-                }
+        // Sin automatización: no inferir/validar fechas por "fecha inicio + día".
                 
                 newTitle = activityTitle;
                 newDescription = `${startTime} - ${endTime} | ${description}`;
@@ -3511,23 +3424,7 @@
             
             closeModal();
             
-            // Show date warning if needed
-            if (dateWarning) {
-                const startDate = document.getElementById('startDate')?.value;
-                if (startDate) {
-                    const startDateObj = new Date(startDate + 'T00:00:00');
-                    const expectedDateObj = new Date(startDateObj);
-                    expectedDateObj.setDate(startDateObj.getDate() + (data.day - 1));
-                    const expectedDate = expectedDateObj.toLocaleDateString('es-ES', { 
-                        weekday: 'long',
-                        day: '2-digit', 
-                        month: '2-digit', 
-                        year: 'numeric' 
-                    });
-                    
-                    alert(`⚠️ Advertencia: La fecha del elemento no coincide con el día ${data.day} del itinerario (${expectedDate}). Considera mover el elemento al día correcto o ajustar la fecha.`);
-                }
-            }
+            // Sin automatización: no generar advertencias comparando contra "fecha inicio + día".
             
 
             
@@ -3624,9 +3521,13 @@
                 
                 // Trip dates
                 if (startDate) {
-                    const startDateObj = new Date(startDate);
-                    const endDateObj = new Date(startDate);
-                    endDateObj.setDate(startDateObj.getDate() + dayContainers.length - 1);
+                    // Sin automatización: usar fechas registradas por día, si existen.
+                    const dayDateValues = Array.from(dayContainers)
+                        .map(c => c.querySelector('.day-date')?.getAttribute('data-date') || null)
+                        .filter(Boolean)
+                        .sort();
+                    const startDateObj = dayDateValues.length > 0 ? new Date(dayDateValues[0] + 'T00:00:00') : new Date(startDate);
+                    const endDateObj = dayDateValues.length > 0 ? new Date(dayDateValues[dayDateValues.length - 1] + 'T00:00:00') : new Date(startDate);
                     
                     doc.setTextColor(100, 100, 100);
                     doc.setFontSize(12);
@@ -4043,13 +3944,14 @@
                 const startDate = document.getElementById('startDate')?.value;
                 const dayContainers = document.querySelectorAll('.day-container');
                 
-                // Calculate end date
+                // Determinar endDate SIN automatización (sin startDate + días)
                 let endDate = '';
                 if (startDate && dayContainers.length > 0) {
-                    const startDateObj = new Date(startDate + 'T00:00:00');
-                    const endDateObj = new Date(startDate + 'T00:00:00');
-                    endDateObj.setDate(startDateObj.getDate() + dayContainers.length - 1);
-                    endDate = endDateObj.toISOString().split('T')[0];
+                    const dayDateValues = Array.from(dayContainers)
+                        .map(c => c.querySelector('.day-date')?.getAttribute('data-date') || null)
+                        .filter(Boolean)
+                        .sort();
+                    endDate = dayDateValues.length > 0 ? dayDateValues[dayDateValues.length - 1] : startDate;
                 }
                 
                 // Format dates
@@ -4328,9 +4230,13 @@
                     
                     // Trip dates
                     if (startDate) {
-                        const startDateObj = new Date(startDate);
-                        const endDateObj = new Date(startDate);
-                        endDateObj.setDate(startDateObj.getDate() + dayContainers.length - 1);
+                        // Sin automatización: usar fechas registradas por día, si existen.
+                        const dayDateValues = Array.from(dayContainers)
+                            .map(c => c.querySelector('.day-date')?.getAttribute('data-date') || null)
+                            .filter(Boolean)
+                            .sort();
+                        const startDateObj = dayDateValues.length > 0 ? new Date(dayDateValues[0] + 'T00:00:00') : new Date(startDate);
+                        const endDateObj = dayDateValues.length > 0 ? new Date(dayDateValues[dayDateValues.length - 1] + 'T00:00:00') : new Date(startDate);
                         
                         doc.setTextColor(100, 100, 100);
                         doc.setFontSize(12);
@@ -4815,13 +4721,8 @@
             dayContainer.className = 'day-container';
             dayContainer.setAttribute('data-day', dayNumber);
             
-            // Calculate the date for this day
-            let dayDate = 'Selecciona fecha de inicio';
-            if (startDate) {
-                const currentDate = new Date(startDate);
-                currentDate.setDate(startDate.getDate() + (dayNumber - 1));
-                dayDate = formatDate(currentDate);
-            }
+            // NO auto-calcular fecha al restaurar/crear días.
+            let dayDate = 'Sin fecha';
             
             dayContainer.innerHTML = `
                 <div class="day-actions">
@@ -4947,13 +4848,14 @@
             const startDate = document.getElementById('startDate').value;
             const dayContainers = document.querySelectorAll('.day-container');
             
-            // Calculate end date
+            // Determinar endDate SIN automatización (sin startDate + días)
             let endDate = '';
             if (startDate && dayContainers.length > 0) {
-                const startDateObj = new Date(startDate + 'T00:00:00');
-                const endDateObj = new Date(startDate + 'T00:00:00');
-                endDateObj.setDate(startDateObj.getDate() + dayContainers.length - 1);
-                endDate = endDateObj.toISOString().split('T')[0];
+                const dayDateValues = Array.from(dayContainers)
+                    .map(c => c.querySelector('.day-date')?.getAttribute('data-date') || null)
+                    .filter(Boolean)
+                    .sort();
+                endDate = dayDateValues.length > 0 ? dayDateValues[dayDateValues.length - 1] : startDate;
             }
             
             // Create trip data in the format expected by preview
@@ -5083,13 +4985,14 @@
                 const startDate = document.getElementById('startDate')?.value;
                 const dayContainers = document.querySelectorAll('.day-container');
                 
-                // Calculate end date
+                // Determinar endDate SIN automatización (sin startDate + días)
                 let endDate = '';
                 if (startDate && dayContainers.length > 0) {
-                    const startDateObj = new Date(startDate + 'T00:00:00');
-                    const endDateObj = new Date(startDate + 'T00:00:00');
-                    endDateObj.setDate(startDateObj.getDate() + dayContainers.length - 1);
-                    endDate = endDateObj.toISOString().split('T')[0];
+                    const dayDateValues = Array.from(dayContainers)
+                        .map(c => c.querySelector('.day-date')?.getAttribute('data-date') || null)
+                        .filter(Boolean)
+                        .sort();
+                    endDate = dayDateValues.length > 0 ? dayDateValues[dayDateValues.length - 1] : startDate;
                 }
                 
                 // Format dates
@@ -5177,13 +5080,14 @@
                 const startDate = document.getElementById('startDate')?.value;
                 const dayContainers = document.querySelectorAll('.day-container');
                 
-                // Calculate end date
+                // Determinar endDate SIN automatización (sin startDate + días)
                 let endDate = '';
                 if (startDate && dayContainers.length > 0) {
-                    const startDateObj = new Date(startDate + 'T00:00:00');
-                    const endDateObj = new Date(startDate + 'T00:00:00');
-                    endDateObj.setDate(startDateObj.getDate() + dayContainers.length - 1);
-                    endDate = endDateObj.toISOString().split('T')[0];
+                    const dayDateValues = Array.from(dayContainers)
+                        .map(c => c.querySelector('.day-date')?.getAttribute('data-date') || null)
+                        .filter(Boolean)
+                        .sort();
+                    endDate = dayDateValues.length > 0 ? dayDateValues[dayDateValues.length - 1] : startDate;
                 }
                 
                 // Format dates
@@ -5421,13 +5325,8 @@
                 dayContainer.className = 'day-container';
                 dayContainer.setAttribute('data-day', day);
                 
-                // Calculate the date for this day
-                let dayDate = 'Selecciona fecha de inicio';
-                if (startDate) {
-                    const currentDate = new Date(startDate);
-                    currentDate.setDate(startDate.getDate() + (day - 1));
-                    dayDate = formatDate(currentDate);
-                }
+                // NO auto-calcular fecha para este día.
+                let dayDate = 'Sin fecha';
                 
                 dayContainer.innerHTML = `
                     <div class="day-actions">
@@ -5459,9 +5358,7 @@
             rebuildTimelineItems();
             
             dayCounter = maxDay;
-            if (startDate) {
-                updateItineraryDatesSilently();
-            }
+            // Sin automatización: no recalcular fechas luego de reconstruir.
             makeExistingItemsClickable();
             
             console.log('Timeline rebuild completed');

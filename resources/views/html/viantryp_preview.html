@@ -773,7 +773,9 @@
                 // Convert to days array
                 Object.keys(itemsByDay).forEach(dayNumber => {
                     const dayItems = itemsByDay[dayNumber];
-                    const dayDate = calculateDayDate(trip.startDate, parseInt(dayNumber));
+                    // Importante: NO auto-calcular fechas por "fecha inicio + día".
+                    // Usar la fecha registrada para el día (si existe) y, si no, dejar "Sin fecha".
+                    const dayDate = getStoredDayDate(trip, parseInt(dayNumber));
                     
                     convertedData.days.push({
                         day: parseInt(dayNumber),
@@ -812,6 +814,25 @@
                     convertedItem.flightNumber = item.flightNumber;
                     convertedItem.departureTime = item.departureDateTime ? item.departureDateTime.split('T')[1] : item.departureTime;
                     convertedItem.arrivalTime = item.arrivalDateTime ? item.arrivalDateTime.split('T')[1] : item.arrivalTime;
+
+                    // Extract date correctly handling timezone issues
+                    if (item.departureDateTime) {
+                        const date = new Date(item.departureDateTime);
+                        // If the datetime is stored in UTC, convert back to local date
+                        const localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+                        convertedItem.departureDate = localDate.toISOString().split('T')[0];
+                    } else {
+                        convertedItem.departureDate = item.departureDate;
+                    }
+
+                    if (item.arrivalDateTime) {
+                        const date = new Date(item.arrivalDateTime);
+                        const localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+                        convertedItem.arrivalDate = localDate.toISOString().split('T')[0];
+                    } else {
+                        convertedItem.arrivalDate = item.arrivalDate;
+                    }
+
                     convertedItem.departureAirport = item.originAirport;
                     convertedItem.arrivalAirport = item.destinationAirport;
                     convertedItem.departureAirportCode = item.originAirportCode;
@@ -819,24 +840,6 @@
                     convertedItem.confirmationNumber = item.confirmationNumber;
                     convertedItem.notes = item.notes;
                     
-                    // Calculate dates based on trip start date and day
-                    if (item.day && tripData.startDate) {
-                        const startDate = new Date(tripData.startDate);
-                        const departureDate = new Date(startDate);
-                        departureDate.setDate(startDate.getDate() + item.day - 1);
-                        convertedItem.departureDate = departureDate.toISOString().split('T')[0];
-                        
-                        const arrivalDate = new Date(departureDate);
-                        if (item.arrivalDateTime && item.departureDateTime) {
-                            const depTime = new Date(item.departureDateTime);
-                            const arrTime = new Date(item.arrivalDateTime);
-                            if (arrTime.getDate() !== depTime.getDate()) {
-                                arrivalDate.setDate(arrivalDate.getDate() + 1);
-                            }
-                        }
-                        convertedItem.arrivalDate = arrivalDate.toISOString().split('T')[0];
-                    }
-                    break;
                     
                 case 'hotel':
                     convertedItem.hotelName = item.title || item.hotelName;
@@ -1056,21 +1059,6 @@
             
             // Flight details
             if (item.type === 'flight') {
-                const departureDate = item.departureDate ? new Date(item.departureDate) : null;
-                const arrivalDate = item.arrivalDate ? new Date(item.arrivalDate) : null;
-                
-                const departureFormatted = departureDate ? departureDate.toLocaleDateString('es-ES', { 
-                    weekday: 'short', 
-                    day: 'numeric', 
-                    month: 'short' 
-                }) : '';
-                
-                const arrivalFormatted = arrivalDate ? arrivalDate.toLocaleDateString('es-ES', { 
-                    weekday: 'short', 
-                    day: 'numeric', 
-                    month: 'short' 
-                }) : '';
-
                 // Format time for display
                 const formatTime = (timeString) => {
                     if (!timeString) return '';
@@ -1083,15 +1071,23 @@
                 const departureTime = formatTime(item.departureTime);
                 const arrivalTime = formatTime(item.arrivalTime);
 
-                // Check if arrival is on a different day
-                const isNextDay = arrivalDate && departureDate && arrivalDate.getDate() !== departureDate.getDate();
-                
+                // Simple date formatting like trains - no timezone adjustments
+                const formatDate = (dateString) => {
+                    if (!dateString) return '';
+                    const [year, month, day] = dateString.split('-');
+                    const monthNames = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+                    const monthIndex = parseInt(month) - 1;
+                    return `${parseInt(day)} ${monthNames[monthIndex]}`;
+                };
+
+                const departureDate = formatDate(item.departureDate);
+                const arrivalDate = formatDate(item.arrivalDate);
+
                 detailsHTML = `
                     <div class="flight-details">
                         <div class="flight-route">
                             <div class="flight-segment">
-                                <div class="flight-time">${departureTime}</div>
-                                <div class="flight-date" style="font-size: 0.8rem; color: var(--text-gray); font-weight: normal;">${departureFormatted}</div>
+                                <div class="flight-time">${departureDate} - ${departureTime}</div>
                                 <div class="flight-airport">${item.departureAirport || ''}</div>
                             </div>
                             <div class="flight-path">
@@ -1100,9 +1096,7 @@
                                 <div class="flight-destination">📍</div>
                             </div>
                             <div class="flight-segment">
-                                ${isNextDay ? `<div style="font-size: 0.7rem; color: var(--text-gray); margin-bottom: 0.2rem;">+1 día</div>` : ''}
-                                <div class="flight-time">${arrivalTime}</div>
-                                <div class="flight-date" style="font-size: 0.8rem; color: var(--text-gray); font-weight: normal;">${arrivalFormatted}</div>
+                                <div class="flight-time">${arrivalDate} - ${arrivalTime}</div>
                                 <div class="flight-airport">${item.arrivalAirport || ''}</div>
                             </div>
                         </div>
@@ -1376,18 +1370,21 @@
             }
         }
 
-        function calculateDayDate(startDate, dayNumber) {
-            if (!startDate) return 'Sin fecha';
-            
+        function getStoredDayDate(trip, dayNumber) {
             try {
-                const start = new Date(startDate + 'T00:00:00');
-                const targetDate = new Date(start);
-                targetDate.setDate(start.getDate() + dayNumber - 1);
-                
-                return targetDate.toISOString().split('T')[0];
-            } catch (error) {
-                return 'Sin fecha';
+                // 1) trip.days[] con {day, date}
+                if (trip && Array.isArray(trip.days)) {
+                    const found = trip.days.find(d => parseInt(d.day) === parseInt(dayNumber));
+                    if (found && found.date) return found.date;
+                }
+                // 2) mapas típicos { [dayNumber]: 'YYYY-MM-DD' }
+                if (trip && trip.dayDates && trip.dayDates[dayNumber]) return trip.dayDates[dayNumber];
+                if (trip && trip.day_dates && trip.day_dates[dayNumber]) return trip.day_dates[dayNumber];
+                if (trip && trip.daysDates && trip.daysDates[dayNumber]) return trip.daysDates[dayNumber];
+            } catch (e) {
+                // ignore
             }
+            return 'Sin fecha';
         }
 
         function showError(message) {

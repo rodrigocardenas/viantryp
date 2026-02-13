@@ -58,14 +58,14 @@
                     $itemsByDay[$day][] = $item;
                 }
 
-                // Get day dates from days_dates array
+                // Get day dates from days_dates array - ONLY use manual dates
+                // IMPORTANT: NO automatic calculation from start_date
                 foreach(array_keys($itemsByDay) as $dayNumber) {
                     $dayDates[$dayNumber] = null;
                     if ($trip->days_dates && isset($trip->days_dates[$dayNumber])) {
                         $dayDates[$dayNumber] = \Carbon\Carbon::parse($trip->days_dates[$dayNumber]);
-                    } elseif ($trip->start_date) {
-                        $dayDates[$dayNumber] = $trip->start_date->copy()->addDays($dayNumber - 1);
                     }
+                    // If no manual date, leave as null (will display 'Sin fecha')
                 }
 
                 // Sort items within each day chronologically

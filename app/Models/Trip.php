@@ -276,20 +276,21 @@ class Trip extends Model
             $itemsByDay[$day][] = new TripItem($item);
         }
 
-        // Convert to Day objects
+        // Convert to Day objects - sort by day number to maintain correct order
         $days = [];
         foreach ($itemsByDay as $dayNumber => $items) {
             $dayDate = null;
-            if ($this->days_dates && isset($this->days_dates[$dayNumber])) {
+            // IMPORTANT: Only use manual dates from days_dates array
+            // NO automatic calculation from start_date - dates must be manual
+            if ($this->days_dates && isset($this->days_dates[$dayNumber]) && !empty($this->days_dates[$dayNumber])) {
                 $dayDate = \Carbon\Carbon::parse($this->days_dates[$dayNumber]);
-            } elseif ($this->start_date) {
-                // Fallback to calculated date if no manual date set
-                $dayDate = $this->start_date->copy()->addDays($dayNumber - 1);
             }
 
             $days[] = new TripDay($dayNumber, $dayDate, $items);
         }
 
+        // Sort by day number (not by date) to maintain correct day order
+        // Day numbering (Día 1, Día 2, etc.) is automatic, dates are manual
         return collect($days)->sortBy('day');
     }
 
