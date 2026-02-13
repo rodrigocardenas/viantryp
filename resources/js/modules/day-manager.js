@@ -62,7 +62,7 @@ class DayManager {
         const input = document.createElement('input');
         input.type = 'date';
         input.id = `day-${newDayNumber}-date`;
-        input.className = 'day-date-input';
+        input.className = 'day-date-input-large';
         input.value = defaultDate;
         input.setAttribute('data-day', newDayNumber);
         dateSection.appendChild(input);

@@ -22,15 +22,16 @@
                     <span class="subtitle-client">{{ $client->name }}</span>
                 @endif
 
-                @if($trip && method_exists($trip, 'getDuration') && $trip->getDuration())
+                {{-- Duration removed per user request --}}
+                {{-- @if($trip && method_exists($trip, 'getDuration') && $trip->getDuration())
                     <span class="subtitle-sep">|</span>
                     <span class="subtitle-duration">{{ $trip->getDuration() }}</span>
-                @endif
+                @endif --}}
 
                 @php $today = date('Y-m-d'); @endphp
-                <span class="subtitle-sep">|</span>
-                {{-- Editable start date input (value in Y-m-d for input[type=date]) --}}
-                <input type="date" id="start-date" class="subtitle-date-input form-input"
+                {{-- Hidden start date input (value in Y-m-d for input[type=date]) --}}
+                {{-- User requested to move date control to Day 1 header --}}
+                <input type="hidden" id="start-date" class="subtitle-date-input form-input"
                        value="{{ $trip && $trip->start_date ? $trip->start_date->format('Y-m-d') : $today }}"
                        min="{{ $today }}">
             </div>
@@ -202,10 +203,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!window.existingTripData) window.existingTripData = {};
                 window.existingTripData.start_date = startDateInput.value || null;
 
-                // If the editor has an update function for itinerary dates, call it
+                // DISABLE AUTOMATIC DATE UPDATES
+                // The user requested to stop automatic consecutive date filling.
+                // Keeping the code commented out for reference or future optional enabling.
+                /*
                 if (typeof updateItineraryDates === 'function') {
                     try { updateItineraryDates(); } catch (e) { console.warn('updateItineraryDates failed', e); }
                 }
+                */
             });
         }
 });

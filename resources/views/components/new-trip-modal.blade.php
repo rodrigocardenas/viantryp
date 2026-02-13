@@ -19,10 +19,11 @@
                        placeholder="Ej: Viaje a Barcelona 2024">
             </div>
 
-            <div class="form-group">
+            <!-- Date input removed per user request -->
+            <!-- <div class="form-group">
                 <label for="start-date">Fecha de Inicio del Viaje</label>
                 <input type="date" id="modal-start-date" name="start_date">
-            </div>
+            </div> -->
 
             <div class="form-row">
                 <div class="form-group">

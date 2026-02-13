@@ -46,7 +46,13 @@
                         <div class="day-title-row">
                             <h3>DÍA {{ $day->day }}</h3>
                             <span class="day-separator">|</span>
-                            <input type="date" id="day-{{ $day->day }}-date" class="day-date-input-large" value="{{ $day->getDateInputValue() }}" data-day="{{ $day->day }}">
+                            <input type="date" id="day-{{ $day->day }}-date" class="day-date-input-large" 
+                                   value="{{ $day->getDateInputValue() }}" 
+                                   data-day="{{ $day->day }}"
+                                   @if($day->day == 1)
+                                   onchange="document.getElementById('start-date').value = this.value; if(typeof window.updateItineraryDates === 'function' && false) window.updateItineraryDates();"
+                                   @endif
+                            >
                         </div>
                         <p class="day-date-display">{{ $day->getFormattedDate() }}</p>
                     </div>
@@ -73,7 +79,11 @@
                     <div class="day-title-row">
                         <h3>DÍA 1</h3>
                         <span class="day-separator">|</span>
-                        <input type="date" id="day-1-date" class="day-date-input-large" value="{{ isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '' }}" data-day="1">
+                        {{-- Sync Day 1 date with hidden Global Start Date for saving --}}
+                        <input type="date" id="day-1-date" class="day-date-input-large" 
+                               value="{{ isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '' }}" 
+                               data-day="1"
+                               onchange="document.getElementById('start-date').value = this.value; if(typeof window.updateItineraryDates === 'function' && false) window.updateItineraryDates();">
                     </div>
                     <p class="day-date-display" id="day-1-date-display">
                         @php

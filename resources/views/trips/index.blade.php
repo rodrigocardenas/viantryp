@@ -74,7 +74,10 @@
                             </div>
                             <div class="trip-info">
                                 <div class="trip-title">{{ $trip->title }}</div>
-                                <div class="trip-dates">{{ $trip->getFormattedDates() }}</div>
+                                <div class="trip-dates">
+                                    {{-- Show only start date per user request --}}
+                                    {{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->format('d/m/Y') : 'Sin fecha' }}
+                                </div>
                                 <div>
                                     <select class="status-select" data-status="{{ $trip->status }}" onclick="event.stopPropagation();" onchange="changeTripStatus({{ $trip->id }}, this.value)">
                                         <option value="draft" {{ $trip->status === 'draft' ? 'selected' : '' }}>En Diseño</option>

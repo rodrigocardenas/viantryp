@@ -5,7 +5,7 @@ try {
     if (typeof FileManager === 'undefined' && typeof window !== 'undefined') {
         // Create a minimal FileManager fallback
         window.FileManager = window.FileManager || class FileManager {
-            setupFileUploadListeners() {}
+            setupFileUploadListeners() { }
             uploadDocument() { return Promise.resolve(false); }
             processTempFiles() { return Promise.resolve(); }
         };
@@ -17,7 +17,7 @@ try {
 class ExportManager {
     constructor() {
         // Use the global FileManager instance, or create one if not available
-        this.fileManager = window.fileManager || new (window.FileManager || function(){})();
+        this.fileManager = window.fileManager || new (window.FileManager || function () { })();
         this.isSaving = false; // Flag to prevent multiple simultaneous saves
         this.savedTripIds = new Set(); // Track saved trip IDs to prevent duplicates
 
@@ -25,9 +25,9 @@ class ExportManager {
         if (this.fileManager && typeof this.fileManager.setupFileUploadListeners !== 'function') {
             // Fallback for old browsers or missing FileManager
             this.fileManager = {
-                setupFileUploadListeners: function() {},
-                uploadDocument: function() { return Promise.resolve(false); },
-                processTempFiles: function() { return Promise.resolve(); }
+                setupFileUploadListeners: function () { },
+                uploadDocument: function () { return Promise.resolve(false); },
+                processTempFiles: function () { return Promise.resolve(); }
             };
         }
     }
@@ -328,7 +328,7 @@ class ExportManager {
 
         dayCards.forEach(dayCard => {
             const dayNumber = parseInt(dayCard.dataset.day);
-            const dateInput = dayCard.querySelector('.day-date-input');
+            const dateInput = dayCard.querySelector('.day-date-input, .day-date-input-large');
             if (dateInput && dateInput.value) {
                 daysDates[dayNumber] = dateInput.value;
             }

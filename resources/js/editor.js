@@ -32,7 +32,7 @@ let currentElementData = {};
 let currentDay = null;
 
 // Initialize the editor when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('Editor JavaScript initializing...');
 
     // Initialize managers
@@ -67,13 +67,13 @@ function setupGlobalEventListeners() {
     draggableElements.forEach(element => {
         // Add click handlers for summary and total elements
         if (element.dataset.type === 'summary') {
-            element.addEventListener('click', function(e) {
+            element.addEventListener('click', function (e) {
                 e.preventDefault();
                 summaryManager.handleSummaryClick();
             });
         }
         if (element.dataset.type === 'total') {
-            element.addEventListener('click', function(e) {
+            element.addEventListener('click', function (e) {
                 e.preventDefault();
                 summaryManager.handleTotalClick();
             });
@@ -92,7 +92,7 @@ function setupGlobalEventListeners() {
     });
 
     // Add event delegation for data-action attributes
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         const action = e.target.closest('[data-action]');
         if (!action) return;
 
@@ -167,39 +167,39 @@ function setupGlobalEventListeners() {
 }
 
 // Global functions that need to be accessible from HTML
-window.addNewDay = function() {
+window.addNewDay = function () {
     dayManager.addNewDay();
 };
 
-window.updateItineraryDates = function() {
+window.updateItineraryDates = function () {
     dayManager.updateItineraryDates();
 };
 
-window.allowDrop = function(ev) {
+window.allowDrop = function (ev) {
     timelineManager.allowDrop(ev);
 };
 
-window.drag = function(ev) {
+window.drag = function (ev) {
     timelineManager.drag(ev);
 };
 
-window.drop = function(ev) {
+window.drop = function (ev) {
     timelineManager.drop(ev);
 };
 
-window.saveTrip = function() {
+window.saveTrip = function () {
     exportManager.saveTrip();
 };
 
-window.previewTrip = function() {
+window.previewTrip = function () {
     exportManager.previewTrip();
 };
 
-window.downloadPDF = function() {
+window.downloadPDF = function () {
     exportManager.downloadPDF();
 };
 
-window.showUnsavedChangesModal = function() {
+window.showUnsavedChangesModal = function () {
     const modal = document.getElementById('unsaved-changes-modal');
     if (modal) {
         const changesSummary = document.getElementById('changesSummary');
@@ -289,8 +289,9 @@ function loadExistingTripData(tripData) {
         const startDateInput = document.getElementById('start-date');
         if (startDateInput) {
             startDateInput.value = tripData.start_date ? new Date(tripData.start_date).toISOString().split('T')[0] : '';
-            // Trigger date update to populate day dates
-            if (typeof updateItineraryDates === 'function') {
+            // Trigger date update to populate day dates ONLY if not in edit mode
+            // In edit mode, dates are already correctly rendered from the server
+            if (typeof updateItineraryDates === 'function' && window.editorMode !== 'edit') {
                 updateItineraryDates();
             }
         }

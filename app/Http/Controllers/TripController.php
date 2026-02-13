@@ -80,12 +80,12 @@ class TripController extends Controller
         $clientId = null;
         if ($validated['client_name'] && $validated['client_email']) {
             $client = Person::updateOrCreate(
-                ['email' => $validated['client_email']],
-                [
-                    'name' => $validated['client_name'],
-                    'type' => 'client',
-                    'phone' => null // or from request if added
-                ]
+            ['email' => $validated['client_email']],
+            [
+                'name' => $validated['client_name'],
+                'type' => 'client',
+                'phone' => null // or from request if added
+            ]
             );
             $clientId = $client->id;
         }
@@ -98,7 +98,7 @@ class TripController extends Controller
         $validated['end_date'] = $validated['start_date'];
 
         // Smart duplicate handling: update existing trips instead of rejecting
-        return DB::transaction(function() use ($validated, $request, $clientId) {
+        return DB::transaction(function () use ($validated, $request, $clientId) {
             // Get current user ID once
             $userId = Auth::id();
 
@@ -240,7 +240,8 @@ class TripController extends Controller
                 'request_all' => $request->all(),
                 'user_id' => Auth::id()
             ]);
-        } catch (\Throwable $e) {
+        }
+        catch (\Throwable $e) {
             // Don't break the request if logging fails
             Log::error('Failed logging TripController@update payload: ' . $e->getMessage());
         }
@@ -260,9 +261,11 @@ class TripController extends Controller
         try {
             Log::info('TripController@update validated data', [
                 'trip_id' => $trip->id,
+                'days_dates' => $validated['days_dates'] ?? 'NOT SET',
                 'validated' => $validated
             ]);
-        } catch (\Throwable $e) {
+        }
+        catch (\Throwable $e) {
             Log::error('Failed logging TripController@update validated payload: ' . $e->getMessage());
         }
         // Set default values for optional fields
@@ -369,7 +372,8 @@ class TripController extends Controller
                 'status' => Trip::STATUS_DRAFT,
                 'items_data' => []
             ]);
-        } else {
+        }
+        else {
             // Load existing trip with user relationship
             $trip = Trip::with('user', 'documents')->findOrFail($tripId);
 
@@ -455,9 +459,9 @@ class TripController extends Controller
 
         // Ensure all trips belong to the authenticated user
         $userTrips = Trip::whereIn('id', $validated['trip_ids'])
-                        ->where('user_id', Auth::id())
-                        ->pluck('id')
-                        ->toArray();
+            ->where('user_id', Auth::id())
+            ->pluck('id')
+            ->toArray();
 
         if (count($userTrips) !== count($validated['trip_ids'])) {
             return response()->json([
@@ -474,160 +478,161 @@ class TripController extends Controller
         ]);
     }
 
-     /**
-      * Bulk duplicate trips
-      */
-     public function bulkDuplicate(Request $request): JsonResponse
-     {
-         $validated = $request->validate([
-             'trip_ids' => 'required|array',
-             'trip_ids.*' => 'integer|exists:trips,id'
-         ]);
+    /**
+     * Bulk duplicate trips
+     */
+    public function bulkDuplicate(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'trip_ids' => 'required|array',
+            'trip_ids.*' => 'integer|exists:trips,id'
+        ]);
 
-         // Ensure all trips belong to the authenticated user
-         $trips = Trip::whereIn('id', $validated['trip_ids'])
-                     ->where('user_id', Auth::id())
-                     ->get();
+        // Ensure all trips belong to the authenticated user
+        $trips = Trip::whereIn('id', $validated['trip_ids'])
+            ->where('user_id', Auth::id())
+            ->get();
 
-         if ($trips->count() !== count($validated['trip_ids'])) {
-             return response()->json([
-                 'success' => false,
-                 'message' => 'No tienes permiso para duplicar algunos de los viajes seleccionados.'
-             ], 403);
-         }
+        if ($trips->count() !== count($validated['trip_ids'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para duplicar algunos de los viajes seleccionados.'
+            ], 403);
+        }
 
-         $duplicatedCount = 0;
+        $duplicatedCount = 0;
 
-         foreach ($trips as $trip) {
-             $newTrip = $trip->replicate();
-             $newTrip->title = $trip->title . ' (Copia)';
-             $newTrip->status = Trip::STATUS_DRAFT;
-             $newTrip->user_id = Auth::id(); // Ensure the duplicate belongs to the current user
-             $newTrip->code = null; // Clear the unique code to avoid constraint violation
-             $newTrip->save();
+        foreach ($trips as $trip) {
+            $newTrip = $trip->replicate();
+            $newTrip->title = $trip->title . ' (Copia)';
+            $newTrip->status = Trip::STATUS_DRAFT;
+            $newTrip->user_id = Auth::id(); // Ensure the duplicate belongs to the current user
+            $newTrip->code = null; // Clear the unique code to avoid constraint violation
+            $newTrip->save();
 
-             // Generate a new unique code for the duplicated trip
-             $newTrip->generateCode();
+            // Generate a new unique code for the duplicated trip
+            $newTrip->generateCode();
 
-             $duplicatedCount++;
-         }
+            $duplicatedCount++;
+        }
 
-         return response()->json([
-             'success' => true,
-             'message' => "{$duplicatedCount} viajes duplicados exitosamente"
-         ]);
-     }
+        return response()->json([
+            'success' => true,
+            'message' => "{$duplicatedCount} viajes duplicados exitosamente"
+        ]);
+    }
 
-     /**
-      * Generate share token for trip
-      */
-     public function generateShareToken(Trip $trip): JsonResponse
-     {
-         // Ensure the trip belongs to the authenticated user
-         if ($trip->user_id !== Auth::id()) {
-             return response()->json([
-                 'success' => false,
-                 'message' => 'No tienes permiso para compartir este viaje.'
-             ], 403);
-         }
+    /**
+     * Generate share token for trip
+     */
+    public function generateShareToken(Trip $trip): JsonResponse
+    {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para compartir este viaje.'
+            ], 403);
+        }
 
-         // Only allow sharing for trips that have been sent or approved
-         if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
-             return response()->json([
-                 'success' => false,
-                 'message' => 'Solo puedes compartir viajes que han sido enviados o aprobados.'
-             ], 400);
-         }
+        // Only allow sharing for trips that have been sent or approved
+        if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Solo puedes compartir viajes que han sido enviados o aprobados.'
+            ], 400);
+        }
 
-         $shareUrl = $trip->getShareUrl();
+        $shareUrl = $trip->getShareUrl();
 
-         return response()->json([
-             'success' => true,
-             'message' => 'Enlace de compartición generado exitosamente',
-             'share_url' => $shareUrl,
-             'share_token' => $trip->share_token
-         ]);
-     }
+        return response()->json([
+            'success' => true,
+            'message' => 'Enlace de compartición generado exitosamente',
+            'share_url' => $shareUrl,
+            'share_token' => $trip->share_token
+        ]);
+    }
 
-     /**
-      * Generate PDF for trip
-      */
-     public function generatePdf(Request $request, Trip $trip)
-     {
-         // Check if this is a shared access (via token)
-         $token = $request->get('token');
-         $isShared = $token && $trip->share_token === $token;
+    /**
+     * Generate PDF for trip
+     */
+    public function generatePdf(Request $request, Trip $trip)
+    {
+        // Check if this is a shared access (via token)
+        $token = $request->get('token');
+        $isShared = $token && $trip->share_token === $token;
 
-         // Ensure the trip belongs to the authenticated user or is shared
-         $isOwner = Auth::check() && $trip->user_id === Auth::id();
+        // Ensure the trip belongs to the authenticated user or is shared
+        $isOwner = Auth::check() && $trip->user_id === Auth::id();
 
-         if (!$isOwner && !$isShared) {
-             abort(403, 'No tienes permiso para descargar este viaje.');
-         }
+        if (!$isOwner && !$isShared) {
+            abort(403, 'No tienes permiso para descargar este viaje.');
+        }
 
-         // Only allow PDF generation for trips that have been sent or approved
-         if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
-             abort(403, 'Solo puedes descargar viajes que han sido enviados o aprobados.');
-         }
+        // Only allow PDF generation for trips that have been sent or approved
+        if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
+            abort(403, 'Solo puedes descargar viajes que han sido enviados o aprobados.');
+        }
 
-         $trip->load('user');
+        $trip->load('user');
 
-         $pdf = Pdf::loadView('trips.pdf', [
-             'trip' => $trip,
-             'isPublicPreview' => !$isOwner
-         ]);
+        $pdf = Pdf::loadView('trips.pdf', [
+            'trip' => $trip,
+            'isPublicPreview' => !$isOwner
+        ]);
 
-         $startDate = $trip->start_date ? $trip->start_date->format('d-m-Y') : 'sin-fecha';
-         $filename = 'itinerario-' . Str::slug($trip->title) . '-' . $startDate . '.pdf';
+        $startDate = $trip->start_date ? $trip->start_date->format('d-m-Y') : 'sin-fecha';
+        $filename = 'itinerario-' . Str::slug($trip->title) . '-' . $startDate . '.pdf';
 
-         return $pdf->download($filename);
-     }
+        return $pdf->download($filename);
+    }
 
-     /**
-      * Send trip link via email
-      */
-     public function sendEmail(Request $request, Trip $trip): JsonResponse
-     {
-         // Ensure the trip belongs to the authenticated user
-         if ($trip->user_id !== Auth::id()) {
-             return response()->json([
-                 'success' => false,
-                 'message' => 'No tienes permiso para enviar este viaje.'
-             ], 403);
-         }
+    /**
+     * Send trip link via email
+     */
+    public function sendEmail(Request $request, Trip $trip): JsonResponse
+    {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para enviar este viaje.'
+            ], 403);
+        }
 
-         // Only allow sending for trips that have been sent or approved
-         if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
-             return response()->json([
-                 'success' => false,
-                 'message' => 'Solo puedes enviar viajes que han sido enviados o aprobados.'
-             ], 400);
-         }
+        // Only allow sending for trips that have been sent or approved
+        if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Solo puedes enviar viajes que han sido enviados o aprobados.'
+            ], 400);
+        }
 
-         $validated = $request->validate([
-             'email' => 'required|email',
-             'message' => 'nullable|string|max:1000'
-         ]);
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'message' => 'nullable|string|max:1000'
+        ]);
 
-         try {
-             Mail::to($validated['email'])->send(new SendTripLink($trip, $validated['message'] ?? null));
+        try {
+            Mail::to($validated['email'])->send(new SendTripLink($trip, $validated['message'] ?? null));
 
-             return response()->json([
-                 'success' => true,
-                 'message' => 'El enlace del viaje ha sido enviado exitosamente.'
-             ]);
-         } catch (\Exception $e) {
-             Log::error('Error sending trip email: ' . $e->getMessage());
-             return response()->json([
-                 'success' => false,
-                 'message' => 'No se pudo enviar el correo. Por favor intenta de nuevo.'
-             ], 500);
-         }
-     }
+            return response()->json([
+                'success' => true,
+                'message' => 'El enlace del viaje ha sido enviado exitosamente.'
+            ]);
+        }
+        catch (\Exception $e) {
+            Log::error('Error sending trip email: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo enviar el correo. Por favor intenta de nuevo.'
+            ], 500);
+        }
+    }
 
-     /**
-      * Upload or update trip cover image
-      */
+    /**
+     * Upload or update trip cover image
+     */
     public function uploadCover(Request $request, Trip $trip): JsonResponse
     {
         // Ensure the trip belongs to the authenticated user
@@ -659,19 +664,23 @@ class TripController extends Controller
                     $relativePath = 'trip-covers/' . $filename;
                     \Illuminate\Support\Facades\Storage::disk('public')->put($relativePath, $data);
                     $coverUrl = asset('storage/' . $relativePath);
-                } else {
+                }
+                else {
                     Log::error('Invalid cover_data_url format', ['trip_id' => $trip->id]);
                     return response()->json(['success' => false, 'message' => 'Formato de imagen inválido.'], 422);
                 }
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 Log::error('Cover upload (data URL) exception: ' . $e->getMessage(), ['trip_id' => $trip->id, 'exception' => $e]);
                 return response()->json(['success' => false, 'message' => 'Error al guardar la portada desde data URL.', 'exception' => $e->getMessage()], 500);
             }
-        } else {
+        }
+        else {
             // Guard against missing temporary path (can happen in some PHP configs)
             try {
                 $real = $file->getRealPath();
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 $real = null;
             }
 
@@ -685,15 +694,18 @@ class TripController extends Controller
                         $relativePath = 'trip-covers/' . $filename;
                         \Illuminate\Support\Facades\Storage::disk('public')->put($relativePath, fopen($altPath, 'r'));
                         $coverUrl = asset('storage/' . $relativePath);
-                    } catch (\Exception $e) {
+                    }
+                    catch (\Exception $e) {
                         Log::error('Cover upload manual put failed', ['trip_id' => $trip->id, 'exception' => $e->getMessage()]);
                         return response()->json(['success' => false, 'message' => 'No se pudo guardar la imagen desde el archivo temporal.'], 500);
                     }
-                } else {
+                }
+                else {
                     Log::error('Cover upload failed: uploaded file has no real path and no pathname', ['trip_id' => $trip->id]);
                     return response()->json(['success' => false, 'message' => 'Archivo temporal no disponible en el servidor.'], 500);
                 }
-            } else {
+            }
+            else {
                 // Store in public disk under trip-covers
                 try {
                     $path = $file->store('trip-covers', 'public');
@@ -702,7 +714,8 @@ class TripController extends Controller
                         return response()->json(['success' => false, 'message' => 'No se pudo guardar la imagen en el disco.'], 500);
                     }
                     $coverUrl = asset('storage/' . $path);
-                } catch (\Exception $e) {
+                }
+                catch (\Exception $e) {
                     Log::error('Cover upload exception: ' . $e->getMessage(), ['trip_id' => $trip->id, 'exception' => $e]);
                     return response()->json(['success' => false, 'message' => 'Error al guardar la portada.', 'exception' => $e->getMessage()], 500);
                 }
@@ -716,72 +729,73 @@ class TripController extends Controller
         return response()->json(['success' => true, 'cover_url' => $coverUrl]);
     }
 
-     /**
-      * Enrich hotel data with Google Places details
-      */
-     private function enrichHotelData(Trip $trip): Trip
-     {
-         if (!$trip->items_data || !is_array($trip->items_data)) {
-             return $trip;
-         }
+    /**
+     * Enrich hotel data with Google Places details
+     */
+    private function enrichHotelData(Trip $trip): Trip
+    {
+        if (!$trip->items_data || !is_array($trip->items_data)) {
+            return $trip;
+        }
 
-         $apiKey = config('services.google.places_api_key');
-         if (!$apiKey) {
-             return $trip;
-         }
+        $apiKey = config('services.google.places_api_key');
+        if (!$apiKey) {
+            return $trip;
+        }
 
-         // Create a copy of the items_data array to avoid indirect modification issues
-         $itemsData = $trip->items_data;
+        // Create a copy of the items_data array to avoid indirect modification issues
+        $itemsData = $trip->items_data;
 
-         foreach ($itemsData as &$item) {
-             if (isset($item['type']) && $item['type'] === 'hotel' && isset($item['hotel_id'])) {
-                 try {
-                     $response = Http::get("https://maps.googleapis.com/maps/api/place/details/json", [
-                         'place_id' => $item['hotel_id'],
-                         'fields' => 'name,formatted_address,photos,rating,reviews,opening_hours,website,international_phone_number,price_level,types',
-                         'key' => $apiKey,
-                     ]);
+        foreach ($itemsData as &$item) {
+            if (isset($item['type']) && $item['type'] === 'hotel' && isset($item['hotel_id'])) {
+                try {
+                    $response = Http::get("https://maps.googleapis.com/maps/api/place/details/json", [
+                        'place_id' => $item['hotel_id'],
+                        'fields' => 'name,formatted_address,photos,rating,reviews,opening_hours,website,international_phone_number,price_level,types',
+                        'key' => $apiKey,
+                    ]);
 
-                     $data = $response->json();
+                    $data = $response->json();
 
-                     if ($data['status'] === 'OK') {
-                         $placeDetails = $data['result'];
+                    if ($data['status'] === 'OK') {
+                        $placeDetails = $data['result'];
 
-                         // Add detailed information to the item
-                         $item['detailed_info'] = [
-                             'name' => $placeDetails['name'] ?? $item['hotel_name'] ?? '',
-                             'formatted_address' => $placeDetails['formatted_address'] ?? '',
-                             'rating' => $placeDetails['rating'] ?? null,
-                             'website' => $placeDetails['website'] ?? null,
-                             'international_phone_number' => $placeDetails['international_phone_number'] ?? null,
-                             'price_level' => $placeDetails['price_level'] ?? null,
-                             'types' => $placeDetails['types'] ?? [],
-                         ];
+                        // Add detailed information to the item
+                        $item['detailed_info'] = [
+                            'name' => $placeDetails['name'] ?? $item['hotel_name'] ?? '',
+                            'formatted_address' => $placeDetails['formatted_address'] ?? '',
+                            'rating' => $placeDetails['rating'] ?? null,
+                            'website' => $placeDetails['website'] ?? null,
+                            'international_phone_number' => $placeDetails['international_phone_number'] ?? null,
+                            'price_level' => $placeDetails['price_level'] ?? null,
+                            'types' => $placeDetails['types'] ?? [],
+                        ];
 
-                         // Process photos with full URLs
-                         if (isset($placeDetails['photos']) && is_array($placeDetails['photos'])) {
-                             $item['detailed_info']['photos'] = array_map(function($photo) use ($apiKey) {
-                                 return [
-                                     'url' => "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&maxheight=600&photoreference={$photo['photo_reference']}&key={$apiKey}",
-                                     'photo_reference' => $photo['photo_reference'],
-                                     'width' => $photo['width'] ?? null,
-                                     'height' => $photo['height'] ?? null,
-                                 ];
-                             }, array_slice($placeDetails['photos'], 0, 10)); // Limit to 10 photos
-                         }
-                     }
-                 } catch (\Exception $e) {
-                     // Log error but continue processing
-                     Log::warning('Failed to enrich hotel data for place_id: ' . $item['hotel_id'], [
-                         'error' => $e->getMessage()
-                     ]);
-                 }
-             }
-         }
+                        // Process photos with full URLs
+                        if (isset($placeDetails['photos']) && is_array($placeDetails['photos'])) {
+                            $item['detailed_info']['photos'] = array_map(function ($photo) use ($apiKey) {
+                                return [
+                                'url' => "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&maxheight=600&photoreference={$photo['photo_reference']}&key={$apiKey}",
+                                'photo_reference' => $photo['photo_reference'],
+                                'width' => $photo['width'] ?? null,
+                                'height' => $photo['height'] ?? null,
+                                ];
+                            }, array_slice($placeDetails['photos'], 0, 10)); // Limit to 10 photos
+                        }
+                    }
+                }
+                catch (\Exception $e) {
+                    // Log error but continue processing
+                    Log::warning('Failed to enrich hotel data for place_id: ' . $item['hotel_id'], [
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+        }
 
-         // Update the trip with enriched data
-         $trip->items_data = $itemsData;
+        // Update the trip with enriched data
+        $trip->items_data = $itemsData;
 
-         return $trip;
-     }
- }
+        return $trip;
+    }
+}
