@@ -43,21 +43,21 @@
                 </button>
                 <div class="day-header">
                     <div class="day-title-section">
-                        <div class="day-title-row">
-                            <h3>DÍA {{ $day->day }}</h3>
-                            <span class="day-separator">|</span>
-<<<<<<< HEAD
-                            <input type="date" id="day-{{ $day->day }}-date" class="day-date-input-large" 
-                                   value="{{ $day->getDateInputValue() }}" 
-                                   data-day="{{ $day->day }}"
-                                   @if($day->day == 1)
-                                   onchange="document.getElementById('start-date').value = this.value; if(typeof window.updateItineraryDates === 'function' && false) window.updateItineraryDates();"
-                                   @endif
-                            >
-=======
->>>>>>> af2a82d4984c87e4448f8167272a27a968f12153
-                        </div>
-                        <p class="day-date-display">{{ $day->getFormattedDate() }}</p>
+                            <div class="day-title-row">
+                                <h3>DÍA {{ $day->day }}</h3>
+                                <span class="day-separator">|</span>
+                                <input type="date" id="day-{{ $day->day }}-date" class="day-date-input-large" 
+                                       value="{{ $day->getDateInputValue() }}" 
+                                       data-day="{{ $day->day }}"
+                                       style="opacity: 1; width: auto; height: auto; position: static;"
+                                       @if($day->day == 1)
+                                       onchange="document.getElementById('start-date').value = this.value; document.getElementById('day-{{ $day->day }}-date-display').innerText = new Date(this.value + 'T00:00:00').toLocaleDateString('es-ES', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'});"
+                                       @else
+                                       onchange="document.getElementById('day-{{ $day->day }}-date-display').innerText = new Date(this.value + 'T00:00:00').toLocaleDateString('es-ES', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'});"
+                                       @endif
+                                >
+                            </div>
+                            <p class="day-date-display" id="day-{{ $day->day }}-date-display">{{ $day->getFormattedDate() }}</p>
                     </div>
                 </div>
                 <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -82,14 +82,11 @@
                     <div class="day-title-row">
                         <h3>DÍA 1</h3>
                         <span class="day-separator">|</span>
-<<<<<<< HEAD
-                        {{-- Sync Day 1 date with hidden Global Start Date for saving --}}
                         <input type="date" id="day-1-date" class="day-date-input-large" 
                                value="{{ isset($trip) && $trip->start_date ? $trip->start_date->format('Y-m-d') : '' }}" 
                                data-day="1"
-                               onchange="document.getElementById('start-date').value = this.value; if(typeof window.updateItineraryDates === 'function' && false) window.updateItineraryDates();">
-=======
->>>>>>> af2a82d4984c87e4448f8167272a27a968f12153
+                               style="opacity: 1; width: auto; height: auto; position: static;"
+                               onchange="document.getElementById('start-date').value = this.value; document.getElementById('day-1-date-display').innerText = new Date(this.value + 'T00:00:00').toLocaleDateString('es-ES', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'});">
                     </div>
                     <p class="day-date-display" id="day-1-date-display">Sin fecha</p>
                 </div>

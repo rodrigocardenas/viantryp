@@ -37,32 +37,22 @@ class DayManager {
         const dayHeader = document.createElement('div');
         dayHeader.className = 'day-header';
 
-        // Create title section
+        // Create title section wrapper
         const titleSection = document.createElement('div');
         titleSection.className = 'day-title-section';
 
+        // Create title row (Title + Separator + Input)
+        const titleRow = document.createElement('div');
+        titleRow.className = 'day-title-row';
+
         const title = document.createElement('h3');
-        title.textContent = `Día ${newDayNumber}`;
-        titleSection.appendChild(title);
+        title.textContent = `DÍA ${newDayNumber}`;
+        titleRow.appendChild(title);
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'btn-delete-day';
-        deleteBtn.setAttribute('data-action', 'delete-day');
-        deleteBtn.setAttribute('data-day', newDayNumber);
-        deleteBtn.title = 'Eliminar día';
-        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-        titleSection.appendChild(deleteBtn);
-
-        dayHeader.appendChild(titleSection);
-
-        // Create date section
-        const dateSection = document.createElement('div');
-        dateSection.className = 'day-date-section';
-
-        const label = document.createElement('label');
-        label.setAttribute('for', `day-${newDayNumber}-date`);
-        label.textContent = 'Fecha:';
-        dateSection.appendChild(label);
+        const separator = document.createElement('span');
+        separator.className = 'day-separator';
+        separator.textContent = '|';
+        titleRow.appendChild(separator);
 
         const input = document.createElement('input');
         input.type = 'date';
@@ -70,15 +60,49 @@ class DayManager {
         input.className = 'day-date-input-large';
         input.value = defaultDate;
         input.setAttribute('data-day', newDayNumber);
-        dateSection.appendChild(input);
 
+        // Add onchange handler to update display text
+        input.onchange = function () {
+            const displayId = `day-${newDayNumber}-date-display`;
+            const displayEl = document.getElementById(displayId);
+            if (displayEl && this.value) {
+                const date = new Date(this.value + 'T00:00:00');
+                displayEl.textContent = date.toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            }
+        };
+
+        titleRow.appendChild(input);
+        titleSection.appendChild(titleRow);
+
+        // Create date display text
         const display = document.createElement('p');
         display.className = 'day-date-display';
         display.id = `day-${newDayNumber}-date-display`;
         display.textContent = dayDate;
-        dateSection.appendChild(display);
+        titleSection.appendChild(display);
 
-        dayHeader.appendChild(dateSection);
+        // Add delete button (absolute positioned in CSS usually, or flex)
+        // Note: In timeline.blade.php, btn-delete-day-absolute is strictly inside .day-card, BEFORE .day-header
+        // But here we are inside addNewDay logic. 
+        // We need to add the delete button to dayCard, NOT dayHeader, to match blade.
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn-delete-day-absolute';
+        deleteBtn.setAttribute('data-action', 'delete-day');
+        deleteBtn.setAttribute('data-day', newDayNumber);
+        deleteBtn.title = 'Eliminar día';
+        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+
+        // Append delete button to CARD (before header)
+        dayCard.appendChild(deleteBtn);
+
+        // Append titleSection to Header
+        dayHeader.appendChild(titleSection);
 
         dayCard.appendChild(dayHeader);
 
