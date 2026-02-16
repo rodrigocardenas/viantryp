@@ -6,14 +6,25 @@ class DayManager {
 
     addNewDay() {
         const dayInput = document.getElementById('new-day-number');
-        if (!dayInput || !dayInput.value) {
-            alert('Por favor ingresa un número de día');
-            return;
-        }
-        const newDayNumber = parseInt(dayInput.value);
-        if (isNaN(newDayNumber) || newDayNumber < 1) {
-            alert('Número de día inválido');
-            return;
+        let newDayNumber;
+
+        if (dayInput && dayInput.value) {
+            newDayNumber = parseInt(dayInput.value);
+            if (isNaN(newDayNumber) || newDayNumber < 1) {
+                alert('Número de día inválido');
+                return;
+            }
+        } else {
+            // Comportamiento automático: calcular el siguiente día basado en los existentes
+            const daysContainer = document.getElementById('days-container');
+            const existingDays = daysContainer.querySelectorAll('.day-card');
+
+            if (existingDays.length > 0) {
+                const existingDayNumbers = Array.from(existingDays).map(card => parseInt(card.dataset.day));
+                newDayNumber = Math.max(...existingDayNumbers) + 1;
+            } else {
+                newDayNumber = 1;
+            }
         }
 
         const daysContainer = document.getElementById('days-container');
@@ -73,6 +84,14 @@ class DayManager {
                     month: 'long',
                     year: 'numeric'
                 });
+
+                // Si es el Día 1, sincronizar con la fecha de inicio del viaje
+                if (newDayNumber === 1) {
+                    const tripStartDateInput = document.getElementById('start-date');
+                    if (tripStartDateInput) {
+                        tripStartDateInput.value = this.value;
+                    }
+                }
             }
         };
 
