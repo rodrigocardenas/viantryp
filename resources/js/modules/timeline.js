@@ -365,7 +365,18 @@ export class TimelineManager {
             // element.dataset returns camelCase keys for data-attributes (e.g. departureAirport)
             // convert camelCase to snake_case so it matches the server-side data keys (departure_airport)
             const snake = key.replace(/([A-Z])/g, '_$1').toLowerCase();
-            data[snake] = element.dataset[key];
+            let value = element.dataset[key];
+
+            // Try to parse JSON if it looks like an object or array
+            if (typeof value === 'string' && (value.startsWith('{') || value.startsWith('['))) {
+                try {
+                    value = JSON.parse(value);
+                } catch (e) {
+                    // Not valid JSON, keep as string
+                }
+            }
+
+            data[snake] = value;
         });
 
         return data;

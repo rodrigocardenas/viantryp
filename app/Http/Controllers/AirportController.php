@@ -17,7 +17,7 @@ class AirportController extends Controller
         $query = Airport::query();
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $query->where(function (\Illuminate\Database\Eloquent\Builder $q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('iata_code', 'like', "%{$search}%")
                     ->orWhere('city', 'like', "%{$search}%");

@@ -383,6 +383,8 @@ class ExportManager {
                     arrival_time: itemElement.getAttribute('data-arrival-time') || '',
                     departure_date: itemElement.getAttribute('data-departure-date') || '',
                     arrival_date: itemElement.getAttribute('data-arrival-date') || '',
+                    departure_datetime: itemElement.getAttribute('data-departure-datetime') || '',
+                    arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || '',
                     departure_city: itemElement.getAttribute('data-departure-city') || '',
                     arrival_city: itemElement.getAttribute('data-arrival-city') || '',
                     confirmation_number: itemElement.getAttribute('data-confirmation-number') || '',
