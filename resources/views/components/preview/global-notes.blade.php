@@ -33,7 +33,7 @@
             }
 
             .unified-note-item {
-                padding: 2.5rem;
+                padding: 1rem;
                 color: #374151;
                 line-height: 1.8;
                 font-size: 1.1rem;
@@ -58,7 +58,7 @@
 
             @media (max-width: 768px) {
                 .unified-note-item {
-                    padding: 1.5rem;
+                    padding: 1rem;
                     font-size: 11px;
                 }
             }
