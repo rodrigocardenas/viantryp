@@ -6,31 +6,104 @@
 
 @props(['trip' => null])
 
-<!-- Global Notes Section -->
-<div class="info-card global-notes-card" id="global-notes-section">
-    <div class="card-header">
-        <i class="fas fa-sticky-note"></i>
-        <h3>Notas Generales</h3>
+<!-- Global Notes Section (Redesigned) -->
+<div class="section-title-notes" id="global-notes-section">
+    <div class="section-title-icon-notes">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
     </div>
-    <div class="card-content">
-        <div class="global-notes-section-inner">
-            <div class="notes-editor-row">
-                <div id="global-note-editor" class="quill-container" style="height: 100px !important;"></div>
-                <br>
-                <div class="notes-actions">
-                    <button class="btn btn-primary" id="btn-save-global-note" type="button">Agregar Nota</button>
-                </div>
-            </div>
-            <br>
-            <div class="notes-container" id="global-notes-list" ondrop="drop(event)" ondragover="allowDrop(event)">
-        @if(isset($trip) && $trip->notes && count($trip->notes) > 0)
-            @foreach($trip->notes as $note)
-                <x-trip-item :item="$note" :day="null" />
-            @endforeach
-        @endif
-            </div>
+    <h3>Notas Generales</h3>
+</div>
+
+<div class="editor-card-notes">
+    <!-- Toolbar -->
+    <div class="toolbar-notes">
+        <!-- Paragraph style -->
+        <div class="toolbar-group-notes">
+            <select class="tb-select-notes" id="note-style-select" title="Estilo de párrafo">
+                <option value="p">Párrafo</option>
+                <option value="h1">Título 1</option>
+                <option value="h2">Título 2</option>
+                <option value="h3">Título 3</option>
+                <option value="blockquote">Cita</option>
+            </select>
+        </div>
+
+        <!-- Bold / Italic / Underline -->
+        <div class="toolbar-group-notes">
+            <button class="tb-btn-notes" data-cmd="bold" title="Negrita"><b>B</b></button>
+            <button class="tb-btn-notes" data-cmd="italic" title="Cursiva"><i>I</i></button>
+            <button class="tb-btn-notes" data-cmd="underline" title="Subrayado"><u>U</u></button>
+        </div>
+
+        <!-- Lists -->
+        <div class="toolbar-group-notes">
+            <button class="tb-btn-notes" data-cmd="insertOrderedList" title="Lista numerada">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+            </button>
+            <button class="tb-btn-notes" data-cmd="insertUnorderedList" title="Lista con viñetas">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
+            </button>
+        </div>
+
+        <!-- Alignment -->
+        <div class="toolbar-group-notes">
+            <button class="tb-btn-notes" data-cmd="justifyLeft" title="Alinear izquierda">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg>
+            </button>
+            <button class="tb-btn-notes" data-cmd="justifyCenter" title="Centrar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+            </button>
+            <button class="tb-btn-notes" data-cmd="justifyRight" title="Alinear derecha">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="6" y1="18" x2="21" y2="18"/></svg>
+            </button>
+        </div>
+
+        <!-- Link / Clear -->
+        <div class="toolbar-group-notes">
+            <button class="tb-btn-notes" id="btn-note-link" title="Insertar enlace">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </button>
+            <button class="tb-btn-notes" data-cmd="removeFormat" title="Limpiar formato">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/><line x1="3" y1="21" x2="21" y2="3"/></svg>
+            </button>
         </div>
     </div>
+
+    <!-- Editable area -->
+    <div
+        class="editor-area-notes"
+        id="global-note-editor"
+        contenteditable="true"
+        data-placeholder="Escribe una nota general..."
+    ></div>
+
+    <!-- Footer -->
+    <div class="editor-footer-notes">
+        <span class="char-count-notes" id="char-count-notes">0 caracteres</span>
+        <div class="notes-actions">
+            <button class="btn-notes btn-save-notes" id="btn-save-global-note" type="button">Agregar nota</button>
+        </div>
+    </div>
+</div>
+
+<!-- Link Modal for Notes -->
+<div class="link-modal-notes" id="link-modal-notes">
+    <div class="link-box-notes">
+        <h4>Insertar enlace</h4>
+        <input class="link-input-notes" id="link-url-notes" type="url" placeholder="https://...">
+        <div class="editor-actions-notes">
+            <button class="btn-notes btn-cancel-notes" id="btn-close-link-notes">Cancelar</button>
+            <button class="btn-notes btn-save-notes" id="btn-insert-link-notes">Insertar</button>
+        </div>
+    </div>
+</div>
+
+<div class="notes-container" id="global-notes-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+@if(isset($trip) && $trip->notes && count($trip->notes) > 0)
+    @foreach($trip->notes as $note)
+        <x-trip-item :item="$note" :day="null" />
+    @endforeach
+@endif
 </div>
 
 <!-- Days Container -->
@@ -388,13 +461,8 @@
             case 'total':
                 return data.price_breakdown || 'Precio total del viaje';
             case 'note':
-                // For display, strip HTML tags to show plain text in subtitle
-                const noteContent = data.note_content || '';
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = noteContent;
-                const plainText = tempDiv.textContent || tempDiv.innerText || '';
-                // Truncate if too long
-                return plainText.length > 100 ? plainText.substring(0, 100) + '...' : plainText;
+                // For General Notes, we preserve the HTML formatting
+                return data.note_content || '';
             default:
                 return '';
         }
@@ -433,7 +501,34 @@
         const itemData = extractItemDataForDisplay(itemElement);
         if (!itemData) return;
 
-        // Set current element data for editing
+        // Special handling for Global Notes: edit in the redesigned editor
+        if (itemData.type === 'note' && (itemElement.closest('#global-notes-list') || !itemElement.closest('.day-card'))) {
+            const editor = document.getElementById('global-note-editor');
+            if (editor) {
+                editor.innerHTML = itemData.note_content || '';
+                editor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                editor.focus();
+                
+                // Set editing state
+                editor.dataset.editingId = itemElement.id || '';
+                // If it doesn't have an ID, we'll use a temporary data attribute to find it later
+                if (!itemElement.id) {
+                    const tempId = 'edit-' + Date.now();
+                    itemElement.id = tempId;
+                    editor.dataset.editingId = tempId;
+                }
+                
+                const saveBtn = document.getElementById('btn-save-global-note');
+                if (saveBtn) saveBtn.textContent = 'Actualizar nota';
+                
+                // Update char count
+                const countEl = document.getElementById('char-count-notes');
+                if (countEl) countEl.textContent = (editor.innerText || '').length + ' caracteres';
+                return;
+            }
+        }
+
+        // Default handling for other elements (Modal)
         currentElementType = itemData.type;
         currentElementData = itemData;
         currentDay = itemData.day || 1;
@@ -593,75 +688,142 @@
         });
     }
 
-    // Global Quill editor instance for notes
-    let globalNotesQuill = null;
+    // --- General Notes Custom Editor logic ---
+    let savedRange = null;
 
-    function initializeGlobalNotesEditor() {
-        const editorEl = document.getElementById('global-note-editor');
-        if (!editorEl) return;
+    function initializeGeneralNotesEditor() {
+        const editor = document.getElementById('global-note-editor');
+        if (!editor) return;
 
-        // Wait for Quill to be available in window
-        if (!window.Quill) {
-            setTimeout(initializeGlobalNotesEditor, 100);
-            return;
-        }
-
-        try {
-            globalNotesQuill = new window.Quill('#global-note-editor', {
-                theme: 'snow',
-                placeholder: 'Escribe una nota global... ',
-                modules: { toolbar: [['bold','italic','underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link'], ['clean']] }
+        // Toolbar Button Commands
+        document.querySelectorAll('.tb-btn-notes[data-cmd]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const cmd = this.dataset.cmd;
+                editor.focus();
+                document.execCommand(cmd, false, null);
+                updateCount();
             });
-        } catch (err) {
-            console.error('Error initializing global Quill editor:', err);
-            return;
+        });
+
+        // Style Selector (P, H1, H2, H3, Blockquote)
+        const styleSelect = document.getElementById('note-style-select');
+        if (styleSelect) {
+            styleSelect.addEventListener('change', function() {
+                editor.focus();
+                document.execCommand('formatBlock', false, this.value);
+                this.blur();
+                updateCount();
+            });
         }
 
-        // Attach click handler to save button
+        // Link Handling
+        const linkBtn = document.getElementById('btn-note-link');
+        const linkModal = document.getElementById('link-modal-notes');
+        const linkInput = document.getElementById('link-url-notes');
+        const insertLinkBtn = document.getElementById('btn-insert-link-notes');
+        const closeLinkBtn = document.getElementById('btn-close-link-notes');
+
+        if (linkBtn && linkModal) {
+            linkBtn.addEventListener('click', function() {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    savedRange = selection.getRangeAt(0);
+                    linkInput.value = '';
+                    linkModal.classList.add('open');
+                    setTimeout(() => linkInput.focus(), 100);
+                } else {
+                    alert('Por favor selecciona texto para insertar un enlace.');
+                }
+            });
+
+            closeLinkBtn?.addEventListener('click', () => linkModal.classList.remove('open'));
+            
+            insertLinkBtn?.addEventListener('click', function() {
+                const url = linkInput.value.trim();
+                if (!url) {
+                    linkModal.classList.remove('open');
+                    return;
+                }
+                editor.focus();
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(savedRange);
+                document.execCommand('createLink', false, url);
+                linkModal.classList.remove('open');
+                updateCount();
+            });
+
+            // Close modal on backdrop click
+            linkModal.addEventListener('click', (e) => {
+                if (e.target === linkModal) linkModal.classList.remove('open');
+            });
+        }
+
+        // Character Count & Input
+        editor.addEventListener('input', updateCount);
+        editor.addEventListener('keyup', updateCount);
+        editor.addEventListener('mouseup', updateCount);
+
+        function updateCount() {
+            const text = editor.innerText || '';
+            const countEl = document.getElementById('char-count-notes');
+            if (countEl) countEl.textContent = text.length + ' caracteres';
+        }
+
+        // Save Button logic
         const saveBtn = document.getElementById('btn-save-global-note');
         if (saveBtn) {
             saveBtn.addEventListener('click', function() {
-                saveGlobalNote();
+                const content = editor.innerHTML.trim();
+                const plainText = editor.innerText.trim();
+                
+                if (!plainText) {
+                    alert('Por favor ingresa contenido para la nota.');
+                    return;
+                }
+
+                const noteData = { 
+                    type: 'note', 
+                    note_title: 'Nota', 
+                    note_content: content, 
+                    day: null 
+                };
+
+                if (typeof addElementToDay === 'function') {
+                    const editingId = editor.dataset.editingId;
+                    if (editingId) {
+                        // Update existing note
+                        const existingItem = document.getElementById(editingId);
+                        if (existingItem) {
+                            existingItem.dataset.noteContent = content;
+                            const subtitleEl = existingItem.querySelector('.item-subtitle');
+                            if (subtitleEl) subtitleEl.innerHTML = content;
+                            
+                            // Exit edit mode
+                            delete editor.dataset.editingId;
+                            saveBtn.textContent = 'Agregar nota';
+                            showNotification('Nota actualizada', 'La nota fue actualizada correctamente.');
+                        }
+                    } else {
+                        // Create new note
+                        addElementToDay(noteData);
+                        showNotification('Nota agregada', 'La nota global fue agregada correctamente.');
+                    }
+                } else {
+                    console.error('No method found to add note to timeline');
+                    return;
+                }
+
+                // Clear editor
+                editor.innerHTML = '';
+                updateCount();
             });
         }
     }
 
-    // Save function exposed globally
-    function saveGlobalNote() {
-        if (!globalNotesQuill) {
-            alert('El editor no está listo aún.');
-            return;
-        }
-
-        const content = globalNotesQuill.root.innerHTML.trim();
-        if (!content.replace(/<[^>]*>/g, '').trim()) {
-            alert('Por favor ingresa contenido para la nota.');
-            return;
-        }
-
-        const noteData = { type: 'note', note_title: 'Nota', note_content: content, day: null };
-        if (typeof timelineManager !== 'undefined' && typeof timelineManager.addElementToDay === 'function') {
-            timelineManager.addElementToDay(noteData);
-        } else if (typeof addElementToDay === 'function') {
-            addElementToDay(noteData);
-        } else {
-            console.error('No method found to add note to timeline');
-            return;
-        }
-
-        // Clear editor
-        globalNotesQuill.setContents([]);
-        // Optionally show notification
-        if (typeof showNotification === 'function') showNotification('Nota agregada', 'La nota global fue agregada.');
-    }
-    // Expose globally
-    if (typeof window !== 'undefined') {
-        window.saveGlobalNote = saveGlobalNote;
-    }
-
-    // Initialize Quill after DOM is ready
+    // Initialize after DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(initializeGlobalNotesEditor, 400);
+        setTimeout(initializeGeneralNotesEditor, 400);
     });
 
     function extractItemData(itemElement, dayNumber) {
@@ -743,7 +905,7 @@
                     ...baseData,
                     type: 'note',
                     note_title: itemElement.querySelector('.item-title')?.textContent || '',
-                    note_content: itemElement.querySelector('.item-subtitle')?.textContent || ''
+                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.innerHTML || ''
                 };
 
             default:
@@ -751,7 +913,7 @@
                     ...baseData,
                     type: 'note',
                     note_title: itemElement.querySelector('.item-title')?.textContent || 'Elemento',
-                    note_content: itemElement.querySelector('.item-subtitle')?.textContent || ''
+                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.innerHTML || ''
                 };
         }
     }

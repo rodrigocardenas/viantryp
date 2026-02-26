@@ -46,6 +46,7 @@
     <link rel="stylesheet" href="{{ asset('css/editor.css') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('css/components/trip-header.css') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('css/components/editor-layout.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('css/components/notes-editor.css') }}?v={{ time() }}">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

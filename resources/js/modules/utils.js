@@ -29,11 +29,11 @@ class Utils {
 
         const baseData = {
             type: itemElement.classList.contains('flight') ? 'flight' :
-                  itemElement.classList.contains('hotel') ? 'hotel' :
-                  itemElement.classList.contains('activity') ? 'activity' :
-                  itemElement.classList.contains('transport') ? 'transport' :
-                  itemElement.classList.contains('note') ? 'note' :
-                  itemElement.classList.contains('total') ? 'total' : 'unknown'
+                itemElement.classList.contains('hotel') ? 'hotel' :
+                    itemElement.classList.contains('activity') ? 'activity' :
+                        itemElement.classList.contains('transport') ? 'transport' :
+                            itemElement.classList.contains('note') ? 'note' :
+                                itemElement.classList.contains('total') ? 'total' : 'unknown'
         };
 
         switch (baseData.type) {
@@ -97,7 +97,7 @@ class Utils {
                     ...baseData,
                     title: itemElement.querySelector('.item-title')?.textContent || '',
                     note_title: itemElement.querySelector('.item-title')?.textContent || '',
-                    note_content: itemElement.querySelector('.item-subtitle')?.textContent || ''
+                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.innerHTML || ''
                 };
 
             case 'total':
