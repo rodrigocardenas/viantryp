@@ -2,9 +2,9 @@
 <div class="public-preview-header">
     <div class="public-header-content">
         <div class="public-logo">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <img src="{{ asset('images/VIANTRYP LOGO.png') }}" alt="Viantryp Logo" style="width: 20%;">
-                <img src="{{ asset('images/LOGO GPS.png') }}" alt="GPS Logo" style="width: 13%;">
+            <div class="header-logos-container">
+                <img src="{{ asset('images/VIANTRYP LOGO.png') }}" alt="Viantryp Logo" class="viantryp-logo">
+                <img src="{{ asset('images/LOGO GPS.png') }}" alt="GPS Logo" class="gps-logo">
             </div>
         </div>
         <div class="public-actions">

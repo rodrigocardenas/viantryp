@@ -278,14 +278,13 @@ function toggleItemContent(button) {
 let lastScrollTop = 0;
 const header = document.getElementById('previewStickyHeader');
 
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', function () {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-    if (scrollTop > lastScrollTop && scrollTop > 100) {
-        // Scrolling down and past 100px
+    // Hide immediately on downward scroll, show on upward scroll
+    if (scrollTop > lastScrollTop && scrollTop > 5) {
         header.classList.add('hidden');
     } else {
-        // Scrolling up or at top
         header.classList.remove('hidden');
     }
 
@@ -469,7 +468,7 @@ function initializeActivityCarousels() {
     });
 }
 
-window.showHotelGallery = function(images, startIndex = 0, hotelName = 'Hotel') {
+window.showHotelGallery = function (images, startIndex = 0, hotelName = 'Hotel') {
     // Limit to first 6 images only
     currentHotelImages = images.slice(0, 6);
     currentImageIndex = Math.min(startIndex, currentHotelImages.length - 1);
@@ -556,7 +555,7 @@ window.showHotelGallery = function(images, startIndex = 0, hotelName = 'Hotel') 
     document.addEventListener('keydown', handleGalleryKeydown);
 }
 
-window.closeHotelGallery = function() {
+window.closeHotelGallery = function () {
     const modal = document.getElementById('hotelGalleryModal');
     if (modal) {
         modal.remove();
@@ -564,7 +563,7 @@ window.closeHotelGallery = function() {
     document.removeEventListener('keydown', handleGalleryKeydown);
 }
 
-window.showActivityGallery = function(images, startIndex = 0, activityName = 'Actividad') {
+window.showActivityGallery = function (images, startIndex = 0, activityName = 'Actividad') {
     // Limit to first 6 images only
     currentActivityImages = images.slice(0, 6);
     currentActivityImageIndex = Math.min(startIndex, currentActivityImages.length - 1);
@@ -651,7 +650,7 @@ window.showActivityGallery = function(images, startIndex = 0, activityName = 'Ac
     document.addEventListener('keydown', handleActivityGalleryKeydown);
 }
 
-window.closeActivityGallery = function() {
+window.closeActivityGallery = function () {
     const modal = document.getElementById('activityGalleryModal');
     if (modal) {
         modal.remove();
@@ -659,12 +658,12 @@ window.closeActivityGallery = function() {
     document.removeEventListener('keydown', handleActivityGalleryKeydown);
 }
 
-window.nextActivityImage = function() {
+window.nextActivityImage = function () {
     currentActivityImageIndex = (currentActivityImageIndex + 1) % currentActivityImages.length;
     updateActivityGalleryImage();
 }
 
-window.prevActivityImage = function() {
+window.prevActivityImage = function () {
     currentActivityImageIndex = currentActivityImageIndex === 0 ? currentActivityImages.length - 1 : currentActivityImageIndex - 1;
     updateActivityGalleryImage();
 }
@@ -691,12 +690,12 @@ function handleActivityGalleryKeydown(e) {
     }
 }
 
-window.nextHotelImage = function() {
+window.nextHotelImage = function () {
     currentImageIndex = (currentImageIndex + 1) % currentHotelImages.length;
     updateGalleryImage();
 }
 
-window.prevHotelImage = function() {
+window.prevHotelImage = function () {
     currentImageIndex = currentImageIndex === 0 ? currentHotelImages.length - 1 : currentImageIndex - 1;
     updateGalleryImage();
 }
@@ -732,7 +731,7 @@ let currentActivityImages = [];
 let currentActivityImageIndex = 0;
 
 // Initialize carousels on page load
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeHotelCarousels();
     initializeActivityCarousels();
 });
