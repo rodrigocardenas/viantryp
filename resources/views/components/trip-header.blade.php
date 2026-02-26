@@ -35,6 +35,25 @@
                        value="{{ $trip && $trip->start_date ? $trip->start_date->format('Y-m-d') : $today }}"
                        min="{{ $today }}">
             </div>
+
+            <div class="trip-header-fields">
+                <div class="trip-field-group">
+                    <label for="trip-travelers"><i class="fas fa-users"></i> Número de Viajeros</label>
+                    <input type="number" id="trip-travelers" class="trip-field-input" placeholder="1" min="1" value="{{ $trip->travelers ?? 1 }}">
+                </div>
+                <div class="trip-field-group">
+                    <label for="trip-price"><i class="fas fa-tag"></i> Valor del viaje</label>
+                    <div class="price-input-wrapper">
+                        <input type="number" id="trip-price" class="trip-field-input" placeholder="0.00" min="0" step="0.01" value="{{ $trip->price ?? 0 }}">
+                        <select id="trip-currency" class="trip-field-select">
+                            <option value="USD" {{ ($trip->currency ?? 'USD') == 'USD' ? 'selected' : '' }}>USD</option>
+                            <option value="EUR" {{ ($trip->currency ?? '') == 'EUR' ? 'selected' : '' }}>EUR</option>
+                            <option value="COP" {{ ($trip->currency ?? '') == 'COP' ? 'selected' : '' }}>COP</option>
+                            <option value="MXN" {{ ($trip->currency ?? '') == 'MXN' ? 'selected' : '' }}>MXN</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Optionally other meta/chips to the right -->

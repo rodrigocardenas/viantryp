@@ -130,11 +130,18 @@ class ExportManager {
                 }
             }
 
+            // Read travelers, price and currency from header inputs
+            const travelersEl = document.getElementById('trip-travelers');
+            const priceEl = document.getElementById('trip-price');
+            const currencyEl = document.getElementById('trip-currency');
+
             const tripData = {
                 title: tripTitle,
                 start_date: startDate,
                 end_date: endDate,
-                travelers: 1, // Default value
+                travelers: travelersEl ? (parseInt(travelersEl.value) || 1) : 1,
+                price: priceEl ? (parseFloat(priceEl.value) || 0) : 0,
+                currency: currencyEl ? currencyEl.value : 'USD',
                 destination: '', // Optional field
                 summary: '', // Optional field
                 items_data: itemsData,

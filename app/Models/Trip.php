@@ -21,6 +21,7 @@ class Trip extends Model
         'status',
         'summary',
         'price',
+        'currency',
         'items_data',
         'days_dates',
         'cover_image_url',
@@ -70,7 +71,8 @@ class Trip extends Model
                 // Increment the counter for this type
                 if (!isset($typeCounters[$counterKey])) {
                     $typeCounters[$counterKey] = 1;
-                } else {
+                }
+                else {
                     $typeCounters[$counterKey]++;
                 }
 
@@ -125,7 +127,8 @@ class Trip extends Model
                     \Log::info('Updating document:', ['id' => $doc->id, 'from' => $tempId, 'to' => $item['id']]);
                     $doc->update(['item_id' => $item['id']]);
                 }
-            } else {
+            }
+            else {
                 // No temp_id means this is either:
                 // 1. An edited item (which should already have correct item_id for its documents)
                 // 2. An old item saved before temp_id logic was implemented
@@ -341,116 +344,117 @@ class Trip extends Model
     /**
      * Scope for searching by title
      */
-     public function scopeSearch($query, $search)
-     {
-         if (empty($search)) {
-             return $query;
-         }
+    public function scopeSearch($query, $search)
+    {
+        if (empty($search)) {
+            return $query;
+        }
 
-         return $query->where('title', 'like', "%{$search}%");
-     }
+        return $query->where('title', 'like', "%{$search}%");
+    }
 
-     /**
-      * Generate a unique share token for the trip
-      */
-     public function generateShareToken(): string
-     {
-         do {
-             $token = hash('sha256', $this->id . time() . rand());
-         } while (self::where('share_token', $token)->exists());
+    /**
+     * Generate a unique share token for the trip
+     */
+    public function generateShareToken(): string
+    {
+        do {
+            $token = hash('sha256', $this->id . time() . rand());
+        } while (self::where('share_token', $token)->exists());
 
-         $this->share_token = $token;
-         $this->save();
+        $this->share_token = $token;
+        $this->save();
 
-         return $token;
-     }
+        return $token;
+    }
 
-     /**
-      * Get the share URL for the trip
-      */
-     public function getShareUrl(): string
-     {
-         if (!$this->share_token) {
-             $this->generateShareToken();
-         }
+    /**
+     * Get the share URL for the trip
+     */
+    public function getShareUrl(): string
+    {
+        if (!$this->share_token) {
+            $this->generateShareToken();
+        }
 
-         return route('trips.share', ['token' => $this->share_token]);
-     }
+        return route('trips.share', ['token' => $this->share_token]);
+    }
 
-     /**
-      * Generate a unique random code for the trip
-      */
-     public function generateCode(): string
-     {
-         $maxAttempts = 10; // Prevent infinite loops
-         $attempts = 0;
+    /**
+     * Generate a unique random code for the trip
+     */
+    public function generateCode(): string
+    {
+        $maxAttempts = 10; // Prevent infinite loops
+        $attempts = 0;
 
-         do {
-             $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
-             $attempts++;
+        do {
+            $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
+            $attempts++;
 
-             try {
-                 // Attempt to save the code - database will enforce uniqueness
-                 $this->code = $code;
-                 $this->save();
+            try {
+                // Attempt to save the code - database will enforce uniqueness
+                $this->code = $code;
+                $this->save();
 
-                 // If we get here, the save was successful
-                 return $code;
-             } catch (QueryException $e) {
-                 // Check if it's a unique constraint violation
-                 $errorCode = $e->getCode();
-                 $errorMessage = $e->getMessage();
+                // If we get here, the save was successful
+                return $code;
+            }
+            catch (QueryException $e) {
+                // Check if it's a unique constraint violation
+                $errorCode = $e->getCode();
+                $errorMessage = $e->getMessage();
 
-                 if ($errorCode == 23000 ||
-                     str_contains($errorMessage, 'Duplicate entry') ||
-                     str_contains($errorMessage, 'UNIQUE constraint') ||
-                     str_contains($errorMessage, '1062')) { // MySQL duplicate entry error code
-                     // Code collision occurred due to race condition, retry with a new code
-                     continue;
-                 }
-                 // If it's a different database error, rethrow it
-                 throw $e;
-             }
-         } while ($attempts < $maxAttempts);
+                if ($errorCode == 23000 ||
+                str_contains($errorMessage, 'Duplicate entry') ||
+                str_contains($errorMessage, 'UNIQUE constraint') ||
+                str_contains($errorMessage, '1062')) { // MySQL duplicate entry error code
+                    // Code collision occurred due to race condition, retry with a new code
+                    continue;
+                }
+                // If it's a different database error, rethrow it
+                throw $e;
+            }
+        } while ($attempts < $maxAttempts);
 
-         // If we've exhausted all attempts, throw an exception
-         throw new \RuntimeException('Failed to generate a unique code after ' . $maxAttempts . ' attempts.');
-     }
+        // If we've exhausted all attempts, throw an exception
+        throw new \RuntimeException('Failed to generate a unique code after ' . $maxAttempts . ' attempts.');
+    }
 
-     /**
-      * Find trip by share token
-      */
-     public static function findByShareToken(string $token): ?self
-     {
-         return self::where('share_token', $token)->first();
-     }
+    /**
+     * Find trip by share token
+     */
+    public static function findByShareToken(string $token): ?self
+    {
+        return self::where('share_token', $token)->first();
+    }
 
-     /**
-      * Get the documents for the trip
-      */
-     public function documents()
-     {
-         return $this->hasMany(TripDocument::class);
-     }
+    /**
+     * Get the documents for the trip
+     */
+    public function documents()
+    {
+        return $this->hasMany(TripDocument::class);
+    }
 
-     /**
-      * Get documents by type
-      */
-     public function getDocumentsByType(string $type)
-     {
-         return $this->documents()->where('type', $type)->get();
-     }
+    /**
+     * Get documents by type
+     */
+    public function getDocumentsByType(string $type)
+    {
+        return $this->documents()->where('type', $type)->get();
+    }
 
-     /**
-      * Get documents for a specific item by item ID
-      *
-      * @param string $itemId The item ID in items_data
-      * @return \Illuminate\Database\Eloquent\Collection
-      */
-     public function getDocumentsByItemId(string $itemId)
-     {
-         return $this->documents()->where('item_id', $itemId)->get();
-     }
+    /**
+     * Get documents for a specific item by item ID
+     *
+     * @param string $itemId The item ID in items_data
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getDocumentsByItemId(string $itemId)
+    {
+        return $this->documents()->where('item_id', $itemId)->get();
+    }
 }
 
 /**
@@ -654,7 +658,7 @@ class TripItem
         $html .= '<span class="reservation-label">Aerolínea:</span>';
         $html .= '<span class="reservation-value">';
         $html .= ($this->data['airline'] ?? '') .
-                 (!empty($this->data['flight_number']) ? ' · ' . $this->data['flight_number'] : '');
+            (!empty($this->data['flight_number']) ? ' · ' . $this->data['flight_number'] : '');
         $html .= '</span>';
         $html .= '</div>';
         $html .= '</div>';
@@ -757,8 +761,8 @@ class TripItem
             $html .= '<div class="detail-text-small">';
             $html .= '<div class="detail-label-small">Check-in/Check-out</div>';
             $html .= '<div class="detail-value-small">' .
-                     ($this->data['check_in'] ?? '') . ' · ' .
-                     ($this->data['check_out'] ?? '') . '</div>';
+                ($this->data['check_in'] ?? '') . ' · ' .
+                ($this->data['check_out'] ?? '') . '</div>';
             $html .= '</div>';
             $html .= '</div>';
         }
@@ -769,7 +773,7 @@ class TripItem
             $html .= '<div class="detail-text-small">';
             $html .= '<div class="detail-label-small">Noches</div>';
             $html .= '<div class="detail-value-small">' . $this->data['nights'] .
-                     ($this->data['nights'] == 1 ? ' noche' : ' noches') . '</div>';
+                ($this->data['nights'] == 1 ? ' noche' : ' noches') . '</div>';
             $html .= '</div>';
             $html .= '</div>';
         }
@@ -808,8 +812,8 @@ class TripItem
             $html .= '<div class="detail-text-small">';
             $html .= '<div class="detail-label-small">Horario</div>';
             $html .= '<div class="detail-value-small">' .
-                     ($this->data['start_time'] ?? '') .
-                     (!empty($this->data['end_time']) ? ' - ' . $this->data['end_time'] : '') . '</div>';
+                ($this->data['start_time'] ?? '') .
+                (!empty($this->data['end_time']) ? ' - ' . $this->data['end_time'] : '') . '</div>';
             $html .= '</div>';
             $html .= '</div>';
         }
@@ -883,7 +887,7 @@ class TripItem
         $html .= '<div class="detail-icon-small"><i class="fas fa-sticky-note"></i></div>';
         $html .= '<div class="detail-text-small">';
         $html .= '<div class="detail-value-small">' .
-                 ($this->data['note_content'] ?? $this->data['notes'] ?? 'Sin contenido') . '</div>';
+            ($this->data['note_content'] ?? $this->data['notes'] ?? 'Sin contenido') . '</div>';
         $html .= '</div>';
         $html .= '</div>';
         $html .= '</div>';

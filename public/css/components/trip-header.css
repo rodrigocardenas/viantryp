@@ -145,7 +145,7 @@
     background-position: center;
     border-radius: 10px;
     position: relative;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
     flex-shrink: 0;
     overflow: hidden;
 }
@@ -157,11 +157,11 @@
     align-items: flex-end;
     justify-content: flex-end;
     padding: 8px;
-    background: linear-gradient(to top, rgba(0,0,0,0.35), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.35), transparent);
 }
 
 .change-cover-btn {
-    background: rgba(255,255,255,0.9);
+    background: rgba(255, 255, 255, 0.9);
     border: none;
     width: 36px;
     height: 36px;
@@ -171,7 +171,7 @@
     justify-content: center;
     cursor: pointer;
     color: #111827;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
 .trip-main {
@@ -205,7 +205,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255,255,255,0.06);
+    background: rgba(255, 255, 255, 0.06);
     padding: 6px 8px;
     border-radius: 999px;
     color: white;
@@ -217,7 +217,7 @@
     height: 36px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(255,255,255,0.9);
+    border: 2px solid rgba(255, 255, 255, 0.9);
 }
 
 .person-meta {
@@ -236,7 +236,7 @@
 
 .person-email {
     font-size: 0.8rem;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255, 255, 255, 0.8);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -260,7 +260,8 @@
 }
 
 .h2-style {
-    font-size: 1.5rem; /* h2-like on desktop */
+    font-size: 1.5rem;
+    /* h2-like on desktop */
     font-weight: 700;
     border: none;
     background: transparent;
@@ -278,22 +279,26 @@
 }
 
 .trip-subtitle .subtitle-date {
-    font-size: 0.8rem; /* smaller for date */
+    font-size: 0.8rem;
+    /* smaller for date */
     color: #64748b;
 }
 
-.trip-subtitle .subtitle-sep { color: rgba(71,85,105,0.5); }
+.trip-subtitle .subtitle-sep {
+    color: rgba(71, 85, 105, 0.5);
+}
 
 /* Banner: full width under the top block */
 .trip-banner {
     width: 100%;
-    height: 200px; /* desktop height */
+    height: 200px;
+    /* desktop height */
     background-size: cover;
     background-position: center;
     border-radius: 8px;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.08);
 }
 
 .banner-overlay {
@@ -309,11 +314,12 @@
     right: 8px;
     display: flex;
     gap: 8px;
-    pointer-events: auto; /* allow clicks on the button */
+    pointer-events: auto;
+    /* allow clicks on the button */
 }
 
 .change-cover-btn {
-    background: rgba(255,255,255,0.95);
+    background: rgba(255, 255, 255, 0.95);
     border: none;
     width: 40px;
     height: 40px;
@@ -323,7 +329,7 @@
     border-radius: 8px;
     cursor: pointer;
     color: #0f172a;
-    box-shadow: 0 6px 18px rgba(2,6,23,0.12);
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.12);
 }
 
 .banner-info {
@@ -336,7 +342,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255,255,255,0.95);
+    background: rgba(255, 255, 255, 0.95);
     padding: 6px 10px;
     border-radius: 999px;
 }
@@ -346,33 +352,49 @@
     height: 36px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(255,255,255,0.95);
+    border: 2px solid rgba(255, 255, 255, 0.95);
 }
 
-.chip-meta { display: flex; flex-direction: column; min-width:0 }
-.chip-name { font-size: 0.95rem; color: #0b1220; }
-.chip-email { font-size: 0.8rem; color: #475569; }
+.chip-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0
+}
+
+.chip-name {
+    font-size: 0.95rem;
+    color: #0b1220;
+}
+
+.chip-email {
+    font-size: 0.8rem;
+    color: #475569;
+}
 
 /* Trip Header Card styles - public/css/components/trip-header.css */
 
 .trip-header-card {
     background: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(2,6,23,0.08);
+    box-shadow: 0 8px 30px rgba(2, 6, 23, 0.08);
     overflow: hidden;
     display: block;
     width: 100%;
-    border: 1px solid rgba(2,6,23,0.06); /* subtle border to make card visible */
-    margin: 16px 0; /* space around card */
+    border: 1px solid rgba(2, 6, 23, 0.06);
+    /* subtle border to make card visible */
+    margin: 16px 0;
+    /* space around card */
 }
 
 .trip-card-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 20px; /* bigger padding so the title is clearly inside the card */
+    padding: 18px 20px;
+    /* bigger padding so the title is clearly inside the card */
     gap: 12px;
-    background: transparent; /* keep consistent */
+    background: transparent;
+    /* keep consistent */
 }
 
 .trip-header-card .h2-style {
@@ -409,16 +431,140 @@
     display: block;
 }
 
-.trip-card-banner .banner-overlay { position: absolute; inset: 0; pointer-events: none; }
-.trip-card-banner .banner-actions { position: absolute; top: 10px; right: 10px; pointer-events: auto; }
+.trip-card-banner .banner-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
 
-.trip-card-banner { border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
+.trip-card-banner .banner-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    pointer-events: auto;
+}
+
+.trip-card-banner {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
 
 @media (max-width: 768px) {
-    .h2-style { font-size: 1.15rem; }
-    .trip-subtitle { font-size: 0.8rem; gap: 6px; }
-    .trip-banner { height: 140px; border-radius: 6px; }
-    .change-cover-btn { width: 36px; height: 36px; }
-    .trip-card-banner, .trip-banner { height: 140px; }
-    .trip-card-top { padding: 12px; }
+    .h2-style {
+        font-size: 1.15rem;
+    }
+
+    .trip-subtitle {
+        font-size: 0.8rem;
+        gap: 6px;
+    }
+
+    .trip-banner {
+        height: 140px;
+        border-radius: 6px;
+    }
+
+    .change-cover-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .trip-card-banner,
+    .trip-banner {
+        height: 140px;
+    }
+
+    .trip-card-top {
+        padding: 12px;
+    }
+}
+
+/* New fields styles */
+.trip-header-fields {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.trip-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.trip-field-group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.trip-field-group label i {
+    color: #3b82f6;
+    font-size: 0.8rem;
+}
+
+.trip-field-input {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    color: #1e293b;
+    background: #f8fafc;
+    transition: all 0.2s ease;
+    width: 140px;
+}
+
+.trip-field-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.price-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.price-input-wrapper .trip-field-input {
+    width: 100px;
+}
+
+.trip-field-select {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 0.5rem 0.5rem;
+    font-size: 0.85rem;
+    color: #1e293b;
+    background: #f8fafc;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.trip-field-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: #ffffff;
+}
+
+@media (max-width: 640px) {
+    .trip-header-fields {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .trip-field-input {
+        width: 100%;
+    }
+
+    .price-input-wrapper .trip-field-input {
+        flex: 1;
+    }
 }

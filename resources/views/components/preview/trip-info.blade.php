@@ -59,14 +59,14 @@
             <div class="summary-item">
                 <span class="summary-label">VIAJEROS</span>
                 <span class="summary-value">
-                    {{ $trip->travelers ?? '1 adulto' }}
+                    {{ $trip->travelers ?? '1' }} {{ ($trip->travelers ?? 1) > 1 ? 'adultos' : 'adulto' }}
                 </span>
             </div>
             <div class="summary-divider"></div>
             <div class="summary-item">
                 <span class="summary-label">TOTAL</span>
                 <span class="summary-value total-price">
-                    ${{ number_format($trip->price, 2, ',', '.') }}
+                    {{ $trip->currency ?? 'USD' }} ${{ number_format($trip->price ?? 0, 2, ',', '.') }}
                 </span>
             </div>
         </div>

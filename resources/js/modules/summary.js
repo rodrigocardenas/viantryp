@@ -142,29 +142,50 @@ export class SummaryManager {
             summary += '<em>Sin elementos agregados aún</em>';
         }
 
-        // Add total price if exists
-        const totalElements = document.querySelectorAll('.timeline-item.total');
-        if (totalElements.length > 0) {
-            const totalElement = totalElements[0];
-            const totalData = this.extractItemDataForDisplay(totalElement);
-            if (totalData && totalData.total_amount && totalData.currency) {
-                const price = parseFloat(totalData.total_amount);
-                if (!isNaN(price)) {
-                    const currencySymbols = {
-                        'USD': '$',
-                        'EUR': '€',
-                        'COP': '$',
-                        'MXN': '$'
-                    };
-                    const symbol = currencySymbols[totalData.currency] || totalData.currency;
-                    const formattedPrice = `${symbol}${price.toLocaleString('es-ES', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                        useGrouping: true
-                    })}`;
-                    summary += `<br><br><strong>💰 Valor Total del Viaje:</strong> ${formattedPrice} ${totalData.currency}`;
+        // Add travelers info
+        const travelersEl = document.getElementById('trip-travelers');
+        if (travelersEl && travelersEl.value) {
+            const travelers = parseInt(travelersEl.value);
+            summary += `<strong>Viajeros:</strong> ${travelers} ${travelers > 1 ? 'adultos' : 'adulto'}<br>`;
+        }
+
+        // Add total price from header or total element
+        const priceEl = document.getElementById('trip-price');
+        const currencyEl = document.getElementById('trip-currency');
+
+        let finalPrice = null;
+        let finalCurrency = 'USD';
+
+        if (priceEl && priceEl.value && parseFloat(priceEl.value) > 0) {
+            finalPrice = parseFloat(priceEl.value);
+            finalCurrency = currencyEl ? currencyEl.value : 'USD';
+        } else {
+            // Fallback to total element in timeline
+            const totalElements = document.querySelectorAll('.timeline-item.total');
+            if (totalElements.length > 0) {
+                const totalElement = totalElements[0];
+                const totalData = this.extractItemDataForDisplay(totalElement);
+                if (totalData && totalData.total_amount) {
+                    finalPrice = parseFloat(totalData.total_amount);
+                    finalCurrency = totalData.currency || 'USD';
                 }
             }
+        }
+
+        if (finalPrice !== null) {
+            const currencySymbols = {
+                'USD': '$',
+                'EUR': '€',
+                'COP': '$',
+                'MXN': '$'
+            };
+            const symbol = currencySymbols[finalCurrency] || finalCurrency;
+            const formattedPrice = `${symbol}${finalPrice.toLocaleString('es-ES', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+                useGrouping: true
+            })}`;
+            summary += `<br><strong>💰 Valor Total del Viaje:</strong> ${formattedPrice} ${finalCurrency}`;
         }
 
         return summary;

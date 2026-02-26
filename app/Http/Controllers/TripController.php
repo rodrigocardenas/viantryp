@@ -71,6 +71,8 @@ class TripController extends Controller
             'destination' => 'nullable|string|max:255',
             'summary' => 'nullable|string',
             'items_data' => 'nullable|array',
+            'price' => 'nullable|numeric|min:0',
+            'currency' => 'nullable|string|max:10',
             'client_name' => 'nullable|string|max:255',
             'client_email' => 'nullable|email|max:255',
             'agent_id' => 'nullable|exists:persons,id'
@@ -115,6 +117,8 @@ class TripController extends Controller
                     'travelers' => $validated['travelers'] ?? 1,
                     'destination' => $validated['destination'] ?? '',
                     'summary' => $validated['summary'] ?? '',
+                    'price' => $validated['price'] ?? 0,
+                    'currency' => $validated['currency'] ?? 'USD',
                     'items_data' => $validated['items_data'] ?? []
                 ]);
 
@@ -156,6 +160,8 @@ class TripController extends Controller
 
             // Set default values for optional fields
             $validated['travelers'] = $validated['travelers'] ?? 1;
+            $validated['price'] = $validated['price'] ?? 0;
+            $validated['currency'] = $validated['currency'] ?? 'USD';
             $validated['status'] = Trip::STATUS_DRAFT;
             $validated['user_id'] = $userId;
 
@@ -253,6 +259,8 @@ class TripController extends Controller
             'travelers' => 'nullable|integer|min:1',
             'destination' => 'nullable|string|max:255',
             'summary' => 'nullable|string',
+            'price' => 'nullable|numeric|min:0',
+            'currency' => 'nullable|string|max:10',
             'items_data' => 'nullable|array',
             'days_dates' => 'nullable|array'
         ]);
