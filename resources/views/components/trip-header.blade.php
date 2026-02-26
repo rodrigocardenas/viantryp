@@ -12,203 +12,80 @@
 @endphp
 
 <div class="trip-header-card">
-    <!-- Top card: data (title and compact subtitle) -->
-    <div class="trip-card-top">
-        <div class="trip-header-top">
-            <input type="text" id="trip-title" class="trip-title-input h2-style" placeholder="Nombre del viaje" value="{{ $trip->title ?? '' }}">
+    <!-- Main Editing Form -->
+    <div class="trip-header-form">
+        @php $today = date('Y-m-d'); @endphp
+        <input type="hidden" id="start-date" value="{{ $trip && $trip->start_date ? $trip->start_date->format('Y-m-d') : $today }}">
 
-            <div class="trip-subtitle">
-                @if($client)
-                    <span class="subtitle-client">{{ $client->name }}</span>
-                @endif
+        <div class="form-group-top">
+            <label class="field-label">TÍTULO DEL PLAN</label>
+            <input type="text" id="trip-title" class="trip-title-input-premium" placeholder="Nombre del viaje" value="{{ $trip->title ?? '' }}">
+        </div>
 
-                {{-- Duration removed per user request --}}
-                {{-- @if($trip && method_exists($trip, 'getDuration') && $trip->getDuration())
-                    <span class="subtitle-sep">|</span>
-                    <span class="subtitle-duration">{{ $trip->getDuration() }}</span>
-                @endif --}}
+        <div class="form-group-top">
+            <label class="field-label">NOMBRE DEL CLIENTE</label>
+            <input type="text" id="trip-client-name" class="trip-client-input-premium" placeholder="Nombre del cliente" value="{{ $client->name ?? '' }}" readonly>
+        </div>
 
-                @php $today = date('Y-m-d'); @endphp
-                {{-- Hidden start date input (value in Y-m-d for input[type=date]) --}}
-                {{-- User requested to move date control to Day 1 header --}}
-                <input type="hidden" id="start-date" class="subtitle-date-input form-input"
-                       value="{{ $trip && $trip->start_date ? $trip->start_date->format('Y-m-d') : $today }}"
-                       min="{{ $today }}">
+        <hr class="header-divider">
+
+        <div class="form-row-flexible">
+            <div class="form-group-half">
+                <label class="field-label">NÚMERO DE VIAJEROS</label>
+                <div class="stepper-input">
+                    <button type="button" class="stepper-btn minus" onclick="decrementTravelers()">−</button>
+                    <input type="number" id="trip-travelers" class="stepper-value" value="{{ $trip->travelers ?? 1 }}" min="1">
+                    <button type="button" class="stepper-btn plus" onclick="incrementTravelers()">+</button>
+                </div>
+                <span class="field-help">Adultos + niños</span>
             </div>
 
-            <div class="trip-header-fields">
-                <div class="trip-field-group">
-                    <label for="trip-travelers"><i class="fas fa-users"></i> Número de Viajeros</label>
-                    <input type="number" id="trip-travelers" class="trip-field-input" placeholder="1" min="1" value="{{ $trip->travelers ?? 1 }}">
-                </div>
-                <div class="trip-field-group">
-                    <label for="trip-price"><i class="fas fa-tag"></i> Valor del viaje</label>
-                    <div class="price-input-wrapper">
-                        <input type="number" id="trip-price" class="trip-field-input" placeholder="0.00" min="0" step="0.01" value="{{ $trip->price ?? 0 }}">
-                        <select id="trip-currency" class="trip-field-select">
+            <div class="form-group-half">
+                <label class="field-label">VALOR DEL VIAJE</label>
+                <div class="price-group-premium">
+                    <input type="number" id="trip-price" class="price-input-premium" placeholder="0,00" min="0" step="0.01" value="{{ $trip->price ?? 0 }}">
+                    <div class="currency-selector-wrapper">
+                        <select id="trip-currency" class="currency-select-premium">
                             <option value="USD" {{ ($trip->currency ?? 'USD') == 'USD' ? 'selected' : '' }}>USD</option>
                             <option value="EUR" {{ ($trip->currency ?? '') == 'EUR' ? 'selected' : '' }}>EUR</option>
                             <option value="COP" {{ ($trip->currency ?? '') == 'COP' ? 'selected' : '' }}>COP</option>
                             <option value="MXN" {{ ($trip->currency ?? '') == 'MXN' ? 'selected' : '' }}>MXN</option>
                         </select>
+                        <i class="fas fa-chevron-down select-icon"></i>
                     </div>
                 </div>
+                <span class="field-help">Valor total del viaje</span>
             </div>
-        </div>
-
-        <!-- Optionally other meta/chips to the right -->
-        <div class="trip-header-meta">
-            @if($agent)
-                <div class="meta-chip agent-chip">
-                    <div class="meta-text">
-                        <strong>{{ $agent->name }}</strong>
-                    </div>
-                </div>
-            @endif
         </div>
     </div>
 
-    <!-- Banner below the top section -->
-    <div id="trip-banner" class="trip-card-banner" style="background-image: url('{{ $trip->cover_image_url ?? '/images/default-cover.jpeg' }}')">
-        <div class="banner-overlay">
-            <div class="banner-actions">
-                <button type="button" id="change-cover-btn" class="change-cover-btn" title="Cambiar portada">
-                    <i class="fas fa-camera"></i>
-                </button>
-                <input type="file" id="cover-file-input" accept="image/*" style="display:none">
-            </div>
-            <!-- No text overlays on the banner by design -->
+    <!-- Footer within the card -->
+    <div class="trip-header-footer">
+        <div class="footer-actions">
+            <button type="button" class="btn-cancel-premium" onclick="window.history.back()">Cancelar</button>
+            <button type="button" class="btn-save-premium" data-action="save-trip">Guardar cambios</button>
         </div>
     </div>
 </div>
 
 <script>
-// Keep existing JS that binds to #change-cover-btn and #trip-banner
 document.addEventListener('DOMContentLoaded', function() {
-    const changeBtn = document.getElementById('change-cover-btn');
-    const fileInput = document.getElementById('cover-file-input');
-    const banner = document.getElementById('trip-banner');
+    // Stepper logic
+    window.incrementTravelers = function() {
+        const input = document.getElementById('trip-travelers');
+        if (input) {
+            input.value = parseInt(input.value || 0) + 1;
+            input.dispatchEvent(new Event('change'));
+        }
+    };
 
-    if (changeBtn && fileInput && banner) {
-        changeBtn.addEventListener('click', function() { fileInput.click(); });
-
-        fileInput.addEventListener('change', function(evt) {
-            const file = evt.target.files && evt.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                banner.style.backgroundImage = `url('${e.target.result}')`;
-                let hidden = document.getElementById('cover-data-url');
-                if (!hidden) {
-                    hidden = document.createElement('input');
-                    hidden.type = 'hidden';
-                    hidden.id = 'cover-data-url';
-                    hidden.name = 'cover_data_url';
-                    document.querySelector('#editor-container')?.appendChild(hidden);
-                }
-                hidden.value = e.target.result;
-            };
-            reader.readAsDataURL(file);
-
-            if (window.currentTripId) {
-                // Client-side file size check (server limit: 5120 KB = 5 MB)
-                const MAX_BYTES = 5 * 1024 * 1024;
-                if (file.size > MAX_BYTES) {
-                    const msg = 'La imagen es demasiado grande. El tamaño máximo permitido es 5 MB.';
-                    try { showNotification && showNotification('Error', msg, 'error'); } catch(e){}
-                    alert(msg);
-                    return;
-                }
-
-                const fd = new FormData();
-                fd.append('cover', file);
-                // If a base64 preview was created, include it as a fallback
-                const hiddenData = document.getElementById('cover-data-url');
-                if (hiddenData && hiddenData.value) {
-                    fd.append('cover_data_url', hiddenData.value);
-                }
-
-                fetch(`/trips/${window.currentTripId}/cover`, {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: fd
-                })
-                .then(async res => {
-                    const contentType = res.headers.get('content-type') || '';
-                    const text = await res.text();
-
-                    if (!res.ok) {
-                        console.warn('Cover upload HTTP error', res.status, text);
-
-                        // If server returned JSON (validation errors), parse and surface them
-                        if (contentType.includes('application/json')) {
-                            try {
-                                const json = JSON.parse(text);
-                                // Validation errors (422)
-                                if (res.status === 422 && json.errors) {
-                                    const coverErrors = json.errors.cover || [];
-                                    const errMsg = coverErrors.join('\n') || json.message || 'Error de validación';
-                                    try { showNotification && showNotification('Error al subir portada', errMsg, 'error'); } catch(e){}
-                                    alert(errMsg);
-                                    throw new Error('Validation error: ' + errMsg);
-                                }
-
-                                // CSRF/session expired
-                                if (res.status === 419) {
-                                    try { showNotification && showNotification('Sesión expirada', 'Tu sesión ha expirado. Vuelve a iniciar sesión y vuelve a intentarlo.','error'); } catch(e){}
-                                }
-
-                                // Generic JSON error
-                                const message = json.message || ('HTTP ' + res.status);
-                                try { showNotification && showNotification('Error', message, 'error'); } catch(e){}
-                                throw new Error(message);
-                            } catch (e) {
-                                // JSON parse failed
-                                console.warn('Failed to parse JSON error response', e, text);
-                                throw new Error(`HTTP ${res.status}`);
-                            }
-                        }
-
-                        // Non-JSON response (HTML) — likely redirect/login page or server error
-                        if (res.status === 419) {
-                            try { showNotification && showNotification('Sesión expirada', 'Tu sesión ha expirado. Vuelve a iniciar sesión y vuelve a intentarlo.','error'); } catch(e){}
-                        }
-
-                        throw new Error(`HTTP ${res.status}`);
-                    }
-
-                    if (contentType.includes('application/json')) {
-                        try {
-                            return JSON.parse(text);
-                        } catch (e) {
-                            console.warn('Cover upload returned invalid JSON:', e, text);
-                            throw e;
-                        }
-                    }
-
-                    // Unexpected non-JSON response (probably an HTML error page like 419)
-                    console.warn('Cover upload returned non-JSON response:', contentType, text);
-                    throw new Error('Unexpected response content-type: ' + contentType);
-                })
-                .then(data => {
-                    if (data && data.cover_url) {
-                        banner.style.backgroundImage = `url('${data.cover_url}')`;
-                    }
-                })
-                .catch(err => {
-                    console.warn('No se pudo subir la portada ahora:', err);
-                    // Optionally surface the error to the user
-                    try { showNotification && showNotification('Error', 'No se pudo subir la portada. Revisa la consola.','error'); } catch(e){}
-                });
-            }
-        });
-    }
+    window.decrementTravelers = function() {
+        const input = document.getElementById('trip-travelers');
+        if (input && input.value > 1) {
+            input.value = parseInt(input.value) - 1;
+            input.dispatchEvent(new Event('change'));
+        }
+    };
 
         // Make the start-date editable and keep it in sync with global state
         const startDateInput = document.getElementById('start-date');

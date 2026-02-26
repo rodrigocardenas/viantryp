@@ -13,12 +13,12 @@
     flex: 1;
     overflow-y: auto;
     background: white;
+    padding: 0;
 }
 
 .main-content {
-    padding: 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
+    padding: 0 2rem 2rem 2rem;
+    margin: 0;
 }
 
 /* Responsive */
