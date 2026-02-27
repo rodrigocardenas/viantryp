@@ -33,10 +33,10 @@
             }
 
             .unified-note-item {
-                padding: 1rem;
+                padding: 1.5rem 2rem;
                 color: #374151;
                 line-height: 1.8;
-                font-size: 1.1rem;
+                font-size: 12px;
             }
 
             .unified-note-item:not(:last-child) {
