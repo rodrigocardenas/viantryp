@@ -141,7 +141,7 @@
                     <i class="fa-solid fa-plane-departure"style="margin-right: 10px "></i>
                     {{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? $matches[1] : $item['departure_airport'] ?? 'DEP' }}
                 </div>
-                <div class="airport-name mobile-only">{{ ucfirst(strtolower($finalDepartureName)) }}</div>
+
                 <div class="airport-location mobile-only">{{ $finalDepartureCity }}, {{ $finalDepartureCountry }}</div>
                 <div class="airport-location desktop-only">{{ $finalDepartureCity }}, {{ $finalDepartureCountry }}</div>
                 <span class="airport-date desktop-only">{{ $departureDateLong }}</span>
@@ -171,7 +171,7 @@
                     <i class="fa-solid fa-plane-arrival" style="margin-right: 10px "></i>
                     {{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? $matches[1] : $item['arrival_airport'] ?? 'DEP' }}
                 </div>
-                <div class="airport-name mobile-only">{{ ucfirst(strtolower($finalArrivalName)) }}</div>
+
                 <div class="airport-location mobile-only">{{ $finalArrivalCity }}, {{ $finalArrivalCountry }}</div>
                 <div class="airport-location desktop-only">{{ $finalArrivalCity }}, {{ $finalArrivalCountry }}</div>
                 <span class="airport-date desktop-only">{{ $arrivalDateLong }}</span>

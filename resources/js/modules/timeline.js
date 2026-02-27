@@ -353,9 +353,10 @@ export class TimelineManager {
     }
 
     extractElementData(element) {
+        const dayCard = element.closest('.day-card');
         const data = {
             type: element.dataset.type,
-            day: parseInt(element.closest('.day-card').dataset.day)
+            day: dayCard ? parseInt(dayCard.dataset.day) : null
         };
 
         // Extract all data attributes

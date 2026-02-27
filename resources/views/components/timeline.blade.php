@@ -301,6 +301,7 @@
     function createElementDiv(data) {
         const elementDiv = document.createElement('div');
         elementDiv.className = `timeline-item ${data.type}`;
+        elementDiv.setAttribute('data-type', data.type);
 
         // Add flight data as attributes if this is a flight element
         if (data.type === 'flight') {
@@ -494,12 +495,10 @@
         return icons[type] || 'fas fa-sticky-note';
     }
 
-    function editElement(button) {
-        const itemElement = button.closest('.timeline-item');
-        if (!itemElement) return;
-
-        const itemData = extractItemDataForDisplay(itemElement);
-        if (!itemData) return;
+    // Escuchar el evento 'editElement' que es despachado por timeline.js
+    document.addEventListener('editElement', function(e) {
+        const itemElement = e.detail.element;
+        const itemData = e.detail.elementData;
 
         // Special handling for Global Notes: edit in the redesigned editor
         if (itemData.type === 'note' && (itemElement.closest('#global-notes-list') || !itemElement.closest('.day-card'))) {
@@ -527,39 +526,7 @@
                 return;
             }
         }
-
-        // Default handling for other elements (Modal)
-        currentElementType = itemData.type;
-        currentElementData = itemData;
-        currentDay = itemData.day || 1;
-
-        // Show modal with form
-        const modalTitle = document.getElementById('modal-title');
-        const modalBody = document.getElementById('modal-body');
-
-        modalTitle.textContent = `Editar ${getTypeLabel(itemData.type)}`;
-        modalBody.innerHTML = getElementForm(itemData.type);
-        setupFileUploadListeners(elementType);
-
-        // Fill form with existing data
-        fillFormWithData(itemData);
-
-        // Initialize Select2 for the modal form
-        initializeSelect2();
-
-        // Add event listener for flight lookup button
-        setTimeout(() => {
-            const lookupBtn = document.getElementById('lookup-flight');
-            if (lookupBtn) {
-                lookupBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    lookupFlightInfo();
-                });
-            }
-        }, 100);
-
-        document.getElementById('element-modal').style.display = 'block';
-    }
+    });
 
     function deleteElement(button) {
         if (confirm('¿Estás seguro de que quieres eliminar este elemento?')) {

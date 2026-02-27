@@ -57,6 +57,14 @@ export class ModalManager {
         // Listen for edit element events
         document.addEventListener('editElement', (e) => {
             console.log('Edit element event received:', e.detail);
+            const detailElement = e.detail.element;
+
+            // Special handling for Global Notes: do not open modal
+            if (e.detail.elementData.type === 'note' && (detailElement.closest('#global-notes-list') || !detailElement.closest('.day-card'))) {
+                console.log('Ignoring global note edit in modal - handled by custom editor');
+                return;
+            }
+
             this.showEditElementModal(e.detail.element, e.detail.elementData);
         });
 
