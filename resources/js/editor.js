@@ -91,6 +91,14 @@ function setupGlobalEventListeners() {
         summaryManager.updateAllSummaries();
     });
 
+    // Listen for saveTripRequested events to trigger auto-save
+    document.addEventListener('saveTripRequested', () => {
+        console.log('Auto-saving trip due to element save');
+        if (exportManager && typeof exportManager.saveTrip === 'function') {
+            exportManager.saveTrip();
+        }
+    });
+
     // Add event delegation for data-action attributes
     document.addEventListener('click', function (e) {
         const action = e.target.closest('[data-action]');

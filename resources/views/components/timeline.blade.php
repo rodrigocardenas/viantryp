@@ -781,6 +781,9 @@
                     return;
                 }
 
+                // Trigger auto-save of the entire trip
+                document.dispatchEvent(new CustomEvent('saveTripRequested'));
+
                 // Clear editor
                 editor.innerHTML = '';
                 updateCount();

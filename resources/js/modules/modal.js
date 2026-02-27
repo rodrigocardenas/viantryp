@@ -608,6 +608,9 @@ export class ModalManager {
 
         this.closeModal();
         this.showNotification('Elemento Guardado', `${this.getTypeLabel(this.currentElementType)} guardado correctamente.`);
+
+        // Trigger auto-save of the entire trip
+        document.dispatchEvent(new CustomEvent('saveTripRequested'));
     }
 
     async createNewAirline(airlineName) {
