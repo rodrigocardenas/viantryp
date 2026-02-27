@@ -63,6 +63,7 @@ Route::middleware('auth')->group(function () {
     Route::get('trips/{trip}/pdf', [TripController::class , 'generatePdf'])->name('trips.pdf')->withoutMiddleware('auth');
     Route::post('trips/bulk-delete', [TripController::class , 'bulkDelete'])->name('trips.bulk-delete');
     Route::post('trips/bulk-duplicate', [TripController::class , 'bulkDuplicate'])->name('trips.bulk-duplicate');
+    Route::post('trips/{trip}/render-item', [TripController::class , 'renderItem'])->name('trips.render-item');
 
     // Document routes
     Route::post('trips/{trip}/documents/upload', [\App\Http\Controllers\TripDocumentController::class , 'upload'])->name('trips.documents.upload');

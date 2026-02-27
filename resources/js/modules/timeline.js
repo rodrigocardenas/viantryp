@@ -51,53 +51,87 @@ export class TimelineManager {
             return;
         }
 
-        // If data is an object, create the element directly
-        console.log('Creating element div for data:', data);
-        const elementDiv = this.createElementDiv(data);
+        // Determine the trip ID from the page URL (/trips/{id}/edit)
+        const tripIdMatch = window.location.pathname.match(/\/trips\/(\d+)/);
+        const tripId = tripIdMatch ? tripIdMatch[1] : null;
 
-        // If this is a global note (day null) append to global notes list
+        if (tripId) {
+            // Async path: ask the server to render the element HTML
+            this._renderItemFromServer(tripId, data).then(html => {
+                if (html) {
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = html.trim();
+                    const elementDiv = wrapper.firstElementChild;
+
+                    if (elementDiv) {
+                        // If note_content exists, set it via dataset (not attribute) to preserve HTML
+                        if (data.note_content) {
+                            elementDiv.dataset.noteContent = data.note_content;
+                        }
+                        this._insertElementIntoDOM(elementDiv, data);
+                        return;
+                    }
+                }
+                // Fallback if server response is empty/malformed
+                this._insertElementIntoDOM(this.createElementDiv(data), data);
+            }).catch(() => {
+                // Network/server error fallback
+                this._insertElementIntoDOM(this.createElementDiv(data), data);
+            });
+        } else {
+            // No trip ID available (e.g. creating mode), use JS rendering
+            this._insertElementIntoDOM(this.createElementDiv(data), data);
+        }
+    }
+
+    async _renderItemFromServer(tripId, data) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (!csrfToken) return null;
+
+        try {
+            const response = await fetch(`/trips/${tripId}/render-item`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'text/html',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) return null;
+            return await response.text();
+        } catch (e) {
+            console.warn('render-item endpoint failed, using JS fallback:', e);
+            return null;
+        }
+    }
+
+    _insertElementIntoDOM(elementDiv, data) {
+        // Global note
         if (data.type === 'note' && (typeof data.day === 'undefined' || data.day === null)) {
             const globalNotesList = document.getElementById('global-notes-list');
             if (globalNotesList) {
                 globalNotesList.appendChild(elementDiv);
-                const event = new CustomEvent('elementAdded', {
-                    detail: { elementData: data }
-                });
-                document.dispatchEvent(event);
+                document.dispatchEvent(new CustomEvent('elementAdded', { detail: { elementData: data } }));
                 return;
             }
         }
-        console.log('Element div created:', elementDiv);
 
         const dayCard = document.querySelector(`[data-day="${data.day}"]`);
-        console.log('Day card found:', dayCard);
-
         if (dayCard) {
             const dayContent = dayCard.querySelector('.day-content');
-            console.log('Day content found:', dayContent);
-
             if (dayContent) {
-                // Change the drag instruction text
                 const dragInstruction = dayContent.querySelector('.drag-instruction');
-                if (dragInstruction) {
-                    dragInstruction.textContent = 'arrastra para agregar más elementos';
-                    console.log('Drag instruction updated');
-                }
-
-                // Add the element
+                if (dragInstruction) dragInstruction.textContent = 'arrastra para agregar más elementos';
                 dayContent.appendChild(elementDiv);
-                console.log('Element appended to day content');
             }
         }
 
-        // Emit event to update summaries
-        const event = new CustomEvent('elementAdded', {
-            detail: { elementData: data }
-        });
-        document.dispatchEvent(event);
-
+        document.dispatchEvent(new CustomEvent('elementAdded', { detail: { elementData: data } }));
         console.log('Element added to timeline successfully:', data);
     }
+
 
     createElementDiv(data) {
         const elementDiv = document.createElement('div');

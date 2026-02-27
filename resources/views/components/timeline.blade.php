@@ -242,30 +242,17 @@
         document.getElementById('element-modal').style.display = 'block';
     }
 
-    function addElementToDay(data) {
-        // Special handling for global notes (no day)
-        if (data.type === 'note' && (typeof data.day === 'undefined' || data.day === null)) {
-            const globalNotesList = document.getElementById('global-notes-list');
-            if (!globalNotesList) return;
-            const elementDiv = createElementDiv(data);
-            globalNotesList.appendChild(elementDiv);
-            updateAllSummaries();
-            return;
-        }
-
-        // Special handling for total element positioning
+    async function addElementToDay(data) {
+        // Special handling for total element positioning (keep JS rendering)
         if (data.type === 'total') {
             const daysContainer = document.getElementById('days-container');
             if (!daysContainer) return;
 
-            // Create element
             const elementDiv = createElementDiv(data);
 
             if (data.place_at_end) {
-                // Place at the end of all days
                 daysContainer.appendChild(elementDiv);
             } else {
-                // Place at the beginning (after summary if exists)
                 const firstDay = daysContainer.querySelector('.day-card');
                 if (firstDay) {
                     daysContainer.insertBefore(elementDiv, firstDay);
@@ -274,9 +261,55 @@
                 }
             }
 
+            updateAllSummaries();
+            return;
+        }
 
+        // Try server-rendered HTML for all other types
+        const tripIdMatch = window.location.pathname.match(/\/trips\/(\d+)/);
+        const tripId = tripIdMatch ? tripIdMatch[1] : null;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-            // Update summaries after adding element
+        let elementDiv = null;
+
+        if (tripId && csrfToken) {
+            try {
+                const response = await fetch(`/trips/${tripId}/render-item`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'text/html',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (response.ok) {
+                    const html = await response.text();
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = html.trim();
+                    elementDiv = wrapper.firstElementChild;
+
+                    // Set note_content as dataset property (not HTML attribute) to preserve HTML
+                    if (elementDiv && data.note_content) {
+                        elementDiv.dataset.noteContent = data.note_content;
+                    }
+                }
+            } catch (e) {
+                console.warn('render-item failed, using JS fallback:', e);
+            }
+        }
+
+        // Fallback to JS rendering if server rendering failed
+        if (!elementDiv) {
+            elementDiv = createElementDiv(data);
+        }
+
+        // Special handling for global notes (no day)
+        if (data.type === 'note' && (typeof data.day === 'undefined' || data.day === null)) {
+            const globalNotesList = document.getElementById('global-notes-list');
+            if (!globalNotesList) return;
+            globalNotesList.appendChild(elementDiv);
             updateAllSummaries();
             return;
         }
@@ -285,18 +318,13 @@
         if (!dayCard) return;
 
         const dayContent = dayCard.querySelector('.day-content');
-
-        // Change the instruction text
         const instruction = dayContent.querySelector('.drag-instruction');
         if (instruction) instruction.textContent = 'arrastra para agregar más elementos';
 
-        // Create element
-        const elementDiv = createElementDiv(data);
         dayContent.appendChild(elementDiv);
-
-        // Update summaries after adding element
         updateAllSummaries();
     }
+
 
     function createElementDiv(data) {
         const elementDiv = document.createElement('div');

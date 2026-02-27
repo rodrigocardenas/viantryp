@@ -806,4 +806,56 @@ class TripController extends Controller
 
         return $trip;
     }
+
+    /**
+     * Render a single item partial using the server-side Blade component.
+     * Called by the frontend when a new element is added so the visual stays
+     * consistent with what's shown after a full page reload.
+     */
+    public function renderItem(Request $request, Trip $trip): \Illuminate\Http\Response|JsonResponse
+    {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'No autorizado.'], 403);
+        }
+
+        $data = $request->validate([
+            'type' => 'required|string',
+            'day' => 'nullable|integer',
+            'note_title' => 'nullable|string',
+            'note_content' => 'nullable|string',
+            'airline_id' => 'nullable',
+            'flight_number' => 'nullable|string',
+            'departure_airport' => 'nullable|string',
+            'arrival_airport' => 'nullable|string',
+            'departure_time' => 'nullable|string',
+            'arrival_time' => 'nullable|string',
+            'confirmation_number' => 'nullable|string',
+            'hotel_name' => 'nullable|string',
+            'hotel_id' => 'nullable|string',
+            'hotel_data' => 'nullable|array',
+            'check_in' => 'nullable|string',
+            'check_out' => 'nullable|string',
+            'room_type' => 'nullable|string',
+            'meal_plan' => 'nullable|string',
+            'nights' => 'nullable|integer',
+            'activity_title' => 'nullable|string',
+            'location' => 'nullable|string',
+            'description' => 'nullable|string',
+            'start_time' => 'nullable|string',
+            'end_time' => 'nullable|string',
+            'transport_type' => 'nullable|string',
+            'pickup_location' => 'nullable|string',
+            'destination' => 'nullable|string',
+            'pickup_datetime' => 'nullable|string',
+            'arrival_datetime' => 'nullable|string',
+        ]);
+
+        // Build TripItem from the submitted data
+        $item = new \App\Models\TripItem($data);
+
+        $html = view('components.trip-item', ['item' => $item, 'day' => $data['day'] ?? null])->render();
+
+        return response($html)->header('Content-Type', 'text/html');
+    }
 }
