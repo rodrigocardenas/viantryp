@@ -75,7 +75,8 @@ class TripController extends Controller
             'currency' => 'nullable|string|max:10',
             'client_name' => 'nullable|string|max:255',
             'client_email' => 'nullable|email|max:255',
-            'agent_id' => 'nullable|exists:persons,id'
+            'agent_id' => 'nullable|exists:persons,id',
+            'cover_image_url' => 'nullable|string'
         ]);
 
         // Handle client: updateOrCreate Person with type 'client'
@@ -119,6 +120,7 @@ class TripController extends Controller
                     'summary' => $validated['summary'] ?? '',
                     'price' => $validated['price'] ?? 0,
                     'currency' => $validated['currency'] ?? 'USD',
+                    'cover_image_url' => $validated['cover_image_url'] ?? $existingTrip->cover_image_url,
                     'items_data' => $validated['items_data'] ?? []
                 ]);
 
@@ -262,7 +264,8 @@ class TripController extends Controller
             'price' => 'nullable|numeric|min:0',
             'currency' => 'nullable|string|max:10',
             'items_data' => 'nullable|array',
-            'days_dates' => 'nullable|array'
+            'days_dates' => 'nullable|array',
+            'cover_image_url' => 'nullable|string'
         ]);
 
         // Log validated payload for debugging
@@ -735,6 +738,73 @@ class TripController extends Controller
         $trip->save();
 
         return response()->json(['success' => true, 'cover_url' => $coverUrl]);
+    }
+
+    /**
+     * Search Unsplash for cover images
+     */
+    public function searchUnsplash(Request $request)
+    {
+        $query = $request->input('query', 'travel');
+        $page = $request->input('page', 1);
+        $perPage = $request->input('per_page', 24);
+
+        $accessKey = config('services.unsplash.access_key');
+
+        if (empty($accessKey)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unsplash API key not configured.'
+            ], 400);
+        }
+
+        try {
+            $response = \Illuminate\Support\Facades\Http::get('https://api.unsplash.com/search/photos', [
+                'client_id' => $accessKey,
+                'query' => $query,
+                'page' => $page,
+                'per_page' => $perPage,
+                'orientation' => 'landscape'
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                // Format response to only send exactly what we need
+                $images = [];
+                if (isset($data['results'])) {
+                    foreach ($data['results'] as $result) {
+                        $images[] = [
+                            'id' => $result['id'],
+                            'url_thumb' => $result['urls']['small'],
+                            'url_full' => $result['urls']['regular'],
+                            'author_name' => $result['user']['name'] ?? 'Unknown',
+                            'author_link' => ($result['user']['links']['html'] ?? '#') . '?utm_source=viantryp&utm_medium=referral',
+                        ];
+                    }
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'images' => $images,
+                    'total_pages' => $data['total_pages'] ?? 1
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching images from Unsplash.',
+                'error' => $response->body()
+            ], $response->status());
+
+        }
+        catch (\Exception $e) {
+            \Log::error('Unsplash API Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Internal server error while fetching images.'
+            ], 500);
+        }
     }
 
     /**

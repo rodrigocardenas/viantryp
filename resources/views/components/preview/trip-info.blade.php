@@ -38,11 +38,7 @@
             </div>
         </div>
 
-        @if($trip->cover_image_url)
-            <div class="trip-cover-banner">
-                <img src="{{ $trip->cover_image_url }}" alt="Imagen de portada" class="cover-banner-image">
-            </div>
-        @endif
+
 
         <div class="trip-summary-box">
             <div class="summary-item">
@@ -72,5 +68,11 @@
         </div>
     </header>
 </div>
+
+@if($trip->cover_image_url)
+    <div class="preview-cover-section">
+        <img src="{{ $trip->cover_image_url }}" alt="Imagen de portada" class="preview-cover-image">
+    </div>
+@endif
 
 <x-preview.global-notes :trip="$trip" />

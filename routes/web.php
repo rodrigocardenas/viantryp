@@ -34,10 +34,10 @@ Route::middleware('guest')->group(function () {
 // Logout route (authenticated users only)
 Route::middleware('auth')->post('logout', [GoogleAuthController::class , 'logout'])->name('logout');
 
-// Redirect root to trips index
+// Public landing page
 Route::get('/', function () {
-    return redirect()->route('trips.index');
-});
+    return view('landing');
+})->name('home');
 
 // Protected routes (require authentication)
 Route::middleware('auth')->group(function () {
@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('airlines', AirlineController::class);
     Route::get('api/airlines', [AirlineController::class , 'apiIndex'])->name('api.airlines.index');
     Route::get('api/airports', [AirportController::class , 'apiIndex'])->name('api.airports.index');
+    Route::get('api/unsplash/search', [TripController::class , 'searchUnsplash'])->name('api.unsplash.search');
 
     // Additional trip routes
     Route::post('trips/{trip}/status', [TripController::class , 'updateStatus'])->name('trips.update-status');

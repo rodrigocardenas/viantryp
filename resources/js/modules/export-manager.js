@@ -135,6 +135,18 @@ class ExportManager {
             const priceEl = document.getElementById('trip-price');
             const currencyEl = document.getElementById('trip-currency');
 
+            // Read cover image from global state or HTML element if present
+            let coverImageUrl = null;
+            if (window.existingTripData && window.existingTripData.cover_image_url !== undefined) {
+                coverImageUrl = window.existingTripData.cover_image_url;
+            } else {
+                const previewImg = document.getElementById('cover-image-preview');
+                if (previewImg && previewImg.src && !previewImg.src.includes('data:')) {
+                    // Only use it if it's a URL, not a base64 (which should go via FormData upload)
+                    coverImageUrl = previewImg.src;
+                }
+            }
+
             const tripData = {
                 title: tripTitle,
                 start_date: startDate,
@@ -142,6 +154,7 @@ class ExportManager {
                 travelers: travelersEl ? (parseInt(travelersEl.value) || 1) : 1,
                 price: priceEl ? (parseFloat(priceEl.value) || 0) : 0,
                 currency: currencyEl ? currencyEl.value : 'USD',
+                cover_image_url: coverImageUrl,
                 destination: '', // Optional field
                 summary: '', // Optional field
                 items_data: itemsData,
