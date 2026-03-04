@@ -51,7 +51,7 @@
                                 </button>
                             @else
                                 {{-- Render link actions but include data-action when provided so JS delegation works --}}
-                                <a href="{{ $action['url'] }}" class="btn {{ $action['class'] ?? 'btn-primary' }}" @if(isset($action['data-action'])) data-action="{{ $action['data-action'] }}" @endif>
+                                <a href="{{ $action['url'] }}" class="btn {{ $action['class'] ?? 'btn-primary' }}" @if(isset($action['data-action'])) data-action="{{ $action['data-action'] }}" @endif @if(isset($action['target'])) target="{{ $action['target'] }}" @endif>
                                     @if(isset($action['icon']))
                                         <i class="{{ $action['icon'] }}"></i>
                                     @endif

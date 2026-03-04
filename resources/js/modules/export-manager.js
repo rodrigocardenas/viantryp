@@ -399,8 +399,15 @@ class ExportManager {
                     arrival_airport: arrivalAirport,
                     departure_datetime: itemElement.getAttribute('data-departure-datetime') || '',
                     arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || '',
+                    // Split datetime into separate date/time fields for the preview blade
+                    departure_date: (itemElement.getAttribute('data-departure-datetime') || '').split(/[T ]/)[0] || '',
+                    departure_time: (itemElement.getAttribute('data-departure-datetime') || '').split(/[T ]/)[1] || '',
+                    arrival_date: (itemElement.getAttribute('data-arrival-datetime') || '').split(/[T ]/)[0] || '',
+                    arrival_time: (itemElement.getAttribute('data-arrival-datetime') || '').split(/[T ]/)[1] || '',
                     departure_city: itemElement.getAttribute('data-departure-city') || '',
                     arrival_city: itemElement.getAttribute('data-arrival-city') || '',
+                    departure_airport_name: itemElement.getAttribute('data-departure-airport-name') || '',
+                    arrival_airport_name: itemElement.getAttribute('data-arrival-airport-name') || '',
                     confirmation_number: itemElement.getAttribute('data-confirmation-number') || '',
                     baggage_types: itemElement.getAttribute('data-baggage-types') ? JSON.parse(itemElement.getAttribute('data-baggage-types')) : [],
                     temp_id: itemElement.getAttribute('data-temp-id') || ''

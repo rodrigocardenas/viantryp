@@ -2,30 +2,31 @@
 
 <div class="trip-preview-wrapper">
     <header class="preview-header-minimal">
-        <div class="trip-main-banner">
-            <div class="banner-icon">
-                <i class="fas fa-plane"></i>
-            </div>
-            <div class="banner-text">
+        {{-- Banner with cover image or fallback gradient --}}
+        <div class="trip-main-banner {{ $trip->cover_image_url ? 'has-cover' : '' }}">
+            @if($trip->cover_image_url)
+                <img src="{{ $trip->cover_image_url }}" alt="Imagen de portada" class="banner-cover-image">
+                <div class="banner-cover-overlay"></div>
+            @endif
+
+            @if(!$trip->cover_image_url)
+                <div class="banner-icon-centered">
+                    <i class="fas fa-globe"></i>
+                </div>
+            @endif
+        </div>
+
+        {{-- Title and status below the banner --}}
+        <div class="trip-title-section">
+            <div class="trip-title-left">
                 <h1 class="preview-trip-title">
                     {{ $trip->title ?? 'Plan de Viaje' }}
                 </h1>
                 @if(isset($trip->customer_name))
                     <p class="customer-name-subtitle">{{ $trip->customer_name }}</p>
                 @endif
-                <div class="status-badge-container mobile-only">
-                    @if($trip->status === 'approved' || $trip->status === 'completed')
-                        <span class="status-badge confirmed">
-                            <span class="status-dot"></span> CONFIRMADO
-                        </span>
-                    @else
-                       <span class="status-badge draft">
-                            <span class="status-dot"></span> BORRADOR
-                        </span>
-                    @endif
-                </div>
             </div>
-            <div class="status-badge-container desktop-only">
+            <div class="status-badge-container">
                 @if($trip->status === 'approved' || $trip->status === 'completed')
                     <span class="status-badge confirmed">
                         <span class="status-dot"></span> CONFIRMADO
@@ -37,8 +38,6 @@
                 @endif
             </div>
         </div>
-
-
 
         <div class="trip-summary-box">
             <div class="summary-item">
@@ -68,11 +67,5 @@
         </div>
     </header>
 </div>
-
-@if($trip->cover_image_url)
-    <div class="preview-cover-section">
-        <img src="{{ $trip->cover_image_url }}" alt="Imagen de portada" class="preview-cover-image">
-    </div>
-@endif
 
 <x-preview.global-notes :trip="$trip" />

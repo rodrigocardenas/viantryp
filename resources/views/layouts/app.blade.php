@@ -58,7 +58,8 @@
         }
 
         body {
-            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
+;
             background: #f8f9fa;
             color: var(--ink);
             letter-spacing: 0.1px;

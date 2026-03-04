@@ -102,7 +102,7 @@
 
 @vite(['resources/js/preview.js'])
 
-<link rel="stylesheet" href="{{ asset('css/preview.css') }}">
+<link rel="stylesheet" href="{{ asset('css/preview.css') }}?v={{ time() }}">
 
 <script>
     // Make trip data available globally for JavaScript
