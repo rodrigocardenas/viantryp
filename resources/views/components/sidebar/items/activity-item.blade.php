@@ -1,7 +1,7 @@
 @props(['disabled' => false])
 
 <x-sidebar.items.base
-    type="act"
+    type="activity"
     title="Actividad"
     description="Tour o experiencia"
     :disabled="$disabled"

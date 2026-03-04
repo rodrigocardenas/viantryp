@@ -1,22 +1,23 @@
 @props(['trip'])
 
 <!-- Header for authenticated users -->
-<div class="header">
+<div class="header" style="background: linear-gradient(135deg, #ffffff 0%, #e3e9ec 60%, #ffffff 100%);">
     <div class="header-content">
-        <div class="logo-container">
-            <a href="{{ route('trips.index') }}" class="viantryp-logo">
-                <i class="fas fa-route"></i>
-                Viantryp
+        <div class="logo-container" style="flex: 1; min-width: max-content;">
+            <a href="{{ route('trips.index') }}" class="viantryp-logo" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                <img src="/images/logo-viantryp.png" alt="Viantryp Logo" style="height: 32px; width: auto; filter: invert(1) hue-rotate(180deg) brightness(0.2);">
+                <span style="color: #475569; font-size: 15px; font-weight: 600; font-family: 'Barlow', sans-serif; white-space: nowrap;">- Vista previa del viaje</span>
             </a>
         </div>
         <div class="header-right">
             <div class="nav-actions">
-                <a href="{{ route('trips.edit', $trip->id) }}" class="btn btn-back">
+                <a href="{{ route('trips.edit', $trip->id) }}" class="btn btn-back" style="color: black !important; display: inline-flex; align-items: center; gap: 6px; font-weight: 500;">
                     <i class="fas fa-arrow-left"></i>
+                    Volver
                 </a>
-                <button type="button" class="btn btn-share" onclick="shareTrip()">
+                <button type="button" class="btn btn-share" onclick="shareTrip()" style="background-color: #61c5ed; color: #ffffff; border: none;">
                     <i class="fas fa-share-alt"></i>
-                    Compartir
+                    Link para el viajero
                 </button>
                 {{-- <button type="button" class="btn btn-pdf" onclick="downloadPDF()">
                     <i class="fas fa-file-pdf"></i>

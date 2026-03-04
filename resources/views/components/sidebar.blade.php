@@ -6,7 +6,7 @@
     'showHotel' => true,
     'showActivity' => true,
     'showTransport' => true,
-    'showNote' => true,
+    'showNote' => false,
     'showTitle' => true,
     'showParagraph' => true,
     'showExtra' => true
@@ -17,13 +17,10 @@
 
   <!-- HEADER -->
   <div class="sidebar-header">
-    <div class="sidebar-title">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-        <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-      </svg>
-      Elementos
+    <div class="sidebar-title sidebar-title-premium">
+      ELEMENTOS
     </div>
+    <span class="header-hint">Arrastra los elementos al itinerario</span>
   </div>
 
   <!-- BODY -->
@@ -83,13 +80,5 @@
     @endif
 
   </div><!-- /sidebar-body -->
-
-  <!-- FOOTER -->
-  <div class="sidebar-footer">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sidebar-teal);flex-shrink:0">
-      <path d="M7 10l5-6 5 6"/><path d="M7 14l5 6 5-6"/>
-    </svg>
-    <span class="footer-hint">Arrastra los elementos al itinerario</span>
-  </div>
 
 </div>

@@ -22,10 +22,6 @@
             <input type="text" id="trip-title" class="trip-title-input-premium" placeholder="Nombre del viaje" value="{{ $trip->title ?? '' }}">
         </div>
 
-        <div class="form-group-top">
-            <label class="field-label">NOMBRE DEL CLIENTE</label>
-            <input type="text" id="trip-client-name" class="trip-client-input-premium" placeholder="Nombre del cliente" value="{{ $client->name ?? '' }}" readonly>
-        </div>
 
         <hr class="header-divider">
 

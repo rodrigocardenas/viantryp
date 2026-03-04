@@ -35,6 +35,7 @@
             </div>
             <div class="item-info">
                 <div class="item-type">{{ $item->getTypeLabel() }}</div>
+                <div class="item-title">{!! $item->getTitle() !!}</div>
                 <div class="item-subtitle">{!! $item->getSubtitle() !!}</div>
             </div>
             <div class="item-actions">

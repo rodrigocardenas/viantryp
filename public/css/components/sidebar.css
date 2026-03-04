@@ -38,8 +38,8 @@
 
 /* ── SIDEBAR SHELL ── */
 .editor-sidebar {
-    width: 280px;
-    /* adjusted from 240px to fit standard editor layout */
+    width: 282px;
+    /* adjusted from 280px to fit standard editor layout */
     background: var(--sidebar-white);
     border-right: 1px solid var(--sidebar-border);
     display: flex;
@@ -50,24 +50,23 @@
 /* ── HEADER ── */
 .sidebar-header {
     padding: 14px 16px 12px;
-    border-bottom: 1px solid var(--sidebar-border);
+    border-bottom: none;
     background: var(--sidebar-white);
 }
 
-.sidebar-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: 15px;
-    color: var(--sidebar-dark);
-    letter-spacing: 0.2px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+.sidebar-title-premium {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
 }
 
-.sidebar-title svg {
-    color: var(--sidebar-teal);
+.header-hint {
+    font-size: 11px;
+    color: var(--sidebar-gray);
+    display: block;
 }
 
 /* Search */
@@ -236,12 +235,12 @@
     box-shadow: 0 4px 14px rgba(26, 154, 138, 0.15);
 }
 
-.c-trans .card-icon {
+.c-transport .card-icon {
     background: var(--trans-bg);
     color: var(--trans-c);
 }
 
-.c-trans:hover {
+.c-transport:hover {
     border-color: var(--trans-c);
     box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
 }
@@ -256,12 +255,12 @@
     box-shadow: 0 4px 14px rgba(239, 68, 68, 0.15);
 }
 
-.c-act .card-icon {
+.c-activity .card-icon {
     background: var(--act-bg);
     color: var(--act-c);
 }
 
-.c-act:hover {
+.c-activity:hover {
     border-color: var(--act-c);
     box-shadow: 0 4px 14px rgba(59, 130, 246, 0.15);
 }

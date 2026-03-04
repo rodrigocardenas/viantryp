@@ -3,7 +3,7 @@
     <div class="public-header-content">
         <div class="public-logo">
             <div class="header-logos-container">
-                <img src="{{ asset('images/VIANTRYP LOGO.png') }}" alt="Viantryp Logo" class="viantryp-logo">
+                <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp Logo" class="viantryp-logo">
                 <img src="{{ asset('images/LOGO GPS.png') }}" alt="GPS Logo" class="gps-logo">
             </div>
         </div>

@@ -2,11 +2,11 @@
     <div class="header-content">
         <div class="logo-container">
             <a href="{{ route('trips.index') }}" class="viantryp-logo">
-                <span class="logo-v">V</span><span class="logo-dot">.</span><span class="logo-text">iantryp</span>
+                <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 38px; width: auto;" />
             </a>
             @if(isset($subtitle))
                 <span class="header-subtitle">
-                    <i class="fas fa-pen"></i>
+                    <span style="opacity: 0.6;">|</span>
                     {{ $subtitle }}
                 </span>
             @endif
@@ -99,10 +99,10 @@
 
 <style>
     .header {
-        background: #ffffff;
-        color: #0d2b3e;
+        background: linear-gradient(90deg, #0c4a5b 0%, #61c5ed 100%);
+        color: #ffffff;
         padding: 0 2rem;
-        border-bottom: 1px solid #e2e8ef;
+        border-bottom: none;
         height: 64px;
         display: flex;
         align-items: center;
@@ -130,7 +130,7 @@
     }
 
     .viantryp-logo {
-        color: #0d2b3e;
+        color: #ffffff;
         text-decoration: none;
         font-size: 1.5rem;
         display: flex;
@@ -144,7 +144,7 @@
 
     .logo-dot {
         font-weight: 900;
-        color: #1a9a8a; /* Teal dot */
+        color: #4cd5c2; /* Brighter teal dot for dark bg */
     }
 
     .logo-text {
@@ -153,7 +153,7 @@
     }
 
     .header-subtitle {
-        color: #0d2b3e;
+        color: rgba(255, 255, 255, 0.9);
         font-size: 0.95rem;
         font-weight: 600;
         display: flex;
@@ -163,7 +163,7 @@
     }
 
     .header-subtitle i {
-        color: #6b7a8d;
+        color: rgba(255, 255, 255, 0.6);
         font-size: 0.75rem;
         font-weight: 400;
     }

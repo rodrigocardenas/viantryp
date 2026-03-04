@@ -27,8 +27,8 @@
     ];
 
     // Formatear fecha de recogida
-    $pickupDateLong = 'Fecha no disponible';
-    if ($item['pickup_datetime']) {
+    $pickupDateLong = '';
+    if (!empty($item['pickup_datetime'])) {
         try {
             $pickupDT = \Carbon\Carbon::parse($item['pickup_datetime']);
             $diaIngles = $pickupDT->format('l');
@@ -36,13 +36,13 @@
             $diaNumero = $pickupDT->format('j');
             $pickupDateLong = $diasEspanol[$diaIngles] . ', ' . $diaNumero . ' de ' . $mesesEspanol[$mesIngles];
         } catch (Exception $e) {
-            $pickupDateLong = 'Fecha no disponible';
+            $pickupDateLong = '';
         }
     }
 
     // Formatear fecha de llegada
-    $arrivalDateLong = 'Fecha no disponible';
-    if ($item['arrival_datetime']) {
+    $arrivalDateLong = '';
+    if (!empty($item['arrival_datetime'])) {
         try {
             $arrivalDT = \Carbon\Carbon::parse($item['arrival_datetime']);
             $diaIngles = $arrivalDT->format('l');
@@ -50,7 +50,7 @@
             $diaNumero = $arrivalDT->format('j');
             $arrivalDateLong = $diasEspanol[$diaIngles] . ', ' . $diaNumero . ' de ' . $mesesEspanol[$mesIngles];
         } catch (Exception $e) {
-            $arrivalDateLong = 'Fecha no disponible';
+            $arrivalDateLong = '';
         }
     }
 @endphp
@@ -68,16 +68,15 @@
             <div class="airport-info">
                 <span class="airport-date mobile-only" style="order:0 !important">{{ $pickupDateLong }}</span>
                 <div class="airport-time-date desktop-only">
-                    <span class="airport-time desktop-only">{{ $item['pickup_datetime'] ? \Carbon\Carbon::parse($item['pickup_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
+                    <span class="airport-time desktop-only">{{ !empty($item['pickup_datetime']) ? \Carbon\Carbon::parse($item['pickup_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
                 </div>
                 <div class="airport-time-date mobile-only">
-                    <span class="airport-time mobile-only">{{ $item['pickup_datetime'] ? \Carbon\Carbon::parse($item['pickup_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
+                    <span class="airport-time mobile-only">{{ !empty($item['pickup_datetime']) ? \Carbon\Carbon::parse($item['pickup_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
                 </div>
                 <div class="airport-name desktop-only ">{{ $item['pickup_location'] ?? 'Ubicación no especificada' }}</div>
                 <div class="airport-location desktop-only">Salida</div>
                 <span class="airport-date desktop-only">{{ $pickupDateLong }}</span>
                 <div class="airport-name mobile-only">{{ $item['pickup_location'] ?? 'Ubicación no especificada' }}</div>
-
             </div>
         </div>
 
@@ -88,11 +87,11 @@
             <div class="plane-container">
                 @php
                     $icon = 'fas fa-car';
-                    if ($item['transport_type'] === 'Tren') {
+                    if (($item['transport_type'] ?? '') === 'Tren') {
                         $icon = 'fas fa-train';
-                    } elseif ($item['transport_type'] === 'Bus') {
+                    } elseif (($item['transport_type'] ?? '') === 'Bus') {
                         $icon = 'fas fa-bus';
-                    } elseif ($item['transport_type'] === 'Barco/Ferry') {
+                    } elseif (($item['transport_type'] ?? '') === 'Barco/Ferry') {
                         $icon = 'fas fa-ship';
                     }
                 @endphp
@@ -103,15 +102,17 @@
         <!-- Arrival section -->
         <div class="airport-section">
             <div class="airport-info arrival-info">
-                <span class="airport-date mobile-only"style="order:0 !important" >{{ $arrivalDateLong }}</span>
-                <div class="airport-time-date">
-                    <span class="airport-time">{{ $item['arrival_datetime'] ? \Carbon\Carbon::parse($item['arrival_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
+                <span class="airport-date mobile-only" style="order:0 !important">{{ $arrivalDateLong }}</span>
+                <div class="airport-time-date desktop-only">
+                    <span class="airport-time desktop-only">{{ !empty($item['arrival_datetime']) ? \Carbon\Carbon::parse($item['arrival_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
+                </div>
+                <div class="airport-time-date mobile-only">
+                    <span class="airport-time mobile-only">{{ !empty($item['arrival_datetime']) ? \Carbon\Carbon::parse($item['arrival_datetime'])->format('H:i') : 'Hora no disponible' }}</span>
                 </div>
                 <div class="airport-name desktop-only">{{ $item['destination'] ?? 'Ubicación no especificada' }}</div>
                 <div class="airport-location desktop-only">Llegada</div>
-                <div class="airport-name mobile-only">{{ $item['destination'] ?? 'Ubicación no especificada' }}</div>
                 <span class="airport-date desktop-only">{{ $arrivalDateLong }}</span>
-
+                <div class="airport-name mobile-only">{{ $item['destination'] ?? 'Ubicación no especificada' }}</div>
             </div>
         </div>
     </div>

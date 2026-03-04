@@ -1,7 +1,7 @@
 @props(['disabled' => false])
 
 <x-sidebar.items.base
-    type="trans"
+    type="transport"
     title="Traslado"
     description="Bus, tren u otro"
     :disabled="$disabled"

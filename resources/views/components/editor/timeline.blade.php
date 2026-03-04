@@ -602,11 +602,11 @@
                 return {
                     ...baseData,
                     type: 'activity',
-                    activity_title: itemElement.querySelector('.item-title')?.textContent || '',
-                    location: itemElement.querySelector('.item-subtitle')?.textContent || '',
-                    start_time: '',
-                    end_time: '',
-                    description: ''
+                    activity_title: itemElement.getAttribute('data-activity-title') || itemElement.querySelector('.item-title')?.textContent || '',
+                    location: itemElement.getAttribute('data-location') || itemElement.querySelector('.item-subtitle')?.textContent || '',
+                    start_datetime: itemElement.getAttribute('data-start-datetime') || '',
+                    end_datetime: itemElement.getAttribute('data-end-datetime') || '',
+                    description: itemElement.getAttribute('data-description') || ''
                 };
 
             case 'traslado':
@@ -614,11 +614,12 @@
                 return {
                     ...baseData,
                     type: 'transport',
-                    transport_type: itemElement.getAttribute('data-transport-type') || '',
+                    transport_type: itemElement.getAttribute('data-transport-type') || itemElement.querySelector('.item-title')?.textContent || '',
                     pickup_location: itemElement.getAttribute('data-pickup-location') || '',
                     destination: itemElement.getAttribute('data-destination') || '',
                     pickup_datetime: itemElement.getAttribute('data-pickup-datetime') || '',
-                    arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || ''
+                    arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || '',
+                    pickup_time: itemElement.getAttribute('data-pickup-time') || ''
                 };
 
             case 'nota':

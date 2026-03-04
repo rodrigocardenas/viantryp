@@ -1257,15 +1257,15 @@
     }
 
     .btn-share {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        background: #61c5ed !important;
         color: white;
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        box-shadow: 0 2px 8px rgba(97, 197, 237, 0.3);
     }
 
     .btn-share:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        background: #4ab2dc !important;
         transform: translateY(-1px);
-        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+        box-shadow: 0 4px 16px rgba(97, 197, 237, 0.4);
     }
 
     .btn-pdf {
@@ -3104,15 +3104,15 @@
     }
 
     .btn-share {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        background: #61c5ed !important;
         color: white;
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        box-shadow: 0 2px 8px rgba(97, 197, 237, 0.3);
     }
 
     .btn-share:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        background: #4ab2dc !important;
         transform: translateY(-1px);
-        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+        box-shadow: 0 4px 16px rgba(97, 197, 237, 0.4);
     }
 
     .auth-section {

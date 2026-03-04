@@ -298,7 +298,7 @@
   <!-- ── NAVBAR ── -->
   <nav>
     <a href="{{ route('home') }}" class="nav-logo">
-      <span class="nav-logo-text">V<span class="dot">.</span>iantryp</span>
+      <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 32px; width: auto; object-fit: contain;">
     </a>
 
     <div class="nav-links">

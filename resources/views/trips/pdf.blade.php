@@ -311,7 +311,9 @@
 </head>
 <body>
     <div class="header">
-        <div class="logo">Viantryp</div>
+        <div class="logo">
+            <img src="{{ public_path('images/logo-viantryp.png') }}" alt="Viantryp" style="height: 40px; width: auto; filter: invert(1);">
+        </div>
         <h1 class="trip-title">{{ $trip->title }}</h1>
     </div>
 

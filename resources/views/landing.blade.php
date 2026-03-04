@@ -348,7 +348,9 @@
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">V<span>.</span>iantryp</a>
+  <a href="#" class="nav-logo" style="display:flex; align-items:center;">
+    <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 32px; width: auto; filter: invert(1) hue-rotate(180deg) contrast(1.5);">
+  </a>
   <ul class="nav-links">
     <li><a href="#como-funciona">Cómo funciona</a></li>
     <li><a href="#precios">Precios</a></li>
