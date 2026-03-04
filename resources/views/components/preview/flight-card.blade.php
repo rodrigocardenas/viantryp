@@ -118,6 +118,16 @@
     $finalArrivalCity = $arrivalAirportObj ? $arrivalAirportObj->city : ($item['arrival_city'] ?? '');
     $finalArrivalCountry = $arrivalAirportObj ? $arrivalAirportObj->country : getCountryFromCity($item['arrival_city'] ?? '', $item['arrival_airport'] ?? null);
     $finalArrivalName = $arrivalAirportObj ? $arrivalAirportObj->name : ($item['arrival_airport_name'] ?? '');
+
+    // Format Full Airport Names + IATA
+    $depIata = preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? $matches[1] : ($item['departure_airport'] ?? 'DEP');
+    $arrIata = preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? $matches[1] : ($item['arrival_airport'] ?? 'ARR');
+
+    $displayDeparture = trim(preg_replace('/\([^)]*\)/', '', $finalDepartureName));
+    $displayDeparture = $displayDeparture ? "$displayDeparture ($depIata)" : $depIata;
+
+    $displayArrival = trim(preg_replace('/\([^)]*\)/', '', $finalArrivalName));
+    $displayArrival = $displayArrival ? "$displayArrival ($arrIata)" : $arrIata;
 @endphp
 
 <div class="flight-card-unified">
@@ -136,10 +146,10 @@
                 <div class="airport-time-date desktop-only">
                     <span class="airport-time">{{ date('H:i', strtotime($item['departure_time'] ?? '00:00')) }}</span>
                 </div>
-                <div class="airport-code desktop-only">{{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? $matches[1] : $item['departure_airport'] ?? 'DEP' }}</div>
+                <div class="airport-code desktop-only">{{ $displayDeparture }}</div>
                 <div class="airport-code mobile-only">
                     <i class="fa-solid fa-plane-departure"style="margin-right: 10px "></i>
-                    {{ preg_match('/\(([^)]+)\)/', $item['departure_airport_name'] ?? '', $matches) ? $matches[1] : $item['departure_airport'] ?? 'DEP' }}
+                    {{ $displayDeparture }}
                 </div>
 
                 <div class="airport-location mobile-only">{{ $finalDepartureCity }}, {{ $finalDepartureCountry }}</div>
@@ -166,10 +176,10 @@
                 <div class="airport-time-date desktop-only">
                     <span class="airport-time">{{ date('H:i', strtotime($item['arrival_time'] ?? '00:00')) }}</span>
                 </div>
-                <div class="airport-code desktop-only">{{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? $matches[1] : $item['arrival_airport'] ?? 'DEP' }}</div>
+                <div class="airport-code desktop-only">{{ $displayArrival }}</div>
                 <div class="airport-code mobile-only">
                     <i class="fa-solid fa-plane-arrival" style="margin-right: 10px "></i>
-                    {{ preg_match('/\(([^)]+)\)/', $item['arrival_airport_name'] ?? '', $matches) ? $matches[1] : $item['arrival_airport'] ?? 'DEP' }}
+                    {{ $displayArrival }}
                 </div>
 
                 <div class="airport-location mobile-only">{{ $finalArrivalCity }}, {{ $finalArrivalCountry }}</div>

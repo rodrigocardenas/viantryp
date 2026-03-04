@@ -9,12 +9,63 @@
 
     <!-- Main Content -->
     <main class="main-content">
+        <!-- Page Header & Stats -->
+        <div class="page-header-container">
+            <h1 class="page-title">Mis <span>Viajes</span></h1>
+            <p class="page-subtitle">Gestiona y diseña todas tus propuestas de viaje</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon icon-total"><i class="fas fa-plane"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number">{{ $stats['total'] ?? 0 }}</div>
+                        <div class="stat-label">Total viajes</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-draft"><i class="far fa-window-maximize"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number">{{ $stats['draft'] ?? 0 }}</div>
+                        <div class="stat-label">En diseño</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-sent" style="color: #6366f1;"><i class="fas fa-paper-plane"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number">{{ $stats['sent'] ?? 0 }}</div>
+                        <div class="stat-label">Enviado</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-reserved" style="color: #10b981;"><i class="far fa-calendar-check"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number">{{ $stats['reserved'] ?? 0 }}</div>
+                        <div class="stat-label">Reservado</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-completed" style="color: #0d9488;"><i class="fas fa-check-double"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number">{{ $stats['completed'] ?? 0 }}</div>
+                        <div class="stat-label">Completado</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-discarded" style="color: #ef4444;"><i class="fas fa-ban"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number">{{ $stats['discarded'] ?? 0 }}</div>
+                        <div class="stat-label">Descartado</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Search Section -->
         <div class="search-section">
             <div class="search-container">
                 <div class="search-bar">
                     <span class="search-icon"><i class="fas fa-search"></i></span>
-                    <input type="text" class="search-input" placeholder="Buscar viajes..." oninput="searchTrips(this.value)">
+                    <input type="text" class="search-input" placeholder="Buscar por nombre del viaje..." oninput="searchTrips(this.value)">
                 </div>
                 <a href="{{ route('trips.create') }}" class="new-trip-btn-search">
                     <i class="fas fa-plus"></i>
@@ -56,11 +107,13 @@
                 </div>
                 <div class="header-code">ID</div>
                 <div class="header-info">
-                    <div class="header-title">Nombre del Viaje</div>
-                    <div class="header-dates">Fecha del Viaje</div>
-                    <div class="header-status">Estado</div>
+                    <div class="header-title">NOMBRE DEL VIAJE</div>
+                    <div class="header-dates">INICIO DEL VIAJE</div>
+                    <div class="header-client">CLIENTE</div>
+                    <div class="header-email">CORREO</div>
+                    <div class="header-status">ESTADO</div>
                 </div>
-                <div class="header-actions">Acciones</div>
+                <div class="header-actions">ACCIONES</div>
             </div>
 
             <div id="trips-list">
@@ -73,29 +126,46 @@
                                 <input type="text" class="code-input" id="code-input-{{ $trip->id }}" style="display: none;" onblur="saveTripCode({{ $trip->id }})" onkeypress="handleCodeKeyPress(event, {{ $trip->id }})" maxlength="20">
                             </div>
                             <div class="trip-info">
-                                <div class="trip-title">{{ $trip->title }}</div>
-                                <div class="trip-dates">
-                                    {{-- Show only start date per user request --}}
-                                    {{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->format('d/m/Y') : 'Sin fecha' }}
+                                <div class="trip-title-wrapper">
+                                    <div class="trip-title">{{ $trip->title }}</div>
                                 </div>
-                                <div>
-                                    <select class="status-select" data-status="{{ $trip->status }}" onclick="event.stopPropagation();" onchange="changeTripStatus({{ $trip->id }}, this.value)">
-                                        <option value="draft" {{ $trip->status === 'draft' ? 'selected' : '' }}>En Diseño</option>
-                                        <option value="sent" {{ $trip->status === 'sent' ? 'selected' : '' }}>Enviada</option>
-                                        <option value="approved" {{ $trip->status === 'approved' ? 'selected' : '' }}>Aprobado</option>
+                                <div class="trip-dates-wrapper" style="text-align: left; display: flex; justify-content: flex-start;">
+                                    <div class="trip-dates" style="text-align: left;">
+                                        {{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : 'Sin fecha' }}
+                                    </div>
+                                </div>
+                                @php
+                                    $client = $trip->persons->firstWhere('type', 'client') ?? $trip->persons->first();
+                                @endphp
+                                <div class="trip-client" style="text-align: left; display: flex; justify-content: flex-start;">
+                                    {{ $client ? $client->name : 'Sin cliente' }}
+                                </div>
+                                <div class="trip-email" style="text-align: left; display: flex; justify-content: flex-start;">
+                                    @if($client && $client->email)
+                                        <a href="mailto:{{ $client->email }}" onclick="event.stopPropagation();" class="email-link" style="text-align: left;">{{ $client->email }}</a>
+                                    @else
+                                        -
+                                    @endif
+                                </div>
+                                <div style="text-align: left; display: flex; justify-content: flex-start;">
+                                    <select class="status-select status-{{ $trip->status }}" data-status="{{ $trip->status }}" onclick="event.stopPropagation();" onchange="changeTripStatus({{ $trip->id }}, this.value)" style="text-align: left;">
+                                        <option value="draft" {{ $trip->status === 'draft' ? 'selected' : '' }}>En diseño</option>
+                                        <option value="sent" {{ $trip->status === 'sent' ? 'selected' : '' }}>Enviado</option>
+                                        <option value="reserved" {{ $trip->status === 'reserved' ? 'selected' : '' }}>Reservado</option>
                                         <option value="completed" {{ $trip->status === 'completed' ? 'selected' : '' }}>Completado</option>
+                                        <option value="discarded" {{ $trip->status === 'discarded' ? 'selected' : '' }}>Descartado</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="trip-actions">
-                                <button class="action-btn btn-primary" onclick="event.stopPropagation(); previewTrip({{ $trip->id }})">
-                                    <i class="fas fa-eye"></i>
+                                <button class="action-btn btn-secondary action-icon-btn" onclick="event.stopPropagation(); previewTrip({{ $trip->id }})" title="Visualizar plan">
+                                    <i class="far fa-eye"></i>
                                 </button>
-                                <button class="action-btn btn-secondary" onclick="event.stopPropagation(); editTrip({{ $trip->id }})">
-                                    <i class="fas fa-edit"></i>
+                                <button class="action-btn btn-secondary action-icon-btn action-edit-btn" onclick="event.stopPropagation(); editTrip({{ $trip->id }})" title="Editar">
+                                    <i class="far fa-edit"></i>
                                 </button>
-                                <button class="action-btn btn-info" onclick="event.stopPropagation(); openEmailModal({{ $trip->id }}, '{{ $trip->title }}')">
-                                    <i class="fas fa-envelope"></i>
+                                <button class="action-btn btn-secondary action-icon-btn" onclick="event.stopPropagation(); shareTripIndex({{ $trip->id }}, '{{ $trip->share_token }}')" title="Compartir">
+                                    <i class="far fa-paper-plane"></i>
                                 </button>
                                 <button class="action-btn btn-danger" onclick="event.stopPropagation(); deleteTrip({{ $trip->id }})">
                                     <i class="fas fa-trash"></i>
@@ -113,35 +183,7 @@
         </div>
     </main>
 
-    <!-- Email Modal -->
-    <div id="email-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Enviar viaje por correo</h3>
-                <button class="modal-close" onclick="closeEmailModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p id="email-modal-trip-title"></p>
-                <form id="email-form">
-                    <div class="form-group">
-                        <label for="email-address">Dirección de correo electrónico:</label>
-                        <input type="email" id="email-address" name="email" required placeholder="cliente@ejemplo.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="email-message">Mensaje opcional:</label>
-                        <textarea id="email-message" name="message" rows="3" placeholder="Mensaje personalizado (opcional)"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeEmailModal()">Cancelar</button>
-                <button class="btn-primary" onclick="sendEmail()" id="send-email-btn">
-                    <i class="fas fa-paper-plane"></i>
-                    Enviar
-                </button>
-            </div>
-        </div>
-    </div>
+
 @endsection
 
 @push('styles')
@@ -185,13 +227,86 @@
         padding: 2rem;
     }
 
-    .search-section {
-        background: white;
-        border-radius: var(--radius);
-        padding: 1.25rem 1.5rem;
+    .page-header-container {
         margin-bottom: 2rem;
-        box-shadow: var(--shadow-soft);
-        border: 1px solid var(--stone-300);
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--ink);
+        margin-bottom: 0.2rem;
+        letter-spacing: -0.5px;
+    }
+
+    .page-title span {
+        color: #1f2a44;
+    }
+
+    .page-subtitle {
+        color: var(--slate-500);
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stats-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4rem;
+    }
+
+    .stat-card {
+        background: transparent;
+        border-radius: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        box-shadow: none;
+        border: none;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    .icon-total { background: none; color: #10b981; }
+    .icon-approved { background: #ecfdf5; color: #10b981; }
+    .icon-draft { color: #0ea5e9; }
+    .icon-pending { background: #fffbeb; color: #f59e0b; }
+
+    .stat-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--ink);
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: var(--slate-500);
+        font-weight: 500;
+    }
+
+    .search-section {
+        background: transparent;
+        border-radius: var(--radius);
+        padding: 0;
+        margin-bottom: 2rem;
+        box-shadow: none;
+        border: none;
     }
 
     .search-container {
@@ -227,46 +342,46 @@
 
     .search-icon { color: var(--slate-500); }
 
+    .filter-btn {
+        background: white;
+        color: var(--slate-600);
+        border: 1px solid var(--stone-300);
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .filter-btn:hover {
+        background: var(--stone-100);
+    }
+
     .new-trip-btn-search {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        background: #0e7cae;
         color: white;
         border: none;
         padding: 12px 24px;
-        border-radius: 999px;
+        border-radius: 8px;
         font-weight: 600;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
         gap: 8px;
         white-space: nowrap;
-        box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
         text-decoration: none;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .new-trip-btn-search::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s;
-    }
-
-    .new-trip-btn-search:hover::before {
-        left: 100%;
     }
 
     .new-trip-btn-search:hover {
-        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
-        color: white;
+        background: #059669;
+        transform: translateY(-1px);
     }
 
     .bulk-actions {
@@ -377,13 +492,13 @@
     }
 
     .trips-column-headers {
-        background: var(--sky-50);
+        background: #ededed;
         padding: 1rem 1.5rem;
         border-bottom: 1px solid var(--stone-300);
         display: flex;
         align-items: center;
         font-weight: 600;
-        color: var(--slate-600);
+        color: #000000;
         font-size: 0.9rem;
     }
 
@@ -402,30 +517,41 @@
     }
 
     .header-code {
-        width: 120px;
+        width: 80px;
         margin-right: 1rem;
         font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        color: #000000;
     }
 
     .header-info {
         flex: 1;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr 1fr;
         gap: 1rem;
         align-items: center;
+        padding-left: 0.5rem;
     }
 
-    .header-title, .header-dates, .header-status {
+    .header-title, .header-dates, .header-client, .header-email, .header-status {
         font-weight: 600;
         text-align: left;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        color: #000000;
     }
 
     .header-actions {
         display: flex;
         gap: 8px;
-        width: 160px;
-        justify-content: center;
+        width: 180px;
+        justify-content: flex-start;
         font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        color: #000000;
+        margin-left: 1rem;
     }
 
     .select-all-container {
@@ -463,7 +589,7 @@
     }
 
     .trip-code {
-        width: 120px;
+        width: 80px;
         margin-right: 1rem;
         font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
         font-size: 0.85rem;
@@ -510,25 +636,61 @@
     .trip-info {
         flex: 1;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr 1fr;
         gap: 1rem;
         align-items: center;
+        text-align: left;
+        padding-left: 0.5rem;
+    }
+
+    .trip-title-wrapper {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
     }
 
     .trip-title {
-        font-weight: 600;
-        font-size: 1.1rem;
+        font-weight: 700;
+        font-size: 1rem;
         color: var(--ink);
     }
 
-    .trip-dates {
-        color: var(--slate-500);
-        font-size: 0.9rem;
+    .trip-dates-wrapper {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
     }
 
-    .trip-duration {
-        color: var(--slate-500);
+    .trip-dates {
+        color: var(--slate-600);
         font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .trip-duration-sub {
+        color: #9ca3af;
+        font-size: 0.8rem;
+    }
+
+    .trip-client {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--ink);
+    }
+
+    .trip-email {
+        font-size: 10px;
+        color: #10b981;
+        text-align: left;
+    }
+
+    .email-link {
+        color: #10b981;
+        text-decoration: none;
+    }
+
+    .email-link:hover {
+        text-decoration: underline;
     }
 
     .trip-status {
@@ -540,14 +702,17 @@
     }
 
     .status-published { background: #e8f8ff; color: var(--blue-700); }
-    .status-draft { background: #fff7e6; color: #92400e; }
+    .status-draft { background: #e0f2fe; color: var(--blue-700); }
     .status-sent { background: #e6f3ff; color: #1d4ed8; }
-    .status-approved { background: #e8fff5; color: #065f46; }
+    .status-approved { background: #dcfce7; color: #047857; }
     .status-completed { background: #eef2f6; color: #374151; }
 
     .trip-actions {
         display: flex;
         gap: 8px;
+        width: 180px;
+        justify-content: flex-start;
+        margin-left: 1rem;
     }
 
     .action-btn {
@@ -627,23 +792,55 @@
         font-size: 0.9rem;
     }
 
+    .action-icon-btn {
+        background: transparent !important;
+        border: 1px solid var(--stone-300) !important;
+        border-radius: 8px !important;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        color: var(--slate-500) !important;
+        box-shadow: none !important;
+    }
+
+    .action-icon-btn:hover {
+        background: var(--stone-100) !important;
+        color: var(--ink) !important;
+        border-color: #cbd5e1 !important;
+    }
+
+    .btn-danger.action-icon-btn {
+        min-width: 36px;
+    }
+
+    .btn-danger.action-icon-btn:hover {
+        color: #ef4444 !important;
+        background: transparent !important;
+        border-color: #fecaca !important;
+    }
+
     .status-select {
-        padding: 4px 8px;
+        padding: 6px 12px;
         border: 1px solid var(--stone-300);
         border-radius: 999px;
-        font-size: 0.8rem;
-        font-weight: 400;
+        font-size: 11px;
+        font-weight: 500;
         background: white;
         cursor: pointer;
         transition: all 0.2s ease;
-        min-width: 100px;
+        min-width: 110px;
         appearance: none;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-        background-position: right 4px center;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2338bdf8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 8px center;
         background-repeat: no-repeat;
         background-size: 12px;
-        padding-right: 20px;
-        color: var(--slate-500);
+        padding-right: 28px;
+        color: #0e3242;
+        display: flex;
+        align-items: center;
     }
 
     .status-select:focus {
@@ -775,6 +972,10 @@
     }
 
     @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
         .main-content {
             padding: 0 1rem;
         }
@@ -784,7 +985,7 @@
             gap: 1rem;
         }
 
-        .new-trip-btn-search {
+        .new-trip-btn-search, .filter-btn {
             width: 100%;
             justify-content: center;
         }
@@ -794,14 +995,49 @@
         }
 
         .trip-code {
-            width: auto;
-            margin-right: 0.5rem;
-            font-size: 0.8rem;
+            display: none;
         }
 
         .trip-info {
             grid-template-columns: 1fr;
             gap: 0.5rem;
+            text-align: left;
+        }
+
+        .trip-info > div {
+            display: none; /* Hide everything by default in mobile */
+        }
+
+        .trip-info > .trip-title-wrapper,
+        .trip-info > div:last-child { 
+            display: flex; /* Show title and status */
+        }
+
+        .trip-title-wrapper {
+            margin-bottom: 0.25rem;
+        }
+
+        .trip-item {
+            padding: 1rem;
+        }
+
+        .header-actions {
+            width: 100%;
+            justify-content: flex-start;
+            margin-left: 0;
+        }
+
+        .trip-actions {
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            width: 100%;
+            justify-content: flex-start;
+            margin-left: 0;
+        }
+
+        .action-edit-btn {
+            display: none !important;
         }
 
         .trip-actions {
@@ -888,6 +1124,20 @@
         window.location.href = `{{ url('trips') }}/${tripId}/edit`;
     }
 
+    function updateStatCount(status, change) {
+        const iconContainer = document.querySelector(`.icon-${status}`);
+        if(iconContainer) {
+            const statInfo = iconContainer.nextElementSibling;
+            if(statInfo) {
+                const numberDiv = statInfo.querySelector('.stat-number');
+                if(numberDiv) {
+                    let current = parseInt(numberDiv.innerText) || 0;
+                    numberDiv.innerText = current + change;
+                }
+            }
+        }
+    }
+
     function changeTripStatus(tripId, newStatus) {
         fetch(`{{ url('trips') }}/${tripId}/status`, {
             method: 'POST',
@@ -901,16 +1151,23 @@
         .then(data => {
             if (data.success) {
                 showNotification('Estado Actualizado', `El viaje ha cambiado a "${getStatusText(newStatus)}".`);
-                // Update the select element's data-status attribute
+                // Update the select element's data-status attribute and real-time stats
                 const selectElement = document.querySelector(`select[onchange*="${tripId}"]`);
                 if (selectElement) {
+                    const oldStatus = selectElement.getAttribute('data-status');
+                    updateStatCount(oldStatus, -1);
+                    updateStatCount(newStatus, 1);
+
                     selectElement.setAttribute('data-status', newStatus);
+                    selectElement.className = `status-select status-${newStatus}`;
                 }
+            } else {
+                showNotification('Error', data.message || 'No se pudo actualizar el estado del viaje.', 'error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            showNotification('Error', 'No se pudo actualizar el estado del viaje.');
+            showNotification('Error', 'No se pudo actualizar el estado del viaje.', 'error');
         });
     }
 
@@ -1156,88 +1413,141 @@
     }
 
 
-    // Email modal functions
-    let currentTripId = null;
 
-    function openEmailModal(tripId, tripTitle) {
-        currentTripId = tripId;
-        document.getElementById('email-modal-trip-title').textContent = `Enviar "${tripTitle}" por correo`;
-        document.getElementById('email-modal').style.display = 'flex';
-        document.getElementById('email-address').focus();
-        document.getElementById('email-form').reset();
-    }
-
-    function closeEmailModal() {
-        document.getElementById('email-modal').style.display = 'none';
-        currentTripId = null;
-    }
-
-    function sendEmail() {
-        const email = document.getElementById('email-address').value.trim();
-        const message = document.getElementById('email-message').value.trim();
-
-        if (!email) {
-            showNotification('Error', 'Por favor ingresa una dirección de correo válida.');
+    function shareTripIndex(tripId, existingToken) {
+        if (!tripId) {
+            showNotification('Error', 'No se puede compartir este viaje.', 'error');
             return;
         }
 
-        if (!currentTripId) {
-            showNotification('Error', 'No se pudo identificar el viaje.');
+        // Si ya hay token, no necesitamos llamar a la API
+        if (existingToken) {
+            const shareUrl = `${window.location.origin}/share/${existingToken}`;
+            showShareModalIndex(shareUrl);
             return;
         }
 
-        const sendBtn = document.getElementById('send-email-btn');
-        const originalText = sendBtn.innerHTML;
-        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-        sendBtn.disabled = true;
+        const shareBtn = document.querySelector(`.action-icon-btn[onclick*="shareTripIndex(${tripId}"]`);
+        const originalContent = shareBtn ? shareBtn.innerHTML : '';
+        if (shareBtn) {
+            shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            shareBtn.disabled = true;
+        }
 
-        fetch(`{{ url('trips') }}/${currentTripId}/send-email`, {
+        fetch(`{{ url('trips') }}/${tripId}/generate-share-token`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({
-                email: email,
-                message: message
-            })
+            }
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                showNotification('Correo Enviado', 'El enlace del viaje ha sido enviado exitosamente.');
-                closeEmailModal();
+                showShareModalIndex(data.share_url);
             } else {
-                showNotification('Error', data.message || 'No se pudo enviar el correo.');
+                showNotification('Error', data.message || 'Error al generar el enlace', 'error');
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            showNotification('Error', 'Ocurrió un error al enviar el correo.');
+            console.error('Share error:', error);
+            showNotification('Error', 'No se pudo generar el enlace de compartición.', 'error');
         })
         .finally(() => {
-            sendBtn.innerHTML = originalText;
-            sendBtn.disabled = false;
+            if (shareBtn) {
+                shareBtn.innerHTML = originalContent;
+                shareBtn.disabled = false;
+            }
         });
     }
 
-    // Close modal when clicking outside
-    document.addEventListener('DOMContentLoaded', function() {
-        const modal = document.getElementById('email-modal');
-        if (modal) {
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    closeEmailModal();
-                }
-            });
-        }
+    function showShareModalIndex(shareUrl) {
+        const existingModal = document.getElementById('shareModal');
+        if (existingModal) existingModal.remove();
 
-        // Close modal on Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
-                closeEmailModal();
+        const modalHtml = `
+            <div id="shareModal" class="share-modal-overlay" style="
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0, 0, 0, 0.5); display: flex;
+                align-items: center; justify-content: center; z-index: 10000;
+                font-family: 'Inter', sans-serif;
+            ">
+                <div class="share-modal" style="
+                    background: white; border-radius: 16px; padding: 2rem;
+                    max-width: 500px; width: 90%; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+                    position: relative;
+                ">
+                    <div class="share-modal-header" style="text-align: center; margin-bottom: 1.5rem;">
+                        <h3 style="font-size: 1.5rem; font-weight: 700; color: #1f2937; margin: 0 0 0.5rem 0;">Compartir Itinerario</h3>
+                        <p style="color: #6b7280; margin: 0; font-size: 0.9rem;">Copia el enlace para compartir este viaje</p>
+                    </div>
+
+                    <div class="share-modal-body">
+                        <div class="share-url-container" style="margin-bottom: 1.5rem;">
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Enlace de compartición:</label>
+                            <div class="share-url-input-group" style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="shareUrlInput" value="${shareUrl}" readonly style="
+                                    flex: 1; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px;
+                                    font-size: 0.9rem; background: #f9fafb; color: #374151;
+                                    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+                                ">
+                                <button id="copyShareUrlBtn" style="
+                                    padding: 0.75rem 1rem; background: linear-gradient(135deg, #10b981, #059669);
+                                    color: white; border: none; border-radius: 8px; cursor: pointer;
+                                    font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;
+                                ">
+                                    <i class="far fa-copy"></i> Copiar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="share-modal-actions" style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                            <button id="closeShareModalBtn" style="
+                                padding: 0.625rem 1.25rem; background: #f3f4f6; color: #374151;
+                                border: 1px solid #d1d5db; border-radius: 8px; cursor: pointer; font-weight: 500;
+                            ">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        const modal = document.getElementById('shareModal');
+        const urlInput = document.getElementById('shareUrlInput');
+        const copyBtn = document.getElementById('copyShareUrlBtn');
+        const closeBtn = document.getElementById('closeShareModalBtn');
+
+        setTimeout(() => { urlInput.select(); urlInput.focus(); }, 100);
+
+        copyBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(shareUrl);
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                copyBtn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="far fa-copy"></i> Copiar';
+                    copyBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                }, 2000);
+            } catch (error) {
+                urlInput.select(); document.execCommand('copy');
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                copyBtn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="far fa-copy"></i> Copiar';
+                    copyBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                }, 2000);
             }
         });
-    });
+
+        closeBtn.addEventListener('click', () => modal.remove());
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+        document.addEventListener('keydown', function closeOnEscape(e) {
+            if (e.key === 'Escape') {
+                modal.remove(); document.removeEventListener('keydown', closeOnEscape);
+            }
+        });
+    }
 </script>
 @endpush

@@ -30,6 +30,9 @@ class ElementManager {
 
         this.modalManager.closeModal();
         this.showNotification('Elemento Guardado', `${this.getTypeLabel(currentElementType)} guardado correctamente.`);
+
+        // Trigger auto-save of the entire trip
+        document.dispatchEvent(new CustomEvent('saveTripRequested'));
     }
 
     validateForm(data) {

@@ -885,9 +885,11 @@
 
     // Handle day deletion
     document.addEventListener('click', function(e) {
-        if (e.target.closest('[data-action="delete-day"]')) {
-            const button = e.target.closest('[data-action="delete-day"]');
-            const dayNumber = button.dataset.day;
+        const deleteButton = e.target.closest('[data-action="delete-day"]');
+        if (deleteButton) {
+            e.preventDefault(); // Stop form submissions or navigation if it's an a tag
+            e.stopPropagation(); // Stop parent clicks from intercepting
+            const dayNumber = deleteButton.dataset.day;
 
             if (confirm(`¿Estás seguro de que quieres eliminar el Día ${dayNumber}? Se eliminarán todos los elementos contenidos en este día.`)) {
                 deleteDay(dayNumber);

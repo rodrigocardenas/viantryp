@@ -23,7 +23,18 @@ class TripController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Trip::with('user')->where('user_id', Auth::id());
+        $query = Trip::with(['user', 'persons'])->where('user_id', Auth::id());
+
+        // Calculate stats before filtering
+        $allTripsQuery = Trip::where('user_id', Auth::id());
+        $stats = [
+            'total' => (clone $allTripsQuery)->count(),
+            'draft' => (clone $allTripsQuery)->where('status', 'draft')->count(),
+            'sent' => (clone $allTripsQuery)->where('status', 'sent')->count(),
+            'reserved' => (clone $allTripsQuery)->where('status', 'reserved')->count(),
+            'completed' => (clone $allTripsQuery)->where('status', 'completed')->count(),
+            'discarded' => (clone $allTripsQuery)->where('status', 'discarded')->count(),
+        ];
 
         // Apply status filter
         $filter = $request->get('filter', 'all');
@@ -40,14 +51,16 @@ class TripController extends Controller
             'all' => 'Todos los Viajes',
             'draft' => 'Viajes en Diseño',
             'sent' => 'Propuestas Enviadas',
-            'approved' => 'Viajes Aprobados',
-            'completed' => 'Viajes Pasados'
+            'reserved' => 'Viajes Reservados',
+            'completed' => 'Viajes Completados',
+            'discarded' => 'Viajes Descartados'
         ];
 
         return view('trips.index', [
             'trips' => $trips,
             'activeTab' => $filter,
-            'headerTitle' => $headerTitles[$filter] ?? 'Todos los Viajes'
+            'headerTitle' => $headerTitles[$filter] ?? 'Todos los Viajes',
+            'stats' => $stats
         ]);
     }
 
@@ -326,7 +339,7 @@ class TripController extends Controller
         }
 
         $validated = $request->validate([
-            'status' => 'required|in:draft,sent,approved,completed'
+            'status' => 'required|in:draft,sent,reserved,completed,discarded'
         ]);
 
         $trip->update(['status' => $validated['status']]);
@@ -387,14 +400,6 @@ class TripController extends Controller
         else {
             // Load existing trip with user relationship
             $trip = Trip::with('user', 'documents')->findOrFail($tripId);
-
-            // For public preview, ensure the trip is in a shareable state
-            // Allow preview for drafts if the user is authenticated and owns the trip
-            $isOwner = Auth::check() && $trip->user_id === Auth::id();
-            if (!$isOwner && !in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
-                // Only allow preview for trips that have been sent or approved, or for owners in draft
-                abort(404, 'Vista previa no disponible para este viaje.');
-            }
         }
 
         return view('trips.preview', [
@@ -414,11 +419,6 @@ class TripController extends Controller
 
         if (!$trip) {
             abort(404, 'Enlace de compartición no válido o expirado.');
-        }
-
-        // Only allow sharing for trips that have been sent or approved
-        if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
-            abort(404, 'Este viaje no está disponible para compartir.');
         }
 
         return view('trips.preview', [
@@ -546,13 +546,6 @@ class TripController extends Controller
             ], 403);
         }
 
-        // Only allow sharing for trips that have been sent or approved
-        if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Solo puedes compartir viajes que han sido enviados o aprobados.'
-            ], 400);
-        }
 
         $shareUrl = $trip->getShareUrl();
 
@@ -580,10 +573,6 @@ class TripController extends Controller
             abort(403, 'No tienes permiso para descargar este viaje.');
         }
 
-        // Only allow PDF generation for trips that have been sent or approved
-        if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
-            abort(403, 'Solo puedes descargar viajes que han sido enviados o aprobados.');
-        }
 
         $trip->load('user');
 
@@ -611,13 +600,6 @@ class TripController extends Controller
             ], 403);
         }
 
-        // Only allow sending for trips that have been sent or approved
-        if (!in_array($trip->status, [Trip::STATUS_SENT, Trip::STATUS_APPROVED, Trip::STATUS_COMPLETED])) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Solo puedes enviar viajes que han sido enviados o aprobados.'
-            ], 400);
-        }
 
         $validated = $request->validate([
             'email' => 'required|email',

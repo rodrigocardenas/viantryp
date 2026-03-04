@@ -358,11 +358,16 @@
   </ul>
   <div class="nav-right">
     @auth
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 1.25rem;">
             <a href="{{ route('trips.index') }}" class="nav-login">Ir a Mis Viajes</a>
-            <a href="{{ route('trips.index') }}" style="width: 34px; height: 34px; border-radius: 50%; background-color: var(--teal); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; text-decoration: none; border: 2px solid var(--teal-light); transition: transform 0.2s;" title="{{ auth()->user()->name }}" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-            </a>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 0.95rem; font-weight: 600; color: var(--navy);">
+                    {{ auth()->user()->name }}
+                </span>
+                <a href="{{ route('trips.index') }}" style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--teal); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; text-decoration: none; border: 2px solid var(--teal-light); transition: transform 0.2s;" title="Ir a Mis Viajes" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                </a>
+            </div>
         </div>
     @else
         <a href="{{ route('login') }}" class="nav-login">Iniciar sesión</a>

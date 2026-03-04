@@ -27,15 +27,33 @@
                 @endif
             </div>
             <div class="status-badge-container">
-                @if($trip->status === 'approved' || $trip->status === 'completed')
-                    <span class="status-badge confirmed">
-                        <span class="status-dot"></span> CONFIRMADO
-                    </span>
-                @else
-                   <span class="status-badge draft">
-                        <span class="status-dot"></span> BORRADOR
-                    </span>
-                @endif
+                @php
+                    $statusClass = 'draft';
+                    $statusText = 'PROPUESTA';
+                    
+                    switch($trip->status) {
+                        case 'draft':
+                        case 'sent':
+                            $statusClass = 'draft';
+                            $statusText = 'PROPUESTA';
+                            break;
+                        case 'reserved':
+                            $statusClass = 'reserved';
+                            $statusText = 'RESERVADO';
+                            break;
+                        case 'completed':
+                            $statusClass = 'completed';
+                            $statusText = 'COMPLETADO';
+                            break;
+                        case 'discarded':
+                            $statusClass = 'discarded';
+                            $statusText = 'DESCARTADO';
+                            break;
+                    }
+                @endphp
+                <span class="status-badge {{ $statusClass }}">
+                    <span class="status-dot"></span> {{ $statusText }}
+                </span>
             </div>
         </div>
 

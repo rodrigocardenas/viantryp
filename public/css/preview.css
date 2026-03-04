@@ -151,26 +151,55 @@
         flex-shrink: 0;
     }
 
-    .status-badge.confirmed {
+    /* Green for Completado */
+    .status-badge.completed {
         background-color: #f0fdf4;
         color: #16a34a;
         border: 1px solid #bbf7d0;
-    }
-
-    .status-badge.draft {
-        background-color: #fef2f2;
-        color: #dc2626;
-        border: 1px solid #fecaca;
     }
 
     .status-dot {
         width: 6px;
         height: 6px;
         border-radius: 50%;
+        display: inline-block;
+        margin-right: 4px;
+    }
+
+    .status-badge.completed .status-dot {
         background-color: #4ade80;
     }
 
+    /* Orange for Propuesta (draft/sent) */
+    .status-badge.draft {
+        background-color: #fff7ed;
+        color: #ea580c;
+        border: 1px solid #ffedd5;
+    }
+
     .status-badge.draft .status-dot {
+        background-color: #fb923c;
+    }
+
+    /* Yellow for Reservado */
+    .status-badge.reserved {
+        background-color: #fefce8;
+        color: #ca8a04;
+        border: 1px solid #fef08a;
+    }
+
+    .status-badge.reserved .status-dot {
+        background-color: #facc15;
+    }
+
+    /* Red for Descartado */
+    .status-badge.discarded {
+        background-color: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    .status-badge.discarded .status-dot {
         background-color: #f87171;
     }
 

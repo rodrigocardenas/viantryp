@@ -67,13 +67,23 @@
             <div class="auth-section">
                 @auth
                     <!-- User is logged in -->
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="logout-btn">
-                            <i class="fas fa-sign-out-alt"></i>
-                            Log Out
-                        </button>
-                    </form>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;" title="{{ auth()->user()->name }}">
+                            <span style="font-size: 0.95rem; font-weight: 600; color: #ffffff;">
+                                {{ auth()->user()->name }}
+                            </span>
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.2); color: #ffffff; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; border: 1.5px solid rgba(255, 255, 255, 0.4); box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                            </div>
+                        </div>
+                        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                            @csrf
+                            <button type="submit" class="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Salir
+                            </button>
+                        </form>
+                    </div>
                 @else
                     <!-- User is not logged in -->
                     <div class="auth-buttons">
