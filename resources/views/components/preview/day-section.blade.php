@@ -25,8 +25,8 @@
                     $itemDocuments = isset($item['id']) ? $trip->getDocumentsByItemId($item['id']) : collect();
                 @endphp
                 <x-preview.transport-card :item="$item" :trip="$trip" :documents="$itemDocuments" />
-            @else
-                {{-- <x-preview.activity-card :item="$item" :showBadges="false" /> --}}
+            @elseif(in_array($item['type'], ['title', 'paragraph', 'extra']))
+                <x-preview.text-card :item="$item" />
             @endif
         @endforeach
     @else

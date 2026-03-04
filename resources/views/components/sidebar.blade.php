@@ -51,13 +51,13 @@
     <!-- ── DISEÑO ── -->
     @if($showTitle || $showParagraph || $showNote)
     <div class="group">
-      <div class="group-label">Diseño</div>
+      <div class="group-label">Diseño <span style="font-size: 0.7em; font-weight: normal; color: #9ca3af; margin-left: 0.5rem;">(Próximamente)</span></div>
       <div class="group-grid">
         @if($showTitle)
-            <x-sidebar.items.title-item />
+            <x-sidebar.items.title-item :disabled="true" />
         @endif
         @if($showParagraph)
-            <x-sidebar.items.paragraph-item />
+            <x-sidebar.items.paragraph-item :disabled="true" />
         @endif
         @if($showNote)
             <x-sidebar.items.note-item />
@@ -70,10 +70,10 @@
     <!-- ── INFO DEL VIAJE ── -->
     @if($showExtra)
     <div class="group">
-      <div class="group-label">Info del viaje</div>
+      <div class="group-label">Info del viaje <span style="font-size: 0.7em; font-weight: normal; color: #9ca3af; margin-left: 0.5rem;">(Próximamente)</span></div>
       <div class="group-grid">
         @if($showExtra)
-            <x-sidebar.items.extra-item />
+            <x-sidebar.items.extra-item :disabled="true" />
         @endif
       </div>
     </div>

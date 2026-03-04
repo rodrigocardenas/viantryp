@@ -199,6 +199,10 @@ export class ModalManager {
             },
             paragraph: {
                 'content': 'paragraph-content'
+            },
+            extra: {
+                'extra_title': 'extra-title',
+                'extra_content': 'extra-content'
             }
         };
 
@@ -886,6 +890,8 @@ export class ModalManager {
                 return data.content || 'Título nuevo';
             case 'paragraph':
                 return 'Párrafo de texto';
+            case 'extra':
+                return data.extra_title || 'Información Extra';
             default:
                 return 'Elemento';
         }
@@ -908,6 +914,8 @@ export class ModalManager {
             case 'title':
             case 'paragraph':
                 return '';
+            case 'extra':
+                return data.extra_content ? (data.extra_content.substring(0, 30) + '...') : '';
             default:
                 return '';
         }

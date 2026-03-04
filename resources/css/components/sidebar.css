@@ -134,3 +134,22 @@
         max-height: 200px;
     }
 }
+
+/* Disabled Elements styles */
+.drag-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+}
+
+.drag-card.disabled:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: #e9ecef;
+}
+
+.drag-card.disabled:active {
+    cursor: not-allowed;
+    transform: none;
+}

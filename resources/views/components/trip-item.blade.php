@@ -2,11 +2,11 @@
     $itemId = 'item-' . uniqid();
 @endphp
 
-<div class="timeline-item type-{{ $item->type }}" id="{{ $itemId }}" data-type="{{ $item->type }}" @foreach($item->data as $key => $value) @if($key !== 'note_content' && $key !== 'content') data-{{ str_replace('_', '-', $key) }}="{{ is_array($value) ? json_encode($value) : $value }}" @endif @endforeach>
+<div class="timeline-item type-{{ $item->type }}" id="{{ $itemId }}" data-type="{{ $item->type }}" @foreach($item->data as $key => $value) @if($key !== 'note_content' && $key !== 'content' && $key !== 'extra_content') data-{{ str_replace('_', '-', $key) }}="{{ is_array($value) ? json_encode($value) : $value }}" @endif @endforeach>
     
     @if($item->type === 'title')
         <div class="item-header simple-text title-element">
-            <h2 class="element-content-display">{!! nl2br(htmlspecialchars($item->data['content'] ?? 'Título nuevo')) !!}</h2>
+            <h2 class="element-content-display">{!! nl2br(htmlspecialchars($item->data['content'] ?? $item->data['title_content'] ?? 'Título nuevo')) !!}</h2>
             <div class="item-actions hover-only">
                 <button class="action-btn" data-action="edit-element" title="Editar">
                     <i class="fas fa-edit"></i>
@@ -19,6 +19,21 @@
     @elseif($item->type === 'paragraph')
         <div class="item-header simple-text paragraph-element">
             <p class="element-content-display">{!! nl2br(htmlspecialchars($item->data['content'] ?? 'Párrafo nuevo')) !!}</p>
+            <div class="item-actions hover-only">
+                <button class="action-btn" data-action="edit-element" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn btn-danger" data-action="delete-element" title="Eliminar">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    @elseif($item->type === 'extra')
+        <div class="item-header simple-text extra-element">
+            <div class="element-content-display">
+                <h3 style="margin: 0 0 5px 0; color: #0d3b4c; font-size: 16px;">{!! htmlspecialchars($item->data['extra_title'] ?? 'Información Extra') !!}</h3>
+                <p style="margin: 0; color: #4B5563; font-size: 14px;">{!! nl2br(htmlspecialchars($item->data['extra_content'] ?? '...')) !!}</p>
+            </div>
             <div class="item-actions hover-only">
                 <button class="action-btn" data-action="edit-element" title="Editar">
                     <i class="fas fa-edit"></i>
@@ -85,14 +100,14 @@
         transition: all 0.3s ease;
     }
 
-    .timeline-item.type-title, .timeline-item.type-paragraph {
+    .timeline-item.type-title, .timeline-item.type-paragraph, .timeline-item.type-extra {
         border: none;
         background: transparent;
         box-shadow: none;
         margin-bottom: 0.5rem;
     }
     
-    .timeline-item.type-title:hover, .timeline-item.type-paragraph:hover {
+    .timeline-item.type-title:hover, .timeline-item.type-paragraph:hover, .timeline-item.type-extra:hover {
         background: rgba(0, 0, 0, 0.02);
         box-shadow: none;
     }
