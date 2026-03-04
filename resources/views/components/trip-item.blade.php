@@ -8,11 +8,11 @@
         <div class="item-header simple-text title-element">
             <h2 class="element-content-display">{!! nl2br(htmlspecialchars($item->data['content'] ?? $item->data['title_content'] ?? 'Título nuevo')) !!}</h2>
             <div class="item-actions hover-only">
-                <button class="action-btn" data-action="edit-element" title="Editar">
-                    <i class="fas fa-edit"></i>
+                <button class="action-btn-outline" data-action="edit-element" title="Editar">
+                    <i class="far fa-edit"></i>
                 </button>
-                <button class="action-btn btn-danger" data-action="delete-element" title="Eliminar">
-                    <i class="fas fa-trash"></i>
+                <button class="action-btn-outline text-danger" data-action="delete-element" title="Eliminar">
+                    <i class="far fa-trash-alt"></i>
                 </button>
             </div>
         </div>
@@ -20,11 +20,11 @@
         <div class="item-header simple-text paragraph-element">
             <p class="element-content-display">{!! nl2br(htmlspecialchars($item->data['content'] ?? 'Párrafo nuevo')) !!}</p>
             <div class="item-actions hover-only">
-                <button class="action-btn" data-action="edit-element" title="Editar">
-                    <i class="fas fa-edit"></i>
+                <button class="action-btn-outline" data-action="edit-element" title="Editar">
+                    <i class="far fa-edit"></i>
                 </button>
-                <button class="action-btn btn-danger" data-action="delete-element" title="Eliminar">
-                    <i class="fas fa-trash"></i>
+                <button class="action-btn-outline text-danger" data-action="delete-element" title="Eliminar">
+                    <i class="far fa-trash-alt"></i>
                 </button>
             </div>
         </div>
@@ -35,18 +35,21 @@
                 <p style="margin: 0; color: #4B5563; font-size: 14px;">{!! nl2br(htmlspecialchars($item->data['extra_content'] ?? '...')) !!}</p>
             </div>
             <div class="item-actions hover-only">
-                <button class="action-btn" data-action="edit-element" title="Editar">
-                    <i class="fas fa-edit"></i>
+                <button class="action-btn-outline" data-action="edit-element" title="Editar">
+                    <i class="far fa-edit"></i>
                 </button>
-                <button class="action-btn btn-danger" data-action="delete-element" title="Eliminar">
-                    <i class="fas fa-trash"></i>
+                <button class="action-btn-outline text-danger" data-action="delete-element" title="Eliminar">
+                    <i class="far fa-trash-alt"></i>
                 </button>
             </div>
         </div>
     @else
         <div class="item-header">
+            <div class="drag-handle" title="Arrastrar para reordenar">
+                <i class="fas fa-grip-vertical"></i>
+            </div>
             <div class="item-icon {{ $item->getIconClass() }}">
-                <i class="{{ $item->getIcon() }}"></i>
+                {!! $item->getIcon() !!}
             </div>
             <div class="item-info">
                 <div class="item-type">{{ $item->getTypeLabel() }}</div>
@@ -54,11 +57,11 @@
                 <div class="item-subtitle">{!! $item->getSubtitle() !!}</div>
             </div>
             <div class="item-actions">
-                <button class="action-btn" data-action="edit-element" title="Editar">
-                    <i class="fas fa-edit"></i>
+                <button class="action-btn-outline" data-action="edit-element" title="Editar">
+                    <i class="far fa-edit"></i>
                 </button>
-                <button class="action-btn btn-danger" data-action="delete-element" title="Eliminar">
-                    <i class="fas fa-trash"></i>
+                <button class="action-btn-outline text-danger" data-action="delete-element" title="Eliminar">
+                    <i class="far fa-trash-alt"></i>
                 </button>
             </div>
         </div>
@@ -91,12 +94,6 @@
 
 <style>
     .timeline-item {
-        background: white;
-        border: 1px solid var(--stone-300);
-        border-radius: 12px;
-        margin-bottom: 1.5rem;
-        overflow: hidden;
-        box-shadow: var(--shadow-soft);
         transition: all 0.3s ease;
     }
 
@@ -112,17 +109,7 @@
         box-shadow: none;
     }
 
-    .timeline-item:hover {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        transform: translateY(-1px);
-    }
-
     .item-header {
-        padding: 1.5rem;
-        border-bottom: 1px solid var(--stone-300);
-        display: flex;
-        align-items: center;
-        gap: 1rem;
         position: relative;
     }
 
@@ -145,105 +132,5 @@
 
     .element-content-display {
         margin: 0;
-    }
-
-    .title-element h2 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--ink);
-    }
-
-    .paragraph-element p {
-        font-size: 1rem;
-        color: var(--slate-600);
-        line-height: 1.6;
-    }
-
-    .item-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.2rem;
-    }
-
-    .icon-flight {
-        background: var(--blue-700);
-    }
-
-    .icon-hotel {
-        background: #FF6B6B;
-    }
-
-    .icon-activity {
-        background: #22c55e;
-    }
-
-    .icon-transport {
-        background: #a78bfa;
-    }
-
-    .icon-note {
-        background: #fb923c;
-    }
-
-    .item-info {
-        flex: 1;
-    }
-
-    .item-type {
-        font-size: 0.8rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--slate-500);
-        margin-bottom: 0.25rem;
-    }
-
-    .item-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: var(--ink);
-        margin-bottom: 0.25rem;
-    }
-
-    .item-subtitle {
-        color: var(--slate-500);
-        font-size: 0.9rem;
-    }
-
-    .item-actions {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .action-btn {
-        padding: 0.5rem;
-        border: 1px solid var(--stone-300);
-        border-radius: 6px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        color: var(--slate-500);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-    }
-
-    .action-btn:hover {
-        background: var(--sky-50);
-        border-color: var(--blue-700);
-        color: var(--blue-700);
-    }
-
-    .action-btn.btn-danger:hover {
-        background: #fef2f2;
-        border-color: var(--danger);
-        color: var(--danger);
     }
 </style>

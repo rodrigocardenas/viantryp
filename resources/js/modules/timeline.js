@@ -171,7 +171,7 @@ export class TimelineManager {
         elementDiv.innerHTML = `
             <div class="item-header">
                 <div class="item-icon ${iconClass}">
-                    <i class="${icon}"></i>
+                    ${icon}
                 </div>
                 <div class="item-info">
                     <div class="item-type">${this.getTypeLabel(data.type)}</div>
@@ -220,18 +220,18 @@ export class TimelineManager {
 
     getIcon(type) {
         const iconMap = {
-            'flight': 'fas fa-plane',
-            'hotel': 'fas fa-bed',
-            'activity': 'fas fa-map-marker-alt',
-            'transport': 'fas fa-car',
-            'note': 'fas fa-sticky-note',
-            'summary': 'fas fa-list-check',
-            'total': 'fas fa-dollar-sign'
+            'flight': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>',
+            'hotel': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+            'activity': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+            'transport': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
+            'note': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>',
+            'summary': '<i class="fas fa-list-check" style="font-size: 1.25em;"></i>',
+            'total': '<i class="fas fa-dollar-sign" style="font-size: 1.25em;"></i>'
         };
-        return iconMap[type] || 'fas fa-sticky-note';
+        return iconMap[type] || iconMap['note'];
     }
 
-    getTypeLabel(type) {
+    getTypeLabel(type, data = null) {
         const labels = {
             'flight': 'Vuelo',
             'hotel': 'Hotel',
@@ -246,57 +246,94 @@ export class TimelineManager {
 
     getElementTitle(data) {
         switch (data.type) {
-            case 'flight':
-                return `${data.airline_id || 'Vuelo'} ${data.flight_number || ''}`.trim();
+            case 'flight': {
+                const dep = data.departure_airport || '';
+                const arr = data.arrival_airport || '';
+                if (dep && arr) return `${dep} → ${arr}`;
+                return dep || arr || data.airline_id || 'Vuelo';
+            }
             case 'hotel':
                 return data.hotel_name || 'Hotel';
             case 'activity':
                 return data.activity_title || 'Actividad';
-            case 'transport':
-                return data.transport_type || 'Traslado';
+            case 'transport': {
+                const from = data.pickup_location || '';
+                const to = data.destination || '';
+                if (from && to) return `${from} → ${to}`;
+                return from || to || data.transport_type || 'Traslado';
+            }
             case 'note':
                 return data.note_title || 'Nota';
             case 'summary':
                 return data.summary_title || 'Resumen de Itinerario';
-            case 'total':
+            case 'total': {
                 const currencySymbols = {
-                    'USD': '$',
-                    'EUR': '€',
-                    'CLP': '$',
-                    'ARS': '$',
-                    'PEN': 'S/',
-                    'COP': '$',
-                    'MXN': '$'
+                    'USD': '$', 'EUR': '€', 'CLP': '$',
+                    'ARS': '$', 'PEN': 'S/', 'COP': '$', 'MXN': '$'
                 };
                 const symbol = currencySymbols[data.currency] || data.currency || '$';
                 const amount = data.total_amount || '0.00';
                 return `${symbol}${parseFloat(amount).toFixed(2)} ${data.currency || 'USD'}`;
+            }
             default:
                 return 'Elemento';
         }
     }
 
+    formatDateEs(dateString, includeTime = true) {
+        if (!dateString) return '';
+        try {
+            if (/^\d{2}:\d{2}$/.test(dateString)) return dateString;
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            const options = { day: 'numeric', month: 'short' };
+            if (includeTime && dateString.includes('T')) {
+                options.hour = '2-digit';
+                options.minute = '2-digit';
+            }
+            return date.toLocaleDateString('es-ES', options).replace(',', '.');
+        } catch (e) {
+            return dateString;
+        }
+    }
+
     getElementSubtitle(data) {
         switch (data.type) {
-            case 'flight':
-                const departureInfo = `${data.departure_airport || ''} ${data.departure_time || ''}`.trim();
-                const arrivalInfo = `${data.arrival_airport || ''} ${data.arrival_time || ''}`.trim();
-                if (departureInfo && arrivalInfo) {
-                    return `${departureInfo} → ${arrivalInfo}`;
-                }
-                return departureInfo || arrivalInfo || '';
-            case 'hotel':
-                return `${data.check_in || ''} - ${data.check_out || ''}`.replace(' - ', '');
-            case 'activity':
-                return data.location || '';
-            case 'transport':
-                return `${data.pickup_location || ''} → ${data.destination || ''}`.replace(' → ', '');
+            case 'flight': {
+                const depDate = this.formatDateEs(data.departure_datetime, true);
+                const arrDate = this.formatDateEs(data.arrival_datetime, true);
+                if (depDate && arrDate) return `${depDate} → ${arrDate}`;
+                return depDate || arrDate;
+            }
+            case 'hotel': {
+                const checkin = this.formatDateEs(data.check_in, false);
+                const checkout = this.formatDateEs(data.check_out, false);
+                if (checkin && checkout) return `${checkin} - ${checkout}`;
+                return checkin || checkout;
+            }
+            case 'activity': {
+                const start = this.formatDateEs(data.start_datetime, true);
+                const loc = data.location || '';
+                if (start && loc) return `${start} | ${loc}`;
+                return start || loc;
+            }
+            case 'transport': {
+                const pickDate = this.formatDateEs(data.pickup_datetime, true);
+                const arrTransDate = this.formatDateEs(data.arrival_datetime, true);
+                if (pickDate && arrTransDate) return `${pickDate} → ${arrTransDate}`;
+                return pickDate || arrTransDate;
+            }
             case 'summary':
                 return 'Resumen automático del viaje';
             case 'total':
                 return data.price_breakdown || 'Precio total del viaje';
             case 'note':
-                return data.note_content || '';
+                const content = data.note_content || '';
+                // Simple plain text extraction and truncation
+                const div = document.createElement('div');
+                div.innerHTML = content;
+                const text = div.textContent || div.innerText || '';
+                return text.length > 50 ? text.substring(0, 50) + '...' : text;
             default:
                 return '';
         }
@@ -315,9 +352,23 @@ export class TimelineManager {
         // La fecha del día debe ser la ingresada por el usuario (o sin fecha).
 
         dayCard.innerHTML = `
-            <div class="day-header">
-                <h3>Día ${newDayNumber}</h3>
-                <p class="day-date">${dayDate}</p>
+            <div class="day-header" style="justify-content: space-between; display: flex; align-items: flex-start;">
+                <div class="day-title-section">
+                    <div class="day-title-row">
+                        <h3>DÍA ${newDayNumber}</h3>
+                        <span class="day-separator">|</span>
+                        <input type="date" id="day-${newDayNumber}-date" class="day-date-input-large" value="" data-day="${newDayNumber}">
+                    </div>
+                    <p class="day-date-display" id="day-${newDayNumber}-date-display">${dayDate}</p>
+                </div>
+                <div class="day-actions">
+                    <button class="action-btn-outline" data-action="copy-day" data-day="${newDayNumber}" title="Copiar día">
+                        <i class="far fa-copy"></i>
+                    </button>
+                    <button class="action-btn-outline text-danger" data-action="delete-day" data-day="${newDayNumber}" title="Eliminar día">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
+                </div>
             </div>
             <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <div class="add-element-btn" data-action="add-element" data-day="${newDayNumber}">

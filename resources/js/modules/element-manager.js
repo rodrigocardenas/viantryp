@@ -19,10 +19,10 @@ class ElementManager {
             return;
         }
 
-        // If editing existing element
-        if (this.currentElementData && this.currentElementData.title && this.currentElementData.title !== '') {
-            // Update existing element
-            this.updateExistingElement(formData);
+        // Check if we are editing (using the isEditing flag in ModalManager)
+        if (this.modalManager.isEditing && this.modalManager.editingElement) {
+            // Update existing element with new data
+            this.updateExistingElement(formData, this.modalManager.editingElement);
         } else {
             // Create new element
             this.timelineManager.addElementToDay(formData);
@@ -54,11 +54,11 @@ class ElementManager {
 
         inputs.forEach(input => {
             if (input.type === 'checkbox') {
-                data[input.id.replace('-', '_')] = input.checked;
+                data[input.id.replace(/-/g, '_')] = input.checked;
             } else if (input.type === 'file') {
                 // Skip file inputs, handled separately
             } else if (input.value.trim()) {
-                data[input.id.replace('-', '_')] = input.value.trim();
+                data[input.id.replace(/-/g, '_')] = input.value.trim();
             }
         });
 
@@ -93,33 +93,45 @@ class ElementManager {
         return data;
     }
 
-    updateExistingElement(newData) {
-        // Find the existing element to update
-        const allItems = document.querySelectorAll('.timeline-item');
-        let elementToUpdate = null;
+    updateExistingElement(newData, elementDiv) {
+        if (!elementDiv) {
+            // Fallback: find by current title/type match
+            const allItems = document.querySelectorAll('.timeline-item');
+            allItems.forEach(item => {
+                const titleEl = item.querySelector('.item-title');
+                if (titleEl && item.getAttribute('data-type') === this.currentElementData.type) {
+                    elementDiv = item;
+                }
+            });
+        }
 
-        allItems.forEach(item => {
-            const itemData = this.extractItemDataForDisplay(item);
-            if (itemData && itemData.title === this.currentElementData.title && itemData.type === this.currentElementData.type) {
-                elementToUpdate = item;
+        if (!elementDiv) return;
+
+        // Update ALL data-* attributes with the new form data
+        Object.keys(newData).forEach(key => {
+            if (key === 'type' || key === 'day') return;
+            let value = newData[key];
+            if (typeof value === 'object' && value !== null) {
+                value = JSON.stringify(value);
+            }
+            if (value !== undefined && value !== null && value !== '') {
+                elementDiv.setAttribute(`data-${key.replace(/_/g, '-')}`, value);
             }
         });
 
-        if (elementToUpdate) {
-            // Update the element's content
-            const titleElement = elementToUpdate.querySelector('.item-title');
-            const subtitleElement = elementToUpdate.querySelector('.item-subtitle');
+        // Update visible text (title and subtitle)
+        const titleElement = elementDiv.querySelector('.item-title');
+        const subtitleElement = elementDiv.querySelector('.item-subtitle');
 
-            if (titleElement) {
-                titleElement.textContent = this.getElementTitle(newData);
-            }
-            if (subtitleElement) {
-                subtitleElement.textContent = this.getElementSubtitle(newData);
-            }
-
-            // Update summaries
-            this.summaryManager.updateAllSummaries();
+        if (titleElement) {
+            titleElement.textContent = this.getElementTitle(newData);
         }
+        if (subtitleElement) {
+            subtitleElement.textContent = this.getElementSubtitle(newData);
+        }
+
+        // Update summaries
+        this.summaryManager.updateAllSummaries();
     }
 
     extractItemDataForDisplay(item) {
@@ -138,51 +150,86 @@ class ElementManager {
 
     getElementTitle(data) {
         switch (data.type) {
-            case 'flight':
-                return `${data.airline || 'Vuelo'} ${data.flight_number || ''}`.trim();
+            case 'flight': {
+                const dep = data.departure_airport || '';
+                const arr = data.arrival_airport || '';
+                if (dep && arr) return `${dep} → ${arr}`;
+                return dep || arr || data.airline || 'Vuelo';
+            }
             case 'hotel':
                 return data.hotel_name || 'Hotel';
             case 'activity':
                 return data.activity_title || 'Actividad';
-            case 'transport':
-                return data.transport_type || 'Traslado';
+            case 'transport': {
+                const from = data.pickup_location || '';
+                const to = data.destination || '';
+                if (from && to) return `${from} → ${to}`;
+                return from || to || data.transport_type || 'Traslado';
+            }
             case 'note':
                 return data.note_title || 'Nota';
             case 'summary':
                 return data.summary_title || 'Resumen de Itinerario';
-            case 'total':
+            case 'total': {
                 const currencySymbols = {
-                    'USD': '$',
-                    'EUR': '€',
-                    'CLP': '$',
-                    'ARS': '$',
-                    'PEN': 'S/',
-                    'COP': '$',
-                    'MXN': '$'
+                    'USD': '$', 'EUR': '€', 'CLP': '$',
+                    'ARS': '$', 'PEN': 'S/', 'COP': '$', 'MXN': '$'
                 };
                 const symbol = currencySymbols[data.currency] || data.currency || '$';
                 const amount = data.total_amount || '0.00';
                 return `${symbol}${parseFloat(amount).toFixed(2)} ${data.currency || 'USD'}`;
+            }
             default:
                 return 'Elemento';
         }
     }
 
+    formatDateEs(dateString, includeTime = true) {
+        if (!dateString) return '';
+        try {
+            // Check if string contains only time (e.g., "14:30")
+            if (/^\d{2}:\d{2}$/.test(dateString)) return dateString;
+
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+
+            const options = { day: 'numeric', month: 'short' };
+            if (includeTime && dateString.includes('T')) {
+                options.hour = '2-digit';
+                options.minute = '2-digit';
+            }
+            return date.toLocaleDateString('es-ES', options).replace(',', '.');
+        } catch (e) {
+            return dateString;
+        }
+    }
+
     getElementSubtitle(data) {
         switch (data.type) {
-            case 'flight':
-                const departureInfo = `${data.departure_airport || ''} ${data.departure_time || ''}`.trim();
-                const arrivalInfo = `${data.arrival_airport || ''} ${data.arrival_time || ''}`.trim();
-                if (departureInfo && arrivalInfo) {
-                    return `${departureInfo} → ${arrivalInfo}`;
-                }
-                return departureInfo || arrivalInfo || '';
-            case 'hotel':
-                return `${data.check_in || ''} - ${data.check_out || ''}`.replace(' - ', '');
-            case 'activity':
-                return data.location || '';
-            case 'transport':
-                return `${data.pickup_location || ''} → ${data.destination || ''}`.replace(' → ', '');
+            case 'flight': {
+                const depDate = this.formatDateEs(data.departure_datetime, true);
+                const arrDate = this.formatDateEs(data.arrival_datetime, true);
+                if (depDate && arrDate) return `${depDate} → ${arrDate}`;
+                return depDate || arrDate;
+            }
+            case 'hotel': {
+                const checkin = this.formatDateEs(data.check_in, false);
+                const checkout = this.formatDateEs(data.check_out, false);
+                if (checkin && checkout) return `${checkin} - ${checkout}`;
+                return checkin || checkout;
+            }
+            case 'activity': {
+                const start = this.formatDateEs(data.start_datetime, true);
+                const loc = data.location || '';
+                if (start && loc) return `${start} | ${loc}`;
+                return start || loc;
+            }
+            case 'transport': {
+                const pickDate = this.formatDateEs(data.pickup_datetime, true);
+                const arrTransDate = this.formatDateEs(data.arrival_datetime, true);
+                if (pickDate && arrTransDate) return `${pickDate} → ${arrTransDate}`;
+                return pickDate || arrTransDate;
+            }
             case 'summary':
                 return 'Resumen automático del viaje';
             case 'total':

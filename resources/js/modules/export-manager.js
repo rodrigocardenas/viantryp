@@ -360,27 +360,26 @@ class ExportManager {
     }
 
     extractItemData(itemElement, dayNumber) {
-        const itemType = itemElement.querySelector('.item-type')?.textContent?.toLowerCase();
+        // Use data-type attribute (canonical: 'flight', 'hotel', etc.) as primary source
+        const dataType = itemElement.getAttribute('data-type')?.toLowerCase() || '';
+        const labelType = itemElement.querySelector('.item-type')?.textContent?.toLowerCase() || '';
+        const resolvedType = dataType || labelType.replace('elemento', '').trim();
 
-        if (!itemType) return null;
+        if (!resolvedType) return null;
 
         const baseData = {
-            type: itemType.replace('elemento', '').trim().toLowerCase(),
+            type: resolvedType,
             day: dayNumber
         };
 
-        console.log('Extracting item data for type:', baseData.type, 'from element:', itemElement);
-        console.log('Element data attributes:', {
-            'data-temp-id': itemElement.getAttribute('data-temp-id'),
-            'data-airline-name': itemElement.getAttribute('data-airline-name'),
-            'data-hotel-name': itemElement.getAttribute('data-hotel-name')
-        });
+        console.log('Extracting item data for type:', resolvedType, 'from element:', itemElement);
 
         // Extract data based on item type
-        switch (baseData.type) {
+        switch (resolvedType) {
+            case 'flight':
             case 'vuelo':
-                let departureAirport = itemElement.getAttribute('data-departure-airport') || itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[0] || '';
-                let arrivalAirport = itemElement.getAttribute('data-arrival-airport') || itemElement.querySelector('.item-subtitle')?.textContent?.split(' → ')[1] || '';
+                let departureAirport = itemElement.getAttribute('data-departure-airport') || '';
+                let arrivalAirport = itemElement.getAttribute('data-arrival-airport') || '';
 
                 // Handle case where airports might be concatenated
                 if (departureAirport && arrivalAirport === '' && departureAirport.includes('→')) {
@@ -394,15 +393,10 @@ class ExportManager {
                 return {
                     ...baseData,
                     type: 'flight',
-                    airline_id: itemElement.getAttribute('data-airline-id') || itemElement.querySelector('.item-title')?.textContent?.split(' ')[0] || '',
                     airline_name: itemElement.getAttribute('data-airline-name') || '',
-                    flight_number: itemElement.getAttribute('data-flight-number') || itemElement.querySelector('.item-title')?.textContent?.split(' ')[1] || '',
+                    flight_number: itemElement.getAttribute('data-flight-number') || '',
                     departure_airport: departureAirport,
                     arrival_airport: arrivalAirport,
-                    departure_time: itemElement.getAttribute('data-departure-time') || '',
-                    arrival_time: itemElement.getAttribute('data-arrival-time') || '',
-                    departure_date: itemElement.getAttribute('data-departure-date') || '',
-                    arrival_date: itemElement.getAttribute('data-arrival-date') || '',
                     departure_datetime: itemElement.getAttribute('data-departure-datetime') || '',
                     arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || '',
                     departure_city: itemElement.getAttribute('data-departure-city') || '',
@@ -428,19 +422,15 @@ class ExportManager {
                     temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
-            case 'actividad':
             case 'activity':
+            case 'actividad':
                 return {
                     ...baseData,
                     type: 'activity',
                     activity_title: itemElement.getAttribute('data-activity-title') || itemElement.querySelector('.item-title')?.textContent || '',
-                    location: itemElement.getAttribute('data-location') || itemElement.querySelector('.item-subtitle')?.textContent || '',
+                    location: itemElement.getAttribute('data-location') || '',
                     start_datetime: itemElement.getAttribute('data-start-datetime') || '',
                     end_datetime: itemElement.getAttribute('data-end-datetime') || '',
-                    start_date: itemElement.getAttribute('data-start-date') || '',
-                    start_time: itemElement.getAttribute('data-start-time') || '',
-                    end_date: itemElement.getAttribute('data-end-date') || '',
-                    end_time: itemElement.getAttribute('data-end-time') || '',
                     description: itemElement.getAttribute('data-description') || '',
                     place_id: itemElement.getAttribute('data-place-id') || '',
                     location_data: itemElement.getAttribute('data-location-data') ? JSON.parse(itemElement.getAttribute('data-location-data')) : null,
@@ -453,6 +443,7 @@ class ExportManager {
                     temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
+            case 'transport':
             case 'traslado':
             case 'transporte':
                 return {
@@ -466,17 +457,18 @@ class ExportManager {
                     temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
+            case 'note':
             case 'nota':
                 return {
                     ...baseData,
                     type: 'note',
                     note_title: itemElement.querySelector('.item-title')?.textContent || '',
-                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.textContent || '',
+                    note_content: itemElement.dataset.noteContent || '',
                     temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
-            case 'título':
             case 'title':
+            case 'título':
                 return {
                     ...baseData,
                     type: 'title',
@@ -484,8 +476,8 @@ class ExportManager {
                     temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
-            case 'párrafo':
             case 'paragraph':
+            case 'párrafo':
                 return {
                     ...baseData,
                     type: 'paragraph',
@@ -498,7 +490,7 @@ class ExportManager {
                     ...baseData,
                     type: 'note',
                     note_title: itemElement.querySelector('.item-title')?.textContent || 'Elemento',
-                    note_content: itemElement.dataset.noteContent || itemElement.querySelector('.item-subtitle')?.textContent || '',
+                    note_content: itemElement.dataset.noteContent || '',
                     temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
         }

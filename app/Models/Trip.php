@@ -533,16 +533,16 @@ class TripItem
     public function getIcon(): string
     {
         $iconMap = [
-            'flight' => 'fas fa-plane',
-            'hotel' => 'fas fa-bed',
-            'activity' => 'fas fa-map-marker-alt',
-            'transport' => 'fas fa-car',
-            'note' => 'fas fa-sticky-note',
-            'title' => 'fas fa-heading',
-            'paragraph' => 'fas fa-paragraph'
+            'flight' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>',
+            'hotel' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+            'activity' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+            'transport' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
+            'note' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>',
+            'title' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><path d="M4 12h16M4 6h16M4 18h16"/></svg>',
+            'paragraph' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><path d="M21 6H3M21 12H3M21 18H3"/></svg>'
         ];
 
-        return $iconMap[$this->type] ?? 'fas fa-sticky-note';
+        return $iconMap[$this->type] ?? $iconMap['note'];
     }
 
     public function getTypeLabel(): string
@@ -564,15 +564,21 @@ class TripItem
     {
         switch ($this->type) {
             case 'flight':
-                $airline = $this->data['airline'] ?? '';
-                $flightNumber = $this->data['flight_number'] ?? '';
-                return trim("{$airline} {$flightNumber}");
+                $dep = $this->data['departure_airport'] ?? '';
+                $arr = $this->data['arrival_airport'] ?? '';
+                if ($dep && $arr)
+                    return "{$dep} → {$arr}";
+                return $dep ?: ($arr ?: ($this->data['airline'] ?? 'Vuelo'));
             case 'hotel':
                 return $this->data['hotel_name'] ?? 'Hotel';
             case 'activity':
                 return $this->data['activity_title'] ?? 'Actividad';
             case 'transport':
-                return $this->data['transport_type'] ?? 'Transporte';
+                $from = $this->data['pickup_location'] ?? '';
+                $to = $this->data['destination'] ?? '';
+                if ($from && $to)
+                    return "{$from} → {$to}";
+                return $from ?: ($to ?: ($this->data['transport_type'] ?? 'Traslado'));
             case 'note':
                 return $this->data['note_title'] ?? 'Nota';
             case 'title':
@@ -589,19 +595,29 @@ class TripItem
     {
         switch ($this->type) {
             case 'flight':
-                $departure = $this->data['departure_airport'] ?? '';
-                $arrival = $this->data['arrival_airport'] ?? '';
-                return trim("{$departure} → {$arrival}");
+                $depDate = isset($this->data['departure_datetime']) ?\Carbon\Carbon::parse($this->data['departure_datetime'])->translatedFormat('j \d\e M. H:i') : '';
+                $arrDate = isset($this->data['arrival_datetime']) ?\Carbon\Carbon::parse($this->data['arrival_datetime'])->translatedFormat('j \d\e M. H:i') : '';
+                if ($depDate && $arrDate)
+                    return "{$depDate} → {$arrDate}";
+                return $depDate ?: $arrDate;
             case 'hotel':
-                $checkin = $this->data['check_in'] ?? '';
-                $checkout = $this->data['check_out'] ?? '';
-                return trim("{$checkin} - {$checkout}");
+                $checkin = isset($this->data['check_in']) ?\Carbon\Carbon::parse($this->data['check_in'])->translatedFormat('j \d\e M.') : '';
+                $checkout = isset($this->data['check_out']) ?\Carbon\Carbon::parse($this->data['check_out'])->translatedFormat('j \d\e M.') : '';
+                if ($checkin && $checkout)
+                    return "{$checkin} - {$checkout}";
+                return $checkin ?: $checkout;
             case 'activity':
-                return $this->data['location'] ?? '';
+                $location = $this->data['location'] ?? '';
+                $start = isset($this->data['start_datetime']) ?\Carbon\Carbon::parse($this->data['start_datetime'])->translatedFormat('j \d\e M. H:i') : '';
+                if ($start && $location)
+                    return "{$start} | {$location}";
+                return $start ?: $location;
             case 'transport':
-                $pickup = $this->data['pickup_location'] ?? '';
-                $destination = $this->data['destination'] ?? '';
-                return trim("{$pickup} → {$destination}");
+                $pickDate = isset($this->data['pickup_datetime']) ?\Carbon\Carbon::parse($this->data['pickup_datetime'])->translatedFormat('j \d\e M. H:i') : '';
+                $arrDate2 = isset($this->data['arrival_datetime']) ?\Carbon\Carbon::parse($this->data['arrival_datetime'])->translatedFormat('j \d\e M. H:i') : '';
+                if ($pickDate && $arrDate2)
+                    return "{$pickDate} → {$arrDate2}";
+                return $pickDate ?: $arrDate2;
             case 'note':
                 // Return plain text preview (strip HTML tags)
                 $noteContent = $this->data['note_content'] ?? '';

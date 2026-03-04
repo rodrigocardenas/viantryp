@@ -111,9 +111,6 @@
     @if(isset($trip) && $trip->days && count($trip->days) > 0)
         @foreach($trip->days as $day)
             <div class="day-card" data-day="{{ $day->day }}">
-                <button class="btn-delete-day-absolute" data-action="delete-day" data-day="{{ $day->day }}" title="Eliminar día">
-                    <i class="fas fa-trash"></i>
-                </button>
                 <div class="day-header">
                     <div class="day-title-section">
                         <div class="day-title-row">
@@ -121,7 +118,16 @@
                             <span class="day-separator">|</span>
                             <input type="date" id="day-{{ $day->day }}-date" class="day-date-input-large" value="{{ $day->getDateInputValue() }}" data-day="{{ $day->day }}">
                         </div>
-                        <p class="day-date-display">{{ $day->getFormattedDate() }}</p>
+                        <p class="day-date-display" id="day-{{ $day->day }}-date-display">{{ $day->getFormattedDate() ?: 'Sin fecha' }}</p>
+                    </div>
+                    <div class="day-actions">
+                            <button class="action-btn-outline" data-action="copy-day" data-day="{{ $day->day }}" title="Copiar día">
+                                <i class="far fa-copy"></i>
+                            </button>
+                            <button class="action-btn-outline text-danger" data-action="delete-day" data-day="{{ $day->day }}" title="Eliminar día">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -138,19 +144,25 @@
     @else
         {{-- Always show at least one day for editing --}}
         <div class="day-card" data-day="1">
-            <button class="btn-delete-day-absolute" data-action="delete-day" data-day="1" title="Eliminar día" style="display: none;">
-                <i class="fas fa-trash"></i>
-            </button>
-            <div class="day-header">
-                <div class="day-title-section">
-                    <div class="day-title-row">
-                        <h3>DÍA 1</h3>
-                        <span class="day-separator">|</span>
+                <div class="day-header">
+                    <div class="day-title-section">
+                        <div class="day-title-row">
+                            <h3>DÍA 1</h3>
+                            <span class="day-separator">|</span>
+                            <input type="date" id="day-1-date" class="day-date-input-large" value="" data-day="1">
+                        </div>
+                        <p class="day-date-display" id="day-1-date-display">Sin fecha</p>
                     </div>
-                    <input type="date" id="day-1-date" class="subtitle-date-input form-input day-date-input-large" value="" data-day="1">
-                    <p class="day-date-display" id="day-1-date-display">Sin fecha</p>
+                    <div class="day-actions">
+                            <button class="action-btn-outline" data-action="copy-day" data-day="1" title="Copiar día">
+                                <i class="far fa-copy"></i>
+                            </button>
+                            <button class="action-btn-outline text-danger" data-action="delete-day" data-day="1" title="Eliminar día" style="display: none;">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
             <div class="day-content" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <p class="drag-instruction">Arrastra aquí los elementos que quieres agregar a este día</p>
             </div>
@@ -548,17 +560,21 @@
     });
 
     function extractItemData(itemElement, dayNumber) {
-        const itemType = itemElement.querySelector('.item-type')?.textContent?.toLowerCase();
+        // Prefer the data-type attribute (canonical type like 'flight', 'hotel', etc.)
+        // Fallback to .item-type text for backwards compatibility
+        const dataTypeAttr = itemElement.getAttribute('data-type')?.toLowerCase() || '';
+        const itemTypeText = itemElement.querySelector('.item-type')?.textContent?.toLowerCase() || '';
+        const itemType = dataTypeAttr || itemTypeText;
 
         if (!itemType) return null;
 
         const baseData = {
-            type: itemType.replace('elemento', '').trim().toLowerCase(),
+            type: itemType,
             day: dayNumber
         };
 
         // Extract data based on item type
-        switch (baseData.type) {
+        switch (itemType) {
             case 'vuelo':
                 let departureAirport = itemElement.getAttribute('data-departure-airport') || '';
                 let arrivalAirport = itemElement.getAttribute('data-arrival-airport') || '';
@@ -575,12 +591,12 @@
                 return {
                     ...baseData,
                     type: 'flight',
-                    airline_id: itemElement.getAttribute('data-airline_id') || '',
+                    airline_id: itemElement.getAttribute('data-airline_id') || itemElement.getAttribute('data-airline-id') || '',
                     flight_number: itemElement.getAttribute('data-flight-number') || '',
                     departure_airport: departureAirport,
                     arrival_airport: arrivalAirport,
-                    departure_time: itemElement.getAttribute('data-departure-time') || '',
-                    arrival_time: itemElement.getAttribute('data-arrival-time') || '',
+                    departure_datetime: itemElement.getAttribute('data-departure-datetime') || '',
+                    arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || '',
                     confirmation_number: itemElement.getAttribute('data-confirmation-number') || ''
                 };
 
@@ -598,28 +614,29 @@
                     nights: parseInt(itemElement.getAttribute('data-nights')) || 1
                 };
 
+            case 'activity':
             case 'actividad':
                 return {
                     ...baseData,
                     type: 'activity',
                     activity_title: itemElement.getAttribute('data-activity-title') || itemElement.querySelector('.item-title')?.textContent || '',
-                    location: itemElement.getAttribute('data-location') || itemElement.querySelector('.item-subtitle')?.textContent || '',
+                    location: itemElement.getAttribute('data-location') || '',
                     start_datetime: itemElement.getAttribute('data-start-datetime') || '',
                     end_datetime: itemElement.getAttribute('data-end-datetime') || '',
                     description: itemElement.getAttribute('data-description') || ''
                 };
 
+            case 'transport':
             case 'traslado':
             case 'transporte':
                 return {
                     ...baseData,
                     type: 'transport',
-                    transport_type: itemElement.getAttribute('data-transport-type') || itemElement.querySelector('.item-title')?.textContent || '',
+                    transport_type: itemElement.getAttribute('data-transport-type') || '',
                     pickup_location: itemElement.getAttribute('data-pickup-location') || '',
                     destination: itemElement.getAttribute('data-destination') || '',
                     pickup_datetime: itemElement.getAttribute('data-pickup-datetime') || '',
-                    arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || '',
-                    pickup_time: itemElement.getAttribute('data-pickup-time') || ''
+                    arrival_datetime: itemElement.getAttribute('data-arrival-datetime') || ''
                 };
 
             case 'nota':

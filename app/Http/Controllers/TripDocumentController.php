@@ -193,7 +193,7 @@ class TripDocumentController extends Controller
         }
 
         $request->validate([
-            'type' => 'required|in:flight,hotel,transport',
+            'type' => 'required|in:flight,hotel,transport,activity,note',
             'item_id' => 'nullable|string'
         ]);
 
@@ -243,7 +243,8 @@ class TripDocumentController extends Controller
                 'success' => true,
                 'message' => 'Documentos actualizados exitosamente.'
             ]);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error al actualizar documentos: ' . $e->getMessage()

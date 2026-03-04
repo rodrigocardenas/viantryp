@@ -16,7 +16,7 @@ const elementLabelsData = {
 };
 
 const elementFormsData = {
-    "flight": "<div class=\"form-row\"><div class=\"form-group\"><label for=\"airline\">Aerolínea</label><select id=\"airline_id\" class=\"form-input airline-select\" placeholder=\"Ej: Iberia\"><option value=\"\">Seleccionar aerolínea</option></select></div><div class=\"form-group\"><label for=\"flight-number\">Número de Vuelo</label><input type=\"text\" id=\"flight-number\" class=\"form-input\" placeholder=\"Ej: IB1234\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-datetime\">Fecha y Hora de Salida</label><input type=\"datetime-local\" id=\"departure-datetime\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"arrival-datetime\">Fecha y Hora de Llegada</label><input type=\"datetime-local\" id=\"arrival-datetime\" class=\"form-input\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-airport\">Aeropuerto de Salida</label><select id=\"departure-airport\" class=\"form-input airport-select\" placeholder=\"Ej: Madrid Barajas\"><option value=\"\">Seleccionar aeropuerto</option></select></div><div class=\"form-group\"><label for=\"arrival-airport\">Aeropuerto de Llegada</label><select id=\"arrival-airport\" class=\"form-input airport-select\" placeholder=\"Ej: París Charles de Gaulle\"><option value=\"\">Seleccionar aeropuerto</option></select></div></div><div class=\"form-group\"><label for=\"confirmation-number\">Número de Confirmación</label><input type=\"text\" id=\"confirmation-number\" class=\"form-input\" placeholder=\"Ej: ABC123\"></div><div class=\"form-group\"><label>Tipo de Equipaje</label><div class=\"checkbox-group\"><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-personal\" value=\"personal\"><span class=\"checkmark\"></span> Equipaje personal</label><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-cabin\" value=\"cabin\"><span class=\"checkmark\"></span> Equipaje de cabina</label><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-checked\" value=\"checked\"><span class=\"checkmark\"></span> Equipaje documentado (23Kg)</label></div></div><div class=\"form-group\"><label for=\"flight-documents\">Documentos</label><input type=\"file\" id=\"flight-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el vuelo</small></div>",
+    "flight": "<div class=\"form-row\"><div class=\"form-group\"><label for=\"airline-name\">Aerolínea</label><input type=\"text\" id=\"airline-name\" class=\"form-input\" placeholder=\"Ej: Iberia, Copa, Avianca\"></div><div class=\"form-group\"><label for=\"flight-number\">Número de Vuelo</label><input type=\"text\" id=\"flight-number\" class=\"form-input\" placeholder=\"Ej: IB1234\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-datetime\">Fecha y Hora de Salida</label><input type=\"datetime-local\" id=\"departure-datetime\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"arrival-datetime\">Fecha y Hora de Llegada</label><input type=\"datetime-local\" id=\"arrival-datetime\" class=\"form-input\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"departure-airport\">Aeropuerto de Salida</label><select id=\"departure-airport\" class=\"form-input airport-select\" placeholder=\"Ej: Madrid Barajas\"><option value=\"\">Seleccionar aeropuerto</option></select></div><div class=\"form-group\"><label for=\"arrival-airport\">Aeropuerto de Llegada</label><select id=\"arrival-airport\" class=\"form-input airport-select\" placeholder=\"Ej: París Charles de Gaulle\"><option value=\"\">Seleccionar aeropuerto</option></select></div></div><div class=\"form-group\"><label for=\"confirmation-number\">Número de Confirmación</label><input type=\"text\" id=\"confirmation-number\" class=\"form-input\" placeholder=\"Ej: ABC123\"></div><div class=\"form-group\"><label>Tipo de Equipaje</label><div class=\"checkbox-group\"><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-personal\" value=\"personal\"><span class=\"checkmark\"></span> Equipaje personal</label><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-cabin\" value=\"cabin\"><span class=\"checkmark\"></span> Equipaje de cabina</label><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"baggage-checked\" value=\"checked\"><span class=\"checkmark\"></span> Equipaje documentado (23Kg)</label></div></div><div class=\"form-group\"><label for=\"flight-documents\">Documentos</label><input type=\"file\" id=\"flight-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el vuelo</small></div>",
     "hotel": "<div class=\"form-group\"><label for=\"hotel-name\">Nombre del Hotel</label><div class=\"autocomplete-input\"><input type=\"text\" id=\"hotel-name\" class=\"form-input hotel-autocomplete\" placeholder=\"Ej: Hotel Central\" autocomplete=\"off\"></div><div id=\"selected-place-info\" class=\"selected-place-info\" style=\"display: none;\"></div><div id=\"selected-place-details\" class=\"selected-place-details\" style=\"display: none;\"></div></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"check-in\">Check-in</label><input type=\"datetime-local\" id=\"check-in\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"check-out\">Check-out</label><input type=\"datetime-local\" id=\"check-out\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"room-type\">Tipo de Habitación</label><input type=\"text\" id=\"room-type\" class=\"form-input\" placeholder=\"Ej: Habitación doble\"></div><div class=\"form-group\"><label for=\"meal-plan\">Régimen de Alimentación</label><select id=\"meal-plan\" class=\"form-input\"><option value=\"\">Seleccionar régimen</option><option value=\"all-inclusive\">All inclusive</option><option value=\"breakfast-included\">Desayuno incluido</option><option value=\"room-only\">Solo alojamiento</option></select></div><div class=\"form-group\"><label for=\"nights\">Noches</label><input type=\"number\" id=\"nights\" class=\"form-input\" min=\"1\" placeholder=\"2\"></div><div class=\"form-group\"><label for=\"hotel-documents\">Documentos</label><input type=\"file\" id=\"hotel-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el hotel</small></div>",
     "activity": "<div class=\"form-group\"><label for=\"activity-title\">Título de la Actividad</label><input type=\"text\" id=\"activity-title\" class=\"form-input\" placeholder=\"Ej: Visita al Louvre\"></div><div class=\"form-row\"><div class=\"form-group\"><label for=\"start-datetime\">Fecha y hora de inicio</label><input type=\"datetime-local\" id=\"start-datetime\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"end-datetime\">Fecha y hora de finalización</label><input type=\"datetime-local\" id=\"end-datetime\" class=\"form-input\"></div></div><div class=\"form-group\"><label for=\"location\">Ubicación</label><div class=\"autocomplete-input\"><input type=\"text\" id=\"location\" class=\"form-input activity-autocomplete\" placeholder=\"Ej: Museo del Louvre, París\" autocomplete=\"off\"></div><div id=\"selected-place-info\" class=\"selected-place-info\" style=\"display: none;\"></div><div id=\"selected-place-details\" class=\"selected-place-details\" style=\"display: none;\"></div></div><div class=\"form-group\"><label for=\"description\">Descripción</label><textarea id=\"description\" class=\"form-input\" rows=\"3\" placeholder=\"Detalles de la actividad...\"></textarea></div><div class=\"form-group\"><label for=\"activity-documents\">Documentos</label><input type=\"file\" id=\"activity-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con la actividad</small></div>",
     "transport": "<div class=\"form-group\"><label for=\"pickup-location\">Punto de Recogida</label><input type=\"text\" id=\"pickup-location\" class=\"form-input\" placeholder=\"Ej: Hotel Plaza\"></div><div class=\"form-group\"><label for=\"pickup-datetime\">Fecha y Hora de Recogida</label><input type=\"datetime-local\" id=\"pickup-datetime\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"destination\">Punto de Destino</label><input type=\"text\" id=\"destination\" class=\"form-input\" placeholder=\"Ej: Aeropuerto\"></div><div class=\"form-group\"><label for=\"arrival-datetime\">Fecha y Hora de Llegada</label><input type=\"datetime-local\" id=\"arrival-datetime\" class=\"form-input\"></div><div class=\"form-group\"><label for=\"transport-type\">Tipo de Transporte</label><select id=\"transport-type\" class=\"form-input\"><option value=\"\">Seleccionar tipo de transporte</option><option value=\"Tren\">Tren</option><option value=\"Bus\">Bus</option><option value=\"Barco/Ferry\">Barco/Ferry</option><option value=\"Traslado privado\">Traslado privado</option></select></div><div class=\"form-group\"><label for=\"transport-documents\">Documentos</label><input type=\"file\" id=\"transport-documents\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt\"><small class=\"form-text\">Sube archivos PDF, DOC, DOCX o TXT relacionados con el traslado</small></div>",
@@ -130,8 +130,8 @@ export class ModalManager {
         this.editingElement = element; // Store reference to element being edited
         this.isEditing = true;
 
-        // Load existing documents for this element type
-        this.loadExistingDocuments(elementData.type);
+        // Load existing documents for this specific element
+        this.loadExistingDocuments(elementData);
 
         const modal = document.getElementById('element-modal');
         const modalTitle = document.getElementById('modal-title');
@@ -160,7 +160,7 @@ export class ModalManager {
         // Define field mappings for different element types
         const fieldMappings = {
             flight: {
-                'airline_id': 'airline_id',
+                'airline_name': 'airline-name',
                 'flight_number': 'flight-number',
                 'departure_datetime': 'departure-datetime',
                 'arrival_datetime': 'arrival-datetime',
@@ -178,8 +178,8 @@ export class ModalManager {
             },
             activity: {
                 'activity_title': 'activity-title',
-                'start_time': 'start-time',
-                'end_time': 'end-time',
+                'start_datetime': 'start-datetime',
+                'end_datetime': 'end-datetime',
                 'location': 'location',
                 'description': 'description'
             },
@@ -458,14 +458,88 @@ export class ModalManager {
         }
     }
 
-    loadExistingDocuments(elementType) {
-        // Load existing documents for the current trip and element type
-        if (window.existingTripData && window.existingTripData.documents) {
+    loadExistingDocuments(elementData) {
+        const elementType = typeof elementData === 'string' ? elementData : (elementData?.type || '');
+        const tripId = this.getCurrentTripId();
+
+        // Reset existing documents
+        this.existingDocuments = [];
+
+        if (!tripId) return;
+
+        // Determine item_id: prefer stored id, fall back to temp_id
+        const itemId = elementData?.id || elementData?.item_id || null;
+
+        if (itemId) {
+            // Fetch documents from server for this specific element
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            fetch(`/trips/${tripId}/documents?item_id=${encodeURIComponent(itemId)}&type=${encodeURIComponent(elementType)}`, {
+                headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+            })
+                .then(res => res.ok ? res.json() : null)
+                .then(data => {
+                    if (data && Array.isArray(data.documents)) {
+                        this.existingDocuments = data.documents;
+                    }
+                    // Re-render documents section if modal is open
+                    this._renderExistingDocumentsInModal();
+                })
+                .catch(() => { });
+        } else if (window.existingTripData?.documents) {
+            // Fallback: filter by type from global trip data
             this.existingDocuments = window.existingTripData.documents.filter(doc => doc.type === elementType);
-        } else {
-            this.existingDocuments = [];
+            this._renderExistingDocumentsInModal();
         }
-        console.log('Loaded existing documents for', elementType, ':', this.existingDocuments);
+
+        console.log('Loading existing documents for', elementType, 'item_id:', itemId);
+    }
+
+    _renderExistingDocumentsInModal() {
+        if (!this.existingDocuments || this.existingDocuments.length === 0) return;
+
+        // Check if an existing-documents section already exists in the modal
+        const modalBody = document.getElementById('modal-body');
+        if (!modalBody) return;
+
+        let docsSection = modalBody.querySelector('.existing-documents-section');
+        if (!docsSection) {
+            docsSection = document.createElement('div');
+            docsSection.className = 'form-group existing-documents-section';
+            modalBody.appendChild(docsSection);
+        }
+
+        const documentsHtml = this.existingDocuments.map(doc => `
+            <div class="existing-document" data-document-id="${doc.id}">
+                <div class="document-info">
+                    <i class="fas fa-file"></i>
+                    <span class="document-name">${doc.original_name || doc.name || 'Archivo'}</span>
+                    <span class="document-size">${doc.size ? '(' + this.formatFileSize(doc.size) + ')' : ''}</span>
+                </div>
+                <div class="document-actions">
+                    <a href="/documents/${doc.id}/download" target="_blank" class="btn-document-view" title="Ver documento">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <button type="button" class="btn-document-delete" data-document-id="${doc.id}" title="Eliminar documento">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        docsSection.innerHTML = `
+            <label>Documentos existentes</label>
+            <div class="existing-documents-list">${documentsHtml}</div>
+        `;
+
+        // Re-setup delete button listeners
+        docsSection.querySelectorAll('.btn-document-delete').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const documentId = e.currentTarget.dataset.documentId;
+                if (confirm('¿Estás seguro de que quieres eliminar este documento?')) {
+                    await this.deleteDocument(documentId);
+                }
+            });
+        });
     }
 
     getCurrentTripId() {

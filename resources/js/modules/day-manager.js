@@ -48,11 +48,10 @@ class DayManager {
         const dayHeader = document.createElement('div');
         dayHeader.className = 'day-header';
 
-        // Create title section wrapper
+        // --- TITLE SECTION ---
         const titleSection = document.createElement('div');
         titleSection.className = 'day-title-section';
 
-        // Create title row (Title + Separator + Input)
         const titleRow = document.createElement('div');
         titleRow.className = 'day-title-row';
 
@@ -72,25 +71,26 @@ class DayManager {
         input.value = defaultDate;
         input.setAttribute('data-day', newDayNumber);
 
-        // Add onchange handler to update display text
         input.onchange = function () {
             const displayId = `day-${newDayNumber}-date-display`;
             const displayEl = document.getElementById(displayId);
-            if (displayEl && this.value) {
-                const date = new Date(this.value + 'T00:00:00');
-                displayEl.textContent = date.toLocaleDateString('es-ES', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                });
-
-                // Si es el Día 1, sincronizar con la fecha de inicio del viaje
-                if (newDayNumber === 1) {
-                    const tripStartDateInput = document.getElementById('start-date');
-                    if (tripStartDateInput) {
-                        tripStartDateInput.value = this.value;
+            if (displayEl) {
+                if (this.value) {
+                    const date = new Date(this.value + 'T00:00:00');
+                    displayEl.textContent = date.toLocaleDateString('es-ES', {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    });
+                    if (newDayNumber === 1) {
+                        const tripStartDateInput = document.getElementById('start-date');
+                        if (tripStartDateInput) {
+                            tripStartDateInput.value = this.value;
+                        }
                     }
+                } else {
+                    displayEl.textContent = 'Sin fecha';
                 }
             }
         };
@@ -98,33 +98,43 @@ class DayManager {
         titleRow.appendChild(input);
         titleSection.appendChild(titleRow);
 
-        // Create date display text
         const display = document.createElement('p');
         display.className = 'day-date-display';
         display.id = `day-${newDayNumber}-date-display`;
         display.textContent = dayDate;
         titleSection.appendChild(display);
 
-        // Add delete button (absolute positioned in CSS usually, or flex)
-        // Note: In timeline.blade.php, btn-delete-day-absolute is strictly inside .day-card, BEFORE .day-header
-        // But here we are inside addNewDay logic. 
-        // We need to add the delete button to dayCard, NOT dayHeader, to match blade.
+        dayHeader.appendChild(titleSection);
+
+        // --- META SECTION ---
+        const metaSection = document.createElement('div');
+        metaSection.className = 'day-meta-section';
+
+
+        // Actions Group
+        const actionsGroup = document.createElement('div');
+        actionsGroup.className = 'day-actions';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'action-btn-outline';
+        copyBtn.setAttribute('data-action', 'copy-day');
+        copyBtn.setAttribute('data-day', newDayNumber);
+        copyBtn.title = 'Copiar día';
+        copyBtn.innerHTML = '<i class="far fa-copy"></i>';
 
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'btn-delete-day-absolute';
+        deleteBtn.className = 'action-btn-outline text-danger';
         deleteBtn.setAttribute('data-action', 'delete-day');
         deleteBtn.setAttribute('data-day', newDayNumber);
         deleteBtn.title = 'Eliminar día';
-        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        deleteBtn.innerHTML = '<i class="far fa-trash-alt"></i>';
 
-        // Append delete button to CARD (before header)
-        dayCard.appendChild(deleteBtn);
+        actionsGroup.appendChild(copyBtn);
+        actionsGroup.appendChild(deleteBtn);
+        metaSection.appendChild(actionsGroup);
 
-        // Append titleSection to Header
-        dayHeader.appendChild(titleSection);
-
+        dayHeader.appendChild(metaSection);
         dayCard.appendChild(dayHeader);
-
         // Create day content
         const dayContent = document.createElement('div');
         dayContent.className = 'day-content';
