@@ -4,8 +4,9 @@
 /* Main Editor Container */
 .editor-container {
     display: flex;
-    height: calc(100vh - 80px);
-    background: #f8f9fa;
+    height: calc(100vh - 64px);
+    background: #ffffff;
+    overflow: hidden;
 }
 
 /* Main Content */

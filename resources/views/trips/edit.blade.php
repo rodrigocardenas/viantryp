@@ -8,10 +8,10 @@
 @section('title', 'Viantryp - Editar Viaje')
 
 @section('content')
-    <x-header :showActions="true" :backUrl="route('trips.index')" :backOnclick="'showUnsavedChangesModal()'" :actions="[
-        ['url' => '#', 'text' => 'Guardar', 'class' => 'btn-save', 'icon' => 'fas fa-save', 'data-action' => 'save-trip'],
-        ['url' => route('trips.preview', $trip->id), 'text' => 'Vista Previa', 'class' => 'btn-preview', 'icon' => 'fas fa-eye', 'target' => '_blank'],
-        ['url' => route('trips.pdf', $trip->id), 'text' => 'Descarga PDF', 'class' => 'btn-pdf', 'icon' => 'fas fa-file-pdf', 'data-action' => 'download-pdf']
+    <x-header :showActions="true" :subtitle="'Editor de Itinerario'" :backUrl="route('trips.index')" :backOnclick="'showUnsavedChangesModal()'" :actions="[
+        ['url' => route('trips.preview', $trip->id), 'text' => 'Vista previa', 'class' => 'btn-preview', 'icon' => 'far fa-eye', 'target' => '_blank'],
+        ['url' => route('trips.pdf', $trip->id), 'text' => 'Exportar', 'class' => 'btn-export', 'icon' => 'fas fa-download', 'data-action' => 'download-pdf'],
+        ['url' => '#', 'text' => 'Guardar', 'class' => 'btn-save', 'icon' => 'fas fa-save', 'data-action' => 'save-trip']
     ]" />
 
     <!-- Contenedor del editor -->
@@ -43,6 +43,12 @@
 @endsection
 
 @push('styles')
+    <style>
+        body {
+            overflow: hidden !important;
+            background-color: #ffffff !important;
+        }
+    </style>
     <link rel="stylesheet" href="{{ asset('css/editor.css') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('css/components/trip-header.css') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('css/components/editor-layout.css') }}?v={{ time() }}">

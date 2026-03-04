@@ -475,6 +475,24 @@ class ExportManager {
                     temp_id: itemElement.getAttribute('data-temp-id') || ''
                 };
 
+            case 'título':
+            case 'title':
+                return {
+                    ...baseData,
+                    type: 'title',
+                    content: itemElement.dataset.content || itemElement.querySelector('.element-content-display')?.textContent || '',
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
+                };
+
+            case 'párrafo':
+            case 'paragraph':
+                return {
+                    ...baseData,
+                    type: 'paragraph',
+                    content: itemElement.dataset.content || itemElement.querySelector('.element-content-display')?.textContent || '',
+                    temp_id: itemElement.getAttribute('data-temp-id') || ''
+                };
+
             default:
                 return {
                     ...baseData,

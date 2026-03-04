@@ -19,9 +19,10 @@
 
 .editor-container {
     display: flex;
-    min-height: calc(100vh - 80px);
-    margin-top: 80px;
-    background: linear-gradient(180deg, #e6f3fb 0%, #f7fbff 60%);
+    height: calc(100vh - 64px);
+    margin-top: 64px;
+    background: #ffffff;
+    overflow: hidden;
 }
 
 /* Left Sidebar */

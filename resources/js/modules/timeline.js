@@ -21,14 +21,26 @@ export class TimelineManager {
     }
 
     drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.dataset.type);
+        let elementType = ev.target.dataset ? ev.target.dataset.type : null;
+        if (!elementType) {
+            const el = ev.target.closest('[data-type]');
+            if (el) elementType = el.dataset.type;
+        }
+        ev.dataTransfer.setData("text", elementType || "");
     }
 
     drop(ev) {
         ev.preventDefault();
         const elementType = ev.dataTransfer.getData("text");
-        const dayElement = ev.currentTarget.closest('.day-card');
-        const dayNumber = parseInt(dayElement.dataset.day);
+
+        // Handle drops to summary directly
+        if (elementType === 'summary' && typeof summaryManager !== 'undefined') {
+            document.dispatchEvent(new CustomEvent('summaryClicked'));
+            // Assuming ModalManager or SummaryManager listens to this or we just call the method
+        }
+
+        const dayElement = ev.currentTarget.closest ? ev.currentTarget.closest('.day-card') : null;
+        const dayNumber = dayElement && dayElement.dataset ? parseInt(dayElement.dataset.day) : null;
 
         // Emit event for modal manager
         const event = new CustomEvent('elementDropped', {

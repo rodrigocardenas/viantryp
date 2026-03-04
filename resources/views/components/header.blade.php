@@ -2,9 +2,14 @@
     <div class="header-content">
         <div class="logo-container">
             <a href="{{ route('trips.index') }}" class="viantryp-logo">
-                <i class="fas fa-route"></i>
-                Viantryp
+                <span class="logo-v">V</span><span class="logo-dot">.</span><span class="logo-text">iantryp</span>
             </a>
+            @if(isset($subtitle))
+                <span class="header-subtitle">
+                    <i class="fas fa-pen"></i>
+                    {{ $subtitle }}
+                </span>
+            @endif
         </div>
         @auth
             {{-- Navigation removed as requested --}}
@@ -94,11 +99,11 @@
 
 <style>
     .header {
-        background: linear-gradient(135deg, var(--blue-700) 0%, var(--blue-600) 60%, var(--blue-300) 100%);
-        color: white;
-        padding: 1.25rem 2rem;
-        box-shadow: var(--shadow-soft);
-        height: 80px;
+        background: #ffffff;
+        color: #0d2b3e;
+        padding: 0 2rem;
+        border-bottom: 1px solid #e2e8ef;
+        height: 64px;
         display: flex;
         align-items: center;
         position: fixed;
@@ -109,27 +114,58 @@
     }
 
     .header-content {
-        max-width: 1200px;
+        max-width: 1400px; /* Made it wider to match the editor spread */
         margin: 0 auto;
-        padding: 0 2rem;
+        padding: 0;
         display: flex;
         justify-content: space-between;
         align-items: center;
         width: 100%;
+        height: 100%;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
     }
 
     .viantryp-logo {
-        color: white;
+        color: #0d2b3e;
         text-decoration: none;
         font-size: 1.5rem;
-        font-weight: 700;
         display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        align-items: baseline;
     }
 
-    .viantryp-logo i {
-        font-size: 1.8rem;
+    .logo-v {
+        font-weight: 900;
+        font-family: 'Barlow Condensed', sans-serif;
+    }
+
+    .logo-dot {
+        font-weight: 900;
+        color: #1a9a8a; /* Teal dot */
+    }
+
+    .logo-text {
+        font-weight: 800;
+        font-family: 'Barlow Condensed', sans-serif;
+    }
+
+    .header-subtitle {
+        color: #0d2b3e;
+        font-size: 0.95rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-left: 1.5rem;
+    }
+
+    .header-subtitle i {
+        color: #6b7a8d;
+        font-size: 0.75rem;
+        font-weight: 400;
     }
 
     .nav-actions {
@@ -139,58 +175,49 @@
     }
 
     .btn {
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        border-radius: 999px; /* Pill shape like image */
         text-decoration: none;
-        font-weight: 500;
+        font-weight: 600;
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
         transition: all 0.3s ease;
-        border: none;
+        border: 1px solid transparent;
         cursor: pointer;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 
     .btn-back {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: white;
+        color: #6b7a8d;
+        border: 1px solid #e2e8ef;
     }
 
     .btn-back:hover {
-        background: rgba(255, 255, 255, 0.3);
-        color: white;
+        background: #f5f7f9;
+        color: #0d2b3e;
         transform: translateY(-1px);
     }
 
     .btn-save {
-        background: #28a745;
+        background: #1a9a8a;
         color: white;
     }
 
     .btn-save:hover {
-        background: #218838;
+        background: #147A6D;
         transform: translateY(-1px);
     }
 
-    .btn-preview {
-        background: #dc3545;
-        color: white;
+    .btn-preview, .btn-export {
+        background: white;
+        color: #0d2b3e;
+        border: 1px solid #e2e8ef;
     }
 
-    .btn-preview:hover {
-        background: #c82333;
-        transform: translateY(-1px);
-    }
-
-    .btn-pdf {
-        background: #fd7e14;
-        color: white;
-    }
-
-    .btn-pdf:hover {
-        background: #e8650e;
+    .btn-preview:hover, .btn-export:hover {
+        background: #f5f7f9;
         transform: translateY(-1px);
     }
 
@@ -264,7 +291,7 @@
     }
 
     .user-name {
-        color: white;
+        color: #0d2b3e;
         font-weight: 500;
         font-size: 0.9rem;
         max-width: 120px;
@@ -274,9 +301,9 @@
     }
 
     .btn-logout {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: white;
+        color: #6b7a8d;
+        border: 1px solid #e2e8ef;
         padding: 0.4rem 0.8rem;
         border-radius: 6px;
         font-size: 0.8rem;
@@ -289,14 +316,15 @@
     }
 
     .btn-logout:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: #f5f7f9;
+        color: #0d2b3e;
         transform: translateY(-1px);
     }
 
     .logout-btn {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: white;
+        color: #6b7a8d;
+        border: 1px solid #e2e8ef;
         padding: 10px 20px;
         border-radius: 999px;
         font-weight: 600;
@@ -311,9 +339,10 @@
     }
 
     .logout-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: #f5f7f9;
+        color: #0d2b3e;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     .logout-btn i {
@@ -328,9 +357,9 @@
     }
 
     .btn-login {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: white;
+        color: #0d2b3e;
+        border: 1px solid #e2e8ef;
         padding: 0.5rem 1rem;
         border-radius: 999px;
         font-weight: 500;
@@ -343,14 +372,14 @@
     }
 
     .btn-login:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: #f5f7f9;
         transform: translateY(-1px);
     }
 
     .btn-register {
-        background: #28a745;
+        background: #1a9a8a;
         color: white;
-        border: 1px solid #28a745;
+        border: 1px solid #1a9a8a;
         padding: 0.5rem 1rem;
         border-radius: 999px;
         font-weight: 500;
@@ -363,16 +392,16 @@
     }
 
     .btn-register:hover {
-        background: #218838;
-        border-color: #218838;
+        background: #147A6D;
+        border-color: #147A6D;
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        box-shadow: 0 4px 12px rgba(26, 154, 138, 0.2);
     }
 
     .auth-divider {
-        color: rgba(255, 255, 255, 0.6);
+        color: #6b7a8d;
         font-size: 0.8rem;
-        font-weight: 300;
+        font-weight: 400;
     }
 
     @media (max-width: 768px) {
@@ -405,49 +434,6 @@
         .auth-divider {
             font-size: 0.7rem;
         }
-    }
-
-    .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .logo-container {
-        display: flex;
-        align-items: center;
-    }
-
-    .viantryp-logo {
-        display: flex;
-        align-items: center;
-        color: white;
-        font-size: 1.8rem;
-        font-weight: 700;
-        text-decoration: none;
-    }
-
-    .viantryp-logo i { margin-right: 0.6rem; }
-
-
-    .nav-actions {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .btn-back {
-        background: var(--stone-100);
-        color: var(--slate-600);
-        border: 1px solid var(--stone-300);
-    }
-
-    .btn-back:hover {
-        background: var(--blue-700);
-        color: white;
-        border-color: var(--blue-700);
     }
 
     @media (max-width: 768px) {
@@ -510,6 +496,7 @@
         .auth-divider {
             font-size: 0.7rem;
         }
+    }
 
     .main-nav {
         display: flex;

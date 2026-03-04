@@ -522,7 +522,9 @@ class TripItem
             'hotel' => 'icon-hotel',
             'activity' => 'icon-activity',
             'transport' => 'icon-transport',
-            'note' => 'icon-note'
+            'note' => 'icon-note',
+            'title' => 'icon-title',
+            'paragraph' => 'icon-paragraph'
         ];
 
         return $iconMap[$this->type] ?? 'icon-note';
@@ -535,7 +537,9 @@ class TripItem
             'hotel' => 'fas fa-bed',
             'activity' => 'fas fa-map-marker-alt',
             'transport' => 'fas fa-car',
-            'note' => 'fas fa-sticky-note'
+            'note' => 'fas fa-sticky-note',
+            'title' => 'fas fa-heading',
+            'paragraph' => 'fas fa-paragraph'
         ];
 
         return $iconMap[$this->type] ?? 'fas fa-sticky-note';
@@ -548,7 +552,9 @@ class TripItem
             'hotel' => 'Hotel',
             'activity' => 'Actividad',
             'transport' => 'Transporte',
-            'note' => 'Nota'
+            'note' => 'Nota',
+            'title' => 'Título',
+            'paragraph' => 'Párrafo'
         ];
 
         return $labelMap[$this->type] ?? 'Elemento';
@@ -569,6 +575,11 @@ class TripItem
                 return $this->data['transport_type'] ?? 'Transporte';
             case 'note':
                 return $this->data['note_title'] ?? 'Nota';
+            case 'title':
+                return $this->data['content'] ?? 'Título nuevo';
+            case 'paragraph':
+                $plainText = strip_tags($this->data['content'] ?? 'Párrafo nuevo');
+                return strlen($plainText) > 40 ? substr($plainText, 0, 40) . '...' : $plainText;
             default:
                 return 'Elemento';
         }
@@ -597,6 +608,9 @@ class TripItem
                 $plainText = strip_tags($noteContent);
                 // Truncate if too long
                 return strlen($plainText) > 100 ? substr($plainText, 0, 100) . '...' : $plainText;
+            case 'title':
+            case 'paragraph':
+                return ''; // Se muestra ya el contenido en el título de la pastilla
             default:
                 return '';
         }
@@ -615,6 +629,9 @@ class TripItem
                 return $this->getTransportDetailsHtml();
             case 'note':
                 return $this->getNoteDetailsHtml();
+            case 'title':
+            case 'paragraph':
+                return '<p>' . nl2br(htmlspecialchars($this->data['content'] ?? '')) . '</p>';
             default:
                 return '<p>Sin detalles disponibles</p>';
         }
