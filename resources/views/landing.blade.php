@@ -69,7 +69,7 @@
     color: var(--white); text-decoration: none;
     padding: 0.6rem 1.4rem; border-radius: 100px;
     background: var(--teal);
-    transition: background 0.2s, transform 0.15s;
+    transition: background 0.2s, transform 0.15s; 
   }
   .nav-cta:hover { background: var(--teal-dark); transform: scale(1.03); }
 
@@ -108,19 +108,18 @@
   }
   .hero h1 {
     position: relative; z-index: 1;
-    font-family: 'Syne', sans-serif;
+    font-family: inter sans-serif;
     font-size: clamp(3rem, 7vw, 6rem);
     font-weight: 800; line-height: 1.0;
     letter-spacing: -0.04em; color: var(--navy);
-    max-width: 860px; margin-bottom: 1.5rem;
+    max-width: 1060px; margin-bottom: 1.5rem;
     animation: fadeDown 0.7s 0.12s ease both;
   }
   .hero h1 em { font-style: normal; color: var(--teal); }
   .hero > p {
     position: relative; z-index: 1;
-    font-size: clamp(1rem, 2vw, 1.18rem);
     font-weight: 300; color: var(--text-soft);
-    max-width: 520px; line-height: 1.75; margin-bottom: 2.8rem;
+    max-width: 800px; line-height: 1.75; margin-bottom: 2.8rem;
     animation: fadeDown 0.7s 0.24s ease both;
   }
   .hero-actions {
@@ -159,7 +158,7 @@
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
 
   /* ── SHARED ── */
-  section { padding: 7rem 2rem; }
+  section { padding: 3rem 2rem; }
   .container { max-width: 1100px; margin: 0 auto; }
   .section-label {
     display: inline-block; font-size: 0.73rem; font-weight: 700;
@@ -167,7 +166,7 @@
     color: var(--teal); margin-bottom: 1rem;
   }
   .section-title {
-    font-family: 'Syne', sans-serif;
+    font-family: inter , sans-serif;
     font-size: clamp(2rem, 4vw, 3rem); font-weight: 800;
     line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1.2rem;
     color: var(--navy);
@@ -296,16 +295,16 @@
   .cta-box {
     background: linear-gradient(135deg, #e6f6f8 0%, var(--lime-bg) 100%);
     border: 1.5px solid var(--mid-gray);
-    border-radius: 24px; padding: 5rem 3rem; text-align: center;
+    border-radius: 24px; padding: 3rem 3rem; text-align: center;
   }
   .cta-box h2 {
-    font-family: 'Syne', sans-serif;
+    font-family: inter , sans-serif;
     font-size: clamp(2rem, 4vw, 3rem); font-weight: 800;
-    letter-spacing: -0.03em; margin-bottom: 1rem; color: var(--navy);
+    letter-spacing: -0.03em; margin-bottom: 2rem; color: var(--navy);
   }
   .cta-box > p { font-size: 1.05rem; color: var(--text-soft); margin-bottom: 2.5rem; }
   .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-  .cta-note { font-size: 0.78rem; color: var(--text-muted); margin-top: 1.5rem; }
+  .cta-note { font-size: 0.87rem; color: var(--text-muted); margin-top: 1.5rem; }
 
   /* ── CONTACT ── */
   .contact { padding: 5rem 2rem; text-align: center; background: var(--off-white); }
@@ -318,7 +317,7 @@
   .contact-email:hover { border-color: var(--teal); }
 
   /* ── FOOTER ── */
-  footer { background: var(--navy); padding: 2.5rem 2rem; }
+  footer { background: var(--navy); padding: 1.5rem 1.5rem; }
   .footer-inner {
     max-width: 1100px; margin: 0 auto;
     display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;
@@ -338,9 +337,19 @@
   .d3 { transition-delay: 0.4s; }
 
   @media (max-width: 768px) {
-    nav { padding: 1rem 1.5rem; }
+    nav { padding: 1rem; justify-content: space-between; }
     .nav-links { display: none; }
+    .nav-logo img { height: 26px !important; }
+    .nav-right { gap: 0.4rem; margin-right: 0.5rem; }
+    .nav-login, .nav-cta {
+      font-size: 12px !important;
+      padding: 0.4rem 0.6rem !important;
+      white-space: nowrap;
+    }
     .hero-stats { gap: 1.8rem; flex-wrap: wrap; justify-content: center; }
+    .hero { padding-bottom: 3rem; }
+    .cta-note { font-size: 0.87rem !important; }
+    .section-desc { font-size: 0.8rem !important; }
   }
 </style>
 </head>
@@ -389,11 +398,6 @@
         <a href="#cta" class="btn-primary">Empezar ahora →</a>
         <a href="#como-funciona" class="btn-secondary">Ver cómo funciona</a>
     @endauth
-  </div>
-  <div class="hero-stats">
-    <div class="stat"><div class="stat-num">+13K</div><div class="stat-label">Agencias objetivo</div></div>
-    <div class="stat"><div class="stat-num">48h</div><div class="stat-label">Propuesta lista</div></div>
-    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">En español</div></div>
   </div>
 </section>
 
@@ -620,7 +624,6 @@
     <div class="cta-box reveal">
       <div class="section-label">¿Listo para empezar?</div>
       <h2>Tu próxima propuesta,<br>lista en minutos</h2>
-      <p>Únete a las agencias y consultores que ya están ahorrando tiempo y cerrando más ventas con Viantryp.</p>
       <div class="cta-actions">
         <a href="{{ route('register') }}" class="btn-primary">Crear cuenta gratis →</a>
         <a href="#contacto" class="btn-secondary">Hablar con el equipo</a>
@@ -635,7 +638,7 @@
   <div class="container reveal">
     <div class="section-label">Contacto</div>
     <h2 class="section-title">¿Tienes preguntas?</h2>
-    <p class="section-desc" style="margin:0 auto 2.5rem;">Estamos en Barcelona y pensamos en toda América Latina. Escríbenos.</p>
+    <p class="section-desc" style="margin:0 auto 2.5rem;">Más que una plataforma, somos tu aliado en tus viajes. <br>Escríbenos.</p>
     <a href="mailto:hola@viantryp.com" class="contact-email">hola@viantryp.com</a>
   </div>
 </section>
@@ -643,13 +646,15 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-logo">V<span>.</span>iantryp</div>
+    <div class="footer-logo" style="display:flex; align-items:center;">
+      <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 32px; width: auto; filter: brightness(0) invert(1);">
+    </div>
     <div class="footer-links">
       <a href="#como-funciona">Cómo funciona</a>
       <a href="#precios">Precios</a>
       <a href="#contacto">Contacto</a>
     </div>
-    <div class="footer-copy">© 2025 Viantryp. Hecho con ♥ en Barcelona.</div>
+    <div class="footer-copy">© 2026 Viantryp. Hecho con ♥.</div>
   </div>
 </footer>
 

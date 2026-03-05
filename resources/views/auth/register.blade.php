@@ -94,6 +94,19 @@
     .nav-back:hover { border-color: var(--teal); color: var(--teal); background: #f0faf9; }
     .nav-back svg { width: 15px; height: 15px; }
 
+    /* Responsive Nav (similar to landing) */
+    @media (max-width: 768px) {
+      nav { padding: 1rem; justify-content: space-between; height: auto; }
+      .nav-links { display: none; }
+      .nav-logo img { height: 26px !important; }
+      .nav-back {
+        font-size: 12px !important;
+        padding: 0.4rem 0.6rem !important;
+        white-space: nowrap;
+      }
+      .nav-right { gap: 0.4rem; margin-right: 0.5rem; }
+    }
+
     /* ─── SPLIT LAYOUT ─── */
     .page-body {
       flex: 1;
@@ -144,9 +157,9 @@
     }
 
     .left-headline {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 900;
-      font-size: 62px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 42px;
       line-height: 0.95;
       color: var(--white);
       letter-spacing: -1px;
@@ -206,7 +219,7 @@
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding: 40px 48px;
+      padding: 56px 52px;
       overflow-y: auto;
     }
 
@@ -225,9 +238,9 @@
       margin-bottom: 28px;
     }
     .form-header h2 {
-      font-family: 'Barlow Condensed', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-weight: 900;
-      font-size: 36px;
+      font-size: 28px;
       color: var(--dark);
       letter-spacing: -0.5px;
       line-height: 1.1;
@@ -422,7 +435,7 @@
   <!-- ── NAVBAR ── -->
   <nav>
     <a href="{{ route('home') }}" class="nav-logo">
-      <span class="nav-logo-text">V<span class="dot">.</span>iantryp</span>
+      <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 32px; width: auto; filter: invert(1) hue-rotate(180deg) contrast(1.5);">
     </a>
     <div class="nav-links">
       <a href="{{ route('home') }}#como-funciona" class="nav-link">Cómo funciona</a>

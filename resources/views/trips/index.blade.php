@@ -973,11 +973,38 @@
 
     @media (max-width: 768px) {
         .stats-grid {
-            grid-template-columns: 1fr 1fr;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .stat-card {
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 0.9rem;
+            margin: 0 auto;
+        }
+
+        .stat-number {
+            font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            font-size: 9px;
+            text-align: center;
         }
 
         .main-content {
-            padding: 0 1rem;
+            padding: 80px 1rem 1rem 1rem;
         }
 
         .search-container {
@@ -994,80 +1021,83 @@
             display: none;
         }
 
-        .trip-code {
+        .trip-code, .trip-checkbox {
             display: none;
         }
 
+        .trip-item:last-child {
+            border-bottom: 1px solid var(--stone-300);
+        }
+
         .trip-info {
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
             text-align: left;
+            width: calc(100% - 40px);
+            padding-left: 0;
         }
 
-        .trip-info > div {
-            display: none; /* Hide everything by default in mobile */
-        }
-
-        .trip-info > .trip-title-wrapper,
-        .trip-info > div:last-child { 
-            display: flex; /* Show title and status */
-        }
-
-        .trip-title-wrapper {
-            margin-bottom: 0.25rem;
-        }
-
-        .trip-item {
-            padding: 1rem;
-        }
-
-        .header-actions {
+        .trip-title-wrapper, .trip-dates-wrapper, .trip-client, .trip-email, .trip-status-wrapper {
+            display: flex !important;
+            justify-content: flex-start !important;
+            text-align: left !important;
             width: 100%;
-            justify-content: flex-start;
-            margin-left: 0;
+        }
+
+        .trip-title {
+            font-size: 1rem;
+        }
+        
+        .trip-client {
+            font-size: 0.85rem;
+        }
+        
+        .trip-email {
+            font-size: 0.75rem;
+            margin-top: -2px;
+            margin-bottom: 6px;
+        }
+        
+        .trip-dates {
+            font-size: 0.8rem;
         }
 
         .trip-actions {
-            margin-top: 0.5rem;
-            flex-wrap: wrap;
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            display: flex;
+            flex-direction: column;
             gap: 0.5rem;
-            width: 100%;
+            width: auto;
+            margin: 0;
             justify-content: flex-start;
-            margin-left: 0;
         }
 
         .action-edit-btn {
             display: none !important;
         }
 
-        .trip-actions {
-            margin-top: 1rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
+        .action-btn {
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .action-btn {
-            padding: 6px 12px;
-            font-size: 0.8rem;
+        .btn-danger.action-icon-btn {
+            order: -1; /* Move delete button to top */
         }
 
         .status-select {
-            width: 100%;
-            margin-top: 0.5rem;
-            min-width: 80px;
+            width: auto;
+            margin-top: 0.25rem;
+            min-width: unset;
             font-size: 0.75rem;
-        }
-
-        .btn-danger {
-            padding: 6px 10px;
-            font-size: 0.8rem;
-            min-width: 35px;
-        }
-
-        .btn-info {
-            padding: 6px 10px;
-            font-size: 0.8rem;
-            min-width: 35px;
+            padding: 4px 24px 4px 10px;
         }
 
         .modal-content {

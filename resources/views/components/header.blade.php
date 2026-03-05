@@ -79,7 +79,9 @@
                         <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                             @csrf
                             <button type="submit" class="logout-btn">
-                                <i class="fas fa-sign-out-alt"></i>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                                </svg>
                                 Salir
                             </button>
                         </form>
@@ -109,7 +111,7 @@
 
 <style>
     .header {
-        background: linear-gradient(90deg, #0c4a5b 0%, #61c5ed 100%);
+        background: #0f2a3a; /* Match landing footer background */
         color: #ffffff;
         padding: 0 2rem;
         border-bottom: none;
@@ -333,30 +335,24 @@
 
     .logout-btn {
         background: white;
-        color: #6b7a8d;
-        border: 1px solid #e2e8ef;
-        padding: 10px 20px;
-        border-radius: 999px;
+        color: #0d2b3e;
+        border: 1.5px solid #e2e8ef;
+        padding: 8px 18px;
+        border-radius: 50px;
         font-weight: 600;
-        font-size: 0.75rem;
+        font-size: 15px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: border-color 0.18s, color 0.18s, background 0.18s;
         display: flex;
         align-items: center;
         gap: 6px;
-        white-space: nowrap;
         text-decoration: none;
     }
 
     .logout-btn:hover {
-        background: #f5f7f9;
-        color: #0d2b3e;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .logout-btn i {
-        font-size: 0.8rem;
+        border-color: #1a7a8a;
+        color: #1a7a8a;
+        background: #f0faf9;
     }
 
     /* New Authentication Buttons */
@@ -417,80 +413,37 @@
     @media (max-width: 768px) {
         .header-content {
             padding: 0 1rem;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .nav-actions {
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-        }
-
-        .auth-buttons {
-            gap: 0.5rem;
-        }
-
-        .btn-login,
-        .btn-register {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.75rem;
-        }
-
-        .auth-divider {
-            font-size: 0.7rem;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .header-content {
-            padding: 0 1rem;
-            flex-direction: column;
-            gap: 1rem;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .header-right {
-            width: 100%;
-            justify-content: space-between;
-        }
-
-        .logo-container {
-            gap: 1rem;
-        }
-
-        .viantryp-logo {
-            font-size: 1.4rem;
+            width: auto;
+            justify-content: flex-end;
         }
 
         .nav-actions {
-            flex-wrap: wrap;
-            gap: 0.5rem;
+            display: none !important;
         }
 
-        .auth-section {
-            order: -1;
-        }
-
-        .user-profile {
-            padding: 0.4rem 0.8rem;
+        .header-subtitle {
+            display: none !important;
         }
 
         .user-name {
             display: none;
         }
 
-        .btn-google-login {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
+        .logout-btn {
+            font-size: 12px !important;
+            padding: 0.4rem 0.6rem !important;
+            gap: 4px;
+            white-space: nowrap;
         }
-
-        .btn-logout {
-            padding: 0.3rem 0.6rem;
-            font-size: 0.75rem;
+        
+        .viantryp-logo img {
+            height: 32px !important;
         }
 
         .auth-buttons {

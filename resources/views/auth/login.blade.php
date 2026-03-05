@@ -109,6 +109,19 @@
     }
     .nav-back svg { width: 15px; height: 15px; }
 
+    /* Responsive Nav (similar to landing) */
+    @media (max-width: 768px) {
+      nav { padding: 1rem; justify-content: space-between; height: auto; }
+      .nav-links { display: none; }
+      .nav-logo img { height: 26px !important; }
+      .nav-back {
+        font-size: 12px !important;
+        padding: 0.4rem 0.6rem !important;
+        white-space: nowrap;
+      }
+      .nav-right { gap: 0.4rem; margin-right: 0.5rem; }
+    }
+
     /* ─── MAIN ─── */
     main {
       flex: 1;
@@ -135,9 +148,9 @@
       margin-bottom: 32px;
     }
     .login-header h1 {
-      font-family: 'Barlow Condensed', sans-serif;
+      font-family: 'inter', sans-serif;
       font-weight: 900;
-      font-size: 42px;
+      font-size: 39px;
       color: var(--dark);
       line-height: 1.1;
       letter-spacing: -0.5px;
@@ -298,7 +311,7 @@
   <!-- ── NAVBAR ── -->
   <nav>
     <a href="{{ route('home') }}" class="nav-logo">
-      <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 32px; width: auto; object-fit: contain;">
+    <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 32px; width: auto; filter: invert(1) hue-rotate(180deg) contrast(1.5);">
     </a>
 
     <div class="nav-links">
