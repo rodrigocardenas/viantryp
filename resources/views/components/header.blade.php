@@ -2,7 +2,7 @@
     <div class="header-content">
         <div class="logo-container">
             <a href="{{ route('trips.index') }}" class="viantryp-logo">
-                <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 38px; width: auto;" />
+                <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 25px; width: auto;" />
             </a>
             @if(isset($subtitle))
                 <span class="header-subtitle">
@@ -69,7 +69,7 @@
                     <!-- User is logged in -->
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         <div style="display: flex; align-items: center; gap: 0.5rem;" title="{{ auth()->user()->name }}">
-                            <span style="font-size: 0.95rem; font-weight: 600; color: #ffffff;">
+                            <span style="font-size: 12px; font-weight: 600; color: #ffffff;">
                                 {{ auth()->user()->name }}
                             </span>
                             <div style="width: 36px; height: 36px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.2); color: #ffffff; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; border: 1.5px solid rgba(255, 255, 255, 0.4); box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
@@ -336,11 +336,11 @@
     .logout-btn {
         background: white;
         color: #0d2b3e;
-        border: 1.5px solid #e2e8ef;
+        border: 1px solid #e2e8ef;
         padding: 8px 18px;
         border-radius: 50px;
-        font-weight: 600;
-        font-size: 15px;
+        font-weight: 500;
+        font-size: 12px;
         cursor: pointer;
         transition: border-color 0.18s, color 0.18s, background 0.18s;
         display: flex;
