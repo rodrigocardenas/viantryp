@@ -141,7 +141,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     overflow: hidden;
-    height: 2.25rem;
+    height: 34px;
 }
 
 .price-input-premium {
@@ -214,7 +214,7 @@
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 999px;
-    font-size: 0.9375rem;
+    font-size: 13px;
     font-weight: 600;
     color: #475569;
     cursor: pointer;
@@ -231,7 +231,7 @@
     background: #157984;
     border: none;
     border-radius: 999px;
-    font-size: 1rem;
+    font-size: 13px;
     font-weight: 600;
     color: #ffffff;
     cursor: pointer;

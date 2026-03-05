@@ -1,1173 +1,494 @@
 @extends('layouts.app')
 
-@section('title', 'Viantryp - Gestión de Viajes')
-
-@section('content')
-    <x-header />
-
-    <x-navigation :activeTab="$activeTab ?? 'all'" />
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Page Header & Stats -->
-        <div class="page-header-container">
-            <h1 class="page-title">Mis <span>Viajes</span></h1>
-            <p class="page-subtitle">Gestiona y diseña todas tus propuestas de viaje</p>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon icon-total"><i class="fas fa-plane"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-number">{{ $stats['total'] ?? 0 }}</div>
-                        <div class="stat-label">Total viajes</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon icon-draft"><i class="far fa-window-maximize"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-number">{{ $stats['draft'] ?? 0 }}</div>
-                        <div class="stat-label">En diseño</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon icon-sent" style="color: #6366f1;"><i class="fas fa-paper-plane"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-number">{{ $stats['sent'] ?? 0 }}</div>
-                        <div class="stat-label">Enviado</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon icon-reserved" style="color: #10b981;"><i class="far fa-calendar-check"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-number">{{ $stats['reserved'] ?? 0 }}</div>
-                        <div class="stat-label">Reservado</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon icon-completed" style="color: #0d9488;"><i class="fas fa-check-double"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-number">{{ $stats['completed'] ?? 0 }}</div>
-                        <div class="stat-label">Completado</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon icon-discarded" style="color: #ef4444;"><i class="fas fa-ban"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-number">{{ $stats['discarded'] ?? 0 }}</div>
-                        <div class="stat-label">Descartado</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Search Section -->
-        <div class="search-section">
-            <div class="search-container">
-                <div class="search-bar">
-                    <span class="search-icon"><i class="fas fa-search"></i></span>
-                    <input type="text" class="search-input" placeholder="Buscar por nombre del viaje..." oninput="searchTrips(this.value)">
-                </div>
-                <a href="{{ route('trips.create') }}" class="new-trip-btn-search">
-                    <i class="fas fa-plus"></i>
-                    Crear Viaje
-                </a>
-            </div>
-        </div>
-
-        <!-- Bulk Actions Panel -->
-        <div class="bulk-actions" id="bulk-actions">
-            <div class="bulk-actions-info">
-                <span class="bulk-actions-count">
-                    <i class="fas fa-check-circle"></i>
-                    <span id="selected-count">0</span> viaje(s) seleccionado(s)
-                </span>
-            </div>
-            <div class="bulk-actions-buttons">
-                <button class="bulk-action-btn bulk-duplicate-btn" onclick="duplicateSelectedTrips()">
-                    <i class="fas fa-copy"></i>
-                    Duplicar
-                </button>
-                <button class="bulk-action-btn bulk-delete-btn" onclick="deleteSelectedTrips()">
-                    <i class="fas fa-trash"></i>
-                    Eliminar
-                </button>
-                <button class="bulk-action-btn bulk-clear-btn" onclick="clearSelection()">
-                    <i class="fas fa-times"></i>
-                    Limpiar
-                </button>
-            </div>
-        </div>
-
-        <!-- Trips List -->
-        <div class="trips-container">
-            <!-- Column Headers -->
-            <div class="trips-column-headers">
-                <div class="header-checkbox">
-                    <input type="checkbox" id="select-all-checkbox" class="select-all-checkbox" onchange="toggleSelectAll()">
-                </div>
-                <div class="header-code">ID</div>
-                <div class="header-info">
-                    <div class="header-title">NOMBRE DEL VIAJE</div>
-                    <div class="header-dates">INICIO DEL VIAJE</div>
-                    <div class="header-client">CLIENTE</div>
-                    <div class="header-email">CORREO</div>
-                    <div class="header-status">ESTADO</div>
-                </div>
-                <div class="header-actions">ACCIONES</div>
-            </div>
-
-            <div id="trips-list">
-                @if(count($trips) > 0)
-                    @foreach($trips as $trip)
-                        <div class="trip-item" onclick="openTrip({{ $trip->id }})">
-                            <input type="checkbox" class="trip-checkbox" data-trip-id="{{ $trip->id }}" onclick="event.stopPropagation();" onchange="updateSelectAllState()">
-                            <div class="trip-code">
-                                <span class="code-display" onclick="event.stopPropagation(); editTripCode({{ $trip->id }}, '{{ $trip->code }}')">{{ $trip->code ?? 'N/A' }}</span>
-                                <input type="text" class="code-input" id="code-input-{{ $trip->id }}" style="display: none;" onblur="saveTripCode({{ $trip->id }})" onkeypress="handleCodeKeyPress(event, {{ $trip->id }})" maxlength="20">
-                            </div>
-                            <div class="trip-info">
-                                <div class="trip-title-wrapper">
-                                    <div class="trip-title">{{ $trip->title }}</div>
-                                </div>
-                                <div class="trip-dates-wrapper" style="text-align: left; display: flex; justify-content: flex-start;">
-                                    <div class="trip-dates" style="text-align: left;">
-                                        {{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : 'Sin fecha' }}
-                                    </div>
-                                </div>
-                                @php
-                                    $client = $trip->persons->firstWhere('type', 'client') ?? $trip->persons->first();
-                                @endphp
-                                <div class="trip-client" style="text-align: left; display: flex; justify-content: flex-start;">
-                                    {{ $client ? $client->name : 'Sin cliente' }}
-                                </div>
-                                <div class="trip-email" style="text-align: left; display: flex; justify-content: flex-start;">
-                                    @if($client && $client->email)
-                                        <a href="mailto:{{ $client->email }}" onclick="event.stopPropagation();" class="email-link" style="text-align: left;">{{ $client->email }}</a>
-                                    @else
-                                        -
-                                    @endif
-                                </div>
-                                <div style="text-align: left; display: flex; justify-content: flex-start;">
-                                    <select class="status-select status-{{ $trip->status }}" data-status="{{ $trip->status }}" onclick="event.stopPropagation();" onchange="changeTripStatus({{ $trip->id }}, this.value)" style="text-align: left;">
-                                        <option value="draft" {{ $trip->status === 'draft' ? 'selected' : '' }}>En diseño</option>
-                                        <option value="sent" {{ $trip->status === 'sent' ? 'selected' : '' }}>Enviado</option>
-                                        <option value="reserved" {{ $trip->status === 'reserved' ? 'selected' : '' }}>Reservado</option>
-                                        <option value="completed" {{ $trip->status === 'completed' ? 'selected' : '' }}>Completado</option>
-                                        <option value="discarded" {{ $trip->status === 'discarded' ? 'selected' : '' }}>Descartado</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="trip-actions">
-                                <button class="action-btn btn-secondary action-icon-btn" onclick="event.stopPropagation(); previewTrip({{ $trip->id }})" title="Visualizar plan">
-                                    <i class="far fa-eye"></i>
-                                </button>
-                                <button class="action-btn btn-secondary action-icon-btn action-edit-btn" onclick="event.stopPropagation(); editTrip({{ $trip->id }})" title="Editar">
-                                    <i class="far fa-edit"></i>
-                                </button>
-                                <button class="action-btn btn-secondary action-icon-btn" onclick="event.stopPropagation(); shareTripIndex({{ $trip->id }}, '{{ $trip->share_token }}')" title="Compartir">
-                                    <i class="far fa-paper-plane"></i>
-                                </button>
-                                <button class="action-btn btn-danger" onclick="event.stopPropagation(); deleteTrip({{ $trip->id }})">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    @endforeach
-                @else
-                    <div class="empty-state">
-                        <div class="empty-icon"><i class="fas fa-clipboard-list"></i></div>
-                        <p>No se encontraron viajes</p>
-                    </div>
-                @endif
-            </div>
-        </div>
-    </main>
-
-
-@endsection
+@section('title', 'Mis Viajes - Viantryp')
 
 @push('styles')
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-        --ink: #1f2a44;
-        --blue-700: #0ea5e9;
-        --blue-600: #38bdf8;
-        --blue-300: #93c5fd;
-        --blue-100: #e0f2fe;
-        --sky-50: #f0f9ff;
-        --stone-100: #f5f7fa;
-        --stone-300: #e2e8f0;
-        --stone-400: #cbd5e1;
-        --slate-600: #475569;
-        --slate-500: #64748b;
-        --success: #10b981;
-        --danger: #ef4444;
-        --shadow-soft: 0 10px 30px rgba(0,0,0,0.06);
-        --shadow-hover: 0 14px 40px rgba(0,0,0,0.08);
-        --radius: 16px;
+      --ink:   #0f2a3a;
+      --teal:  #1a9a8a;
+      --teal2: #0c4a5b;
+      --tealL: rgba(26,154,138,0.10);
+      --cream: #f4f6f8;
+      --sand:  #e2e8ef;
+      --bdr:   rgba(15,42,58,0.09);
+      --gray:  #6b7a8d;
+      --gray2: #8f9db0;
+      --white: #ffffff;
     }
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      background: var(--cream);
     }
 
-    body {
-        font-family: 'Inter', sans-serif;
-;
-        background: linear-gradient(180deg, #e6f3fb 0%, #f7fbff 60%);
-        color: var(--ink);
-        letter-spacing: 0.1px;
+    body { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ════════════════════════════════════════
+       TOPBAR
+    ════════════════════════════════════════ */
+    .topbar {
+      position: sticky; top: 0; z-index: 200;
+      background: var(--ink);
+      height: 75px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .topbar::before {
+      content: ''; position: absolute; top: 0; right: 120px;
+      width: 160px; height: 300%; background: var(--teal);
+      transform: skewX(-16deg); opacity: 0.07; pointer-events: none;
+    }
+    .topbar::after {
+      content: ''; position: absolute; top: 0; right: 60px;
+      width: 60px; height: 300%; background: var(--teal);
+      transform: skewX(-16deg); opacity: 0.04; pointer-events: none;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 28px; position: relative; z-index: 1; }
+    
+    .logo {
+      display: flex; align-items: center; text-decoration: none;
+    }
+    .logo img {
+      height: 28px; width: auto; filter: brightness(0) invert(1);
     }
 
-    .main-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
+    .nav-links { display: flex; gap: 4px; }
+    .nav-link {
+      font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.5); text-decoration: none;
+      padding: 6px 12px; border-radius: 7px; transition: background 0.18s, color 0.18s;
     }
+    .nav-link:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
+    .nav-link.active { color: white; background: rgba(255,255,255,0.1); }
 
-    .page-header-container {
-        margin-bottom: 2rem;
+    .topbar-right { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; }
+    .ubadge {
+      display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px;
     }
-
-    .page-title {
-        font-size: 2rem;
-        font-weight: 800;
-        color: var(--ink);
-        margin-bottom: 0.2rem;
-        letter-spacing: -0.5px;
+    .avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), var(--teal2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: white; letter-spacing: 0.5px;
     }
-
-    .page-title span {
-        color: #1f2a44;
+    .uname { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); }
+    .btn-out {
+      display: flex; align-items: center; gap: 6px;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 24px; padding: 7px 16px;
+      background: transparent; color: rgba(255,255,255,0.6);
+      font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+      cursor: pointer; transition: all 0.18s;
     }
+    .btn-out:hover { background: rgba(255,255,255,0.09); color: white; }
+    .btn-out svg { width: 13px; height: 13px; }
 
-    .page-subtitle {
-        color: var(--slate-500);
-        font-size: 1rem;
-        margin-bottom: 1.5rem;
+    /* ════════════════════════════════════════
+       HERO BAND
+    ════════════════════════════════════════ */
+    .hero {
+      background: #f8f9fa; padding: 40px 40px 0;
+      position: relative; overflow: hidden;
     }
-
-    .stats-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4rem;
+    .hero-rings { position: absolute; top: -140px; right: -140px; pointer-events: none; }
+    .hero-rings span {
+      display: block; border-radius: 50%; border: 1px solid rgba(255,255,255,0.045);
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
     }
-
-    .stat-card {
-        background: transparent;
-        border-radius: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        box-shadow: none;
-        border: none;
+    .hero-rings span:nth-child(1) { width: 560px; height: 560px; }
+    .hero-rings span:nth-child(2) { width: 400px; height: 400px; }
+    .hero-rings span:nth-child(3) { width: 260px; height: 260px; }
+    .hero-rings span:nth-child(4) { width: 140px; height: 140px; }
+    .hero-dot { position: absolute; border-radius: 50%; background: var(--teal); pointer-events: none; }
+    .hero-dot:nth-child(1) { width:8px; height:8px; top:38px; right:240px; opacity:0.5; }
+    .hero-dot:nth-child(2) { width:5px; height:5px; top:90px; right:180px; opacity:0.35; }
+    .hero-dot:nth-child(3) { width:4px; height:4px; top:58px; right:300px; opacity:0.3; }
+    .hero-dot:nth-child(4) { width:10px; height:10px; top:120px; right:130px; opacity:0.2; }
+    .hero-watermark { position: absolute; right: 60px; top: 50%; transform: translateY(-50%); pointer-events: none; opacity: 0.04; }
+    .hero-watermark svg { width: 220px; height: 220px; fill: white; }
+    
+    .hero-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; position: relative; z-index: 1; }
+    
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #f2f8d8; border: 1px solid rgba(26,154,138,0.32);
+      border-radius: 4px; padding: 4px 10px; font-size: 10px; font-weight: 700;
+      letter-spacing: 1.2px; text-transform: uppercase; color: #8ab820; margin-bottom: 14px;
     }
-
-    .stat-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
+    .htag-dot { width: 6px; height: 6px; border-radius: 50%; background: #8ab820; animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    
+    .hero-title {
+      font-family: 'Playfair Display', serif; font-weight: 900; font-size: 56px; line-height: 1.0;
+      color: white; letter-spacing: -2px; margin-bottom: 8px;
     }
+    .hero-title em { color: var(--teal); font-style: italic; }
+    .hero-sub { font-size: 15px; font-weight: 400; color: #1f2a44; margin-bottom: 32px; }
 
-    .icon-total { background: none; color: #10b981; }
-    .icon-approved { background: #ecfdf5; color: #10b981; }
-    .icon-draft { color: #0ea5e9; }
-    .icon-pending { background: #fffbeb; color: #f59e0b; }
-
-    .stat-info {
-        display: flex;
-        flex-direction: column;
+    /* STAT CHIPS */
+    .stat-chips { display: flex; gap: 8px; padding-bottom: 0; }
+    .schip {
+      background: #1a7a8a; border: 1px solid rgba(255,255,255,0.09); border-bottom: none;
+      border-radius: 10px 10px 0 0; padding: 12px 20px; min-width: 100px;
+      display: flex; flex-direction: column; align-items: center; cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, transform 0.12s; position: relative;
     }
-
-    .stat-number {
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: var(--ink);
-        line-height: 1;
-        margin-bottom: 0.25rem;
+    .schip::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: var(--teal); transform: scaleX(0); transform-origin: left; transition: transform 0.22s ease;
     }
+    .schip.on { background: #1f2a44; border-color: rgba(26,154,138,0.35); }
+    .schip.on::after { transform: scaleX(1); }
+    .schip:active { transform: scale(0.96) translateY(1px); }
+    .chip-num { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 26px; line-height: 1; color: white; }
+    .chip-lbl { font-size: 10.5px; font-weight: 600; color: #ffffffb8; margin-top: 4px; white-space: nowrap; letter-spacing: 0.3px; }
+    .schip.on .chip-lbl { color: rgba(255,255,255,0.75); }
 
-    .stat-label {
-        font-size: 12px;
-        color: var(--slate-500);
-        font-weight: 500;
+    /* ACTION BUTTON */
+    .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; padding-bottom: 32px; flex-shrink: 0; }
+    .btn-create {
+      display: flex; align-items: center; gap: 9px; height: 46px; padding: 0 24px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--teal), var(--teal2)); color: white; border: none;
+      font-size: 14px; font-weight: 700; font-family: 'DM Sans', sans-serif; cursor: pointer; letter-spacing: 0.2px; text-decoration: none;
+      box-shadow: 0 8px 28px rgba(26,154,138,0.4); transition: transform 0.14s, box-shadow 0.18s, opacity 0.18s; position: relative; overflow: hidden;
     }
-
-    .search-section {
-        background: transparent;
-        border-radius: var(--radius);
-        padding: 0;
-        margin-bottom: 2rem;
-        box-shadow: none;
-        border: none;
+    .btn-create::before {
+      content: ''; position: absolute; top: -15px; left: 10%; width: 40%; height: 70%;
+      background: rgba(255,255,255,0.15); border-radius: 50%; filter: blur(8px);
     }
+    .btn-create:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(26,154,138,0.5); color: white; }
+    .btn-create:active { transform: translateY(0) scale(0.97); }
+    .btn-create svg { width: 16px; height: 16px; position: relative; z-index: 1; }
+    .btn-create span { position: relative; z-index: 1; }
 
-    .search-container {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
+    .wave { display: block; background: var(--ink); line-height: 0; }
+    .wave svg { width: 100%; height: 32px; display: block; }
+
+    /* ════════════════════════════════════════
+       MAIN CONTENT
+    ════════════════════════════════════════ */
+    .content { flex: 1; padding: 28px 10px 56px; max-width: 1200px; width: 100%; margin: 0 auto; }
+
+    .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .sbox { flex: 1; position: relative; max-width: 420px; }
+    .sbox input {
+      width: 100%; height: 44px; background: var(--white); border: 1.5px solid var(--bdr);
+      border-radius: 12px; padding: 0 14px 0 42px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+      color: var(--ink); outline: none; box-shadow: 0 2px 10px rgba(10,22,40,0.05); transition: border-color 0.18s, box-shadow 0.18s;
     }
-
-    .search-bar {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        background: white;
-        border: 1px solid var(--stone-300);
-        border-radius: 999px;
-        padding: 12px 16px;
-        transition: border-color 0.3s ease;
-    }
-
-    .search-bar:focus-within {
-        border-color: var(--blue-700);
-        box-shadow: 0 0 0 4px rgba(14,165,233,0.08);
-    }
-
-    .search-input {
-        flex: 1;
-        border: none;
-        background: transparent;
-        outline: none;
-        font-size: 1rem;
-        margin-left: 8px;
-    }
-
-    .search-icon { color: var(--slate-500); }
-
-    .filter-btn {
-        background: white;
-        color: var(--slate-600);
-        border: 1px solid var(--stone-300);
-        padding: 12px 20px;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        transition: all 0.2s ease;
-        white-space: nowrap;
-    }
-
-    .filter-btn:hover {
-        background: var(--stone-100);
-    }
-
-    .new-trip-btn-search {
-        background: #0e7cae;
-        color: white;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        white-space: nowrap;
-        text-decoration: none;
-    }
-
-    .new-trip-btn-search:hover {
-        background: #059669;
-        transform: translateY(-1px);
-    }
-
+    .sbox input::placeholder { color: #b8c0cc; }
+    .sbox input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26,154,138,0.10); }
+    .sico { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #b8c0cc; pointer-events: none; display: flex; }
+    
+    /* BULK ACTIONS */
     .bulk-actions {
-        display: none;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-        padding: 1.25rem 1.5rem;
-        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-        border: 1px solid var(--stone-300);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-soft);
-        animation: slideDown 0.3s ease-out;
-        justify-content: space-between;
-        align-items: center;
+        display: none; align-items: center; gap: 0.5rem; justify-content: space-between; margin-bottom: 20px;
+        padding: 12px 20px; background: var(--white); border: 1px solid var(--bdr); border-radius: 12px; box-shadow: 0 4px 24px rgba(10,22,40,0.06);
     }
-
-    .bulk-actions.show {
-        display: flex;
-    }
-
-    .bulk-actions-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex: 1;
-    }
-
-    .bulk-actions-count {
-        font-weight: 600;
-        color: #475569;
-        font-size: 1rem;
-    }
-
-    .bulk-actions-count i {
-        color: #10b981;
-        margin-right: 0.5rem;
-    }
-
-    .bulk-actions-buttons {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
+    .bulk-actions.show { display: flex; }
+    .bulk-actions-info { font-size: 14px; font-weight: 600; color: var(--ink); }
+    .bulk-actions-info i { color: var(--teal); margin-right: 6px; }
     .bulk-action-btn {
-        padding: 10px 18px;
-        border: none;
-        border-radius: 12px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        box-shadow: var(--shadow-soft);
+        padding: 8px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600;
+        cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
     }
+    .bulk-duplicate-btn { background: var(--teal); color: white; }
+    .bulk-duplicate-btn:hover { background: var(--teal2); }
+    .bulk-delete-btn { background: #d94040; color: white; }
+    .bulk-delete-btn:hover { background: #b43030; }
+    .bulk-clear-btn { background: var(--sand); color: var(--ink); }
+    .bulk-clear-btn:hover { background: #cbd5e1; }
 
-    .bulk-action-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
+    /* TABLE */
+    .tbl-wrap { background: var(--white); border: 1px solid var(--bdr); border-radius: 18px; overflow: hidden; box-shadow: 0 4px 24px rgba(10,22,40,0.06); }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { border-bottom: 1px solid var(--bdr); background: #f8f7f3; }
+    thead th { padding: 13px 20px; text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--gray2); white-space: nowrap; }
+    thead th:first-child { width: 46px; padding-left: 22px; }
+    thead th.right { text-align: center; padding-right: 22px; }
+    
+    tbody tr { border-bottom: 1px solid var(--bdr); transition: transform 0.22s, opacity 0.22s, background 0.14s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f9f8f5; }
+    tbody td { padding: 20px 20px; vertical-align: middle; font-size: 14px; }
+    tbody td:first-child { padding-left: 22px; }
+    input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--teal); cursor: pointer; }
 
-    .bulk-delete-btn {
-        background: #ef4444;
-        color: white;
-    }
+    .id-chip { font-size: 10.5px; font-weight: 700; font-family: monospace; letter-spacing: 0.5px; color: var(--teal); background: var(--tealL); border: 1px solid rgba(26,154,138,0.2); padding: 3px 8px; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+    .id-chip:hover { background: white; border-color: var(--teal); }
+    .code-input { width: 80px; padding: 2px 4px; border: 1px solid var(--bdr); border-radius: 4px; font-family: monospace; font-size: 10.5px; text-transform: uppercase; }
 
-    .bulk-delete-btn:hover {
-        background: #dc2626;
-    }
+    .trip-name { font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+    .trip-dest { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--gray2); margin-top: 3px; }
+    .trip-dest svg { width: 11px; height: 11px; color: var(--teal); flex-shrink: 0; }
+    .trip-date { font-size: 13px; color: var(--gray); font-weight: 500; }
+    .trip-range { font-size: 11.5px; color: var(--gray2); margin-top: 2px; }
+    .client-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+    .client-email { font-size: 11.5px; color: var(--teal); margin-top: 2px; text-decoration: none; transition: color 0.15s; display: block; }
+    .client-email:hover { color: var(--teal2); text-decoration: underline; }
 
-    .bulk-duplicate-btn {
-        background: var(--blue-700);
-        color: white;
-    }
-
-    .bulk-duplicate-btn:hover {
-        background: #2563eb;
-    }
-
-    .bulk-clear-btn {
-        background: #94a3b8;
-        color: white;
-    }
-
-    .bulk-clear-btn:hover {
-        background: #4b5563;
-    }
-
-    .trips-container {
-        background: white;
-        border-radius: var(--radius);
-        overflow: hidden;
-        box-shadow: var(--shadow-soft);
-        border: 1px solid var(--stone-300);
-        min-height: calc(100vh - 200px); /* Ensure it extends to near the bottom of the viewport */
-    }
-
-    .trips-column-headers {
-        background: #ededed;
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid var(--stone-300);
-        display: flex;
-        align-items: center;
-        font-weight: 600;
-        color: #000000;
-        font-size: 0.9rem;
-    }
-
-    .header-checkbox {
-        width: 18px;
-        margin-right: 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .header-checkbox .select-all-checkbox {
-        width: 16px;
-        height: 16px;
-        cursor: pointer;
-    }
-
-    .header-code {
-        width: 80px;
-        margin-right: 1rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        color: #000000;
-    }
-
-    .header-info {
-        flex: 1;
-        display: grid;
-        grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr 1fr;
-        gap: 1rem;
-        align-items: center;
-        padding-left: 0.5rem;
-    }
-
-    .header-title, .header-dates, .header-client, .header-email, .header-status {
-        font-weight: 600;
-        text-align: left;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        color: #000000;
-    }
-
-    .header-actions {
-        display: flex;
-        gap: 8px;
-        width: 180px;
-        justify-content: flex-start;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        color: #000000;
-        margin-left: 1rem;
-    }
-
-    .select-all-container {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .select-all-checkbox {
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-    }
-
-    .select-all-label {
-        font-size: 0.9rem;
-        color: #64748b;
-        cursor: pointer;
-    }
-
-    .trip-item {
-        display: flex;
-        align-items: center;
-        padding: 1.5rem;
-        border-bottom: 1px solid var(--stone-300);
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-
-    .trip-checkbox {
-        width: 18px;
-        height: 18px;
-        margin-right: 1rem;
-        cursor: pointer;
-    }
-
-    .trip-code {
-        width: 80px;
-        margin-right: 1rem;
-        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--slate-500);
-        text-align: left;
-        cursor: pointer;
-    }
-
-    .code-display {
-        display: inline-block;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        transition: background-color 0.2s ease;
-    }
-
-    .code-display:hover {
-        background: white;
-        border: 1px solid var(--stone-300);
-        border-radius: 4px;
-    }
-
-
-    .code-input {
-        width: 100px;
-        padding: 0.25rem 0.5rem;
-        border: 1px solid var(--stone-300);
-        border-radius: 4px;
-        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-
-    .trip-item:hover {
-        background: var(--sky-50);
-        transform: translateX(2px);
-    }
-
-    .trip-item:last-child {
-        border-bottom: none;
-    }
-
-    .trip-info {
-        flex: 1;
-        display: grid;
-        grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr 1fr;
-        gap: 1rem;
-        align-items: center;
-        text-align: left;
-        padding-left: 0.5rem;
-    }
-
-    .trip-title-wrapper {
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-    }
-
-    .trip-title {
-        font-weight: 700;
-        font-size: 1rem;
-        color: var(--ink);
-    }
-
-    .trip-dates-wrapper {
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-    }
-
-    .trip-dates {
-        color: var(--slate-600);
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
-
-    .trip-duration-sub {
-        color: #9ca3af;
-        font-size: 0.8rem;
-    }
-
-    .trip-client {
-        font-weight: 700;
-        font-size: 0.9rem;
-        color: var(--ink);
-    }
-
-    .trip-email {
-        font-size: 10px;
-        color: #10b981;
-        text-align: left;
-    }
-
-    .email-link {
-        color: #10b981;
-        text-decoration: none;
-    }
-
-    .email-link:hover {
-        text-decoration: underline;
-    }
-
-    .trip-status {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 500;
-    }
-
-    .status-published { background: #e8f8ff; color: var(--blue-700); }
-    .status-draft { background: #e0f2fe; color: var(--blue-700); }
-    .status-sent { background: #e6f3ff; color: #1d4ed8; }
-    .status-approved { background: #dcfce7; color: #047857; }
-    .status-completed { background: #eef2f6; color: #374151; }
-
-    .trip-actions {
-        display: flex;
-        gap: 8px;
-        width: 180px;
-        justify-content: flex-start;
-        margin-left: 1rem;
-    }
-
-    .action-btn {
-        padding: 8px 16px;
-        border: none;
-        border-radius: 10px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: var(--shadow-soft);
-    }
-
-    .btn-primary { background: var(--blue-700); color: white; }
-    .btn-primary:hover { background: var(--blue-600); transform: translateY(-1px); box-shadow: var(--shadow-hover); }
-    .btn-secondary { background: #f1f5f9; color: var(--slate-600); border: 1px solid var(--stone-300); }
-    .btn-secondary:hover { background: #e2e8f0; }
-    .btn-danger {
-        background: var(--danger);
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 10px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        min-width: 40px;
-        justify-content: center;
-    }
-
-    .btn-danger:hover {
-        background: #dc2626;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-    }
-
-    .btn-danger:active {
-        transform: translateY(0);
-    }
-
-    .btn-danger i {
-        font-size: 0.9rem;
-    }
-
-    .btn-info {
-        background: #06b6d4;
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 10px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        min-width: 40px;
-        justify-content: center;
-    }
-
-    .btn-info:hover {
-        background: #0891b2;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
-    }
-
-    .btn-info:active {
-        transform: translateY(0);
-    }
-
-    .btn-info i {
-        font-size: 0.9rem;
-    }
-
-    .action-icon-btn {
-        background: transparent !important;
-        border: 1px solid var(--stone-300) !important;
-        border-radius: 8px !important;
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        color: var(--slate-500) !important;
-        box-shadow: none !important;
-    }
-
-    .action-icon-btn:hover {
-        background: var(--stone-100) !important;
-        color: var(--ink) !important;
-        border-color: #cbd5e1 !important;
-    }
-
-    .btn-danger.action-icon-btn {
-        min-width: 36px;
-    }
-
-    .btn-danger.action-icon-btn:hover {
-        color: #ef4444 !important;
-        background: transparent !important;
-        border-color: #fecaca !important;
-    }
-
+    /* STATUS SELECTOR */
     .status-select {
         padding: 6px 12px;
-        border: 1px solid var(--stone-300);
+        border: 1px solid var(--sand);
         border-radius: 999px;
         font-size: 11px;
         font-weight: 500;
-        background: white;
         cursor: pointer;
         transition: all 0.2s ease;
         min-width: 110px;
         appearance: none;
+        background-color: white;
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2338bdf8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
         background-position: right 8px center;
         background-repeat: no-repeat;
         background-size: 12px;
         padding-right: 28px;
         color: #0e3242;
-        display: flex;
-        align-items: center;
     }
+    .status-select:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 2px rgba(26,154,138,0.12); }
+    .status-select:hover { border-color: var(--teal); }
+    
+    .status-completed { background-color: #eef2f6 !important; color: #0f766e !important; border-color: #cbd5e1 !important; }
+    .status-reserved { background-color: #dcfce7 !important; color: #15803d !important; border-color: #bbf7d0 !important; }
+    .status-draft    { background-color: #e0f2fe !important; color: #1d5fa8 !important; border-color: #bae6fd !important; }
+    .status-sent     { background-color: #e8f8ff !important; color: #0284c7 !important; border-color: #bae6fd !important; }
+    .status-discarded { background-color: #fee2e2 !important; color: #b43030 !important; border-color: #fecaca !important; }
 
-    .status-select:focus {
-        outline: none;
-        border-color: var(--blue-700);
-        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.12);
+    .acts-cell { text-align: right; }
+    .acts { display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
+    .abt {
+      width: 32px; height: 32px; border-radius: 8px; border: 1.5px solid var(--bdr); background: transparent;
+      display: flex; align-items: center; justify-content: center; color: var(--gray); cursor: pointer;
+      position: relative; transition: all 0.16s;
     }
-
-    .status-select:hover {
-        border-color: #cbd5e1;
+    .abt svg { width: 13px; height: 13px; }
+    .abt:hover { transform: translateY(-1px); }
+    .abt.view:hover  { border-color:var(--teal);  color:var(--teal);  background:rgba(26,154,138,0.07);  box-shadow:0 3px 10px rgba(26,154,138,0.18); }
+    .abt.edit:hover  { border-color:#7c3aed; color:#7c3aed; background:rgba(124,58,237,0.07); box-shadow:0 3px 10px rgba(124,58,237,0.18); }
+    .abt.share:hover { border-color:#2878d4; color:#2878d4; background:rgba(40,120,212,0.07); box-shadow:0 3px 10px rgba(40,120,212,0.18); }
+    .abt.del:hover   { border-color:#d94040; color:#d94040; background:rgba(217,64,64,0.07);  box-shadow:0 3px 10px rgba(217,64,64,0.18); }
+    
+    .abt::after {
+      content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%;
+      transform: translateX(-50%); background: var(--ink); color: white; font-size: 10px;
+      font-weight: 600; padding: 3px 8px; border-radius: 6px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.15s;
     }
+    .abt:hover::after { opacity: 1; z-index: 1000; }
 
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        color: var(--slate-500);
+    .empty { display: none; text-align: center; padding: 72px 24px; }
+    .e-ring {
+      width: 72px; height: 72px; border-radius: 50%; background: var(--tealL);
+      border: 1.5px dashed rgba(26,154,138,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
     }
+    .e-ring svg { width: 30px; height: 30px; color: var(--teal); }
+    .empty h3 { font-family: Inter, sans-serif; font-weight: 600; font-size: 20px; color: var(--ink); margin-bottom: 7px; }
+    .empty p  { font-size: 13px; color: var(--gray); }
 
-    .empty-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        opacity: 0.5;
-    }
+    .bar-cell { width: 4px; padding: 0 !important; }
+    .bar-inner { width: 4px; height: 100%; border-radius: 2px; }
 
-    /* Modal Styles */
-    .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-
-    .modal-content {
-        background: white;
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-hover);
-        max-width: 500px;
-        width: 90%;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-
-    .modal-header {
-        padding: 1.5rem;
-        border-bottom: 1px solid var(--stone-300);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .modal-header h3 {
-        margin: 0;
-        color: var(--ink);
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
-
-    .modal-close {
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        color: var(--slate-500);
-        padding: 0;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        transition: all 0.2s ease;
-    }
-
-    .modal-close:hover {
-        background: var(--stone-100);
-        color: var(--ink);
-    }
-
-    .modal-body {
-        padding: 1.5rem;
-    }
-
-    .modal-body p {
-        margin: 0 0 1rem 0;
-        color: var(--slate-600);
-        font-weight: 500;
-    }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: var(--slate-600);
-        font-weight: 500;
-    }
-
-    .form-group input,
-    .form-group textarea {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid var(--stone-300);
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: border-color 0.2s ease;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus {
-        outline: none;
-        border-color: var(--blue-700);
-        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-    }
-
-    .modal-footer {
-        padding: 1.5rem;
-        border-top: 1px solid var(--stone-300);
-        display: flex;
-        justify-content: flex-end;
-        gap: 0.75rem;
-    }
-
-    @media (max-width: 768px) {
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.75rem;
-        }
-
-        .stat-card {
-            flex-direction: column;
-            gap: 0.5rem;
-            text-align: center;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .stat-icon {
-            width: 32px;
-            height: 32px;
-            font-size: 0.9rem;
-            margin: 0 auto;
-        }
-
-        .stat-number {
-            font-size: 1.1rem;
-            margin-bottom: 0;
-        }
-
-        .stat-label {
-            font-size: 9px;
-            text-align: center;
-        }
-
-        .main-content {
-            padding: 80px 1rem 1rem 1rem;
-        }
-
-        .search-container {
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .new-trip-btn-search, .filter-btn {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .trips-column-headers {
-            display: none;
-        }
-
-        .trip-code, .trip-checkbox {
-            display: none;
-        }
-
-        .trip-item:last-child {
-            border-bottom: 1px solid var(--stone-300);
-        }
-
-        .trip-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-            text-align: left;
-            width: calc(100% - 40px);
-            padding-left: 0;
-        }
-
-        .trip-title-wrapper, .trip-dates-wrapper, .trip-client, .trip-email, .trip-status-wrapper {
-            display: flex !important;
-            justify-content: flex-start !important;
-            text-align: left !important;
-            width: 100%;
-        }
-
-        .trip-title {
-            font-size: 1rem;
-        }
-        
-        .trip-client {
-            font-size: 0.85rem;
-        }
-        
-        .trip-email {
-            font-size: 0.75rem;
-            margin-top: -2px;
-            margin-bottom: 6px;
-        }
-        
-        .trip-dates {
-            font-size: 0.8rem;
-        }
-
-        .trip-actions {
-            position: absolute;
-            right: 1rem;
-            top: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            width: auto;
-            margin: 0;
-            justify-content: flex-start;
-        }
-
-        .action-edit-btn {
-            display: none !important;
-        }
-
-        .action-btn {
-            padding: 0;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-danger.action-icon-btn {
-            order: -1; /* Move delete button to top */
-        }
-
-        .status-select {
-            width: auto;
-            margin-top: 0.25rem;
-            min-width: unset;
-            font-size: 0.75rem;
-            padding: 4px 24px 4px 10px;
-        }
-
-        .modal-content {
-            width: 95%;
-            margin: 1rem;
-        }
-
-        .modal-header,
-        .modal-body,
-        .modal-footer {
-            padding: 1rem;
-        }
-    }
+    @keyframes rowIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 </style>
 @endpush
 
+@section('content')
+
+@php
+    function getStatusBand($status) {
+        $colors = [
+            'draft' => 'linear-gradient(180deg,#2878d4,#60a5fa)',
+            'sent' => 'linear-gradient(180deg,#0ea5e9,#7dd3fc)',
+            'reserved' => 'linear-gradient(180deg,#16a34a,#4ade80)',
+            'completed' => 'linear-gradient(180deg,#0d9488,#2dd4bf)',
+            'discarded' => 'linear-gradient(180deg,#d94040,#f87171)',
+        ];
+        return $colors[$status] ?? 'linear-gradient(180deg,#a8b2bc,#cbd5e1)';
+    }
+    function getStatusLabel($status) {
+        $labels = [
+            'draft' => 'En Diseño',
+            'sent' => 'Enviado',
+            'reserved' => 'Reservado',
+            'completed' => 'Completado',
+            'discarded' => 'Descartado',
+        ];
+        return $labels[$status] ?? ucfirst($status);
+    }
+@endphp
+
+<!-- ══ TOPBAR ══ -->
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="{{ route('home') }}" class="logo">
+      <img src="/images/logo-viantryp.png" alt="Viantryp">
+    </a>
+  </div>
+  <div class="topbar-right">
+    <div class="ubadge">
+      <div class="avatar">{{ collect(explode(' ', auth()->user()->name))->map(function($word) { return strtoupper(substr($word, 0, 1)); })->take(2)->join('') }}</div>
+      <span class="uname">{{ auth()->user()->name }}</span>
+    </div>
+    <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+        @csrf
+        <button type="submit" class="btn-out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Cerrar sesión
+        </button>
+    </form>
+  </div>
+</header>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  </div>
+</section>
+
+<!-- ══ CONTENT ══ -->
+<div class="content">
+
+  <div class="toolbar">
+    <div class="sbox">
+      <span class="sico">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      </span>
+      <input type="text" placeholder="Buscar por ID, nombre, cliente..." id="searchInput" oninput="searchTripsRows(this.value)"/>
+    </div>
+    <a href="{{ route('trips.create') }}" class="btn btn-primary" style="font-family: 'DM Sans', sans-serif; background-color: #1a7a8a; border-color: #1a7a8a; margin-left: auto;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 4px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>Crear nuevo viaje</span>
+    </a>
+  </div>
+
+  <div class="bulk-actions" id="bulk-actions">
+      <div class="bulk-actions-info">
+          <span>
+              <i class="fas fa-check-circle"></i>
+              <span id="selected-count">0</span> viaje(s) seleccionado(s)
+          </span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+          <button class="bulk-action-btn bulk-duplicate-btn" onclick="duplicateSelectedTrips()">Duplicar</button>
+          <button class="bulk-action-btn bulk-delete-btn" onclick="deleteSelectedTrips()">Eliminar</button>
+          <button class="bulk-action-btn bulk-clear-btn" onclick="clearSelection()">Limpiar</button>
+      </div>
+  </div>
+
+  <!-- Table -->
+  <div class="tbl-wrap">
+    <table id="mainTable">
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="checkAll" onchange="toggleSelectAll(this)"/></th>
+          <th style="width:4px;padding:0"></th>
+          <th>ID</th>
+          <th>Nombre del Viaje</th>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Estado</th>
+          <th class="right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+          @if(count($trips) > 0)
+              @foreach($trips as $index => $trip)
+                <tr class="trip-row" style="animation-delay: {{ $index * 0.04 }}s; animation: rowIn 0.28s ease both;">
+                    <td><input type="checkbox" class="rchk trip-checkbox" data-trip-id="{{ $trip->id }}" onchange="updateSelectAllState()"/></td>
+                    <td class="bar-cell"><div class="bar-inner" style="background: {{ getStatusBand($trip->status) }}"></div></td>
+                    <td>
+                        <span class="id-chip code-display" onclick="event.stopPropagation(); editTripCode({{ $trip->id }}, '{{ $trip->code }}')">{{ $trip->code ?? 'N/A' }}</span>
+                        <input type="text" class="code-input" id="code-input-{{ $trip->id }}" style="display: none;" onblur="saveTripCode({{ $trip->id }})" onkeypress="handleCodeKeyPress(event, {{ $trip->id }})" maxlength="20">
+                    </td>
+                    <td>
+                      <div class="trip-name">{{ $trip->title }}</div>
+                      @if($trip->destinations && count($trip->destinations) > 0)
+                         <div class="trip-dest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> {{ rtrim($trip->destinations->pluck('name')->join(' · '), ' · ') ?: 'Sin destino' }}</div>
+                      @endif
+                    </td>
+                    <td>
+                      <div class="trip-date">{{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : 'Sin fecha' }}</div>
+                    </td>
+                    @php
+                        $client = collect($trip->persons)->firstWhere('type', 'client') ?? collect($trip->persons)->first();
+                    @endphp
+                    <td>
+                      <div class="client-name">{{ $client ? $client->name : 'Sin cliente' }}</div>
+                      @if($client && $client->email)
+                        <a class="client-email" href="mailto:{{ $client->email }}">{{ $client->email }}</a>
+                      @else
+                        <div class="client-email" style="color:var(--gray2);text-decoration:none;">N/A</div>
+                      @endif
+                    </td>
+                    <td>
+                      <select class="status-select status-{{ $trip->status }}" data-status="{{ $trip->status }}" onchange="changeTripStatus({{ $trip->id }}, this.value)">
+                          <option value="draft" {{ $trip->status === 'draft' ? 'selected' : '' }}>En diseño</option>
+                          <option value="sent" {{ $trip->status === 'sent' ? 'selected' : '' }}>Enviado</option>
+                          <option value="reserved" {{ $trip->status === 'reserved' ? 'selected' : '' }}>Reservado</option>
+                          <option value="completed" {{ $trip->status === 'completed' ? 'selected' : '' }}>Completado</option>
+                          <option value="discarded" {{ $trip->status === 'discarded' ? 'selected' : '' }}>Descartado</option>
+                      </select>
+                    </td>
+                    <td class="acts-cell">
+                      <div class="acts">
+                        <button class="abt view" data-tip="Ver propuesta" onclick="previewTrip({{ $trip->id }})">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                        <button class="abt edit" data-tip="Editar" onclick="editTrip({{ $trip->id }})">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="abt share" data-tip="Enviar al cliente" onclick="shareTripIndex({{ $trip->id }}, '{{ $trip->share_token }}')">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                        <button class="abt del" data-tip="Eliminar" onclick="delRow({{ $trip->id }})">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                        </button>
+                      </div>
+                    </td>
+                </tr>
+              @endforeach
+          @else
+                <tr id="emptyRow">
+                  <td colspan="8">
+                    <div class="empty" style="display:block;">
+                      <div class="e-ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg></div>
+                      <h3>No hay viajes en tu lista.</h3>
+                      <p> Haz clic en ‘Crear viaje’ y empieza a explorar.</p>
+                    </div>
+                  </td>
+                </tr>
+          @endif
+      </tbody>
+    </table>
+  </div>
+</div>
+@endsection
+
 @push('scripts')
 <script>
-    let currentFilter = '{{ $activeTab ?? "all" }}';
-    let currentSearch = '';
-
     function filterTrips(filter) {
-        currentFilter = filter;
         window.location.href = `{{ route('trips.index') }}?filter=${filter}`;
     }
 
-    function searchTrips(query) {
-        currentSearch = query;
-        // Implement search functionality
-        const tripItems = document.querySelectorAll('.trip-item');
-        tripItems.forEach(item => {
-            const title = item.querySelector('.trip-title').textContent.toLowerCase();
-            if (title.includes(query.toLowerCase())) {
-                item.style.display = 'flex';
-            } else {
-                item.style.display = 'none';
-            }
+    function searchTripsRows(query) {
+        query = query.toLowerCase();
+        const rows = document.querySelectorAll('.trip-row');
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
         });
     }
 
-    function createNewTrip() {
-        window.location.href = '{{ route("trips.create") }}';
-    }
-
-    function previewTrip(tripId) {
-        window.open(`{{ url('trips') }}/${tripId}/preview`, '_blank');
-    }
-
-    function openTrip(tripId) {
-        window.location.href = `{{ url('trips') }}/${tripId}/edit`;
-    }
-
-    function editTrip(tripId) {
-        window.location.href = `{{ url('trips') }}/${tripId}/edit`;
-    }
-
-    function updateStatCount(status, change) {
-        const iconContainer = document.querySelector(`.icon-${status}`);
-        if(iconContainer) {
-            const statInfo = iconContainer.nextElementSibling;
-            if(statInfo) {
-                const numberDiv = statInfo.querySelector('.stat-number');
-                if(numberDiv) {
-                    let current = parseInt(numberDiv.innerText) || 0;
-                    numberDiv.innerText = current + change;
-                }
-            }
-        }
-    }
-
+    function previewTrip(tripId) { window.open(`{{ url('trips') }}/${tripId}/preview`, '_blank'); }
+    function editTrip(tripId) { window.location.href = `{{ url('trips') }}/${tripId}/edit`; }
+    
+    // Status Logic
     function changeTripStatus(tripId, newStatus) {
         fetch(`{{ url('trips') }}/${tripId}/status`, {
             method: 'POST',
@@ -1180,17 +501,14 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                showNotification('Estado Actualizado', `El viaje ha cambiado a "${getStatusText(newStatus)}".`);
-                // Update the select element's data-status attribute and real-time stats
+                showNotification('Estado Actualizado', 'El estado del viaje ha sido actualizado.');
+                // Update the select element's data-status attribute
                 const selectElement = document.querySelector(`select[onchange*="${tripId}"]`);
                 if (selectElement) {
-                    const oldStatus = selectElement.getAttribute('data-status');
-                    updateStatCount(oldStatus, -1);
-                    updateStatCount(newStatus, 1);
-
                     selectElement.setAttribute('data-status', newStatus);
                     selectElement.className = `status-select status-${newStatus}`;
                 }
+                setTimeout(()=>location.reload(), 800);
             } else {
                 showNotification('Error', data.message || 'No se pudo actualizar el estado del viaje.', 'error');
             }
@@ -1201,172 +519,68 @@
         });
     }
 
-    function deleteTrip(tripId) {
-        if (confirm('¿Estás seguro de que quieres eliminar este viaje?')) {
-            fetch(`{{ url('trips') }}/${tripId}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showNotification('Viaje Eliminado', 'El viaje ha sido eliminado exitosamente.');
-                    location.reload();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('Error', 'No se pudo eliminar el viaje.');
-            });
-        }
-    }
-
-    function getStatusText(status) {
-        const statusMap = {
-            'draft': 'En Diseño',
-            'sent': 'Enviada',
-            'approved': 'Aprobado',
-            'completed': 'Completado'
-        };
-        return statusMap[status] || status;
-    }
-
-    // Selection functions
-    function toggleSelectAll() {
-        const selectAllCheckbox = document.getElementById('select-all-checkbox');
-        const tripCheckboxes = document.querySelectorAll('.trip-checkbox');
-
-        tripCheckboxes.forEach(checkbox => {
-            checkbox.checked = selectAllCheckbox.checked;
+    function delRow(tripId) {
+        if (!confirm('¿Seguro de que quieres eliminar este viaje?')) return;
+        fetch(`{{ url('trips') }}/${tripId}`, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
+        })
+        .then(r => r.json())
+        .then(d => {
+            if (d.success) location.reload();
         });
-
-        updateBulkActionsVisibility();
     }
-
+    
+    // Bulk Selection
+    function toggleSelectAll(cb) {
+        document.querySelectorAll('.trip-checkbox').forEach(c => c.checked = cb.checked);
+        updateSelectAllState();
+    }
+    
     function updateSelectAllState() {
-        const selectAllCheckbox = document.getElementById('select-all-checkbox');
-        const tripCheckboxes = document.querySelectorAll('.trip-checkbox');
-        const checkedCheckboxes = document.querySelectorAll('.trip-checkbox:checked');
-
-        if (checkedCheckboxes.length === 0) {
-            selectAllCheckbox.checked = false;
-            selectAllCheckbox.indeterminate = false;
-        } else if (checkedCheckboxes.length === tripCheckboxes.length) {
-            selectAllCheckbox.checked = true;
-            selectAllCheckbox.indeterminate = false;
+        const checked = document.querySelectorAll('.trip-checkbox:checked');
+        const bulk = document.getElementById('bulk-actions');
+        document.getElementById('selected-count').textContent = checked.length;
+        if(checked.length > 0) {
+            bulk.classList.add('show');
         } else {
-            selectAllCheckbox.checked = false;
-            selectAllCheckbox.indeterminate = true;
-        }
-
-        updateBulkActionsVisibility();
-    }
-
-    function updateBulkActionsVisibility() {
-        const bulkActions = document.getElementById('bulk-actions');
-        const selectedCountElement = document.getElementById('selected-count');
-        const checkedCheckboxes = document.querySelectorAll('.trip-checkbox:checked');
-
-        if (checkedCheckboxes.length > 0) {
-            bulkActions.classList.add('show');
-            selectedCountElement.textContent = checkedCheckboxes.length;
-        } else {
-            bulkActions.classList.remove('show');
-            selectedCountElement.textContent = '0';
+            bulk.classList.remove('show');
         }
     }
-
-    function getSelectedTrips() {
-        const selectedCheckboxes = document.querySelectorAll('.trip-checkbox:checked');
-        return Array.from(selectedCheckboxes).map(checkbox => parseInt(checkbox.dataset.tripId));
-    }
-
+    
     function clearSelection() {
-        const selectAllCheckbox = document.getElementById('select-all-checkbox');
-        const tripCheckboxes = document.querySelectorAll('.trip-checkbox');
-
-        selectAllCheckbox.checked = false;
-        selectAllCheckbox.indeterminate = false;
-
-        tripCheckboxes.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-
-        updateBulkActionsVisibility();
+        document.getElementById('checkAll').checked = false;
+        toggleSelectAll(document.getElementById('checkAll'));
     }
-
+    
+    function getSelectedTrips() {
+        return Array.from(document.querySelectorAll('.trip-checkbox:checked')).map(c => parseInt(c.dataset.tripId));
+    }
+    
     function deleteSelectedTrips() {
-        const selectedTripIds = getSelectedTrips();
-
-        if (selectedTripIds.length === 0) {
-            showNotification('Sin Selección', 'Por favor selecciona al menos un viaje para eliminar.');
-            return;
-        }
-
-        const message = selectedTripIds.length === 1
-            ? '¿Estás seguro de que quieres eliminar el viaje seleccionado?'
-            : `¿Estás seguro de que quieres eliminar ${selectedTripIds.length} viajes seleccionados?`;
-
-        if (confirm(message)) {
+        const ids = getSelectedTrips();
+        if(ids.length === 0) return;
+        if(confirm(`¿Eliminar ${ids.length} viaje(s)?`)) {
             fetch(`{{ url('trips/bulk-delete') }}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({ trip_ids: selectedTripIds })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showNotification('Viajes Eliminados', `${selectedTripIds.length} viaje(s) eliminado(s) exitosamente.`);
-                    location.reload();
-                } else {
-                    showNotification('Error', data.message || 'No se pudieron eliminar los viajes.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('Error', 'Ocurrió un error al eliminar los viajes.');
-            });
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+                body: JSON.stringify({ trip_ids: ids })
+            }).then(r => r.json()).then(d => { if(d.success) location.reload(); });
         }
     }
-
+    
     function duplicateSelectedTrips() {
-        const selectedTripIds = getSelectedTrips();
-
-        if (selectedTripIds.length === 0) {
-            showNotification('Sin Selección', 'Por favor selecciona al menos un viaje para duplicar.');
-            return;
-        }
-
+        const ids = getSelectedTrips();
+        if(ids.length === 0) return;
         fetch(`{{ url('trips/bulk-duplicate') }}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ trip_ids: selectedTripIds })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showNotification('Viajes Duplicados', `${selectedTripIds.length} viaje(s) duplicado(s) exitosamente.`);
-                location.reload();
-            } else {
-                showNotification('Error', data.message || 'No se pudieron duplicar los viajes.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Error', 'Ocurrió un error al duplicar los viajes.');
-        });
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+            body: JSON.stringify({ trip_ids: ids })
+        }).then(r => r.json()).then(d => { if(d.success) location.reload(); });
     }
 
     function editTripCode(tripId, currentCode) {
-        const displaySpan = document.querySelector(`.code-display[onclick*="${tripId}"]`);
+        const displaySpan = document.querySelector(`.code-display[onclick*="(${tripId}"]`);
         const inputField = document.getElementById(`code-input-${tripId}`);
 
         if (displaySpan && inputField) {
@@ -1380,204 +594,59 @@
 
     function saveTripCode(tripId) {
         const inputField = document.getElementById(`code-input-${tripId}`);
-        const displaySpan = document.querySelector(`.code-display[onclick*="${tripId}"]`);
+        const displaySpan = document.querySelector(`.code-display[onclick*="(${tripId}"]`);
         const newCode = inputField.value.trim().toUpperCase();
-        const currentCode = displaySpan.textContent.trim();
-
-        if (displaySpan && inputField) {
-            // If code hasn't changed, just hide input and show display
-            if (newCode === currentCode) {
-                inputField.style.display = 'none';
-                displaySpan.style.display = 'inline';
-                return;
-            }
-
-            // If code changed, save it first, then update UI only on success
-            fetch(`{{ url('trips') }}/${tripId}/code`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({ code: newCode })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Only hide input and show display after successful API response
-                    inputField.style.display = 'none';
-                    displaySpan.style.display = 'inline';
-                    displaySpan.textContent = newCode;
-                    showNotification('Identificador Actualizado', 'El identificador del viaje ha sido actualizado.');
-                } else {
-                    // Keep input visible on error so user can retry
-                    showNotification('Error', data.message || 'No se pudo actualizar el identificador.');
-                    inputField.value = currentCode;
-                    inputField.focus();
-                    inputField.select();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Keep input visible on error so user can retry
-                showNotification('Error', 'Ocurrió un error al actualizar el identificador.');
-                inputField.value = currentCode;
-                inputField.focus();
-                inputField.select();
-            });
+        
+        if (newCode === displaySpan.textContent.trim()) {
+            inputField.style.display = 'none';
+            displaySpan.style.display = 'inline-block';
+            return;
         }
+
+        fetch(`{{ url('trips') }}/${tripId}/code`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')},
+            body: JSON.stringify({ code: newCode })
+        }).then(r => r.json()).then(d => {
+            if (d.success) {
+                displaySpan.textContent = newCode;
+                displaySpan.setAttribute('onclick', `event.stopPropagation(); editTripCode(${tripId}, '${newCode}')`);
+                inputField.style.display = 'none'; displaySpan.style.display = 'inline-block';
+            }
+        });
     }
 
     function handleCodeKeyPress(event, tripId) {
-        if (event.key === 'Enter') {
-            saveTripCode(tripId);
-        } else if (event.key === 'Escape') {
+        if (event.key === 'Enter') saveTripCode(tripId);
+        else if (event.key === 'Escape') {
             const inputField = document.getElementById(`code-input-${tripId}`);
-            const displaySpan = document.querySelector(`.code-display[onclick*="${tripId}"]`);
-            if (inputField && displaySpan) {
-                inputField.style.display = 'none';
-                displaySpan.style.display = 'inline';
-                inputField.value = displaySpan.textContent.trim();
-            }
+            const displaySpan = document.querySelector(`.code-display[onclick*="(${tripId}"]`);
+            inputField.style.display = 'none';
+            displaySpan.style.display = 'inline-block';
         }
     }
 
-
-
-    function shareTripIndex(tripId, existingToken) {
-        if (!tripId) {
-            showNotification('Error', 'No se puede compartir este viaje.', 'error');
-            return;
-        }
-
-        // Si ya hay token, no necesitamos llamar a la API
-        if (existingToken) {
-            const shareUrl = `${window.location.origin}/share/${existingToken}`;
-            showShareModalIndex(shareUrl);
-            return;
-        }
-
-        const shareBtn = document.querySelector(`.action-icon-btn[onclick*="shareTripIndex(${tripId}"]`);
-        const originalContent = shareBtn ? shareBtn.innerHTML : '';
-        if (shareBtn) {
-            shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-            shareBtn.disabled = true;
-        }
-
+    // Share Modal
+    function shareTripIndex(tripId, token) {
+        if(token) return showShareModalIndex(`${window.location.origin}/share/${token}`);
         fetch(`{{ url('trips') }}/${tripId}/generate-share-token`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showShareModalIndex(data.share_url);
-            } else {
-                showNotification('Error', data.message || 'Error al generar el enlace', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Share error:', error);
-            showNotification('Error', 'No se pudo generar el enlace de compartición.', 'error');
-        })
-        .finally(() => {
-            if (shareBtn) {
-                shareBtn.innerHTML = originalContent;
-                shareBtn.disabled = false;
-            }
-        });
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
+        }).then(r => r.json()).then(d => { if(d.success) showShareModalIndex(d.share_url); });
     }
 
-    function showShareModalIndex(shareUrl) {
-        const existingModal = document.getElementById('shareModal');
-        if (existingModal) existingModal.remove();
-
-        const modalHtml = `
-            <div id="shareModal" class="share-modal-overlay" style="
-                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(0, 0, 0, 0.5); display: flex;
-                align-items: center; justify-content: center; z-index: 10000;
-                font-family: 'Inter', sans-serif;
-            ">
-                <div class="share-modal" style="
-                    background: white; border-radius: 16px; padding: 2rem;
-                    max-width: 500px; width: 90%; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-                    position: relative;
-                ">
-                    <div class="share-modal-header" style="text-align: center; margin-bottom: 1.5rem;">
-                        <h3 style="font-size: 1.5rem; font-weight: 700; color: #1f2937; margin: 0 0 0.5rem 0;">Compartir Itinerario</h3>
-                        <p style="color: #6b7280; margin: 0; font-size: 0.9rem;">Copia el enlace para compartir este viaje</p>
-                    </div>
-
-                    <div class="share-modal-body">
-                        <div class="share-url-container" style="margin-bottom: 1.5rem;">
-                            <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Enlace de compartición:</label>
-                            <div class="share-url-input-group" style="display: flex; gap: 0.5rem;">
-                                <input type="text" id="shareUrlInput" value="${shareUrl}" readonly style="
-                                    flex: 1; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px;
-                                    font-size: 0.9rem; background: #f9fafb; color: #374151;
-                                    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-                                ">
-                                <button id="copyShareUrlBtn" style="
-                                    padding: 0.75rem 1rem; background: linear-gradient(135deg, #10b981, #059669);
-                                    color: white; border: none; border-radius: 8px; cursor: pointer;
-                                    font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;
-                                ">
-                                    <i class="far fa-copy"></i> Copiar
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="share-modal-actions" style="display: flex; justify-content: flex-end; gap: 0.75rem;">
-                            <button id="closeShareModalBtn" style="
-                                padding: 0.625rem 1.25rem; background: #f3f4f6; color: #374151;
-                                border: 1px solid #d1d5db; border-radius: 8px; cursor: pointer; font-weight: 500;
-                            ">Cerrar</button>
-                        </div>
-                    </div>
+    function showShareModalIndex(url) {
+        const b = document.createElement('div');
+        b.innerHTML = `
+            <div id="shareModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000;font-family:'Inter',sans-serif;">
+                <div style="background:white;border-radius:16px;padding:2rem;max-width:500px;width:90%;">
+                    <h3 style="margin-bottom:20px; text-align:center;">Compartir Itinerario</h3>
+                    <input type="text" value="${url}" readonly style="width:100%;padding:10px;margin-bottom:15px;border:1px solid #ddd;border-radius:8px;">
+                    <button onclick="navigator.clipboard.writeText('${url}').then(()=>alert('¡Copiado!'))" style="background:#1a9a8a;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Copiar</button>
+                    <button onclick="document.getElementById('shareModal').remove()" style="margin-left:10px;background:#f3f4f6;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Cerrar</button>
                 </div>
-            </div>
-        `;
-
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-        const modal = document.getElementById('shareModal');
-        const urlInput = document.getElementById('shareUrlInput');
-        const copyBtn = document.getElementById('copyShareUrlBtn');
-        const closeBtn = document.getElementById('closeShareModalBtn');
-
-        setTimeout(() => { urlInput.select(); urlInput.focus(); }, 100);
-
-        copyBtn.addEventListener('click', async () => {
-            try {
-                await navigator.clipboard.writeText(shareUrl);
-                copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
-                copyBtn.style.background = 'linear-gradient(135deg, #059669, #047857)';
-                setTimeout(() => {
-                    copyBtn.innerHTML = '<i class="far fa-copy"></i> Copiar';
-                    copyBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                }, 2000);
-            } catch (error) {
-                urlInput.select(); document.execCommand('copy');
-                copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
-                copyBtn.style.background = 'linear-gradient(135deg, #059669, #047857)';
-                setTimeout(() => {
-                    copyBtn.innerHTML = '<i class="far fa-copy"></i> Copiar';
-                    copyBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                }, 2000);
-            }
-        });
-
-        closeBtn.addEventListener('click', () => modal.remove());
-        modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
-        document.addEventListener('keydown', function closeOnEscape(e) {
-            if (e.key === 'Escape') {
-                modal.remove(); document.removeEventListener('keydown', closeOnEscape);
-            }
-        });
+            </div>`;
+        document.body.appendChild(b.firstElementChild);
     }
 </script>
 @endpush

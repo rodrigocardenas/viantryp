@@ -64,7 +64,7 @@
         --stone-400: #cbd5e1;
         --slate-600: #475569;
         --slate-500: #64748b;
-        --success: #10b981;
+        --success: #1a7a8a;
         --danger: #ef4444;
         --shadow-soft: 0 10px 30px rgba(0,0,0,0.06);
         --shadow-hover: 0 14px 40px rgba(0,0,0,0.08);
@@ -190,7 +190,7 @@
     }
 
     .btn-primary {
-        background: var(--blue-700);
+        background: #1a7a8a;
         color: white;
         box-shadow: var(--shadow-soft);
     }

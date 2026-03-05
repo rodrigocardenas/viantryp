@@ -49,7 +49,7 @@
 
 /* ── HEADER ── */
 .sidebar-header {
-    padding: 14px 16px 12px;
+    padding: 25px 16px 18px;
     border-bottom: none;
     background: var(--sidebar-white);
 }

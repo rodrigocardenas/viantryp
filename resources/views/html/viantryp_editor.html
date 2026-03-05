@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Viantryp - Editor de Itinerarios</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -19,8 +21,8 @@
             --shadow: rgba(0, 0, 0, 0.08);
             --overlay: rgba(0, 0, 0, 0.5);
             --border-gray: #e2e8f0;
-            --shadow-soft: 0 10px 30px rgba(0,0,0,0.06);
-            --shadow-hover: 0 14px 40px rgba(0,0,0,0.08);
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 14px 40px rgba(0, 0, 0, 0.08);
             --radius: 16px;
         }
 
@@ -71,9 +73,14 @@
             border-radius: 10px;
         }
 
-        .logo:hover { background: rgba(255,255,255,0.15); transform: translateY(-1px); }
+        .logo:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
 
-        .logo i { color: #ffffff; }
+        .logo i {
+            color: #ffffff;
+        }
 
         .btn-back {
             background: var(--light-gray);
@@ -92,7 +99,13 @@
             box-shadow: var(--shadow-soft);
         }
 
-        .btn-back:hover { background: var(--primary-blue); color: white; border-color: var(--primary-blue); transform: translateY(-1px); box-shadow: var(--shadow-hover); }
+        .btn-back:hover {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
 
         .nav-actions {
             display: flex;
@@ -101,7 +114,8 @@
         }
 
         .user-profile {
-            display: none; /* Oculto temporalmente */
+            display: none;
+            /* Oculto temporalmente */
             align-items: center;
             gap: 1rem;
         }
@@ -121,7 +135,11 @@
             box-shadow: var(--shadow-soft);
         }
 
-        .profile-btn:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+        .profile-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
 
         /* Main Content */
         .main-content {
@@ -135,7 +153,13 @@
             height: 100%;
         }
 
-        .sidebar { width: 300px; background: white; border-right: 1px solid var(--border-gray); padding: 1.5rem; overflow-y: auto; }
+        .sidebar {
+            width: 300px;
+            background: white;
+            border-right: 1px solid var(--border-gray);
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
 
         .sidebar h3 {
             color: var(--primary-dark);
@@ -181,42 +205,67 @@
             text-align: center;
         }
 
-        .element-icon.flight { color: var(--primary-blue); }
-        .element-icon.hotel { color: var(--coral); }
-        .element-icon.activity { color: var(--mint); }
-        .element-icon.transport { color: #9b59b6; }
-        .element-icon.note { color: #f39c12; }
-        .element-icon.summary { color: #059669; }
-        .element-icon.total { color: #e74c3c; }
-        
+        .element-icon.flight {
+            color: var(--primary-blue);
+        }
+
+        .element-icon.hotel {
+            color: var(--coral);
+        }
+
+        .element-icon.activity {
+            color: var(--mint);
+        }
+
+        .element-icon.transport {
+            color: #9b59b6;
+        }
+
+        .element-icon.note {
+            color: #f39c12;
+        }
+
+        .element-icon.summary {
+            color: #1e293b;
+        }
+
+        .element-icon.total {
+            color: #e74c3c;
+        }
+
         /* Special styles for summary and total elements to indicate they're clickable */
         .draggable-element[data-type="summary"],
         .draggable-element[data-type="total"] {
             cursor: pointer;
             position: relative;
         }
-        
+
         .draggable-element[data-type="summary"]:hover,
         .draggable-element[data-type="total"]:hover {
             background: rgba(5, 150, 105, 0.1);
-            border-color: #059669;
+            border-color: #1e293b;
             transform: translateX(5px);
         }
-        
+
         .draggable-element[data-type="summary"]:active,
         .draggable-element[data-type="total"]:active {
             cursor: pointer;
             transform: scale(1.02);
         }
-        
+
         .draggable-element[data-type="total"]:hover {
             background: rgba(231, 76, 60, 0.1);
             border-color: #e74c3c;
         }
-        
 
 
-        .timeline-area { flex: 1; padding: 2rem; background: #f8fbfe; overflow-y: auto; }
+
+        .timeline-area {
+            flex: 1;
+            padding: 2rem;
+            background: #f8fbfe;
+            overflow-y: auto;
+        }
 
         .timeline-header {
             display: flex;
@@ -230,7 +279,7 @@
             font-weight: 600;
             color: var(--primary-dark);
         }
-        
+
         .trip-title-input {
             background: transparent;
             border: none;
@@ -244,7 +293,7 @@
             transition: all 0.3s ease;
             min-width: 300px;
         }
-        
+
         .trip-title-input:focus {
             outline: none;
             border-bottom-color: var(--primary-blue);
@@ -252,7 +301,7 @@
             border-radius: 4px;
             padding: 0.2rem 0.5rem;
         }
-        
+
         .trip-title-input:hover {
             border-bottom-color: var(--primary-blue);
             background: rgba(74, 144, 226, 0.02);
@@ -264,7 +313,14 @@
         }
 
         /* Date Selector */
-        .date-selector-container { background: white; border-radius: var(--radius); padding: 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-soft); border: 1px solid var(--border-gray); }
+        .date-selector-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-gray);
+        }
 
         .date-selector-header {
             display: flex;
@@ -279,23 +335,66 @@
             gap: 1rem;
         }
 
-        .date-input { padding: 0.5rem 1rem; border: 1px solid var(--border-gray); border-radius: 12px; font-size: 1rem; transition: border-color 0.3s ease; }
+        .date-input {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-gray);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
 
-        .date-input:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(14,165,233,0.12); }
+        .date-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
+        }
 
-        .btn { padding: 0.5rem 1rem; border: none; border-radius: 999px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem; box-shadow: var(--shadow-soft); }
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-soft);
+        }
 
-        .btn-primary { background: var(--primary-blue); color: white; }
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
 
-        .btn-success { background: var(--mint); color: white; }
+        .btn-success {
+            background: var(--mint);
+            color: white;
+        }
 
 
 
-        .btn-coral { background: var(--coral); color: white; }
+        .btn-coral {
+            background: var(--coral);
+            color: white;
+        }
 
-        .btn-secondary { background: #6c757d; color: white; }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
 
-        .btn-add-day { background: var(--mint); color: white; border: 2px dashed transparent; padding: 1rem 2rem; margin-top: 1rem; width: 100%; font-size: 1.1rem; transition: all 0.3s ease; border-radius: 999px; }
+        .btn-add-day {
+            background: var(--mint);
+            color: white;
+            border: 2px dashed transparent;
+            padding: 1rem 2rem;
+            margin-top: 1rem;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border-radius: 999px;
+        }
 
         .btn-add-day:hover {
             background: transparent;
@@ -304,7 +403,10 @@
             transform: translateY(-2px);
         }
 
-        .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
 
 
 
@@ -402,7 +504,7 @@
             border-left: 4px solid var(--primary-blue);
             animation: slideInRight 0.5s ease;
         }
-        
+
         .timeline-item:hover {
             background: white;
             box-shadow: 0 3px 15px var(--shadow);
@@ -414,6 +516,7 @@
                 opacity: 0;
                 transform: translateX(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -426,21 +529,37 @@
             transform: translateX(5px);
         }
 
-        .timeline-item.flight { border-left-color: var(--primary-blue); }
-        .timeline-item.hotel { border-left-color: var(--coral); }
-        .timeline-item.activity { border-left-color: var(--mint); }
-        .timeline-item.transport { border-left-color: #9b59b6; }
-        .timeline-item.note { border-left-color: #f39c12; }
-        .timeline-item.summary { 
-            border-left-color: #059669; 
+        .timeline-item.flight {
+            border-left-color: var(--primary-blue);
+        }
+
+        .timeline-item.hotel {
+            border-left-color: var(--coral);
+        }
+
+        .timeline-item.activity {
+            border-left-color: var(--mint);
+        }
+
+        .timeline-item.transport {
+            border-left-color: #9b59b6;
+        }
+
+        .timeline-item.note {
+            border-left-color: #f39c12;
+        }
+
+        .timeline-item.summary {
+            border-left-color: #1e293b;
             background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-            border: 2px solid #059669;
+            border: 2px solid #1e293b;
             margin-bottom: 2rem;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15);
         }
-        .timeline-item.total { 
-            border-left-color: #e74c3c; 
+
+        .timeline-item.total {
+            border-left-color: #e74c3c;
             background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
             border: 2px solid #e74c3c;
             margin-bottom: 2rem;
@@ -449,22 +568,22 @@
         }
 
         /* Special styling when summary is at the top of timeline */
-        #timeline > .timeline-item.summary {
+        #timeline>.timeline-item.summary {
             margin: 0 0 2rem 0;
             padding: 1.5rem;
             background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-            border: 2px solid #059669;
+            border: 2px solid #1e293b;
             border-radius: 15px;
             box-shadow: 0 6px 20px rgba(5, 150, 105, 0.2);
         }
 
         .timeline-item.summary .item-title {
-            color: #059669;
+            color: #1e293b;
             font-weight: 700;
         }
 
         .summary-update-btn {
-            background: #059669;
+            background: #1e293b;
             color: white;
             border: none;
             padding: 0.3rem 0.8rem;
@@ -541,13 +660,18 @@
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             animation: slideIn 0.3s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         @keyframes slideIn {
@@ -555,6 +679,7 @@
                 opacity: 0;
                 transform: scale(0.8) translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: scale(1) translateY(0);
@@ -602,21 +727,21 @@
             margin-bottom: 0.5rem;
             color: var(--primary-dark);
         }
-        
+
         .form-label.error {
             color: #e74c3c;
         }
-        
+
         .form-control.error {
             border-color: #e74c3c;
             box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
         }
-        
+
         .form-control.error:focus {
             border-color: #e74c3c;
             box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.3);
         }
-        
+
         .checkbox-label {
             display: flex;
             align-items: center;
@@ -625,14 +750,14 @@
             color: var(--primary-dark);
             margin-bottom: 0.5rem;
         }
-        
+
         .checkbox-label input[type="checkbox"] {
             margin-right: 0.75rem;
             width: 18px;
             height: 18px;
             accent-color: var(--primary-blue);
         }
-        
+
         .form-text {
             display: block;
             font-size: 0.85rem;
@@ -685,13 +810,13 @@
             border-color: var(--primary-blue);
             box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
         }
-        
+
         .image-upload-container {
             display: flex;
             gap: 1rem;
             margin-top: 1rem;
         }
-        
+
         .image-upload-box {
             flex: 1;
             border: 2px dashed #ddd;
@@ -707,36 +832,36 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .image-upload-box:hover {
             border-color: var(--primary-blue);
             background: rgba(74, 144, 226, 0.05);
         }
-        
+
         .image-upload-box.has-image {
             border-style: solid;
             border-color: var(--mint);
         }
-        
+
         .image-preview {
             max-width: 100%;
             max-height: 100px;
             border-radius: 5px;
             margin-top: 0.5rem;
         }
-        
+
         .image-upload-text {
             color: #666;
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
         }
-        
+
         .image-upload-icon {
             font-size: 2rem;
             color: var(--primary-blue);
             margin-bottom: 0.5rem;
         }
-        
+
         .remove-image {
             position: absolute;
             top: 5px;
@@ -751,11 +876,11 @@
             font-size: 0.8rem;
             display: none;
         }
-        
+
         .image-upload-box.has-image .remove-image {
             display: block;
         }
-        
+
         /* PDF Preview Styles */
         .pdf-preview-header {
             background: #1E2A38;
@@ -764,18 +889,18 @@
             border-radius: 8px 8px 0 0;
             margin-bottom: 1rem;
         }
-        
+
         .pdf-preview-title {
             font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 0.5rem;
         }
-        
+
         .pdf-preview-subtitle {
             font-size: 1rem;
             opacity: 0.8;
         }
-        
+
         .pdf-preview-day {
             background: #f5f7fa;
             border-radius: 8px;
@@ -783,19 +908,19 @@
             margin-bottom: 1rem;
             border-left: 4px solid #4A90E2;
         }
-        
+
         .pdf-preview-day-header {
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px solid #e0e0e0;
         }
-        
+
         .pdf-preview-day-title {
             font-weight: bold;
             color: #1E2A38;
             margin-bottom: 0.3rem;
         }
-        
+
         .pdf-preview-day-date {
             color: #4A90E2;
             font-size: 0.9rem;
@@ -803,7 +928,7 @@
             margin-left: 0;
             padding-left: 0;
         }
-        
+
         .pdf-preview-item {
             background: white;
             border-radius: 6px;
@@ -811,13 +936,27 @@
             margin-bottom: 0.8rem;
             border-left: 3px solid #4A90E2;
         }
-        
-        .pdf-preview-item.flight { border-left-color: #4A90E2; }
-        .pdf-preview-item.hotel { border-left-color: #FF6B6B; }
-        .pdf-preview-item.activity { border-left-color: #2ECC71; }
-        .pdf-preview-item.transport { border-left-color: #9b59b6; }
-        .pdf-preview-item.note { border-left-color: #f39c12; }
-        
+
+        .pdf-preview-item.flight {
+            border-left-color: #4A90E2;
+        }
+
+        .pdf-preview-item.hotel {
+            border-left-color: #FF6B6B;
+        }
+
+        .pdf-preview-item.activity {
+            border-left-color: #2ECC71;
+        }
+
+        .pdf-preview-item.transport {
+            border-left-color: #9b59b6;
+        }
+
+        .pdf-preview-item.note {
+            border-left-color: #f39c12;
+        }
+
         .pdf-preview-item-header {
             background: #4A90E2;
             color: white;
@@ -828,19 +967,33 @@
             margin-bottom: 0.5rem;
             display: inline-block;
         }
-        
-        .pdf-preview-item.flight .pdf-preview-item-header { background: #4A90E2; }
-        .pdf-preview-item.hotel .pdf-preview-item-header { background: #FF6B6B; }
-        .pdf-preview-item.activity .pdf-preview-item-header { background: #2ECC71; }
-        .pdf-preview-item.transport .pdf-preview-item-header { background: #9b59b6; }
-        .pdf-preview-item.note .pdf-preview-item-header { background: #f39c12; }
-        
+
+        .pdf-preview-item.flight .pdf-preview-item-header {
+            background: #4A90E2;
+        }
+
+        .pdf-preview-item.hotel .pdf-preview-item-header {
+            background: #FF6B6B;
+        }
+
+        .pdf-preview-item.activity .pdf-preview-item-header {
+            background: #2ECC71;
+        }
+
+        .pdf-preview-item.transport .pdf-preview-item-header {
+            background: #9b59b6;
+        }
+
+        .pdf-preview-item.note .pdf-preview-item-header {
+            background: #f39c12;
+        }
+
         .pdf-preview-item-title {
             font-weight: bold;
             color: #1E2A38;
             margin-bottom: 0.3rem;
         }
-        
+
         .pdf-preview-item-details {
             color: #666;
             font-size: 0.9rem;
@@ -923,7 +1076,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Autocomplete styles */
@@ -933,20 +1088,20 @@
             border-bottom: 1px solid #eee;
             transition: background-color 0.2s ease;
         }
-        
+
         .autocomplete-item:hover {
             background-color: #f0f8ff !important;
         }
-        
+
         .autocomplete-item.selected {
             background-color: #e3f2fd !important;
         }
-        
+
         .autocomplete-item {
             padding: 10px 12px;
             border-bottom: 1px solid #eee;
         }
-        
+
         .autocomplete-item:last-child {
             border-bottom: none;
         }
@@ -999,18 +1154,18 @@
                 flex-direction: column;
                 align-items: stretch;
             }
-            
+
             .notification {
                 right: 1rem;
                 left: 1rem;
                 max-width: none;
                 transform: translateY(100%);
             }
-            
+
             .notification.show {
                 transform: translateY(0);
             }
-            
+
             .trip-title-input {
                 min-width: 200px;
                 font-size: 1.2rem;
@@ -1019,11 +1174,13 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
         <nav class="nav-container">
-            <a href="#" class="logo" title="Volver al inicio" onclick="confirmExit(() => window.location.href = 'viantryp_index.html')">
+            <a href="#" class="logo" title="Volver al inicio"
+                onclick="confirmExit(() => window.location.href = 'viantryp_index.html')">
                 <i class="fas fa-route"></i>
                 Viantryp
             </a>
@@ -1116,7 +1273,8 @@
                 <div class="timeline-header">
                     <h2 class="timeline-title">
                         <i class="fas fa-plane"></i>
-                        <input type="text" id="tripTitle" value="" class="trip-title-input" placeholder="Nombre o Título del Viaje">
+                        <input type="text" id="tripTitle" value="" class="trip-title-input"
+                            placeholder="Nombre o Título del Viaje">
                     </h2>
                 </div>
 
@@ -1148,7 +1306,8 @@
                         </div>
                         <div class="day-items">
                             <div style="text-align: center; padding: 2rem; color: #666; font-style: italic;">
-                                <i class="fas fa-plus-circle" style="font-size: 2rem; margin-bottom: 1rem; display: block; color: var(--primary-blue);"></i>
+                                <i class="fas fa-plus-circle"
+                                    style="font-size: 2rem; margin-bottom: 1rem; display: block; color: var(--primary-blue);"></i>
                                 Arrastra elementos aquí para personalizar este día
                             </div>
                         </div>
@@ -1186,7 +1345,7 @@
 
     <!-- Notification - Hidden -->
     <div id="notification" class="notification" style="display: none;">
-        
+
         <div>
             <i class="fas fa-check-circle" style="font-size: 1.5rem;"></i>
         </div>
@@ -1209,7 +1368,8 @@
                 </h3>
                 <button class="modal-close" onclick="closePDFPreview()">&times;</button>
             </div>
-            <div id="pdfPreviewContent" style="background: white; padding: 2rem; border-radius: 8px; max-height: 60vh; overflow-y: auto;">
+            <div id="pdfPreviewContent"
+                style="background: white; padding: 2rem; border-radius: 8px; max-height: 60vh; overflow-y: auto;">
                 <!-- PDF preview content will be inserted here -->
             </div>
             <div class="modal-actions">
@@ -1222,87 +1382,87 @@
         </div>
     </div>
 
-                <!-- Trip Name Modal -->
-            <div id="tripNameModal" class="modal">
-                <div class="modal-content" style="max-width: 500px;">
-                    <div class="modal-header">
-                        <h3 class="modal-title">
-                            <i class="fas fa-map-marked-alt"></i>
-                            <span>Nuevo Viaje</span>
-                        </h3>
-                        <button class="modal-close" onclick="closeTripNameModal()">&times;</button>
+    <!-- Trip Name Modal -->
+    <div id="tripNameModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>Nuevo Viaje</span>
+                </h3>
+                <button class="modal-close" onclick="closeTripNameModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="font-size: 3rem; color: var(--primary-blue); margin-bottom: 1rem;">
+                        <i class="fas fa-plane"></i>
                     </div>
-                    <div class="modal-body">
-                        <div style="text-align: center; margin-bottom: 2rem;">
-                            <div style="font-size: 3rem; color: var(--primary-blue); margin-bottom: 1rem;">
-                                <i class="fas fa-plane"></i>
-                            </div>
-                            <h4 style="color: var(--primary-dark); margin-bottom: 0.5rem;">¡Bienvenido a tu nuevo viaje!</h4>
-                            <p style="color: var(--text-gray); font-size: 0.9rem;">Dale un nombre especial a tu aventura</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="newTripName" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-dark);">
-                                Nombre del viaje
-                            </label>
-                            <input 
-                                type="text" 
-                                id="newTripName" 
-                                placeholder="Ej: Aventura en París, Vacaciones en la playa..."
-                                style="width: 100%; padding: 1rem; border: 2px solid #E0E0E0; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s ease;"
-                                onkeypress="handleTripNameKeyPress(event)"
-                            >
-                            <div id="tripNameError" style="color: var(--coral); font-size: 0.8rem; margin-top: 0.5rem; display: none;">
-                                Por favor ingresa un nombre para tu viaje
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-actions">
-                        <button class="btn btn-secondary" onclick="closeTripNameModal()">Cancelar</button>
-                        <button class="btn btn-primary" onclick="createTripWithName()">
-                            <i class="fas fa-check"></i>
-                            Crear Viaje
-                        </button>
+                    <h4 style="color: var(--primary-dark); margin-bottom: 0.5rem;">¡Bienvenido a tu nuevo viaje!</h4>
+                    <p style="color: var(--text-gray); font-size: 0.9rem;">Dale un nombre especial a tu aventura</p>
+                </div>
+                <div class="form-group">
+                    <label for="newTripName"
+                        style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-dark);">
+                        Nombre del viaje
+                    </label>
+                    <input type="text" id="newTripName" placeholder="Ej: Aventura en París, Vacaciones en la playa..."
+                        style="width: 100%; padding: 1rem; border: 2px solid #E0E0E0; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s ease;"
+                        onkeypress="handleTripNameKeyPress(event)">
+                    <div id="tripNameError"
+                        style="color: var(--coral); font-size: 0.8rem; margin-top: 0.5rem; display: none;">
+                        Por favor ingresa un nombre para tu viaje
                     </div>
                 </div>
             </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeTripNameModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="createTripWithName()">
+                    <i class="fas fa-check"></i>
+                    Crear Viaje
+                </button>
+            </div>
+        </div>
+    </div>
 
-            <!-- Save Changes Modal -->
-            <div id="saveChangesModal" class="modal">
-                <div class="modal-content" style="max-width: 500px;">
-                    <div class="modal-header">
-                        <h3 class="modal-title">
-                            <i class="fas fa-save"></i>
-                            <span>Guardar Cambios</span>
-                        </h3>
-                        <button class="modal-close" onclick="closeSaveChangesModal()">&times;</button>
+    <!-- Save Changes Modal -->
+    <div id="saveChangesModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-save"></i>
+                    <span>Guardar Cambios</span>
+                </h3>
+                <button class="modal-close" onclick="closeSaveChangesModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="font-size: 3rem; color: var(--primary-blue); margin-bottom: 1rem;">
+                        <i class="fas fa-question-circle"></i>
                     </div>
-                    <div class="modal-body">
-                        <div style="text-align: center; margin-bottom: 2rem;">
-                            <div style="font-size: 3rem; color: var(--primary-blue); margin-bottom: 1rem;">
-                                <i class="fas fa-question-circle"></i>
-                            </div>
-                            <h4 style="color: var(--primary-dark); margin-bottom: 0.5rem;">¿Deseas guardar los cambios?</h4>
-                            <p style="color: var(--text-gray); font-size: 0.9rem;">Tienes cambios sin guardar. Al salir volverás al index principal.</p>
-                        </div>
-                        <div class="changes-summary" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                            <h5 style="margin: 0 0 0.5rem 0; color: var(--primary-dark);">
-                                <i class="fas fa-list"></i> Resumen de cambios:
-                            </h5>
-                            <div id="changesSummary" style="font-size: 0.9rem; color: var(--text-gray);">
-                                <!-- Se llenará dinámicamente -->
-                            </div>
-                        </div>
+                    <h4 style="color: var(--primary-dark); margin-bottom: 0.5rem;">¿Deseas guardar los cambios?</h4>
+                    <p style="color: var(--text-gray); font-size: 0.9rem;">Tienes cambios sin guardar. Al salir volverás
+                        al index principal.</p>
+                </div>
+                <div class="changes-summary"
+                    style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <h5 style="margin: 0 0 0.5rem 0; color: var(--primary-dark);">
+                        <i class="fas fa-list"></i> Resumen de cambios:
+                    </h5>
+                    <div id="changesSummary" style="font-size: 0.9rem; color: var(--text-gray);">
+                        <!-- Se llenará dinámicamente -->
                     </div>
-                    <div class="modal-actions">
-                        <button class="btn btn-secondary" onclick="exitWithoutSaving()">
-                            <i class="fas fa-times"></i>
-                            Salir sin guardar
-                        </button>
-                        <button class="btn btn-primary" onclick="saveAndExit()">
-                            <i class="fas fa-save"></i>
-                            Guardar y volver al index
-                        </button>
-                                </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="exitWithoutSaving()">
+                    <i class="fas fa-times"></i>
+                    Salir sin guardar
+                </button>
+                <button class="btn btn-primary" onclick="saveAndExit()">
+                    <i class="fas fa-save"></i>
+                    Guardar y volver al index
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1316,35 +1476,35 @@
         let dayCounter = 1; // Start from 1 for new trips
         let currentEditingItem = null;
         let startDate = null;
-        
+
         let itemsData = {}; // Empty object for new trips
 
         // Global list of airlines for autocomplete
         const airlinesList = [
-            'Aer Lingus', 'Aeroflot', 'Aerolíneas Argentinas', 'Aeroméxico', 'Air Canada', 'Air China', 'Air France', 
-            'Air India', 'Air New Zealand', 'Air Serbia', 'Air Tahiti Nui', 'Air Transat', 'AirAsia', 'AirAsia X', 
-            'AirBaltic', 'Airbus', 'Aircalin', 'Alaska Airlines', 'Alitalia', 'All Nippon Airways (ANA)', 
-            'American Airlines', 'Asiana Airlines', 'Austrian Airlines', 'Avianca', 'Bangkok Airways', 'British Airways', 
-            'Brussels Airlines', 'Cathay Pacific', 'China Airlines', 'China Eastern Airlines', 'China Southern Airlines', 
-            'Copa Airlines', 'Croatia Airlines', 'Delta Air Lines', 'EasyJet', 'EgyptAir', 'El Al', 'Emirates', 
-            'Ethiopian Airlines', 'Etihad Airways', 'EVA Air', 'Finnair', 'Flydubai', 'Frontier Airlines', 'Garuda Indonesia', 
-            'Gulf Air', 'Hainan Airlines', 'Hawaiian Airlines', 'Iberia', 'Icelandair', 'IndiGo', 'Japan Airlines', 
-            'JetBlue Airways', 'Jetstar', 'Kenya Airways', 'KLM Royal Dutch Airlines', 'Korean Air', 'LATAM Airlines', 
-            'Lion Air', 'LOT Polish Airlines', 'Lufthansa', 'Malaysia Airlines', 'Mango', 'Norwegian Air Shuttle', 
-            'Pakistan International Airlines', 'Pegasus Airlines', 'Philippine Airlines', 'Qantas', 'Qatar Airways', 
-            'Royal Air Maroc', 'Royal Brunei Airlines', 'Royal Jordanian', 'S7 Airlines', 'SAS Scandinavian Airlines', 
-            'Saudi Arabian Airlines', 'Singapore Airlines', 'South African Airways', 'Southwest Airlines', 'Spirit Airlines', 
-            'SriLankan Airlines', 'Swiss International Air Lines', 'TAP Air Portugal', 'Thai Airways', 'Turkish Airlines', 
-            'United Airlines', 'US Airways', 'Vietnam Airlines', 'Virgin Atlantic', 'Virgin Australia', 'WestJet', 
-            'Wizz Air', 'XiamenAir', 'Air Europa', 'Vueling', 'Ryanair', 'Norwegian', 'Jet2', 'TUI Airways', 
-            'Thomas Cook Airlines', 'Condor', 'Eurowings', 'Air Berlin', 'Monarch Airlines', 'Flybe', 'bmi', 
-            'Aer Arann', 'CityJet', 'Stobart Air', 'Blue Air', 'Tarom', 'Air Moldova', 'Belavia', 'Ukraine International Airlines', 
-            'Aeroflot', 'S7 Airlines', 'Ural Airlines', 'Rossiya Airlines', 'Red Wings Airlines', 'Yamal Airlines', 
-            'Nordwind Airlines', 'Azur Air', 'Pobeda', 'S7 Airlines', 'Ural Airlines', 'Rossiya Airlines', 
-            'Red Wings Airlines', 'Yamal Airlines', 'Nordwind Airlines', 'Azur Air', 'Pobeda', 'S7 Airlines', 
-            'Ural Airlines', 'Rossiya Airlines', 'Red Wings Airlines', 'Yamal Airlines', 'Nordwind Airlines', 
-            'Azur Air', 'Pobeda', 'S7 Airlines', 'Ural Airlines', 'Rossiya Airlines', 'Red Wings Airlines', 
-            'Yamal Airlines', 'Nordwind Airlines', 'Azur Air', 'Pobeda', 'S7 Airlines', 'Ural Airlines', 
+            'Aer Lingus', 'Aeroflot', 'Aerolíneas Argentinas', 'Aeroméxico', 'Air Canada', 'Air China', 'Air France',
+            'Air India', 'Air New Zealand', 'Air Serbia', 'Air Tahiti Nui', 'Air Transat', 'AirAsia', 'AirAsia X',
+            'AirBaltic', 'Airbus', 'Aircalin', 'Alaska Airlines', 'Alitalia', 'All Nippon Airways (ANA)',
+            'American Airlines', 'Asiana Airlines', 'Austrian Airlines', 'Avianca', 'Bangkok Airways', 'British Airways',
+            'Brussels Airlines', 'Cathay Pacific', 'China Airlines', 'China Eastern Airlines', 'China Southern Airlines',
+            'Copa Airlines', 'Croatia Airlines', 'Delta Air Lines', 'EasyJet', 'EgyptAir', 'El Al', 'Emirates',
+            'Ethiopian Airlines', 'Etihad Airways', 'EVA Air', 'Finnair', 'Flydubai', 'Frontier Airlines', 'Garuda Indonesia',
+            'Gulf Air', 'Hainan Airlines', 'Hawaiian Airlines', 'Iberia', 'Icelandair', 'IndiGo', 'Japan Airlines',
+            'JetBlue Airways', 'Jetstar', 'Kenya Airways', 'KLM Royal Dutch Airlines', 'Korean Air', 'LATAM Airlines',
+            'Lion Air', 'LOT Polish Airlines', 'Lufthansa', 'Malaysia Airlines', 'Mango', 'Norwegian Air Shuttle',
+            'Pakistan International Airlines', 'Pegasus Airlines', 'Philippine Airlines', 'Qantas', 'Qatar Airways',
+            'Royal Air Maroc', 'Royal Brunei Airlines', 'Royal Jordanian', 'S7 Airlines', 'SAS Scandinavian Airlines',
+            'Saudi Arabian Airlines', 'Singapore Airlines', 'South African Airways', 'Southwest Airlines', 'Spirit Airlines',
+            'SriLankan Airlines', 'Swiss International Air Lines', 'TAP Air Portugal', 'Thai Airways', 'Turkish Airlines',
+            'United Airlines', 'US Airways', 'Vietnam Airlines', 'Virgin Atlantic', 'Virgin Australia', 'WestJet',
+            'Wizz Air', 'XiamenAir', 'Air Europa', 'Vueling', 'Ryanair', 'Norwegian', 'Jet2', 'TUI Airways',
+            'Thomas Cook Airlines', 'Condor', 'Eurowings', 'Air Berlin', 'Monarch Airlines', 'Flybe', 'bmi',
+            'Aer Arann', 'CityJet', 'Stobart Air', 'Blue Air', 'Tarom', 'Air Moldova', 'Belavia', 'Ukraine International Airlines',
+            'Aeroflot', 'S7 Airlines', 'Ural Airlines', 'Rossiya Airlines', 'Red Wings Airlines', 'Yamal Airlines',
+            'Nordwind Airlines', 'Azur Air', 'Pobeda', 'S7 Airlines', 'Ural Airlines', 'Rossiya Airlines',
+            'Red Wings Airlines', 'Yamal Airlines', 'Nordwind Airlines', 'Azur Air', 'Pobeda', 'S7 Airlines',
+            'Ural Airlines', 'Rossiya Airlines', 'Red Wings Airlines', 'Yamal Airlines', 'Nordwind Airlines',
+            'Azur Air', 'Pobeda', 'S7 Airlines', 'Ural Airlines', 'Rossiya Airlines', 'Red Wings Airlines',
+            'Yamal Airlines', 'Nordwind Airlines', 'Azur Air', 'Pobeda', 'S7 Airlines', 'Ural Airlines',
             'Rossiya Airlines', 'Red Wings Airlines', 'Yamal Airlines', 'Nordwind Airlines', 'Azur Air', 'Pobeda'
         ];
 
@@ -1361,7 +1521,7 @@
             { code: 'BIO', name: 'Bilbao', city: 'Bilbao', country: 'España' },
             { code: 'SVQ', name: 'Sevilla', city: 'Sevilla', country: 'España' },
             { code: 'GRX', name: 'Granada', city: 'Granada', country: 'España' },
-            
+
             // Europa
             { code: 'CDG', name: 'Charles de Gaulle', city: 'París', country: 'Francia' },
             { code: 'ORY', name: 'Orly', city: 'París', country: 'Francia' },
@@ -1388,7 +1548,7 @@
             { code: 'DUB', name: 'Dublín', city: 'Dublín', country: 'Irlanda' },
             { code: 'LIS', name: 'Humberto Delgado', city: 'Lisboa', country: 'Portugal' },
             { code: 'OPO', name: 'Francisco Sá Carneiro', city: 'Oporto', country: 'Portugal' },
-            
+
             // América del Norte
             { code: 'JFK', name: 'John F. Kennedy', city: 'Nueva York', country: 'Estados Unidos' },
             { code: 'LAX', name: 'Los Ángeles International', city: 'Los Ángeles', country: 'Estados Unidos' },
@@ -1406,7 +1566,7 @@
             { code: 'MEX', name: 'Benito Juárez', city: 'Ciudad de México', country: 'México' },
             { code: 'CUN', name: 'Cancún International', city: 'Cancún', country: 'México' },
             { code: 'GDL', name: 'Miguel Hidalgo', city: 'Guadalajara', country: 'México' },
-            
+
             // América del Sur
             { code: 'GRU', name: 'Guarulhos', city: 'São Paulo', country: 'Brasil' },
             { code: 'GIG', name: 'Galeão', city: 'Río de Janeiro', country: 'Brasil' },
@@ -1421,7 +1581,7 @@
             { code: 'CCS', name: 'Simón Bolívar', city: 'Caracas', country: 'Venezuela' },
             { code: 'ASU', name: 'Silvio Pettirossi', city: 'Asunción', country: 'Paraguay' },
             { code: 'MVD', name: 'Carrasco', city: 'Montevideo', country: 'Uruguay' },
-            
+
             // Asia
             { code: 'NRT', name: 'Narita', city: 'Tokio', country: 'Japón' },
             { code: 'HND', name: 'Haneda', city: 'Tokio', country: 'Japón' },
@@ -1448,7 +1608,7 @@
             { code: 'CAI', name: 'Cairo International', city: 'El Cairo', country: 'Egipto' },
             { code: 'JNB', name: 'O.R. Tambo', city: 'Johannesburgo', country: 'Sudáfrica' },
             { code: 'CPT', name: 'Cape Town International', city: 'Ciudad del Cabo', country: 'Sudáfrica' },
-            
+
             // Oceanía
             { code: 'SYD', name: 'Kingsford Smith', city: 'Sídney', country: 'Australia' },
             { code: 'MEL', name: 'Tullamarine', city: 'Melbourne', country: 'Australia' },
@@ -1461,16 +1621,16 @@
         ];
 
         // Initialize drag and drop functionality
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             console.log('DOM Content Loaded - Initializing editor...');
-            
+
             // Check if we need to restore editor state from preview
             const editorStateBackup = sessionStorage.getItem('editor_state_backup');
             if (editorStateBackup) {
                 try {
                     const editorState = JSON.parse(editorStateBackup);
                     const timeDiff = Date.now() - editorState.timestamp;
-                    
+
                     // Only restore if the backup is less than 1 hour old
                     if (timeDiff < 3600000) {
                         console.log('Restoring editor state from preview backup');
@@ -1487,25 +1647,25 @@
                     sessionStorage.removeItem('editor_state_backup');
                 }
             }
-            
+
             // Clean up corrupted data first
             cleanupCorruptedData();
-            
+
             initializeDragAndDrop();
             setDefaultStartDate();
             makeExistingItemsClickable();
-            
+
             // Add event listener for date input to update automatically
             const startDateInput = document.getElementById('startDate');
-            startDateInput.addEventListener('change', function() {
+            startDateInput.addEventListener('change', function () {
                 updateItineraryDatesSilently();
                 autoSave();
             });
-            
+
             // Add event listener for trip title to update automatically
             const tripTitleInput = document.getElementById('tripTitle');
             if (tripTitleInput) {
-                tripTitleInput.addEventListener('input', function() {
+                tripTitleInput.addEventListener('input', function () {
                     updateTripTitleInRealTime();
                     // Debounce auto-save to avoid too frequent saves
                     clearTimeout(window.tripTitleSaveTimeout);
@@ -1515,20 +1675,20 @@
                         showNotification('Guardado Automático', 'Cambios guardados automáticamente', 2000);
                     }, 1000);
                 });
-                
+
                 // Also save on blur (when user finishes editing)
-                tripTitleInput.addEventListener('blur', function() {
+                tripTitleInput.addEventListener('blur', function () {
                     autoSave();
                 });
             }
-            
+
             // Check if we're editing a saved trip
             const urlParams = new URLSearchParams(window.location.search);
             const tripId = urlParams.get('trip');
             const mode = urlParams.get('mode');
-            
+
             console.log('Editor loaded with tripId:', tripId, 'mode:', mode);
-            
+
             if (tripId && (mode === 'edit' || mode === 'new')) {
                 if (mode === 'edit') {
                     loadSavedTrip(tripId);
@@ -1544,11 +1704,11 @@
                 // For legacy URLs or no parameters, create a new trip
                 createNewTrip();
             }
-            
+
             // Update save status after initialization
             setTimeout(() => {
                 updateSaveStatus();
-                
+
                 // Check if we have a trip ID and verify it's saved
                 const urlParams = new URLSearchParams(window.location.search);
                 const tripId = urlParams.get('trip');
@@ -1567,7 +1727,7 @@
                         console.log('Trip not found in storage, will be saved on first change');
                     }
                 }
-                
+
                 // Verify current state
                 console.log('Current editor state:', {
                     tripTitle: document.getElementById('tripTitle')?.value,
@@ -1576,7 +1736,7 @@
                     dayCounter: dayCounter,
                     itemCounter: itemCounter
                 });
-                
+
                 // Double-check data loading after a longer delay
                 setTimeout(() => {
                     const urlParams = new URLSearchParams(window.location.search);
@@ -1591,12 +1751,12 @@
                     }
                 }, 3000);
             }, 1000);
-            
+
             // Set up auto-save interval
             setInterval(autoSave, 30000); // Auto-save every 30 seconds
-            
+
             // Auto-save when page is about to unload
-            window.beforeUnloadHandler = function(e) {
+            window.beforeUnloadHandler = function (e) {
                 // Show confirmation dialog if there are unsaved changes
                 if (hasUnsavedChanges()) {
                     e.preventDefault();
@@ -1604,23 +1764,23 @@
                     return e.returnValue;
                 }
             };
-            
-            window.addEventListener('beforeunload', window.beforeUnloadHandler);
-            
 
-            
+            window.addEventListener('beforeunload', window.beforeUnloadHandler);
+
+
+
             // Auto-save when page loses focus (user switches tabs or windows)
-            window.addEventListener('blur', function() {
+            window.addEventListener('blur', function () {
                 autoSave();
             });
-            
+
             // Auto-save when user navigates away
-            window.addEventListener('pagehide', function() {
+            window.addEventListener('pagehide', function () {
                 autoSave();
             });
-            
+
             // Clean up editor state backup when leaving the page (but not when going to preview)
-            window.addEventListener('beforeunload', function(e) {
+            window.addEventListener('beforeunload', function (e) {
                 // Only clean up if we're not going to preview
                 const isGoingToPreview = e.target.location && e.target.location.href.includes('viantryp_preview.html');
                 if (!isGoingToPreview) {
@@ -1648,12 +1808,12 @@
                     dateElement.textContent = 'Sin fecha';
                 }
             });
-            
+
             // Sort items in all days after updating dates
             dayContainers.forEach(container => {
                 sortItemsByTime(container);
             });
-            
+
             // Auto-save after updating dates (silent)
             autoSave();
         }
@@ -1672,9 +1832,9 @@
         }
 
         function formatDate(date) {
-            const options = { 
-                year: 'numeric', 
-                month: 'long', 
+            const options = {
+                year: 'numeric',
+                month: 'long',
                 day: 'numeric',
                 weekday: 'long'
             };
@@ -1684,17 +1844,17 @@
         function addNewDay() {
             dayCounter++;
             const timeline = document.getElementById('timeline');
-            
+
             // Create new day container
             const newDayContainer = document.createElement('div');
             newDayContainer.className = 'day-container';
             newDayContainer.setAttribute('data-day', dayCounter);
             newDayContainer.style.opacity = '0';
             newDayContainer.style.transform = 'translateY(20px)';
-            
+
             // NO auto-calcular fecha para el nuevo día.
             let dayDate = 'Sin fecha';
-            
+
             newDayContainer.innerHTML = `
                 <div class="day-actions">
                     <button class="day-btn" onclick="deleteDay(this)">
@@ -1712,30 +1872,30 @@
                     </div>
                 </div>
             `;
-            
+
             timeline.appendChild(newDayContainer);
-            
+
             // Make the new day container droppable
             newDayContainer.addEventListener('dragover', handleDragOver);
             newDayContainer.addEventListener('drop', handleDrop);
             newDayContainer.addEventListener('dragenter', handleDragEnter);
             newDayContainer.addEventListener('dragleave', handleDragLeave);
-            
+
             // Add entrance animation
             setTimeout(() => {
                 newDayContainer.style.opacity = '1';
                 newDayContainer.style.transform = 'translateY(0)';
             }, 100);
-            
+
             // Scroll to the new day
             newDayContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
+
             // Sort items in all days after adding new day
             const allDayContainers = document.querySelectorAll('.day-container');
             allDayContainers.forEach(container => {
                 sortItemsByTime(container);
             });
-            
+
             // Auto-save after adding new day (silent)
             autoSave();
         }
@@ -1743,13 +1903,13 @@
         function deleteDay(button) {
             const dayContainer = button.closest('.day-container');
             const dayNumber = dayContainer.getAttribute('data-day');
-            
+
             // Don't allow deleting if it's the only day
             const totalDays = document.querySelectorAll('.day-container').length;
             if (totalDays <= 1) {
                 return;
             }
-            
+
             if (confirm(`¿Estás seguro de que quieres eliminar el Día ${dayNumber} y todos sus elementos?`)) {
                 // Delete all items in this day from itemsData
                 const items = dayContainer.querySelectorAll('.timeline-item[data-item-id]');
@@ -1757,23 +1917,23 @@
                     const itemId = item.getAttribute('data-item-id');
                     delete itemsData[itemId];
                 });
-                
+
                 // Remove with animation
                 dayContainer.style.opacity = '0';
                 dayContainer.style.transform = 'translateX(-50px) scale(0.95)';
-                
+
                 setTimeout(() => {
                     dayContainer.remove();
                     renumberDays();
                     updateItineraryDatesSilently(); // Recalculate dates
-                    
+
                     // Sort items in all remaining days
                     const remainingDayContainers = document.querySelectorAll('.day-container');
                     remainingDayContainers.forEach(container => {
                         sortItemsByTime(container);
                     });
                 }, 300);
-                
+
                 // Auto-save after deleting day (silent)
                 autoSave();
             }
@@ -1794,7 +1954,7 @@
             document.querySelectorAll('.draggable-element').forEach(element => {
                 element.addEventListener('dragstart', handleDragStart);
                 element.addEventListener('dragend', handleDragEnd);
-                
+
                 // Add click functionality for summary and total elements
                 if (element.dataset.type === 'summary') {
                     element.addEventListener('click', handleSummaryClick);
@@ -1815,11 +1975,11 @@
 
         function handleSummaryClick(e) {
             e.preventDefault();
-            
+
             // Check if there's already a summary at the top
             const timeline = document.getElementById('timeline');
             const existingSummary = timeline.querySelector('.timeline-item.summary');
-            
+
             if (existingSummary) {
                 // If summary already exists, remove it
                 existingSummary.remove();
@@ -1831,13 +1991,13 @@
                 autoSave();
                 return;
             }
-            
+
             // Create new summary element
             const newItem = createTimelineItem('summary', 'Resumen de Itinerario', 0);
-            
+
             // Insert at the beginning of the timeline (before first day)
             timeline.insertBefore(newItem, timeline.firstChild);
-            
+
             // Add entrance animation
             newItem.style.opacity = '0';
             newItem.style.transform = 'translateX(50px)';
@@ -1845,21 +2005,21 @@
                 newItem.style.opacity = '1';
                 newItem.style.transform = 'translateX(0)';
             }, 100);
-            
+
             // Auto-save after adding new item (silent)
             autoSave();
-            
+
             // Update the summary content
             updateAllSummaries();
         }
 
         function handleTotalClick(e) {
             e.preventDefault();
-            
+
             // Check if there's already a total element
             const timeline = document.getElementById('timeline');
             const existingTotal = timeline.querySelector('.timeline-item.total');
-            
+
             if (existingTotal) {
                 // If total already exists, remove it
                 existingTotal.remove();
@@ -1871,18 +2031,18 @@
                 autoSave();
                 return;
             }
-            
+
             // Create total element directly (will be positioned based on checkbox in edit form)
             const newItem = createTimelineItem('total', 'Valor Total del Viaje', -1);
-            
+
             // Check if there's already a total
             if (existingTotal) {
                 existingTotal.remove();
             }
-            
+
             // Place at the end initially (will be repositioned when saved)
             timeline.appendChild(newItem);
-            
+
             // Add entrance animation
             newItem.style.opacity = '0';
             newItem.style.transform = 'translateX(50px)';
@@ -1890,13 +2050,13 @@
                 newItem.style.opacity = '1';
                 newItem.style.transform = 'translateX(0)';
             }, 100);
-            
+
             // Auto-save after adding new item (silent)
             autoSave();
-            
+
             // Update summary if it exists
             updateAllSummaries();
-            
+
             // Automatically open edit modal for the new item
             setTimeout(() => {
                 const editButton = newItem.querySelector('.item-btn');
@@ -1910,7 +2070,7 @@
             draggedElement = e.target;
             e.target.style.opacity = '0.5';
             e.target.style.transform = 'rotate(5deg) scale(1.05)';
-            
+
             e.dataTransfer.setData('text/plain', JSON.stringify({
                 type: e.target.dataset.type,
                 text: e.target.querySelector('strong').textContent
@@ -1941,59 +2101,59 @@
         function handleDrop(e) {
             e.preventDefault();
             e.currentTarget.classList.remove('drag-over');
-            
+
             const data = JSON.parse(e.dataTransfer.getData('text/plain'));
             const dayContainer = e.currentTarget;
             const dayItems = dayContainer.querySelector('.day-items');
             const dayNumber = parseInt(dayContainer.getAttribute('data-day'));
-            
+
             // Remove placeholder if exists
             const placeholder = dayItems.querySelector('[style*="text-align: center"]');
             if (placeholder) placeholder.remove();
-            
+
             // Create new timeline item
             const newItem = createTimelineItem(data.type, data.text, dayNumber);
-            
+
             // Special handling for summary element - position at top
             if (data.type === 'summary') {
                 // Find the timeline container
                 const timeline = document.getElementById('timeline');
-                
+
                 // Check if there's already a summary at the top
                 const existingSummary = timeline.querySelector('.timeline-item.summary');
                 if (existingSummary) {
                     // Replace existing summary
                     existingSummary.remove();
                 }
-                
+
                 // Insert at the beginning of the timeline (before first day)
                 timeline.insertBefore(newItem, timeline.firstChild);
-                
+
                 // Update the day to 0 for summary (special case)
                 itemsData[newItem.getAttribute('data-item-id')].day = 0;
             } else if (data.type === 'total') {
                 // Special handling for total element - position based on checkbox
                 const timeline = document.getElementById('timeline');
-                
+
                 // Check if there's already a total
                 const existingTotal = timeline.querySelector('.timeline-item.total');
                 if (existingTotal) {
                     // Replace existing total
                     existingTotal.remove();
                 }
-                
+
                 // Default to placing at the beginning (after summary) unless checkbox is checked
                 // The actual position will be determined when the user saves the form
                 // For now, place it at the end and let the save function handle positioning
                 timeline.appendChild(newItem);
-                
+
                 // Update the day to -1 for total (special case)
                 itemsData[newItem.getAttribute('data-item-id')].day = -1;
             } else {
                 // Normal element - add to day container
                 dayItems.appendChild(newItem);
             }
-            
+
             // Add entrance animation
             newItem.style.opacity = '0';
             newItem.style.transform = 'translateX(50px)';
@@ -2001,16 +2161,16 @@
                 newItem.style.opacity = '1';
                 newItem.style.transform = 'translateX(0)';
             }, 100);
-            
+
             // Auto-save after adding new item (silent)
             autoSave();
-            
+
             // Sort items by time within the day
             sortItemsByTime(dayContainer);
-            
+
             // Update summary if it exists
             updateAllSummaries();
-            
+
             // Show notification about automatic date assignment for elements with date fields
             if (data.type !== 'summary' && data.type !== 'total' && data.type !== 'note') {
                 const dayDate = getDateForDay(dayNumber);
@@ -2023,13 +2183,13 @@
                     } else if (data.type === 'transport') {
                         message = `Fecha de salida automáticamente asignada al Día ${dayNumber}. Completa la fecha de llegada.`;
                     }
-                    
+
                     if (message) {
                         showNotification('Fecha Asignada', message);
                     }
                 }
             }
-            
+
             // Automatically open edit modal for the new item (except summary)
             if (data.type !== 'summary') {
                 setTimeout(() => {
@@ -2053,25 +2213,25 @@
         // Function to get time value for sorting (returns minutes since midnight)
         function getTimeValueForSorting(itemData) {
             if (!itemData) return 0;
-            
+
             // For flights and transport, use departure time
             if (itemData.departureDateTime) {
                 const departureTime = new Date(itemData.departureDateTime);
                 return departureTime.getHours() * 60 + departureTime.getMinutes();
             }
-            
+
             // For hotels, use check-in time
             if (itemData.checkin) {
                 const [hours, minutes] = itemData.checkin.split(':').map(Number);
                 return hours * 60 + minutes;
             }
-            
+
             // For activities, use start time
             if (itemData.startTime) {
                 const [hours, minutes] = itemData.startTime.split(':').map(Number);
                 return hours * 60 + minutes;
             }
-            
+
             // Default to 0 (midnight) for items without time
             return 0;
         }
@@ -2080,26 +2240,26 @@
         function sortItemsByTime(dayContainer) {
             const dayItems = dayContainer.querySelector('.day-items');
             if (!dayItems) return;
-            
+
             const items = Array.from(dayItems.querySelectorAll('.timeline-item'));
             if (items.length <= 1) return; // No need to sort if 0 or 1 items
-            
+
             // Get the day number
             const dayNumber = parseInt(dayContainer.getAttribute('data-day'));
-            
+
             // Sort items by their time values
             items.sort((a, b) => {
                 const itemIdA = a.getAttribute('data-item-id');
                 const itemIdB = b.getAttribute('data-item-id');
                 const itemDataA = itemsData[itemIdA];
                 const itemDataB = itemsData[itemIdB];
-                
+
                 const timeA = getTimeValueForSorting(itemDataA);
                 const timeB = getTimeValueForSorting(itemDataB);
-                
+
                 return timeA - timeB; // Sort from earliest to latest
             });
-            
+
             // Re-append items in sorted order
             items.forEach(item => {
                 dayItems.appendChild(item);
@@ -2112,7 +2272,7 @@
             item.className = `timeline-item ${type}`;
             item.setAttribute('data-item-id', itemCounter);
             item.style.transition = 'all 0.3s ease';
-            
+
             const iconMap = {
                 flight: 'fa-plane',
                 hotel: 'fa-bed',
@@ -2122,7 +2282,7 @@
                 summary: 'fa-clipboard-list',
                 total: 'fa-dollar-sign'
             };
-            
+
             const defaultDescriptions = {
                 flight: 'Seleccionar aeropuertos de origen y destino',
                 hotel: 'Añadir fechas de check-in/out y tipo de habitación',
@@ -2132,10 +2292,10 @@
                 summary: 'Resumen automático del itinerario',
                 total: 'Agregar precio total del viaje'
             };
-            
+
             // Get the date for this day
             const dayDate = getDateForDay(dayNumber);
-            
+
             // Initialize data for new item
             itemsData[itemCounter] = {
                 type: type,
@@ -2143,7 +2303,7 @@
                 description: defaultDescriptions[type],
                 day: dayNumber
             };
-            
+
             // Automatically set start date for elements that have date fields
             if (dayDate && type !== 'summary' && type !== 'total' && type !== 'note') {
                 if (type === 'flight') {
@@ -2162,7 +2322,7 @@
                 }
                 // Note: Activities don't have a specific date field, they inherit from the day placement
             }
-            
+
             if (type === 'summary') {
                 // Special handling for summary element
                 const summaryContent = generateItinerarySummary();
@@ -2215,24 +2375,24 @@
                     </div>
                 `;
             }
-            
+
             // Make the entire item clickable
-            item.addEventListener('click', function(e) {
+            item.addEventListener('click', function (e) {
                 // Don't trigger if clicking on action buttons
                 if (!e.target.closest('.item-actions')) {
                     editItem(this.querySelector('.item-btn'));
                 }
             });
-            
+
             return item;
         }
 
         function generateItinerarySummary() {
             const tripTitle = document.getElementById('tripTitle').value.trim() || 'Mi Viaje';
             const dayContainers = document.querySelectorAll('.day-container');
-            
+
             let summary = `<strong>${tripTitle}</strong><br>`;
-            
+
             // Duración: basada en fechas registradas en cada día (sin startDate + day).
             const dayDateValues = Array.from(dayContainers)
                 .map(container => container.querySelector('.day-date')?.getAttribute('data-date') || null)
@@ -2251,15 +2411,15 @@
                     summary += `<strong>Duración:</strong> ${dayContainers.length} días<br><br>`;
                 }
             }
-            
+
             // Group items by day
             const itemsByDay = {};
-            
+
             // Initialize days
             for (let i = 1; i <= dayContainers.length; i++) {
                 itemsByDay[i] = [];
             }
-            
+
             // Group items by their day
             Object.values(itemsData).forEach(item => {
                 if (item && item.type && item.type !== 'summary' && item.day && item.day > 0) {
@@ -2269,27 +2429,27 @@
                     itemsByDay[item.day].push(item);
                 }
             });
-            
+
             // Generate day-by-day summary
             Object.keys(itemsByDay).forEach(dayNumber => {
                 const dayItems = itemsByDay[dayNumber];
                 if (dayItems.length > 0) {
                     const formatDayDate = (date) => {
-                        return date.toLocaleDateString('es-ES', { 
+                        return date.toLocaleDateString('es-ES', {
                             weekday: 'long',
-                            day: '2-digit', 
-                            month: '2-digit', 
-                            year: 'numeric' 
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
                         });
                     };
                     const container = document.querySelector(`.day-container[data-day="${dayNumber}"]`);
                     const dayDateValue = container?.querySelector('.day-date')?.getAttribute('data-date') || null;
                     const dayDateObj = dayDateValue ? new Date(dayDateValue + 'T00:00:00') : null;
                     summary += `<strong>Día ${dayNumber} - ${dayDateObj ? formatDayDate(dayDateObj) : 'Sin fecha'}</strong><br>`;
-                    
+
                     dayItems.forEach(item => {
                         let itemTitle = item.title || 'Sin título';
-                        
+
                         // Special formatting for different item types
                         if (item.type === 'flight') {
                             // Keep the flight title as is (already formatted as "Vuelo desde X hacia Y")
@@ -2301,19 +2461,19 @@
                             // For other types, use their title as is
                             itemTitle = itemTitle;
                         }
-                        
+
                         summary += `• ${itemTitle}<br>`;
                     });
-                    
+
                     summary += '<br>';
                 }
             });
-            
+
             // If no items found
             if (Object.values(itemsByDay).every(day => day.length === 0)) {
                 summary += '<em>Sin elementos agregados aún</em>';
             }
-            
+
             // Add total price if exists
             const totalItems = Object.values(itemsData).filter(item => item && item.type === 'total');
             if (totalItems.length > 0) {
@@ -2331,8 +2491,8 @@
                             'MXN': '$'
                         };
                         const symbol = currencySymbols[totalItem.currency] || totalItem.currency;
-                        const formattedPrice = `${symbol}${price.toLocaleString('es-ES', { 
-                            minimumFractionDigits: 2, 
+                        const formattedPrice = `${symbol}${price.toLocaleString('es-ES', {
+                            minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                             useGrouping: true
                         })}`;
@@ -2340,7 +2500,7 @@
                     }
                 }
             }
-            
+
             return summary;
         }
 
@@ -2352,12 +2512,12 @@
                 if (descriptionElement) {
                     descriptionElement.innerHTML = summaryContent;
                 }
-                
+
                 // Update the data
                 if (itemsData[itemId]) {
                     itemsData[itemId].description = summaryContent;
                 }
-                
+
                 // Auto-save (silent)
                 autoSave();
             }
@@ -2387,7 +2547,7 @@
         }
 
 
-        
+
         function updateAllSummaries() {
             // Find all summary elements and update them
             const summaryElements = document.querySelectorAll('.timeline-item.summary');
@@ -2398,22 +2558,22 @@
                 }
             });
         }
-        
+
 
 
         function editItem(button) {
             const item = button.closest('.timeline-item');
             const itemId = item.getAttribute('data-item-id');
             const itemData = itemsData[itemId];
-            
+
             currentEditingItem = { element: item, id: itemId, data: itemData };
-            
+
             const modal = document.getElementById('editModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalBody = document.getElementById('modalBody');
-            
+
             let formHTML = '';
-            
+
             if (itemData.type === 'flight') {
                 modalTitle.innerHTML = '<i class="fas fa-plane"></i> Editar Vuelo';
                 formHTML = `
@@ -2678,10 +2838,10 @@
                     </div>
                 `;
             }
-            
+
             modalBody.innerHTML = formHTML;
             modal.classList.add('show');
-            
+
             // Setup airline and airport autocomplete if it's a flight
             if (itemData.type === 'flight') {
                 setTimeout(() => {
@@ -2690,7 +2850,7 @@
                     setupAirportAutocomplete('destinationAirportInput', 'destinationAirportAutocomplete');
                 }, 100);
             }
-            
+
             // Add event listeners to clear error styles when user starts typing
             setTimeout(() => {
                 const modal = document.getElementById('editModal');
@@ -2700,11 +2860,11 @@
                         input.addEventListener('input', clearFieldError);
                         input.addEventListener('change', clearFieldError);
                     });
-                    
+
 
                 }
             }, 100);
-            
+
             // Load existing images if any
             if (itemData.images && itemData.images.length > 0) {
                 if (itemData.type === 'hotel') {
@@ -2712,7 +2872,7 @@
                         const imageInput = document.getElementById(`hotelImage${index + 1}`);
                         const preview = document.getElementById(`hotelImage${index + 1}Preview`);
                         const box = imageInput.closest('.image-upload-box');
-                        
+
                         if (imageInput && preview && box) {
                             imageInput.dataset.fileName = image.fileName;
                             imageInput.dataset.originalName = image.name;
@@ -2720,7 +2880,7 @@
                             imageInput.dataset.base64Data = image.base64Data;
                             imageInput.dataset.size = image.size;
                             imageInput.dataset.type = image.type;
-                            
+
                             preview.src = image.blobUrl;
                             preview.style.display = 'block';
                             box.classList.add('has-image');
@@ -2733,7 +2893,7 @@
                         const imageInput = document.getElementById(`activityImage${index + 1}`);
                         const preview = document.getElementById(`activityImage${index + 1}Preview`);
                         const box = imageInput.closest('.image-upload-box');
-                        
+
                         if (imageInput && preview && box) {
                             imageInput.dataset.fileName = image.fileName;
                             imageInput.dataset.originalName = image.name;
@@ -2741,7 +2901,7 @@
                             imageInput.dataset.base64Data = image.base64Data;
                             imageInput.dataset.size = image.size;
                             imageInput.dataset.type = image.type;
-                            
+
                             preview.src = image.blobUrl;
                             preview.style.display = 'block';
                             box.classList.add('has-image');
@@ -2756,7 +2916,7 @@
         function closeModal() {
             const modal = document.getElementById('editModal');
             modal.classList.remove('show');
-            
+
             // Only clean up blob URLs for unsaved changes, not for existing images
             const imageInputs = modal.querySelectorAll('input[type="file"]');
             imageInputs.forEach(input => {
@@ -2766,7 +2926,7 @@
                     delete input.dataset.blobUrl;
                 }
             });
-            
+
             currentEditingItem = null;
         }
 
@@ -2789,10 +2949,10 @@
         // Function to validate required fields for each element type
         function validateRequiredFields(data) {
             const errors = [];
-            
+
             // Clear previous error styles
             clearErrorStyles();
-            
+
             if (data.type === 'flight') {
                 const originAirport = document.getElementById('originAirportInput')?.value?.trim();
                 const destinationAirport = document.getElementById('destinationAirportInput')?.value?.trim();
@@ -2800,7 +2960,7 @@
                 const airline = document.getElementById('airline')?.value?.trim();
                 const departureDateTime = document.getElementById('departureDateTime')?.value;
                 const arrivalDateTime = document.getElementById('arrivalDateTime')?.value;
-                
+
                 if (!originAirport) {
                     errors.push('Aeropuerto de origen');
                     markFieldAsError('originAirportInput');
@@ -2825,14 +2985,14 @@
                     errors.push('Fecha y hora de llegada');
                     markFieldAsError('arrivalDateTime');
                 }
-                
 
-                
+
+
             } else if (data.type === 'hotel') {
                 const hotelName = document.getElementById('hotelName')?.value?.trim();
                 const checkinDate = document.getElementById('checkinDate')?.value;
                 const checkoutDate = document.getElementById('checkoutDate')?.value;
-                
+
                 if (!hotelName) {
                     errors.push('Nombre del hotel');
                     markFieldAsError('hotelName');
@@ -2845,16 +3005,16 @@
                     errors.push('Fecha de check-out');
                     markFieldAsError('checkoutDate');
                 }
-                
 
-                
+
+
             } else if (data.type === 'activity') {
                 const activityTitle = document.getElementById('activityTitle')?.value?.trim();
                 const startTime = document.getElementById('startTime')?.value;
                 const endTime = document.getElementById('endTime')?.value;
                 const activityDescription = document.getElementById('activityDescription')?.value?.trim();
                 const location = document.getElementById('location')?.value?.trim();
-                
+
                 if (!activityTitle) {
                     errors.push('Nombre de la actividad');
                     markFieldAsError('activityTitle');
@@ -2875,16 +3035,16 @@
                     errors.push('Ubicación');
                     markFieldAsError('location');
                 }
-                
 
-                
+
+
             } else if (data.type === 'transport') {
                 const transportType = document.getElementById('transportType')?.value;
                 const originLocation = document.getElementById('originLocation')?.value?.trim();
                 const destinationLocation = document.getElementById('destinationLocation')?.value?.trim();
                 const departureDateTime = document.getElementById('departureDateTime')?.value;
                 const arrivalDateTime = document.getElementById('arrivalDateTime')?.value;
-                
+
                 if (!transportType) {
                     errors.push('Tipo de transporte');
                     markFieldAsError('transportType');
@@ -2905,13 +3065,13 @@
                     errors.push('Fecha y hora de llegada');
                     markFieldAsError('arrivalDateTime');
                 }
-                
 
-                
+
+
             } else if (data.type === 'note') {
                 const noteTitle = document.getElementById('noteTitle')?.value?.trim();
                 const noteContent = document.getElementById('noteContent')?.value?.trim();
-                
+
                 if (!noteTitle) {
                     errors.push('Título de la nota');
                     markFieldAsError('noteTitle');
@@ -2920,11 +3080,11 @@
                     errors.push('Contenido');
                     markFieldAsError('noteContent');
                 }
-                
+
             } else if (data.type === 'total') {
                 const totalPrice = document.getElementById('totalPrice')?.value?.trim();
                 const currency = document.getElementById('currency')?.value;
-                
+
                 if (!totalPrice) {
                     errors.push('Precio total del viaje');
                     markFieldAsError('totalPrice');
@@ -2934,15 +3094,15 @@
                     markFieldAsError('currency');
                 }
             }
-            
+
             return errors;
         }
-        
+
         // Function to mark a field as having an error
         function markFieldAsError(fieldId) {
             const field = document.getElementById(fieldId);
             const label = field?.previousElementSibling;
-            
+
             if (field) {
                 field.classList.add('error');
             }
@@ -2950,24 +3110,24 @@
                 label.classList.add('error');
             }
         }
-        
+
         // Function to clear all error styles
         function clearErrorStyles() {
             const modal = document.getElementById('editModal');
             if (modal) {
                 const errorFields = modal.querySelectorAll('.form-control.error');
                 const errorLabels = modal.querySelectorAll('.form-label.error');
-                
+
                 errorFields.forEach(field => field.classList.remove('error'));
                 errorLabels.forEach(label => label.classList.remove('error'));
             }
         }
-        
+
         // Function to clear error style from a specific field
         function clearFieldError(event) {
             const field = event.target;
             const label = field.previousElementSibling;
-            
+
             field.classList.remove('error');
             if (label && label.classList.contains('form-label')) {
                 label.classList.remove('error');
@@ -2980,11 +3140,11 @@
 
         function saveChanges() {
             if (!currentEditingItem) return;
-            
+
             const { element, id, data } = currentEditingItem;
             const titleElement = element.querySelector('.item-title');
             const descElement = element.querySelector('.item-description');
-            
+
             // Validate required fields first
             const validationErrors = validateRequiredFields(data);
             if (validationErrors.length > 0) {
@@ -2992,11 +3152,11 @@
                 alert(errorMessage);
                 return; // Don't close the modal
             }
-            
+
             let newTitle = '';
             let newDescription = '';
             let dateWarning = false;
-            
+
             if (data.type === 'flight') {
                 const originAirport = document.getElementById('originAirportInput').value;
                 const destinationAirport = document.getElementById('destinationAirportInput').value;
@@ -3005,11 +3165,11 @@
                 const departureDateTime = document.getElementById('departureDateTime').value;
                 const arrivalDateTime = document.getElementById('arrivalDateTime').value;
                 const notes = document.getElementById('flightNotes').value;
-                
+
                 // Extract city names from airport data attributes or fallback to parsing
                 let originCity = document.getElementById('originAirportInput').getAttribute('data-airport-city');
                 let destinationCity = document.getElementById('destinationAirportInput').getAttribute('data-airport-city');
-                
+
                 // If we don't have the city from data attributes, try to parse from the airport string
                 if (!originCity && originAirport) {
                     if (originAirport.includes(' - ')) {
@@ -3023,7 +3183,7 @@
                         originCity = getCityFromAirportCode(originCode);
                     }
                 }
-                
+
                 if (!destinationCity && destinationAirport) {
                     if (destinationAirport.includes(' - ')) {
                         const parts = destinationAirport.split(' - ')[1];
@@ -3036,45 +3196,45 @@
                         destinationCity = getCityFromAirportCode(destinationCode);
                     }
                 }
-                
+
                 // Validate departure date matches the day
                 if (departureDateTime && !validateItemDate(departureDateTime, data.day)) {
                     dateWarning = true;
                 }
-                
+
                 // Generate title automatically using city names
                 newTitle = `Vuelo desde ${originCity} hacia ${destinationCity}`;
-                
+
                 // Format dates for description
                 let departureText = '';
                 let arrivalText = '';
-                
+
                 if (departureDateTime) {
                     departureText = formatFlightDateTime(departureDateTime);
                 }
-                
+
                 if (arrivalDateTime) {
                     arrivalText = formatFlightDateTime(arrivalDateTime);
                 }
-                
+
                 // Check if arrival is on a different day
                 let dayDifferenceText = '';
                 if (departureDateTime && arrivalDateTime) {
                     const departureDate = new Date(departureDateTime);
                     const arrivalDate = new Date(arrivalDateTime);
-                    
+
                     // Calculate day difference
                     const departureDay = new Date(departureDate.getFullYear(), departureDate.getMonth(), departureDate.getDate());
                     const arrivalDay = new Date(arrivalDate.getFullYear(), arrivalDate.getMonth(), arrivalDate.getDate());
                     const dayDiff = Math.round((arrivalDay - departureDay) / (1000 * 60 * 60 * 24));
-                    
+
                     if (dayDiff > 0) {
                         dayDifferenceText = ` (+${dayDiff} día${dayDiff > 1 ? 's' : ''})`;
                     }
                 }
-                
+
                 newDescription = `${flightNumber} - ${airline} | Salida: ${departureText} - Llegada: ${arrivalText}${dayDifferenceText}`;
-                
+
                 // Update data
                 itemsData[id] = {
                     ...itemsData[id],
@@ -3089,10 +3249,10 @@
                     arrivalDateTime,
                     notes
                 };
-                
+
                 // Generate trip title from flights
                 generateTripTitleFromFlights();
-                
+
             } else if (data.type === 'hotel') {
                 const hotelName = document.getElementById('hotelName').value;
                 const checkinDate = document.getElementById('checkinDate').value;
@@ -3102,39 +3262,39 @@
                 const roomType = document.getElementById('roomType').value;
                 const mealPlan = document.getElementById('mealPlan').value;
                 const notes = document.getElementById('hotelNotes').value;
-                
+
                 // Calculate stay duration
                 let stayDuration = '';
                 if (checkinDate && checkoutDate) {
                     const checkinDateObj = new Date(checkinDate);
                     const checkoutDateObj = new Date(checkoutDate);
-                    
+
                     // Calculate difference in days
                     const timeDiff = checkoutDateObj.getTime() - checkinDateObj.getTime();
                     const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                    
+
                     if (daysDiff > 0) {
                         stayDuration = `${daysDiff} noche${daysDiff > 1 ? 's' : ''}`;
                     } else if (daysDiff === 0) {
                         stayDuration = '1 noche';
                     }
                 }
-                
+
                 // Validate check-in date matches the day (more flexible for hotels)
                 console.log('About to validate hotel check-in date:', { checkinDate, day: data.day });
                 if (checkinDate && !validateHotelDate(checkinDate, data.day)) {
                     dateWarning = true;
                     console.log('Hotel date validation failed - will show warning');
                 }
-                
+
                 newTitle = hotelName;
                 newDescription = `${stayDuration ? stayDuration + ' | ' : ''}Check-in: ${checkin} | ${roomType} | ${mealPlan}`;
-                
+
                 // Handle hotel images
                 const hotelImages = [];
                 const hotelImage1 = document.getElementById('hotelImage1');
                 const hotelImage2 = document.getElementById('hotelImage2');
-                
+
                 if (hotelImage1.files[0] && hotelImage1.dataset.blobUrl) {
                     hotelImages.push({
                         name: hotelImage1.dataset.originalName,
@@ -3155,7 +3315,7 @@
                         type: hotelImage1.dataset.type || 'image/jpeg'
                     });
                 }
-                
+
                 if (hotelImage2.files[0] && hotelImage2.dataset.blobUrl) {
                     hotelImages.push({
                         name: hotelImage2.dataset.originalName,
@@ -3176,7 +3336,7 @@
                         type: hotelImage2.dataset.type || 'image/jpeg'
                     });
                 }
-                
+
                 // Update data
                 itemsData[id] = {
                     ...itemsData[id],
@@ -3190,26 +3350,26 @@
                     notes,
                     images: hotelImages
                 };
-                
+
             } else if (data.type === 'activity') {
                 const activityTitle = document.getElementById('activityTitle').value;
                 const startTime = document.getElementById('startTime').value;
                 const endTime = document.getElementById('endTime').value;
                 const description = document.getElementById('activityDescription').value;
                 const location = document.getElementById('location').value;
-                
+
                 // For activities, we'll validate based on the day placement
                 // Activities don't have a specific date field, so we validate based on placement
-        // Sin automatización: no inferir/validar fechas por "fecha inicio + día".
-                
+                // Sin automatización: no inferir/validar fechas por "fecha inicio + día".
+
                 newTitle = activityTitle;
                 newDescription = `${startTime} - ${endTime} | ${description}`;
-                
+
                 // Handle activity images
                 const activityImages = [];
                 const activityImage1 = document.getElementById('activityImage1');
                 const activityImage2 = document.getElementById('activityImage2');
-                
+
                 // Check for new images or existing images
                 if (activityImage1.files[0] && activityImage1.dataset.blobUrl) {
                     activityImages.push({
@@ -3231,7 +3391,7 @@
                         type: activityImage1.dataset.type || 'image/jpeg'
                     });
                 }
-                
+
                 if (activityImage2.files[0] && activityImage2.dataset.blobUrl) {
                     activityImages.push({
                         name: activityImage2.dataset.originalName,
@@ -3252,7 +3412,7 @@
                         type: activityImage2.dataset.type || 'image/jpeg'
                     });
                 }
-                
+
                 // Update data
                 itemsData[id] = {
                     ...itemsData[id],
@@ -3263,7 +3423,7 @@
                     location,
                     images: activityImages
                 };
-                
+
             } else if (data.type === 'transport') {
                 const transportType = document.getElementById('transportType').value;
                 const originLocation = document.getElementById('originLocation').value;
@@ -3271,45 +3431,45 @@
                 const departureDateTime = document.getElementById('departureDateTime').value;
                 const arrivalDateTime = document.getElementById('arrivalDateTime').value;
                 const notes = document.getElementById('transportNotes').value;
-                
+
                 // Validate departure date matches the day
                 if (departureDateTime && !validateItemDate(departureDateTime, data.day)) {
                     dateWarning = true;
                 }
-                
+
                 // Generate title automatically
                 newTitle = `${transportType} desde ${originLocation} hasta ${destinationLocation}`;
-                
+
                 // Format dates for description
                 let departureText = '';
                 let arrivalText = '';
-                
+
                 if (departureDateTime) {
                     departureText = formatFlightDateTime(departureDateTime);
                 }
-                
+
                 if (arrivalDateTime) {
                     arrivalText = formatFlightDateTime(arrivalDateTime);
                 }
-                
+
                 // Check if arrival is on a different day
                 let dayDifferenceText = '';
                 if (departureDateTime && arrivalDateTime) {
                     const departureDate = new Date(departureDateTime);
                     const arrivalDate = new Date(arrivalDateTime);
-                    
+
                     // Calculate day difference
                     const departureDay = new Date(departureDate.getFullYear(), departureDate.getMonth(), departureDate.getDate());
                     const arrivalDay = new Date(arrivalDate.getFullYear(), arrivalDate.getMonth(), arrivalDate.getDate());
                     const dayDiff = Math.round((arrivalDay - departureDay) / (1000 * 60 * 60 * 24));
-                    
+
                     if (dayDiff > 0) {
                         dayDifferenceText = ` (+${dayDiff} día${dayDiff > 1 ? 's' : ''})`;
                     }
                 }
-                
+
                 newDescription = `Salida: ${departureText} - Llegada: ${arrivalText}${dayDifferenceText}`;
-                
+
                 // Update data
                 itemsData[id] = {
                     ...itemsData[id],
@@ -3321,18 +3481,18 @@
                     arrivalDateTime,
                     notes
                 };
-                
+
                 // Update transport icon based on type
                 updateTransportIcon(id);
-                
+
             } else if (data.type === 'note') {
                 const noteTitle = document.getElementById('noteTitle').value;
                 const noteContent = document.getElementById('noteContent').value;
                 const noteType = document.getElementById('noteType').value;
-                
+
                 newTitle = noteTitle;
                 newDescription = noteContent.length > 80 ? noteContent.substring(0, 80) + '...' : noteContent;
-                
+
                 // Update data
                 itemsData[id] = {
                     ...itemsData[id],
@@ -3346,7 +3506,7 @@
                 const placeAtEnd = document.getElementById('placeAtEnd').checked;
                 const priceBreakdown = document.getElementById('priceBreakdown').value;
                 const notes = document.getElementById('totalNotes').value;
-                
+
                 // Format price for display with thousands separator
                 let formattedPrice = '';
                 if (totalPrice) {
@@ -3363,17 +3523,17 @@
                         };
                         const symbol = currencySymbols[currency] || currency;
                         // Use Spanish locale for thousands separator (points)
-                        formattedPrice = `${symbol}${price.toLocaleString('es-ES', { 
-                            minimumFractionDigits: 2, 
+                        formattedPrice = `${symbol}${price.toLocaleString('es-ES', {
+                            minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                             useGrouping: true
                         })}`;
                     }
                 }
-                
+
                 newTitle = `Valor Total del Viaje`;
                 newDescription = formattedPrice ? `${formattedPrice} ${currency}` : 'Precio por definir';
-                
+
                 // Update data
                 itemsData[id] = {
                     ...itemsData[id],
@@ -3384,15 +3544,15 @@
                     priceBreakdown: priceBreakdown,
                     notes: notes
                 };
-                
+
                 // Handle positioning based on checkbox
                 const timeline = document.getElementById('timeline');
                 const totalElement = document.querySelector(`[data-item-id="${id}"]`);
-                
+
                 if (totalElement) {
                     // Remove from current position
                     totalElement.remove();
-                    
+
                     if (placeAtEnd) {
                         // Place at the end of the timeline
                         timeline.appendChild(totalElement);
@@ -3409,11 +3569,11 @@
                     }
                 }
             }
-            
+
             // Update UI
             titleElement.textContent = newTitle;
             descElement.textContent = newDescription;
-            
+
             // Add update animation
             element.style.background = 'rgba(46, 204, 113, 0.1)';
             element.style.transform = 'scale(1.02)';
@@ -3421,19 +3581,19 @@
                 element.style.background = '';
                 element.style.transform = '';
             }, 1000);
-            
-            closeModal();
-            
-            // Sin automatización: no generar advertencias comparando contra "fecha inicio + día".
-            
 
-            
+            closeModal();
+
+            // Sin automatización: no generar advertencias comparando contra "fecha inicio + día".
+
+
+
             // Changes saved successfully
-            
+
             // Auto-save after editing with a slight delay to ensure UI updates
             setTimeout(() => {
                 autoSave();
-                
+
                 // Sort items by time within the day if this is a regular item (not summary/total)
                 if (data.day > 0) {
                     const dayContainer = document.querySelector(`[data-day="${data.day}"]`);
@@ -3441,7 +3601,7 @@
                         sortItemsByTime(dayContainer);
                     }
                 }
-                
+
                 // Update summary if it exists
                 updateAllSummaries();
             }, 500);
@@ -3450,14 +3610,14 @@
         function deleteItem(button) {
             const item = button.closest('.timeline-item');
             const itemId = item.getAttribute('data-item-id');
-            
+
             if (confirm('¿Estás seguro de que quieres eliminar este elemento?')) {
                 item.style.transform = 'translateX(50px)';
                 item.style.opacity = '0';
                 setTimeout(() => {
                     item.remove();
                     delete itemsData[itemId];
-                    
+
                     // Check if day is empty and add placeholder
                     const dayItems = item.closest('.day-items');
                     if (dayItems.children.length === 0) {
@@ -3469,10 +3629,10 @@
                         `;
                     }
                 }, 300);
-                
+
                 // Auto-save after deletion (silent)
                 autoSave();
-                
+
                 // Update summary if it exists
                 updateAllSummaries();
             }
@@ -3481,44 +3641,44 @@
         function downloadPDF() {
             const button = event.target;
             const originalText = button.innerHTML;
-            
+
             // Show loading state
             button.innerHTML = '<div class="loading"></div> Generando PDF...';
             button.disabled = true;
-            
+
             try {
                 // Get itinerary data
                 const itineraryTitle = document.getElementById('tripTitle').value.trim() || 'Mi Viaje';
                 const startDate = document.getElementById('startDate').value;
                 const dayContainers = document.querySelectorAll('.day-container');
-                
+
                 // Create PDF
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
-                
+
                 // Set up fonts and colors
                 doc.setFont('helvetica');
-                
+
                 // Header
                 doc.setFillColor(30, 42, 56); // Primary dark
                 doc.rect(0, 0, 210, 40, 'F');
-                
+
                 // Logo and title
                 doc.setTextColor(255, 255, 255);
                 doc.setFontSize(24);
                 doc.setFont('helvetica', 'bold');
                 doc.text('VIAINTRYP', 20, 25);
-                
+
                 doc.setFontSize(16);
                 doc.setFont('helvetica', 'normal');
                 doc.text('Editor de Itinerarios', 20, 35);
-                
+
                 // Itinerary title
                 doc.setTextColor(74, 144, 226); // Primary blue
                 doc.setFontSize(20);
                 doc.setFont('helvetica', 'bold');
                 doc.text(itineraryTitle, 20, 60);
-                
+
                 // Trip dates
                 if (startDate) {
                     // Sin automatización: usar fechas registradas por día, si existen.
@@ -3528,7 +3688,7 @@
                         .sort();
                     const startDateObj = dayDateValues.length > 0 ? new Date(dayDateValues[0] + 'T00:00:00') : new Date(startDate);
                     const endDateObj = dayDateValues.length > 0 ? new Date(dayDateValues[dayDateValues.length - 1] + 'T00:00:00') : new Date(startDate);
-                    
+
                     doc.setTextColor(100, 100, 100);
                     doc.setFontSize(12);
                     doc.setFont('helvetica', 'normal');
@@ -3536,52 +3696,52 @@
                     doc.text(`Fecha de fin: ${formatDateForPDF(endDateObj)}`, 20, 85);
                     doc.text(`Duración: ${dayContainers.length} días`, 20, 95);
                 }
-                
+
                 // Separator
                 doc.setDrawColor(74, 144, 226);
                 doc.setLineWidth(0.5);
                 doc.line(20, 105, 190, 105);
-                
+
                 // Process each day
                 let yPosition = 120; // Initialize yPosition
                 dayContainers.forEach((dayContainer, dayIndex) => {
                     const dayNumber = dayIndex + 1;
                     const dayDate = dayContainer.querySelector('.day-date').textContent;
                     const dayItems = dayContainer.querySelectorAll('.timeline-item');
-                    
+
                     // Add space between days (except first day)
                     if (dayIndex > 0) {
                         yPosition += 20;
                     }
-                    
+
                     // Day header
                     doc.setFillColor(245, 247, 250); // Light gray
                     doc.rect(20, yPosition - 5, 170, 20, 'F');
-                    
+
                     doc.setTextColor(30, 42, 56);
                     doc.setFontSize(16);
                     doc.setFont('helvetica', 'bold');
                     doc.text(`DÍA ${dayNumber}`, 25, yPosition + 5);
-                    
+
                     doc.setTextColor(74, 144, 226);
                     doc.setFontSize(12);
                     doc.setFont('helvetica', 'normal');
                     doc.text(dayDate, 25, yPosition + 15);
-                    
+
                     yPosition += 30;
-                    
+
                     // Day items
                     if (dayItems.length > 0) {
                         dayItems.forEach(item => {
                             const itemId = item.getAttribute('data-item-id');
                             const itemData = itemsData[itemId] || {};
                             const itemType = item.className.includes('flight') ? 'flight' :
-                                           item.className.includes('hotel') ? 'hotel' :
-                                           item.className.includes('activity') ? 'activity' :
-                                           item.className.includes('transport') ? 'transport' : 'note';
-                            
+                                item.className.includes('hotel') ? 'hotel' :
+                                    item.className.includes('activity') ? 'activity' :
+                                        item.className.includes('transport') ? 'transport' : 'note';
+
                             const itemTitle = item.querySelector('.item-title').textContent;
-                            
+
                             // Type labels
                             const typeLabels = {
                                 flight: 'VUELO',
@@ -3590,7 +3750,7 @@
                                 transport: 'TRANSPORTE',
                                 note: 'NOTA'
                             };
-                            
+
                             const colorMap = {
                                 flight: [74, 144, 226],    // Blue
                                 hotel: [255, 107, 107],    // Coral
@@ -3598,33 +3758,33 @@
                                 transport: [155, 89, 182], // Purple
                                 note: [243, 156, 18]       // Orange
                             };
-                            
+
                             // Item header
                             doc.setFillColor(...colorMap[itemType]);
                             doc.rect(20, yPosition - 3, 170, 12, 'F');
-                            
+
                             doc.setTextColor(255, 255, 255);
                             doc.setFontSize(10);
                             doc.setFont('helvetica', 'bold');
                             doc.text(typeLabels[itemType], 25, yPosition + 5);
-                            
+
                             yPosition += 15;
-                            
+
                             // Item content box
                             doc.setFillColor(255, 255, 255);
                             doc.rect(20, yPosition - 3, 170, 1, 'F');
-                            
+
                             // Item title
                             doc.setTextColor(30, 42, 56);
                             doc.setFontSize(14);
                             doc.setFont('helvetica', 'bold');
                             doc.text(itemTitle, 25, yPosition + 8);
-                            
+
                             yPosition += 20;
-                            
+
                             // Detailed information based on item type
                             let detailY = yPosition;
-                            
+
                             if (itemType === 'flight') {
                                 if (itemData.flightNumber) {
                                     doc.setTextColor(100, 100, 100);
@@ -3736,9 +3896,9 @@
                                     detailY += 8;
                                 }
                             }
-                            
+
                             yPosition = detailY + 15;
-                            
+
                             // Check if we need a new page within the same day
                             if (yPosition > 250) {
                                 doc.addPage();
@@ -3754,27 +3914,27 @@
                         yPosition += 25;
                     }
                 });
-                
+
                 // Footer removed - no footer in PDF
-                
+
                 // Save the PDF
                 const fileName = `itinerario_${itineraryTitle.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
                 doc.save(fileName);
-                
+
                 // Reset button
-            setTimeout(() => {
-                    button.innerHTML = '<i class="fas fa-check"></i> PDF Generado';
-                button.style.background = 'var(--mint)';
-                
                 setTimeout(() => {
-                    button.innerHTML = originalText;
-                    button.style.background = '';
-                    button.disabled = false;
-                }, 2000);
+                    button.innerHTML = '<i class="fas fa-check"></i> PDF Generado';
+                    button.style.background = 'var(--mint)';
+
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.style.background = '';
+                        button.disabled = false;
+                    }, 2000);
                 }, 500);
-                
+
                 // PDF generated successfully
-                
+
             } catch (error) {
                 console.error('Error generating PDF:', error);
                 button.innerHTML = originalText;
@@ -3782,22 +3942,22 @@
                 // Error generating PDF
             }
         }
-        
+
         function formatDateForPDF(date) {
-            const options = { 
-                year: 'numeric', 
-                month: 'long', 
+            const options = {
+                year: 'numeric',
+                month: 'long',
                 day: 'numeric',
                 weekday: 'long'
             };
             return date.toLocaleDateString('es-ES', options);
         }
-        
+
         function handleImageUpload(input, previewId, boxId) {
             const file = input.files[0];
             const preview = document.getElementById(previewId);
             const box = input.closest('.image-upload-box');
-            
+
             if (file) {
                 // Validate file size (max 5MB)
                 const maxSize = 5 * 1024 * 1024; // 5MB
@@ -3805,73 +3965,73 @@
                     input.value = '';
                     return;
                 }
-                
+
                 // Validate file type
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
                 if (!allowedTypes.includes(file.type)) {
                     input.value = '';
                     return;
                 }
-                
+
                 // Generate unique filename
                 const timestamp = Date.now();
                 const randomId = Math.random().toString(36).substring(2, 15);
                 const fileExtension = file.name.split('.').pop();
                 const fileName = `img_${timestamp}_${randomId}.${fileExtension}`;
-                
+
                 // Store file info for later use
                 input.dataset.fileName = fileName;
                 input.dataset.originalName = file.name;
-                
+
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     // Store the base64 data for PDF export
                     const base64Data = e.target.result;
                     input.dataset.base64Data = base64Data;
-                    
+
                     // Create blob URL for preview
                     const blob = new Blob([file], { type: file.type });
                     const blobUrl = URL.createObjectURL(blob);
-                    
+
                     preview.src = blobUrl;
                     preview.style.display = 'block';
                     box.classList.add('has-image');
                     box.querySelector('.image-upload-text').style.display = 'none';
                     box.querySelector('.image-upload-icon').style.display = 'none';
-                    
+
                     // Store the blob URL for later use
                     input.dataset.blobUrl = blobUrl;
                 };
                 reader.readAsDataURL(file);
             }
         }
-        
+
         function removeImage(inputId, previewId, boxId) {
             const input = document.getElementById(inputId);
             const preview = document.getElementById(previewId);
             const box = input.closest('.image-upload-box');
-            
+
             // Clean up blob URL if it exists
             if (input.dataset.blobUrl) {
                 URL.revokeObjectURL(input.dataset.blobUrl);
                 delete input.dataset.blobUrl;
             }
-            
+
             // Clear file data
             delete input.dataset.fileName;
             delete input.dataset.originalName;
             delete input.dataset.base64Data;
-            
+
             input.value = '';
             preview.style.display = 'none';
             box.classList.remove('has-image');
             box.querySelector('.image-upload-text').style.display = 'block';
             box.querySelector('.image-upload-icon').style.display = 'block';
         }
-        
+
         function makeExistingItemsClickable() {
             document.querySelectorAll('.timeline-item').forEach(item => {
-                item.addEventListener('click', function(e) {
+                item.addEventListener('click', function (e) {
                     // Don't trigger if clicking on action buttons
                     if (!e.target.closest('.item-actions')) {
                         editItem(this.querySelector('.item-btn'));
@@ -3879,7 +4039,7 @@
                 });
             });
         }
-        
+
         function closePDFPreview() {
             document.getElementById('pdfPreviewModal').classList.remove('show');
         }
@@ -3888,10 +4048,10 @@
         function showTripNameModal() {
             const modal = document.getElementById('tripNameModal');
             const input = document.getElementById('newTripName');
-            
+
             modal.classList.add('show');
             input.focus();
-            
+
             // Clear any previous errors
             hideTripNameError();
         }
@@ -3899,11 +4059,11 @@
         function closeTripNameModal() {
             const modal = document.getElementById('tripNameModal');
             const input = document.getElementById('newTripName');
-            
+
             modal.classList.remove('show');
             input.value = '';
             hideTripNameError();
-            
+
             // If user cancels, redirect to index
             window.location.href = 'viantryp_index.html';
         }
@@ -3911,39 +4071,39 @@
         function createTripWithName() {
             console.log('createTripWithName called');
             const tripName = document.getElementById('newTripName').value.trim();
-            
+
             console.log('Trip name:', tripName);
-            
+
             if (!tripName) {
                 showTripNameError();
                 return;
             }
-            
+
             // Get the current trip ID from URL
             const urlParams = new URLSearchParams(window.location.search);
             const tripId = urlParams.get('trip');
-            
+
             if (!tripId) {
                 return;
             }
-            
+
             // Set the trip title
             const tripTitleInput = document.getElementById('tripTitle');
             if (tripTitleInput) {
                 tripTitleInput.value = tripName;
             }
-            
+
             // Update page title
             updateTripTitleInRealTime();
-            
+
             // Force save the trip immediately
             console.log('Creating trip with name:', tripName, 'ID:', tripId);
-            
+
             // Save the trip data immediately
             try {
                 const startDate = document.getElementById('startDate')?.value;
                 const dayContainers = document.querySelectorAll('.day-container');
-                
+
                 // Determinar endDate SIN automatización (sin startDate + días)
                 let endDate = '';
                 if (startDate && dayContainers.length > 0) {
@@ -3953,7 +4113,7 @@
                         .sort();
                     endDate = dayDateValues.length > 0 ? dayDateValues[dayDateValues.length - 1] : startDate;
                 }
-                
+
                 // Format dates
                 const formatDate = (dateString) => {
                     if (!dateString) return '';
@@ -3963,14 +4123,14 @@
                     const year = date.getFullYear();
                     return `${day}/${month}/${year}`;
                 };
-                
+
                 const startDateFormatted = formatDate(startDate);
                 const endDateFormatted = formatDate(endDate);
                 const dateRange = startDateFormatted && endDateFormatted ? `${startDateFormatted} - ${endDateFormatted}` : 'Sin fecha';
-                
+
                 // Get existing trips
                 let existingTrips = JSON.parse(localStorage.getItem('viantryp_trips') || '[]');
-                
+
                 // Create new trip
                 const newTrip = {
                     id: parseInt(tripId),
@@ -3984,32 +4144,32 @@
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
                 };
-                
+
                 // Add to existing trips
                 existingTrips.push(newTrip);
-                
+
                 // Save to localStorage
                 localStorage.setItem('viantryp_trips', JSON.stringify(existingTrips));
-                
+
                 // Also save backup
                 localStorage.setItem(`viantryp_trip_backup_${tripId}`, JSON.stringify({
                     trip: newTrip,
                     timestamp: new Date().toISOString()
                 }));
-                
+
                 console.log('Trip saved successfully:', newTrip);
-                
+
                 // Update save status
                 updateSaveStatus();
-                
+
                 // Close the modal first, then show notification
                 const modal = document.getElementById('tripNameModal');
                 if (modal) {
                     modal.classList.remove('show');
                 }
-                
+
                 // Trip created successfully
-                
+
             } catch (error) {
                 console.error('Error creating trip:', error);
             }
@@ -4024,7 +4184,7 @@
         function showTripNameError() {
             const errorDiv = document.getElementById('tripNameError');
             const input = document.getElementById('newTripName');
-            
+
             errorDiv.style.display = 'block';
             input.classList.add('error');
             input.focus();
@@ -4033,7 +4193,7 @@
         function hideTripNameError() {
             const errorDiv = document.getElementById('tripNameError');
             const input = document.getElementById('newTripName');
-            
+
             errorDiv.style.display = 'none';
             input.classList.remove('error');
         }
@@ -4043,11 +4203,11 @@
 
         function showSaveChangesModal(exitAction) {
             pendingExitAction = exitAction;
-            
+
             // Generate changes summary
             const changesSummary = generateChangesSummary();
             document.getElementById('changesSummary').innerHTML = changesSummary;
-            
+
             // Show modal
             const modal = document.getElementById('saveChangesModal');
             modal.classList.add('show');
@@ -4066,17 +4226,17 @@
             const startDate = document.getElementById('startDate')?.value;
             const itemsCount = Object.keys(itemsData).length;
             const dayContainers = document.querySelectorAll('.day-container');
-            
+
             let summary = `<div style="margin-bottom: 0.5rem;"><strong>Título:</strong> ${tripTitle}</div>`;
-            
+
             if (startDate) {
                 const formattedDate = new Date(startDate).toLocaleDateString('es-ES');
                 summary += `<div style="margin-bottom: 0.5rem;"><strong>Fecha de inicio:</strong> ${formattedDate}</div>`;
             }
-            
+
             summary += `<div style="margin-bottom: 0.5rem;"><strong>Días:</strong> ${dayContainers.length}</div>`;
             summary += `<div style="margin-bottom: 0.5rem;"><strong>Elementos:</strong> ${itemsCount}</div>`;
-            
+
             if (itemsCount > 0) {
                 const itemTypes = {};
                 Object.values(itemsData).forEach(item => {
@@ -4084,7 +4244,7 @@
                         itemTypes[item.type] = (itemTypes[item.type] || 0) + 1;
                     }
                 });
-                
+
                 const typeLabels = {
                     flight: 'Vuelos',
                     hotel: 'Hoteles',
@@ -4092,32 +4252,32 @@
                     transport: 'Transportes',
                     note: 'Notas'
                 };
-                
+
                 const typeSummary = Object.entries(itemTypes)
                     .map(([type, count]) => `${typeLabels[type] || type}: ${count}`)
                     .join(', ');
-                
+
                 summary += `<div><strong>Tipos:</strong> ${typeSummary}</div>`;
             }
-            
+
             return summary;
         }
 
         function saveAndExit() {
             // Save changes with manual save for better reliability
             const saveSuccess = manualSave();
-            
+
             // Close modal immediately
             closeSaveChangesModal();
-            
+
             // Disable beforeunload temporarily to avoid browser dialog
             window.removeEventListener('beforeunload', window.beforeUnloadHandler);
-            
+
             // Show success message if save was successful
             if (saveSuccess) {
                 showNotification('Viaje Guardado', 'Tu itinerario se ha guardado y puedes continuar trabajando desde donde lo dejaste.');
             }
-            
+
             // Execute pending exit action immediately (go to index)
             if (pendingExitAction) {
                 pendingExitAction();
@@ -4130,10 +4290,10 @@
         function exitWithoutSaving() {
             // Close modal immediately
             closeSaveChangesModal();
-            
+
             // Disable beforeunload temporarily to avoid browser dialog
             window.removeEventListener('beforeunload', window.beforeUnloadHandler);
-            
+
             // Execute pending exit action immediately
             if (pendingExitAction) {
                 pendingExitAction();
@@ -4147,11 +4307,11 @@
             const tripTitle = document.getElementById('tripTitle')?.value?.trim();
             const hasItems = Object.keys(itemsData).length > 0;
             const hasCustomTitle = tripTitle && tripTitle !== 'Mi Viaje';
-            
+
             // Also check if there are any recent changes that haven't been auto-saved
             const lastAutoSave = sessionStorage.getItem('last_auto_save');
             const hasRecentChanges = lastAutoSave && (Date.now() - parseInt(lastAutoSave)) < 30000; // 30 seconds
-            
+
             return hasItems || hasCustomTitle || hasRecentChanges;
         }
 
@@ -4159,40 +4319,40 @@
             // Always save before exiting to ensure data persistence
             const tripTitle = document.getElementById('tripTitle')?.value?.trim();
             const hasItems = Object.keys(itemsData).length > 0;
-            
+
             // Save if there's any content (title or items)
             if ((tripTitle && tripTitle !== 'Mi Viaje') || hasItems) {
                 console.log('Saving before exit...');
                 const saveSuccess = manualSave();
-                
+
                 if (saveSuccess) {
                     showNotification('Viaje Guardado', 'Tu itinerario se ha guardado automáticamente antes de salir.');
                 }
             }
-            
+
             if (hasUnsavedChanges()) {
                 showSaveChangesModal(exitAction);
             } else {
                 // Disable beforeunload temporarily to avoid browser dialog
                 window.removeEventListener('beforeunload', window.beforeUnloadHandler);
-                
+
                 // Execute exit action immediately
                 exitAction();
             }
         }
 
 
-        
+
         function downloadPDFFromPreview() {
             const button = event.target;
             const originalText = button.innerHTML;
-            
+
             // Show loading state
             button.innerHTML = '<div class="loading"></div> Generando PDF...';
             button.disabled = true;
-            
+
             closePDFPreview();
-            
+
             // Trigger the download after a short delay to ensure modal is closed
             setTimeout(() => {
                 try {
@@ -4200,34 +4360,34 @@
                     const itineraryTitle = document.getElementById('tripTitle').value.trim() || 'Mi Viaje';
                     const startDate = document.getElementById('startDate').value;
                     const dayContainers = document.querySelectorAll('.day-container');
-                    
+
                     // Create PDF
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF();
-                    
+
                     // Set up fonts and colors
                     doc.setFont('helvetica');
-                    
+
                     // Header
                     doc.setFillColor(30, 42, 56); // Primary dark
                     doc.rect(0, 0, 210, 40, 'F');
-                    
+
                     // Logo and title
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(24);
                     doc.setFont('helvetica', 'bold');
                     doc.text('VIAINTRYP', 20, 25);
-                    
+
                     doc.setFontSize(16);
                     doc.setFont('helvetica', 'normal');
                     doc.text('Editor de Itinerarios', 20, 35);
-                    
+
                     // Itinerary title
                     doc.setTextColor(74, 144, 226); // Primary blue
                     doc.setFontSize(20);
                     doc.setFont('helvetica', 'bold');
                     doc.text(itineraryTitle, 20, 60);
-                    
+
                     // Trip dates
                     if (startDate) {
                         // Sin automatización: usar fechas registradas por día, si existen.
@@ -4237,7 +4397,7 @@
                             .sort();
                         const startDateObj = dayDateValues.length > 0 ? new Date(dayDateValues[0] + 'T00:00:00') : new Date(startDate);
                         const endDateObj = dayDateValues.length > 0 ? new Date(dayDateValues[dayDateValues.length - 1] + 'T00:00:00') : new Date(startDate);
-                        
+
                         doc.setTextColor(100, 100, 100);
                         doc.setFontSize(12);
                         doc.setFont('helvetica', 'normal');
@@ -4245,52 +4405,52 @@
                         doc.text(`Fecha de fin: ${formatDateForPDF(endDateObj)}`, 20, 85);
                         doc.text(`Duración: ${dayContainers.length} días`, 20, 95);
                     }
-                    
+
                     // Separator
                     doc.setDrawColor(74, 144, 226);
                     doc.setLineWidth(0.5);
                     doc.line(20, 105, 190, 105);
-                    
+
                     // Process each day
                     let yPosition = 120; // Initialize yPosition
                     dayContainers.forEach((dayContainer, dayIndex) => {
                         const dayNumber = dayIndex + 1;
                         const dayDate = dayContainer.querySelector('.day-date').textContent;
                         const dayItems = dayContainer.querySelectorAll('.timeline-item');
-                        
+
                         // Add space between days (except first day)
                         if (dayIndex > 0) {
                             yPosition += 20;
                         }
-                        
+
                         // Day header
                         doc.setFillColor(245, 247, 250); // Light gray
                         doc.rect(20, yPosition - 5, 170, 20, 'F');
-                        
+
                         doc.setTextColor(30, 42, 56);
                         doc.setFontSize(16);
                         doc.setFont('helvetica', 'bold');
                         doc.text(`DÍA ${dayNumber}`, 25, yPosition + 5);
-                        
+
                         doc.setTextColor(74, 144, 226);
                         doc.setFontSize(12);
                         doc.setFont('helvetica', 'normal');
                         doc.text(dayDate, 25, yPosition + 15);
-                        
+
                         yPosition += 30;
-                        
+
                         // Day items
                         if (dayItems.length > 0) {
                             dayItems.forEach(item => {
                                 const itemId = item.getAttribute('data-item-id');
                                 const itemData = itemsData[itemId] || {};
                                 const itemType = item.className.includes('flight') ? 'flight' :
-                                               item.className.includes('hotel') ? 'hotel' :
-                                               item.className.includes('activity') ? 'activity' :
-                                               item.className.includes('transport') ? 'transport' : 'note';
-                                
+                                    item.className.includes('hotel') ? 'hotel' :
+                                        item.className.includes('activity') ? 'activity' :
+                                            item.className.includes('transport') ? 'transport' : 'note';
+
                                 const itemTitle = item.querySelector('.item-title').textContent;
-                                
+
                                 // Type labels
                                 const typeLabels = {
                                     flight: 'VUELO',
@@ -4299,7 +4459,7 @@
                                     transport: 'TRANSPORTE',
                                     note: 'NOTA'
                                 };
-                                
+
                                 const colorMap = {
                                     flight: [74, 144, 226],    // Blue
                                     hotel: [255, 107, 107],    // Coral
@@ -4307,33 +4467,33 @@
                                     transport: [155, 89, 182], // Purple
                                     note: [243, 156, 18]       // Orange
                                 };
-                                
+
                                 // Item header
                                 doc.setFillColor(...colorMap[itemType]);
                                 doc.rect(20, yPosition - 3, 170, 12, 'F');
-                                
+
                                 doc.setTextColor(255, 255, 255);
                                 doc.setFontSize(10);
                                 doc.setFont('helvetica', 'bold');
                                 doc.text(typeLabels[itemType], 25, yPosition + 5);
-                                
+
                                 yPosition += 15;
-                                
+
                                 // Item content box
                                 doc.setFillColor(255, 255, 255);
                                 doc.rect(20, yPosition - 3, 170, 1, 'F');
-                                
+
                                 // Item title
                                 doc.setTextColor(30, 42, 56);
                                 doc.setFontSize(14);
                                 doc.setFont('helvetica', 'bold');
                                 doc.text(itemTitle, 25, yPosition + 8);
-                                
+
                                 yPosition += 20;
-                                
+
                                 // Detailed information based on item type
                                 let detailY = yPosition;
-                                
+
                                 if (itemType === 'flight') {
                                     if (itemData.flightNumber) {
                                         doc.setTextColor(100, 100, 100);
@@ -4385,25 +4545,25 @@
                                     if (itemData.images && itemData.images.length > 0) {
                                         doc.text(`Imágenes adjuntas: ${itemData.images.length}`, 25, detailY);
                                         detailY += 8;
-                                        
+
                                         // Add images to PDF with better layout
                                         const maxImagesPerRow = 3;
                                         const imgWidth = 50;
                                         const imgHeight = 35;
                                         const imgSpacing = 60;
-                                        
+
                                         itemData.images.forEach((image, imgIndex) => {
                                             try {
                                                 const row = Math.floor(imgIndex / maxImagesPerRow);
                                                 const col = imgIndex % maxImagesPerRow;
                                                 const imgX = 25 + (col * imgSpacing);
                                                 const imgY = detailY + (row * (imgHeight + 15));
-                                                
+
                                                 // Add image border
                                                 doc.setDrawColor(200, 200, 200);
                                                 doc.setLineWidth(0.5);
                                                 doc.rect(imgX - 1, imgY - 1, imgWidth + 2, imgHeight + 2, 'S');
-                                                
+
                                                 // Add image to PDF using base64 data
                                                 if (image.base64Data) {
                                                     // Determine image format from base64 data
@@ -4415,20 +4575,20 @@
                                                     } else if (image.base64Data.startsWith('data:image/webp')) {
                                                         imageFormat = 'WEBP';
                                                     }
-                                                    
+
                                                     // Extract base64 data without the data URL prefix
                                                     const base64Data = image.base64Data.split(',')[1];
-                                                    
+
                                                     doc.addImage(base64Data, imageFormat, imgX, imgY, imgWidth, imgHeight);
                                                 }
-                                                
+
                                                 // Add image name below
                                                 doc.setTextColor(100, 100, 100);
                                                 doc.setFontSize(8);
                                                 doc.setFont('helvetica', 'normal');
                                                 const shortName = image.name.length > 12 ? image.name.substring(0, 12) + '...' : image.name;
                                                 doc.text(shortName, imgX, imgY + imgHeight + 5);
-                                                
+
                                                 // Update detailY for next content
                                                 if (imgIndex === itemData.images.length - 1) {
                                                     const totalRows = Math.floor((itemData.images.length - 1) / maxImagesPerRow) + 1;
@@ -4464,25 +4624,25 @@
                                     if (itemData.images && itemData.images.length > 0) {
                                         doc.text(`Imágenes adjuntas: ${itemData.images.length}`, 25, detailY);
                                         detailY += 8;
-                                        
+
                                         // Add images to PDF with better layout
                                         const maxImagesPerRow = 3;
                                         const imgWidth = 50;
                                         const imgHeight = 35;
                                         const imgSpacing = 60;
-                                        
+
                                         itemData.images.forEach((image, imgIndex) => {
                                             try {
                                                 const row = Math.floor(imgIndex / maxImagesPerRow);
                                                 const col = imgIndex % maxImagesPerRow;
                                                 const imgX = 25 + (col * imgSpacing);
                                                 const imgY = detailY + (row * (imgHeight + 15));
-                                                
+
                                                 // Add image border
                                                 doc.setDrawColor(200, 200, 200);
                                                 doc.setLineWidth(0.5);
                                                 doc.rect(imgX - 1, imgY - 1, imgWidth + 2, imgHeight + 2, 'S');
-                                                
+
                                                 // Add image to PDF using base64 data
                                                 if (image.base64Data) {
                                                     // Determine image format from base64 data
@@ -4494,20 +4654,20 @@
                                                     } else if (image.base64Data.startsWith('data:image/webp')) {
                                                         imageFormat = 'WEBP';
                                                     }
-                                                    
+
                                                     // Extract base64 data without the data URL prefix
                                                     const base64Data = image.base64Data.split(',')[1];
-                                                    
+
                                                     doc.addImage(base64Data, imageFormat, imgX, imgY, imgWidth, imgHeight);
                                                 }
-                                                
+
                                                 // Add image name below
                                                 doc.setTextColor(100, 100, 100);
                                                 doc.setFontSize(8);
                                                 doc.setFont('helvetica', 'normal');
                                                 const shortName = image.name.length > 12 ? image.name.substring(0, 12) + '...' : image.name;
                                                 doc.text(shortName, imgX, imgY + imgHeight + 5);
-                                                
+
                                                 // Update detailY for next content
                                                 if (imgIndex === itemData.images.length - 1) {
                                                     const totalRows = Math.floor((itemData.images.length - 1) / maxImagesPerRow) + 1;
@@ -4563,9 +4723,9 @@
                                         detailY += 8;
                                     }
                                 }
-                                
+
                                 yPosition = detailY + 15;
-                                
+
                                 // Check if we need a new page within the same day
                                 if (yPosition > 250) {
                                     doc.addPage();
@@ -4581,25 +4741,25 @@
                             yPosition += 25;
                         }
                     });
-                    
+
                     // Save the PDF
                     const fileName = `itinerario_${itineraryTitle.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
                     doc.save(fileName);
-                    
+
                     // Reset button
                     setTimeout(() => {
                         button.innerHTML = '<i class="fas fa-check"></i> PDF Generado';
                         button.style.background = 'var(--mint)';
-                        
+
                         setTimeout(() => {
                             button.innerHTML = originalText;
                             button.style.background = '';
                             button.disabled = false;
                         }, 2000);
                     }, 500);
-                    
+
                     showNotification('¡PDF generado!', 'El itinerario se ha descargado correctamente');
-                    
+
                 } catch (error) {
                     console.error('Error generating PDF:', error);
                     button.innerHTML = originalText;
@@ -4610,30 +4770,30 @@
 
         function restoreEditorState(editorState) {
             console.log('Restoring editor state:', editorState);
-            
+
             // Restore global variables
             itemsData = editorState.itemsData || {};
             itemCounter = editorState.itemCounter || 0;
             dayCounter = editorState.dayCounter || 1;
             currentEditingItem = editorState.currentEditingItem || null;
-            
+
             // Restore trip title
             const tripTitleInput = document.getElementById('tripTitle');
             if (tripTitleInput && editorState.tripTitle) {
                 tripTitleInput.value = editorState.tripTitle;
             }
-            
+
             // Restore start date
             const startDateInput = document.getElementById('startDate');
             if (startDateInput && editorState.startDate) {
                 startDateInput.value = editorState.startDate;
                 startDate = new Date(editorState.startDate + 'T00:00:00');
             }
-            
+
             // Clear existing timeline
             const timeline = document.getElementById('timeline');
             timeline.innerHTML = '';
-            
+
             // Recreate day containers and items
             if (editorState.itemsData) {
                 // Group items by day
@@ -4646,20 +4806,20 @@
                         itemsByDay[item.day].push(item);
                     }
                 });
-                
+
                 // Create day containers
                 const dayNumbers = Object.keys(itemsByDay).filter(day => day > 0).sort((a, b) => parseInt(a) - parseInt(b));
                 dayCounter = Math.max(1, dayNumbers.length);
-                
+
                 dayNumbers.forEach(dayNumber => {
                     createDayContainer(parseInt(dayNumber));
                 });
-                
+
                 // If no days with items, create at least one day
                 if (dayNumbers.length === 0) {
                     createDayContainer(1);
                 }
-                
+
                 // Add items to their respective days
                 Object.values(editorState.itemsData).forEach(item => {
                     if (item && item.type) {
@@ -4678,7 +4838,7 @@
                                 const dayItems = dayContainer.querySelector('.day-items');
                                 const timelineItem = createTimelineItemFromData(item);
                                 dayItems.appendChild(timelineItem);
-                                
+
                                 // Remove placeholder if exists
                                 const placeholder = dayItems.querySelector('[style*="text-align: center"]');
                                 if (placeholder) placeholder.remove();
@@ -4686,44 +4846,44 @@
                         }
                     }
                 });
-                
+
                 // Update dates for all days
                 updateItineraryDatesSilently();
-                
+
                 // Sort items in all days
                 document.querySelectorAll('.day-container').forEach(container => {
                     sortItemsByTime(container);
                 });
-                
+
                 // Update summaries if they exist
                 updateAllSummaries();
             }
-            
+
             // Initialize drag and drop for restored elements
             initializeDragAndDrop();
             makeExistingItemsClickable();
-            
+
             // Update save status
             setTimeout(() => {
                 updateSaveStatus();
             }, 500);
-            
+
             // Show notification that state was restored
             showNotification('Estado Restaurado', 'Tu itinerario se ha restaurado exactamente como estaba antes de la vista previa.');
-            
+
             console.log('Editor state restored successfully');
         }
-        
+
         function createDayContainer(dayNumber) {
             const timeline = document.getElementById('timeline');
-            
+
             const dayContainer = document.createElement('div');
             dayContainer.className = 'day-container';
             dayContainer.setAttribute('data-day', dayNumber);
-            
+
             // NO auto-calcular fecha al restaurar/crear días.
             let dayDate = 'Sin fecha';
-            
+
             dayContainer.innerHTML = `
                 <div class="day-actions">
                     <button class="day-btn" onclick="deleteDay(this)">
@@ -4741,22 +4901,22 @@
                     </div>
                 </div>
             `;
-            
+
             timeline.appendChild(dayContainer);
-            
+
             // Make the day container droppable
             dayContainer.addEventListener('dragover', handleDragOver);
             dayContainer.addEventListener('drop', handleDrop);
             dayContainer.addEventListener('dragenter', handleDragEnter);
             dayContainer.addEventListener('dragleave', handleDragLeave);
         }
-        
+
         function createTimelineItemFromData(itemData) {
             const item = document.createElement('div');
             item.className = `timeline-item ${itemData.type}`;
             item.setAttribute('data-item-id', itemData.id || itemData.itemId);
             item.style.transition = 'all 0.3s ease';
-            
+
             const iconMap = {
                 flight: 'fa-plane',
                 hotel: 'fa-bed',
@@ -4766,7 +4926,7 @@
                 summary: 'fa-clipboard-list',
                 total: 'fa-dollar-sign'
             };
-            
+
             if (itemData.type === 'summary') {
                 item.innerHTML = `
                     <i class="fas ${iconMap[itemData.type]} element-icon ${itemData.type}"></i>
@@ -4816,15 +4976,15 @@
                     </div>
                 `;
             }
-            
+
             // Make the entire item clickable
-            item.addEventListener('click', function(e) {
+            item.addEventListener('click', function (e) {
                 // Don't trigger if clicking on action buttons
                 if (!e.target.closest('.item-actions')) {
                     editItem(this.querySelector('.item-btn'));
                 }
             });
-            
+
             return item;
         }
 
@@ -4839,15 +4999,15 @@
                 currentEditingItem: currentEditingItem,
                 timestamp: Date.now()
             };
-            
+
             // Save editor state to sessionStorage
             sessionStorage.setItem('editor_state_backup', JSON.stringify(editorState));
-            
+
             // Get current trip data
             const tripTitle = document.getElementById('tripTitle').value.trim() || 'Mi Viaje';
             const startDate = document.getElementById('startDate').value;
             const dayContainers = document.querySelectorAll('.day-container');
-            
+
             // Determinar endDate SIN automatización (sin startDate + días)
             let endDate = '';
             if (startDate && dayContainers.length > 0) {
@@ -4857,7 +5017,7 @@
                     .sort();
                 endDate = dayDateValues.length > 0 ? dayDateValues[dayDateValues.length - 1] : startDate;
             }
-            
+
             // Create trip data in the format expected by preview
             const tripData = {
                 id: 'temp_' + Date.now(),
@@ -4868,10 +5028,10 @@
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
             };
-            
+
             // Save to sessionStorage for temporary preview
             sessionStorage.setItem('temp_trip_preview', JSON.stringify(tripData));
-            
+
             // Open preview in new tab
             const previewUrl = `viantryp_preview.html?trip=${tripData.id}&mode=preview`;
             window.open(previewUrl, '_blank');
@@ -4881,42 +5041,42 @@
             const notification = document.getElementById('notification');
             const notificationTitle = notification.querySelector('.notification-title');
             const notificationMessage = document.getElementById('notificationMessage');
-            
+
             if (!notification || !notificationTitle || !notificationMessage) {
                 console.error('Notification elements not found');
                 return;
             }
-            
+
             notificationTitle.textContent = title;
             notificationMessage.textContent = message;
-            
+
             // Ensure the notification is visible before adding the show class
             notification.style.display = 'flex';
-            
+
             // Force a reflow to ensure the display change takes effect
             notification.offsetHeight;
-            
+
             notification.classList.add('show');
-            
+
             // Auto hide after specified duration (default 4 seconds)
             setTimeout(() => {
                 hideNotification();
             }, duration);
-            
+
             // Log for debugging
             console.log('Notification shown:', title, message);
         }
 
         function hideNotification() {
             const notification = document.getElementById('notification');
-            
+
             if (!notification) {
                 console.error('Notification element not found');
                 return;
             }
-            
+
             notification.classList.remove('show');
-            
+
             // Wait for animation to complete, then hide the element completely
             setTimeout(() => {
                 notification.style.display = 'none';
@@ -4924,45 +5084,45 @@
         }
 
         // Close modal when clicking outside
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             const modal = document.getElementById('editModal');
             const pdfPreviewModal = document.getElementById('pdfPreviewModal');
             const tripNameModal = document.getElementById('tripNameModal');
-            
+
             if (e.target === modal) {
                 closeModal();
             }
-            
+
             if (e.target === pdfPreviewModal) {
                 closePDFPreview();
             }
-            
+
             if (e.target === tripNameModal) {
                 closeTripNameModal();
             }
-            
+
             if (e.target === saveChangesModal) {
                 closeSaveChangesModal();
             }
-            
+
 
         });
 
         // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 const tripNameModal = document.getElementById('tripNameModal');
                 const editModal = document.getElementById('editModal');
                 const pdfPreviewModal = document.getElementById('pdfPreviewModal');
                 const saveChangesModal = document.getElementById('saveChangesModal');
-                
+
                 if (tripNameModal.classList.contains('show')) {
                     closeTripNameModal();
                 } else if (editModal.classList.contains('show')) {
                     closeModal();
                 } else if (pdfPreviewModal.classList.contains('show')) {
                     closePDFPreview();
-                                } else if (saveChangesModal.classList.contains('show')) {
+                } else if (saveChangesModal.classList.contains('show')) {
                     closeSaveChangesModal();
                 }
             }
@@ -4972,7 +5132,7 @@
         function createNewTrip() {
             const urlParams = new URLSearchParams(window.location.search);
             const tripId = urlParams.get('trip');
-            
+
             if (!tripId) {
                 // Show the trip name modal instead of creating automatically
                 showTripNameModal();
@@ -4984,7 +5144,7 @@
                 const tripTitle = document.getElementById('tripTitle')?.value?.trim() || 'Mi Viaje';
                 const startDate = document.getElementById('startDate')?.value;
                 const dayContainers = document.querySelectorAll('.day-container');
-                
+
                 // Determinar endDate SIN automatización (sin startDate + días)
                 let endDate = '';
                 if (startDate && dayContainers.length > 0) {
@@ -4994,7 +5154,7 @@
                         .sort();
                     endDate = dayDateValues.length > 0 ? dayDateValues[dayDateValues.length - 1] : startDate;
                 }
-                
+
                 // Format dates
                 const formatDate = (dateString) => {
                     if (!dateString) return '';
@@ -5004,22 +5164,22 @@
                     const year = date.getFullYear();
                     return `${day}/${month}/${year}`;
                 };
-                
+
                 const startDateFormatted = formatDate(startDate);
                 const endDateFormatted = formatDate(endDate);
                 const dateRange = startDateFormatted && endDateFormatted ? `${startDateFormatted} - ${endDateFormatted}` : 'Sin fecha';
-                
+
                 // Get trip ID from URL
                 const urlParams = new URLSearchParams(window.location.search);
                 const tripId = urlParams.get('trip');
-                
+
                 if (tripId) {
                     // Get existing trips
                     let existingTrips = JSON.parse(localStorage.getItem('viantryp_trips') || '[]');
-                    
+
                     // Find existing trip or create new one
                     let tripIndex = existingTrips.findIndex(t => t.id == tripId);
-                    
+
                     if (tripIndex === -1) {
                         // Create new trip
                         const newTrip = {
@@ -5049,17 +5209,17 @@
                             updatedAt: new Date().toISOString()
                         };
                     }
-                    
+
                     // Save to localStorage with error handling (silent)
                     try {
                         localStorage.setItem('viantryp_trips', JSON.stringify(existingTrips));
-                        
+
                         // Also save a backup copy
                         localStorage.setItem(`viantryp_trip_backup_${tripId}`, JSON.stringify({
                             trip: existingTrips[tripIndex],
                             timestamp: new Date().toISOString()
                         }));
-                        
+
                         // Record the timestamp of successful auto-save
                         sessionStorage.setItem('last_auto_save', Date.now().toString());
                         console.log('Auto-save successful for trip:', tripId);
@@ -5079,7 +5239,7 @@
                 const tripTitle = document.getElementById('tripTitle')?.value?.trim() || 'Mi Viaje';
                 const startDate = document.getElementById('startDate')?.value;
                 const dayContainers = document.querySelectorAll('.day-container');
-                
+
                 // Determinar endDate SIN automatización (sin startDate + días)
                 let endDate = '';
                 if (startDate && dayContainers.length > 0) {
@@ -5089,7 +5249,7 @@
                         .sort();
                     endDate = dayDateValues.length > 0 ? dayDateValues[dayDateValues.length - 1] : startDate;
                 }
-                
+
                 // Format dates
                 const formatDate = (dateString) => {
                     if (!dateString) return '';
@@ -5099,22 +5259,22 @@
                     const year = date.getFullYear();
                     return `${day}/${month}/${year}`;
                 };
-                
+
                 const startDateFormatted = formatDate(startDate);
                 const endDateFormatted = formatDate(endDate);
                 const dateRange = startDateFormatted && endDateFormatted ? `${startDateFormatted} - ${endDateFormatted}` : 'Sin fecha';
-                
+
                 // Get trip ID from URL
                 const urlParams = new URLSearchParams(window.location.search);
                 const tripId = urlParams.get('trip');
-                
+
                 if (tripId) {
                     // Get existing trips
                     let existingTrips = JSON.parse(localStorage.getItem('viantryp_trips') || '[]');
-                    
+
                     // Find existing trip or create new one
                     let tripIndex = existingTrips.findIndex(t => t.id == tripId);
-                    
+
                     if (tripIndex === -1) {
                         // Create new trip
                         const newTrip = {
@@ -5144,30 +5304,30 @@
                             updatedAt: new Date().toISOString()
                         };
                     }
-                    
+
                     // Save to localStorage with multiple backup strategies
                     try {
                         // Primary save
                         localStorage.setItem('viantryp_trips', JSON.stringify(existingTrips));
-                        
+
                         // Backup save
                         localStorage.setItem(`viantryp_trip_backup_${tripId}`, JSON.stringify({
                             trip: existingTrips[tripIndex],
                             timestamp: new Date().toISOString()
                         }));
-                        
+
                         // Session backup
                         sessionStorage.setItem(`viantryp_trip_session_${tripId}`, JSON.stringify({
                             trip: existingTrips[tripIndex],
                             timestamp: new Date().toISOString()
                         }));
-                        
+
                         // Save successful
                         console.log('Manual save successful for trip:', tripId);
-                        
+
                         // Show success notification
                         showNotification('Guardado Exitoso', 'Tu itinerario se ha guardado correctamente.');
-                        
+
                         return true;
                     } catch (storageError) {
                         console.error('Storage error during manual save:', storageError);
@@ -5196,14 +5356,14 @@
                     const backupData = JSON.parse(sessionBackup);
                     return backupData.trip;
                 }
-                
+
                 // Try localStorage backup
                 const localBackup = localStorage.getItem(`viantryp_trip_backup_${tripId}`);
                 if (localBackup) {
                     const backupData = JSON.parse(localBackup);
                     return backupData.trip;
                 }
-                
+
                 return null;
             } catch (error) {
                 console.error('Error recovering from backup:', error);
@@ -5215,15 +5375,15 @@
         function loadSavedTrip(tripId) {
             try {
                 console.log('Loading saved trip with ID:', tripId);
-                
+
                 // Show loading notification
                 showNotification('Cargando Viaje', 'Restaurando tu itinerario...');
-                
+
                 const savedTrips = JSON.parse(localStorage.getItem('viantryp_trips') || '[]');
                 let trip = savedTrips.find(t => t.id == tripId);
-                
+
                 console.log('Found trip in storage:', trip);
-                
+
                 // If trip not found in main storage, try backup
                 if (!trip) {
                     trip = recoverFromBackup(tripId);
@@ -5231,10 +5391,10 @@
                         // Data recovered from backup
                     }
                 }
-                
+
                 if (trip) {
                     console.log('Loading trip data:', trip);
-                    
+
                     // Load trip data
                     if (trip.title) {
                         const tripTitleInput = document.getElementById('tripTitle');
@@ -5243,7 +5403,7 @@
                             console.log('Set trip title:', trip.title);
                         }
                     }
-                    
+
                     if (trip.startDate) {
                         const startDateInput = document.getElementById('startDate');
                         if (startDateInput) {
@@ -5253,7 +5413,7 @@
                             console.log('Set start date:', trip.startDate);
                         }
                     }
-                    
+
                     if (trip.itemsData && Object.keys(trip.itemsData).length > 0) {
                         itemsData = JSON.parse(JSON.stringify(trip.itemsData)); // Deep copy
                         itemCounter = Math.max(...Object.keys(trip.itemsData).map(Number)) + 1;
@@ -5264,13 +5424,13 @@
                         itemCounter = 0;
                         console.log('No items data found, initialized empty');
                     }
-                    
+
                     // Update dates first
                     updateItineraryDatesSilently();
-                    
+
                     // Update page title
                     updateTripTitleInRealTime();
-                    
+
                     // Rebuild timeline if needed
                     if (Object.keys(itemsData).length > 0) {
                         console.log('Rebuilding timeline with items...');
@@ -5278,14 +5438,14 @@
                     } else {
                         console.log('No items to rebuild, keeping default timeline');
                     }
-                    
+
                     // Success notification removed - no longer needed
-                    
+
                     // Auto-save to ensure everything is properly saved
                     setTimeout(() => {
                         autoSave();
                     }, 1000);
-                    
+
                     // Show success notification
                     showNotification('Viaje Cargado', 'Tu itinerario se ha cargado exactamente como lo dejaste.');
                 } else {
@@ -5303,11 +5463,11 @@
                 console.error('Timeline element not found');
                 return;
             }
-            
+
             console.log('Rebuilding timeline...');
             console.log('Current itemsData:', itemsData);
             console.log('Current startDate:', startDate);
-            
+
             timeline.innerHTML = ''; // Clear existing timeline
 
             let maxDay = 1;
@@ -5317,17 +5477,17 @@
                     return item.day || 1;
                 }));
             }
-            
+
             console.log('Max day calculated:', maxDay);
 
             for (let day = 1; day <= maxDay; day++) {
                 const dayContainer = document.createElement('div');
                 dayContainer.className = 'day-container';
                 dayContainer.setAttribute('data-day', day);
-                
+
                 // NO auto-calcular fecha para este día.
                 let dayDate = 'Sin fecha';
-                
+
                 dayContainer.innerHTML = `
                     <div class="day-actions">
                         <button class="day-btn" onclick="deleteDay(this)">
@@ -5346,47 +5506,47 @@
                     </div>
                 `;
                 timeline.appendChild(dayContainer);
-                
+
                 // Make the day container droppable
                 dayContainer.addEventListener('dragover', handleDragOver);
                 dayContainer.addEventListener('drop', handleDrop);
                 dayContainer.addEventListener('dragenter', handleDragEnter);
                 dayContainer.addEventListener('dragleave', handleDragLeave);
             }
-            
+
             // Now rebuild the items for each day
             rebuildTimelineItems();
-            
+
             dayCounter = maxDay;
             // Sin automatización: no recalcular fechas luego de reconstruir.
             makeExistingItemsClickable();
-            
+
             console.log('Timeline rebuild completed');
         }
 
         function rebuildTimelineItems() {
             console.log('Rebuilding timeline items...');
-            
+
             // Group items by day
             const itemsByDay = {};
             const summaryItems = [];
-            
+
             Object.keys(itemsData).forEach(itemKey => {
                 const item = itemsData[itemKey];
                 if (item && item.type) {
                     if (item.type === 'summary') {
                         // Summary items go to the top
-                        summaryItems.push({...item, id: itemKey});
+                        summaryItems.push({ ...item, id: itemKey });
                     } else {
                         let day = item.day || 1;
                         if (!itemsByDay[day]) {
                             itemsByDay[day] = [];
                         }
-                        itemsByDay[day].push({...item, id: itemKey});
+                        itemsByDay[day].push({ ...item, id: itemKey });
                     }
                 }
             });
-            
+
             console.log('Items grouped by day:', itemsByDay);
             console.log('Summary items:', summaryItems);
 
@@ -5396,7 +5556,7 @@
                 console.log('Adding summary items to timeline...');
                 // Remove existing summary items
                 timeline.querySelectorAll('.timeline-item.summary').forEach(summary => summary.remove());
-                
+
                 // Add summary items at the top
                 summaryItems.forEach(item => {
                     const timelineItem = createTimelineItemFromData(item);
@@ -5410,39 +5570,39 @@
                 const dayContainer = document.querySelector(`[data-day="${dayNumber}"]`);
                 if (dayContainer) {
                     const dayItems = dayContainer.querySelector('.day-items');
-                    
+
                     // Clear placeholder
                     dayItems.innerHTML = '';
-                    
+
                     // Add items for this day
                     itemsByDay[dayNumber].forEach(item => {
                         const timelineItem = createTimelineItemFromData(item);
                         dayItems.appendChild(timelineItem);
                     });
-                    
+
                     // Sort items by time within this day
                     sortItemsByTime(dayContainer);
                 } else {
                     console.error(`Day container for day ${dayNumber} not found`);
                 }
             });
-            
+
             console.log('Timeline items rebuild completed');
         }
 
         function createTimelineItemFromData(itemData) {
             console.log('Creating timeline item from data:', itemData);
-            
+
             if (!itemData || !itemData.type) {
                 console.error('Invalid item data:', itemData);
                 return null;
             }
-            
+
             const item = document.createElement('div');
             item.className = `timeline-item ${itemData.type}`;
             item.setAttribute('data-item-id', itemData.id);
             item.style.transition = 'all 0.3s ease';
-            
+
             const iconMap = {
                 flight: 'fa-plane',
                 hotel: 'fa-bed',
@@ -5451,7 +5611,7 @@
                 note: 'fa-sticky-note',
                 summary: 'fa-clipboard-list'
             };
-            
+
             if (itemData.type === 'summary') {
                 // Special handling for summary element
                 const summaryContent = generateItinerarySummary();
@@ -5487,15 +5647,15 @@
                     </div>
                 `;
             }
-            
+
             // Make the entire item clickable
-            item.addEventListener('click', function(e) {
+            item.addEventListener('click', function (e) {
                 // Don't trigger if clicking on action buttons
                 if (!e.target.closest('.item-actions')) {
                     editItem(this.querySelector('.item-btn'));
                 }
             });
-            
+
             console.log('Timeline item created successfully:', item);
             return item;
         }
@@ -5512,21 +5672,21 @@
 
         function updateTripTitleInRealTime() {
             const tripTitle = document.getElementById('tripTitle')?.value?.trim();
-            
+
             // Update page title
             document.title = `Viantryp - ${tripTitle || 'Mi Viaje'}`;
-            
+
             // Update save status indicator
             updateSaveStatus();
         }
-        
+
         function generateTripTitleFromFlights() {
             const flightItems = Object.values(itemsData).filter(item => item.type === 'flight');
-            
+
             if (flightItems.length > 0) {
                 const firstFlight = flightItems[0];
                 const lastFlight = flightItems[flightItems.length - 1];
-                
+
                 if (firstFlight.originCity && lastFlight.destinationCity) {
                     const tripTitleInput = document.getElementById('tripTitle');
                     if (tripTitleInput && !tripTitleInput.value.trim()) {
@@ -5537,53 +5697,53 @@
                 }
             }
         }
-        
+
         function formatFlightDateTime(dateTime) {
             if (!dateTime) return '';
-            
+
             const date = new Date(dateTime);
             const months = [
                 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
                 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
             ];
-            
+
             const day = date.getDate().toString().padStart(2, '0');
             const month = months[date.getMonth()];
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
-            
+
             return `${day} ${month} ${hours}:${minutes}`;
         }
-        
+
         function getCityFromAirportCode(code) {
             const airport = airportsList.find(airport => airport.code === code);
             return airport ? airport.city : code;
         }
-        
+
         function calculateFlightDuration(departureDateTime, arrivalDateTime) {
             if (!departureDateTime || !arrivalDateTime) return '';
-            
+
             const departure = new Date(departureDateTime);
             const arrival = new Date(arrivalDateTime);
             const durationMs = arrival - departure;
-            
+
             if (durationMs <= 0) return '';
-            
+
             const hours = Math.floor(durationMs / (1000 * 60 * 60));
             const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
-            
+
             if (hours > 0) {
                 return `${hours}h ${minutes}m`;
             } else {
                 return `${minutes}m`;
             }
         }
-        
+
         function updateSaveStatus() {
             const tripTitle = document.getElementById('tripTitle')?.value?.trim();
             const hasItems = Object.keys(itemsData).length > 0;
             const hasCustomTitle = tripTitle && tripTitle !== 'Mi Viaje';
-            
+
             // Update save button state
             const saveButton = document.querySelector('button[onclick="manualSave()"]');
             if (saveButton) {
@@ -5595,7 +5755,7 @@
                     saveButton.style.background = '#6c757d';
                 }
             }
-            
+
             // Check if data is missing and try to reload
             const urlParams = new URLSearchParams(window.location.search);
             const tripId = urlParams.get('trip');
@@ -5606,12 +5766,12 @@
                 }, 500);
             }
         }
-        
+
         // Airport autocomplete functions
         function setupAirportAutocomplete(inputId, containerId) {
             const airportInput = document.getElementById(inputId);
             if (!airportInput) return;
-            
+
             // Create autocomplete container
             let autocompleteContainer = document.getElementById(containerId);
             if (!autocompleteContainer) {
@@ -5634,23 +5794,23 @@
                 airportInput.parentNode.style.position = 'relative';
                 airportInput.parentNode.appendChild(autocompleteContainer);
             }
-            
-            airportInput.addEventListener('input', function() {
+
+            airportInput.addEventListener('input', function () {
                 const query = this.value.toLowerCase();
                 if (query.length < 2) {
                     autocompleteContainer.style.display = 'none';
                     return;
                 }
-                
-                const matches = airportsList.filter(airport => 
+
+                const matches = airportsList.filter(airport =>
                     airport.code.toLowerCase().includes(query) ||
                     airport.name.toLowerCase().includes(query) ||
                     airport.city.toLowerCase().includes(query) ||
                     airport.country.toLowerCase().includes(query)
                 ).slice(0, 8); // Limit to 8 results
-                
+
                 if (matches.length > 0) {
-                    autocompleteContainer.innerHTML = matches.map(airport => 
+                    autocompleteContainer.innerHTML = matches.map(airport =>
                         `<div class="autocomplete-item" onclick="selectAirport('${inputId}', '${airport.code}', '${airport.name}', '${airport.city}', '${airport.country}')">
                             <div style="font-weight: bold; color: #333;">${airport.code} - ${airport.name}</div>
                             <div style="font-size: 0.9em; color: #666;">${airport.city}, ${airport.country}</div>
@@ -5661,19 +5821,19 @@
                     autocompleteContainer.style.display = 'none';
                 }
             });
-            
+
             // Hide autocomplete when clicking outside
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 if (!airportInput.contains(e.target) && !autocompleteContainer.contains(e.target)) {
                     autocompleteContainer.style.display = 'none';
                 }
             });
-            
+
             // Handle keyboard navigation
-            airportInput.addEventListener('keydown', function(e) {
+            airportInput.addEventListener('keydown', function (e) {
                 const items = autocompleteContainer.querySelectorAll('.autocomplete-item');
                 const currentIndex = Array.from(items).findIndex(item => item.classList.contains('selected'));
-                
+
                 if (e.key === 'ArrowDown') {
                     e.preventDefault();
                     if (currentIndex < items.length - 1) {
@@ -5706,38 +5866,38 @@
                 }
             });
         }
-        
+
         function selectAirport(inputId, code, name, city, country) {
             const airportInput = document.getElementById(inputId);
             const autocompleteContainer = document.getElementById(inputId.replace('Input', 'Autocomplete'));
-            
+
             if (airportInput) {
                 airportInput.value = `${code} - ${name}`;
                 airportInput.setAttribute('data-airport-code', code);
                 airportInput.setAttribute('data-airport-city', city);
                 airportInput.setAttribute('data-airport-country', country);
                 airportInput.focus();
-                
+
                 // Trigger title update if both airports are selected
                 setTimeout(() => {
                     const originInput = document.getElementById('originAirportInput');
                     const destinationInput = document.getElementById('destinationAirportInput');
-                    
-                    if (originInput && destinationInput && 
-                        originInput.getAttribute('data-airport-city') && 
+
+                    if (originInput && destinationInput &&
+                        originInput.getAttribute('data-airport-city') &&
                         destinationInput.getAttribute('data-airport-city')) {
-                        
+
                         // Update the title preview in real-time
                         const originCity = originInput.getAttribute('data-airport-city');
                         const destinationCity = destinationInput.getAttribute('data-airport-city');
                         const titlePreview = `Vuelo desde ${originCity} hacia ${destinationCity}`;
-                        
+
                         // You could add a preview element here if needed
                         console.log('Título sugerido:', titlePreview);
                     }
                 }, 100);
             }
-            
+
             if (autocompleteContainer) {
                 autocompleteContainer.style.display = 'none';
             }
@@ -5747,7 +5907,7 @@
         function setupAirlineAutocomplete() {
             const airlineInput = document.getElementById('airline');
             if (!airlineInput) return;
-            
+
             // Create autocomplete container
             let autocompleteContainer = document.getElementById('airlineAutocomplete');
             if (!autocompleteContainer) {
@@ -5770,20 +5930,20 @@
                 airlineInput.parentNode.style.position = 'relative';
                 airlineInput.parentNode.appendChild(autocompleteContainer);
             }
-            
-            airlineInput.addEventListener('input', function() {
+
+            airlineInput.addEventListener('input', function () {
                 const query = this.value.toLowerCase();
                 if (query.length < 2) {
                     autocompleteContainer.style.display = 'none';
                     return;
                 }
-                
-                const matches = airlinesList.filter(airline => 
+
+                const matches = airlinesList.filter(airline =>
                     airline.toLowerCase().includes(query)
                 ).slice(0, 10); // Limit to 10 results
-                
+
                 if (matches.length > 0) {
-                    autocompleteContainer.innerHTML = matches.map(airline => 
+                    autocompleteContainer.innerHTML = matches.map(airline =>
                         `<div class="autocomplete-item" onclick="selectAirline('${airline}')">${airline}</div>`
                     ).join('');
                     autocompleteContainer.style.display = 'block';
@@ -5791,19 +5951,19 @@
                     autocompleteContainer.style.display = 'none';
                 }
             });
-            
+
             // Hide autocomplete when clicking outside
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 if (!airlineInput.contains(e.target) && !autocompleteContainer.contains(e.target)) {
                     autocompleteContainer.style.display = 'none';
                 }
             });
-            
+
             // Handle keyboard navigation
-            airlineInput.addEventListener('keydown', function(e) {
+            airlineInput.addEventListener('keydown', function (e) {
                 const items = autocompleteContainer.querySelectorAll('.autocomplete-item');
                 const currentIndex = Array.from(items).findIndex(item => item.classList.contains('selected'));
-                
+
                 if (e.key === 'ArrowDown') {
                     e.preventDefault();
                     if (currentIndex < items.length - 1) {
@@ -5832,16 +5992,16 @@
                 }
             });
         }
-        
+
         function selectAirline(airline) {
             const airlineInput = document.getElementById('airline');
             const autocompleteContainer = document.getElementById('airlineAutocomplete');
-            
+
             if (airlineInput) {
                 airlineInput.value = airline;
                 airlineInput.focus();
             }
-            
+
             if (autocompleteContainer) {
                 autocompleteContainer.style.display = 'none';
             }
@@ -5850,7 +6010,7 @@
         function cleanupCorruptedData() {
             try {
                 console.log('Starting data cleanup...');
-                
+
                 // Clean up localStorage
                 const keys = Object.keys(localStorage);
                 keys.forEach(key => {
@@ -5866,7 +6026,7 @@
                         }
                     }
                 });
-                
+
                 // Clean up sessionStorage
                 const sessionKeys = Object.keys(sessionStorage);
                 sessionKeys.forEach(key => {
@@ -5882,14 +6042,14 @@
                         }
                     }
                 });
-                
+
                 // Remove duplicate trips and fix corrupted trip data
                 try {
                     const savedTrips = JSON.parse(localStorage.getItem('viantryp_trips') || '[]');
                     if (savedTrips.length > 0) {
                         const uniqueTrips = [];
                         const seenIds = new Set();
-                        
+
                         savedTrips.forEach(trip => {
                             if (trip && trip.id && !seenIds.has(trip.id)) {
                                 // Fix corrupted trip data
@@ -5905,17 +6065,17 @@
                                     createdAt: trip.createdAt || new Date().toISOString(),
                                     updatedAt: trip.updatedAt || new Date().toISOString()
                                 };
-                                
+
                                 seenIds.add(trip.id);
                                 uniqueTrips.push(fixedTrip);
                             }
                         });
-                        
+
                         if (uniqueTrips.length !== savedTrips.length) {
                             console.log('Removed duplicate trips:', savedTrips.length - uniqueTrips.length);
                             localStorage.setItem('viantryp_trips', JSON.stringify(uniqueTrips));
                         }
-                        
+
                         console.log('Data cleanup completed. Total trips:', uniqueTrips.length);
                     }
                 } catch (error) {
@@ -5927,4 +6087,5 @@
         }
     </script>
 </body>
+
 </html>

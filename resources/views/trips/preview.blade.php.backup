@@ -1059,13 +1059,13 @@
     }
 
     .btn-share {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        background: linear-gradient(135deg, #1a7a8a 0%, #1e293b 100%);
         color: white;
         box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
     }
 
     .btn-share:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        background: linear-gradient(135deg, #1e293b 0%, #047857 100%);
         transform: translateY(-1px);
         box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
     }
@@ -1801,7 +1801,7 @@
     }
 
     .icon-activity {
-        background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+        background: linear-gradient(135deg, #1a7a8a 0%, #1e293b 50%, #047857 100%);
     }
 
     .icon-transport {
@@ -2532,13 +2532,13 @@
     }
 
     .btn-save {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        background: linear-gradient(135deg, #1a7a8a 0%, #1e293b 100%);
         color: white;
         box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
     }
 
     .btn-save:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        background: linear-gradient(135deg, #1e293b 0%, #047857 100%);
         transform: translateY(-1px);
         box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
     }
@@ -2568,13 +2568,13 @@
     }
 
     .btn-share {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        background: linear-gradient(135deg, #1a7a8a 0%, #1e293b 100%);
         color: white;
         box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
     }
 
     .btn-share:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        background: linear-gradient(135deg, #1e293b 0%, #047857 100%);
         transform: translateY(-1px);
         box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
     }
@@ -3413,7 +3413,7 @@
                                 ">
                                 <button id="copyShareUrlBtn" style="
                                     padding: 0.75rem 1rem;
-                                    background: linear-gradient(135deg, #10b981, #059669);
+                                    background: linear-gradient(135deg, #1a7a8a, #1e293b);
                                     color: white;
                                     border: none;
                                     border-radius: 8px;
@@ -3471,23 +3471,23 @@
             try {
                 await navigator.clipboard.writeText(shareUrl);
                 copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
-                copyBtn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                copyBtn.style.background = 'linear-gradient(135deg, #1e293b, #047857)';
 
                 // Reset button after 2 seconds
                 setTimeout(() => {
                     copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
-                    copyBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    copyBtn.style.background = 'linear-gradient(135deg, #1a7a8a, #1e293b)';
                 }, 2000);
             } catch (error) {
                 // Fallback for older browsers
                 urlInput.select();
                 document.execCommand('copy');
                 copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
-                copyBtn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                copyBtn.style.background = 'linear-gradient(135deg, #1e293b, #047857)';
 
                 setTimeout(() => {
                     copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
-                    copyBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    copyBtn.style.background = 'linear-gradient(135deg, #1a7a8a, #1e293b)';
                 }, 2000);
             }
         });

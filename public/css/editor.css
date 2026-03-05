@@ -370,7 +370,7 @@
 
 /* Hotel search button styles */
 .btn-search-hotels {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #047857 100%);
     color: white;
     border: none;
     padding: 0.5rem 0.75rem;
@@ -469,7 +469,7 @@
 
 /* Update dates button */
 .btn-update-dates {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #1a7a8a 0%, #1e293b 100%);
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -486,7 +486,7 @@
 }
 
 .btn-update-dates:hover {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #047857 100%);
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
 }
@@ -588,7 +588,7 @@
 }
 
 .btn-add-day {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #1a7a8a 0%, #1e293b 100%);
     color: white;
     border: none;
     padding: 1rem 2rem;
@@ -605,7 +605,7 @@
 }
 
 .btn-add-day:hover {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #047857 100%);
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
 }
@@ -772,7 +772,7 @@
 }
 
 .btn-create {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #1a7a8a 0%, #1e293b 100%);
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
@@ -789,7 +789,7 @@
 }
 
 .btn-create:hover {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #047857 100%);
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
 }
@@ -939,7 +939,7 @@
 }
 
 .icon-summary {
-    color: #10b981;
+    color: #1a7a8a;
 }
 
 .icon-total {
@@ -1038,12 +1038,12 @@
 /* Special styling for summary and total elements */
 .timeline-item.summary {
     background: linear-gradient(135deg, #f8fff8 0%, #ffffff 100%);
-    border: 2px solid #10b981;
+    border: 2px solid #1a7a8a;
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
 }
 
 .timeline-item.summary .item-icon {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #1a7a8a 0%, #1e293b 100%);
 }
 
 .timeline-item.total {
@@ -1057,7 +1057,7 @@
 }
 
 .summary-update-btn {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #1a7a8a 0%, #1e293b 100%);
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -1071,7 +1071,7 @@
 }
 
 .summary-update-btn:hover {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #047857 100%);
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
 }

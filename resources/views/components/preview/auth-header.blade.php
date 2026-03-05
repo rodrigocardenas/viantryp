@@ -150,7 +150,7 @@
                                 ">
                                 <button id="copyShareUrlBtn" style="
                                     padding: 0.75rem 1rem;
-                                    background: linear-gradient(135deg, #10b981, #059669);
+                                    background: linear-gradient(135deg, #1a7a8a, #1e293b);
                                     color: white;
                                     border: none;
                                     border-radius: 8px;
@@ -208,23 +208,23 @@
             try {
                 await navigator.clipboard.writeText(shareUrl);
                 copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
-                copyBtn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                copyBtn.style.background = 'linear-gradient(135deg, #1e293b, #047857)';
 
                 // Reset button after 2 seconds
                 setTimeout(() => {
                     copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
-                    copyBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    copyBtn.style.background = 'linear-gradient(135deg, #1a7a8a, #1e293b)';
                 }, 2000);
             } catch (error) {
                 // Fallback for older browsers
                 urlInput.select();
                 document.execCommand('copy');
                 copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
-                copyBtn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                copyBtn.style.background = 'linear-gradient(135deg, #1e293b, #047857)';
 
                 setTimeout(() => {
                     copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
-                    copyBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    copyBtn.style.background = 'linear-gradient(135deg, #1a7a8a, #1e293b)';
                 }, 2000);
             }
         });

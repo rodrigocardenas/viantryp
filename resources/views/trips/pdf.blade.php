@@ -297,7 +297,7 @@
 
         .icon-flight { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
         .icon-hotel { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .icon-activity { background: linear-gradient(135deg, #10b981, #059669); }
+        .icon-activity { background: linear-gradient(135deg, #1a7a8a, #1e293b); }
         .icon-transport { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
         .icon-note { background: linear-gradient(135deg, #6b7280, #4b5563); }
 

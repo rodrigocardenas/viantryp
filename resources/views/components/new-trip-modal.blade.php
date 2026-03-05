@@ -505,7 +505,7 @@ document.addEventListener('DOMContentLoaded', function() {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #1a7a8a 0%, #1e293b 100%);
             color: white;
             padding: 0;
             border-radius: 12px;

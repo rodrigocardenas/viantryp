@@ -25,36 +25,6 @@
 
         <hr class="header-divider">
 
-        <div class="form-row-flexible">
-            <div class="form-group-half">
-                <label class="field-label">NÚMERO DE VIAJEROS</label>
-                <div class="stepper-input">
-                    <button type="button" class="stepper-btn minus" onclick="decrementTravelers()">−</button>
-                    <input type="number" id="trip-travelers" class="stepper-value" value="{{ $trip->travelers ?? 1 }}" min="1">
-                    <button type="button" class="stepper-btn plus" onclick="incrementTravelers()">+</button>
-                </div>
-                <span class="field-help">Adultos + niños</span>
-            </div>
-
-            <div class="form-group-half">
-                <label class="field-label">VALOR DEL VIAJE</label>
-                <div class="price-group-premium">
-                    <input type="number" id="trip-price" class="price-input-premium" placeholder="0,00" min="0" step="0.01" value="{{ $trip->price ?? 0 }}">
-                    <div class="currency-selector-wrapper">
-                        <select id="trip-currency" class="currency-select-premium">
-                            <option value="USD" {{ ($trip->currency ?? 'USD') == 'USD' ? 'selected' : '' }}>USD</option>
-                            <option value="EUR" {{ ($trip->currency ?? '') == 'EUR' ? 'selected' : '' }}>EUR</option>
-                            <option value="COP" {{ ($trip->currency ?? '') == 'COP' ? 'selected' : '' }}>COP</option>
-                            <option value="MXN" {{ ($trip->currency ?? '') == 'MXN' ? 'selected' : '' }}>MXN</option>
-                        </select>
-                        <i class="fas fa-chevron-down select-icon"></i>
-                    </div>
-                </div>
-                <span class="field-help">Valor total del viaje</span>
-            </div>
-        </div>
-    </div>
-
     <!-- New Section: Cover Image Upload -->
     <div class="trip-cover-upload-section">
         <label class="field-label">FOTO DE PORTADA</label>
@@ -85,6 +55,36 @@
             <div class="upload-progress-overlay" id="upload-progress-overlay" style="display: none;">
                 <div class="loader-spinner"><i class="fas fa-spinner fa-spin"></i></div>
                 <span>Subiendo...</span>
+            </div>
+        </div>
+    </div>
+
+        <div class="form-row-flexible" style="margin-top: 1rem;">
+            <div class="form-group-half">
+                <label class="field-label">NÚMERO DE VIAJEROS</label>
+                <div class="stepper-input">
+                    <button type="button" class="stepper-btn minus" onclick="decrementTravelers()">−</button>
+                    <input type="number" id="trip-travelers" class="stepper-value" value="{{ $trip->travelers ?? 1 }}" min="1">
+                    <button type="button" class="stepper-btn plus" onclick="incrementTravelers()">+</button>
+                </div>
+                <span class="field-help">Adultos + niños</span>
+            </div>
+
+            <div class="form-group-half">
+                <label class="field-label">VALOR DEL VIAJE</label>
+                <div class="price-group-premium">
+                    <input type="number" id="trip-price" class="price-input-premium" placeholder="0,00" min="0" step="0.01" value="{{ $trip->price ?? 0 }}">
+                    <div class="currency-selector-wrapper">
+                        <select id="trip-currency" class="currency-select-premium">
+                            <option value="USD" {{ ($trip->currency ?? 'USD') == 'USD' ? 'selected' : '' }}>USD</option>
+                            <option value="EUR" {{ ($trip->currency ?? '') == 'EUR' ? 'selected' : '' }}>EUR</option>
+                            <option value="COP" {{ ($trip->currency ?? '') == 'COP' ? 'selected' : '' }}>COP</option>
+                            <option value="MXN" {{ ($trip->currency ?? '') == 'MXN' ? 'selected' : '' }}>MXN</option>
+                        </select>
+                        <i class="fas fa-chevron-down select-icon"></i>
+                    </div>
+                </div>
+                <span class="field-help">Valor total del viaje</span>
             </div>
         </div>
     </div>

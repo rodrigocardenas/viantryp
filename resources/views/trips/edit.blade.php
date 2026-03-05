@@ -10,7 +10,6 @@
 @section('content')
     <x-header :showActions="true" :subtitle="'Editor de Itinerario'" :backUrl="route('trips.index')" :backOnclick="'showUnsavedChangesModal()'" :actions="[
         ['url' => route('trips.preview', $trip->id), 'text' => 'Vista previa', 'class' => 'btn-preview', 'icon' => 'far fa-eye', 'target' => '_blank'],
-        ['url' => route('trips.pdf', $trip->id), 'text' => 'Exportar', 'class' => 'btn-export', 'icon' => 'fas fa-download', 'data-action' => 'download-pdf'],
         ['url' => '#', 'text' => 'Guardar', 'class' => 'btn-save', 'icon' => 'fas fa-save', 'data-action' => 'save-trip']
     ]" />
 
