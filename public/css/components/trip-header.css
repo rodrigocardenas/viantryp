@@ -313,14 +313,14 @@
 }
 
 .upload-text {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     margin-bottom: 0.25rem;
     color: inherit;
 }
 
 .upload-hint {
-    font-size: 11px;
+    font-size: 12px;
     color: #94a3b8;
 }
 
