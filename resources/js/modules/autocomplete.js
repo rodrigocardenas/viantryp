@@ -194,27 +194,28 @@ export class GooglePlacesAutocomplete {
             console.log('Input value changed to:', e.target.value);
             // Check if pac-container exists and adjust its position
             setTimeout(() => {
-                const pacContainer = document.querySelector('.pac-container');
-                console.log('Pac container exists:', !!pacContainer);
-                if (pacContainer) {
-                    console.log('Pac container style:', pacContainer.style.cssText);
-                    console.log('Pac container position:', pacContainer.getBoundingClientRect());
+                const pacContainers = document.querySelectorAll('.pac-container');
+                console.log('Found', pacContainers.length, 'pac-containers');
 
-                    // Force the dropdown to appear on top by moving it outside the modal
-                    const inputRect = this.currentInput.getBoundingClientRect();
-                    const modal = this.currentInput.closest('.modal');
+                pacContainers.forEach(container => {
+                    // Only reposition the container if it's currently visible
+                    if (container.style.display !== 'none') {
+                        const inputRect = this.currentInput.getBoundingClientRect();
+                        const modal = this.currentInput.closest('.modal');
 
-                    if (modal) {
-                        const modalRect = modal.getBoundingClientRect();
-                        // Position the dropdown relative to the viewport instead of the modal
-                        pacContainer.style.position = 'fixed';
-                        pacContainer.style.left = inputRect.left + 'px';
-                        pacContainer.style.top = (inputRect.bottom + window.scrollY) + 'px';
-                        pacContainer.style.zIndex = '1000000';
-                        pacContainer.style.width = inputRect.width + 'px';
-                        console.log('Repositioned pac-container to fixed position');
+                        if (modal) {
+                            // Position the dropdown relative to the viewport
+                            container.style.position = 'fixed';
+                            container.style.left = inputRect.left + 'px';
+                            // When using position: fixed, we use the viewport coordinates (inputRect.bottom)
+                            // NOT including window.scrollY, as that would double-offset if the page is scrolled.
+                            container.style.top = inputRect.bottom + 'px';
+                            container.style.zIndex = '1000000'; // Extra high to be sure
+                            container.style.width = inputRect.width + 'px';
+                            console.log('Repositioned active pac-container to fixed position:', inputRect.bottom + 'px');
+                        }
                     }
-                }
+                });
             }, 100);
         });
 
