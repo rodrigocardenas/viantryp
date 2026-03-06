@@ -34,7 +34,7 @@
     ════════════════════════════════════════ */
     .topbar {
       position: sticky; top: 0; z-index: 200;
-      background: var(--ink);
+      background: #0f2a3a;
       height: 75px;
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 80px;
@@ -84,7 +84,7 @@
       border: 1px solid rgba(255,255,255,0.16);
       border-radius: 24px; padding: 7px 16px;
       background: transparent; color: rgba(255,255,255,0.6);
-      font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 500; font-family: 'DM Sans' sans-serif;
       cursor: pointer; transition: all 0.18s;
     }
     .btn-out:hover { background: rgba(255,255,255,0.09); color: white; }
@@ -174,9 +174,9 @@
     /* ════════════════════════════════════════
        MAIN CONTENT
     ════════════════════════════════════════ */
-    .content { flex: 1; padding: 60px 10px 56px; max-width: 1200px; width: 100%; margin: 0 auto; }
+    .content { flex: 1; padding: 40px 10px 56px; max-width: 1200px; width: 100%; margin: 0 auto; }
 
-    .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; }
     .sbox { flex: 1; position: relative; max-width: 420px; }
     .sbox input {
       width: 100%; height: 44px; background: var(--white); border: 1.5px solid var(--bdr);
@@ -468,30 +468,31 @@
         <tr>
           <th><input type="checkbox" id="checkAll" onchange="toggleSelectAll(this)"/></th>
           <th style="width:4px;padding:0"></th>
-          <th>ID</th>
-          <th>Nombre del Viaje</th>
-          <th>Fecha</th>
-          <th>Cliente</th>
-          <th>Estado</th>
+          <th class="sortable" onclick="sortTable(2, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">ID <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span></th>
+          <th class="sortable" onclick="sortTable(3, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">Nombre del Viaje <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span></th>
+          <th class="sortable" onclick="sortTable(4, 'date')" style="cursor: pointer; user-select: none; white-space: nowrap;">Inicio del Viaje <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span></th>
+          <th class="sortable" onclick="sortTable(5, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">Cliente <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span></th>
+          <th class="sortable" onclick="sortTable(6, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">Estado <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span></th>
           <th class="right">Acciones</th>
         </tr>
       </thead>
       <tbody id="tbody">
           @if(count($trips) > 0)
               @foreach($trips as $index => $trip)
-                <tr class="trip-row" style="animation-delay: {{ $index * 0.04 }}s; animation: rowIn 0.28s ease both; cursor: pointer;" onclick="window.location='{{ route('trips.edit', $trip->id) }}'">
+                <tr class="trip-row" style="animation-delay: {{ $index * 0.04 }}s; animation: rowIn 0.28s ease both; cursor: pointer;" onclick="if(window.innerWidth > 768) { window.location='{{ route('trips.edit', $trip->id) }}'; }">
                     <td onclick="event.stopPropagation()"><input type="checkbox" class="rchk trip-checkbox" data-trip-id="{{ $trip->id }}" onchange="updateSelectAllState()"/></td>
                     <td class="bar-cell"></td>
                     <td>
                         <span class="id-chip code-display" onclick="event.stopPropagation(); editTripCode({{ $trip->id }}, '{{ $trip->code }}')">{{ $trip->code ?? 'N/A' }}</span>
                         <input type="text" class="code-input" id="code-input-{{ $trip->id }}" style="display: none;" onblur="saveTripCode({{ $trip->id }})" onkeypress="handleCodeKeyPress(event, {{ $trip->id }})" maxlength="20">
                     </td>
-                    <td>
-                      <div class="trip-name">
-                          <span style="padding-right: 120px;">{{ $trip->title }}</span>
+                    <td style="width: 225.73px; max-width: 225.73px;">
+                      <div class="trip-name" onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'title')" style="cursor: pointer;" title="Haz clic para editar">
+                          <span class="title-display" id="title-display-{{ $trip->id }}" style="display: inline-block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $trip->title }}</span>
+                          <input type="text" class="field-input code-input" id="title-input-{{ $trip->id }}" style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: inherit; text-transform: none;" onblur="saveTripField({{ $trip->id }}, 'title')" onkeypress="handleFieldKeyPress(event, {{ $trip->id }}, 'title')" onclick="event.stopPropagation()">
                       </div>
                       @if($trip->destinations && count($trip->destinations) > 0)
-                         <div class="trip-dest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> {{ rtrim($trip->destinations->pluck('name')->join(' · '), ' · ') ?: 'Sin destino' }}</div>
+                         <div class="trip-dest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; display: inline-block; vertical-align: bottom;">{{ rtrim($trip->destinations->pluck('name')->join(' · '), ' · ') ?: 'Sin destino' }}</span></div>
                       @endif
                       
                       {{-- Mobile only info chips --}}
@@ -504,7 +505,7 @@
                               {{ $clientMobile->name }}
                           </div>
                           @if($clientMobile->email)
-                          <a href="mailto:{{ $clientMobile->email }}" class="mobile-client-email">
+                          <a href="mailto:{{ $clientMobile->email }}" class="mobile-client-email" onclick="event.stopPropagation()">
                               {{ $clientMobile->email }}
                           </a>
                           @endif
@@ -514,19 +515,22 @@
                           </div>
                       </div>
                     </td>
-                    <td>
+                    <td style="width: 127px; min-width: 127px;">
                       <div class="trip-date">{{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : 'Sin fecha' }}</div>
                     </td>
                     @php
                         $client = collect($trip->persons)->firstWhere('type', 'client') ?? collect($trip->persons)->first();
                     @endphp
                     <td>
-                      <div class="client-name">{{ $client ? $client->name : 'Sin cliente' }}</div>
-                      @if($client && $client->email)
-                        <a class="client-email" href="mailto:{{ $client->email }}">{{ $client->email }}</a>
-                      @else
-                        <div class="client-email" style="color:var(--gray2);text-decoration:none;">N/A</div>
-                      @endif
+                      <div class="client-name" onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_name')" style="cursor: pointer;" title="Haz clic para editar">
+                          <span class="name-display" id="name-display-{{ $trip->id }}">{{ $client ? $client->name : 'Sin cliente' }}</span>
+                          <input type="text" class="field-input code-input" id="name-input-{{ $trip->id }}" style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 13px; text-transform: none;" onblur="saveTripField({{ $trip->id }}, 'client_name')" onkeypress="handleFieldKeyPress(event, {{ $trip->id }}, 'client_name')" onclick="event.stopPropagation()">
+                      </div>
+                      
+                      <div class="client-email-container" onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_email')" style="cursor: pointer; color: var(--teal); font-size: 11.5px; margin-top: 4px;" title="Haz clic para editar">
+                          <span class="email-display" id="email-display-{{ $trip->id }}" style="display: block;">{{ ($client && $client->email) ? $client->email : 'Añadir correo' }}</span>
+                          <input type="email" class="field-input code-input" id="email-input-{{ $trip->id }}" style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 11.5px; text-transform: none;" onblur="saveTripField({{ $trip->id }}, 'client_email')" onkeypress="handleFieldKeyPress(event, {{ $trip->id }}, 'client_email')" onclick="event.stopPropagation()">
+                      </div>
                     </td>
                     <td onclick="event.stopPropagation()">
                       <select class="status-select status-{{ $trip->status }}" data-status="{{ $trip->status }}" onchange="changeTripStatus({{ $trip->id }}, this.value)">
@@ -728,6 +732,122 @@
         }
     }
 
+    // Inline field editing (Title, Client Name, Client Email)
+    function editTripField(tripId, fieldName) {
+        let displaySpan, inputField;
+        
+        if (fieldName === 'title') {
+            displaySpan = document.getElementById(`title-display-${tripId}`);
+            inputField = document.getElementById(`title-input-${tripId}`);
+        } else if (fieldName === 'client_email') {
+            displaySpan = document.getElementById(`email-display-${tripId}`);
+            inputField = document.getElementById(`email-input-${tripId}`);
+        } else if (fieldName === 'client_name') {
+            displaySpan = document.getElementById(`name-display-${tripId}`);
+            inputField = document.getElementById(`name-input-${tripId}`);
+        }
+        
+        if (displaySpan && inputField) {
+            displaySpan.style.display = 'none';
+            inputField.style.display = 'inline-block';
+            
+            // Start with empty value if placeholder text is present
+            if (fieldName === 'client_email' && displaySpan.textContent.trim() === 'Añadir correo') {
+                inputField.value = '';
+            } else if (fieldName === 'client_name' && displaySpan.textContent.trim() === 'Sin cliente') {
+                inputField.value = '';
+            } else {
+                inputField.value = displaySpan.textContent.trim();
+            }
+            
+            inputField.focus();
+            inputField.select();
+        }
+    }
+
+    function saveTripField(tripId, fieldName) {
+        let inputField, displaySpan;
+        
+        if (fieldName === 'title') {
+            inputField = document.getElementById(`title-input-${tripId}`);
+            displaySpan = document.getElementById(`title-display-${tripId}`);
+            
+            const newValue = inputField.value.trim();
+            if(!newValue) {
+                // Restore if empty
+                inputField.value = displaySpan.textContent.trim();
+                inputField.style.display = 'none';
+                displaySpan.style.display = 'inline-block';
+                showNotification('Error', 'El título no puede estar vacío.', 'error');
+                return;
+            }
+        } else if (fieldName === 'client_email') {
+            inputField = document.getElementById(`email-input-${tripId}`);
+            displaySpan = document.getElementById(`email-display-${tripId}`);
+        } else if (fieldName === 'client_name') {
+            inputField = document.getElementById(`name-input-${tripId}`);
+            displaySpan = document.getElementById(`name-display-${tripId}`);
+        }
+        
+        const newValue = inputField.value.trim();
+        let currentValue = displaySpan.textContent.trim();
+        if (fieldName === 'client_email' && currentValue === 'Añadir correo') currentValue = '';
+        if (fieldName === 'client_name' && currentValue === 'Sin cliente') currentValue = '';
+        
+        if (newValue === currentValue) {
+            inputField.style.display = 'none';
+            displaySpan.style.display = 'inline-block';
+            return;
+        }
+
+        fetch(`{{ url('trips') }}/${tripId}/inline-update`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')},
+            body: JSON.stringify({ field: fieldName, value: newValue })
+        }).then(r => r.json()).then(d => {
+            if (d.success) {
+                if(fieldName === 'client_email' && !newValue) {
+                    displaySpan.textContent = 'Añadir correo';
+                } else if (fieldName === 'client_name' && !newValue) {
+                    displaySpan.textContent = 'Sin cliente';
+                } else {
+                    displaySpan.textContent = newValue;
+                }
+                inputField.style.display = 'none'; 
+                displaySpan.style.display = 'inline-block';
+            } else {
+                showNotification('Error', d.message || 'No se pudo actualizar el campo.', 'error');
+                // Restore on error
+                inputField.style.display = 'none';
+                displaySpan.style.display = 'inline-block';
+            }
+        }).catch(err => {
+            console.error('Update error:', err);
+            showNotification('Error', 'Error de conexión al actualizar.', 'error');
+            inputField.style.display = 'none';
+            displaySpan.style.display = 'inline-block';
+        });
+    }
+
+    function handleFieldKeyPress(event, tripId, fieldName) {
+        if (event.key === 'Enter') saveTripField(tripId, fieldName);
+        else if (event.key === 'Escape') {
+            let inputField, displaySpan;
+            if (fieldName === 'title') {
+                inputField = document.getElementById(`title-input-${tripId}`);
+                displaySpan = document.getElementById(`title-display-${tripId}`);
+            } else if (fieldName === 'client_email') {
+                inputField = document.getElementById(`email-input-${tripId}`);
+                displaySpan = document.getElementById(`email-display-${tripId}`);
+            } else if (fieldName === 'client_name') {
+                inputField = document.getElementById(`name-input-${tripId}`);
+                displaySpan = document.getElementById(`name-display-${tripId}`);
+            }
+            inputField.style.display = 'none';
+            displaySpan.style.display = 'inline-block';
+        }
+    }
+
     // Share Modal
     function shareTripIndex(tripId, token) {
         if(token) return showShareModalIndex(`${window.location.origin}/share/${token}`);
@@ -749,6 +869,85 @@
                 </div>
             </div>`;
         document.body.appendChild(b.firstElementChild);
+    }
+
+    // Table Sorting
+    function sortTable(columnIndex, type = 'string') {
+        const table = document.getElementById("mainTable");
+        let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        switching = true;
+        // Set the sorting direction to ascending:
+        dir = "asc"; 
+        
+        // Reset all header icons
+        const headers = table.querySelectorAll('th.sortable');
+        headers.forEach(th => {
+            const icon = th.querySelector('.sort-icon');
+            if (icon) icon.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg>'; // default
+        });
+        
+        const currentHeader = headers[columnIndex - 2]; // Adjust index based on sortable headers offset
+        const currentIcon = currentHeader.querySelector('.sort-icon');
+
+        while (switching) {
+            switching = false;
+            rows = table.querySelectorAll("tbody .trip-row");
+            
+            for (i = 0; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[columnIndex];
+                y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+                
+                let valX = x.textContent || x.innerText;
+                let valY = y.textContent || y.innerText;
+                
+                // Special handling for inputs inside the cell (like status dropdown)
+                if (columnIndex === 6) { // Status column
+                   valX = x.querySelector('select').options[x.querySelector('select').selectedIndex].text;
+                   valY = y.querySelector('select').options[y.querySelector('select').selectedIndex].text;
+                }
+                
+                if (type === 'number') {
+                    valX = parseFloat(valX.replace(/[^0-9.-]+/g,""));
+                    valY = parseFloat(valY.replace(/[^0-9.-]+/g,""));
+                } else if (type === 'date') {
+                    // Extract date using a simpler approach if the specific formats vary 
+                    // This attempts to extract a parseable date or uses raw string comparison
+                    valX = valX.trim().toLowerCase();
+                    valY = valY.trim().toLowerCase();
+                } else {
+                    valX = valX.toLowerCase().trim();
+                    valY = valY.toLowerCase().trim();
+                }
+
+                if (dir == "asc") {
+                    if (valX > valY) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (valX < valY) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount ++;      
+            } else {
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+        
+        // Update the clicked header icon
+        if (currentIcon) {
+            currentIcon.innerHTML = dir === 'asc' ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg>' : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M15 20V4"/><path d="M15 4l-4 4"/><path d="M15 4l4 4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg>';
+        }
     }
 </script>
 @endpush

@@ -11,7 +11,7 @@
         </div>
         <div class="header-right">
             <div class="nav-actions">
-                <a href="{{ route('trips.edit', $trip->id) }}" class="btn btn-back" style="color: black !important; display: inline-flex; align-items: center; gap: 6px; font-weight: 500;">
+                <a href="{{ route('trips.edit', $trip->id) }}" onclick="if(window.innerWidth <= 768) { window.location.href='{{ route('trips.index') }}'; return false; }" class="btn btn-back" style="color: black !important; display: inline-flex; align-items: center; gap: 6px; font-weight: 500;">
                     <i class="fas fa-arrow-left"></i>
                     Volver
                 </a>

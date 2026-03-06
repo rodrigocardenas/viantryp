@@ -129,14 +129,14 @@
   }
   .btn-primary {
     background: var(--teal); color: var(--white);
-    padding: 0.9rem 2.2rem; border-radius: 100px;
+    padding: 14px 18px; border-radius: 100px;
     font-weight: 700; font-size: 1rem; text-decoration: none;
     transition: all 0.2s; box-shadow: 0 4px 24px rgba(26,122,138,0.2);
   }
   .btn-primary:hover { background: var(--teal-dark); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(26,122,138,0.28); }
   .btn-secondary {
     background: var(--white); border: 1.5px solid var(--mid-gray);
-    color: var(--navy); padding: 0.9rem 2.2rem; border-radius: 100px;
+    color: var(--navy); padding: 14px 21px; border-radius: 100px;
     font-weight: 500; font-size: 1rem; text-decoration: none; transition: all 0.2s;
   }
   .btn-secondary:hover { background: var(--light-gray); border-color: #bbb; }
@@ -347,7 +347,7 @@
       white-space: nowrap;
     }
     .hero-stats { gap: 1.8rem; flex-wrap: wrap; justify-content: center; }
-    .hero { padding-bottom: 3rem; }
+    .hero { padding-top: 6rem; padding-bottom: 3rem; }
     .cta-note { font-size: 0.87rem !important; }
     .section-desc { font-size: 0.8rem !important; }
   }
@@ -370,7 +370,7 @@
         <div style="display: flex; align-items: center; gap: 1.25rem;">
             <a href="{{ route('trips.index') }}" class="nav-login">Ir a Mis Viajes</a>
             <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 0.95rem; font-weight: 600; color: var(--navy);">
+                <span style="font-size: 12px; font-weight: 600; color: var(--navy);">
                     {{ auth()->user()->name }}
                 </span>
                 <a href="{{ route('trips.index') }}" style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--teal); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; text-decoration: none; border: 2px solid var(--teal-light); transition: transform 0.2s;" title="Ir a Mis Viajes" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
