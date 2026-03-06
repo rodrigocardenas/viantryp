@@ -72,7 +72,7 @@
             <div class="summary-item">
                 <span class="summary-label">VIAJEROS</span>
                 <span class="summary-value">
-                    {{ $trip->travelers ?? '1' }} {{ ($trip->travelers ?? 1) > 1 ? 'adultos' : 'adulto' }}
+                    {{ $trip->travelers ?? '1' }} {{ ($trip->travelers ?? 1) > 1 ? 'personas' : 'adulto' }}
                 </span>
             </div>
             <div class="summary-divider"></div>

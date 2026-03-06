@@ -146,7 +146,7 @@ export class SummaryManager {
         const travelersEl = document.getElementById('trip-travelers');
         if (travelersEl && travelersEl.value) {
             const travelers = parseInt(travelersEl.value);
-            summary += `<strong>Viajeros:</strong> ${travelers} ${travelers > 1 ? 'adultos' : 'adulto'}<br>`;
+            summary += `<strong>Viajeros:</strong> ${travelers} ${travelers > 1 ? 'personas' : 'persona'}<br>`;
         }
 
         // Add total price from header or total element
