@@ -85,5 +85,3 @@
         </div>
     </header>
 </div>
-
-<x-preview.global-notes :trip="$trip" />

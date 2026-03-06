@@ -300,6 +300,12 @@
     color: #3b82f6;
 }
 
+.upload-option-unsplash,
+.upload-option-local {
+    cursor: pointer;
+    width: 100%;
+}
+
 .upload-icon {
     font-size: 2rem;
     margin-bottom: 0.5rem;
@@ -307,14 +313,14 @@
 }
 
 .upload-text {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     margin-bottom: 0.25rem;
     color: inherit;
 }
 
 .upload-hint {
-    font-size: 0.75rem;
+    font-size: 11px;
     color: #94a3b8;
 }
 

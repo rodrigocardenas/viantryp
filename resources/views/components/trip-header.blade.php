@@ -39,17 +39,24 @@
             </div>
             
             <div class="cover-upload-prompt" id="cover-upload-prompt" style="{{ $trip && $trip->cover_image_url ? 'display: none;' : '' }}">
-                <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                <div class="upload-text">Haz clic o arrastra una imagen aquí</div>
-                <div class="upload-hint">JPG, PNG o WEBP (máx. 5MB)</div>
+                <div class="upload-option-unsplash" onclick="event.stopPropagation(); openUnsplashModal()">
+                    <div class="upload-icon"><i class="fas fa-thin fa-images"></i></div>
+                    <div class="upload-text">Agregar foto desde Unsplash</div>
+                    <div class="upload-hint">Miles de fotos profesionales sin costo · sin atribución</div>
+                </div>
+                
                 <div class="unsplash-divider" style="margin: 1rem 0; width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                     <hr style="flex:1; border:0; border-top:1px solid #e2e8f0;">
                     <span style="font-size:0.75rem; color:#94a3b8; font-weight:600;">O</span>
                     <hr style="flex:1; border:0; border-top:1px solid #e2e8f0;">
                 </div>
-                <button type="button" class="btn-unsplash-search" id="btn-unsplash-search" onclick="event.stopPropagation(); openUnsplashModal()">
-                    <i class="fas fa-search"></i> Buscar en Galería
-                </button>
+
+                <div class="upload-option-local" onclick="event.stopPropagation(); document.getElementById('trip-cover-input').click()">
+                    <button type="button" class="btn-unsplash-search" id="btn-upload-local">
+                        <div class="upload-text">Sube tu propia imagen</div>
+                        <div class="upload-hint">JPG, PNG o WEBP · máx. 5 MB</div>
+                    </button>
+                </div>
             </div>
             
             <div class="upload-progress-overlay" id="upload-progress-overlay" style="display: none;">
@@ -182,11 +189,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnRemoveCover = document.getElementById('btn-remove-cover');
 
     if (uploadContainer && fileInput) {
-        // Handle click on prompt
-        uploadPrompt.addEventListener('click', () => {
-            fileInput.click();
-        });
-
         // Handle File Selection
         fileInput.addEventListener('change', function() {
             if (this.files && this.files[0]) {
