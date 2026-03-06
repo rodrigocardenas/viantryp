@@ -35,7 +35,6 @@
             .unified-note-item {
                 padding: 1.5rem 2rem;
                 color: #374151;
-                font-family: 'Inter', sans-serif !important;
                 line-height: 1.8;
                 font-size: 12px;
             }
@@ -44,46 +43,8 @@
                 border-bottom: 1px solid #f1f5f9;
             }
 
-            .note-body h1 {
-                font-size: 20px;
-                font-weight: 700;
-                line-height: 1.2;
-                margin-bottom: 0.5rem;
-                color: #0f2a3a;
-            }
-
-            .note-body h2 {
-                font-size: 18px;
-                font-weight: 600;
-                line-height: 1.2;
-                margin-bottom: 0.4rem;
-                color: #0f2a3a;
-            }
-
-            .note-body h3 {
-                font-size: 16px;
-                font-weight: 600;
-                line-height: 1.2;
-                margin-bottom: 0.3rem;
-                color: #0f2a3a;
-            }
-
             .note-body p {
-                font-size: 14px;
-                font-weight: 500;
-                line-height: 1.4;
                 margin-bottom: 1.25rem;
-            }
-
-            .note-body blockquote {
-                border-left: 3px solid #c2e8ed;
-                padding-left: 1rem;
-                margin: 0.8rem 0;
-                color: #555555;
-                font-size: 14px;
-                font-weight: 400;
-                font-style: italic;
-                line-height: 1.4;
             }
 
             .note-body p:last-child {
