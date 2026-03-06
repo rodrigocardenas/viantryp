@@ -37,7 +37,7 @@
       background: var(--ink);
       height: 75px;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 40px;
+      padding: 0 80px;
       overflow: hidden;
       flex-shrink: 0;
     }
@@ -174,7 +174,7 @@
     /* ════════════════════════════════════════
        MAIN CONTENT
     ════════════════════════════════════════ */
-    .content { flex: 1; padding: 28px 10px 56px; max-width: 1200px; width: 100%; margin: 0 auto; }
+    .content { flex: 1; padding: 60px 10px 56px; max-width: 1200px; width: 100%; margin: 0 auto; }
 
     .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
     .sbox { flex: 1; position: relative; max-width: 420px; }
@@ -295,7 +295,91 @@
     .bar-cell { width: 4px; padding: 0 !important; }
     .bar-inner { width: 4px; height: 100%; border-radius: 2px; }
 
-    @keyframes rowIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    @media (max-width: 768px) {
+        .topbar { padding: 0 15px; }
+        .uname { display: none; }
+        .btn-out { font-size: 11px; padding: 6px 12px; gap: 4px; }
+        .btn-out svg { width: 12px; height: 12px; }
+        .topbar-right { flex-direction: row-reverse; gap: 12px; }
+        .ubadge { padding: 0; border: none; margin: 0; }
+
+        /* Mobile Trips Card Layout */
+        .toolbar { flex-direction: column; align-items: stretch; }
+        .sbox { max-width: 100%; }
+        .toolbar .btn-primary { display: none !important; }
+
+        .tbl-wrap { background: transparent; border: none; box-shadow: none; border-radius: 0; }
+        table, thead, tbody, th, td, tr { display: block; }
+        thead { display: none; }
+        
+        .trip-row {
+            background: white; border: 1px solid var(--bdr); border-radius: 12px;
+            margin-bottom: 16px; position: relative; padding: 20px 20px 16px;
+            box-shadow: 0 4px 12px rgba(10,22,40,0.04);
+        }
+        .trip-row:hover { background: white; transform: translateY(-2px); box-shadow: 0 8px 16px rgba(10,22,40,0.06); }
+        
+        /* Hide checkbox and ID on mobile */
+        .trip-row > td:nth-child(1),
+        .trip-row > td:nth-child(3) { display: none; }
+        
+        /* Status Band */
+        .bar-cell { position: absolute; top: 0; left: 0; width: 100%; height: 5px; padding: 0 !important; border-radius: 12px 12px 0 0; overflow: hidden; }
+        .bar-inner { width: 100%; height: 100%; border-radius: 0; }
+
+        /* Header Line: Title + Status */
+        .trip-row > td:nth-child(4) { padding: 0 0 12px 0; border: none; display: flex; flex-direction: column; gap: 8px; }
+        
+        .trip-name { font-size: 18px; line-height: 1.2; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        
+        /* Status Pill Re-styling for Card Header */
+        .trip-row > td:nth-child(7) { position: absolute; top: 20px; right: 20px; padding: 0; border: none; width: auto; z-index: 10; }
+        .status-select { 
+            padding: 4px 26px 4px 10px; font-size: 11.5px; 
+            border-radius: 6px; pointer-events: auto;
+        }
+
+        /* Destiny */
+        .trip-dest { font-size: 13.5px; margin-top: 0; }
+        .trip-dest svg { width: 13px; height: 13px; }
+
+        /* Info Text Layout */
+        .mobile-info-row { display: flex !important; flex-direction: column; gap: 3px; margin-top: 14px; }
+        .mobile-client-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+        .mobile-client-email { font-size: 13px; color: var(--teal); text-decoration: none; display: inline-block; }
+        .mobile-trip-date { font-size: 13px; color: var(--gray); font-weight: 500; margin-top: 2px; }
+
+        /* Overwrite logic to hide old rows and use new mobile info row */
+        .trip-row > td:nth-child(5), 
+        .trip-row > td:nth-child(6) { display: none; }
+
+        /* Action Buttons Block */
+        .trip-row > td:nth-child(8) { 
+            padding: 16px 0 0 0; margin-top: 16px; border-top: 1px solid #f0f2f5; 
+            display: flex; gap: 10px;
+        }
+        .acts-cell { text-align: left; }
+        .acts { justify-content: space-between; width: 100%; gap: 10px; }
+        
+        /* Specialized Mobile Buttons */
+        .abt { 
+            width: auto; flex: 1; height: 38px; border-radius: 8px; font-size: 13px; 
+            font-weight: 600; font-family: 'DM Sans', sans-serif; 
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            color: var(--gray); border-color: var(--bdr); background: transparent;
+        }
+        .abt::after { display: none !important; } /* Hide tooltips */
+        .abt.edit { display: none; } /* User requested to hide edit on mobile */
+        
+        .abt.view::before { content: 'Ver'; }
+        .abt.share::before { content: 'Compartir'; }
+        
+        .abt.del { flex: 0 0 42px; }
+        .abt svg { width: 15px; height: 15px; }
+
+        /* Empty state adaptation */
+        .empty { padding: 40px 15px; }
+    }
 </style>
 @endpush
 
@@ -346,10 +430,6 @@
   </div>
 </header>
 
-<!-- ══ HERO ══ -->
-<section class="hero">
-  </div>
-</section>
 
 <!-- ══ CONTENT ══ -->
 <div class="content">
@@ -401,16 +481,38 @@
               @foreach($trips as $index => $trip)
                 <tr class="trip-row" style="animation-delay: {{ $index * 0.04 }}s; animation: rowIn 0.28s ease both; cursor: pointer;" onclick="window.location='{{ route('trips.edit', $trip->id) }}'">
                     <td onclick="event.stopPropagation()"><input type="checkbox" class="rchk trip-checkbox" data-trip-id="{{ $trip->id }}" onchange="updateSelectAllState()"/></td>
-                    <td class="bar-cell"><div class="bar-inner" style="background: {{ getStatusBand($trip->status) }}"></div></td>
+                    <td class="bar-cell"></td>
                     <td>
                         <span class="id-chip code-display" onclick="event.stopPropagation(); editTripCode({{ $trip->id }}, '{{ $trip->code }}')">{{ $trip->code ?? 'N/A' }}</span>
                         <input type="text" class="code-input" id="code-input-{{ $trip->id }}" style="display: none;" onblur="saveTripCode({{ $trip->id }})" onkeypress="handleCodeKeyPress(event, {{ $trip->id }})" maxlength="20">
                     </td>
                     <td>
-                      <div class="trip-name">{{ $trip->title }}</div>
+                      <div class="trip-name">
+                          <span style="padding-right: 120px;">{{ $trip->title }}</span>
+                      </div>
                       @if($trip->destinations && count($trip->destinations) > 0)
                          <div class="trip-dest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> {{ rtrim($trip->destinations->pluck('name')->join(' · '), ' · ') ?: 'Sin destino' }}</div>
                       @endif
+                      
+                      {{-- Mobile only info chips --}}
+                      <div class="mobile-info-row" style="display: none;">
+                          @php
+                              $clientMobile = collect($trip->persons)->firstWhere('type', 'client') ?? collect($trip->persons)->first();
+                          @endphp
+                          @if($clientMobile)
+                          <div class="mobile-client-name">
+                              {{ $clientMobile->name }}
+                          </div>
+                          @if($clientMobile->email)
+                          <a href="mailto:{{ $clientMobile->email }}" class="mobile-client-email">
+                              {{ $clientMobile->email }}
+                          </a>
+                          @endif
+                          @endif
+                          <div class="mobile-trip-date">
+                              Inicio del viaje: {{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : 'Sin fecha' }}
+                          </div>
+                      </div>
                     </td>
                     <td>
                       <div class="trip-date">{{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : 'Sin fecha' }}</div>

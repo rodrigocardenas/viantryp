@@ -1,4 +1,4 @@
-<header class="topbar">
+﻿<header class="topbar">
   <div class="topbar-left">
     <a href="{{ route('trips.index') }}" class="logo">
       <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 28px; width: auto; filter: brightness(0) invert(1);">
@@ -135,9 +135,9 @@
         .nav-actions { display: none !important; }
         .header-subtitle { display: none !important; }
         .uname { display: none; }
-        .btn-out { gap: 0; padding: 6px 12px; font-size: 0; }
-        .btn-out svg { margin: 0; }
+        .btn-out { font-size: 11px; padding: 6px 12px; gap: 4px; }
+        .btn-out svg { width: 12px; height: 12px; margin: 0; }
         .ubadge { padding-right: 0; border: none; margin-left: 0; }
-        .topbar-right { gap: 5px; }
+        .topbar-right { flex-direction: row-reverse; gap: 15px; }
     }
 </style>
