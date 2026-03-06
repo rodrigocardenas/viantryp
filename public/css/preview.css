@@ -15,7 +15,7 @@
     .container {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 40px;
     }
 
     /* Layout Base */
@@ -1365,15 +1365,15 @@
     }
 
     .btn-share {
-        background: #61c5ed !important;
+        background: #1a7a8a !important;
         color: white;
-        box-shadow: 0 2px 8px rgba(97, 197, 237, 0.3);
+        box-shadow: 0 2px 8px rgba(26, 122, 138, 0.3);
     }
 
     .btn-share:hover {
-        background: #4ab2dc !important;
+        background: #145d69 !important;
         transform: translateY(-1px);
-        box-shadow: 0 4px 16px rgba(97, 197, 237, 0.4);
+        box-shadow: 0 4px 16px rgba(26, 122, 138, 0.4);
     }
 
     .btn-pdf {
@@ -1466,7 +1466,7 @@
         }
 
         .container {
-            padding: 10px;
+            padding: 40px 10px 10px 10px;
         }
 
         h1 {
@@ -3212,15 +3212,15 @@
     }
 
     .btn-share {
-        background: #61c5ed !important;
+        background: #1a7a8a !important;
         color: white;
-        box-shadow: 0 2px 8px rgba(97, 197, 237, 0.3);
+        box-shadow: 0 2px 8px rgba(26, 122, 138, 0.3);
     }
 
     .btn-share:hover {
-        background: #4ab2dc !important;
+        background: #145d69 !important;
         transform: translateY(-1px);
-        box-shadow: 0 4px 16px rgba(97, 197, 237, 0.4);
+        box-shadow: 0 4px 16px rgba(26, 122, 138, 0.4);
     }
 
     .auth-section {

@@ -494,7 +494,7 @@
     .container {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 40px;
     }
 
     header {
@@ -1152,7 +1152,7 @@
 
     @media (max-width: 768px) {
         .container {
-            padding: 10px;
+            padding: 40px 10px 10px 10px;
         }
 
         h1 {

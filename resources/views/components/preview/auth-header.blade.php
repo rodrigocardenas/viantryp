@@ -15,7 +15,7 @@
                     <i class="fas fa-arrow-left"></i>
                     Volver
                 </a>
-                <button type="button" class="btn btn-share" onclick="shareTrip()" style="background-color: #61c5ed; color: #ffffff; border: none;">
+                <button type="button" class="btn btn-share" onclick="shareTrip()" style="background-color: #1a7a8a; color: #ffffff; border: none;">
                     <i class="fas fa-share-alt"></i>
                     Link para el viajero
                 </button>
@@ -27,6 +27,25 @@
         </div>
     </div>
 </div>
+
+<style>
+    @media (max-width: 768px) {
+        /* Reduce header padding */
+        .header { padding: 18px !important; }
+        
+        /* Resize Logo and Title */
+        .viantryp-logo img { height: 20px !important; }
+        .viantryp-logo span { font-size: 11px !important; }
+        
+        /* Layout adjustments for very small screens */
+        .header-content { flex-direction: column; gap: 6px; }
+        .header-right { display: flex; justify-content: flex-start; }
+        
+        /* Button adjustments */
+        .nav-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .nav-actions .btn { font-size: 11px !important; padding: 6px 12px !important; }
+    }
+</style>
 
 <script>
     async function shareTrip() {

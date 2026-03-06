@@ -1,4 +1,4 @@
-﻿<header class="topbar">
+<header class="topbar">
   <div class="topbar-left">
     <a href="{{ route('trips.index') }}" class="logo">
       <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 28px; width: auto; filter: brightness(0) invert(1);">
