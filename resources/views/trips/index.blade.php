@@ -850,7 +850,7 @@
 
     // Share Modal
     function shareTripIndex(tripId, token) {
-        if(token) return showShareModalIndex(`${window.location.origin}/share/${token}`);
+        if(token) return showShareModalIndex(`${window.location.origin}/trips/share/${token}`);
         fetch(`{{ url('trips') }}/${tripId}/generate-share-token`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
@@ -858,17 +858,179 @@
     }
 
     function showShareModalIndex(url) {
-        const b = document.createElement('div');
-        b.innerHTML = `
-            <div id="shareModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000;font-family:'Inter',sans-serif;">
-                <div style="background:white;border-radius:16px;padding:2rem;max-width:500px;width:90%;">
-                    <h3 style="margin-bottom:20px; text-align:center;">Compartir Itinerario</h3>
-                    <input type="text" value="${url}" readonly style="width:100%;padding:10px;margin-bottom:15px;border:1px solid #ddd;border-radius:8px;">
-                    <button onclick="navigator.clipboard.writeText('${url}').then(()=>alert('¡Copiado!'))" style="background:#1a9a8a;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Copiar</button>
-                    <button onclick="document.getElementById('shareModal').remove()" style="margin-left:10px;background:#f3f4f6;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Cerrar</button>
+        // Remove existing modal if present
+        const existingModal = document.getElementById('shareModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        // Create modal HTML with premium styles matching auth-header.blade.php
+        const modalHtml = `
+            <div id="shareModal" class="share-modal-overlay" style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                font-family: 'Poppins', sans-serif;
+            ">
+                <div class="share-modal" style="
+                    background: white;
+                    border-radius: 16px;
+                    padding: 2rem;
+                    max-width: 500px;
+                    width: 90%;
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+                    position: relative;
+                ">
+                    <div class="share-modal-header" style="
+                        text-align: center;
+                        margin-bottom: 1.5rem;
+                    ">
+                        <h3 style="
+                            font-size: 1.5rem;
+                            font-weight: 700;
+                            color: #1f2937;
+                            margin: 0 0 0.5rem 0;
+                        ">Compartir Itinerario</h3>
+                        <p style="
+                            color: #6b7280;
+                            margin: 0;
+                            font-size: 0.9rem;
+                        ">Copia el enlace para compartir este viaje</p>
+                    </div>
+
+                    <div class="share-modal-body">
+                        <div class="share-url-container" style="
+                            margin-bottom: 1.5rem;
+                        ">
+                            <label style="
+                                display: block;
+                                font-size: 0.85rem;
+                                font-weight: 600;
+                                color: #374151;
+                                margin-bottom: 0.5rem;
+                            ">Enlace de compartición:</label>
+                            <div class="share-url-input-group" style="
+                                display: flex;
+                                gap: 0.5rem;
+                            ">
+                                <input type="text" id="shareUrlInput" value="${url}" readonly style="
+                                    flex: 1;
+                                    padding: 0.75rem;
+                                    border: 1px solid #d1d5db;
+                                    border-radius: 8px;
+                                    font-size: 0.9rem;
+                                    background: #f9fafb;
+                                    color: #374151;
+                                    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+                                ">
+                                <button id="copyShareUrlBtn" style="
+                                    padding: 0.75rem 1rem;
+                                    background: linear-gradient(135deg, #1a7a8a, #1e293b);
+                                    color: white;
+                                    border: none;
+                                    border-radius: 8px;
+                                    cursor: pointer;
+                                    font-weight: 600;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 0.5rem;
+                                    transition: all 0.3s ease;
+                                    white-space: nowrap;
+                                ">
+                                    <i class="fas fa-copy"></i>
+                                    Copiar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="share-modal-actions" style="
+                            display: flex;
+                            gap: 0.75rem;
+                            justify-content: flex-end;
+                        ">
+                            <button id="closeShareModalBtn" style="
+                                padding: 0.625rem 1.25rem;
+                                background: #f3f4f6;
+                                color: #374151;
+                                border: 1px solid #d1d5db;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                font-weight: 500;
+                                transition: all 0.3s ease;
+                            ">Cerrar</button>
+                        </div>
+                    </div>
                 </div>
-            </div>`;
-        document.body.appendChild(b.firstElementChild);
+            </div>
+        `;
+
+        // Add modal to body
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        // Get modal elements
+        const modal = document.getElementById('shareModal');
+        const urlInput = document.getElementById('shareUrlInput');
+        const copyBtn = document.getElementById('copyShareUrlBtn');
+        const closeBtn = document.getElementById('closeShareModalBtn');
+
+        // Auto-select the URL
+        setTimeout(() => {
+            urlInput.select();
+            urlInput.focus();
+        }, 100);
+
+        // Copy button functionality
+        copyBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(url);
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                copyBtn.style.background = 'linear-gradient(135deg, #1e293b, #047857)';
+
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
+                    copyBtn.style.background = 'linear-gradient(135deg, #1a7a8a, #1e293b)';
+                }, 2000);
+            } catch (error) {
+                // Fallback for older browsers
+                urlInput.select();
+                document.execCommand('copy');
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                copyBtn.style.background = 'linear-gradient(135deg, #1e293b, #047857)';
+
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
+                    copyBtn.style.background = 'linear-gradient(135deg, #1a7a8a, #1e293b)';
+                }, 2000);
+            }
+        });
+
+        // Close modal functionality
+        closeBtn.addEventListener('click', () => {
+            modal.remove();
+        });
+
+        // Close on overlay click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function closeOnEscape(e) {
+            if (e.key === 'Escape') {
+                modal.remove();
+                document.removeEventListener('keydown', closeOnEscape);
+            }
+        });
     }
 
     // Table Sorting
