@@ -225,7 +225,7 @@
     .id-chip:hover { background: white; border-color: var(--teal); }
     .code-input { width: 80px; padding: 2px 4px; border: 1px solid var(--bdr); border-radius: 4px; font-family: monospace; font-size: 10.5px; text-transform: uppercase; }
 
-    .trip-name { font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+    .trip-name { font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
     .trip-dest { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--gray2); margin-top: 3px; }
     .trip-dest svg { width: 11px; height: 11px; color: var(--teal); flex-shrink: 0; }
     .trip-date { font-size: 13px; color: var(--gray); font-weight: 500; }
@@ -239,7 +239,7 @@
         padding: 6px 12px;
         border: 1px solid var(--sand);
         border-radius: 999px;
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 500;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -399,8 +399,8 @@
       <tbody id="tbody">
           @if(count($trips) > 0)
               @foreach($trips as $index => $trip)
-                <tr class="trip-row" style="animation-delay: {{ $index * 0.04 }}s; animation: rowIn 0.28s ease both;">
-                    <td><input type="checkbox" class="rchk trip-checkbox" data-trip-id="{{ $trip->id }}" onchange="updateSelectAllState()"/></td>
+                <tr class="trip-row" style="animation-delay: {{ $index * 0.04 }}s; animation: rowIn 0.28s ease both; cursor: pointer;" onclick="window.location='{{ route('trips.edit', $trip->id) }}'">
+                    <td onclick="event.stopPropagation()"><input type="checkbox" class="rchk trip-checkbox" data-trip-id="{{ $trip->id }}" onchange="updateSelectAllState()"/></td>
                     <td class="bar-cell"><div class="bar-inner" style="background: {{ getStatusBand($trip->status) }}"></div></td>
                     <td>
                         <span class="id-chip code-display" onclick="event.stopPropagation(); editTripCode({{ $trip->id }}, '{{ $trip->code }}')">{{ $trip->code ?? 'N/A' }}</span>
@@ -426,7 +426,7 @@
                         <div class="client-email" style="color:var(--gray2);text-decoration:none;">N/A</div>
                       @endif
                     </td>
-                    <td>
+                    <td onclick="event.stopPropagation()">
                       <select class="status-select status-{{ $trip->status }}" data-status="{{ $trip->status }}" onchange="changeTripStatus({{ $trip->id }}, this.value)">
                           <option value="draft" {{ $trip->status === 'draft' ? 'selected' : '' }}>En diseño</option>
                           <option value="sent" {{ $trip->status === 'sent' ? 'selected' : '' }}>Enviado</option>
@@ -435,7 +435,7 @@
                           <option value="discarded" {{ $trip->status === 'discarded' ? 'selected' : '' }}>Descartado</option>
                       </select>
                     </td>
-                    <td class="acts-cell">
+                    <td class="acts-cell" onclick="event.stopPropagation()">
                       <div class="acts">
                         <button class="abt view" data-tip="Ver propuesta" onclick="previewTrip({{ $trip->id }})">
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>

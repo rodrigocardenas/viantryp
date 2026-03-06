@@ -162,6 +162,29 @@ class DayManager {
         this.summaryManager?.updateAllSummaries?.();
     }
 
+    deleteDay(dayNumber) {
+        if (confirm(`¿Estás seguro de que deseas eliminar este día y todo su contenido?`)) {
+            const dayCard = document.querySelector(`.day-card[data-day="${dayNumber}"]`);
+            if (dayCard) {
+                // Animate removal 
+                dayCard.style.opacity = '0';
+                dayCard.style.transform = 'scale(0.95)';
+                dayCard.style.transition = 'all 0.3s ease-out';
+
+                setTimeout(() => {
+                    dayCard.remove();
+                    this.summaryManager.updateAllSummaries();
+                    this.showNotification('Día Eliminado', `El día ha sido eliminado.`);
+                    document.dispatchEvent(new CustomEvent('saveTripRequested'));
+                }, 300);
+            }
+        }
+    }
+
+    copyDay(dayNumber) {
+        alert('La función de duplicar día se encuentra en desarrollo.');
+    }
+
     showNotification(title, message, type = 'success') {
         // This should be imported from a notification module
         console.log(`${type.toUpperCase()}: ${title} - ${message}`);

@@ -4,7 +4,7 @@
 /* Main Editor Container */
 .editor-container {
     display: flex;
-    height: calc(100vh - 64px);
+    height: calc(100vh - 75px);
     background: #ffffff;
     overflow: hidden;
 }

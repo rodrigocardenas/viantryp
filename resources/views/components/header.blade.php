@@ -1,6 +1,6 @@
 <header class="topbar">
   <div class="topbar-left">
-    <a href="{{ route('home') }}" class="logo">
+    <a href="{{ route('trips.index') }}" class="logo">
       <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 28px; width: auto; filter: brightness(0) invert(1);">
     </a>
     @if(isset($subtitle))
@@ -66,15 +66,15 @@
 </header>
 
 <style>
-    /* ════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        TOPBAR GLOBALES
-    ════════════════════════════════════════ */
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .topbar {
       position: sticky; top: 0; z-index: 200;
       background: #0f2a3a;
       height: 75px;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 40px;
+      padding: 0 4rem;
       overflow: hidden;
       flex-shrink: 0;
       font-family: 'DM Sans', sans-serif;

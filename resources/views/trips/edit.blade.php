@@ -1,8 +1,3 @@
-{{-- Vista: Editar Viaje Existente --}}
-{{-- Ubicación: resources/views/trips/edit.blade.php --}}
-{{-- Propósito: Vista dedicada para la edición de viajes existentes --}}
-{{-- Contexto: Viaje existente con datos que cargar --}}
-
 @extends('layouts.app')
 
 @section('title', 'Viantryp - Editar Viaje')

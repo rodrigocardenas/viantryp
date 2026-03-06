@@ -116,6 +116,14 @@ function setupGlobalEventListeners() {
                 e.preventDefault();
                 dayManager.addNewDay();
                 break;
+            case 'delete-day':
+                e.preventDefault();
+                dayManager.deleteDay(action.dataset.day);
+                break;
+            case 'copy-day':
+                e.preventDefault();
+                dayManager.copyDay(action.dataset.day);
+                break;
             case 'edit-element':
                 e.preventDefault();
                 timelineManager.editElement(action);
