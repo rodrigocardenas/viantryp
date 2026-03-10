@@ -729,6 +729,47 @@ class TripController extends Controller
     }
 
     /**
+     * Upload attachment for PRO editor elements
+     */
+    public function uploadAttachment(Request $request, Trip $trip): JsonResponse
+    {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para subir documentos a este viaje.'
+            ], 403);
+        }
+
+        $request->validate([
+            'file' => 'required|file|max:5120|mimes:pdf,doc,docx,txt,jpg,jpeg,png,webp'
+        ]);
+
+        $file = $request->file('file');
+
+        // Generate a unique filename
+        $filename = \Illuminate\Support\Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $path = 'attachments/' . $filename;
+
+        // Store file in public disk
+        $stored = \Illuminate\Support\Facades\Storage::disk('public')->put($path, file_get_contents($file));
+
+        if (!$stored) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al guardar el archivo.'
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Archivo subido exitosamente.',
+            'url' => asset('storage/' . $path),
+            'original_name' => $file->getClientOriginalName()
+        ]);
+    }
+
+    /**
      * Generate PDF for trip
      */
     public function generatePdf(Request $request, Trip $trip)

@@ -147,6 +147,7 @@ function buildPreviewHTML(data) {
             </div>
           </div>
           ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
+          ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}" target="_blank" style="display:inline-block;background:#fff;color:#0f172a;border:1px solid #e2e8f0;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;text-decoration:none;box-shadow:0 1px 2px rgba(0,0,0,0.05);"><i class="fa-solid fa-paperclip" style="color:var(--muted);margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
         </div>`;
       }
 
@@ -178,6 +179,7 @@ function buildPreviewHTML(data) {
                 ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn" style="text-decoration:none">📞 ${d.phone}</a>` : ''}
               </div>
               ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
+              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}" target="_blank" style="display:inline-block;background:#fff;color:#0f172a;border:1px solid #e2e8f0;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;text-decoration:none;box-shadow:0 1px 2px rgba(0,0,0,0.05);"><i class="fa-solid fa-paperclip" style="color:var(--muted);margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
             </div>
           </div>
         </div>`;
@@ -213,6 +215,7 @@ function buildPreviewHTML(data) {
           </div>
           ${d.precio ? `<div class="pv-chips-row"><span class="pv-chip">💰 $${d.precio} ${moneda}</span></div>` : ''}
           ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
+          ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}" target="_blank" style="display:inline-block;background:#fff;color:#0f172a;border:1px solid #e2e8f0;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;text-decoration:none;box-shadow:0 1px 2px rgba(0,0,0,0.05);"><i class="fa-solid fa-paperclip" style="color:var(--muted);margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
         </div>`;
       }
 
@@ -240,6 +243,7 @@ function buildPreviewHTML(data) {
                 ${d.precio ? `<span class="pv-action-btn pv-action-btn-blue">💰 $${d.precio} ${moneda}</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket"></i> Reserva: ${d.reserva}</div>` : ''}
+              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}" target="_blank" style="display:inline-block;background:#fff;color:#0f172a;border:1px solid #e2e8f0;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;text-decoration:none;box-shadow:0 1px 2px rgba(0,0,0,0.05);"><i class="fa-solid fa-paperclip" style="color:var(--muted);margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
             </div>
           </div>
         </div>`;
@@ -265,6 +269,7 @@ function buildPreviewHTML(data) {
                 ${d.reserva && d.reserva !== 'No aplica' ? `<span class="pv-action-btn" style="background:#f1f5f9;color:var(--text);border:1px solid var(--border)"><i class="fa-solid fa-calendar-check"></i> ${d.reserva}</span>` : ''}
               </div>
               ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
+              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}" target="_blank" style="display:inline-block;background:#fff;color:#0f172a;border:1px solid #e2e8f0;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;text-decoration:none;box-shadow:0 1px 2px rgba(0,0,0,0.05);"><i class="fa-solid fa-paperclip" style="color:var(--muted);margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
             </div>
           </div>
         </div>`;
@@ -291,6 +296,7 @@ function buildPreviewHTML(data) {
                 ${d.personas ? `<span class="pv-chip"><i class="fa-solid fa-users"></i> ${d.personas} personas</span>` : ''}
                 ${d.precio ? `<span class="pv-chip">💰 $${d.precio} ${moneda}</span>` : ''}
               </div>
+              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}" target="_blank" style="display:inline-block;background:#fff;color:#0f172a;border:1px solid #e2e8f0;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;text-decoration:none;box-shadow:0 1px 2px rgba(0,0,0,0.05);"><i class="fa-solid fa-paperclip" style="color:var(--muted);margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
             </div>
           </div>
         </div>`;

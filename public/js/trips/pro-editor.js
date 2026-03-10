@@ -201,12 +201,12 @@ document.getElementById('unsplashSearch').addEventListener('keydown', e => { if 
 
 // CONFIGS
 const C = {
-  flight: { icon: '<i class="fa-solid fa-plane"></i>', label: 'Vuelo', color: 'var(--primary-blue)', bg: '#e0f2fe', fields: [{ k: 'origen', l: 'Ciudad origen', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'destino', l: 'Ciudad destino', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'aerolinea', l: 'Aerolínea', t: 'text', ph: 'Air France' }, { k: 'vuelo', l: 'No. de vuelo', t: 'text', ph: 'AF9474' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'clase', l: 'Clase', t: 'select', opts: ['Económica', 'Ejecutiva', 'Primera'] }, { k: 'precio', l: 'Precio (USD)', t: 'text', ph: '800' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
-  alojamiento: { icon: '<i class="fa-solid fa-hotel"></i>', label: 'Alojamiento', color: '#f0567a', bg: '#fde8ee', hasStars: true, fields: [{ k: 'nombre', l: 'Nombre del hotel', t: 'text', ph: 'Hotel Luxe París', fw: true }, { k: 'checkin', l: 'Check-in', t: 'date' }, { k: 'checkout', l: 'Check-out', t: 'date' }, { k: 'habitacion', l: 'Tipo habitación', t: 'select', ph: 'Selecciona...', opts: ['Sencilla', 'Doble', 'Suite', 'Familiar'] }, { k: 'alimentacion', l: 'Alimentación', t: 'select', ph: 'Selecciona...', opts: ['Solo alojamiento', 'Desayuno incluido', 'Media pensión', 'Pensión completa', 'Todo incluido'] }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...' }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', fw: true }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Desayuno incluido...' }] },
-  transporte: { icon: '<i class="fa-solid fa-car"></i>', label: 'Transporte', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'tipo', l: 'Tipo', t: 'select', opts: ['Auto de alquiler', 'Taxi/Uber', 'Tren', 'Bus', 'Ferry', 'Moto'] }, { k: 'proveedor', l: 'Proveedor', t: 'text', ph: 'Hertz, Renfe...' }, { k: 'origen', l: 'Desde', t: 'text', ph: 'Aeropuerto CDG' }, { k: 'destino', l: 'Hasta', t: 'text', ph: 'Hotel Centro' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'precio', l: 'Precio (USD)', t: 'text', ph: '50' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Confirmación...' }] },
-  actividad: { icon: '<i class="fa-solid fa-bullseye"></i>', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', hasStars: true, fields: [{ k: 'nombre', l: 'Nombre actividad', t: 'text', ph: 'Cena con vista, Tour privado...', fw: true }, { k: 'direccion', l: 'Lugar (Google Maps)', t: 'text', ph: 'Torre Eiffel, Museo del Louvre...', fw: true }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'precio', l: 'Precio (USD)', t: 'text', ph: '25' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...' }] },
-  comida: { icon: '<i class="fa-solid fa-utensils"></i>', label: 'Comida', color: '#f96b3a', bg: '#ffe8e0', hasStars: true, fields: [{ k: 'restaurante', l: 'Restaurante', t: 'text', ph: 'Le Jules Verne', fw: true }, { k: 'tipo', l: 'Tipo', t: 'select', opts: ['Desayuno', 'Almuerzo', 'Cena', 'Brunch', 'Snack'] }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...' }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', fw: true }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'reserva', l: 'Reservación', t: 'select', opts: ['Sí, confirmada', 'Pendiente', 'No aplica'] }, { k: 'precio', l: 'Presupuesto (USD)', t: 'text', ph: '80' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Menú degustación...' }] },
-  tour: { icon: '<i class="fa-solid fa-map-location-dot"></i>', label: 'Tour', color: '#8b5cf6', bg: '#f5f3ff', fields: [{ k: 'nombre', l: 'Nombre del tour', t: 'text', ph: 'Tour Versalles' }, { k: 'operador', l: 'Operador', t: 'text', ph: 'Get Your Guide' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['2h', '4h', 'Medio día', 'Día completo', '2 días', '3+ días'] }, { k: 'personas', l: 'No. personas', t: 'text', ph: '2' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'precio', l: 'Precio total (USD)', t: 'text', ph: '120' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Incluye entrada, guía...' }] },
+  flight: { icon: '<i class="fa-solid fa-plane"></i>', label: 'Vuelo', color: 'var(--primary-blue)', bg: '#e0f2fe', fields: [{ k: 'origen', l: 'Ciudad origen', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'destino', l: 'Ciudad destino', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'aerolinea', l: 'Aerolínea', t: 'text', ph: 'Air France' }, { k: 'vuelo', l: 'No. de vuelo', t: 'text', ph: 'AF9474' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'clase', l: 'Clase', t: 'select', opts: ['Económica', 'Ejecutiva', 'Primera'] }, { k: 'precio', l: 'Precio (USD)', t: 'text', ph: '800' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
+  alojamiento: { icon: '<i class="fa-solid fa-hotel"></i>', label: 'Alojamiento', color: '#f0567a', bg: '#fde8ee', hasStars: true, fields: [{ k: 'nombre', l: 'Nombre del hotel', t: 'text', ph: 'Hotel Luxe París', fw: true }, { k: 'checkin', l: 'Check-in', t: 'date' }, { k: 'checkout', l: 'Check-out', t: 'date' }, { k: 'habitacion', l: 'Tipo habitación', t: 'select', ph: 'Selecciona...', opts: ['Sencilla', 'Doble', 'Suite', 'Familiar'] }, { k: 'alimentacion', l: 'Alimentación', t: 'select', ph: 'Selecciona...', opts: ['Solo alojamiento', 'Desayuno incluido', 'Media pensión', 'Pensión completa', 'Todo incluido'] }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...' }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', fw: true }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Desayuno incluido...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
+  transporte: { icon: '<i class="fa-solid fa-car"></i>', label: 'Transporte', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'tipo', l: 'Tipo', t: 'select', opts: ['Auto de alquiler', 'Taxi/Uber', 'Tren', 'Bus', 'Ferry', 'Moto'] }, { k: 'proveedor', l: 'Proveedor', t: 'text', ph: 'Hertz, Renfe...' }, { k: 'origen', l: 'Desde', t: 'text', ph: 'Aeropuerto CDG' }, { k: 'destino', l: 'Hasta', t: 'text', ph: 'Hotel Centro' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'precio', l: 'Precio (USD)', t: 'text', ph: '50' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Confirmación...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
+  actividad: { icon: '<i class="fa-solid fa-bullseye"></i>', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', hasStars: true, fields: [{ k: 'nombre', l: 'Nombre actividad', t: 'text', ph: 'Cena con vista, Tour privado...', fw: true }, { k: 'direccion', l: 'Lugar (Google Maps)', t: 'text', ph: 'Torre Eiffel, Museo del Louvre...', fw: true }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'precio', l: 'Precio (USD)', t: 'text', ph: '25' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
+  comida: { icon: '<i class="fa-solid fa-utensils"></i>', label: 'Comida', color: '#f96b3a', bg: '#ffe8e0', hasStars: true, fields: [{ k: 'restaurante', l: 'Restaurante', t: 'text', ph: 'Le Jules Verne', fw: true }, { k: 'tipo', l: 'Tipo', t: 'select', opts: ['Desayuno', 'Almuerzo', 'Cena', 'Brunch', 'Snack'] }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...' }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', fw: true }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'reserva', l: 'Reservación', t: 'select', opts: ['Sí, confirmada', 'Pendiente', 'No aplica'] }, { k: 'precio', l: 'Presupuesto (USD)', t: 'text', ph: '80' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Menú degustación...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
+  tour: { icon: '<i class="fa-solid fa-map-location-dot"></i>', label: 'Tour', color: '#8b5cf6', bg: '#f5f3ff', fields: [{ k: 'nombre', l: 'Nombre del tour', t: 'text', ph: 'Tour Versalles' }, { k: 'operador', l: 'Operador', t: 'text', ph: 'Get Your Guide' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['2h', '4h', 'Medio día', 'Día completo', '2 días', '3+ días'] }, { k: 'personas', l: 'No. personas', t: 'text', ph: '2' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'precio', l: 'Precio total (USD)', t: 'text', ph: '120' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Incluye entrada, guía...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
   texto: { icon: '<i class="fa-solid fa-font"></i>', label: 'Caja de texto', color: '#64748b', bg: '#f1f5f9', fields: [{ k: 'contenido', l: 'Contenido', t: 'textarea', ph: 'Escribe aquí...' }, { k: 'alineacion', l: 'Alineación', t: 'select', opts: ['Izquierda', 'Centro', 'Derecha'] }] },
   titulo: { icon: '✦', label: 'Título', color: '#1a1a2e', bg: '#f0f1f7', fields: [{ k: 'texto', l: 'Texto del título', t: 'text', ph: 'Día 1 — Llegada a París' }, { k: 'subtitulo', l: 'Subtítulo (opcional)', t: 'text', ph: 'Una ciudad de luz...' }, { k: 'emoji', l: 'Emoji decorativo', t: 'text', ph: '🗼' }] },
   separador: { icon: '—', label: 'Separador', color: '#94a3b8', bg: '#f1f5f9', fields: [{ k: 'estilo', l: 'Estilo', t: 'select', opts: ['Línea simple', 'Línea con diamante', 'Punteado', 'Gradiente'] }, { k: 'etiqueta', l: 'Etiqueta (opcional)', t: 'text', ph: 'Mañana' }] },
@@ -525,7 +525,7 @@ function buildItem(item, idx) {
   }
   const d = item.data; let title = '', chips = [], sub = [];
   switch (item.type) { case 'flight': title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : 'Vuelo'; if (d.aerolinea) chips.push(d.aerolinea); if (d.vuelo) chips.push(d.vuelo); if (d.clase) chips.push(d.clase); if (d.salida) sub.push('🕐 ' + fmtDT(d.salida)); if (d.precio) chips.push('$' + d.precio); break; case 'alojamiento': title = d.nombre || 'Alojamiento'; if (d.direccion) sub.push('📍 ' + d.direccion); if (d.checkin) chips.push('In: ' + d.checkin); if (d.checkout) chips.push('Out: ' + d.checkout); if (d.habitacion) chips.push(d.habitacion); if (d.alimentacion) chips.push('🍽️ ' + d.alimentacion); if (d.stars) sub.push('⭐ ' + (Number.isInteger(d.stars) ? d.stars + '.0' : d.stars)); break; case 'transporte': title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : (d.tipo || 'Transporte'); if (d.tipo) chips.push(d.tipo); if (d.proveedor) chips.push(d.proveedor); if (d.fecha) sub.push('🕐 ' + fmtDT(d.fecha)); if (d.precio) chips.push('$' + d.precio); break; case 'actividad': title = d.nombre || 'Actividad'; if (d.lugar) sub.push('📍 ' + d.lugar); if (d.duracion) chips.push('⏱ ' + d.duracion); if (d.fecha) chips.push(fmtDT(d.fecha)); if (d.precio) chips.push('$' + d.precio); break; case 'comida': title = d.restaurante || 'Comida'; if (d.ciudad) sub.push('📍 ' + d.ciudad); if (d.tipo) chips.push(d.tipo); if (d.fecha) chips.push(fmtDT(d.fecha)); if (d.precio) chips.push('$' + d.precio); if (d.stars) sub.push('⭐ ' + (Number.isInteger(d.stars) ? d.stars + '.0' : d.stars)); break; case 'tour': title = d.nombre || 'Tour'; if (d.operador) sub.push('🏢 ' + d.operador); if (d.duracion) chips.push('⏱ ' + d.duracion); if (d.personas) chips.push('👥 ' + d.personas); if (d.precio) chips.push('$' + d.precio); break }
-  el.innerHTML = `<div class="item-inner"><div class="item-accent-bar" style="background:${cfg.color}"></div><div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div><div class="item-content"><div class="item-type-label" style="color:${cfg.color}">${cfg.label}</div><div class="item-title">${title}</div><div class="item-subtitle">${sub.map(s => `<span>${s}</span>`).join('')}${chips.map(c => `<span class="item-chip">${c}</span>`).join('')}</div></div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})">✏</button><button class="item-action-btn delete" onclick="deleteItem(${idx})">✕</button></div></div>`;
+  el.innerHTML = `<div class="item-inner"><div class="item-accent-bar" style="background:${cfg.color}"></div><div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div><div class="item-content"><div class="item-type-label" style="color:${cfg.color}">${cfg.label}</div><div class="item-title">${title}</div><div class="item-subtitle">${sub.map(s => `<span>${s}</span>`).join('')}${chips.map(c => `<span class="item-chip">${c}</span>`).join('')}</div>${d.notas ? `<div style="font-size:12px;color:var(--text-muted);margin-top:6px;display:flex;align-items:center;gap:4px;"><i class="fa-solid fa-circle-info" style="font-size:10px;opacity:0.7"></i> ${d.notas}</div>` : ''}${d.adjunto_url ? `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);width:100%;"><div style="display:inline-block;background:#fff;color:#0f172a;border:1px solid #e2e8f0;padding:4px 10px;border-radius:18px;font-size:11.5px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.05);"><i class="fa-solid fa-paperclip" style="color:var(--text-muted);margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</div></div>` : ''}</div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})">✏</button><button class="item-action-btn delete" onclick="deleteItem(${idx})">✕</button></div></div>`;
   setupReorder(el, idx); return el;
 }
 function setupReorder(el, idx) {
@@ -637,6 +637,82 @@ function buildField(field, data) {
   if (field.t === 'textarea') { const ta = document.createElement('textarea'); ta.className = 'form-textarea'; ta.placeholder = field.ph || ''; ta.value = val; ta.dataset.key = field.k; fg.appendChild(ta) }
   else if (field.t === 'select') { const sel = document.createElement('select'); sel.className = 'form-select'; sel.dataset.key = field.k; if (field.ph) { const op = document.createElement('option'); op.value = ''; op.textContent = field.ph; op.disabled = true; op.selected = !val; sel.appendChild(op); } field.opts.forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt; if (opt === val) o.selected = true; sel.appendChild(o) }); fg.appendChild(sel) }
   else if (field.t === 'color-picker') { const row = document.createElement('div'); row.className = 'color-row'; field.opts.forEach((color, ci) => { const sw = document.createElement('div'); sw.className = 'color-swatch' + (data[field.k] === color || (!data[field.k] && ci === 0) ? ' selected' : ''); sw.style.background = color; sw.dataset.color = color; sw.dataset.key = field.k; sw.addEventListener('click', () => { row.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected')); sw.classList.add('selected') }); row.appendChild(sw) }); fg.appendChild(row) }
+  else if (field.t === 'file-upload') {
+    const wrap = document.createElement('div');
+    wrap.style = 'border:1.5px dashed var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;background:var(--surface)';
+
+    // Store url & original name in hidden inputs
+    const hiddenUrl = document.createElement('input'); hiddenUrl.type = 'hidden'; hiddenUrl.dataset.key = field.k + '_url'; hiddenUrl.value = data[field.k + '_url'] || '';
+    const hiddenName = document.createElement('input'); hiddenName.type = 'hidden'; hiddenName.dataset.key = field.k + '_name'; hiddenName.value = data[field.k + '_name'] || '';
+
+    const infoCol = document.createElement('div'); infoCol.style = 'flex:1;overflow:hidden;';
+    const statusText = document.createElement('div'); statusText.style = 'font-size:12.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+
+    if (data[field.k + '_url']) {
+      statusText.innerHTML = `<i class="fa-solid fa-paperclip"></i> <a href="${data[field.k + '_url']}" target="_blank" style="color:#0ea5d8;text-decoration:none;">${data[field.k + '_name'] || 'Archivo subido'}</a>`;
+    } else {
+      statusText.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Ningún archivo seleccionado';
+    }
+
+    const fileInp = document.createElement('input'); fileInp.type = 'file'; fileInp.accept = '.pdf,.doc,.docx,.jpg,.jpeg,.png,.webp'; fileInp.style.display = 'none';
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-secondary'; btn.style = 'font-size:12px;padding:6px 12px;border-radius:6px;'; btn.textContent = 'Explorar';
+
+    // Removal button
+    const removeBtn = document.createElement('button'); removeBtn.type = 'button'; removeBtn.style = 'background:none;border:none;color:#ef4444;cursor:pointer;padding:4px;display:' + (data[field.k + '_url'] ? 'block' : 'none'); removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+    removeBtn.onclick = () => { hiddenUrl.value = ''; hiddenName.value = ''; statusText.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Ningún archivo seleccionado'; removeBtn.style.display = 'none'; fileInp.value = ''; };
+
+    btn.onclick = () => fileInp.click();
+    fileInp.onchange = e => {
+      const f = e.target.files[0];
+      if (!f) return;
+      if (f.size > 5 * 1024 * 1024) { showToast('⚠️', 'El archivo no puede superar 5MB'); return; }
+
+      statusText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo...';
+      btn.disabled = true;
+
+      const formData = new FormData();
+      formData.append('file', f);
+
+      const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      const tripId = window.tripId;
+      fetch(`/trips/${tripId}/upload-attachment`, {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': csrf,
+          'Accept': 'application/json'
+        },
+        body: formData
+      })
+        .then(res => res.json())
+        .then(res => {
+          btn.disabled = false;
+          if (res.success) {
+            hiddenUrl.value = res.url;
+            hiddenName.value = res.original_name;
+            statusText.innerHTML = `<i class="fa-solid fa-paperclip"></i> <a href="${res.url}" target="_blank" style="color:#0ea5d8;text-decoration:none;">${res.original_name}</a>`;
+            removeBtn.style.display = 'block';
+            showToast('✅', 'Archivo subido');
+          } else {
+            statusText.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color:#ef4444"></i> Error al subir';
+            showToast('⚠️', res.message || 'Error al subir');
+          }
+        })
+        .catch(err => {
+          btn.disabled = false;
+          statusText.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color:#ef4444"></i> Error de conexión';
+          console.error(err);
+        });
+    };
+
+    infoCol.appendChild(statusText);
+    wrap.appendChild(infoCol);
+    wrap.appendChild(removeBtn);
+    wrap.appendChild(btn);
+    wrap.appendChild(fileInp);
+    wrap.appendChild(hiddenUrl);
+    wrap.appendChild(hiddenName);
+    fg.appendChild(wrap);
+  }
   else {
     const inp = document.createElement('input'); inp.className = 'form-input'; inp.type = field.t || 'text'; inp.placeholder = field.ph || ''; inp.value = val; inp.dataset.key = field.k; fg.appendChild(inp);
 

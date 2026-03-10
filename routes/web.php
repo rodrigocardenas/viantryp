@@ -64,6 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/{trip}/duplicate', [TripController::class , 'duplicate'])->name('trips.duplicate');
     Route::post('trips/{trip}/generate-share-token', [TripController::class , 'generateShareToken'])->name('trips.generate-share-token');
     Route::post('trips/{trip}/save-pro-state', [TripController::class , 'saveProState'])->name('trips.save-pro-state');
+    Route::post('trips/{trip}/upload-attachment', [TripController::class , 'uploadAttachment'])->name('trips.upload-attachment');
     Route::post('trips/{trip}/send-email', [TripController::class , 'sendEmail'])->name('trips.send-email');
     Route::get('trips/{trip}/pdf', [TripController::class , 'generatePdf'])->name('trips.pdf')->withoutMiddleware('auth');
     Route::post('trips/bulk-delete', [TripController::class , 'bulkDelete'])->name('trips.bulk-delete');
