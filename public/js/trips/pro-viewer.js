@@ -557,7 +557,7 @@ ${hasPortada ? `
       </div>
       <div class="pv-portada-meta-cell">
         <div class="pv-pm-label">Total</div>
-        <div class="pv-pm-value highlight">${precio ? moneda + ' $' + Number(precio).toLocaleString('es', { minimumFractionDigits: 2 }) : '—'}</div>
+        <div class="pv-pm-value highlight">${precio ? moneda + ' $' + Number(precio).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—'}</div>
       </div>
     </div>
   </div>
@@ -580,7 +580,7 @@ ${hasPortada ? `
           </span>
         </div>
       ` : ''}
-      ${precio ? `<div class="pvstat"><span class="pvstat-label"><i class="fa-solid fa-sack-dollar"></i> Total viaje</span><span class="pvstat-val">${moneda} $${Number(precio).toLocaleString('es')}</span></div>` : ''}
+      ${precio ? `<div class="pvstat"><span class="pvstat-label"><i class="fa-solid fa-sack-dollar"></i> Total viaje</span><span class="pvstat-val">${moneda} $${Number(precio).toLocaleString('en-US')}</span></div>` : ''}
       <div class="pvstat"><span class="pvstat-label"><i class="fa-regular fa-calendar-days"></i> Días</span><span class="pvstat-val">${numericTabs.length}</span></div>
     </div>
   </aside>

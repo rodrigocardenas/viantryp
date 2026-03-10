@@ -548,6 +548,16 @@ function setupReorder(el, idx) {
   });
 }
 function fmtDT(s) { if (!s) return ''; try { const d = new Date(s); return d.toLocaleDateString('es', { day: '2-digit', month: 'short' }) + ' ' + d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }) } catch { return s } }
+function formatNumber(val) {
+  if (!val && val !== 0) return '';
+  const parts = val.toString().split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return parts.join('.');
+}
+function unformatNumber(val) {
+  if (!val) return '';
+  return val.toString().replace(/,/g, '');
+}
 function fmtDate(s) { if (!s) return ''; try { return new Date(s + 'T00:00:00').toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' }) } catch { return s } }
 function editItem(idx) {
   const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
@@ -794,7 +804,7 @@ function openPreview() {
   const title = document.getElementById('portadaTitle').value || document.getElementById('itineraryNameInput').value || 'Mi Itinerario';
   const fechaInicio = document.getElementById('portadaFechaInicio').value;
   const fechaFin = document.getElementById('portadaFechaFin').value;
-  const precio = document.getElementById('portadaPrecio').value;
+  const precio = unformatNumber(document.getElementById('portadaPrecio').value);
   const moneda = document.getElementById('portadaMoneda').value;
   const totalViajeros = portadaAdultos + portadaNinos;
   const hasPortada = !!document.querySelector('.day-tab.portada-tab');
@@ -856,7 +866,7 @@ if (window.proState) {
     const pf = document.getElementById('portadaFechaFin');
     if (pf && s.fechaFin) pf.value = s.fechaFin;
     const pp = document.getElementById('portadaPrecio');
-    if (pp && s.precio) pp.value = s.precio;
+    if (pp && s.precio) pp.value = formatNumber(s.precio);
     const pm = document.getElementById('portadaMoneda');
     if (pm && s.moneda) pm.value = s.moneda;
 
@@ -868,6 +878,21 @@ if (window.proState) {
     headerInputs.forEach(inp => {
       if (inp) inp.addEventListener('input', () => autoSaveProTrip());
     });
+    if (pp) {
+      pp.addEventListener('input', e => {
+        const cursor = e.target.selectionStart;
+        const oldLen = e.target.value.length;
+        const raw = unformatNumber(e.target.value);
+        if (isNaN(raw.replace('.', ''))) {
+          e.target.value = e.target.value.replace(/[^\d.,]/g, '');
+          return;
+        }
+        const formatted = formatNumber(raw);
+        e.target.value = formatted;
+        const newLen = e.target.value.length;
+        e.target.setSelectionRange(cursor + (newLen - oldLen), cursor + (newLen - oldLen));
+      });
+    }
 
     renderTabs();
     renderCanvas();
@@ -893,7 +918,7 @@ function autoSaveProTrip() {
     const title = document.getElementById('portadaTitle') ? document.getElementById('portadaTitle').value : 'Sin título';
     const fechaInicio = document.getElementById('portadaFechaInicio') ? document.getElementById('portadaFechaInicio').value : null;
     const fechaFin = document.getElementById('portadaFechaFin') ? document.getElementById('portadaFechaFin').value : null;
-    const precio = document.getElementById('portadaPrecio') ? document.getElementById('portadaPrecio').value : null;
+    const precio = document.getElementById('portadaPrecio') ? unformatNumber(document.getElementById('portadaPrecio').value) : null;
     const moneda = document.getElementById('portadaMoneda') ? document.getElementById('portadaMoneda').value : 'USD';
     const totalViajeros = portadaAdultos + portadaNinos;
 
