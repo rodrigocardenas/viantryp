@@ -310,7 +310,6 @@ function buildPreviewHTML(data) {
       <div class="pvday-header">
         <div class="pvday-pill">Día ${i + 1}</div>
         <div class="pvday-title">${dayTitle}</div>
-        <div class="pvday-count">${items.length} elemento${items.length !== 1 ? 's' : ''}</div>
       </div>
       <div class="pvday-items">${renderPreviewItems(items)}</div>
     </section>`;
@@ -478,9 +477,10 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
   .pv-content{padding-left:0}
   .pv-topbar{padding:0 16px}
   .pvday-header{top:52px}
-  .pv-portada-meta-row{grid-template-columns:1fr}
-  .pv-portada-meta-cell{border-right:none;border-bottom:1px solid var(--border);text-align:left;padding:12px 18px}
-  .pv-portada-meta-cell:last-child{border-bottom:none}
+  .pv-portada-meta-row{grid-template-columns:repeat(3, 1fr)}
+  .pv-portada-meta-cell{border-right:1px solid var(--border);border-bottom:none;text-align:center;padding:12px 6px}
+  .pv-portada-meta-cell:last-child{border-right:none}
+  .pv-portada-title-row{flex-direction:column;align-items:flex-start;gap:8px}
   .pv-portada-wrap{padding:0 14px}
   .pv-portada-extra-items{padding:0 14px}
   .pv-hotel-layout,.pv-media-layout{grid-template-columns:1fr}
@@ -495,7 +495,12 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
   .pv-flight-mobile-details{display:flex !important;}
 }
 @media(max-width:420px){
+  .pv-topbar-title{display:none !important;}
+  .pv-back-text{display:none !important;}
+  .pv-topbar{justify-content:space-between;padding:0 16px}
   .pv-portada-title{font-size:16px}
+  .pvday-title{font-size:14px}
+  .pv-pm-value{font-size:12px}
   .pv-route-row{gap:6px}
   .pv-card{padding:14px 14px}
   .pv-route-row.pv-flight-route { display:flex; justify-content:space-between; align-items:flex-start; text-align:left; }
@@ -518,8 +523,8 @@ ${isPublicLink ? `
   <div class="pv-logo" style="display:flex;align-items:center;"><img src="/images/logo-viantryp.png" alt="Viantryp Logo" style="height:22px; filter:brightness(0) invert(1); display:block;"></div>
   <div class="pv-topbar-title">${title}</div>
   <div class="pv-topbar-actions" style="display:flex;gap:12px;">
-      <button class="pv-share-btn" onclick="shareProTrip()" style="background:#fff;color:#0f172a;border:none;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-share-nodes"></i> Compartir</button>
-      <button class="pv-back-btn" onclick="window.close()" style="display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-times"></i> Cerrar</button>
+      <button class="pv-share-btn" onclick="shareProTrip()" style="background:#fff;color:#0f172a;border:none;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-share-nodes"></i> <span class="pv-back-text">Compartir</span></button>
+      <button class="pv-back-btn" onclick="window.close()" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;"><i class="fa-solid fa-times" style="font-size:16px"></i> <span class="pv-back-text">Cerrar</span></button>
   </div>
 </div>
 `}

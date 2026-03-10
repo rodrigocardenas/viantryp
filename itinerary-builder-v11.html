@@ -2928,7 +2928,6 @@
       <div class="pvday-header">
         <div class="pvday-pill">Día ${i + 1}</div>
         <div class="pvday-title">${dayTitle}</div>
-        <div class="pvday-count">${items.length} elemento${items.length !== 1 ? 's' : ''}</div>
       </div>
       <div class="pvday-items">${renderPreviewItems(items)}</div>
     </section>`;
@@ -2950,11 +2949,11 @@ html{scroll-behavior:smooth}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 /* TOPBAR */
-.pv-topbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 28px;height:52px;display:flex;align-items:center;gap:16px}
-.pv-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;background:linear-gradient(135deg,#7c6fef,#f0567a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
-.pv-topbar-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pv-back-btn{padding:6px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:12.5px;color:var(--muted);cursor:pointer;background:none;font-family:'Inter',sans-serif;transition:all .14s;text-decoration:none;flex-shrink:0}
-.pv-back-btn:hover{border-color:var(--accent);color:var(--accent)}
+.pv-topbar{position:sticky;top:0;z-index:100;background:linear-gradient(23deg, #0f172a, #0e4c6a, #0e7aad);border-bottom:none;padding:0 28px;height:52px;display:flex;align-items:center;gap:16px}
+.pv-logo{display:flex;align-items:center}
+.pv-topbar-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pv-back-btn{padding:6px 14px;border:none;border-radius:8px;font-size:12.5px;color:#fff;cursor:pointer;background:none;font-family:'Inter',sans-serif;transition:all .14s;display:flex;align-items:center;gap:6px;font-weight:600}
+.pv-back-btn:hover{background:rgba(255,255,255,0.1)}
 
 /* ─── PORTADA CARD (imagen referencia 1) ─── */
 .pv-portada-wrap{max-width:900px;margin:28px auto 0;padding:0 24px}
@@ -3091,9 +3090,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   .pv-content{padding-left:0}
   .pv-topbar{padding:0 16px}
   .pvday-header{top:52px}
-  .pv-portada-meta-row{grid-template-columns:1fr}
-  .pv-portada-meta-cell{border-right:none;border-bottom:1px solid var(--border);text-align:left;padding:12px 18px}
-  .pv-portada-meta-cell:last-child{border-bottom:none}
+  .pv-portada-meta-row{grid-template-columns:repeat(3, 1fr)}
+  .pv-portada-meta-cell{border-right:1px solid var(--border);border-bottom:none;text-align:center;padding:12px 6px}
+  .pv-portada-meta-cell:last-child{border-right:none}
+  .pv-portada-title-row{flex-direction:column;align-items:flex-start;gap:8px}
   .pv-portada-wrap{padding:0 14px}
   .pv-portada-extra-items{padding:0 14px}
   .pv-hotel-layout,.pv-media-layout{grid-template-columns:1fr}
@@ -3108,7 +3108,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   .pv-flight-mobile-details{display:flex !important;}
 }
 @media(max-width:420px){
+  .pv-topbar-title{display:none !important;}
+  .pv-back-text{display:none !important;}
+  .pv-topbar{justify-content:space-between;}
   .pv-portada-title{font-size:16px}
+  .pvday-title{font-size:14px}
+  .pv-pm-value{font-size:12px}
   .pv-route-row{gap:6px}
   .pv-card{padding:14px 14px}
   .pv-route-row.pv-flight-route { display:flex; justify-content:space-between; align-items:flex-start; text-align:left; }
@@ -3122,9 +3127,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 </head>
 <body>
 <div class="pv-topbar">
-  <div class="pv-logo">✦ itinerai</div>
+  <div class="pv-logo" style="display:flex;align-items:center;"><img src="/images/logo-viantryp.png" alt="Viantryp Logo" style="height:22px; filter:brightness(0) invert(1); display:block;"></div>
   <div class="pv-topbar-title">${title}</div>
-  <button class="pv-back-btn" onclick="window.close()">✕ Cerrar</button>
+  <button class="pv-back-btn" onclick="window.close()">✕ <span class="pv-back-text">Cerrar</span></button>
 </div>
 
 ${hasPortada ? `
