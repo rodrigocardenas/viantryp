@@ -63,12 +63,12 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/{trip}/cover', [TripController::class , 'uploadCover'])->name('trips.upload-cover');
     Route::post('trips/{trip}/duplicate', [TripController::class , 'duplicate'])->name('trips.duplicate');
     Route::post('trips/{trip}/generate-share-token', [TripController::class , 'generateShareToken'])->name('trips.generate-share-token');
+    Route::post('trips/{trip}/save-pro-state', [TripController::class , 'saveProState'])->name('trips.save-pro-state');
     Route::post('trips/{trip}/send-email', [TripController::class , 'sendEmail'])->name('trips.send-email');
     Route::get('trips/{trip}/pdf', [TripController::class , 'generatePdf'])->name('trips.pdf')->withoutMiddleware('auth');
     Route::post('trips/bulk-delete', [TripController::class , 'bulkDelete'])->name('trips.bulk-delete');
     Route::post('trips/bulk-duplicate', [TripController::class , 'bulkDuplicate'])->name('trips.bulk-duplicate');
     Route::post('trips/{trip}/render-item', [TripController::class , 'renderItem'])->name('trips.render-item');
-    Route::post('trips/{trip}/publish-pro', [TripController::class , 'publishPro'])->name('trips.publish-pro');
 
     // Document routes
     Route::post('trips/{trip}/documents/upload', [\App\Http\Controllers\TripDocumentController::class , 'upload'])->name('trips.documents.upload');

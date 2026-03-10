@@ -42,12 +42,6 @@
           <button class="btn-viantryp" onclick="openPreview()">
               <i class="fa-solid fa-eye"></i> Vista previa
           </button>
-          <button class="btn-viantryp">
-              <i class="fa-solid fa-download"></i> Exportar
-          </button>
-          <button class="btn-viantryp" onclick="publishItinerary()">
-              <i class="fa-solid fa-paper-plane"></i> Publicar
-          </button>
       </div>
 
       @auth
@@ -196,7 +190,7 @@
             </div>
             <div class="portada-body">
               <div style="display:flex;align-items:center;gap:8px;position:relative">
-                <input class="portada-title-input" id="portadaTitle" placeholder="✦ Nombre del viaje..." value="Tour por Europa 2025" style="flex:1">
+                <input class="portada-title-input" id="portadaTitle" placeholder="✦ Nombre del viaje..." value="{{ $trip->title ?? '' }}" style="flex:1">
                 <button class="pfield-clear" onclick="document.getElementById('portadaTitle').value=''" title="Borrar título">🗑</button>
               </div>
               <div class="portada-divider"></div>
@@ -332,6 +326,7 @@
 
 
 
-    <script src="{{ asset('js/trips/pro-editor.js') }}"></script>
+    <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('js/trips/pro-editor.js') }}?v={{ time() }}"></script>
 </body>
 </html>

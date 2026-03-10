@@ -556,44 +556,15 @@ class TripController extends Controller
 
         if ($trip->is_pro) {
             return view('trips.pro-share', [
-                'trip' => $trip->load('user'),
-                'isPublicPreview' => true,
-                'isSharedPreview' => true
+                'trip' => $trip->load('user', 'documents')
             ]);
         }
+
 
         return view('trips.preview', [
             'trip' => $this->enrichHotelData($trip->load('user', 'documents')),
             'isPublicPreview' => true,
             'isSharedPreview' => true
-        ]);
-    }
-
-    /**
-     * Publish PRO itinerary and generate shareable link
-     */
-    public function publishPro(Request $request, Trip $trip): JsonResponse
-    {
-        $data = $request->validate([
-            'pro_state' => 'required|array',
-            'title' => 'nullable|string',
-        ]);
-
-        $trip->update([
-            'is_pro' => true,
-            'pro_state' => $data['pro_state'],
-            'title' => $data['title'] ?? $trip->title,
-        ]);
-
-        // Generate short token if not exists
-        if (!$trip->short_token) {
-            $trip->generateShortToken();
-        }
-
-        return response()->json([
-            'success' => true,
-            'share_url' => $trip->getPublicUrl(),
-            'short_token' => $trip->short_token
         ]);
     }
 
@@ -721,6 +692,37 @@ class TripController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Enlace de compartición generado exitosamente',
+            'share_url' => $shareUrl,
+            'share_token' => $trip->share_token
+        ]);
+    }
+
+    /**
+     * Save PRO trip state and return share URL
+     */
+    public function saveProState(Request $request, Trip $trip): JsonResponse
+    {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para compartir este viaje.'
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'pro_state' => 'required|array'
+        ]);
+
+        $trip->update([
+            'pro_state' => $validated['pro_state']
+        ]);
+
+        $shareUrl = $trip->getShareUrl();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Estado PRO guardado exitosamente',
             'share_url' => $shareUrl,
             'share_token' => $trip->share_token
         ]);
