@@ -22,6 +22,11 @@ class AirportController extends Controller
                     ->orWhere('iata_code', 'like', "%{$search}%")
                     ->orWhere('city', 'like', "%{$search}%");
             });
+
+            // Prioritize exact IATA code match if 3 letters are provided
+            if (strlen($search) === 3) {
+                $query->orderByRaw("CASE WHEN iata_code = ? THEN 1 ELSE 0 END DESC", [strtoupper($search)]);
+            }
         }
 
         // Limit results for performance

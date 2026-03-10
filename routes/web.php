@@ -42,6 +42,7 @@ Route::get('/', function () {
 // Protected routes (require authentication)
 Route::middleware('auth')->group(function () {
     // Trip routes
+    Route::get('trips/create-pro', [TripController::class , 'createPro'])->name('trips.create-pro');
     Route::resource('trips', TripController::class);
 
     // Person routes

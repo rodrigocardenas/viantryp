@@ -441,10 +441,16 @@
       </span>
       <input type="text" placeholder="Buscar por ID, nombre, cliente..." id="searchInput" oninput="searchTripsRows(this.value)"/>
     </div>
-    <a href="{{ route('trips.create') }}" class="btn btn-primary" style="font-family: 'DM Sans', sans-serif; background-color: #1a7a8a; border-color: #1a7a8a; margin-left: auto;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 4px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      <span>Crear nuevo viaje</span>
-    </a>
+    
+    <div style="margin-left: auto; display: flex; gap: 10px;">
+        <a href="{{ route('trips.create-pro') }}" class="btn btn-primary" style="font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, var(--teal), var(--teal2)); border: none; box-shadow: 0 4px 14px rgba(26,154,138,0.25);">
+          <span>✨ Crear viaje PRO</span>
+        </a>
+        <a href="{{ route('trips.create') }}" class="btn btn-primary" style="font-family: 'DM Sans', sans-serif; background-color: #1a7a8a; border-color: #1a7a8a;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 4px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Crear nuevo viaje</span>
+        </a>
+    </div>
   </div>
 
   <div class="bulk-actions" id="bulk-actions">

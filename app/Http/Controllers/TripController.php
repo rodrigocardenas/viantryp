@@ -73,6 +73,14 @@ class TripController extends Controller
     }
 
     /**
+     * Show the new PRO editor for creating a new trip
+     */
+    public function createPro(): View
+    {
+        return view('trips.pro-editor');
+    }
+
+    /**
      * Store a newly created trip
      */
     public function store(Request $request): JsonResponse
