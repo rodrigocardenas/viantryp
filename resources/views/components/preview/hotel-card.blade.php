@@ -75,8 +75,8 @@
 
             <!-- Hotel address -->
             @if($hotelAddress)
-                <div class="hotel-address">
-                    <i class="fas fa-map-marker-alt"></i> {{ $hotelAddress }}
+                <div class="hotel-address" style="color:var(--muted)">
+                    <i class="fas fa-location-dot"></i> {{ $hotelAddress }}
                 </div>
             @endif
 
@@ -113,12 +113,11 @@
 
                 if (isset($item['check_in']) && !empty($item['check_in'])) {
                     try {
-                        $checkInDateTime = new DateTime($item['check_in']);
-                        $dia = $checkInDateTime->format('d');
-                        $mes = $checkInDateTime->format('m');
-                        $ano = $checkInDateTime->format('y');
-                        $hora = $checkInDateTime->format('H:i');
-                        $checkInFormatted = $dia . '/' . $mes . '/' . $ano . ' - ' . $hora;
+                        $checkInDateTime = \Carbon\Carbon::parse($item['check_in'])->locale('es');
+                        $checkInFormatted = $checkInDateTime->isoFormat('dddd, D [de] MMMM');
+                        if ($checkInDateTime->format('H:i') !== '00:00') {
+                            $checkInFormatted .= ' - ' . $checkInDateTime->format('H:i');
+                        }
                     } catch (Exception $e) {
                         $checkInFormatted = $item['check_in'];
                     }
@@ -126,12 +125,11 @@
 
                 if (isset($item['check_out']) && !empty($item['check_out'])) {
                     try {
-                        $checkOutDateTime = new DateTime($item['check_out']);
-                        $dia = $checkOutDateTime->format('d');
-                        $mes = $checkOutDateTime->format('m');
-                        $ano = $checkOutDateTime->format('y');
-                        $hora = $checkOutDateTime->format('H:i');
-                        $checkOutFormatted = $dia . '/' . $mes . '/' . $ano . ' - ' . $hora;
+                        $checkOutDateTime = \Carbon\Carbon::parse($item['check_out'])->locale('es');
+                        $checkOutFormatted = $checkOutDateTime->isoFormat('dddd, D [de] MMMM');
+                        if ($checkOutDateTime->format('H:i') !== '00:00') {
+                            $checkOutFormatted .= ' - ' . $checkOutDateTime->format('H:i');
+                        }
                     } catch (Exception $e) {
                         $checkOutFormatted = $item['check_out'];
                     }

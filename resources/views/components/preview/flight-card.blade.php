@@ -133,7 +133,7 @@
 <div class="flight-card-unified">
     <!-- Header con códigos de aeropuertos -->
     <div class="flight-route-header">
-        <span class="airport-route-text">Vuelo {{ ucwords(preg_replace('/\([^)]*\)/', '', strtolower($finalDepartureCity))) }} → {{ ucwords(preg_replace('/\([^)]*\)/', '', strtolower($finalArrivalCity))) }}</span>
+        <span class="airport-route-text">Vuelo {{ ucwords(trim(explode('(', $finalDepartureCity)[0])) }} → {{ ucwords(trim(explode('(', $finalArrivalCity)[0])) }}</span>
     </div>
 
     <!-- Trayecto principal -->

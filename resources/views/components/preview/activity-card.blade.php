@@ -75,8 +75,8 @@
 
             <!-- Activity address -->
             @if($activityAddress)
-                <div class="activity-address">
-                    <i class="fas fa-map-marker-alt"></i> {{ $activityAddress }}
+                <div class="activity-address" style="color:var(--muted)">
+                    <i class="fas fa-location-dot"></i> {{ $activityAddress }}
                 </div>
             @endif
 
@@ -89,7 +89,7 @@
                 <div class="activity-times">
                     <i class="fas fa-clock"></i>
                     @if($startTime && $endTime)
-                        {{ \Carbon\Carbon::parse($startTime)->format('H:i') }} - {{ \Carbon\Carbon::parse($endTime)->format('H:i') }}
+                        {{ \Carbon\Carbon::parse($startTime)->format('H:i') }} - duración {{ \Carbon\Carbon::parse($startTime)->diff(\Carbon\Carbon::parse($endTime))->format('%hh %im') }}
                     @elseif($startTime)
                         Desde {{ \Carbon\Carbon::parse($startTime)->format('H:i') }}
                     @elseif($endTime)
