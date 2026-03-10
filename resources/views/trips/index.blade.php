@@ -443,9 +443,9 @@
     </div>
     
     <div style="margin-left: auto; display: flex; gap: 10px;">
-        <a href="{{ route('trips.create-pro') }}" class="btn btn-primary" style="font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, var(--teal), var(--teal2)); border: none; box-shadow: 0 4px 14px rgba(26,154,138,0.25);">
+        <button onclick="showCreateTripModal()" class="btn btn-primary" style="font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, var(--teal), var(--teal2)); border: none; box-shadow: 0 4px 14px rgba(26,154,138,0.25);">
           <span>✨ Crear viaje PRO</span>
-        </a>
+        </button>
         <a href="{{ route('trips.create') }}" class="btn btn-primary" style="font-family: 'DM Sans', sans-serif; background-color: #1a7a8a; border-color: #1a7a8a;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 4px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           <span>Crear nuevo viaje</span>
@@ -599,6 +599,84 @@
 
     function previewTrip(tripId) { window.open(`{{ url('trips') }}/${tripId}/preview`, '_blank'); }
     function editTrip(tripId) { window.location.href = `{{ url('trips') }}/${tripId}/edit`; }
+
+    function showCreateTripModal() {
+        const modalHtml = `
+            <div id="createTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
+                <div style="background:white; width:90%; max-width:450px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
+                    <div style="background:linear-gradient(135deg, var(--teal), var(--teal2)); padding:24px; color:white;">
+                        <h3 style="margin:0; font-family:'Playfair Display', serif; font-size:24px;">✨ Nuevo Viaje PRO</h3>
+                        <p style="margin:8px 0 0; font-size:13px; opacity:0.85;">Comienza a diseñar una experiencia inolvidable.</p>
+                    </div>
+                    <div style="padding:24px;">
+                        <form id="createTripForm">
+                            <div style="margin-bottom:16px;">
+                                <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px; letter-spacing:0.5px;">Nombre del Viaje</label>
+                                <input type="text" name="title" required placeholder="Ej: Luna de Miel en Bali" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none; transition:border-color 0.2s;">
+                            </div>
+                            <div style="margin-bottom:16px;">
+                                <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px; letter-spacing:0.5px;">Nombre del Cliente</label>
+                                <input type="text" name="client_name" placeholder="Ej: Juan Pérez" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none; transition:border-color 0.2s;">
+                            </div>
+                            <div style="margin-bottom:20px;">
+                                <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px; letter-spacing:0.5px;">Correo del Cliente</label>
+                                <input type="email" name="client_email" placeholder="ejemplo@correo.com" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none; transition:border-color 0.2s;">
+                            </div>
+                            <div style="display:flex; gap:12px;">
+                                <button type="button" onclick="document.getElementById('createTripModal').remove()" style="flex:1; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
+                                <button type="submit" style="flex:1; height:44px; border:none; background:linear-gradient(135deg, var(--teal), var(--teal2)); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px; box-shadow:0 4px 12px rgba(26,154,138,0.3);">Diseñar Viaje</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <style>
+                @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+                @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+                #createTripForm input:focus { border-color: var(--teal) !important; box-shadow: 0 0 0 3px rgba(26,154,138,0.1); }
+            </style>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        const form = document.getElementById('createTripForm');
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+
+            try {
+                const response = await fetch(`{{ route('trips.store-pro') }}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    window.location.href = result.redirect_url;
+                } else {
+                    alert('Error al crear el viaje: ' + (result.message || 'Error desconocido'));
+                    btn.disabled = false;
+                    btn.textContent = 'Diseñar Viaje';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Ocurrió un error de red o del servidor.');
+                btn.disabled = false;
+                btn.textContent = 'Diseñar Viaje';
+            }
+        };
+    }
     
     // Status Logic
     function changeTripStatus(tripId, newStatus) {

@@ -327,21 +327,10 @@ document.getElementById('dayTabs').addEventListener('click', e => {
 
 document.getElementById('addDayBtn').addEventListener('click', () => {
   days.push([]); dayDates.push('');
-  const dayIdx = days.length - 1;
-  // Count existing numeric tabs to get next display number
-  const existingNums = [...document.querySelectorAll('.day-tab:not(.portada-tab):not(.cierre-tab)')].length;
-  const newDayNum = existingNums + 1;
-  const cierreTab = document.querySelector('.day-tab.cierre-tab');
-  const tab = document.createElement('button');
-  tab.className = 'day-tab'; tab.dataset.day = dayIdx;
-  tab.innerHTML = `<span class="day-tab-label">Día ${newDayNum}</span><span class="day-tab-delete" onclick="confirmDeleteDay(${dayIdx},event)" title="Eliminar día"><i class="fa-solid fa-times"></i></span>`;
-  if (cierreTab) document.getElementById('dayTabs').insertBefore(tab, cierreTab);
-  else document.getElementById('dayTabs').appendChild(tab);
-  currentDay = dayIdx;
-  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-  tab.classList.add('active');
+  currentDay = days.length - 1;
+  renderTabs();
   renderCanvas();
-  showToast('📅', 'Día ' + newDayNum + ' agregado');
+  showToast('📅', 'Día ' + days.length + ' agregado');
 });
 
 document.getElementById('addSectionBtn').addEventListener('click', e => { e.stopPropagation(); document.getElementById('sectionDropdown').classList.toggle('open') });
@@ -349,26 +338,15 @@ document.addEventListener('click', () => document.getElementById('sectionDropdow
 
 function addSection(type) {
   document.getElementById('sectionDropdown').classList.remove('open');
-  const tabs = document.getElementById('dayTabs');
   if (type === 'portada') {
-    if (document.querySelector('.day-tab.portada-tab')) return showToast('⚠️', 'La portada ya existe');
-    const tab = document.createElement('button');
-    tab.className = 'day-tab portada-tab'; tab.dataset.day = 'portada';
-    tab.innerHTML = '<span class="day-tab-label"><i class="fa-solid fa-sun"></i> Portada</span><span class="day-tab-delete portada-cierre-delete" onclick="confirmDeleteSection(\'portada\',event)" title="Eliminar portada"><i class="fa-solid fa-times"></i></span>';
-    tabs.insertBefore(tab, tabs.firstChild);
+    if (document.querySelector('.portada-tab')) return showToast('⚠️', 'La portada ya existe');
     currentDay = 'portada';
-    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
+    renderTabs();
     renderCanvas(); showToast('🌅', 'Portada agregada');
   } else {
-    if (document.querySelector('.day-tab.cierre-tab')) return showToast('⚠️', 'El cierre ya existe');
-    const tab = document.createElement('button');
-    tab.className = 'day-tab cierre-tab'; tab.dataset.day = 'cierre';
-    tab.innerHTML = '<span class="day-tab-label"><i class="fa-solid fa-moon"></i> Cierre</span><span class="day-tab-delete portada-cierre-delete" onclick="confirmDeleteSection(\'cierre\',event)" title="Eliminar cierre"><i class="fa-solid fa-times"></i></span>';
-    tabs.appendChild(tab);
+    if (document.querySelector('.cierre-tab')) return showToast('⚠️', 'El cierre ya existe');
     currentDay = 'cierre';
-    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
+    renderTabs();
     renderCanvas(); showToast('✨', 'Cierre agregado');
   }
 }
@@ -380,16 +358,11 @@ function confirmDeleteSection(type, e) {
   openConfirm('¿Eliminar ' + label + '?', 'Se eliminará esta sección del itinerario. Si la vuelves a agregar, aparecerá en blanco.', () => deleteSection(type));
 }
 function deleteSection(type) {
-  const tab = document.querySelector(`.day-tab.${type}-tab`);
-  if (tab) tab.remove();
-  // Navigate to first available day
-  const firstTab = document.querySelector('.day-tab');
-  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-  if (firstTab) {
-    firstTab.classList.add('active');
-    const dv = firstTab.dataset.day;
-    currentDay = dv === 'portada' ? 'portada' : dv === 'cierre' ? 'cierre' : parseInt(dv);
+  // Logic to switch currentDay before renderTabs
+  if (currentDay === type) {
+    currentDay = 0; // go to day 1
   }
+  renderTabs();
   renderCanvas();
   showToast('<i class="fa-solid fa-trash-can"></i>', (type === 'portada' ? 'Portada' : 'Cierre') + ' eliminado');
 }
@@ -403,22 +376,52 @@ function deleteDay(dayIdx) {
   if (days.length <= 1) return showToast('⚠️', 'No puedes eliminar el único día');
   days.splice(dayIdx, 1);
   dayDates.splice(dayIdx, 1);
-  const tab = document.querySelector(`.day-tab[data-day="${dayIdx}"]`);
-  if (tab) tab.remove();
-  // Re-index data-day and re-label all numeric tabs sequentially
-  const numericTabs = [...document.querySelectorAll('.day-tab:not(.portada-tab):not(.cierre-tab)')];
-  numericTabs.forEach((t, i) => {
-    t.dataset.day = i;
-    const lbl = t.querySelector('.day-tab-label');
-    if (lbl) lbl.textContent = 'Día ' + (i + 1);
-    // Rebind delete button
-    const btn = t.querySelector('.day-tab-delete');
-    if (btn) btn.setAttribute('onclick', `confirmDeleteDay(${i},event)`);
-  });
-  const firstNumericTab = numericTabs[0];
-  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-  if (firstNumericTab) { firstNumericTab.classList.add('active'); currentDay = 0 }
+
+  if (currentDay === dayIdx) {
+    currentDay = Math.max(0, dayIdx - 1);
+  } else if (typeof currentDay === 'number' && currentDay > dayIdx) {
+    currentDay--;
+  }
+
+  renderTabs();
   renderCanvas(); showToast('<i class="fa-solid fa-trash-can"></i>', 'Día eliminado');
+}
+
+function renderTabs() {
+  const container = document.getElementById('dayTabs');
+  if (!container) return;
+
+  // Conserve active status if possible
+  const activeDay = currentDay;
+
+  container.innerHTML = '';
+
+  // Portada
+  if (document.querySelector('.portada-tab') || currentDay === 'portada' || (window.proState && window.proState.portadaPhotoUrl !== undefined)) { // Always show if we have data or it's active
+    // Actually let's just show it if it's in the state as existing
+  }
+
+  // Re-render based on current state
+  // This is a bit complex to do perfectly without a full reactive system, 
+  // so let's just make sure the initial labs match the days array.
+
+  let html = '';
+
+  // Portada (always present for now to avoid complexity, or check if it was intended to be deleted)
+  html += `<button class="day-tab portada-tab ${currentDay === 'portada' ? 'active' : ''}" data-day="portada"><span class="day-tab-label"><i class="fa-solid fa-sun" style="margin-right:4px"></i> Portada</span></button>`;
+
+  // Days
+  days.forEach((_, i) => {
+    html += `<button class="day-tab ${currentDay === i ? 'active' : ''}" data-day="${i}">
+      <span class="day-tab-label">Día ${i + 1}</span>
+      <span class="day-tab-delete" onclick="confirmDeleteDay(${i},event)" title="Eliminar día"><i class="fa-solid fa-times"></i></span>
+    </button>`;
+  });
+
+  // Cierre
+  html += `<button class="day-tab cierre-tab ${currentDay === 'cierre' ? 'active' : ''}" data-day="cierre"><span class="day-tab-label"><i class="fa-solid fa-moon" style="margin-right:4px"></i> Cierre</span></button>`;
+
+  container.innerHTML = html;
 }
 
 function resetViajeros() {
@@ -731,6 +734,94 @@ function openPreview() {
   const url = URL.createObjectURL(blob);
   window.open(url, '_blank');
   showToast('<i class="fa-regular fa-eye"></i>', 'Vista previa abierta');
+}
+
+async function publishItinerary() {
+  if (!window.tripId || window.tripId === 'null') {
+    showToast('⚠️', 'Error: ID de viaje no encontrado');
+    return;
+  }
+
+  const title = document.getElementById('portadaTitle').value || 'Mi Itinerario';
+  const state = {
+    title,
+    fechaInicio: document.getElementById('portadaFechaInicio').value,
+    fechaFin: document.getElementById('portadaFechaFin').value,
+    precio: document.getElementById('portadaPrecio').value,
+    moneda: document.getElementById('portadaMoneda').value,
+    portadaAdultos,
+    portadaNinos,
+    portadaPhotoUrl,
+    days,
+    dayDates,
+    portadaItems,
+    cierreItems,
+    hasPortada: !!document.querySelector('.day-tab.portada-tab'),
+    hasCierre: !!document.querySelector('.day-tab.cierre-tab'),
+    showDefaultCierre: document.getElementById('cierreCardMain')?.style.display !== 'none'
+  };
+
+  showToast('<i class="fa-solid fa-spinner fa-spin"></i>', 'Publicando Itinerario...');
+
+  try {
+    const response = await fetch(`/trips/${window.tripId}/publish-pro`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({
+        pro_state: state,
+        title: title
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      showPublishSuccess(result.share_url);
+    } else {
+      showToast('❌', 'Error al publicar');
+    }
+  } catch (error) {
+    console.error('Error publishing:', error);
+    showToast('❌', 'Error de conexión');
+  }
+}
+
+function showPublishSuccess(url) {
+  const overlay = document.getElementById('confirmOverlay');
+  const title = document.getElementById('confirmTitle');
+  const msg = document.getElementById('confirmMsg');
+  const okBtn = document.getElementById('confirmOkBtn');
+
+  title.innerHTML = '¡Publicado con éxito! 🚀';
+  msg.innerHTML = `
+    <p style="margin-bottom:15px; font-size:13px; color:var(--text-dim)">Tu itinerario ya está disponible. Comparte este enlace con tu cliente:</p>
+    <div style="display:flex; gap:8px; background:var(--bg); padding:10px; border-radius:8px; border:1px solid var(--border); margin-bottom:15px">
+      <input type="text" value="${url}" readonly style="flex:1; border:none; background:none; font-size:12px; color:var(--accent); outline:none" id="shareUrlInput">
+      <button onclick="copyShareUrl()" style="background:var(--accent); color:white; border:none; border-radius:6px; padding:4px 10px; font-size:11px; cursor:pointer"><i class="fa-regular fa-copy"></i> Copiar</button>
+    </div>
+    <p style="font-size:11px; color:#14b8a6"><i class="fa-solid fa-check-circle"></i> Enlace corto generado correctamente</p>
+  `;
+
+  okBtn.textContent = 'Ver Itinerario';
+  okBtn.className = 'btn btn-primary';
+  okBtn.onclick = () => window.open(url, '_blank');
+
+  // Update Cancel btn to just close
+  const cancelBtn = overlay.querySelector('.btn-ghost');
+  cancelBtn.textContent = 'Cerrar';
+  cancelBtn.onclick = closeConfirm;
+
+  overlay.classList.add('open');
+}
+
+function copyShareUrl() {
+  const input = document.getElementById('shareUrlInput');
+  input.select();
+  document.execCommand('copy');
+  showToast('📋', 'Enlace copiado al portapapeles');
 }
 
 function buildPreviewHTML(data) {
@@ -1322,7 +1413,52 @@ sections.forEach(s=>obs.observe(s));
 </html>`;
 }
 
-renderCanvas();
+// Initial Load
+if (window.proState) {
+  const s = window.proState;
+  if (s.days) days = s.days;
+  if (s.dayDates) dayDates = s.dayDates;
+  if (s.portadaItems) portadaItems = s.portadaItems;
+  if (s.cierreItems) cierreItems = s.cierreItems;
+  if (s.portadaAdultos !== undefined) portadaAdultos = s.portadaAdultos;
+  if (s.portadaNinos !== undefined) portadaNinos = s.portadaNinos;
+  if (s.portadaPhotoUrl !== undefined) portadaPhotoUrl = s.portadaPhotoUrl;
+
+  // Ensure days array has at least 1 day if empty, or match numeric tabs
+  if (!days || days.length === 0) days = [[]];
+  if (!dayDates || dayDates.length === 0) dayDates = [''];
+
+  // Adjust day counts
+  numericDayCount = days.length;
+  dayCount = numericDayCount;
+  nextDayNumber = dayCount + 1;
+
+  // Set UI elements
+  document.addEventListener('DOMContentLoaded', () => {
+    if (portadaPhotoUrl) setPortadaPhoto(portadaPhotoUrl);
+    document.getElementById('portadaAdultos').textContent = portadaAdultos;
+    document.getElementById('portadaNinos').textContent = portadaNinos;
+    document.getElementById('portadaTotal').textContent = portadaAdultos + portadaNinos;
+
+    const pi = document.getElementById('portadaFechaInicio');
+    if (pi && s.fechaInicio) pi.value = s.fechaInicio;
+    const pf = document.getElementById('portadaFechaFin');
+    if (pf && s.fechaFin) pf.value = s.fechaFin;
+    const pp = document.getElementById('portadaPrecio');
+    if (pp && s.precio) pp.value = s.precio;
+    const pm = document.getElementById('portadaMoneda');
+    if (pm && s.moneda) pm.value = s.moneda;
+
+    // Set title input
+    const titleInp = document.getElementById('portadaTitle');
+    if (titleInp && s.title) titleInp.value = s.title;
+
+    renderTabs();
+    renderCanvas();
+  });
+} else {
+  renderCanvas();
+}
 
 function toggleSidebar() {
   const sb = document.querySelector('.sidebar');

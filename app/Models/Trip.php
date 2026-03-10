@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
 
 class Trip extends Model
 {
@@ -26,6 +27,9 @@ class Trip extends Model
         'days_dates',
         'cover_image_url',
         'share_token',
+        'short_token',
+        'is_pro',
+        'pro_state',
         'created_at',
         'updated_at'
     ];
@@ -35,6 +39,8 @@ class Trip extends Model
         'end_date' => 'date',
         'items_data' => 'array',
         'days_dates' => 'array',
+        'pro_state' => 'array',
+        'is_pro' => 'boolean',
     ];
 
     /**
@@ -426,7 +432,40 @@ class Trip extends Model
      */
     public static function findByShareToken(string $token): ?self
     {
-        return self::where('share_token', $token)->first();
+        return self::where('share_token', $token)
+            ->orWhere('short_token', $token)
+            ->first();
+    }
+
+    /**
+     * Generate a unique short token for the trip
+     */
+    public function generateShortToken(): string
+    {
+        do {
+            $token = Str::random(8); // Beautiful 8-character short token
+        } while (self::where('short_token', $token)->exists());
+
+        $this->short_token = $token;
+        $this->save();
+
+        return $token;
+    }
+
+    /**
+     * Get the public share URL
+     */
+    public function getPublicUrl(): string
+    {
+        if ($this->short_token) {
+            return route('trips.share', ['token' => $this->short_token]);
+        }
+
+        if (!$this->share_token) {
+            $this->generateShareToken();
+        }
+
+        return route('trips.share', ['token' => $this->share_token]);
     }
 
     /**

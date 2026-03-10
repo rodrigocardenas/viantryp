@@ -43,6 +43,7 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     // Trip routes
     Route::get('trips/create-pro', [TripController::class , 'createPro'])->name('trips.create-pro');
+    Route::post('trips/store-pro', [TripController::class , 'storePro'])->name('trips.store-pro');
     Route::resource('trips', TripController::class);
 
     // Person routes
@@ -67,6 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/bulk-delete', [TripController::class , 'bulkDelete'])->name('trips.bulk-delete');
     Route::post('trips/bulk-duplicate', [TripController::class , 'bulkDuplicate'])->name('trips.bulk-duplicate');
     Route::post('trips/{trip}/render-item', [TripController::class , 'renderItem'])->name('trips.render-item');
+    Route::post('trips/{trip}/publish-pro', [TripController::class , 'publishPro'])->name('trips.publish-pro');
 
     // Document routes
     Route::post('trips/{trip}/documents/upload', [\App\Http\Controllers\TripDocumentController::class , 'upload'])->name('trips.documents.upload');

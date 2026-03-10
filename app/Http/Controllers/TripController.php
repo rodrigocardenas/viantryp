@@ -77,7 +77,59 @@ class TripController extends Controller
      */
     public function createPro(): View
     {
-        return view('trips.pro-editor');
+        return view('trips.pro-editor', [
+            'trip' => null
+        ]);
+    }
+
+    /**
+     * Store a quickly created PRO trip
+     */
+    public function storePro(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'client_name' => 'nullable|string|max:255',
+            'client_email' => 'nullable|email|max:255',
+        ]);
+
+        return DB::transaction(function () use ($validated) {
+            $clientId = null;
+            if ($validated['client_name'] && $validated['client_email']) {
+                $client = Person::updateOrCreate(
+                ['email' => $validated['client_email']],
+                [
+                    'name' => $validated['client_name'],
+                    'type' => 'client'
+                ]
+                );
+                $clientId = $client->id;
+            }
+
+            $trip = Trip::create([
+                'user_id' => Auth::id(),
+                'title' => $validated['title'],
+                'is_pro' => true,
+                'status' => 'draft',
+                'start_date' => now(),
+                'end_date' => now(),
+                'travelers' => 1,
+                'currency' => 'USD',
+                'pro_state' => null
+            ]);
+
+            $trip->generateCode();
+
+            if ($clientId) {
+                $trip->persons()->attach($clientId);
+            }
+
+            return response()->json([
+                'success' => true,
+                'redirect_url' => route('trips.edit', $trip->id),
+                'trip_id' => $trip->id
+            ]);
+        });
     }
 
     /**
@@ -242,6 +294,12 @@ class TripController extends Controller
         // Ensure the trip belongs to the authenticated user
         if ($trip->user_id !== Auth::id()) {
             abort(403, 'No tienes permiso para editar este viaje.');
+        }
+
+        if ($trip->is_pro) {
+            return view('trips.pro-editor', [
+                'trip' => $trip->load(['persons'])
+            ]);
         }
 
         return view('trips.edit', [
@@ -496,10 +554,46 @@ class TripController extends Controller
             abort(404, 'Enlace de compartición no válido o expirado.');
         }
 
+        if ($trip->is_pro) {
+            return view('trips.pro-share', [
+                'trip' => $trip->load('user'),
+                'isPublicPreview' => true,
+                'isSharedPreview' => true
+            ]);
+        }
+
         return view('trips.preview', [
             'trip' => $this->enrichHotelData($trip->load('user', 'documents')),
             'isPublicPreview' => true,
             'isSharedPreview' => true
+        ]);
+    }
+
+    /**
+     * Publish PRO itinerary and generate shareable link
+     */
+    public function publishPro(Request $request, Trip $trip): JsonResponse
+    {
+        $data = $request->validate([
+            'pro_state' => 'required|array',
+            'title' => 'nullable|string',
+        ]);
+
+        $trip->update([
+            'is_pro' => true,
+            'pro_state' => $data['pro_state'],
+            'title' => $data['title'] ?? $trip->title,
+        ]);
+
+        // Generate short token if not exists
+        if (!$trip->short_token) {
+            $trip->generateShortToken();
+        }
+
+        return response()->json([
+            'success' => true,
+            'share_url' => $trip->getPublicUrl(),
+            'short_token' => $trip->short_token
         ]);
     }
 

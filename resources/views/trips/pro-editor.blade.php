@@ -10,7 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.places_api_key', env('GOOGLE_PLACES_API_KEY')) }}&libraries=places"></script>
     <link href="{{ asset('css/trips/pro-editor.css') }}" rel="stylesheet">
-    <script>window.viantrypUserName = "{{ auth()->user()->name ?? 'Invitado' }}";</script>
+    <script>
+        window.viantrypUserName = "{{ auth()->user()->name ?? 'Invitado' }}";
+        window.tripId = {{ $trip->id ?? 'null' }};
+        window.proState = @json($trip->pro_state ?? null);
+    </script>
 </head>
 <body>
 <div class="topbar">
@@ -29,17 +33,19 @@
   <div class="topbar-spacer"></div>
   
   <div class="topbar-right">
-      <div class="topbar-actions">
-          <button class="nav-link" style="border:none; cursor:pointer;" data-action="back" onclick="showUnsavedChangesModal()">
+      <div class="topbar-left">
+          <button class="nav-link" style="border:none; cursor:pointer;" data-action="back" onclick="location.href='/trips'">
               <i class="fas fa-arrow-left" style="margin-right:4px;"></i> Volver
           </button>
+      </div>
+      <div class="topbar-actions">
           <button class="btn-viantryp" onclick="openPreview()">
               <i class="fa-solid fa-eye"></i> Vista previa
           </button>
           <button class="btn-viantryp">
               <i class="fa-solid fa-download"></i> Exportar
           </button>
-          <button class="btn-viantryp">
+          <button class="btn-viantryp" onclick="publishItinerary()">
               <i class="fa-solid fa-paper-plane"></i> Publicar
           </button>
       </div>
@@ -247,7 +253,6 @@
             <div class="cierre-badge">¡ITINERARIO COMPLETO!</div>
             <div class="cierre-title" id="cierreTitleDisplay">Tour por Europa 2025</div>
             <div class="cierre-sub">Este itinerario fue creado por <strong id="cierreAutor">${window.viantrypUserName}</strong>. ¡Que tengas un viaje increíble!</div>
-          </div>
           </div>
           <div id="cierreCardPlaceholder" class="cierre-hidden-placeholder" style="display:none">
             <div style="color:var(--text-dim);font-size:12.5px;margin-bottom:8px">El cierre predeterminado ha sido ocultado</div>
