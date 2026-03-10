@@ -277,7 +277,9 @@ function setupContainerDrag(containerId, itemsArr) {
       if (to > dragSourceIndex) to--;
       const [moved] = itemsArr.splice(dragSourceIndex, 1);
       itemsArr.splice(to, 0, moved);
-      renderCanvas(); dragSourceIndex = null; dragSourceContainer = null; return;
+      renderCanvas();
+      autoSaveProTrip();
+      dragSourceIndex = null; dragSourceContainer = null; return;
     }
     if (dragType) openModal(dragType);
   });
@@ -735,7 +737,8 @@ function openPreview() {
     isPublicLink: false,
     csrfToken: csrfToken,
     tripId: window.tripId || '',
-    userName: window.viantrypUserName || ''
+    userName: window.viantrypUserName || '',
+    origin: window.location.origin
   });
   const blob = new Blob([previewHTML], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
@@ -781,9 +784,14 @@ if (window.proState) {
     const pm = document.getElementById('portadaMoneda');
     if (pm && s.moneda) pm.value = s.moneda;
 
-    // Set title input
     const titleInp = document.getElementById('portadaTitle');
     if (titleInp && s.title) titleInp.value = s.title;
+
+    // Listeners para inputs de cabecera
+    const headerInputs = [pi, pf, pp, pm, titleInp];
+    headerInputs.forEach(inp => {
+      if (inp) inp.addEventListener('input', () => autoSaveProTrip());
+    });
 
     renderTabs();
     renderCanvas();
@@ -797,4 +805,49 @@ function toggleSidebar() {
   const ov = document.getElementById('sidebarOverlay');
   sb.classList.toggle('open');
   ov.classList.toggle('open');
+}
+
+// ── EXTENSIÓN: Guardado Automático ──
+let autoSaveTimer = null;
+function autoSaveProTrip() {
+  if (!window.tripId) return;
+
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(async () => {
+    const title = document.getElementById('portadaTitle') ? document.getElementById('portadaTitle').value : 'Sin título';
+    const fechaInicio = document.getElementById('portadaFechaInicio') ? document.getElementById('portadaFechaInicio').value : null;
+    const fechaFin = document.getElementById('portadaFechaFin') ? document.getElementById('portadaFechaFin').value : null;
+    const precio = document.getElementById('portadaPrecio') ? document.getElementById('portadaPrecio').value : null;
+    const moneda = document.getElementById('portadaMoneda') ? document.getElementById('portadaMoneda').value : 'USD';
+    const totalViajeros = portadaAdultos + portadaNinos;
+
+    const portadaContainer = document.getElementById('portadaExtraContainer');
+    const hasPortada = portadaContainer && portadaContainer.style.display !== 'none';
+    const cierreContainer = document.getElementById('cierreExtraContainer');
+    const hasCierre = cierreContainer && cierreContainer.style.display !== 'none';
+    const closureCard = document.getElementById('closureCard');
+    const showDefaultCierre = closureCard && closureCard.style.display !== 'none';
+    const totalItems = days.reduce((s, d) => s + (d ? d.length : 0), 0);
+    const numericTabs = [...document.querySelectorAll('.day-tab:not(.portada-tab):not(.cierre-tab)')].map(t => ({ label: t.querySelector('.day-tab-label')?.textContent || t.textContent.trim(), idx: parseInt(t.dataset.day) }));
+
+    const proStateObj = { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink: false };
+
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
+      const baseUrl = window.location.origin;
+      await fetch(baseUrl + '/trips/' + window.tripId + '/save-pro-state', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ pro_state: proStateObj })
+      });
+      // Silent save in background
+      console.log('Viaje PRO guardado automáticamente.');
+    } catch (e) {
+      console.error('Error en autoguardado:', e);
+    }
+  }, 1500); // 1.5 seconds debounce
 }

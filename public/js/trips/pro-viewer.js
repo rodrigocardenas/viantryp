@@ -611,7 +611,8 @@ ${!isPublicLink && tripId ? `
     const proStateObj = ${JSON.stringify(data).replace(/</g, '\\x3c')};
     
     try {
-      const res = await fetch('/trips/${tripId}/save-pro-state', {
+      const baseUrl = '${data.origin || ''}';
+      const res = await fetch(baseUrl + '/trips/${tripId}/save-pro-state', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -629,13 +630,74 @@ ${!isPublicLink && tripId ? `
       
       const json = await res.json();
       if (json.success) {
-        navigator.clipboard.writeText(json.share_url).then(() => {
-          btn.innerHTML = '<i class="fa-solid fa-check"></i> ¡Enlace copiado!';
+        
+        // Función para mostrar nuestro modal estético
+        const showShareModal = (url) => {
+          const m = document.createElement('div');
+          m.id = 'viantrypShareModal';
+          m.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;';
+          m.innerHTML = \`
+            <div style="background:#fff;border-radius:24px;width:90%;max-width:400px;padding:32px;box-shadow:0 20px 40px rgba(0,0,0,0.15);transform:translateY(20px);transition:transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);text-align:center;">
+              <div style="width:64px;height:64px;background:#e0f2fe;color:#0ea5d8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;">
+                <i class="fa-solid fa-link"></i>
+              </div>
+              <h3 style="margin:0 0 12px;font-family:'Syne',sans-serif;font-size:22px;color:#1e293b;">¡Enlace Listo!</h3>
+              <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.5;">Tu itinerario está listo para compartirse con el mundo.</p>
+              
+              <div style="background:#f1f5f9;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:24px;border:1px solid #e2e8f0;">
+                <input type="text" value="\${url}" readonly style="flex:1;background:transparent;border:none;outline:none;font-size:14px;color:#334155;text-overflow:ellipsis;" id="shareUrlInput">
+                <button id="copyShareModalBtn" style="background:transparent;border:none;color:#0ea5d8;cursor:pointer;font-size:16px;padding:4px;transition:0.2s;"><i class="fa-regular fa-copy"></i></button>
+              </div>
+              
+              <button id="closeShareModalBtn" style="width:100%;padding:14px;border-radius:12px;border:none;background:#0ea5d8;color:#fff;font-weight:600;font-size:15px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#0284c7'" onmouseout="this.style.background='#0ea5d8'">Cerrar</button>
+            </div>
+          \`;
+          document.body.appendChild(m);
+          
+          document.getElementById('closeShareModalBtn').onclick = () => {
+            m.style.opacity = '0';
+            setTimeout(() => m.remove(), 200);
+          };
+          
+          document.getElementById('copyShareModalBtn').onclick = function() {
+            const inp = document.getElementById('shareUrlInput');
+            inp.select();
+            document.execCommand('copy');
+            const b = this;
+            const o = b.innerHTML;
+            b.innerHTML = '<i class="fa-solid fa-check"></i>';
+            b.style.background = '#10b981';
+            b.style.color = '#fff';
+            setTimeout(() => { b.innerHTML = o; b.style.background = ''; b.style.color = '#0ea5d8'; }, 2000);
+          };
+          setTimeout(() => { m.style.opacity = '1'; m.querySelector('div').style.transform = 'translateY(0)'; }, 10);
+        };
+
+        const copySuccess = () => {
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> ¡Copiado!';
           setTimeout(() => { btn.innerHTML = origText; btn.disabled = false; }, 3000);
-        }).catch(() => {
-          alert('Enlace generado:\\n' + json.share_url);
-          btn.innerHTML = origText; btn.disabled = false;
-        });
+          showShareModal(json.share_url);
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(json.share_url).then(copySuccess).catch(() => {
+            showShareModal(json.share_url);
+            btn.innerHTML = origText; btn.disabled = false;
+          });
+        } else {
+          const input = document.createElement('input');
+          input.value = json.share_url;
+          document.body.appendChild(input);
+          input.select();
+          try {
+            document.execCommand('copy');
+            copySuccess();
+          } catch(e) {
+            showShareModal(json.share_url);
+            btn.innerHTML = origText; btn.disabled = false;
+          }
+          document.body.removeChild(input);
+        }
       } else {
         alert('Error: ' + json.message);
         btn.innerHTML = origText; btn.disabled = false;
