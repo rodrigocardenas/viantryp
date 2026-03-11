@@ -25,6 +25,7 @@
         proState.csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         proState.tripId = window.tripId;
         proState.userName = window.viantrypUserName;
+        window.shareToken = @json(request()->route('token'));
     </script>
     <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>
     <script>
