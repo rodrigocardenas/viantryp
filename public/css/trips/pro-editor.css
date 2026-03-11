@@ -1070,14 +1070,14 @@ body {
 }
 
 .portada-body {
-  padding: 20px 24px 24px;
+  padding: 20px 38px 24px;
   display: flex;
   flex-direction: column;
   gap: 16px
 }
 
 .portada-title-input {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 26px;
   font-weight: 800;
   border: none;
