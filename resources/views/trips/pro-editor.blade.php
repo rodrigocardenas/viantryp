@@ -249,7 +249,7 @@
             <div class="cierre-icon"><i class="fa-solid fa-plane-up"></i></div>
             <div class="cierre-badge">¡ITINERARIO COMPLETO!</div>
             <div class="cierre-title" id="cierreTitleDisplay">Tour por Europa 2025</div>
-            <div class="cierre-sub">Este itinerario fue creado por <strong id="cierreAutor">${window.viantrypUserName}</strong>. ¡Que tengas un viaje increíble!</div>
+            <div class="cierre-sub">Este itinerario fue creado por <strong id="cierreAutor">{{ auth()->user()->name }}</strong>. ¡Que tengas un viaje increíble!</div>
           </div>
           <div id="cierreCardPlaceholder" class="cierre-hidden-placeholder" style="display:none">
             <div style="color:var(--text-dim);font-size:12.5px;margin-bottom:8px">El cierre predeterminado ha sido ocultado</div>

@@ -1206,7 +1206,7 @@ body {
 
 .cierre-card {
   position: relative;
-  background: linear-gradient(135deg, #1a1a2e, #2d2044);
+  background: linear-gradient(185deg, #0f172a, #0e4c6a, #0e7aad);
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-md);
