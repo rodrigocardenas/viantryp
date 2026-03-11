@@ -13,23 +13,27 @@ const GIPHY_API_KEY = 'ga2U6DfG1RcG9EESPkiPph7sMM0uhrdy';
 let selectedUnsplashUrl = null, unsplashTarget = 'portada';
 let selectedGiphyUrl = null, giphyTarget = 'canvas';
 let confirmCallback = null;
+let unsavedChanges = false;
 
 // PORTADA
 function changePortadaCount(type, d) {
   if (type === 'adultos') { portadaAdultos = Math.max(0, portadaAdultos + d); document.getElementById('portadaAdultos').textContent = portadaAdultos }
   else { portadaNinos = Math.max(0, portadaNinos + d); document.getElementById('portadaNinos').textContent = portadaNinos }
   document.getElementById('portadaTotal').textContent = portadaAdultos + portadaNinos;
+  autoSaveProTrip();
 }
 function handlePortadaUpload(e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { portadaPhotoUrl = ev.target.result; setPortadaPhoto(ev.target.result) }; r.readAsDataURL(f) }
 function setPortadaPhoto(url) {
   portadaPhotoUrl = url;
   const img = document.getElementById('portadaHeroImg');
   img.src = url; img.classList.add('visible'); document.getElementById('portadaHero').classList.add('has-image');
+  autoSaveProTrip();
 }
 function clearPortadaPhoto(e) {
   e && e.stopPropagation(); portadaPhotoUrl = '';
   const img = document.getElementById('portadaHeroImg');
   img.src = ''; img.classList.remove('visible'); document.getElementById('portadaHero').classList.remove('has-image');
+  autoSaveProTrip();
 }
 
 // UNSPLASH
@@ -111,6 +115,7 @@ function confirmUnsplash() {
     }
   }
   closeUnsplash();
+  autoSaveProTrip();
 }
 
 // GIPHY
@@ -173,11 +178,21 @@ function confirmGiphy() {
     }
   }
   closeGiphy();
+  autoSaveProTrip();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('giphySearch')?.addEventListener('keydown', e => { if (e.key === 'Enter') searchGiphy() });
   document.getElementById('unsplashSearch')?.addEventListener('keydown', e => { if (e.key === 'Enter') searchUnsplash() });
+
+  // Sync title input with autosave
+  const titleInput = document.getElementById('portadaTitle');
+  if (titleInput) {
+    titleInput.addEventListener('input', () => {
+      unsavedChanges = true;
+      autoSaveProTrip();
+    });
+  }
 });
 function hideCierreCard() {
   const card = document.getElementById('cierreCardMain');
@@ -330,8 +345,10 @@ document.getElementById('dayTabs').addEventListener('click', e => {
 document.getElementById('addDayBtn').addEventListener('click', () => {
   days.push([]); dayDates.push('');
   currentDay = days.length - 1;
+  unsavedChanges = true;
   renderTabs();
   renderCanvas();
+  autoSaveProTrip();
   showToast('📅', 'Día ' + days.length + ' agregado');
 });
 
@@ -364,8 +381,10 @@ function deleteSection(type) {
   if (currentDay === type) {
     currentDay = 0; // go to day 1
   }
+  unsavedChanges = true;
   renderTabs();
   renderCanvas();
+  autoSaveProTrip();
   showToast('<i class="fa-solid fa-trash-can"></i>', (type === 'portada' ? 'Portada' : 'Cierre') + ' eliminado');
 }
 
@@ -385,8 +404,11 @@ function deleteDay(dayIdx) {
     currentDay--;
   }
 
+  unsavedChanges = true;
   renderTabs();
-  renderCanvas(); showToast('<i class="fa-solid fa-trash-can"></i>', 'Día eliminado');
+  renderCanvas(); 
+  autoSaveProTrip();
+  showToast('<i class="fa-solid fa-trash-can"></i>', 'Día eliminado');
 }
 
 function renderTabs() {
@@ -439,6 +461,8 @@ function saveDayDate() {
   dayDates[currentDay] = document.getElementById('dayDateInput').value;
   const noDate = document.getElementById('dayNoDate');
   noDate.style.display = dayDates[currentDay] ? 'none' : '';
+  unsavedChanges = true;
+  autoSaveProTrip();
 }
 
 // CONFIRM
@@ -448,9 +472,26 @@ function showUnsavedChangesModal() {
   openConfirm(
     '¿Salir sin guardar?',
     'Tienes cambios sin guardar. Si sales ahora, los cambios no guardados se perderán.',
-    () => { window.location.href = '/trips'; }
+    () => { 
+      unsavedChanges = false;
+      window.location.href = '/trips'; 
+    }
   );
 }
+function confirmExit() {
+  if (unsavedChanges) {
+    showUnsavedChangesModal();
+  } else {
+    window.location.href = '/trips';
+  }
+}
+
+window.addEventListener('beforeunload', (e) => {
+  if (unsavedChanges) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 function closeConfirm() { document.getElementById('confirmOverlay').classList.remove('open'); confirmCallback = null }
 document.getElementById('confirmOkBtn').addEventListener('click', () => { if (confirmCallback) confirmCallback(); closeConfirm() });
 document.getElementById('confirmOverlay').addEventListener('click', e => { if (e.target === document.getElementById('confirmOverlay')) closeConfirm() });
@@ -567,7 +608,10 @@ function deleteItem(idx) {
   if (currentDay === 'portada') portadaItems.splice(idx, 1);
   else if (currentDay === 'cierre') cierreItems.splice(idx, 1);
   else days[currentDay].splice(idx, 1);
-  renderCanvas(); showToast('<i class="fa-solid fa-trash-can"></i>', 'Elemento eliminado');
+  unsavedChanges = true;
+  renderCanvas(); 
+  autoSaveProTrip();
+  showToast('<i class="fa-solid fa-trash-can"></i>', 'Elemento eliminado');
 }
 
 // MODAL
@@ -791,11 +835,29 @@ document.getElementById('modalSave').addEventListener('click', () => {
   const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
   if (editingIndex !== null) { arr[editingIndex] = item; showToast('<i class="fa-solid fa-pencil"></i>', 'Elemento actualizado') }
   else { arr.push(item); showToast('<i class="fa-solid fa-check"></i>', 'Elemento agregado') }
+  unsavedChanges = true;
   renderCanvas(); closeModal();
+  autoSaveProTrip();
 });
 
 // TOAST
-function showToast(icon, msg) { const t = document.getElementById('toast'); document.getElementById('toastIcon').innerHTML = icon; document.getElementById('toastMsg').textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200) }
+// TOAST
+let toastTimeout = null;
+function showToast(icon, msg) {
+  const t = document.getElementById('toast');
+  const iconEl = document.getElementById('toastIcon');
+  const msgEl = document.getElementById('toastMsg');
+  if (!t || !iconEl || !msgEl) return;
+
+  iconEl.innerHTML = icon;
+  msgEl.textContent = msg;
+
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    t.classList.remove('show');
+  }, 2500);
+}
 
 // ============================================================
 // VISTA PREVIA — genera HTML y lo abre en nueva pestaña
@@ -912,43 +974,63 @@ function toggleSidebar() {
 let autoSaveTimer = null;
 function autoSaveProTrip() {
   if (!window.tripId) return;
+  unsavedChanges = true;
 
   clearTimeout(autoSaveTimer);
   autoSaveTimer = setTimeout(async () => {
-    const title = document.getElementById('portadaTitle') ? document.getElementById('portadaTitle').value : 'Sin título';
-    const fechaInicio = document.getElementById('portadaFechaInicio') ? document.getElementById('portadaFechaInicio').value : null;
-    const fechaFin = document.getElementById('portadaFechaFin') ? document.getElementById('portadaFechaFin').value : null;
-    const precio = document.getElementById('portadaPrecio') ? unformatNumber(document.getElementById('portadaPrecio').value) : null;
-    const moneda = document.getElementById('portadaMoneda') ? document.getElementById('portadaMoneda').value : 'USD';
-    const totalViajeros = portadaAdultos + portadaNinos;
-
-    const portadaContainer = document.getElementById('portadaExtraContainer');
-    const hasPortada = portadaContainer && portadaContainer.style.display !== 'none';
-    const cierreContainer = document.getElementById('cierreExtraContainer');
-    const hasCierre = cierreContainer && cierreContainer.style.display !== 'none';
-    const closureCard = document.getElementById('closureCard');
-    const showDefaultCierre = closureCard && closureCard.style.display !== 'none';
-    const totalItems = days.reduce((s, d) => s + (d ? d.length : 0), 0);
-    const numericTabs = [...document.querySelectorAll('.day-tab:not(.portada-tab):not(.cierre-tab)')].map(t => ({ label: t.querySelector('.day-tab-label')?.textContent || t.textContent.trim(), idx: parseInt(t.dataset.day) }));
-
-    const proStateObj = { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink: false };
-
-    try {
-      const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
-      const baseUrl = window.location.origin;
-      await fetch(baseUrl + '/trips/' + window.tripId + '/save-pro-state', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ pro_state: proStateObj })
-      });
-      // Silent save in background
-      console.log('Viaje PRO guardado automáticamente.');
-    } catch (e) {
-      console.error('Error en autoguardado:', e);
-    }
+    await performProSave(true);
   }, 1500); // 1.5 seconds debounce
+}
+
+async function manualSaveProTrip() {
+  if (!window.tripId) return;
+  showToast('<i class="fa-solid fa-spinner fa-spin"></i>', 'Guardando viaje...');
+  await performProSave(false);
+}
+
+async function performProSave(isSilent = true) {
+  const title = document.getElementById('portadaTitle') ? document.getElementById('portadaTitle').value : 'Sin título';
+  const fechaInicio = document.getElementById('portadaFechaInicio') ? document.getElementById('portadaFechaInicio').value : null;
+  const fechaFin = document.getElementById('portadaFechaFin') ? document.getElementById('portadaFechaFin').value : null;
+  const precio = document.getElementById('portadaPrecio') ? unformatNumber(document.getElementById('portadaPrecio').value) : null;
+  const moneda = document.getElementById('portadaMoneda') ? document.getElementById('portadaMoneda').value : 'USD';
+  const totalViajeros = portadaAdultos + portadaNinos;
+
+  const hasPortada = !!document.getElementById('portadaCanvas');
+  const hasCierre = !!document.getElementById('cierreCanvas');
+  const closureCard = document.getElementById('cierreCardMain');
+  const showDefaultCierre = closureCard && closureCard.style.display !== 'none';
+  const totalItems = days.reduce((s, d) => s + (d ? d.length : 0), 0);
+  const numericTabs = [...document.querySelectorAll('.day-tab:not(.portada-tab):not(.cierre-tab)')].map(t => ({ label: t.querySelector('.day-tab-label')?.textContent || t.textContent.trim(), idx: parseInt(t.dataset.day) }));
+
+  const proStateObj = { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink: false };
+
+  try {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
+    const baseUrl = window.location.origin;
+    const response = await fetch(baseUrl + '/trips/' + window.tripId + '/save-pro-state', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': csrfToken,
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ pro_state: proStateObj })
+    });
+    
+    if (response.ok) {
+      unsavedChanges = false;
+      console.log('Viaje PRO guardado correctamente.');
+      showToast('✅', '¡Viaje guardado correctamente!');
+      return true;
+    } else {
+      console.error('Error al guardar el viaje PRO');
+      if (!isSilent) showToast('❌', 'Error al guardar el viaje');
+      return false;
+    }
+  } catch (e) {
+    console.error('Error en el guardado:', e);
+    if (!isSilent) showToast('❌', 'Error de conexión al guardar');
+    return false;
+  }
 }

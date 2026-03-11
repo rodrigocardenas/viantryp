@@ -293,7 +293,7 @@ class TripController extends Controller
     {
         // Ensure the trip belongs to the authenticated user
         if ($trip->user_id !== Auth::id()) {
-            abort(403, 'No tienes permiso para editar este viaje.');
+            abort(403);
         }
 
         if ($trip->is_pro) {
@@ -304,6 +304,27 @@ class TripController extends Controller
 
         return view('trips.edit', [
             'trip' => $trip->load(['persons', 'documents'])
+        ]);
+    }
+
+    /**
+     * Get PRO data for a trip (JSON)
+     */
+    public function getProData(Trip $trip): JsonResponse
+    {
+        // Ensure the trip belongs to the authenticated user
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'No autorizado'], 403);
+        }
+
+        if (!$trip->is_pro) {
+            return response()->json(['success' => false, 'message' => 'Este viaje no es PRO'], 400);
+        }
+
+        return response()->json([
+            'success' => true,
+            'pro_state' => $trip->pro_state,
+            'user_name' => $trip->user->name ?? 'Viantryp'
         ]);
     }
 
@@ -714,9 +735,16 @@ class TripController extends Controller
             'pro_state' => 'required|array'
         ]);
 
-        $trip->update([
+        $tripData = [
             'pro_state' => $validated['pro_state']
-        ]);
+        ];
+
+        // Sync title from pro_state to trips table if present
+        if (isset($validated['pro_state']['title'])) {
+            $tripData['title'] = $validated['pro_state']['title'];
+        }
+
+        $trip->update($tripData);
 
         $shareUrl = $trip->getShareUrl();
 

@@ -34,11 +34,14 @@
   
   <div class="topbar-right">
       <div class="topbar-left">
-          <button class="nav-link" style="border:none; cursor:pointer;" data-action="back" onclick="location.href='/trips'">
+          <button class="nav-link" style="border:none; cursor:pointer;" data-action="back" onclick="confirmExit()">
               <i class="fas fa-arrow-left" style="margin-right:4px;"></i> Volver
           </button>
       </div>
       <div class="topbar-actions">
+          <button class="btn-viantryp" onclick="manualSaveProTrip()" style="background: var(--accent); color: white; border-color: var(--accent); white-space: nowrap;">
+              <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
+          </button>
           <button class="btn-viantryp" onclick="openPreview()">
               <i class="fa-solid fa-eye"></i> Vista previa
           </button>

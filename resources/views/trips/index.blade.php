@@ -221,8 +221,11 @@
     tbody td:first-child { padding-left: 22px; }
     input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--teal); cursor: pointer; }
 
-    .id-chip { font-size: 10.5px; font-weight: 700; font-family: monospace; letter-spacing: 0.5px; color: var(--teal); background: var(--tealL); border: 1px solid rgba(26,154,138,0.2); padding: 3px 8px; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
-    .id-chip:hover { background: white; border-color: var(--teal); }
+    .id-chip, .name-display, .email-display { font-size: 10.5px; font-weight: 700; font-family: monospace; letter-spacing: 0.5px; color: #071917; background: #e7f7f51a; border: 1px solid rgba(7, 25, 23, 0.15); padding: 3px 8px; border-radius: 6px; cursor: pointer; transition: background 0.2s; display: inline-block; }
+    .id-chip:hover, .name-display:hover, .email-display:hover { background: #e7f7f5; border-color: #071917; }
+    .name-display, .email-display { font-family: 'DM Sans', sans-serif; letter-spacing: 0.2px; }
+    .name-display { font-size: 13px; }
+    .email-display { font-size: 10px; font-weight: 500; color: #1a9a8a; }
     .code-input { width: 80px; padding: 2px 4px; border: 1px solid var(--bdr); border-radius: 4px; font-family: monospace; font-size: 10.5px; text-transform: uppercase; }
 
     .trip-name { font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
@@ -485,7 +488,7 @@
       <tbody id="tbody">
           @if(count($trips) > 0)
               @foreach($trips as $index => $trip)
-                <tr class="trip-row" style="animation-delay: {{ $index * 0.04 }}s; animation: rowIn 0.28s ease both; cursor: pointer;" onclick="if(window.innerWidth > 768) { window.location='{{ route('trips.edit', $trip->id) }}'; }">
+                <tr class="trip-row" data-trip-id="{{ $trip->id }}" data-is-pro="{{ $trip->is_pro ? '1' : '0' }}" style="animation-delay: {{ $index * 0.04 }}s; animation: rowIn 0.28s ease both; cursor: pointer;" onclick="if(window.innerWidth > 768) { @if($trip->is_pro) window.location='{{ route('trips.edit', $trip->id) }}'; @else window.location='{{ route('trips.edit', $trip->id) }}'; @endif }">
                     <td onclick="event.stopPropagation()"><input type="checkbox" class="rchk trip-checkbox" data-trip-id="{{ $trip->id }}" onchange="updateSelectAllState()"/></td>
                     <td class="bar-cell"></td>
                     <td>
@@ -493,9 +496,8 @@
                         <input type="text" class="code-input" id="code-input-{{ $trip->id }}" style="display: none;" onblur="saveTripCode({{ $trip->id }})" onkeypress="handleCodeKeyPress(event, {{ $trip->id }})" maxlength="20">
                     </td>
                     <td style="width: 225.73px; max-width: 225.73px;">
-                      <div class="trip-name" onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'title')" style="cursor: pointer;" title="Haz clic para editar">
+                      <div class="trip-name">
                           <span class="title-display" id="title-display-{{ $trip->id }}" style="display: inline-block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $trip->title }}</span>
-                          <input type="text" class="field-input code-input" id="title-input-{{ $trip->id }}" style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: inherit; text-transform: none;" onblur="saveTripField({{ $trip->id }}, 'title')" onkeypress="handleFieldKeyPress(event, {{ $trip->id }}, 'title')" onclick="event.stopPropagation()">
                       </div>
                       @if($trip->destinations && count($trip->destinations) > 0)
                          <div class="trip-dest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; display: inline-block; vertical-align: bottom;">{{ rtrim($trip->destinations->pluck('name')->join(' · '), ' · ') ?: 'Sin destino' }}</span></div>
@@ -528,13 +530,13 @@
                         $client = collect($trip->persons)->firstWhere('type', 'client') ?? collect($trip->persons)->first();
                     @endphp
                     <td>
-                      <div class="client-name" onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_name')" style="cursor: pointer;" title="Haz clic para editar">
+                      <div class="client-name" onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_name')" title="Haz clic para editar">
                           <span class="name-display" id="name-display-{{ $trip->id }}">{{ $client ? $client->name : 'Sin cliente' }}</span>
                           <input type="text" class="field-input code-input" id="name-input-{{ $trip->id }}" style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 13px; text-transform: none;" onblur="saveTripField({{ $trip->id }}, 'client_name')" onkeypress="handleFieldKeyPress(event, {{ $trip->id }}, 'client_name')" onclick="event.stopPropagation()">
                       </div>
                       
-                      <div class="client-email-container" onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_email')" style="cursor: pointer; color: var(--teal); font-size: 11.5px; margin-top: 4px;" title="Haz clic para editar">
-                          <span class="email-display" id="email-display-{{ $trip->id }}" style="display: block;">{{ ($client && $client->email) ? $client->email : 'Añadir correo' }}</span>
+                      <div class="client-email-container" onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_email')" style="margin-top: 4px;" title="Haz clic para editar">
+                          <span class="email-display" id="email-display-{{ $trip->id }}" style="display: inline-block;">{{ ($client && $client->email) ? $client->email : 'Añadir correo' }}</span>
                           <input type="email" class="field-input code-input" id="email-input-{{ $trip->id }}" style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 11.5px; text-transform: none;" onblur="saveTripField({{ $trip->id }}, 'client_email')" onkeypress="handleFieldKeyPress(event, {{ $trip->id }}, 'client_email')" onclick="event.stopPropagation()">
                       </div>
                     </td>
@@ -596,10 +598,55 @@
             row.style.display = text.includes(query) ? '' : 'none';
         });
     }
+</script>
+        <script src="{{ asset('js/trips/pro-viewer.js') }}"></script>
+    <script>
+        function previewTrip(tripId) {
+            const row = document.querySelector(`.trip-row[data-trip-id="${tripId}"]`);
+            const isPro = row && row.dataset.isPro === '1';
 
-    function previewTrip(tripId) { window.open(`{{ url('trips') }}/${tripId}/preview`, '_blank'); }
-    function editTrip(tripId) { window.location.href = `{{ url('trips') }}/${tripId}/edit`; }
+            if (isPro) {
+                openProPreview(tripId);
+            } else {
+                window.open(`{{ url('trips') }}/${tripId}/preview`, '_blank');
+            }
+        }
 
+        async function openProPreview(tripId) {
+            try {
+                // Show a loading indicator if possible, or just fetch
+                const response = await fetch(`{{ url('trips') }}/${tripId}/get-pro-data`);
+                const data = await response.json();
+
+                if (data.success && data.pro_state) {
+                    let proState = data.pro_state;
+                    if (typeof proState === 'string') {
+                        try { proState = JSON.parse(proState); } catch(e) {}
+                    }
+
+                    // Add necessary context for buildPreviewHTML
+                    proState.isPublicLink = false;
+                    proState.csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    proState.tripId = tripId;
+                    proState.userName = data.user_name || 'Viantryp';
+                    proState.origin = window.location.origin;
+
+                    const previewHTML = buildPreviewHTML(proState);
+                    const blob = new Blob([previewHTML], { type: 'text/html' });
+                    const url = URL.createObjectURL(blob);
+                    window.open(url, '_blank');
+                } else {
+                    alert('Error al cargar los datos del viaje PRO: ' + (data.message || 'Error desconocido'));
+                }
+            } catch (error) {
+                console.error('Error fetching PRO data:', error);
+                alert('Ocurrió un error al intentar abrir la vista previa.');
+            }
+        }
+
+        function editTrip(tripId) {
+            window.location.href = `{{ url('trips') }}/${tripId}/edit`;
+        }
     function showCreateTripModal() {
         const modalHtml = `
             <div id="createTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
