@@ -742,17 +742,17 @@ class TripController extends Controller
         }
 
         $request->validate([
-            'file' => 'required|file|max:5120|mimes:pdf,doc,docx,txt,jpg,jpeg,png,webp'
+            'file' => 'required|file|max:10240|mimes:pdf,doc,docx,txt,jpg,jpeg,png,webp'
         ]);
 
         $file = $request->file('file');
 
         // Generate a unique filename
         $filename = \Illuminate\Support\Str::uuid() . '.' . $file->getClientOriginalExtension();
-        $path = 'attachments/' . $filename;
+        $path = 'documents/' . $filename;
 
         // Store file in public disk
-        $stored = \Illuminate\Support\Facades\Storage::disk('public')->put($path, file_get_contents($file));
+        $stored = \Illuminate\Support\Facades\Storage::disk('public')->put($path, $file->get());
 
         if (!$stored) {
             return response()->json([
@@ -761,10 +761,23 @@ class TripController extends Controller
             ], 500);
         }
 
+        // Create document record
+        $document = \App\Models\TripDocument::create([
+            'trip_id' => $trip->id,
+            'user_id' => Auth::id(),
+            'type' => 'pro_attachment',
+            'item_id' => null,
+            'original_name' => $file->getClientOriginalName(),
+            'filename' => $filename,
+            'path' => $path,
+            'mime_type' => $file->getMimeType(),
+            'size' => $file->getSize()
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Archivo subido exitosamente.',
-            'url' => asset('storage/' . $path),
+            'url' => route('documents.download', $document->id),
             'original_name' => $file->getClientOriginalName()
         ]);
     }
