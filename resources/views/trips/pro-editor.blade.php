@@ -194,21 +194,21 @@
             </div>
             <div class="portada-body">
               <div style="display:flex;align-items:center;gap:8px;position:relative">
-                <input class="portada-title-input" id="portadaTitle" placeholder="✦ Nombre del viaje..." value="{{ $trip->title ?? '' }}" style="flex:1">
+                <input class="portada-title-input" id="portadaTitle" placeholder="Nombre del viaje..." value="{{ $trip->title ?? '' }}" style="flex:1">
                 <button class="pfield-clear" onclick="document.getElementById('portadaTitle').value=''" title="Borrar título">🗑</button>
               </div>
               <div class="portada-divider"></div>
               <div class="portada-meta">
                 <div class="portada-meta-item">
-                  <div class="portada-meta-label" style="display:flex;justify-content:space-between;align-items:center">📅 Fecha inicio <button class="pfield-clear-sm" onclick="document.getElementById('portadaFechaInicio').value=''" title="Borrar">🗑</button></div>
+                  <div class="portada-meta-label" style="display:flex;justify-content:space-between;align-items:center"><span><i class="fa-solid fa-calendar-day"></i> Fecha inicio</span> <button class="pfield-clear-sm" onclick="document.getElementById('portadaFechaInicio').value=''" title="Borrar">🗑</button></div>
                   <input type="date" class="portada-meta-input" id="portadaFechaInicio">
                 </div>
                 <div class="portada-meta-item">
-                  <div class="portada-meta-label" style="display:flex;justify-content:space-between;align-items:center">📅 Fecha fin <button class="pfield-clear-sm" onclick="document.getElementById('portadaFechaFin').value=''" title="Borrar">🗑</button></div>
+                  <div class="portada-meta-label" style="display:flex;justify-content:space-between;align-items:center"><span><i class="fa-solid fa-calendar-check"></i> Fecha fin</span> <button class="pfield-clear-sm" onclick="document.getElementById('portadaFechaFin').value=''" title="Borrar">🗑</button></div>
                   <input type="date" class="portada-meta-input" id="portadaFechaFin">
                 </div>
                 <div class="portada-meta-item">
-                  <div class="portada-meta-label" style="display:flex;justify-content:space-between;align-items:center">👥 Viajeros <button class="pfield-clear-sm" onclick="resetViajeros()" title="Reiniciar">🗑</button></div>
+                  <div class="portada-meta-label" style="display:flex;justify-content:space-between;align-items:center"><span><i class="fa-solid fa-user-group"></i> Viajeros</span> <button class="pfield-clear-sm" onclick="resetViajeros()" title="Reiniciar">🗑</button></div>
                   <div class="portada-travelers-row">
                     <div style="display:flex;flex-direction:column;gap:2px;align-items:center">
                       <div class="mini-counter"><button class="mini-counter-btn" onclick="changePortadaCount('adultos',-1)">−</button><div class="mini-counter-val" id="portadaAdultos">2</div><button class="mini-counter-btn" onclick="changePortadaCount('adultos',1)">+</button></div>
@@ -229,7 +229,7 @@
               </div>
               <div class="portada-divider"></div>
               <div class="portada-price-section" style="max-width:200px;margin:0 auto;text-align:center">
-                <div class="portada-meta-label" style="display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:4px">💰 Valor total <button class="pfield-clear-sm" onclick="document.getElementById('portadaPrecio').value=''" title="Borrar">🗑</button></div>
+                <div class="portada-meta-label" style="display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:4px"><span><i class="fa-solid fa-money-bill-wave"></i> Valor total</span> <button class="pfield-clear-sm" onclick="document.getElementById('portadaPrecio').value=''" title="Borrar">🗑</button></div>
                 <div style="display:flex;gap:5px">
                   <input type="text" class="portada-meta-input" id="portadaPrecio" placeholder="0" style="flex:1;min-width:0;text-align:center">
                   <select class="portada-meta-input" id="portadaMoneda" style="width:72px;padding:7px 5px">
