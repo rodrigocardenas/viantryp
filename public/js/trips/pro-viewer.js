@@ -510,6 +510,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
   .pv-flight-header-details{display:none !important;}
   .pv-chips-row{align-items:center;}
   .pv-flight-mobile-details{display:flex !important;}
+  .pv-texto { font-size: 12px !important; }
 }
 @media(max-width:420px){
   .pv-topbar-title{display:none !important;}
