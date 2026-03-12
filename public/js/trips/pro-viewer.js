@@ -1,5 +1,15 @@
 function buildPreviewHTML(data) {
-  const { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName } = data;
+  const { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin } = data;
+
+  const statusMap = {
+    'draft': { label: 'En Diseño', bg: '#e0f2fe', color: '#1d5fa8', bdr: '#bae6fd' },
+    'sent': { label: 'Propuesta', bg: '#e8f8ff', color: '#0284c7', bdr: '#bae6fd' },
+    'reserved': { label: 'Reservado', bg: '#dcfce7', color: '#15803d', bdr: '#bbf7d0' },
+    'completed': { label: 'Pago Completo', bg: '#eef2f6', color: '#0f766e', bdr: '#cbd5e1' },
+    'discarded': { label: 'Descartado', bg: '#fee2e2', color: '#b43030', bdr: '#fecaca' }
+  };
+  const sObj = statusMap[status] || statusMap['draft'];
+  const statusBadgeHTML = `<div class="pv-status-badge" style="background:${sObj.bg}; color:${sObj.color}; border-color:${sObj.bdr}"><span class="pv-status-dot" style="background:${sObj.color}"></span> ${sObj.label.toUpperCase()}</div>`;
 
   const fmtDateShort = s => { if (!s) return ''; try { return new Date(s + 'T00:00:00').toLocaleDateString('es', { day: 'numeric', month: 'short' }) } catch { return s } };
   const fmtDateTime = s => { if (!s) return ''; try { const d = new Date(s); const day = d.toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }); const time = d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }); return { day, time } } catch { return { day: s, time: '' } } };
@@ -332,6 +342,7 @@ function buildPreviewHTML(data) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="${origin || window.location.origin}/">
 <title>${title} · Viantryp</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -521,12 +532,12 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <body>
 ${isPublicLink ? `
 <div class="public-preview-header" style="background:linear-gradient(23deg, #0f172a, #0e4c6a, #0e7aad);position:sticky;top:0;z-index:100;padding:0px 100px;display:flex;justify-content:space-between;align-items:center;height:60px;">
-    <img src="/images/LOGO GPS.png" alt="GPS Logo" class="gps-logo" style="width:70px;height:auto;filter:brightness(0) invert(1);object-fit:contain;">
-    <img src="/images/logo-viantryp.png" alt="Viantryp Logo" class="viantryp-logo" style="width:80px;height:auto;filter:brightness(0) invert(1);object-fit:contain;">
+    <img src="${origin || ''}/images/LOGO%20GPS.png" alt="GPS Logo" class="gps-logo" style="width:70px;height:auto;filter:brightness(0) invert(1);object-fit:contain;">
+    <img src="${origin || ''}/images/logo-viantryp.png" alt="Viantryp Logo" class="viantryp-logo" style="width:80px;height:auto;filter:brightness(0) invert(1);object-fit:contain;">
 </div>
 ` : `
 <div class="pv-topbar">
-  <div class="pv-logo" style="display:flex;align-items:center;"><img src="/images/logo-viantryp.png" alt="Viantryp Logo" style="height:22px; filter:brightness(0) invert(1); display:block;"></div>
+  <div class="pv-logo" style="display:flex;align-items:center;"><img src="${origin || ''}/images/logo-viantryp.png" alt="Viantryp Logo" style="height:22px; filter:brightness(0) invert(1); display:block;"></div>
   <div class="pv-topbar-title">${title}</div>
   <div class="pv-topbar-actions" style="display:flex;gap:12px;">
       <button class="pv-share-btn" onclick="shareProTrip()" style="background:#fff;color:#0f172a;border:none;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-share-nodes"></i> <span class="pv-back-text">Compartir</span></button>
@@ -544,7 +555,7 @@ ${hasPortada ? `
       }
     <div class="pv-portada-title-row">
       <div class="pv-portada-title">${title}</div>
-      <div class="pv-status-badge"><span class="pv-status-dot"></span> RESERVADO</div>
+      ${statusBadgeHTML}
     </div>
     <div class="pv-portada-meta-row">
       <div class="pv-portada-meta-cell">

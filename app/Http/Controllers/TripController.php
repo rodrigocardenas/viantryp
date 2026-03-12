@@ -64,13 +64,6 @@ class TripController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new trip
-     */
-    public function create(): View
-    {
-        return view('trips.create');
-    }
 
     /**
      * Show the new PRO editor for creating a new trip
@@ -132,159 +125,6 @@ class TripController extends Controller
         });
     }
 
-    /**
-     * Store a newly created trip
-     */
-    public function store(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'start_date' => 'nullable|date',
-            'travelers' => 'nullable|integer|min:1',
-            'destination' => 'nullable|string|max:255',
-            'summary' => 'nullable|string',
-            'items_data' => 'nullable|array',
-            'price' => 'nullable|numeric|min:0',
-            'currency' => 'nullable|string|max:10',
-            'client_name' => 'nullable|string|max:255',
-            'client_email' => 'nullable|email|max:255',
-            'agent_id' => 'nullable|exists:persons,id',
-            'cover_image_url' => 'nullable|string'
-        ]);
-
-        // Handle client: updateOrCreate Person with type 'client'
-        $clientId = null;
-        if ($validated['client_name'] && $validated['client_email']) {
-            $client = Person::updateOrCreate(
-            ['email' => $validated['client_email']],
-            [
-                'name' => $validated['client_name'],
-                'type' => 'client',
-                'phone' => null // or from request if added
-            ]
-            );
-            $clientId = $client->id;
-        }
-
-        // Remove person fields from validated data as they don't belong to trips table
-        unset($validated['client_name'], $validated['client_email'], $validated['agent_id']);
-
-        // Set default start and end dates
-        $validated['start_date'] = $validated['start_date'] ?? now();
-        $validated['end_date'] = $validated['start_date'];
-
-        // Smart duplicate handling: update existing trips instead of rejecting
-        return DB::transaction(function () use ($validated, $request, $clientId) {
-            // Get current user ID once
-            $userId = Auth::id();
-
-            // Check for existing trips with the same title (regardless of date)
-            $existingTrip = Trip::where('user_id', $userId)
-                ->where('title', $validated['title'])
-                ->first();
-
-            if ($existingTrip) {
-                // Update the existing trip instead of creating a duplicate
-                $existingTrip->update([
-                    'start_date' => $validated['start_date'],
-                    'end_date' => $validated['end_date'],
-                    'travelers' => $validated['travelers'] ?? 1,
-                    'destination' => $validated['destination'] ?? '',
-                    'summary' => $validated['summary'] ?? '',
-                    'price' => $validated['price'] ?? 0,
-                    'currency' => $validated['currency'] ?? 'USD',
-                    'cover_image_url' => $validated['cover_image_url'] ?? $existingTrip->cover_image_url,
-                    'items_data' => $validated['items_data'] ?? []
-                ]);
-
-                // Sync persons: detach all and attach new ones
-                $personIds = [];
-                if ($clientId) {
-                    $personIds[] = $clientId;
-                }
-                if ($request->agent_id) {
-                    $personIds[] = $request->agent_id;
-                }
-                $existingTrip->persons()->sync($personIds);
-
-                // Generate a code if the trip doesn't have one
-                if (!$existingTrip->code) {
-                    $existingTrip->generateCode();
-                }
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Viaje actualizado exitosamente',
-                    'trip' => $existingTrip->fresh()->load('persons'),
-                    'action' => 'updated' // Indicate this was an update, not a new creation
-                ]);
-            }
-
-            // Count trips with similar title (allow some variation, but limit excessive creation)
-            $similarTrips = Trip::where('user_id', $userId)
-                ->where('title', 'LIKE', '%' . trim($validated['title']) . '%')
-                ->where('created_at', '>=', now()->subDay())
-                ->count();
-
-            if ($similarTrips >= 5) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Has creado demasiados viajes similares hoy. Espera un poco o cambia el título.'
-                ], 422);
-            }
-
-            // Set default values for optional fields
-            $validated['travelers'] = $validated['travelers'] ?? 1;
-            $validated['price'] = $validated['price'] ?? 0;
-            $validated['currency'] = $validated['currency'] ?? 'USD';
-            $validated['status'] = Trip::STATUS_DRAFT;
-            $validated['user_id'] = $userId;
-
-            // Create the trip within the transaction
-            $trip = Trip::create($validated);
-
-            // Generate a unique code for the new trip
-            $trip->generateCode();
-
-            // Associate persons to the trip
-            $personIds = [];
-            if ($clientId) {
-                $personIds[] = $clientId;
-            }
-            if ($request->agent_id) {
-                $personIds[] = $request->agent_id;
-            }
-            if (!empty($personIds)) {
-                $trip->persons()->attach($personIds);
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Viaje creado exitosamente',
-                'trip' => $trip->load('persons'),
-                'action' => 'created' // Indicate this was a new creation
-            ]);
-        });
-    }
-
-    /**
-     * Display the specified trip
-     */
-    public function show(Trip $trip): View
-    {
-        // Ensure the trip belongs to the authenticated user
-        if ($trip->user_id !== Auth::id()) {
-            abort(403, 'No tienes permiso para ver este viaje.');
-        }
-
-        // Load related data
-        $trip->load(['documents', 'persons']);
-
-        return view('trips.preview', [
-            'trip' => $this->enrichHotelData($trip->load('user')),
-            'isPublicPreview' => false
-        ]);
-    }
 
     /**
      * Show the form for editing the specified trip
@@ -296,14 +136,8 @@ class TripController extends Controller
             abort(403);
         }
 
-        if ($trip->is_pro) {
-            return view('trips.pro-editor', [
-                'trip' => $trip->load(['persons'])
-            ]);
-        }
-
-        return view('trips.edit', [
-            'trip' => $trip->load(['persons', 'documents'])
+        return view('trips.pro-editor', [
+            'trip' => $trip->load(['persons'])
         ]);
     }
 
@@ -324,72 +158,11 @@ class TripController extends Controller
         return response()->json([
             'success' => true,
             'pro_state' => $trip->pro_state,
+            'status' => $trip->status,
             'user_name' => $trip->user->name ?? 'Viantryp'
         ]);
     }
 
-    /**
-     * Update the specified trip
-     */
-    public function update(Request $request, Trip $trip): JsonResponse
-    {
-        // Ensure the trip belongs to the authenticated user
-        if ($trip->user_id !== Auth::id()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No tienes permiso para actualizar este viaje.'
-            ], 403);
-        }
-
-        // Temporary debug logging to inspect incoming payload when saving from editor
-        try {
-            Log::info('TripController@update called', [
-                'trip_id' => $trip->id,
-                'request_all' => $request->all(),
-                'user_id' => Auth::id()
-            ]);
-        }
-        catch (\Throwable $e) {
-            // Don't break the request if logging fails
-            Log::error('Failed logging TripController@update payload: ' . $e->getMessage());
-        }
-
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'travelers' => 'nullable|integer|min:1',
-            'destination' => 'nullable|string|max:255',
-            'summary' => 'nullable|string',
-            'price' => 'nullable|numeric|min:0',
-            'currency' => 'nullable|string|max:10',
-            'items_data' => 'nullable|array',
-            'days_dates' => 'nullable|array',
-            'cover_image_url' => 'nullable|string'
-        ]);
-
-        // Log validated payload for debugging
-        try {
-            Log::info('TripController@update validated data', [
-                'trip_id' => $trip->id,
-                'days_dates' => $validated['days_dates'] ?? 'NOT SET',
-                'validated' => $validated
-            ]);
-        }
-        catch (\Throwable $e) {
-            Log::error('Failed logging TripController@update validated payload: ' . $e->getMessage());
-        }
-        // Set default values for optional fields
-        $validated['travelers'] = $validated['travelers'] ?? 1;
-
-        $trip->update($validated);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Viaje actualizado exitosamente',
-            'trip' => $trip
-        ]);
-    }
 
     /**
      * Remove the specified trip
@@ -532,35 +305,6 @@ class TripController extends Controller
         ]);
     }
 
-    /**
-     * Preview trip (public access for clients)
-     */
-    public function preview(Request $request): View
-    {
-        $tripId = $request->route('trip');
-
-        if ($tripId === 'temp') {
-            // Handle temporary trip preview
-            $trip = new Trip([
-                'title' => 'Vista Previa del Viaje',
-                'start_date' => now(),
-                'end_date' => now()->addDays(3),
-                'travelers' => 2,
-                'destination' => 'Destino de ejemplo',
-                'status' => Trip::STATUS_DRAFT,
-                'items_data' => []
-            ]);
-        }
-        else {
-            // Load existing trip with user relationship
-            $trip = Trip::with('user', 'documents')->findOrFail($tripId);
-        }
-
-        return view('trips.preview', [
-            'trip' => $this->enrichHotelData($trip),
-            'isPublicPreview' => !Auth::check()
-        ]);
-    }
 
     /**
      * Share trip preview (public access via token)
@@ -575,17 +319,8 @@ class TripController extends Controller
             abort(404, 'Enlace de compartición no válido o expirado.');
         }
 
-        if ($trip->is_pro) {
-            return view('trips.pro-share', [
-                'trip' => $trip->load('user', 'documents')
-            ]);
-        }
-
-
-        return view('trips.preview', [
-            'trip' => $this->enrichHotelData($trip->load('user', 'documents')),
-            'isPublicPreview' => true,
-            'isSharedPreview' => true
+        return view('trips.pro-share', [
+            'trip' => $trip->load('user', 'documents')
         ]);
     }
 
@@ -810,35 +545,6 @@ class TripController extends Controller
         ]);
     }
 
-    /**
-     * Generate PDF for trip
-     */
-    public function generatePdf(Request $request, Trip $trip)
-    {
-        // Check if this is a shared access (via token)
-        $token = $request->get('token');
-        $isShared = $token && $trip->share_token === $token;
-
-        // Ensure the trip belongs to the authenticated user or is shared
-        $isOwner = Auth::check() && $trip->user_id === Auth::id();
-
-        if (!$isOwner && !$isShared) {
-            abort(403, 'No tienes permiso para descargar este viaje.');
-        }
-
-
-        $trip->load('user');
-
-        $pdf = Pdf::loadView('trips.pdf', [
-            'trip' => $trip,
-            'isPublicPreview' => !$isOwner
-        ]);
-
-        $startDate = $trip->start_date ? $trip->start_date->format('d-m-Y') : 'sin-fecha';
-        $filename = 'itinerario-' . Str::slug($trip->title) . '-' . $startDate . '.pdf';
-
-        return $pdf->download($filename);
-    }
 
     /**
      * Send trip link via email
@@ -1042,129 +748,5 @@ class TripController extends Controller
         }
     }
 
-    /**
-     * Enrich hotel data with Google Places details
-     */
-    private function enrichHotelData(Trip $trip): Trip
-    {
-        if (!$trip->items_data || !is_array($trip->items_data)) {
-            return $trip;
-        }
 
-        $apiKey = config('services.google.places_api_key');
-        if (!$apiKey) {
-            return $trip;
-        }
-
-        // Create a copy of the items_data array to avoid indirect modification issues
-        $itemsData = $trip->items_data;
-
-        foreach ($itemsData as &$item) {
-            if (isset($item['type']) && $item['type'] === 'hotel' && isset($item['hotel_id'])) {
-                try {
-                    $response = Http::get("https://maps.googleapis.com/maps/api/place/details/json", [
-                        'place_id' => $item['hotel_id'],
-                        'fields' => 'name,formatted_address,photos,rating,reviews,opening_hours,website,international_phone_number,price_level,types',
-                        'key' => $apiKey,
-                    ]);
-
-                    $data = $response->json();
-
-                    if ($data['status'] === 'OK') {
-                        $placeDetails = $data['result'];
-
-                        // Add detailed information to the item
-                        $item['detailed_info'] = [
-                            'name' => $placeDetails['name'] ?? $item['hotel_name'] ?? '',
-                            'formatted_address' => $placeDetails['formatted_address'] ?? '',
-                            'rating' => $placeDetails['rating'] ?? null,
-                            'website' => $placeDetails['website'] ?? null,
-                            'international_phone_number' => $placeDetails['international_phone_number'] ?? null,
-                            'price_level' => $placeDetails['price_level'] ?? null,
-                            'types' => $placeDetails['types'] ?? [],
-                        ];
-
-                        // Process photos with full URLs
-                        if (isset($placeDetails['photos']) && is_array($placeDetails['photos'])) {
-                            $item['detailed_info']['photos'] = array_map(function ($photo) use ($apiKey) {
-                                return [
-                                'url' => "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&maxheight=600&photoreference={$photo['photo_reference']}&key={$apiKey}",
-                                'photo_reference' => $photo['photo_reference'],
-                                'width' => $photo['width'] ?? null,
-                                'height' => $photo['height'] ?? null,
-                                ];
-                            }, array_slice($placeDetails['photos'], 0, 10)); // Limit to 10 photos
-                        }
-                    }
-                }
-                catch (\Exception $e) {
-                    // Log error but continue processing
-                    Log::warning('Failed to enrich hotel data for place_id: ' . $item['hotel_id'], [
-                        'error' => $e->getMessage()
-                    ]);
-                }
-            }
-        }
-
-        // Update the trip with enriched data
-        $trip->items_data = $itemsData;
-
-        return $trip;
-    }
-
-    /**
-     * Render a single item partial using the server-side Blade component.
-     * Called by the frontend when a new element is added so the visual stays
-     * consistent with what's shown after a full page reload.
-     */
-    public function renderItem(Request $request, Trip $trip): \Illuminate\Http\Response|JsonResponse
-    {
-        // Ensure the trip belongs to the authenticated user
-        if ($trip->user_id !== Auth::id()) {
-            return response()->json(['success' => false, 'message' => 'No autorizado.'], 403);
-        }
-
-        $data = $request->validate([
-            'type' => 'required|string',
-            'day' => 'nullable|integer',
-            'note_title' => 'nullable|string',
-            'note_content' => 'nullable|string',
-            'airline_name' => 'nullable|string',
-            'airline_id' => 'nullable',
-            'flight_number' => 'nullable|string',
-            'departure_airport' => 'nullable|string',
-            'arrival_airport' => 'nullable|string',
-            'departure_datetime' => 'nullable|string',
-            'arrival_datetime' => 'nullable|string',
-            'departure_time' => 'nullable|string',
-            'arrival_time' => 'nullable|string',
-            'departure_city' => 'nullable|string',
-            'arrival_city' => 'nullable|string',
-            'confirmation_number' => 'nullable|string',
-            'hotel_name' => 'nullable|string',
-            'hotel_id' => 'nullable|string',
-            'hotel_data' => 'nullable|array',
-            'check_in' => 'nullable|string',
-            'check_out' => 'nullable|string',
-            'room_type' => 'nullable|string',
-            'meal_plan' => 'nullable|string',
-            'nights' => 'nullable|integer',
-            'activity_title' => 'nullable|string',
-            'location' => 'nullable|string',
-            'description' => 'nullable|string',
-            'start_datetime' => 'nullable|string',
-            'end_datetime' => 'nullable|string',
-            'transport_type' => 'nullable|string',
-            'pickup_location' => 'nullable|string',
-            'destination' => 'nullable|string',
-            'pickup_datetime' => 'nullable|string',
-        ]);
-
-        // Build TripItem from the submitted data
-        $item = new \App\Models\TripItem($data);
-
-        $html = view('components.trip-item', ['item' => $item, 'day' => $data['day'] ?? null])->render();
-
-        return response($html)->header('Content-Type', 'text/html');
-    }
 }

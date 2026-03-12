@@ -15,13 +15,6 @@
     @if(config('services.google.places_api_key'))
     <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.places_api_key') }}&libraries=places&v=weekly" async defer></script>
     @endif
-    <link rel="stylesheet" href="{{ asset('css/components/sidebar.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/trip-header.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/timeline.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/modals.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/editor-layout.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/timeline-items.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/autocomplete.css') }}">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
     @vite(['resources/js/app.js'])
     @stack('styles')

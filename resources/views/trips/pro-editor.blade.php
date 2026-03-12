@@ -13,6 +13,7 @@
     <script>
         window.viantrypUserName = "{{ auth()->user()->name ?? 'Invitado' }}";
         window.tripId = {{ $trip->id ?? 'null' }};
+        window.proStatus = "{{ $trip->status ?? 'draft' }}";
         window.proState = @json($trip->pro_state ?? null);
     </script>
 </head>

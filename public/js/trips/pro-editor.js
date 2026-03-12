@@ -886,7 +886,8 @@ function openPreview() {
     csrfToken: csrfToken,
     tripId: window.tripId || '',
     userName: window.viantrypUserName || '',
-    origin: window.location.origin
+    origin: window.location.origin,
+    status: window.proStatus
   });
   const blob = new Blob([previewHTML], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
@@ -1003,7 +1004,7 @@ async function performProSave(isSilent = true) {
   const totalItems = days.reduce((s, d) => s + (d ? d.length : 0), 0);
   const numericTabs = [...document.querySelectorAll('.day-tab:not(.portada-tab):not(.cierre-tab)')].map(t => ({ label: t.querySelector('.day-tab-label')?.textContent || t.textContent.trim(), idx: parseInt(t.dataset.day) }));
 
-  const proStateObj = { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink: false };
+  const proStateObj = { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink: false, status: window.proStatus, origin: window.location.origin };
 
   try {
     const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';

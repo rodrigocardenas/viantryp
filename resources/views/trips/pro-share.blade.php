@@ -11,6 +11,7 @@
         // Set up variables for pro-viewer.js
         window.tripId = {{ $trip->id }};
         window.viantrypUserName = @json($trip->user->name ?? 'Viantryp');
+        window.proStatus = "{{ $trip->status }}";
         
         let proState = @json($trip->pro_state);
         if (typeof proState === 'string') {
@@ -25,6 +26,8 @@
         proState.csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         proState.tripId = window.tripId;
         proState.userName = window.viantrypUserName;
+        proState.status = window.proStatus;
+        proState.origin = window.location.origin;
         window.shareToken = @json(request()->route('token'));
     </script>
     <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>

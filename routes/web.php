@@ -44,7 +44,7 @@ Route::middleware('auth')->group(function () {
     // Trip routes
     Route::get('trips/create-pro', [TripController::class , 'createPro'])->name('trips.create-pro');
     Route::post('trips/store-pro', [TripController::class , 'storePro'])->name('trips.store-pro');
-    Route::resource('trips', TripController::class);
+    Route::resource('trips', TripController::class)->only(['index', 'edit', 'destroy']);
 
     // Person routes
     Route::resource('persons', PersonController::class);
@@ -67,26 +67,16 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/{trip}/save-pro-state', [TripController::class , 'saveProState'])->name('trips.save-pro-state');
     Route::post('trips/{trip}/upload-attachment', [TripController::class , 'uploadAttachment'])->name('trips.upload-attachment');
     Route::post('trips/{trip}/send-email', [TripController::class , 'sendEmail'])->name('trips.send-email');
-    Route::get('trips/{trip}/pdf', [TripController::class , 'generatePdf'])->name('trips.pdf')->withoutMiddleware('auth');
     Route::post('trips/bulk-delete', [TripController::class , 'bulkDelete'])->name('trips.bulk-delete');
     Route::post('trips/bulk-duplicate', [TripController::class , 'bulkDuplicate'])->name('trips.bulk-duplicate');
-    Route::post('trips/{trip}/render-item', [TripController::class , 'renderItem'])->name('trips.render-item');
 
     // Document routes
-    Route::post('trips/{trip}/documents/upload', [\App\Http\Controllers\TripDocumentController::class , 'upload'])->name('trips.documents.upload');
-    Route::post('documents/temp-upload', [\App\Http\Controllers\TripDocumentController::class , 'tempUpload'])->name('documents.temp-upload');
-    Route::post('documents/process-temp', [\App\Http\Controllers\TripDocumentController::class , 'processTemp'])->name('documents.process-temp');
-    Route::post('trips/{trip}/documents/update-item-id', [\App\Http\Controllers\TripDocumentController::class , 'updateItemId'])->name('trips.documents.update-item-id');
-    Route::get('trips/{trip}/documents', [\App\Http\Controllers\TripDocumentController::class , 'getByItem'])->name('trips.documents.get');
     Route::delete('documents/{document}', [\App\Http\Controllers\TripDocumentController::class , 'destroy'])->name('documents.destroy');
-    Route::get('documents/{document}/download', [\App\Http\Controllers\TripDocumentController::class , 'download'])->name('documents.download');
+    Route::get('documents/{document}/download', [\App\Http\Controllers\TripDocumentController::class , 'download'])->name('documents.download')->withoutMiddleware('auth');
 });
 
 // Google Places API routes (outside auth middleware for AJAX requests)
 Route::post('api/places/details', [GooglePlacesController::class , 'getPlaceDetails'])->name('places.details');
-
-// Public preview route (no authentication required)
-Route::get('trips/{trip}/preview', [TripController::class , 'preview'])->name('trips.preview');
 
 // Shared trip preview route (no authentication required)
 Route::get('trips/share/{token}', [TripController::class , 'share'])->name('trips.share');

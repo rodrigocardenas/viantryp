@@ -402,9 +402,9 @@
     function getStatusLabel($status) {
         $labels = [
             'draft' => 'En Diseño',
-            'sent' => 'Enviado',
+            'sent' => 'Propuesta',
             'reserved' => 'Reservado',
-            'completed' => 'Completado',
+            'completed' => 'Pago Completo',
             'discarded' => 'Descartado',
         ];
         return $labels[$status] ?? ucfirst($status);
@@ -484,7 +484,7 @@
       <tbody id="tbody">
           @if(count($trips) > 0)
               @foreach($trips as $index => $trip)
-                <tr class="trip-row" data-trip-id="{{ $trip->id }}" data-is-pro="{{ $trip->is_pro ? '1' : '0' }}" style="animation-delay: {{ $index * 0.04 }}s; animation: rowIn 0.28s ease both; cursor: pointer;" onclick="if(window.innerWidth > 768) { @if($trip->is_pro) window.location='{{ route('trips.edit', $trip->id) }}'; @else window.location='{{ route('trips.edit', $trip->id) }}'; @endif }">
+                <tr class="trip-row" data-trip-id="{{ $trip->id }}" data-is-pro="{{ $trip->is_pro ? '1' : '0' }}" style="animation-delay: {{ $index * 0.04 }}s; animation: rowIn 0.28s ease both; cursor: pointer;" onclick="if(window.innerWidth > 768) { window.location='{{ route('trips.edit', $trip->id) }}'; }">
                     <td onclick="event.stopPropagation()"><input type="checkbox" class="rchk trip-checkbox" data-trip-id="{{ $trip->id }}" onchange="updateSelectAllState()"/></td>
                     <td class="bar-cell"></td>
                     <td>
@@ -539,9 +539,9 @@
                     <td onclick="event.stopPropagation()">
                       <select class="status-select status-{{ $trip->status }}" data-status="{{ $trip->status }}" onchange="changeTripStatus({{ $trip->id }}, this.value)">
                           <option value="draft" {{ $trip->status === 'draft' ? 'selected' : '' }}>En diseño</option>
-                          <option value="sent" {{ $trip->status === 'sent' ? 'selected' : '' }}>Enviado</option>
+                          <option value="sent" {{ $trip->status === 'sent' ? 'selected' : '' }}>Propuesta</option>
                           <option value="reserved" {{ $trip->status === 'reserved' ? 'selected' : '' }}>Reservado</option>
-                          <option value="completed" {{ $trip->status === 'completed' ? 'selected' : '' }}>Completado</option>
+                          <option value="completed" {{ $trip->status === 'completed' ? 'selected' : '' }}>Pago Completo</option>
                           <option value="discarded" {{ $trip->status === 'discarded' ? 'selected' : '' }}>Descartado</option>
                       </select>
                     </td>
@@ -598,14 +598,7 @@
         <script src="{{ asset('js/trips/pro-viewer.js') }}"></script>
     <script>
         function previewTrip(tripId) {
-            const row = document.querySelector(`.trip-row[data-trip-id="${tripId}"]`);
-            const isPro = row && row.dataset.isPro === '1';
-
-            if (isPro) {
-                openProPreview(tripId);
-            } else {
-                window.open(`{{ url('trips') }}/${tripId}/preview`, '_blank');
-            }
+            openProPreview(tripId);
         }
 
         async function openProPreview(tripId) {
@@ -624,6 +617,7 @@
                     proState.isPublicLink = false;
                     proState.csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                     proState.tripId = tripId;
+                    proState.status = data.status || 'draft';
                     proState.userName = data.user_name || 'Viantryp';
                     proState.origin = window.location.origin;
 
