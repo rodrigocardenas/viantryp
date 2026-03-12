@@ -209,15 +209,54 @@
     /* TABLE */
     .tbl-wrap { background: var(--white); border: 1px solid var(--bdr); border-radius: 18px; overflow: hidden; box-shadow: 0 4px 24px rgba(10,22,40,0.06); }
     table { width: 100%; border-collapse: collapse; }
-    thead tr { border-bottom: 1px solid var(--bdr); background: #f8f7f3; }
-    thead th { padding: 13px 20px; text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--gray2); white-space: nowrap; }
+    thead tr { border-bottom: 1px solid var(--bdr); background: #f3f3f3; }
+    thead th { position: relative; padding: 13px 20px; text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #24292e; white-space: nowrap; }
     thead th:first-child { width: 46px; padding-left: 22px; }
     thead th.right { text-align: center; padding-right: 22px; }
+
+    /* Column Resizer */
+    .resizer {
+        position: absolute;
+        top: 0;
+        right: -5px;
+        width: 10px;
+        cursor: col-resize;
+        user-select: none;
+        height: 100%;
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+    }
+    .resizer::after {
+        content: "";
+        width: 1px;
+        height: 100%;
+        border-right: 1px dotted rgba(36, 41, 46, 0.3);
+        transition: border-color 0.2s, opacity 0.2s;
+    }
+    .resizer:hover::after, .resizing .resizer::after {
+        border-right: 1px dotted var(--teal);
+        border-right-style: solid; /* Make it solid on hover for better visibility */
+        opacity: 1;
+    }
+    .resizing {
+        cursor: col-resize !important;
+        user-select: none !important;
+    }
     
     tbody tr { border-bottom: 1px solid var(--bdr); transition: transform 0.22s, opacity 0.22s, background 0.14s; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: #f9f8f5; }
-    tbody td { padding: 20px 20px; vertical-align: middle; font-size: 14px; }
+    tbody td { position: relative; padding: 20px 20px; vertical-align: middle; font-size: 14px; }
+    tbody td:not(:last-child):not(.bar-cell)::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        border-right: 1px dotted rgba(36, 41, 46, 0.15);
+        pointer-events: none;
+    }
     tbody td:first-child { padding-left: 22px; }
     input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--teal); cursor: pointer; }
 
@@ -473,11 +512,11 @@
         <tr>
           <th><input type="checkbox" id="checkAll" onchange="toggleSelectAll(this)"/></th>
           <th style="width:4px;padding:0"></th>
-          <th class="sortable" onclick="sortTable(2, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">ID <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span></th>
-          <th class="sortable" onclick="sortTable(3, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">Nombre del Viaje <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span></th>
-          <th class="sortable" onclick="sortTable(4, 'date')" style="cursor: pointer; user-select: none; white-space: nowrap;">Inicio del Viaje <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span></th>
-          <th class="sortable" onclick="sortTable(5, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">Cliente <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span></th>
-          <th class="sortable" onclick="sortTable(6, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">Estado <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span></th>
+          <th class="sortable" onclick="sortTable(2, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">ID <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span><div class="resizer"></div></th>
+          <th class="sortable" onclick="sortTable(3, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">Nombre del Viaje <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span><div class="resizer"></div></th>
+          <th class="sortable" onclick="sortTable(4, 'date')" style="cursor: pointer; user-select: none; white-space: nowrap;">Inicio del Viaje <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span><div class="resizer"></div></th>
+          <th class="sortable" onclick="sortTable(5, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">Cliente <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span><div class="resizer"></div></th>
+          <th class="sortable" onclick="sortTable(6, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">Estado <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span><div class="resizer"></div></th>
           <th class="right">Acciones</th>
         </tr>
       </thead>
@@ -491,9 +530,9 @@
                         <span class="id-chip code-display" onclick="event.stopPropagation(); editTripCode({{ $trip->id }}, '{{ $trip->code }}')">{{ $trip->code ?? 'N/A' }}</span>
                         <input type="text" class="code-input" id="code-input-{{ $trip->id }}" style="display: none;" onblur="saveTripCode({{ $trip->id }})" onkeypress="handleCodeKeyPress(event, {{ $trip->id }})" maxlength="20">
                     </td>
-                    <td style="width: 225.73px; max-width: 225.73px;">
+                    <td style="min-width: 150px;">
                       <div class="trip-name">
-                          <span class="title-display" id="title-display-{{ $trip->id }}" style="display: inline-block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $trip->title }}</span>
+                          <span class="title-display" id="title-display-{{ $trip->id }}" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; line-height: 1.3;">{{ $trip->title }}</span>
                       </div>
                       @if($trip->destinations && count($trip->destinations) > 0)
                          <div class="trip-dest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; display: inline-block; vertical-align: bottom;">{{ rtrim($trip->destinations->pluck('name')->join(' · '), ' · ') ?: 'Sin destino' }}</span></div>
@@ -519,7 +558,7 @@
                           </div>
                       </div>
                     </td>
-                    <td style="width: 127px; min-width: 127px;">
+                    <td style="min-width: 120px;">
                       <div class="trip-date">{{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : 'Sin fecha' }}</div>
                     </td>
                     @php
@@ -1232,5 +1271,73 @@
             currentIcon.innerHTML = dir === 'asc' ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg>' : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M15 20V4"/><path d="M15 4l-4 4"/><path d="M15 4l4 4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg>';
         }
     }
+
+    // Column Resizer Logic
+    function initTableResizer() {
+        const table = document.getElementById('mainTable');
+        if (!table) return;
+
+        const headers = table.querySelectorAll('th');
+        const savedWidths = JSON.parse(localStorage.getItem('tripsTableWidths') || '{}');
+
+        // Apply saved widths
+        headers.forEach((th, index) => {
+            if (savedWidths[index]) {
+                th.style.width = savedWidths[index];
+                th.style.minWidth = savedWidths[index]; // Ensure it sticks
+            }
+
+            const resizer = th.querySelector('.resizer');
+            if (!resizer) return;
+
+            resizer.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                e.stopPropagation(); // Avoid triggering sort
+
+                const startWidth = th.offsetWidth;
+                const downX = e.pageX;
+                
+                document.body.classList.add('resizing');
+                
+                const onMouseMove = (moveE) => {
+                    const newWidth = startWidth + (moveE.pageX - downX);
+                    if (newWidth > 60) {
+                        th.style.width = newWidth + 'px';
+                        th.style.minWidth = newWidth + 'px';
+                        
+                        // Set table to fixed layout once resizing starts to avoid layout jumping
+                        table.style.tableLayout = 'fixed';
+                    }
+                };
+                
+                const onMouseUp = () => {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    document.body.classList.remove('resizing');
+                    
+                    // Save widths
+                    const widths = {};
+                    table.querySelectorAll('th').forEach((header, idx) => {
+                        if (header.style.width) {
+                            widths[idx] = header.style.width;
+                        }
+                    });
+                    localStorage.setItem('tripsTableWidths', JSON.stringify(widths));
+                };
+                
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+        });
+
+        // If we have saved widths, ensure table-layout is fixed
+        if (Object.keys(savedWidths).length > 0) {
+            table.style.tableLayout = 'fixed';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initTableResizer();
+    });
 </script>
 @endpush
