@@ -196,22 +196,77 @@
     .bulk-actions-info { font-size: 14px; font-weight: 600; color: var(--ink); }
     .bulk-actions-info i { color: var(--teal); margin-right: 6px; }
     .bulk-action-btn {
-        padding: 8px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600;
-        cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+        padding: 7px 14px; border: 1px solid var(--bdr); border-radius: 10px; font-size: 12px; font-weight: 500;
+        cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; background: white; color: var(--ink);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
-    .bulk-duplicate-btn { background: var(--teal); color: white; }
-    .bulk-duplicate-btn:hover { background: var(--teal2); }
-    .bulk-delete-btn { background: #d94040; color: white; }
-    .bulk-delete-btn:hover { background: #b43030; }
-    .bulk-clear-btn { background: var(--sand); color: var(--ink); }
-    .bulk-clear-btn:hover { background: #cbd5e1; }
+    .bulk-duplicate-btn:hover { background: #f0faf9; border-color: var(--teal); color: var(--teal); }
+    .bulk-delete-btn:hover { background: #fff5f5; border-color: #d94040; color: #d94040; }
+    .bulk-clear-btn:hover { background: #f8fafc; border-color: var(--gray); }
 
     /* TABLE */
-    .tbl-wrap { background: var(--white); border: 1px solid var(--bdr); border-radius: 18px; overflow: hidden; box-shadow: 0 4px 24px rgba(10,22,40,0.06); }
-    table { width: 100%; border-collapse: collapse; }
-    thead tr { border-bottom: 1px solid var(--bdr); background: #f3f3f3; }
-    thead th { position: relative; padding: 13px 20px; text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #24292e; white-space: nowrap; }
-    thead th:first-child { width: 46px; padding-left: 22px; }
+    .tbl-wrap { background: var(--white); border: 1px solid var(--bdr); border-radius: 18px; overflow: visible; box-shadow: 0 4px 24px rgba(10,22,40,0.06); }
+    table { width: 100% !important; border-collapse: collapse; table-layout: fixed; }
+    thead { background: #f3f3f3; }
+    thead tr { border-bottom: 1px solid var(--bdr); background: transparent; }
+    thead th { position: relative; padding: 13px 20px; text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #24292e; line-height: 1.4; vertical-align: top; background: transparent; }
+    thead th.sortable { transition: background 0.15s; }
+    thead th.sortable:hover { background: #e9e9e9; }
+    
+    .col-menu-btn {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        cursor: pointer;
+        color: var(--gray);
+        transition: all 0.2s;
+        z-index: 5;
+    }
+    thead th:hover .col-menu-btn { display: flex; }
+    .col-menu-btn:hover { background: rgba(0,0,0,0.05); color: var(--teal); }
+    
+    .header-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: white;
+        border: 1px solid var(--bdr);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        z-index: 1000;
+        padding: 8px;
+        min-width: 180px;
+        display: none;
+        text-transform: none;
+        letter-spacing: normal;
+        font-weight: 500;
+    }
+    .header-dropdown.show { display: block; }
+    
+    .header-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 12px;
+        color: var(--ink);
+        transition: background 0.2s;
+    }
+    .header-dropdown-item:hover { background: #f3f3f3; }
+    .header-dropdown-item svg { width: 14px; height: 14px; color: var(--gray); }
+    
+
+    thead th:first-child { width: 46px; padding-left: 22px; border-top-left-radius: 17px; }
+    thead th:last-child { border-top-right-radius: 17px; }
     thead th.right { text-align: center; padding-right: 22px; }
 
     /* Column Resizer */
@@ -258,13 +313,15 @@
         pointer-events: none;
     }
     tbody td:first-child { padding-left: 22px; }
+    tbody tr:last-child td:first-child { border-bottom-left-radius: 18px; }
+    tbody tr:last-child td:last-child { border-bottom-right-radius: 18px; }
     input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--teal); cursor: pointer; }
 
     .id-chip, .name-display, .email-display { font-size: 10.5px; font-weight: 700; font-family: monospace; letter-spacing: 0.5px; color: #071917; background: #e7f7f51a; border: 1px solid rgba(7, 25, 23, 0.15); padding: 3px 8px; border-radius: 6px; cursor: pointer; transition: background 0.2s; display: inline-block; }
     .id-chip:hover, .name-display:hover, .email-display:hover { background: #e7f7f5; border-color: #071917; }
     .name-display, .email-display { font-family: 'DM Sans', sans-serif; letter-spacing: 0.2px; }
     .name-display { font-size: 13px; }
-    .email-display { font-size: 10px; font-weight: 500; color: #1a9a8a; }
+    .email-display { font-size: 10px; font-weight: 500; color: #1a9a8a; white-space: normal; word-break: break-all; max-width: 100%; display: inline-block; }
     .code-input { width: 80px; padding: 2px 4px; border: 1px solid var(--bdr); border-radius: 4px; font-family: monospace; font-size: 10.5px; text-transform: uppercase; }
 
     .trip-name { font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
@@ -283,6 +340,10 @@
         border-radius: 999px;
         font-size: 12px;
         font-weight: 500;
+        white-space: normal;
+        height: auto;
+        line-height: 1.2;
+        padding: 5px 28px 5px 12px;
         cursor: pointer;
         transition: all 0.2s ease;
         min-width: 110px;
@@ -301,7 +362,7 @@
     .status-completed { background-color: #eef2f6 !important; color: #0f766e !important; border-color: #cbd5e1 !important; }
     .status-reserved { background-color: #dcfce7 !important; color: #15803d !important; border-color: #bbf7d0 !important; }
     .status-draft    { background-color: #e0f2fe !important; color: #1d5fa8 !important; border-color: #bae6fd !important; }
-    .status-sent     { background-color: #e8f8ff !important; color: #0284c7 !important; border-color: #bae6fd !important; }
+    .status-sent     { background-color: #fef9c3 !important; color: #854d0e !important; border-color: #fef08a !important; }
     .status-discarded { background-color: #fee2e2 !important; color: #b43030 !important; border-color: #fecaca !important; }
 
     .acts-cell { text-align: right; }
@@ -499,10 +560,22 @@
           </span>
       </div>
       <div style="display: flex; gap: 8px;">
-          <button class="bulk-action-btn bulk-duplicate-btn" onclick="duplicateSelectedTrips()">Duplicar</button>
-          <button class="bulk-action-btn bulk-delete-btn" onclick="deleteSelectedTrips()">Eliminar</button>
-          <button class="bulk-action-btn bulk-clear-btn" onclick="clearSelection()">Limpiar</button>
+          <button class="bulk-action-btn bulk-duplicate-btn" onclick="duplicateSelectedTrips()">
+              <i class="fas fa-copy" style="font-size: 11px; opacity: 0.7;"></i> Duplicar
+          </button>
+          <button class="bulk-action-btn bulk-delete-btn" onclick="deleteSelectedTrips()">
+              <i class="fas fa-trash-alt" style="font-size: 11px; opacity: 0.7;"></i> Eliminar
+          </button>
+          <button class="bulk-action-btn bulk-clear-btn" onclick="clearSelection()">
+              <i class="fas fa-times" style="font-size: 11px; opacity: 0.7;"></i> Limpiar
+          </button>
       </div>
+  </div>
+
+  <div id="table-options-bar" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+      <button id="show-columns-btn" style="background: white; color: var(--ink); display: none; padding: 8px 14px; border: 1px solid var(--bdr); border-radius: 10px; font-weight: 500; font-size: 12px; cursor: pointer; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.2s;" onclick="showAllColumns()">
+          <i class="fas fa-eye" style="color: var(--gray); font-size: 11px;"></i> Mostrar columnas ocultas
+      </button>
   </div>
 
   <!-- Table -->
@@ -512,12 +585,85 @@
         <tr>
           <th><input type="checkbox" id="checkAll" onchange="toggleSelectAll(this)"/></th>
           <th style="width:4px;padding:0"></th>
-          <th class="sortable" onclick="sortTable(2, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">ID <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span><div class="resizer"></div></th>
-          <th class="sortable" onclick="sortTable(3, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">Nombre del Viaje <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span><div class="resizer"></div></th>
-          <th class="sortable" onclick="sortTable(4, 'date')" style="cursor: pointer; user-select: none; white-space: nowrap;">Inicio del Viaje <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span><div class="resizer"></div></th>
-          <th class="sortable" onclick="sortTable(5, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">Cliente <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span><div class="resizer"></div></th>
-          <th class="sortable" onclick="sortTable(6, 'string')" style="cursor: pointer; user-select: none; white-space: nowrap;">Estado <span class="sort-icon" style="margin-left: 10px; display: inline-block; vertical-align: middle;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg></span><div class="resizer"></div></th>
-          <th class="right">Acciones</th>
+          <th class="sortable" onclick="sortTable(2, 'string')" style="cursor: pointer; user-select: none;">
+            ID 
+            <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="header-dropdown" onclick="event.stopPropagation()">
+                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'asc', 'string')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg> Ordenar A - Z</div>
+                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'desc', 'string')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg> Ordenar Z - A</div>
+                <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
+                <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg> Ocultar campo</div>
+            </div>
+            <div class="resizer"></div>
+          </th>
+          <th class="sortable" onclick="sortTable(3, 'string')" style="cursor: pointer; user-select: none;">
+            Nombre del Viaje 
+            <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="header-dropdown" onclick="event.stopPropagation()">
+                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'asc', 'string')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg> Ordenar A - Z</div>
+                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'desc', 'string')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg> Ordenar Z - A</div>
+                <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
+                <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg> Ocultar campo</div>
+            </div>
+            <div class="resizer"></div>
+          </th>
+          <th class="sortable" onclick="sortTable(4, 'date')" style="cursor: pointer; user-select: none;">
+            Inicio del Viaje 
+            <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="header-dropdown" onclick="event.stopPropagation()">
+                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'asc', 'date')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg> Ordenar A - Z</div>
+                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'desc', 'date')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg> Ordenar Z - A</div>
+                <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
+                <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg> Ocultar campo</div>
+            </div>
+            <div class="resizer"></div>
+          </th>
+          <th class="sortable" onclick="sortTable(5, 'string')" style="cursor: pointer; user-select: none;">
+            Cliente 
+            <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="header-dropdown" onclick="event.stopPropagation()">
+                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'asc', 'string')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg> Ordenar A - Z</div>
+                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'desc', 'string')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg> Ordenar Z - A</div>
+                <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
+                <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg> Ocultar campo</div>
+            </div>
+            <div class="resizer"></div>
+          </th>
+          <th class="sortable" onclick="sortTable(6, 'string')" style="cursor: pointer; user-select: none; min-width: 150px;">
+            Estado 
+            <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="header-dropdown" onclick="event.stopPropagation()">
+                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'asc', 'string')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg> Ordenar A - Z</div>
+                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'desc', 'string')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg> Ordenar Z - A</div>
+                <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
+                <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg> Ocultar campo</div>
+            </div>
+            <div class="resizer"></div>
+          </th>
+          <th class="sortable" onclick="sortTable(7, 'number')" style="cursor: pointer; user-select: none;">
+            Vistas 
+            <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="header-dropdown" onclick="event.stopPropagation()">
+                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'asc', 'number')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg> Ordenar Mayor a Menor</div>
+                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'desc', 'number')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg> Ordenar Menor a Mayor</div>
+                <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
+                <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg> Ocultar campo</div>
+            </div>
+            <div class="resizer"></div>
+          </th>
+          <th class="right" style="min-width: 180px;">Acciones</th>
         </tr>
       </thead>
       <tbody id="tbody">
@@ -583,6 +729,14 @@
                           <option value="completed" {{ $trip->status === 'completed' ? 'selected' : '' }}>Pago Completo</option>
                           <option value="discarded" {{ $trip->status === 'discarded' ? 'selected' : '' }}>Descartado</option>
                       </select>
+                    </td>
+                    <td>
+                      <div style="display: flex; align-items: center; gap: 6px; color: var(--gray2); font-weight: 500;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; opacity: 0.7;">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                        </svg> 
+                        {{ $trip->views_count ?? 0 }}
+                      </div>
                     </td>
                     <td class="acts-cell" onclick="event.stopPropagation()">
                       <div class="acts">
@@ -1173,68 +1327,54 @@
         });
 
         // Close modal functionality
-        closeBtn.addEventListener('click', () => {
-            modal.remove();
-        });
-
-        // Close on overlay click
+        const closeBtn_local = document.getElementById('closeShareModalBtn');
+        if (closeBtn_local) {
+            closeBtn_local.addEventListener('click', () => modal.remove());
+        }
+        
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.remove();
-            }
+            if (e.target === modal) modal.remove();
         });
 
-        // Close on Escape key
-        document.addEventListener('keydown', function closeOnEscape(e) {
+        const closeOnEscape = (e) => {
             if (e.key === 'Escape') {
                 modal.remove();
                 document.removeEventListener('keydown', closeOnEscape);
             }
-        });
+        };
+        document.addEventListener('keydown', closeOnEscape);
     }
 
     // Table Sorting
-    function sortTable(columnIndex, type = 'string') {
+    function sortTable(columnIndex, type = 'string', forcedDir = null) {
         const table = document.getElementById("mainTable");
         let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
         switching = true;
-        // Set the sorting direction to ascending:
-        dir = "asc"; 
         
-        // Reset all header icons
-        const headers = table.querySelectorAll('th.sortable');
-        headers.forEach(th => {
-            const icon = th.querySelector('.sort-icon');
-            if (icon) icon.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg>'; // default
-        });
+        // Determine initial direction
+        dir = forcedDir || "asc"; 
         
-        const currentHeader = headers[columnIndex - 2]; // Adjust index based on sortable headers offset
-        const currentIcon = currentHeader.querySelector('.sort-icon');
-
         while (switching) {
             switching = false;
             rows = table.querySelectorAll("tbody .trip-row");
             
             for (i = 0; i < (rows.length - 1); i++) {
                 shouldSwitch = false;
-                x = rows[i].getElementsByTagName("TD")[columnIndex];
-                y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+                x = rows[i].cells[columnIndex];
+                y = rows[i + 1].cells[columnIndex];
                 
                 let valX = x.textContent || x.innerText;
                 let valY = y.textContent || y.innerText;
                 
-                // Special handling for inputs inside the cell (like status dropdown)
-                if (columnIndex === 6) { // Status column
+                if (columnIndex === 6) { 
                    valX = x.querySelector('select').options[x.querySelector('select').selectedIndex].text;
                    valY = y.querySelector('select').options[y.querySelector('select').selectedIndex].text;
                 }
                 
                 if (type === 'number') {
-                    valX = parseFloat(valX.replace(/[^0-9.-]+/g,""));
-                    valY = parseFloat(valY.replace(/[^0-9.-]+/g,""));
+                    valX = parseFloat(valX.replace(/[^0-9.-]+/g,"")) || 0;
+                    valY = parseFloat(valY.replace(/[^0-9.-]+/g,"")) || 0;
                 } else if (type === 'date') {
-                    // Extract date using a simpler approach if the specific formats vary 
-                    // This attempts to extract a parseable date or uses raw string comparison
                     valX = valX.trim().toLowerCase();
                     valY = valY.trim().toLowerCase();
                 } else {
@@ -1243,15 +1383,9 @@
                 }
 
                 if (dir == "asc") {
-                    if (valX > valY) {
-                        shouldSwitch = true;
-                        break;
-                    }
+                    if (valX > valY) { shouldSwitch = true; break; }
                 } else if (dir == "desc") {
-                    if (valX < valY) {
-                        shouldSwitch = true;
-                        break;
-                    }
+                    if (valX < valY) { shouldSwitch = true; break; }
                 }
             }
             if (shouldSwitch) {
@@ -1259,17 +1393,79 @@
                 switching = true;
                 switchcount ++;      
             } else {
-                if (switchcount == 0 && dir == "asc") {
+                if (switchcount == 0 && dir == "asc" && !forcedDir) {
                     dir = "desc";
                     switching = true;
                 }
             }
         }
+    }
+
+    // Advanced Table Menu Functions
+    function toggleHeaderMenu(event, btn) {
+        event.stopPropagation();
+        const menu = btn.nextElementSibling;
+        const allMenus = document.querySelectorAll('.header-dropdown');
         
-        // Update the clicked header icon
-        if (currentIcon) {
-            currentIcon.innerHTML = dir === 'asc' ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4v16"/><path d="M15 20l-4-4"/><path d="M15 20l4-4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg>' : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M15 20V4"/><path d="M15 4l-4 4"/><path d="M15 4l4 4"/><path d="M4 8l2-6 2 6"/><path d="M5 5h2"/><path d="M4 14h4l-4 6h4"/></svg>';
+        allMenus.forEach(m => {
+            if (m !== menu) m.classList.remove('show');
+        });
+        
+        menu.classList.toggle('show');
+        
+        const closeMenu = (e) => {
+            if (!menu.contains(e.target) && e.target !== btn) {
+                menu.classList.remove('show');
+                document.removeEventListener('click', closeMenu);
+            }
+        };
+        if (menu.classList.contains('show')) {
+            document.addEventListener('click', closeMenu);
         }
+    }
+
+    function sortTableFromMenu(item, dir, type) {
+        const th = item.closest('th');
+        const columnIndex = th.cellIndex;
+        item.closest('.header-dropdown').classList.remove('show');
+        sortTable(columnIndex, type, dir);
+    }
+
+    function hideColumn(item) {
+        const th = item.closest('th');
+        const colIndex = th.cellIndex;
+        const table = document.getElementById('mainTable');
+        
+        th.style.display = 'none';
+        const rows = table.rows;
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].cells[colIndex]) {
+                rows[i].cells[colIndex].style.display = 'none';
+            }
+        }
+        
+        document.getElementById('show-columns-btn').style.display = 'flex';
+        
+        const hiddenCols = JSON.parse(localStorage.getItem('tripsTableHiddenCols') || '[]');
+        if (!hiddenCols.includes(colIndex)) {
+            hiddenCols.push(colIndex);
+            localStorage.setItem('tripsTableHiddenCols', JSON.stringify(hiddenCols));
+        }
+    }
+
+    function showAllColumns() {
+        const table = document.getElementById('mainTable');
+        const rows = table.rows;
+        const headers = table.querySelectorAll('th');
+        
+        for (let i = 0; i < rows.length; i++) {
+            for (let j = 0; j < rows[i].cells.length; j++) {
+                rows[i].cells[j].style.display = '';
+            }
+        }
+        
+        document.getElementById('show-columns-btn').style.display = 'none';
+        localStorage.removeItem('tripsTableHiddenCols');
     }
 
     // Column Resizer Logic
@@ -1280,11 +1476,13 @@
         const headers = table.querySelectorAll('th');
         const savedWidths = JSON.parse(localStorage.getItem('tripsTableWidths') || '{}');
 
-        // Apply saved widths
+        if (Object.keys(savedWidths).length > 0) {
+            table.style.tableLayout = 'fixed';
+        }
+
         headers.forEach((th, index) => {
             if (savedWidths[index]) {
                 th.style.width = savedWidths[index];
-                th.style.minWidth = savedWidths[index]; // Ensure it sticks
             }
 
             const resizer = th.querySelector('.resizer');
@@ -1292,21 +1490,39 @@
 
             resizer.addEventListener('mousedown', function(e) {
                 e.preventDefault();
-                e.stopPropagation(); // Avoid triggering sort
+                e.stopPropagation();
 
                 const startWidth = th.offsetWidth;
                 const downX = e.pageX;
+                const baseMinW = parseInt(window.getComputedStyle(th).minWidth) || 80;
+                
+                // Find next visible header sibling
+                let nextTh = th.nextElementSibling;
+                while (nextTh && nextTh.style.display === 'none') {
+                    nextTh = nextTh.nextElementSibling;
+                }
+                
+                let startWidthNext = nextTh ? nextTh.offsetWidth : 0;
+                let minWNext = nextTh ? (parseInt(window.getComputedStyle(nextTh).minWidth) || 80) : 80;
                 
                 document.body.classList.add('resizing');
                 
                 const onMouseMove = (moveE) => {
-                    const newWidth = startWidth + (moveE.pageX - downX);
-                    if (newWidth > 60) {
-                        th.style.width = newWidth + 'px';
-                        th.style.minWidth = newWidth + 'px';
-                        
-                        // Set table to fixed layout once resizing starts to avoid layout jumping
-                        table.style.tableLayout = 'fixed';
+                    const diff = moveE.pageX - downX;
+                    const newWidth = startWidth + diff;
+                    
+                    if (nextTh) {
+                        const newWidthNext = startWidthNext - diff;
+                        if (newWidth >= baseMinW && newWidthNext >= minWNext) { 
+                            th.style.width = newWidth + 'px';
+                            nextTh.style.width = newWidthNext + 'px';
+                            table.style.tableLayout = 'fixed';
+                        }
+                    } else {
+                        if (newWidth >= baseMinW) {
+                            th.style.width = newWidth + 'px';
+                            table.style.tableLayout = 'fixed';
+                        }
                     }
                 };
                 
@@ -1315,7 +1531,6 @@
                     document.removeEventListener('mouseup', onMouseUp);
                     document.body.classList.remove('resizing');
                     
-                    // Save widths
                     const widths = {};
                     table.querySelectorAll('th').forEach((header, idx) => {
                         if (header.style.width) {
@@ -1328,11 +1543,30 @@
                 document.addEventListener('mousemove', onMouseMove);
                 document.addEventListener('mouseup', onMouseUp);
             });
+
+            resizer.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
         });
 
-        // If we have saved widths, ensure table-layout is fixed
         if (Object.keys(savedWidths).length > 0) {
             table.style.tableLayout = 'fixed';
+        }
+        
+        const hiddenCols = JSON.parse(localStorage.getItem('tripsTableHiddenCols') || '[]');
+        if (hiddenCols.length > 0) {
+            hiddenCols.forEach(colIndex => {
+                if (headers[colIndex]) {
+                    headers[colIndex].style.display = 'none';
+                    const rows = table.rows;
+                    for (let i = 0; i < rows.length; i++) {
+                        if (rows[i].cells[colIndex]) {
+                            rows[i].cells[colIndex].style.display = 'none';
+                        }
+                    }
+                }
+            });
+            document.getElementById('show-columns-btn').style.display = 'flex';
         }
     }
 

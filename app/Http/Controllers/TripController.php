@@ -319,6 +319,9 @@ class TripController extends Controller
             abort(404, 'Enlace de compartición no válido o expirado.');
         }
 
+        // Increment views count
+        $trip->incrementViews();
+
         return view('trips.pro-share', [
             'trip' => $trip->load('user', 'documents')
         ]);

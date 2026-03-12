@@ -30,6 +30,7 @@ class Trip extends Model
         'short_token',
         'is_pro',
         'pro_state',
+        'views_count',
         'created_at',
         'updated_at'
     ];
@@ -493,6 +494,14 @@ class Trip extends Model
     public function getDocumentsByItemId(string $itemId)
     {
         return $this->documents()->where('item_id', $itemId)->get();
+    }
+
+    /**
+     * Increment the views count for the trip
+     */
+    public function incrementViews(): void
+    {
+        $this->increment('views_count');
     }
 }
 
