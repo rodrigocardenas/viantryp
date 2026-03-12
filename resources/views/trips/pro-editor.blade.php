@@ -40,7 +40,7 @@
           </button>
       </div>
       <div class="topbar-actions">
-          <button class="btn-viantryp" onclick="manualSaveProTrip()" style="background: linear-gradient(135deg, #1a9a8a, #10a6b1); color: white; border: none; white-space: nowrap; box-shadow: 0 3px 14px rgba(26, 154, 138, .28);">
+          <button class="btn-viantryp" onclick="manualSaveProTrip()" style="background: linear-gradient(135deg, #1a6a78, #1a7a8a); color: white; border: none; white-space: nowrap; box-shadow: 0 3px 14px rgba(26, 106, 120, .28);">
               <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
           </button>
           <button class="btn-viantryp" onclick="openPreview()">

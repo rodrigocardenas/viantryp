@@ -316,14 +316,14 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #1a9a8a, #10a6b1);
+  background: linear-gradient(135deg, #1a6a78, #1a7a8a);
   color: #fff;
-  box-shadow: 0 3px 14px rgba(26, 154, 138, .28)
+  box-shadow: 0 3px 14px rgba(26, 106, 120, .28)
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 5px 20px rgba(26, 154, 138, .38)
+  box-shadow: 0 5px 20px rgba(26, 106, 120, .38)
 }
 
 .main {

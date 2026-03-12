@@ -155,9 +155,9 @@
     .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; padding-bottom: 32px; flex-shrink: 0; }
     .btn-create {
       display: flex; align-items: center; gap: 9px; height: 46px; padding: 0 24px; border-radius: 12px;
-      background: linear-gradient(135deg, var(--teal), var(--teal2)); color: white; border: none;
+      background: linear-gradient(135deg, #1a6a78, #1a7a8a); color: white; border: none;
       font-size: 14px; font-weight: 700; font-family: 'DM Sans', sans-serif; cursor: pointer; letter-spacing: 0.2px; text-decoration: none;
-      box-shadow: 0 8px 28px rgba(26,154,138,0.4); transition: transform 0.14s, box-shadow 0.18s, opacity 0.18s; position: relative; overflow: hidden;
+      box-shadow: 0 8px 28px rgba(26, 106, 120, 0.4); transition: transform 0.14s, box-shadow 0.18s, opacity 0.18s; position: relative; overflow: hidden;
     }
     .btn-create::before {
       content: ''; position: absolute; top: -15px; left: 10%; width: 40%; height: 70%;
@@ -446,7 +446,7 @@
     </div>
     
     <div style="margin-left: auto;">
-        <button onclick="showCreateTripModal()" class="btn btn-primary" style="font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, var(--teal), var(--teal2)); border: none; box-shadow: 0 4px 14px rgba(26,154,138,0.25);">
+        <button onclick="showCreateTripModal()" class="btn btn-primary" style="font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #1a6a78, #1a7a8a); border: none; box-shadow: 0 4px 14px rgba(26, 106, 120, 0.25);">
           <span>+ Crear viaje</span>
         </button>
     </div>
@@ -641,7 +641,7 @@
         const modalHtml = `
             <div id="createTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
                 <div style="background:white; width:90%; max-width:450px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
-                    <div style="background:linear-gradient(135deg, var(--teal), var(--teal2)); padding:24px; color:white;">
+                    <div style="background:linear-gradient(135deg, #1a6a78, #1a7a8a); padding:24px; color:white;">
                         <h3 style="margin:0; font-family:'Playfair Display', serif; font-size:24px;">+ Nuevo Viaje</h3>
                         <p style="margin:8px 0 0; font-size:13px; opacity:0.85;">Comienza a diseñar una experiencia inolvidable.</p>
                     </div>
@@ -661,7 +661,7 @@
                             </div>
                             <div style="display:flex; gap:12px;">
                                 <button type="button" onclick="document.getElementById('createTripModal').remove()" style="flex:1; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
-                                <button type="submit" style="flex:1; height:44px; border:none; background:linear-gradient(135deg, var(--teal), var(--teal2)); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px; box-shadow:0 4px 12px rgba(26,154,138,0.3);">Diseñar Viaje</button>
+                                <button type="submit" style="flex:1; height:44px; border:none; background:linear-gradient(135deg, #1a6a78, #1a7a8a); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px; box-shadow:0 4px 12px rgba(26,106,120,0.3);">Diseñar Viaje</button>
                             </div>
                         </form>
                     </div>
