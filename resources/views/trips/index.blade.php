@@ -301,7 +301,7 @@
     
     tbody tr { border-bottom: 1px solid var(--bdr); transition: transform 0.22s, opacity 0.22s, background 0.14s; }
     tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: #f9f8f5; }
+    tbody tr:hover { background: #f9f9f9; }
     tbody td { position: relative; padding: 20px 20px; vertical-align: middle; font-size: 14px; }
     tbody td:not(:first-child):not(:last-child):not(.bar-cell)::after {
         content: "";
@@ -338,15 +338,15 @@
         padding: 6px 12px;
         border: 1px solid var(--sand);
         border-radius: 999px;
-        font-size: 12px;
+        font-size: 10px;
         font-weight: 500;
         white-space: normal;
         height: auto;
         line-height: 1.2;
-        padding: 5px 28px 5px 12px;
+        padding: 8px 28px 8px 12px;
         cursor: pointer;
         transition: all 0.2s ease;
-        min-width: 110px;
+        min-width: 100px;
         appearance: none;
         background-color: white;
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2338bdf8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
@@ -585,7 +585,7 @@
         <tr>
           <th><input type="checkbox" id="checkAll" onchange="toggleSelectAll(this)"/></th>
           <th style="width:4px;padding:0"></th>
-          <th class="sortable" onclick="sortTable(2, 'string')" style="cursor: pointer; user-select: none; min-width: 90px;">
+          <th class="sortable" style="user-select: none; min-width: 90px;">
             ID 
             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
@@ -598,7 +598,7 @@
             </div>
             <div class="resizer"></div>
           </th>
-          <th class="sortable" onclick="sortTable(3, 'string')" style="cursor: pointer; user-select: none;">
+          <th class="sortable" style="user-select: none;">
             Nombre del Viaje 
             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
@@ -611,8 +611,8 @@
             </div>
             <div class="resizer"></div>
           </th>
-          <th class="sortable" onclick="sortTable(4, 'date')" style="cursor: pointer; user-select: none;">
-            Inicio del Viaje 
+          <th class="sortable" style="user-select: none;">
+            Inicio 
             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
             </div>
@@ -624,7 +624,7 @@
             </div>
             <div class="resizer"></div>
           </th>
-          <th class="sortable" onclick="sortTable(5, 'string')" style="cursor: pointer; user-select: none;">
+          <th class="sortable" style="user-select: none;">
             Cliente 
             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
@@ -637,7 +637,7 @@
             </div>
             <div class="resizer"></div>
           </th>
-          <th class="sortable" onclick="sortTable(6, 'string')" style="cursor: pointer; user-select: none; min-width: 150px;">
+          <th class="sortable" style="user-select: none; min-width: 150px;">
             Estado 
             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
@@ -650,7 +650,7 @@
             </div>
             <div class="resizer"></div>
           </th>
-          <th class="sortable" onclick="sortTable(7, 'number')" style="cursor: pointer; user-select: none;">
+          <th class="sortable" style="user-select: none;">
             Vistas 
             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
@@ -700,7 +700,7 @@
                           @endif
                           @endif
                            <div class="mobile-trip-date">
-                               Inicio del viaje: {!! $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : '<span style="color:#d94040;font-weight:700"><i class="fas fa-exclamation-triangle"></i> ¡Fecha vacía!</span>' !!}
+                               Inicio: {!! $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : '<span style="color:#d94040;font-weight:700"><i class="fas fa-exclamation-triangle"></i> ¡Fecha vacía!</span>' !!}
                            </div>
                       </div>
                     </td>
@@ -731,7 +731,7 @@
                       </select>
                     </td>
                     <td>
-                      <div style="display: flex; align-items: center; gap: 6px; color: var(--gray2); font-weight: 500;">
+                      <div style="display: flex; align-items: center; gap: 6px; color: var(--gray2); font-weight: 500; font-size: 12px;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; opacity: 0.7;">
                           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                         </svg> 
