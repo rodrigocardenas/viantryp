@@ -887,7 +887,8 @@ function openPreview() {
     tripId: window.tripId || '',
     userName: window.viantrypUserName || '',
     origin: window.location.origin,
-    status: window.proStatus
+    status: window.proStatus,
+    themeColor: window.viantrypThemeColor || 'default'
   });
   const blob = new Blob([previewHTML], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
