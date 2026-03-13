@@ -93,4 +93,15 @@ class ProfileController extends Controller
 
         return response()->json(['success' => false], 400);
     }
+
+    public function deleteAvatar()
+    {
+        $user = auth()->user();
+        if ($user->avatar) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar);
+            $user->update(['avatar' => null]);
+            return response()->json(['success' => true, 'message' => 'Avatar eliminado']);
+        }
+        return response()->json(['success' => false, 'message' => 'No hay avatar para eliminar'], 400);
+    }
 }

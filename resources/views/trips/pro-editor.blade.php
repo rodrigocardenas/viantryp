@@ -56,7 +56,13 @@
       @auth
       <div class="user-profile-dropdown" style="position: relative;">
           <div class="ubadge" id="profileTrigger" style="cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px;">
-            <div class="avatar" id="navAvatar">{{ collect(explode(' ', auth()->user()->name))->map(function($word) { return strtoupper(substr($word, 0, 1)); })->take(2)->join('') }}</div>
+            <div class="avatar" id="navAvatar" style="overflow: hidden;">
+              @if(auth()->user()->avatar)
+                  <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+              @else
+                  {{ collect(explode(' ', auth()->user()->name))->map(function($word) { return strtoupper(substr($word, 0, 1)); })->take(2)->join('') }}
+              @endif
+            </div>
             <span class="uname" style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85);">{{ auth()->user()->name }}</span>
             <i class="fas fa-chevron-down" style="font-size: 10px; color: rgba(255,255,255,0.4);"></i>
           </div>

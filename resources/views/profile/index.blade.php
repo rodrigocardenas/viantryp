@@ -128,6 +128,25 @@
 
   .avatar-edit-btn svg { width: 12px; height: 12px; stroke: white; fill: none; stroke-width: 2.5; }
 
+  .avatar-delete-btn {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    width: 26px;
+    height: 26px;
+    background: #ef4444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid white;
+    transition: all 0.2s;
+    opacity: 0.8;
+  }
+  .avatar-delete-btn:hover { opacity: 1; transform: scale(1.1); }
+  .avatar-delete-btn svg { width: 12px; height: 12px; stroke: white; fill: none; stroke-width: 2.5; }
+
   .profile-name {
     font-family: 'Barlow', sans-serif;
     font-size: 20px;
@@ -480,8 +499,11 @@
             <span id="avatarInitial" style="{{ $user->avatar ? 'display:none' : '' }}">{{ collect(explode(' ', $user->name))->map(fn($word) => strtoupper(substr($word, 0, 1)))->take(1)->first() }}</span>
             <img id="avatarImg" src="{{ $user->avatar ? asset('storage/' . $user->avatar) : '' }}" alt="" style="{{ $user->avatar ? '' : 'display:none' }}">
           </div>
-          <div class="avatar-edit-btn">
+          <div class="avatar-edit-btn" title="Subir foto">
             <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <div class="avatar-delete-btn" id="avatarDeleteBtn" title="Eliminar foto" style="{{ $user->avatar ? '' : 'display:none' }}">
+            <svg viewBox="0 0 24 24"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
           </div>
           <input type="file" id="avatarUpload" accept="image/*" style="display:none">
         </div>
@@ -919,6 +941,7 @@
                 img.src = res.url;
                 img.style.display = 'block';
                 document.getElementById('avatarInitial').style.display = 'none';
+                document.getElementById('avatarDeleteBtn').style.display = 'flex';
                 showToast('Avatar actualizado');
             }
         });
@@ -931,6 +954,33 @@
       avatarEditBtn.addEventListener('click', function() {
         document.getElementById('avatarUpload').click();
       });
+    }
+
+    // AVATAR DELETE BTN
+    var avatarDeleteBtn = document.getElementById('avatarDeleteBtn');
+    if (avatarDeleteBtn) {
+        avatarDeleteBtn.addEventListener('click', function() {
+            if (confirm('¿Estás seguro de que quieres eliminar tu foto de perfil?')) {
+                fetch('{{ route('profile.delete.avatar') }}', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrfToken },
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if(res.success) {
+                        document.getElementById('avatarImg').style.display = 'none';
+                        document.getElementById('avatarInitial').style.display = 'block';
+                        avatarDeleteBtn.style.display = 'none';
+                        
+                        // Actualizar avatares de navegación
+                        var navAvatars = document.querySelectorAll('.avatar img');
+                        navAvatars.forEach(img => img.parentElement.innerHTML = document.getElementById('avatarInitial').textContent);
+                        
+                        showToast('Foto de perfil eliminada');
+                    }
+                });
+            }
+        });
     }
   });
 </script>

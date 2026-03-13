@@ -66,8 +66,12 @@
         @auth
         <div class="user-profile-dropdown" style="position: relative; margin-left: 10px; border-left: 1px solid var(--border); padding-left: 16px;">
             <div class="ubadge-editor" id="profileTriggerEditor" style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
-              <div class="avatar" style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #1a9a8a, #0c4a5b); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white;">
-                {{ collect(explode(' ', auth()->user()->name))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('') }}
+              <div class="avatar" style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #1a9a8a, #0c4a5b); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; overflow: hidden;">
+                @if(auth()->user()->avatar)
+                    <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                @else
+                    {{ collect(explode(' ', auth()->user()->name))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('') }}
+                @endif
               </div>
               <i class="fas fa-chevron-down" style="font-size: 10px; color: var(--gray);"></i>
             </div>

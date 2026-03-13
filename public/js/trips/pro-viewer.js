@@ -13,9 +13,9 @@ function buildPreviewHTML(data) {
 
   const adjustColor = (hex, amt) => {
     let col = hex.replace('#', '');
-    let r = parseInt(col.substring(0,2),16) + amt;
-    let g = parseInt(col.substring(2,4),16) + amt;
-    let b = parseInt(col.substring(4,6),16) + amt;
+    let r = parseInt(col.substring(0, 2), 16) + amt;
+    let g = parseInt(col.substring(2, 4), 16) + amt;
+    let b = parseInt(col.substring(4, 6), 16) + amt;
     r = Math.max(0, Math.min(255, r)).toString(16).padStart(2, '0');
     g = Math.max(0, Math.min(255, g)).toString(16).padStart(2, '0');
     b = Math.max(0, Math.min(255, b)).toString(16).padStart(2, '0');
@@ -182,7 +182,7 @@ function buildPreviewHTML(data) {
             </div>
           </div>
           ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-          ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}${window.shareToken ? '?token='+window.shareToken : ''}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
+          ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}${window.shareToken ? '?token=' + window.shareToken : ''}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
         </div>`;
       }
 
@@ -215,7 +215,7 @@ function buildPreviewHTML(data) {
                 ${d.precio ? `<span class="pv-action-btn">💰 $${d.precio} ${moneda}</span>` : ''}
               </div>
               ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}${window.shareToken ? '?token='+window.shareToken : ''}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
+              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}${window.shareToken ? '?token=' + window.shareToken : ''}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
             </div>
           </div>
         </div>`;
@@ -251,7 +251,7 @@ function buildPreviewHTML(data) {
           </div>
           ${d.precio ? `<div class="pv-chips-row"><span class="pv-chip">💰 $${d.precio} ${moneda}</span></div>` : ''}
           ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-          ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}${window.shareToken ? '?token='+window.shareToken : ''}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
+          ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}${window.shareToken ? '?token=' + window.shareToken : ''}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
         </div>`;
       }
 
@@ -280,7 +280,7 @@ function buildPreviewHTML(data) {
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket"></i> Reserva: ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}${window.shareToken ? '?token='+window.shareToken : ''}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
+              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}${window.shareToken ? '?token=' + window.shareToken : ''}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
             </div>
           </div>
         </div>`;
@@ -306,7 +306,7 @@ function buildPreviewHTML(data) {
                 ${d.reserva && d.reserva !== 'No aplica' ? `<span class="pv-action-btn"><i class="fa-solid fa-calendar-check"></i> ${d.reserva}</span>` : ''}
               </div>
               ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}${window.shareToken ? '?token='+window.shareToken : ''}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
+              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}${window.shareToken ? '?token=' + window.shareToken : ''}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
             </div>
           </div>
         </div>`;
@@ -334,7 +334,7 @@ function buildPreviewHTML(data) {
                 ${d.precio ? `<span class="pv-chip">💰 $${d.precio} ${moneda}</span>` : ''}
               </div>
               ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}${window.shareToken ? '?token='+window.shareToken : ''}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
+              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${d.adjunto_url}${window.shareToken ? '?token=' + window.shareToken : ''}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
             </div>
           </div>
         </div>`;
@@ -676,21 +676,21 @@ ${!isPublicLink && tripId ? `
         const showShareModal = (url) => {
           const m = document.createElement('div');
           m.id = 'viantrypShareModal';
-          m.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;';
+          m.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;';
           m.innerHTML = \`
-            <div style="background:#fff;border-radius:24px;width:90%;max-width:400px;padding:32px;box-shadow:0 20px 40px rgba(0,0,0,0.15);transform:translateY(20px);transition:transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);text-align:center;">
-              <div style="width:64px;height:64px;background:#e0f2fe;color:#0ea5d8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;">
-                <i class="fa-solid fa-link"></i>
+            <div style="background:#fff;border-radius:28px;width:95%;max-width:400px;padding:40px 32px;box-shadow:0 25px 60px rgba(0,0,0,0.2);transform:translateY(30px);transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);text-align:center;">
+              <div style="width:72px;height:72px;background:var(--accent-light);color:var(--accent);border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 24px;transform:rotate(-10deg);">
+                <i class="fa-solid fa-paper-plane"></i>
               </div>
-              <h3 style="margin:0 0 12px;font-family:'Syne',sans-serif;font-size:22px;color:#1e293b;">¡Enlace Listo!</h3>
-              <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.5;">Tu itinerario está listo para compartirse con el mundo.</p>
+              <h3 style="margin:0 0 12px;font-family:\'Barlow\',sans-serif;font-size:24px;font-weight:700;color:#1a2e2c;">¡Itinerario listo!</h3>
+              <p style="margin:0 0 32px;font-size:15px;color:#64748b;line-height:1.6;font-family:\'Barlow\',sans-serif;">Comparte este enlace con tu cliente para que tenga su itinerario de viaje en linea.</p>
               
-              <div style="background:#f1f5f9;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:24px;border:1px solid #e2e8f0;">
-                <input type="text" value="\${url}" readonly style="flex:1;background:transparent;border:none;outline:none;font-size:14px;color:#334155;text-overflow:ellipsis;" id="shareUrlInput">
-                <button id="copyShareModalBtn" style="background:transparent;border:none;color:#0ea5d8;cursor:pointer;font-size:16px;padding:4px;transition:0.2s;"><i class="fa-regular fa-copy"></i></button>
+              <div style="background:#f8fafc;border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:32px;border:1.5px solid #eef2f6;">
+                <input type="text" value="\${url}" readonly style="flex:1;background:transparent;border:none;outline:none;font-size:14px;color:#334155;text-overflow:ellipsis;font-family:\'Barlow\',sans-serif;" id="shareUrlInput">
+                <button id="copyShareModalBtn" style="background:var(--accent);border:none;color:#fff;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:0.3s;box-shadow:0 4px 12px var(--accent-light);"><i class="fa-regular fa-copy"></i></button>
               </div>
               
-              <button id="closeShareModalBtn" style="width:100%;padding:14px;border-radius:12px;border:none;background:#0ea5d8;color:#fff;font-weight:600;font-size:15px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#0284c7'" onmouseout="this.style.background='#0ea5d8'">Cerrar</button>
+              <button id="closeShareModalBtn" style="width:100%;padding:16px;border-radius:16px;border:none;background:var(--accent);color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.3s;font-family:\'Barlow\',sans-serif;box-shadow:0 8px 20px var(--accent-light);">Cerrar</button>
             </div>
           \`;
           document.body.appendChild(m);
@@ -708,8 +708,12 @@ ${!isPublicLink && tripId ? `
             const o = b.innerHTML;
             b.innerHTML = '<i class="fa-solid fa-check"></i>';
             b.style.background = '#10b981';
-            b.style.color = '#fff';
-            setTimeout(() => { b.innerHTML = o; b.style.background = ''; b.style.color = '#0ea5d8'; }, 2000);
+            b.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
+            setTimeout(() => { 
+                b.innerHTML = o; 
+                b.style.background = 'var(--accent)'; 
+                b.style.boxShadow = '0 4px 12px var(--accent-light)';
+            }, 2000);
           };
           setTimeout(() => { m.style.opacity = '1'; m.querySelector('div').style.transform = 'translateY(0)'; }, 10);
         };

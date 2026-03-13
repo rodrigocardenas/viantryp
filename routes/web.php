@@ -79,6 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/agency', [\App\Http\Controllers\ProfileController::class, 'updateAgency'])->name('profile.update.agency');
     Route::post('/profile/theme', [\App\Http\Controllers\ProfileController::class, 'updateTheme'])->name('profile.update.theme');
     Route::post('/profile/avatar', [\App\Http\Controllers\ProfileController::class, 'uploadAvatar'])->name('profile.upload.avatar');
+    Route::post('/profile/avatar/delete', [\App\Http\Controllers\ProfileController::class, 'deleteAvatar'])->name('profile.delete.avatar');
     Route::post('/profile/logo', [\App\Http\Controllers\ProfileController::class, 'uploadLogo'])->name('profile.upload.logo');
 });
 
