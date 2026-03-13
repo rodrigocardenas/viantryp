@@ -54,6 +54,10 @@ class GoogleAuthController extends Controller
             // Log the user in
             Auth::login($user);
 
+            if ($user->wasRecentlyCreated) {
+                return redirect()->route('profile.index')->with('success', '¡Bienvenido! Tu cuenta ha sido creada con Google. Por favor, completa tu perfil.');
+            }
+
             return redirect()->route('trips.index')->with('success', '¡Bienvenido! Has iniciado sesión con Google.');
 
         } catch (\Exception $e) {

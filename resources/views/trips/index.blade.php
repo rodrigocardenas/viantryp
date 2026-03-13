@@ -66,8 +66,8 @@
       font-size: 14px; font-weight: 500; color: var(--dark); text-decoration: none;
       padding: 7px 14px; border-radius: 8px; transition: background 0.18s, color 0.18s;
     }
-    .nav-link:hover { background: var(--light); color: var(--teal); }
-    .nav-link.active { color: var(--teal); background: rgba(26,154,138,0.05); }
+    .nav-link:hover { background: var(--light); color: var(--accent); }
+    .nav-link.active { color: var(--accent); background: var(--accent-light); }
 
     .topbar-right { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; }
     .ubadge {
@@ -105,11 +105,11 @@
     
     .hero-tag {
       display: inline-flex; align-items: center; gap: 6px;
-      background: #f0faf9; border: 1px solid rgba(26,154,138,0.2);
+      background: var(--accent-light); border: 1px solid var(--accent-border);
       border-radius: 6px; padding: 4px 12px; font-size: 11px; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase; color: var(--teal); margin-bottom: 12px;
+      letter-spacing: 1px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
     }
-    .htag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: blink 2s infinite; }
+    .htag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 2s infinite; }
     
     .hero-title {
       font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.1;
@@ -366,10 +366,10 @@
 
     .empty { display: none; text-align: center; padding: 72px 24px; }
     .e-ring {
-      width: 72px; height: 72px; border-radius: 50%; background: var(--tealL);
-      border: 1.5px dashed rgba(26,154,138,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
+      width: 72px; height: 72px; border-radius: 50%; background: var(--accent-light);
+      border: 1.5px dashed var(--accent-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
     }
-    .e-ring svg { width: 30px; height: 30px; color: var(--teal); }
+    .e-ring svg { width: 30px; height: 30px; color: var(--accent); }
     .empty h3 { font-family: Inter, sans-serif; font-weight: 600; font-size: 20px; color: var(--ink); margin-bottom: 7px; }
     .empty p  { font-size: 13px; color: var(--gray); }
 

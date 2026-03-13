@@ -63,7 +63,7 @@ class RegisterController extends Controller
         Auth::login($user);
         RateLimiter::clear($throttleKey);
 
-        return redirect()->route('trips.index')
-                        ->with('success', '¡Cuenta creada exitosamente! Bienvenido a Viantryp.');
+        return redirect()->route('profile.index')
+                        ->with('success', '¡Cuenta creada exitosamente! Bienvenido a Viantryp. Por favor, completa tu información de perfil.');
     }
 }
