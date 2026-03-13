@@ -303,7 +303,7 @@
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: #f9f8f5; }
     tbody td { position: relative; padding: 20px 20px; vertical-align: middle; font-size: 14px; }
-    tbody td:not(:last-child):not(.bar-cell)::after {
+    tbody td:not(:first-child):not(:last-child):not(.bar-cell)::after {
         content: "";
         position: absolute;
         right: 0;
@@ -585,7 +585,7 @@
         <tr>
           <th><input type="checkbox" id="checkAll" onchange="toggleSelectAll(this)"/></th>
           <th style="width:4px;padding:0"></th>
-          <th class="sortable" onclick="sortTable(2, 'string')" style="cursor: pointer; user-select: none;">
+          <th class="sortable" onclick="sortTable(2, 'string')" style="cursor: pointer; user-select: none; min-width: 90px;">
             ID 
             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
@@ -699,13 +699,13 @@
                           </a>
                           @endif
                           @endif
-                          <div class="mobile-trip-date">
-                              Inicio del viaje: {{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : 'Sin fecha' }}
-                          </div>
+                           <div class="mobile-trip-date">
+                               Inicio del viaje: {!! $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : '<span style="color:#d94040;font-weight:700"><i class="fas fa-exclamation-triangle"></i> ¡Fecha vacía!</span>' !!}
+                           </div>
                       </div>
                     </td>
                     <td style="min-width: 120px;">
-                      <div class="trip-date">{{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : 'Sin fecha' }}</div>
+                      <div class="trip-date">{!! $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : '<span style="color:#d94040;font-weight:700;font-size:11px;text-transform:uppercase;background:#fee2e2;padding:2px 6px;border-radius:4px;"><i class="fas fa-exclamation-triangle"></i> Vacío</span>' !!}</div>
                     </td>
                     @php
                         $client = collect($trip->persons)->firstWhere('type', 'client') ?? collect($trip->persons)->first();
@@ -1458,10 +1458,30 @@
         const rows = table.rows;
         const headers = table.querySelectorAll('th');
         
+        // Disable fixed layout temporarily to help browser recalculate
+        table.style.tableLayout = 'auto';
+        
         for (let i = 0; i < rows.length; i++) {
             for (let j = 0; j < rows[i].cells.length; j++) {
                 rows[i].cells[j].style.display = '';
             }
+        }
+        
+        // Re-apply saved widths
+        const savedWidths = JSON.parse(localStorage.getItem('tripsTableWidths') || '{}');
+        let hasWidths = false;
+        headers.forEach((th, index) => {
+            if (savedWidths[index]) {
+                th.style.width = savedWidths[index];
+                hasWidths = true;
+            } else {
+                th.style.width = '';
+            }
+        });
+        
+        // Re-enable fixed layout if we had saved widths
+        if (hasWidths) {
+            table.style.tableLayout = 'fixed';
         }
         
         document.getElementById('show-columns-btn').style.display = 'none';

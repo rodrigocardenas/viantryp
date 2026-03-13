@@ -482,6 +482,14 @@ class TripController extends Controller
             $tripData['title'] = $validated['pro_state']['title'];
         }
 
+        // Sync dates from pro_state to trips table
+        if (isset($validated['pro_state']['fechaInicio'])) {
+            $tripData['start_date'] = $validated['pro_state']['fechaInicio'];
+        }
+        if (isset($validated['pro_state']['fechaFin'])) {
+            $tripData['end_date'] = $validated['pro_state']['fechaFin'];
+        }
+
         $trip->update($tripData);
 
         $shareUrl = $trip->getShareUrl();
