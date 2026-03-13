@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Viantryp — Creador de Itinerarios de Viaje</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --teal: #1a7a8a;
@@ -27,7 +27,7 @@
   html { scroll-behavior: smooth; }
 
   body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Barlow', sans-serif;
     background: var(--white);
     color: var(--text);
     overflow-x: hidden;
@@ -43,12 +43,12 @@
     border-bottom: 1px solid var(--mid-gray);
   }
   .nav-logo {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.5rem; font-weight: 800;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.8rem; font-weight: 900;
     letter-spacing: -0.04em; color: var(--navy);
     text-decoration: none;
   }
-  .nav-logo span { color: var(--lime); }
+  .nav-logo span { color: var(--teal); }
   .nav-links { display: flex; gap: 2rem; list-style: none; margin-left: auto; margin-right: 1.5rem; }
   .nav-links a {
     font-size: 0.9rem; font-weight: 500; color: var(--text-soft);
@@ -381,8 +381,13 @@
                 </div>
 
                 <div id="profileMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid var(--mid-gray); text-align: left;">
+                    <a href="{{ route('trips.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
+                        <i class="fas fa-suitcase-rolling" style="color: #64748b; font-size: 15px;"></i>
+                        Mis viajes
+                    </a>
+                    <div style="height: 1px; background: var(--mid-gray);"></div>
                     <a href="{{ route('profile.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
-                        <i class="fas fa-user-circle" style="color: var(--teal); font-size: 15px;"></i>
+                        <i class="fas fa-user-circle" style="color: #64748b; font-size: 15px;"></i>
                         Mi perfil
                     </a>
                     <div style="height: 1px; background: var(--mid-gray);"></div>

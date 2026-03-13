@@ -3,10 +3,10 @@
 @section('title', 'Viantryp — Perfil')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+@include('layouts.theme-styles')
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --accent: #1a7f77;
     --accent-light: #e6f4f3;
     --accent-dark: #115e57;
     --bg: #f4f6f5;
@@ -14,17 +14,17 @@
     --text: #1a2e2c;
     --muted: #7a9290;
     --border: #e0ecea;
-    --avatar-bg: #1a7f77;
+    --avatar-bg: var(--accent);
   }
 
-  /* THEME OVERRIDES */
-  [data-theme="ocean"]  { --accent:#1a5f8f; --accent-light:#e6f0f7; --accent-dark:#0d3d5e; --avatar-bg:#1a5f8f; }
-  [data-theme="sunset"] { --accent:#c0552a; --accent-light:#fdf0eb; --accent-dark:#8c3a1a; --avatar-bg:#c0552a; }
-  [data-theme="gold"]   { --accent:#b08000; --accent-light:#fdf8e6; --accent-dark:#7a5800; --avatar-bg:#b08000; }
-  [data-theme="blush"]     { --accent:#e07b9a; --accent-light:#fdf0f4; --accent-dark:#b55677; --avatar-bg:#e07b9a; }
-  [data-theme="mint"]      { --accent:#3db898; --accent-light:#e8f8f5; --accent-dark:#267a65; --avatar-bg:#3db898; }
-  [data-theme="lavender"]  { --accent:#9b72cf; --accent-light:#f4eeff; --accent-dark:#6d4ea0; --avatar-bg:#9b72cf; }
-  [data-theme="silver"]    { --accent:#6e7f80; --accent-light:#eef1f1; --accent-dark:#4a5859; --avatar-bg:#6e7f80; }
+  /* THEME OVERRIDES FOR LOCAL VARS */
+  [data-theme="ocean"]  { --accent-light:#e6f0f7; --accent-dark:#0d3d5e; }
+  [data-theme="sunset"] { --accent-light:#fdf0eb; --accent-dark:#8c3a1a; }
+  [data-theme="gold"]   { --accent-light:#fdf8e6; --accent-dark:#7a5800; }
+  [data-theme="blush"]     { --accent-light:#fdf0f4; --accent-dark:#b55677; }
+  [data-theme="mint"]      { --accent-light:#e8f8f5; --accent-dark:#267a65; }
+  [data-theme="lavender"]  { --accent-light:#f4eeff; --accent-dark:#6d4ea0; }
+  [data-theme="silver"]    { --accent-light:#eef1f1; --accent-dark:#4a5859; }
 
   /* Adjustments for integration */
   body {
@@ -36,21 +36,25 @@
     max-width: 1060px;
     margin: 0 auto;
     padding: 40px 24px 80px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Barlow', sans-serif;
   }
 
   .page-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Barlow Condensed', sans-serif;
     font-size: 32px;
     font-weight: 900;
-    color: var(--text);
-    margin-bottom: 6px;
+    color: #000000;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
   }
 
   .page-subtitle {
     color: var(--muted);
-    font-size: 14px;
-    margin-bottom: 36px;
+    font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 24px;
   }
 
   .grid {
@@ -88,9 +92,9 @@
     align-items: center;
     justify-content: center;
     color: white;
-    font-family: 'Playfair Display', serif;
+    font-family: 'Barlow Condensed', sans-serif;
     font-size: 32px;
-    font-weight: 700;
+    font-weight: 800;
     margin: 0 auto;
     transition: background 0.3s;
     cursor: pointer;
@@ -125,7 +129,7 @@
   .avatar-edit-btn svg { width: 12px; height: 12px; stroke: white; fill: none; stroke-width: 2.5; }
 
   .profile-name {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Barlow', sans-serif;
     font-size: 20px;
     font-weight: 700;
     color: var(--text);
@@ -155,16 +159,6 @@
 
   .plan-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
 
-  .stat-row {
-    display: flex;
-    justify-content: space-around;
-    border-top: 1px solid var(--border);
-    padding-top: 20px;
-  }
-
-  .stat { text-align: center; }
-  .stat-num { font-size: 22px; font-weight: 700; color: var(--text); }
-  .stat-label { font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; }
 
   .sidebar-nav { padding: 8px; }
   .nav-item {
@@ -470,7 +464,7 @@
 @endpush
 
 @section('content')
-<x-header subtitle="Mi Perfil" />
+<x-header />
 
 <div class="page-wrapper">
   <h1 class="page-title">Mi Perfil</h1>
@@ -496,20 +490,6 @@
         <div class="plan-badge">
           <div class="plan-dot"></div>
           Plan Pro
-        </div>
-        <div class="stat-row">
-          <div class="stat">
-            <div class="stat-num">24</div>
-            <div class="stat-label">Viajes</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">8</div>
-            <div class="stat-label">Activos</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">142</div>
-            <div class="stat-label">Clientes</div>
-          </div>
         </div>
       </div>
 

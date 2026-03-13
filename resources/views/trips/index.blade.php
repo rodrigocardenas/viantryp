@@ -3,7 +3,7 @@
 @section('title', 'Mis Viajes - Viantryp')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -22,9 +22,9 @@
 
     html, body {
       height: 100%;
-      font-family: 'DM Sans', sans-serif;
-      color: var(--ink);
-      background: var(--cream);
+      font-family: 'Barlow', sans-serif;
+      color: var(--dark);
+      background: var(--light);
     }
 
     body { display: flex; flex-direction: column; min-height: 100vh; }
@@ -34,18 +34,14 @@
     ════════════════════════════════════════ */
     .topbar {
       position: sticky; top: 0; z-index: 200;
-      background: #0f2a3a;
-      height: 75px;
+      background: var(--white);
+      height: 64px;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 80px;
+      padding: 0 40px;
       flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
     }
-    .topbar-bg-decorators {
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        overflow: hidden;
-        pointer-events: none;
-    }
+    .topbar-bg-decorators { display: none; }
     .topbar-bg-decorators::before {
       content: ''; position: absolute; top: 0; right: 120px;
       width: 160px; height: 300%; background: var(--teal);
@@ -62,28 +58,28 @@
       display: flex; align-items: center; text-decoration: none;
     }
     .logo img {
-      height: 28px; width: auto; filter: brightness(0) invert(1);
+      height: 28px; width: auto;
     }
 
     .nav-links { display: flex; gap: 4px; }
     .nav-link {
-      font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.5); text-decoration: none;
-      padding: 6px 12px; border-radius: 7px; transition: background 0.18s, color 0.18s;
+      font-size: 14px; font-weight: 500; color: var(--dark); text-decoration: none;
+      padding: 7px 14px; border-radius: 8px; transition: background 0.18s, color 0.18s;
     }
-    .nav-link:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
-    .nav-link.active { color: white; background: rgba(255,255,255,0.1); }
+    .nav-link:hover { background: var(--light); color: var(--teal); }
+    .nav-link.active { color: var(--teal); background: rgba(26,154,138,0.05); }
 
     .topbar-right { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; }
     .ubadge {
-      display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px;
+      display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px; border-left: 1px solid var(--border); margin-left:8px;
     }
     .avatar {
-      width: 30px; height: 30px; border-radius: 50%;
+      width: 32px; height: 32px; border-radius: 50%;
       background: linear-gradient(135deg, var(--teal), var(--teal2));
       display: flex; align-items: center; justify-content: center;
       font-size: 11px; font-weight: 700; color: white; letter-spacing: 0.5px;
     }
-    .uname { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); }
+    .uname { font-size: 14px; font-weight: 600; color: #ffffffd9; }
     .btn-out {
       display: flex; align-items: center; gap: 6px;
       border: 1px solid rgba(255,255,255,0.16);
@@ -99,82 +95,59 @@
        HERO BAND
     ════════════════════════════════════════ */
     .hero {
-      background: #f8f9fa; padding: 40px 40px 0;
+      background: var(--white); padding: 48px 40px 0;
       position: relative; overflow: hidden;
+      border-bottom: 1px solid var(--border);
     }
-    .hero-rings { position: absolute; top: -140px; right: -140px; pointer-events: none; }
-    .hero-rings span {
-      display: block; border-radius: 50%; border: 1px solid rgba(255,255,255,0.045);
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    }
-    .hero-rings span:nth-child(1) { width: 560px; height: 560px; }
-    .hero-rings span:nth-child(2) { width: 400px; height: 400px; }
-    .hero-rings span:nth-child(3) { width: 260px; height: 260px; }
-    .hero-rings span:nth-child(4) { width: 140px; height: 140px; }
-    .hero-dot { position: absolute; border-radius: 50%; background: var(--teal); pointer-events: none; }
-    .hero-dot:nth-child(1) { width:8px; height:8px; top:38px; right:240px; opacity:0.5; }
-    .hero-dot:nth-child(2) { width:5px; height:5px; top:90px; right:180px; opacity:0.35; }
-    .hero-dot:nth-child(3) { width:4px; height:4px; top:58px; right:300px; opacity:0.3; }
-    .hero-dot:nth-child(4) { width:10px; height:10px; top:120px; right:130px; opacity:0.2; }
-    .hero-watermark { position: absolute; right: 60px; top: 50%; transform: translateY(-50%); pointer-events: none; opacity: 0.04; }
-    .hero-watermark svg { width: 220px; height: 220px; fill: white; }
-    
-    .hero-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; position: relative; z-index: 1; }
+    .hero-rings { display: none; }
+    .hero-dot { display: none; }
+    .hero-watermark { display: none; }
     
     .hero-tag {
       display: inline-flex; align-items: center; gap: 6px;
-      background: #f2f8d8; border: 1px solid rgba(26,154,138,0.32);
-      border-radius: 4px; padding: 4px 10px; font-size: 10px; font-weight: 700;
-      letter-spacing: 1.2px; text-transform: uppercase; color: #8ab820; margin-bottom: 14px;
+      background: #f0faf9; border: 1px solid rgba(26,154,138,0.2);
+      border-radius: 6px; padding: 4px 12px; font-size: 11px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; color: var(--teal); margin-bottom: 12px;
     }
-    .htag-dot { width: 6px; height: 6px; border-radius: 50%; background: #8ab820; animation: blink 2s infinite; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .htag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: blink 2s infinite; }
     
     .hero-title {
-      font-family: 'Playfair Display', serif; font-weight: 900; font-size: 56px; line-height: 1.0;
-      color: white; letter-spacing: -2px; margin-bottom: 8px;
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.1;
+      color: #000000; letter-spacing: -0.5px; margin-bottom: 8px; text-transform: uppercase;
     }
-    .hero-title em { color: var(--teal); font-style: italic; }
-    .hero-sub { font-size: 15px; font-weight: 400; color: #1f2a44; margin-bottom: 32px; }
+    .hero-sub { font-size: 15px; font-weight: 400; color: var(--gray); margin-bottom: 24px; }
 
     /* STAT CHIPS */
     .stat-chips { display: flex; gap: 8px; padding-bottom: 0; }
     .schip {
-      background: #1a7a8a; border: 1px solid rgba(255,255,255,0.09); border-bottom: none;
-      border-radius: 10px 10px 0 0; padding: 12px 20px; min-width: 100px;
+      background: var(--teal); border: 1px solid rgba(255,255,255,0.1); border-bottom: none;
+      border-radius: 12px 12px 0 0; padding: 14px 24px; min-width: 120px;
       display: flex; flex-direction: column; align-items: center; cursor: pointer;
-      transition: background 0.18s, border-color 0.18s, transform 0.12s; position: relative;
+      transition: all 0.2s; position: relative;
     }
     .schip::after {
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-      background: var(--teal); transform: scaleX(0); transform-origin: left; transition: transform 0.22s ease;
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: var(--white); transform: scaleX(0); transition: transform 0.25s;
     }
-    .schip.on { background: #1f2a44; border-color: rgba(26,154,138,0.35); }
+    .schip.on { background: var(--dark); }
     .schip.on::after { transform: scaleX(1); }
-    .schip:active { transform: scale(0.96) translateY(1px); }
-    .chip-num { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 26px; line-height: 1; color: white; }
-    .chip-lbl { font-size: 10.5px; font-weight: 600; color: #ffffffb8; margin-top: 4px; white-space: nowrap; letter-spacing: 0.3px; }
+    .schip:hover:not(.on) { background: var(--teal-dark); }
+    .schip:active { transform: translateY(1px); }
+    .chip-num { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 28px; line-height: 1; color: var(--white); }
+    .chip-lbl { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.8); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
     .schip.on .chip-lbl { color: rgba(255,255,255,0.75); }
 
     /* ACTION BUTTON */
-    .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; padding-bottom: 32px; flex-shrink: 0; }
     .btn-create {
-      display: flex; align-items: center; gap: 9px; height: 46px; padding: 0 24px; border-radius: 12px;
-      background: linear-gradient(135deg, #1a6a78, #1a7a8a); color: white; border: none;
-      font-size: 14px; font-weight: 700; font-family: 'DM Sans', sans-serif; cursor: pointer; letter-spacing: 0.2px; text-decoration: none;
-      box-shadow: 0 8px 28px rgba(26, 106, 120, 0.4); transition: transform 0.14s, box-shadow 0.18s, opacity 0.18s; position: relative; overflow: hidden;
+      display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 24px; border-radius: 50px;
+      background: var(--teal); color: white; border: none;
+      font-size: 14px; font-weight: 700; font-family: 'Barlow', sans-serif; cursor: pointer; text-decoration: none;
+      box-shadow: 0 4px 16px rgba(26,158,143,0.3); transition: all 0.2s;
     }
-    .btn-create::before {
-      content: ''; position: absolute; top: -15px; left: 10%; width: 40%; height: 70%;
-      background: rgba(255,255,255,0.15); border-radius: 50%; filter: blur(8px);
-    }
-    .btn-create:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(26,154,138,0.5); color: white; }
-    .btn-create:active { transform: translateY(0) scale(0.97); }
-    .btn-create svg { width: 16px; height: 16px; position: relative; z-index: 1; }
-    .btn-create span { position: relative; z-index: 1; }
+    .btn-create:hover { background: var(--teal2); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(26,158,143,0.4); color: white; }
+    .btn-create:active { transform: translateY(0); }
 
-    .wave { display: block; background: var(--ink); line-height: 0; }
-    .wave svg { width: 100%; height: 32px; display: block; }
+    .wave { display: none; }
 
     /* ════════════════════════════════════════
        MAIN CONTENT
@@ -518,7 +491,6 @@
 
 <!-- ══ TOPBAR ══ -->
 <header class="topbar">
-  <div class="topbar-bg-decorators"></div>
   <div class="topbar-left">
     <a href="{{ route('home') }}" class="logo">
       <img src="/images/logo-viantryp.png" alt="Viantryp">
@@ -527,21 +499,26 @@
   <div class="topbar-right">
     @auth
     <div class="user-profile-dropdown" style="position: relative;">
-        <div class="ubadge" id="profileTrigger" style="cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px;">
+        <div class="ubadge" id="profileTrigger" style="cursor: pointer;">
           <div class="avatar" id="navAvatar">{{ collect(explode(' ', auth()->user()->name))->map(function($word) { return strtoupper(substr($word, 0, 1)); })->take(2)->join('') }}</div>
-          <span class="uname" style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85);">{{ auth()->user()->name }}</span>
-          <i class="fas fa-chevron-down" style="font-size: 10px; color: rgba(255,255,255,0.4);"></i>
+          <span class="uname">{{ auth()->user()->name }}</span>
+          <i class="fas fa-chevron-down" style="font-size: 10px; color: var(--gray);"></i>
         </div>
         
-        <div id="profileMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid #e2e8ef; text-align: left;">
-            <a href="{{ route('profile.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: #1a2e2c; text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
-                <i class="fas fa-user-circle" style="color: #1a9a8a; font-size: 15px;"></i>
+        <div id="profileMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid var(--border); text-align: left;">
+            <a href="{{ route('trips.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--dark); text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
+                <i class="fas fa-suitcase-rolling" style="color: #64748b; font-size: 15px;"></i>
+                Mis viajes
+            </a>
+            <div style="height: 1px; background: var(--border);"></div>
+            <a href="{{ route('profile.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--dark); text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
+                <i class="fas fa-user-circle" style="color: #64748b; font-size: 15px;"></i>
                 Mi perfil
             </a>
-            <div style="height: 1px; background: #e2e8ef;"></div>
+            <div style="height: 1px; background: var(--border);"></div>
             <form method="POST" action="{{ route('logout') }}" id="logout-form" style="margin: 0;">
                 @csrf
-                <button type="submit" class="dropdown-item" style="width: 100%; border: none; background: transparent; display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: #c0392b; cursor: pointer; text-align: left; font-size: 13px; font-weight: 500; transition: background 0.2s; font-family: 'DM Sans', sans-serif;">
+                <button type="submit" class="dropdown-item" style="width: 100%; border: none; background: transparent; display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: #c0392b; cursor: pointer; text-align: left; font-size: 13px; font-weight: 500; transition: background 0.2s; font-family: 'Barlow', sans-serif;">
                     <i class="fas fa-sign-out-alt" style="font-size: 15px;"></i>
                     Cerrar sesión
                 </button>
@@ -559,12 +536,10 @@
                         e.stopPropagation();
                         const isVisible = menu.style.display === 'block';
                         menu.style.display = isVisible ? 'none' : 'block';
-                        trigger.style.background = isVisible ? 'transparent' : 'rgba(255,255,255,0.08)';
                     });
                     document.addEventListener('click', function(e) {
                         if (!trigger.contains(e.target) && !menu.contains(e.target)) {
                             menu.style.display = 'none';
-                            trigger.style.background = 'transparent';
                         }
                     });
                     const items = menu.querySelectorAll('.dropdown-item');
@@ -586,6 +561,13 @@
 <!-- ══ CONTENT ══ -->
 <div class="content">
 
+    <div class="hero-tag">
+        <div class="htag-dot"></div>
+        Agente verificado
+    </div>
+    <h1 class="hero-title">Panel de Control</h1>
+    <p class="hero-sub">Diseña tus itinerarios y gestiona tus viajes de forma profesional.</p>
+
   <div class="toolbar">
     <div class="sbox">
       <span class="sico">
@@ -594,9 +576,10 @@
       <input type="text" placeholder="Buscar por ID, nombre, cliente..." id="searchInput" oninput="searchTripsRows(this.value)"/>
     </div>
     
-    <div style="margin-left: auto;">
-        <button onclick="showCreateTripModal()" class="btn btn-primary" style="font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #1a6a78, #1a7a8a); border: none; box-shadow: 0 4px 14px rgba(26, 106, 120, 0.25);">
-          <span>+ Crear viaje</span>
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+        <button onclick="showCreateTripModal()" class="btn-create">
+          <i class="fas fa-plus"></i>
+          <span>Crear viaje</span>
         </button>
     </div>
   </div>
@@ -880,10 +863,37 @@
             window.location.href = `{{ url('trips') }}/${tripId}/edit`;
         }
     function showCreateTripModal() {
+        const themeColor = '{{ auth()->user()->theme_color ?? "default" }}';
+        const themes = {
+            'default': '#1c7182',
+            'ocean': '#1a5f8f',
+            'gold': '#b08000',
+            'sunset': '#c0552a',
+            'blush': 'linear-gradient(135deg,#e07b9a,#f4a5bd)',
+            'silver': 'linear-gradient(135deg,#6e7f80,#9aa8a9)',
+            'mint': 'linear-gradient(135deg,#3db898,#62d4b5)',
+            'lavender': 'linear-gradient(135deg,#9b72cf,#b39ddb)'
+        };
+        const currentTheme = themes[themeColor] || themes['default'];
+        
+        const adjustColor = (hex, amt) => {
+            if (hex.includes('gradient')) return hex;
+            let col = hex.replace('#', '');
+            let r = parseInt(col.substring(0,2),16) + amt;
+            let g = parseInt(col.substring(2,4),16) + amt;
+            let b = parseInt(col.substring(4,6),16) + amt;
+            r = Math.max(0, Math.min(255, r)).toString(16).padStart(2, '0');
+            g = Math.max(0, Math.min(255, g)).toString(16).padStart(2, '0');
+            b = Math.max(0, Math.min(255, b)).toString(16).padStart(2, '0');
+            return '#' + r + g + b;
+        };
+
+        const modalHeaderBg = currentTheme.includes('gradient') ? currentTheme : `linear-gradient(135deg, ${adjustColor(currentTheme, -40)}, ${currentTheme})`;
+
         const modalHtml = `
             <div id="createTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
                 <div style="background:white; width:90%; max-width:450px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
-                    <div style="background:linear-gradient(135deg, #1a6a78, #1a7a8a); padding:24px; color:white;">
+                    <div style="background:${modalHeaderBg}; padding:24px; color:white;">
                         <h3 style="margin:0; font-family:'Playfair Display', serif; font-size:24px;">+ Nuevo Viaje</h3>
                         <p style="margin:8px 0 0; font-size:13px; opacity:0.85;">Comienza a diseñar una experiencia inolvidable.</p>
                     </div>
@@ -903,7 +913,7 @@
                             </div>
                             <div style="display:flex; gap:12px;">
                                 <button type="button" onclick="document.getElementById('createTripModal').remove()" style="flex:1; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
-                                <button type="submit" style="flex:1; height:44px; border:none; background:linear-gradient(135deg, #1a6a78, #1a7a8a); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px; box-shadow:0 4px 12px rgba(26,106,120,0.3);">Diseñar Viaje</button>
+                                <button type="submit" class="btn-viantryp" style="flex:1; height:44px; border:none; background:var(--accent); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px; box-shadow:0 4px 12px rgba(26,106,120,0.3);">Diseñar Viaje</button>
                             </div>
                         </form>
                     </div>
@@ -912,7 +922,7 @@
             <style>
                 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
                 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-                #createTripForm input:focus { border-color: var(--teal) !important; box-shadow: 0 0 0 3px rgba(26,154,138,0.1); }
+                #createTripForm input:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(26,154,138,0.1); }
             </style>
         `;
 

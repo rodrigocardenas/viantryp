@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="google-places-api-key" content="{{ config('services.google.places_api_key') }}">
     <title>@yield('title', 'Viantryp - Gestión de Viajes')</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -20,22 +20,12 @@
     @stack('styles')
     <style>
         :root {
-            --ink: #1f2a44;
-            --blue-700: #0ea5e9;
-            --blue-600: #38bdf8;
-            --blue-300: #93c5fd;
-            --blue-100: #e0f2fe;
-            --sky-50: #f0f9ff;
-            --stone-100: #f5f7fa;
-            --stone-300: #e2e8f0;
-            --stone-400: #cbd5e1;
-            --slate-600: #475569;
-            --slate-500: #64748b;
-            --success: #1a7a8a;
-            --danger: #ef4444;
-            --shadow-soft: 0 10px 30px rgba(0,0,0,0.06);
-            --shadow-hover: 0 14px 40px rgba(0,0,0,0.08);
-            --radius: 16px;
+            --dark: #0d2b3e;
+            --gray: #6b7a8d;
+            --border: #e2e8ef;
+            --white: #ffffff;
+            --light: #f5f7f9;
+            --radius: 12px;
         }
 
         * {
@@ -51,11 +41,9 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-;
-            background: #f8f9fa;
-            color: var(--ink);
-            letter-spacing: 0.1px;
+            font-family: 'Barlow', sans-serif;
+            background: var(--light);
+            color: var(--dark);
         }
 
         .btn {
@@ -97,9 +85,7 @@
             display: none;
         }
 
-        .notification.show {
-            transform: translateX(0);
-        }
+        .notification.show { transform: translateX(0); }
 
         .notification-content {
             padding: 1rem;
@@ -152,6 +138,10 @@
             }
         }
     </style>
+
+    @auth
+        @include('layouts.theme-styles')
+    @endauth
 </head>
 <body>
     @yield('content')

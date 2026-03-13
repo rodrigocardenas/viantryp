@@ -35,7 +35,7 @@ body {
 }
 
 .topbar {
-  height: 75px;
+  height: 64px;
   background: #0f2a3a;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
@@ -664,33 +664,33 @@ body {
 }
 
 .day-tab.portada-tab {
-  color: #f0567a;
+  color: #c0552a; /* Muted Coral */
   padding: 5px 13px
 }
 
 .day-tab.portada-tab.active {
-  background: #fff0f4;
-  color: #f0567a;
-  border-color: rgba(240, 86, 122, .22)
+  background: #fff5f2;
+  color: #c0552a;
+  border-color: rgba(192, 85, 42, .2)
 }
 
 .day-tab.portada-tab:hover:not(.active) {
-  background: #fff0f4
+  background: #fff5f2
 }
 
 .day-tab.cierre-tab {
-  color: #22c87a;
+  color: #1a7182; /* Deep Teal */
   padding: 5px 13px
 }
 
 .day-tab.cierre-tab.active {
-  background: #edfff6;
-  color: #22c87a;
-  border-color: rgba(34, 200, 122, .22)
+  background: #f0f9fa;
+  color: #1a7182;
+  border-color: rgba(26, 113, 130, .2)
 }
 
 .day-tab.cierre-tab:hover:not(.active) {
-  background: #edfff6
+  background: #f0f9fa
 }
 
 .day-tab-delete {
@@ -729,22 +729,22 @@ body {
 }
 
 .portada-tab .day-tab-delete {
-  color: #f0567a;
+  color: #c0552a;
   opacity: .35
 }
 
 .portada-tab.active .day-tab-delete {
-  color: #f0567a;
+  color: #c0552a;
   opacity: .5
 }
 
 .cierre-tab .day-tab-delete {
-  color: #22c87a;
+  color: #1a7182;
   opacity: .35
 }
 
 .cierre-tab.active .day-tab-delete {
-  color: #22c87a;
+  color: #1a7182;
   opacity: .5
 }
 

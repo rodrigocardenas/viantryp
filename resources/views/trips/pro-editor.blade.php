@@ -10,8 +10,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.places_api_key', env('GOOGLE_PLACES_API_KEY')) }}&libraries=places"></script>
     <link href="{{ asset('css/trips/pro-editor.css') }}" rel="stylesheet">
+    @auth
+        @include('layouts.theme-styles')
+    @endauth
     <script>
         window.viantrypUserName = "{{ auth()->user()->name ?? 'Invitado' }}";
+        window.viantrypThemeColor = "{{ auth()->user()->theme_color ?? 'default' }}";
         window.tripId = {{ $trip->id ?? 'null' }};
         window.proStatus = "{{ $trip->status ?? 'draft' }}";
         window.proState = @json($trip->pro_state ?? null);
@@ -41,10 +45,10 @@
           </button>
       </div>
       <div class="topbar-actions">
-          <button class="btn-viantryp" onclick="manualSaveProTrip()" style="background: linear-gradient(135deg, #1a6a78, #1a7a8a); color: white; border: none; white-space: nowrap; box-shadow: 0 3px 14px rgba(26, 106, 120, .28);">
+          <button class="btn-viantryp" onclick="manualSaveProTrip()" style="color: white; border: none; white-space: nowrap; box-shadow: 0 3px 14px rgba(26, 106, 120, .2) !important;">
               <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
           </button>
-          <button class="btn-viantryp" onclick="openPreview()">
+          <button class="btn-viantryp" onclick="openPreview()" style="color: white !important;">
               <i class="fa-solid fa-eye"></i> Vista previa
           </button>
       </div>
@@ -58,8 +62,13 @@
           </div>
           
           <div id="profileMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid #e2e8ef; text-align: left;">
+              <a href="{{ route('trips.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: #1a2e2c; text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
+                  <i class="fas fa-suitcase-rolling" style="color: #64748b; font-size: 15px;"></i>
+                  Mis viajes
+              </a>
+              <div style="height: 1px; background: #e2e8ef;"></div>
               <a href="{{ route('profile.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: #1a2e2c; text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
-                  <i class="fas fa-user-circle" style="color: #1a9a8a; font-size: 15px;"></i>
+                  <i class="fas fa-user-circle" style="color: #64748b; font-size: 15px;"></i>
                   Mi perfil
               </a>
               <div style="height: 1px; background: #e2e8ef;"></div>
