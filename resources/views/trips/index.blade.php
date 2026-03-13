@@ -38,18 +38,23 @@
       height: 75px;
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 80px;
-      overflow: hidden;
       flex-shrink: 0;
     }
-    .topbar::before {
+    .topbar-bg-decorators {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+    }
+    .topbar-bg-decorators::before {
       content: ''; position: absolute; top: 0; right: 120px;
       width: 160px; height: 300%; background: var(--teal);
-      transform: skewX(-16deg); opacity: 0.07; pointer-events: none;
+      transform: skewX(-16deg); opacity: 0.07;
     }
-    .topbar::after {
+    .topbar-bg-decorators::after {
       content: ''; position: absolute; top: 0; right: 60px;
       width: 60px; height: 300%; background: var(--teal);
-      transform: skewX(-16deg); opacity: 0.04; pointer-events: none;
+      transform: skewX(-16deg); opacity: 0.04;
     }
     .topbar-left { display: flex; align-items: center; gap: 28px; position: relative; z-index: 1; }
     
@@ -513,23 +518,67 @@
 
 <!-- ══ TOPBAR ══ -->
 <header class="topbar">
+  <div class="topbar-bg-decorators"></div>
   <div class="topbar-left">
     <a href="{{ route('home') }}" class="logo">
       <img src="/images/logo-viantryp.png" alt="Viantryp">
     </a>
   </div>
   <div class="topbar-right">
-    <div class="ubadge">
-      <div class="avatar">{{ collect(explode(' ', auth()->user()->name))->map(function($word) { return strtoupper(substr($word, 0, 1)); })->take(2)->join('') }}</div>
-      <span class="uname">{{ auth()->user()->name }}</span>
+    @auth
+    <div class="user-profile-dropdown" style="position: relative;">
+        <div class="ubadge" id="profileTrigger" style="cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px;">
+          <div class="avatar" id="navAvatar">{{ collect(explode(' ', auth()->user()->name))->map(function($word) { return strtoupper(substr($word, 0, 1)); })->take(2)->join('') }}</div>
+          <span class="uname" style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85);">{{ auth()->user()->name }}</span>
+          <i class="fas fa-chevron-down" style="font-size: 10px; color: rgba(255,255,255,0.4);"></i>
+        </div>
+        
+        <div id="profileMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid #e2e8ef; text-align: left;">
+            <a href="{{ route('profile.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: #1a2e2c; text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
+                <i class="fas fa-user-circle" style="color: #1a9a8a; font-size: 15px;"></i>
+                Mi perfil
+            </a>
+            <div style="height: 1px; background: #e2e8ef;"></div>
+            <form method="POST" action="{{ route('logout') }}" id="logout-form" style="margin: 0;">
+                @csrf
+                <button type="submit" class="dropdown-item" style="width: 100%; border: none; background: transparent; display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: #c0392b; cursor: pointer; text-align: left; font-size: 13px; font-weight: 500; transition: background 0.2s; font-family: 'DM Sans', sans-serif;">
+                    <i class="fas fa-sign-out-alt" style="font-size: 15px;"></i>
+                    Cerrar sesión
+                </button>
+            </form>
+        </div>
     </div>
-    <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-        @csrf
-        <button type="submit" class="btn-out">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            Cerrar sesión
-        </button>
-    </form>
+    
+    <script>
+        (function() {
+            const initMenu = () => {
+                const trigger = document.getElementById('profileTrigger');
+                const menu = document.getElementById('profileMenu');
+                if (trigger && menu) {
+                    trigger.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const isVisible = menu.style.display === 'block';
+                        menu.style.display = isVisible ? 'none' : 'block';
+                        trigger.style.background = isVisible ? 'transparent' : 'rgba(255,255,255,0.08)';
+                    });
+                    document.addEventListener('click', function(e) {
+                        if (!trigger.contains(e.target) && !menu.contains(e.target)) {
+                            menu.style.display = 'none';
+                            trigger.style.background = 'transparent';
+                        }
+                    });
+                    const items = menu.querySelectorAll('.dropdown-item');
+                    items.forEach(item => {
+                        item.addEventListener('mouseover', () => item.style.background = '#f8fafc');
+                        item.addEventListener('mouseout', () => item.style.background = 'transparent');
+                    });
+                }
+            };
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initMenu);
+            else initMenu();
+        })();
+    </script>
+    @endauth
   </div>
 </header>
 

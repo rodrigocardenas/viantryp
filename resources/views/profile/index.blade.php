@@ -1,0 +1,957 @@
+@extends('layouts.app')
+
+@section('title', 'Viantryp — Perfil')
+
+@push('styles')
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #1a7f77;
+    --accent-light: #e6f4f3;
+    --accent-dark: #115e57;
+    --bg: #f4f6f5;
+    --card: #ffffff;
+    --text: #1a2e2c;
+    --muted: #7a9290;
+    --border: #e0ecea;
+    --avatar-bg: #1a7f77;
+  }
+
+  /* THEME OVERRIDES */
+  [data-theme="ocean"]  { --accent:#1a5f8f; --accent-light:#e6f0f7; --accent-dark:#0d3d5e; --avatar-bg:#1a5f8f; }
+  [data-theme="sunset"] { --accent:#c0552a; --accent-light:#fdf0eb; --accent-dark:#8c3a1a; --avatar-bg:#c0552a; }
+  [data-theme="gold"]   { --accent:#b08000; --accent-light:#fdf8e6; --accent-dark:#7a5800; --avatar-bg:#b08000; }
+  [data-theme="blush"]     { --accent:#e07b9a; --accent-light:#fdf0f4; --accent-dark:#b55677; --avatar-bg:#e07b9a; }
+  [data-theme="mint"]      { --accent:#3db898; --accent-light:#e8f8f5; --accent-dark:#267a65; --avatar-bg:#3db898; }
+  [data-theme="lavender"]  { --accent:#9b72cf; --accent-light:#f4eeff; --accent-dark:#6d4ea0; --avatar-bg:#9b72cf; }
+  [data-theme="silver"]    { --accent:#6e7f80; --accent-light:#eef1f1; --accent-dark:#4a5859; --avatar-bg:#6e7f80; }
+
+  /* Adjustments for integration */
+  body {
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .page-wrapper {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 36px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .profile-card {
+    text-align: center;
+    padding: 32px 24px 24px;
+  }
+
+  .avatar-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .avatar-big {
+    width: 88px;
+    height: 88px;
+    background: var(--avatar-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 auto;
+    transition: background 0.3s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar-big img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0; left: 0;
+    border-radius: 50%;
+  }
+
+  .avatar-edit-btn {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 26px;
+    height: 26px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid white;
+  }
+
+  .avatar-edit-btn svg { width: 12px; height: 12px; stroke: white; fill: none; stroke-width: 2.5; }
+
+  .profile-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .profile-email {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    border: 1px solid var(--accent);
+    transition: all 0.3s;
+  }
+
+  .plan-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+
+  .stat { text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--text); }
+  .stat-label { font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+  .sidebar-nav { padding: 8px; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.18s;
+    text-decoration: none;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .nav-item:hover { background: var(--accent-light); color: var(--accent); }
+  .nav-item.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+  .nav-item svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; flex-shrink: 0; }
+
+  .main-content { display: flex; flex-direction: column; gap: 20px; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .card-body { padding: 28px; }
+  .form-group { margin-bottom: 20px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+
+  input[type="text"], input[type="email"], input[type="tel"], input[type="password"], select, textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  .logo-upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg);
+    position: relative;
+  }
+
+  .logo-upload-area:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .logo-upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+  .logo-preview {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin: 0 auto 12px;
+    display: block;
+    border-radius: 8px;
+  }
+
+  .upload-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-light);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    transition: background 0.3s;
+  }
+
+  .upload-icon svg { width: 20px; height: 20px; stroke: var(--accent); fill: none; stroke-width: 1.8; }
+  .upload-text { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .upload-hint { font-size: 12px; color: var(--muted); }
+
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  .theme-group-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 20px 0 6px;
+    grid-column: 1 / -1;
+  }
+
+  .theme-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .theme-swatch {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: 3px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .theme-swatch::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .theme-option.selected .theme-swatch {
+    border-color: var(--text);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--text);
+  }
+
+  .theme-option.selected .theme-swatch::after { opacity: 1; }
+  .theme-name { font-size: 11px; font-weight: 600; color: var(--muted); }
+
+  .itinerary-preview {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .preview-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+
+  .preview-header {
+    background: var(--accent);
+    border-radius: 8px 8px 0 0;
+    padding: 10px 14px;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s;
+  }
+
+  .preview-logo-box {
+    width: 22px;
+    height: 22px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 800;
+    overflow: hidden;
+  }
+
+  .preview-logo-box img { width: 100%; height: 100%; object-fit: contain; }
+
+  .preview-body {
+    background: white;
+    border-radius: 0 0 8px 8px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .preview-day { display: flex; align-items: center; gap: 8px; }
+  .preview-day-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; transition: background 0.3s; }
+  .preview-day-line { height: 8px; border-radius: 4px; background: var(--border); flex: 1; }
+  .preview-day-line.short { flex: 0.6; }
+
+  .btn-save {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 28px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-save:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { color: var(--text); border-color: var(--text); }
+  .btn-row { display: flex; align-items: center; gap: 12px; }
+
+  .toast-profile {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--accent);
+    color: white;
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .toast-profile.show { opacity: 1; transform: translateY(0); }
+  .divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+  .danger-text { color: #c0392b; font-size: 13px; margin-bottom: 16px; }
+  .btn-danger-profile {
+    background: transparent;
+    color: #c0392b;
+    border: 1.5px solid #f5b8b8;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-danger-profile:hover { background: #fff0f0; border-color: #c0392b; }
+
+  .tab-section { display: none; }
+  .tab-section.active { display: block; }
+
+  @media (max-width: 768px) {
+    .grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .theme-grid { grid-template-columns: repeat(5, 1fr); }
+  }
+</style>
+@endpush
+
+@section('content')
+<x-header subtitle="Mi Perfil" />
+
+<div class="page-wrapper">
+  <h1 class="page-title">Mi Perfil</h1>
+  <p class="page-subtitle">Gestiona tu información personal y personaliza tu agencia</p>
+
+  <div class="grid">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <!-- Profile Card -->
+      <div class="card profile-card">
+        <div class="avatar-wrapper">
+          <div class="avatar-big" id="avatarBig">
+            <span id="avatarInitial" style="{{ $user->avatar ? 'display:none' : '' }}">{{ collect(explode(' ', $user->name))->map(fn($word) => strtoupper(substr($word, 0, 1)))->take(1)->first() }}</span>
+            <img id="avatarImg" src="{{ $user->avatar ? asset('storage/' . $user->avatar) : '' }}" alt="" style="{{ $user->avatar ? '' : 'display:none' }}">
+          </div>
+          <div class="avatar-edit-btn">
+            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <input type="file" id="avatarUpload" accept="image/*" style="display:none">
+        </div>
+        <div class="profile-name" id="profileName">{{ $user->name }} {{ $user->last_name }}</div>
+        <div class="profile-email">{{ $user->email }}</div>
+        <div class="plan-badge">
+          <div class="plan-dot"></div>
+          Plan Pro
+        </div>
+        <div class="stat-row">
+          <div class="stat">
+            <div class="stat-num">24</div>
+            <div class="stat-label">Viajes</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">8</div>
+            <div class="stat-label">Activos</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">142</div>
+            <div class="stat-label">Clientes</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Nav -->
+      <div class="card sidebar-nav">
+        <button class="nav-item active" data-section="info">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Información Personal
+        </button>
+        <button class="nav-item" data-section="agencia">
+          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          Mi Agencia
+        </button>
+        <button class="nav-item" data-section="tema">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10H2A10 10 0 0 1 12 2z"/><path d="M2 12h20"/></svg>
+          Tema e Identidad
+        </button>
+        <div class="divider"></div>
+        <button class="nav-item" data-section="seguridad">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Seguridad
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+
+      <!-- INFORMACIÓN PERSONAL -->
+      <div class="card tab-section active" id="section-info">
+        <div class="card-body">
+          <div class="section-label">Información Personal</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" id="inputNombre" value="{{ $user->name }}">
+            </div>
+            <div class="form-group">
+              <label>Apellido</label>
+              <input type="text" id="inputApellido" value="{{ $user->last_name }}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" value="{{ auth()->user()->email }}" disabled>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input type="tel" id="inputPhone" value="{{ $user->phone }}" placeholder="+57 300 000 0000">
+            </div>
+            <div class="form-group">
+              <label>País</label>
+              <select id="inputCountry">
+                <option value="Colombia" {{ $user->country == 'Colombia' ? 'selected' : '' }}>Colombia</option>
+                <option value="México" {{ $user->country == 'México' ? 'selected' : '' }}>México</option>
+                <option value="Argentina" {{ $user->country == 'Argentina' ? 'selected' : '' }}>Argentina</option>
+                <option value="España" {{ $user->country == 'España' ? 'selected' : '' }}>España</option>
+                <option value="Chile" {{ $user->country == 'Chile' ? 'selected' : '' }}>Chile</option>
+                <option value="Perú" {{ $user->country == 'Perú' ? 'selected' : '' }}>Perú</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Sobre mí</label>
+            <textarea id="inputBio" placeholder="Cuéntale a tus clientes sobre tu experiencia como consultor de viajes...">{{ $user->bio }}</textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn-save" id="savePersonalInfo">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Guardar Cambios
+            </button>
+            <button class="btn-secondary">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AGENCIA -->
+      <div class="card tab-section" id="section-agencia">
+        <div class="card-body">
+          <div class="section-label">Datos de la Agencia</div>
+          <div class="form-group">
+            <label>Nombre de la Agencia</label>
+            <input type="text" id="inputAgencia" value="{{ $user->agency_name }}">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Sitio Web</label>
+              <input type="text" id="inputWebsite" value="{{ $user->agency_website }}" placeholder="https://miagencia.com">
+            </div>
+            <div class="form-group">
+              <label>WhatsApp</label>
+              <input type="tel" id="inputWhatsapp" value="{{ $user->agency_whatsapp }}" placeholder="+57 300 000 0000">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Eslogan</label>
+            <input type="text" id="inputSlogan" value="{{ $user->agency_slogan }}" placeholder="Tu agencia de confianza para viajar el mundo">
+          </div>
+          <div class="form-group">
+            <label>Logo de la Agencia</label>
+            <div class="logo-upload-area" id="logoDropArea">
+              <input type="file" accept="image/*">
+              <div id="logoPlaceholder">
+                <div class="upload-icon">
+                  <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <div class="upload-text">Sube el logo de tu agencia</div>
+                <div class="upload-hint">PNG, SVG o JPG · Máx. 2MB · Recomendado 200×200px</div>
+              </div>
+              <img id="logoPreview" class="logo-preview" src="" alt="" style="display:none">
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-save" id="saveAgencyInfo">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Guardar Agencia
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEMA -->
+      <div class="card tab-section" id="section-tema">
+        <div class="card-body">
+          <div class="section-label">Tema e Identidad Visual</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Elige el color principal que aparecerá en todos tus itinerarios y propuestas de viaje.</p>
+
+          <div class="theme-grid" id="themeGrid" data-selected="{{ $user->theme_color ?? 'default' }}">
+            <div class="theme-option {{ ($user->theme_color ?? 'default') == 'default' ? 'selected' : '' }}" data-theme="default">
+              <div class="theme-swatch" style="background:#1a7f77"></div>
+              <span class="theme-name">Teal</span>
+            </div>
+            <div class="theme-option {{ $user->theme_color == 'ocean' ? 'selected' : '' }}" data-theme="ocean">
+              <div class="theme-swatch" style="background:#1a5f8f"></div>
+              <span class="theme-name">Ocean</span>
+            </div>
+            <div class="theme-option {{ $user->theme_color == 'gold' ? 'selected' : '' }}" data-theme="gold">
+              <div class="theme-swatch" style="background:#b08000"></div>
+              <span class="theme-name">Gold</span>
+            </div>
+            <div class="theme-option {{ $user->theme_color == 'sunset' ? 'selected' : '' }}" data-theme="sunset">
+              <div class="theme-swatch" style="background:#c0552a"></div>
+              <span class="theme-name">Terracota</span>
+            </div>
+            <div class="theme-option {{ $user->theme_color == 'blush' ? 'selected' : '' }}" data-theme="blush">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#e07b9a,#f4a5bd)"></div>
+              <span class="theme-name">Blush</span>
+            </div>
+            <div class="theme-option {{ $user->theme_color == 'silver' ? 'selected' : '' }}" data-theme="silver">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#6e7f80,#9aa8a9)"></div>
+              <span class="theme-name">Silver</span>
+            </div>
+            <div class="theme-option {{ $user->theme_color == 'mint' ? 'selected' : '' }}" data-theme="mint">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#3db898,#62d4b5)"></div>
+              <span class="theme-name">Menta</span>
+            </div>
+            <div class="theme-option {{ $user->theme_color == 'lavender' ? 'selected' : '' }}" data-theme="lavender">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#9b72cf,#b39ddb)"></div>
+              <span class="theme-name">Lavanda</span>
+            </div>
+          </div>
+
+          <!-- Preview mini -->
+          <div class="itinerary-preview">
+            <div class="preview-label">Vista previa del itinerario</div>
+            <div class="preview-header">
+              <div class="preview-logo-box" id="previewLogoBox">
+                <img id="previewLogoImg" src="{{ $user->agency_logo ? asset('storage/' . $user->agency_logo) : '' }}" alt="" style="{{ $user->agency_logo ? '' : 'display:none;' }}width:100%;height:100%;object-fit:contain">
+                <span id="previewLogoLetter" style="{{ $user->agency_logo ? 'display:none' : '' }}">{{ substr($user->agency_name ?? 'V', 0, 1) }}</span>
+              </div>
+              <span id="previewAgencyName">{{ $user->agency_name ?? 'Mi Agencia' }}</span>
+            </div>
+            <div class="preview-body">
+              <div class="preview-day">
+                <div class="preview-day-dot"></div>
+                <div class="preview-day-line"></div>
+              </div>
+              <div class="preview-day">
+                <div class="preview-day-dot"></div>
+                <div class="preview-day-line short"></div>
+              </div>
+              <div class="preview-day">
+                <div class="preview-day-dot"></div>
+                <div class="preview-day-line"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top:24px">
+            <button class="btn-save" id="saveTheme">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Aplicar Tema
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEGURIDAD -->
+      <div class="card tab-section" id="section-seguridad">
+        <div class="card-body">
+          <div class="section-label">Cambiar Contraseña</div>
+          <div class="form-group">
+            <label>Contraseña Actual</label>
+            <input type="password" placeholder="••••••••">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nueva Contraseña</label>
+              <input type="password" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+              <label>Confirmar Contraseña</label>
+              <input type="password" placeholder="••••••••">
+            </div>
+          </div>
+          <div class="btn-row" style="margin-bottom:32px">
+            <button class="btn-save">Actualizar Contraseña</button>
+          </div>
+
+          <div class="divider" style="margin-bottom:28px"></div>
+
+          <div class="section-label" style="color:#c0392b">Zona de Peligro</div>
+          <p class="danger-text">Eliminar tu cuenta borrará permanentemente todos tus itinerarios, datos y configuración. Esta acción no se puede deshacer.</p>
+          <button class="btn-danger-profile">Eliminar mi cuenta</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-profile" id="toastProfile">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  Cambios guardados exitosamente
+</div>
+@endsection
+
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // CSRF Setup for Fetch
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // NAV ITEMS — navegación entre secciones
+    document.querySelectorAll('.nav-item[data-section]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var id = btn.getAttribute('data-section');
+        document.querySelectorAll('.tab-section').forEach(function(s) { s.classList.remove('active'); });
+        document.querySelectorAll('.nav-item').forEach(function(b) { b.classList.remove('active'); });
+        document.getElementById('section-' + id).classList.add('active');
+        btn.classList.add('active');
+      });
+    });
+
+    // Toast helper
+    function showToast(message) {
+      var toast = document.getElementById('toastProfile');
+      toast.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ${message}`;
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 3000);
+    }
+
+    // SAVE PERSONAL INFO
+    document.getElementById('savePersonalInfo').addEventListener('click', function() {
+      const data = {
+        name: document.getElementById('inputNombre').value,
+        last_name: document.getElementById('inputApellido').value,
+        phone: document.getElementById('inputPhone').value,
+        country: document.getElementById('inputCountry').value,
+        bio: document.getElementById('inputBio').value
+      };
+
+      fetch('{{ route('profile.update.personal') }}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if(res.success) showToast(res.message);
+      });
+    });
+
+    // SAVE AGENCY INFO
+    document.getElementById('saveAgencyInfo').addEventListener('click', function() {
+      const data = {
+        agency_name: document.getElementById('inputAgencia').value,
+        agency_website: document.getElementById('inputWebsite').value,
+        agency_whatsapp: document.getElementById('inputWhatsapp').value,
+        agency_slogan: document.getElementById('inputSlogan').value
+      };
+
+      fetch('{{ route('profile.update.agency') }}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if(res.success) showToast(res.message);
+      });
+    });
+
+    // SAVE THEME
+    document.getElementById('saveTheme').addEventListener('click', function() {
+      const selected = document.querySelector('.theme-option.selected');
+      const theme = selected ? selected.getAttribute('data-theme') : 'default';
+
+      fetch('{{ route('profile.update.theme') }}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ theme_color: theme })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if(res.success) {
+            showToast(res.message);
+            // Dynamic change of UI colors if needed immediately
+            location.reload(); // Simple way to apply global theme injection
+        }
+      });
+    });
+
+    // THEME OPTIONS - Preview only
+    document.querySelectorAll('.theme-option[data-theme]').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var theme = el.getAttribute('data-theme');
+        document.body.setAttribute('data-theme', theme === 'default' ? '' : theme);
+        document.querySelectorAll('.theme-option').forEach(function(o) { o.classList.remove('selected'); });
+        el.classList.add('selected');
+      });
+    });
+
+    // NOMBRE en tiempo real
+    var inputNombre = document.getElementById('inputNombre');
+    var inputApellido = document.getElementById('inputApellido');
+    if (inputNombre) inputNombre.addEventListener('input', updateName);
+    if (inputApellido) inputApellido.addEventListener('input', updateName);
+
+    function updateName() {
+      var n = inputNombre ? inputNombre.value : '';
+      var a = inputApellido ? inputApellido.value : '';
+      var full = (n + ' ' + a).trim();
+      document.getElementById('profileName').textContent = full || 'Tu Nombre';
+      var initial = (n[0] || '?').toUpperCase();
+      document.getElementById('avatarInitial').textContent = initial;
+      var navAvatar = document.getElementById('navAvatar');
+      if (navAvatar) navAvatar.textContent = initial;
+    }
+
+    // AGENCIA en tiempo real
+    var inputAgencia = document.getElementById('inputAgencia');
+    if (inputAgencia) {
+      inputAgencia.addEventListener('input', function() {
+        var val = inputAgencia.value;
+        document.getElementById('previewAgencyName').textContent = val || 'Mi Agencia';
+        document.getElementById('previewLogoLetter').textContent = (val[0] || 'V').toUpperCase();
+      });
+    }
+
+    // LOGO UPLOAD
+    var logoInput = document.querySelector('.logo-upload-area input[type="file"]');
+    if (logoInput) {
+      logoInput.addEventListener('change', function() {
+        var file = this.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('logo', file);
+
+        fetch('{{ route('profile.upload.logo') }}', {
+          method: 'POST',
+          headers: { 'X-CSRF-TOKEN': csrfToken },
+          body: formData
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.success) {
+                var preview = document.getElementById('logoPreview');
+                preview.src = res.url;
+                preview.style.display = 'block';
+                document.getElementById('logoPlaceholder').style.display = 'none';
+                
+                var previewImg = document.getElementById('previewLogoImg');
+                previewImg.src = res.url;
+                previewImg.style.display = 'block';
+                document.getElementById('previewLogoLetter').style.display = 'none';
+                showToast('Logo actualizado');
+            }
+        });
+      });
+    }
+
+    // AVATAR UPLOAD
+    var avatarInput = document.getElementById('avatarUpload');
+    if (avatarInput) {
+      avatarInput.addEventListener('change', function() {
+        var file = this.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        fetch('{{ route('profile.upload.avatar') }}', {
+          method: 'POST',
+          headers: { 'X-CSRF-TOKEN': csrfToken },
+          body: formData
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.success) {
+                var img = document.getElementById('avatarImg');
+                img.src = res.url;
+                img.style.display = 'block';
+                document.getElementById('avatarInitial').style.display = 'none';
+                showToast('Avatar actualizado');
+            }
+        });
+      });
+    }
+
+    // AVATAR EDIT BTN
+    var avatarEditBtn = document.querySelector('.avatar-edit-btn');
+    if (avatarEditBtn) {
+      avatarEditBtn.addEventListener('click', function() {
+        document.getElementById('avatarUpload').click();
+      });
+    }
+  });
+</script>
+@endpush

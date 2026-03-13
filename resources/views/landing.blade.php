@@ -369,15 +369,61 @@
     @auth
         <div style="display: flex; align-items: center; gap: 1.25rem;">
             <a href="{{ route('trips.index') }}" class="nav-login">Ir a Mis Viajes</a>
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 12px; font-weight: 600; color: var(--navy);">
-                    {{ auth()->user()->name }}
-                </span>
-                <a href="{{ route('trips.index') }}" style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--teal); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; text-decoration: none; border: 2px solid var(--teal-light); transition: transform 0.2s;" title="Ir a Mis Viajes" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                </a>
+            
+            <div class="user-profile-dropdown" style="position: relative;">
+                <div id="profileTrigger" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <span style="font-size: 12px; font-weight: 600; color: var(--navy);">
+                        {{ auth()->user()->name }}
+                    </span>
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--teal); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; text-decoration: none; border: 2px solid var(--teal-light); transition: transform 0.2s;">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </div>
+                </div>
+
+                <div id="profileMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid var(--mid-gray); text-align: left;">
+                    <a href="{{ route('profile.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
+                        <i class="fas fa-user-circle" style="color: var(--teal); font-size: 15px;"></i>
+                        Mi perfil
+                    </a>
+                    <div style="height: 1px; background: var(--mid-gray);"></div>
+                    <form method="POST" action="{{ route('logout') }}" id="logout-form" style="margin: 0;">
+                        @csrf
+                        <button type="submit" class="dropdown-item" style="width: 100%; border: none; background: transparent; display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: #c0392b; cursor: pointer; text-align: left; font-size: 13px; font-weight: 500; transition: background 0.2s; font-family: 'DM Sans', sans-serif;">
+                            <i class="fas fa-sign-out-alt" style="font-size: 15px;"></i>
+                            Cerrar sesión
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
+
+        <script>
+            (function() {
+                const initMenu = () => {
+                    const trigger = document.getElementById('profileTrigger');
+                    const menu = document.getElementById('profileMenu');
+                    if (trigger && menu) {
+                        trigger.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const isVisible = menu.style.display === 'block';
+                            menu.style.display = isVisible ? 'none' : 'block';
+                        });
+                        document.addEventListener('click', function(e) {
+                            if (!trigger.contains(e.target) && !menu.contains(e.target)) {
+                                menu.style.display = 'none';
+                            }
+                        });
+                        const items = menu.querySelectorAll('.dropdown-item');
+                        items.forEach(item => {
+                            item.addEventListener('mouseover', () => item.style.background = '#f8fafc');
+                            item.addEventListener('mouseout', () => item.style.background = 'transparent');
+                        });
+                    }
+                };
+                if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initMenu);
+                else initMenu();
+            })();
+        </script>
     @else
         <a href="{{ route('login') }}" class="nav-login">Iniciar sesión</a>
         <a href="{{ route('register') }}" class="nav-cta">Comenzar gratis</a>

@@ -73,6 +73,13 @@ Route::middleware('auth')->group(function () {
     // Document routes
     Route::delete('documents/{document}', [\App\Http\Controllers\TripDocumentController::class , 'destroy'])->name('documents.destroy');
     Route::get('documents/{document}/download', [\App\Http\Controllers\TripDocumentController::class , 'download'])->name('documents.download')->withoutMiddleware('auth');
+    // Profile routes
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/personal', [\App\Http\Controllers\ProfileController::class, 'updatePersonal'])->name('profile.update.personal');
+    Route::post('/profile/agency', [\App\Http\Controllers\ProfileController::class, 'updateAgency'])->name('profile.update.agency');
+    Route::post('/profile/theme', [\App\Http\Controllers\ProfileController::class, 'updateTheme'])->name('profile.update.theme');
+    Route::post('/profile/avatar', [\App\Http\Controllers\ProfileController::class, 'uploadAvatar'])->name('profile.upload.avatar');
+    Route::post('/profile/logo', [\App\Http\Controllers\ProfileController::class, 'uploadLogo'])->name('profile.upload.logo');
 });
 
 // Google Places API routes (outside auth middleware for AJAX requests)

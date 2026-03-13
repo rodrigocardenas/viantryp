@@ -28,6 +28,7 @@
         proState.userName = window.viantrypUserName;
         proState.status = window.proStatus;
         proState.origin = window.location.origin;
+        proState.themeColor = "{{ $trip->user->theme_color ?? 'default' }}";
         window.shareToken = @json(request()->route('token'));
     </script>
     <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>

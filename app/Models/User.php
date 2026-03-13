@@ -23,6 +23,16 @@ class User extends Authenticatable
         'password',
         'google_id',
         'avatar',
+        'last_name',
+        'phone',
+        'country',
+        'bio',
+        'agency_name',
+        'agency_website',
+        'agency_whatsapp',
+        'agency_slogan',
+        'agency_logo',
+        'theme_color',
     ];
 
     /**

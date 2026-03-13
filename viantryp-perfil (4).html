@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viantryp — Perfil</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #1a7f77;
+    --accent-light: #e6f4f3;
+    --accent-dark: #115e57;
+    --bg: #f4f6f5;
+    --card: #ffffff;
+    --text: #1a2e2c;
+    --muted: #7a9290;
+    --border: #e0ecea;
+    --avatar-bg: #1a7f77;
+  }
+
+  /* THEME OVERRIDES */
+  [data-theme="ocean"]  { --accent:#1a5f8f; --accent-light:#e6f0f7; --accent-dark:#0d3d5e; --avatar-bg:#1a5f8f; }
+  [data-theme="sunset"] { --accent:#c0552a; --accent-light:#fdf0eb; --accent-dark:#8c3a1a; --avatar-bg:#c0552a; }
+  [data-theme="gold"]   { --accent:#b08000; --accent-light:#fdf8e6; --accent-dark:#7a5800; --avatar-bg:#b08000; }
+  [data-theme="blush"]     { --accent:#e07b9a; --accent-light:#fdf0f4; --accent-dark:#b55677; --avatar-bg:#e07b9a; }
+  [data-theme="mint"]      { --accent:#3db898; --accent-light:#e8f8f5; --accent-dark:#267a65; --avatar-bg:#3db898; }
+  [data-theme="lavender"]  { --accent:#9b72cf; --accent-light:#f4eeff; --accent-dark:#6d4ea0; --avatar-bg:#9b72cf; }
+  [data-theme="silver"]    { --accent:#6e7f80; --accent-light:#eef1f1; --accent-dark:#4a5859; --avatar-bg:#6e7f80; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 62px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-logo {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn-mis-viajes {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 7px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .btn-mis-viajes:hover { border-color: var(--accent); color: var(--accent); }
+
+  .nav-avatar {
+    width: 36px;
+    height: 36px;
+    background: var(--avatar-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  /* LAYOUT */
+  .page-wrapper {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 36px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .profile-card {
+    text-align: center;
+    padding: 32px 24px 24px;
+  }
+
+  .avatar-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .avatar-big {
+    width: 88px;
+    height: 88px;
+    background: var(--avatar-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 auto;
+    transition: background 0.3s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar-big img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0; left: 0;
+    border-radius: 50%;
+  }
+
+  .avatar-edit-btn {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 26px;
+    height: 26px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid white;
+  }
+
+  .avatar-edit-btn svg { width: 12px; height: 12px; stroke: white; fill: none; stroke-width: 2.5; }
+
+  .profile-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .profile-email {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    border: 1px solid var(--accent);
+    transition: all 0.3s;
+  }
+
+  .plan-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+
+  .stat { text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--text); }
+  .stat-label { font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+  /* NAV ITEMS */
+  .sidebar-nav { padding: 8px; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.18s;
+    text-decoration: none;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .nav-item:hover { background: var(--accent-light); color: var(--accent); }
+  .nav-item.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+
+  .nav-item svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; flex-shrink: 0; }
+
+  /* MAIN CONTENT */
+  .main-content { display: flex; flex-direction: column; gap: 20px; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .card-body { padding: 28px; }
+
+  .form-group { margin-bottom: 20px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+
+  input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* LOGO UPLOAD */
+  .logo-upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg);
+    position: relative;
+  }
+
+  .logo-upload-area:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .logo-upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+  .logo-preview {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin: 0 auto 12px;
+    display: block;
+    border-radius: 8px;
+  }
+
+  .upload-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-light);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    transition: background 0.3s;
+  }
+
+  .upload-icon svg { width: 20px; height: 20px; stroke: var(--accent); fill: none; stroke-width: 1.8; }
+
+  .upload-text { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .upload-hint { font-size: 12px; color: var(--muted); }
+
+  /* THEME PICKER */
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  .theme-group-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 20px 0 6px;
+    grid-column: 1 / -1;
+  }
+
+  .theme-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .theme-swatch {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: 3px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .theme-swatch::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .theme-option.selected .theme-swatch {
+    border-color: var(--text);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--text);
+  }
+
+  .theme-option.selected .theme-swatch::after { opacity: 1; }
+
+  .theme-name { font-size: 11px; font-weight: 600; color: var(--muted); }
+
+  /* PREVIEW MINI */
+  .itinerary-preview {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .preview-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+
+  .preview-header {
+    background: var(--accent);
+    border-radius: 8px 8px 0 0;
+    padding: 10px 14px;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s;
+  }
+
+  .preview-logo-box {
+    width: 22px;
+    height: 22px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 800;
+    overflow: hidden;
+  }
+
+  .preview-logo-box img { width: 100%; height: 100%; object-fit: contain; }
+
+  .preview-body {
+    background: white;
+    border-radius: 0 0 8px 8px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .preview-day {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .preview-day-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    transition: background 0.3s;
+  }
+
+  .preview-day-line {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--border);
+    flex: 1;
+  }
+
+  .preview-day-line.short { flex: 0.6; }
+
+  /* SAVE BTN */
+  .btn-save {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 28px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-save:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { color: var(--text); border-color: var(--text); }
+
+  .btn-row { display: flex; align-items: center; gap: 12px; }
+
+  /* SUCCESS TOAST */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--accent);
+    color: white;
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* SEPARATOR */
+  .divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+  /* DANGER ZONE */
+  .danger-zone { border-color: #ffe0e0; }
+  .danger-text { color: #c0392b; font-size: 13px; margin-bottom: 16px; }
+  .btn-danger {
+    background: transparent;
+    color: #c0392b;
+    border: 1.5px solid #f5b8b8;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-danger:hover { background: #fff0f0; border-color: #c0392b; }
+
+  /* TAB SECTIONS */
+  .tab-section { display: none; }
+  .tab-section.active { display: block; }
+
+  @media (max-width: 768px) {
+    .grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .theme-grid { grid-template-columns: repeat(5, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">viantryp</a>
+  <div class="nav-links">
+    <a href="#">Cómo funciona</a>
+    <a href="#">Precios</a>
+    <a href="#">Contacto</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-mis-viajes">Ir a Mis Viajes</button>
+    <div class="nav-avatar" id="navAvatar">J</div>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+  <h1 class="page-title">Mi Perfil</h1>
+  <p class="page-subtitle">Gestiona tu información personal y personaliza tu agencia</p>
+
+  <div class="grid">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <!-- Profile Card -->
+      <div class="card profile-card">
+        <div class="avatar-wrapper">
+          <div class="avatar-big" id="avatarBig">
+            <span id="avatarInitial">J</span>
+            <img id="avatarImg" src="" alt="" style="display:none">
+          </div>
+          <div class="avatar-edit-btn">
+            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <input type="file" id="avatarUpload" accept="image/*" style="display:none">
+        </div>
+        <div class="profile-name" id="profileName">Juan García</div>
+        <div class="profile-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="701a05111e301117151e1319115e131f1d">[email&#160;protected]</a></div>
+        <div class="plan-badge">
+          <div class="plan-dot"></div>
+          Plan Pro
+        </div>
+        <div class="stat-row">
+          <div class="stat">
+            <div class="stat-num">24</div>
+            <div class="stat-label">Viajes</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">8</div>
+            <div class="stat-label">Activos</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">142</div>
+            <div class="stat-label">Clientes</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Nav -->
+      <div class="card sidebar-nav">
+        <button class="nav-item active" data-section="info">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Información Personal
+        </button>
+        <button class="nav-item" data-section="agencia">
+          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          Mi Agencia
+        </button>
+        <button class="nav-item" data-section="tema">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10H2A10 10 0 0 1 12 2z"/><path d="M2 12h20"/></svg>
+          Tema e Identidad
+        </button>
+        <div class="divider"></div>
+        <button class="nav-item" data-section="seguridad">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Seguridad
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+
+      <!-- INFORMACIÓN PERSONAL -->
+      <div class="card tab-section active" id="section-info">
+        <div class="card-body">
+          <div class="section-label">Información Personal</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" id="inputNombre" value="Juan">
+            </div>
+            <div class="form-group">
+              <label>Apellido</label>
+              <input type="text" id="inputApellido" value="García">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" value="juan@agencia.com">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input type="tel" placeholder="+57 300 000 0000">
+            </div>
+            <div class="form-group">
+              <label>País</label>
+              <select>
+                <option>Colombia</option>
+                <option>México</option>
+                <option>Argentina</option>
+                <option>España</option>
+                <option>Chile</option>
+                <option>Perú</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Sobre mí</label>
+            <textarea placeholder="Cuéntale a tus clientes sobre tu experiencia como consultor de viajes...">Consultor de viajes con más de 10 años de experiencia especializando en rutas por Latinoamérica y Europa.</textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn-save">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Guardar Cambios
+            </button>
+            <button class="btn-secondary">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AGENCIA -->
+      <div class="card tab-section" id="section-agencia">
+        <div class="card-body">
+          <div class="section-label">Datos de la Agencia</div>
+          <div class="form-group">
+            <label>Nombre de la Agencia</label>
+            <input type="text" id="inputAgencia" value="Viajes García & Asociados">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Sitio Web</label>
+              <input type="text" placeholder="https://miagencia.com">
+            </div>
+            <div class="form-group">
+              <label>WhatsApp</label>
+              <input type="tel" placeholder="+57 300 000 0000">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Eslogan</label>
+            <input type="text" placeholder="Tu agencia de confianza para viajar el mundo">
+          </div>
+          <div class="form-group">
+            <label>Logo de la Agencia</label>
+            <div class="logo-upload-area" id="logoDropArea">
+              <input type="file" accept="image/*">
+              <div id="logoPlaceholder">
+                <div class="upload-icon">
+                  <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <div class="upload-text">Sube el logo de tu agencia</div>
+                <div class="upload-hint">PNG, SVG o JPG · Máx. 2MB · Recomendado 200×200px</div>
+              </div>
+              <img id="logoPreview" class="logo-preview" src="" alt="" style="display:none">
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-save">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Guardar Agencia
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEMA -->
+      <div class="card tab-section" id="section-tema">
+        <div class="card-body">
+          <div class="section-label">Tema e Identidad Visual</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Elige el color principal que aparecerá en todos tus itinerarios y propuestas de viaje.</p>
+
+          <div class="theme-grid" id="themeGrid">
+            <div class="theme-option selected" data-theme="default">
+              <div class="theme-swatch" style="background:#1a7f77"></div>
+              <span class="theme-name">Teal</span>
+            </div>
+            <div class="theme-option" data-theme="ocean">
+              <div class="theme-swatch" style="background:#1a5f8f"></div>
+              <span class="theme-name">Ocean</span>
+            </div>
+            <div class="theme-option" data-theme="gold">
+              <div class="theme-swatch" style="background:#b08000"></div>
+              <span class="theme-name">Gold</span>
+            </div>
+            <div class="theme-option" data-theme="sunset">
+              <div class="theme-swatch" style="background:#c0552a"></div>
+              <span class="theme-name">Terracota</span>
+            </div>
+            <div class="theme-option" data-theme="blush">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#e07b9a,#f4a5bd)"></div>
+              <span class="theme-name">Blush</span>
+            </div>
+            <div class="theme-option" data-theme="silver">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#6e7f80,#9aa8a9)"></div>
+              <span class="theme-name">Silver</span>
+            </div>
+            <div class="theme-option" data-theme="mint">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#3db898,#62d4b5)"></div>
+              <span class="theme-name">Menta</span>
+            </div>
+            <div class="theme-option" data-theme="lavender">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#9b72cf,#b39ddb)"></div>
+              <span class="theme-name">Lavanda</span>
+            </div>
+          </div>
+
+          <!-- Preview mini -->
+          <div class="itinerary-preview">
+            <div class="preview-label">Vista previa del itinerario</div>
+            <div class="preview-header">
+              <div class="preview-logo-box" id="previewLogoBox">
+                <img id="previewLogoImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:contain">
+                <span id="previewLogoLetter">V</span>
+              </div>
+              <span id="previewAgencyName">Viajes García & Asociados</span>
+            </div>
+            <div class="preview-body">
+              <div class="preview-day">
+                <div class="preview-day-dot"></div>
+                <div class="preview-day-line"></div>
+              </div>
+              <div class="preview-day">
+                <div class="preview-day-dot"></div>
+                <div class="preview-day-line short"></div>
+              </div>
+              <div class="preview-day">
+                <div class="preview-day-dot"></div>
+                <div class="preview-day-line"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top:24px">
+            <button class="btn-save">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Aplicar Tema
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEGURIDAD -->
+      <div class="card tab-section" id="section-seguridad">
+        <div class="card-body">
+          <div class="section-label">Cambiar Contraseña</div>
+          <div class="form-group">
+            <label>Contraseña Actual</label>
+            <input type="password" placeholder="••••••••">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nueva Contraseña</label>
+              <input type="password" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+              <label>Confirmar Contraseña</label>
+              <input type="password" placeholder="••••••••">
+            </div>
+          </div>
+          <div class="btn-row" style="margin-bottom:32px">
+            <button class="btn-save">Actualizar Contraseña</button>
+          </div>
+
+          <div class="divider" style="margin-bottom:28px"></div>
+
+          <div class="section-label" style="color:#c0392b">Zona de Peligro</div>
+          <p class="danger-text">Eliminar tu cuenta borrará permanentemente todos tus itinerarios, datos y configuración. Esta acción no se puede deshacer.</p>
+          <button class="btn-danger">Eliminar mi cuenta</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  Cambios guardados exitosamente
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+
+  // NAV ITEMS — navegación entre secciones
+  document.querySelectorAll('.nav-item[data-section]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var id = btn.getAttribute('data-section');
+      document.querySelectorAll('.tab-section').forEach(function(s) { s.classList.remove('active'); });
+      document.querySelectorAll('.nav-item').forEach(function(b) { b.classList.remove('active'); });
+      document.getElementById('section-' + id).classList.add('active');
+      btn.classList.add('active');
+    });
+  });
+
+  // THEME OPTIONS
+  document.querySelectorAll('.theme-option[data-theme]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var theme = el.getAttribute('data-theme');
+      document.body.setAttribute('data-theme', theme === 'default' ? '' : theme);
+      document.querySelectorAll('.theme-option').forEach(function(o) { o.classList.remove('selected'); });
+      el.classList.add('selected');
+    });
+  });
+
+  // SAVE BUTTONS
+  document.querySelectorAll('.btn-save').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 3000);
+    });
+  });
+
+  // NOMBRE en tiempo real
+  var inputNombre = document.getElementById('inputNombre');
+  var inputApellido = document.getElementById('inputApellido');
+  if (inputNombre) inputNombre.addEventListener('input', updateName);
+  if (inputApellido) inputApellido.addEventListener('input', updateName);
+
+  function updateName() {
+    var n = inputNombre ? inputNombre.value : '';
+    var a = inputApellido ? inputApellido.value : '';
+    var full = (n + ' ' + a).trim();
+    document.getElementById('profileName').textContent = full || 'Tu Nombre';
+    var initial = (n[0] || '?').toUpperCase();
+    document.getElementById('avatarInitial').textContent = initial;
+    document.getElementById('navAvatar').textContent = initial;
+  }
+
+  // AGENCIA en tiempo real
+  var inputAgencia = document.getElementById('inputAgencia');
+  if (inputAgencia) {
+    inputAgencia.addEventListener('input', function() {
+      var val = inputAgencia.value;
+      document.getElementById('previewAgencyName').textContent = val || 'Mi Agencia';
+      document.getElementById('previewLogoLetter').textContent = (val[0] || 'V').toUpperCase();
+    });
+  }
+
+  // LOGO UPLOAD
+  var logoInput = document.querySelector('.logo-upload-area input[type="file"]');
+  if (logoInput) {
+    logoInput.addEventListener('change', function() {
+      var file = this.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('logoPlaceholder').style.display = 'none';
+        var preview = document.getElementById('logoPreview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        var previewImg = document.getElementById('previewLogoImg');
+        previewImg.src = e.target.result;
+        previewImg.style.display = 'block';
+        document.getElementById('previewLogoLetter').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // AVATAR UPLOAD
+  var avatarInput = document.getElementById('avatarUpload');
+  if (avatarInput) {
+    avatarInput.addEventListener('change', function() {
+      var file = this.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = document.getElementById('avatarImg');
+        img.src = e.target.result;
+        img.style.display = 'block';
+        document.getElementById('avatarInitial').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // AVATAR EDIT BTN
+  var avatarEditBtn = document.querySelector('.avatar-edit-btn');
+  if (avatarEditBtn) {
+    avatarEditBtn.addEventListener('click', function() {
+      document.getElementById('avatarUpload').click();
+    });
+  }
+
+  }); // end DOMContentLoaded
+</script>
+</body>
+</html>

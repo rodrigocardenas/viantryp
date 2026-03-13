@@ -45,10 +45,16 @@ body {
   z-index: 200;
   flex-shrink: 0;
   position: relative;
-  overflow: hidden;
 }
 
-.topbar::before {
+.topbar-bg-decorators {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.topbar-bg-decorators::before {
   content: '';
   position: absolute;
   top: 0;
@@ -61,7 +67,7 @@ body {
   pointer-events: none;
 }
 
-.topbar::after {
+.topbar-bg-decorators::after {
   content: '';
   position: absolute;
   top: 0;

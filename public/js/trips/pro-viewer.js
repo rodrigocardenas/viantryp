@@ -1,5 +1,5 @@
 function buildPreviewHTML(data) {
-  const { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin } = data;
+  const { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor } = data;
 
   const statusMap = {
     'draft': { label: 'En Diseño', bg: '#e0f2fe', color: '#1d5fa8', bdr: '#bae6fd' },
@@ -10,6 +10,18 @@ function buildPreviewHTML(data) {
   };
   const sObj = statusMap[status] || statusMap['draft'];
   const statusBadgeHTML = `<div class="pv-status-badge" style="background:${sObj.bg}; color:${sObj.color}; border-color:${sObj.bdr}"><span class="pv-status-dot" style="background:${sObj.color}"></span> ${sObj.label.toUpperCase()}</div>`;
+
+  const themes = {
+    'default': '#1a7f77',
+    'ocean': '#1a5f8f',
+    'gold': '#b08000',
+    'sunset': '#c0552a',
+    'blush': 'linear-gradient(135deg,#e07b9a,#f4a5bd)',
+    'silver': 'linear-gradient(135deg,#6e7f80,#9aa8a9)',
+    'mint': 'linear-gradient(135deg,#3db898,#62d4b5)',
+    'lavender': 'linear-gradient(135deg,#9b72cf,#b39ddb)'
+  };
+  const currentTheme = themes[themeColor] || themes['default'];
 
   const fmtDateShort = s => { if (!s) return ''; try { return new Date(s + 'T00:00:00').toLocaleDateString('es', { day: 'numeric', month: 'short' }) } catch { return s } };
   const fmtDateTime = s => { if (!s) return ''; try { const d = new Date(s); const day = d.toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }); const time = d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }); return { day, time } } catch { return { day: s, time: '' } } };
@@ -352,7 +364,7 @@ function buildPreviewHTML(data) {
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-:root{--accent:var(--primary-blue);--text:#0f172a;--muted:#64748b;--dim:#94a3b8;--border:#e2e8f0;--bg:#f1f5f9;--surface:#fff;--radius:12px;--shadow:0 10px 30px rgba(0,0,0,.06)}
+:root{--accent:${currentTheme};--text:#0f172a;--muted:#64748b;--dim:#94a3b8;--border:#e2e8f0;--bg:#f1f5f9;--surface:#fff;--radius:12px;--shadow:0 10px 30px rgba(0,0,0,.06)}
 body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 /* TOPBAR */
