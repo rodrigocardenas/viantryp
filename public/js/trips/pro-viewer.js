@@ -23,7 +23,7 @@ function buildPreviewHTML(data) {
   };
 
   const themes = {
-    'default': '#1c7182',
+    'default': '#1a7f77',
     'ocean': '#1a5f8f',
     'gold': '#b08000',
     'sunset': '#c0552a',
@@ -34,7 +34,17 @@ function buildPreviewHTML(data) {
   };
   const currentTheme = themes[themeColor] || themes['default'];
   const isGradient = currentTheme.includes('gradient');
-  const accentBackground = isGradient ? currentTheme : `linear-gradient(23deg, ${adjustColor(currentTheme, -40)}, ${currentTheme})`;
+  
+  const cierreGradients = {
+    'default': 'linear-gradient(185deg, #0f172a, #1a7f77, #10a6b1)',
+    'ocean': 'linear-gradient(185deg, #091a2a, #1a5f8f, #2a7fb9)',
+    'gold': 'linear-gradient(185deg, #1a1400, #b08000, #d4a017)',
+    'sunset': 'linear-gradient(185deg, #1a1005, #c0552a, #d35400)'
+  };
+
+  const accentBackground = isGradient ? currentTheme : (cierreGradients[themeColor] || `linear-gradient(23deg, ${adjustColor(currentTheme, -40)}, ${currentTheme})`);
+  const primaryBlue = isGradient ? '#fff' : currentTheme;
+  const accentLight = isGradient ? 'rgba(255,255,255,0.2)' : adjustColor(currentTheme, 180);
 
   const fmtDateShort = s => { if (!s) return ''; try { return new Date(s + 'T00:00:00').toLocaleDateString('es', { day: 'numeric', month: 'short' }) } catch { return s } };
   const fmtDateTime = s => { if (!s) return ''; try { const d = new Date(s); const day = d.toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }); const time = d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }); return { day, time } } catch { return { day: s, time: '' } } };
@@ -377,7 +387,7 @@ function buildPreviewHTML(data) {
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-:root{--accent:${currentTheme};--accent-bg:${accentBackground};--text:#0f172a;--muted:#64748b;--dim:#94a3b8;--border:#e2e8f0;--bg:#f1f5f9;--surface:#fff;--radius:12px;--shadow:0 10px 30px rgba(0,0,0,.06)}
+:root{--accent:${currentTheme};--accent-bg:${accentBackground};--accent-light:${accentLight};--primary-blue:${primaryBlue};--text:#0f172a;--muted:#64748b;--dim:#94a3b8;--border:#e2e8f0;--bg:#f1f5f9;--surface:#fff;--radius:12px;--shadow:0 10px 30px rgba(0,0,0,.06)}
 body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 /* TOPBAR */
@@ -499,7 +509,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-cierre{background:var(--accent-bg);border-radius:var(--radius);padding:40px 32px;text-align:center;color:#fff;display:flex;flex-direction:column;align-items:center;gap:12px;box-shadow:var(--shadow)}
 .pv-cierre-plane{font-size:50px;animation:float 3s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.pv-cierre-badge{background:var(--accent-light);border:1px solid rgba(14,165,233,.4);border-radius:20px;padding:5px 15px;font-size:11px;font-weight:700;color:var(--primary-blue);letter-spacing:.8px;text-transform:uppercase}
+.pv-cierre-badge{background:var(--accent-light);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:5px 15px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.8px;text-transform:uppercase}
 .pv-cierre-title{font-family:'Poppins',sans-serif;font-size:24px;font-weight:800;color:#fff}
 .pv-cierre-sub{font-size:13px;color:rgba(255,255,255,.5);max-width:360px;line-height:1.6}
 .pv-cierre-stats{display:flex;gap:22px;margin-top:6px}

@@ -7,9 +7,69 @@
     <title>Editor PRO - Viantryp</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.places_api_key', env('GOOGLE_PLACES_API_KEY')) }}&libraries=places"></script>
     <link href="{{ asset('css/trips/pro-editor.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <style>
+        /* Driver.js Custom Styles (Consistent with Dashboard) */
+        .driver-popover {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 1px solid #e2e8ef;
+            font-family: 'Barlow', sans-serif;
+        }
+        .driver-popover-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+            color: #1a2e2c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .driver-popover-description {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+        .driver-popover-btn {
+            background: #1ebdb1;
+            color: white;
+            text-shadow: none;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .driver-popover-btn:hover { background: #16a69b; }
+        .driver-popover-close-btn { color: #8f9db0; }
+        .driver-popover-arrow { border-color: #ffffff; }
+
+        .btn-help {
+            width: 32px; height: 32px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.2s;
+            text-decoration: none; font-size: 14px; margin-right: 8px;
+        }
+        .btn-help:hover {
+            background: rgba(255,255,255,0.2); color: white; border-color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Multi-element highlight helper - Refined: removed green border */
+        .tutorial-extra-highlight {
+            z-index: 1000004 !important; /* Above Driver.js overlay */
+            position: relative !important;
+            transition: all 0.2s ease !important;
+        }
+    </style>
     @auth
         @include('layouts.theme-styles')
     @endauth
@@ -48,12 +108,15 @@
           <button class="btn-viantryp" onclick="manualSaveProTrip()" style="color: white; border: none; white-space: nowrap; box-shadow: 0 3px 14px rgba(26, 106, 120, .2) !important;">
               <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
           </button>
-          <button class="btn-viantryp" onclick="openPreview()" style="color: white !important;">
+          <button id="btnPreviewTrip" class="btn-viantryp" onclick="openPreview()" style="color: white !important;">
               <i class="fa-solid fa-eye"></i> Vista previa
           </button>
       </div>
 
       @auth
+      <a href="javascript:void(0)" onclick="initEditorTutorial(true)" class="btn-help" title="Ayuda / Tutorial">
+          <i class="fas fa-question-circle"></i>
+      </a>
       <div class="user-profile-dropdown" style="position: relative;">
           <div class="ubadge" id="profileTrigger" style="cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px;">
             <div class="avatar" id="navAvatar" style="overflow: hidden;">
@@ -387,6 +450,155 @@
 
 
 
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <script>
+        function initEditorTutorial(force = false) {
+            const driver = window.driver.js.driver;
+            const hasSeenTutorial = localStorage.getItem('viantryp_tutorial_editor');
+
+            if (hasSeenTutorial && !force) return;
+
+            const driverObj = driver({
+                showProgress: true,
+                animate: true,
+                allowClose: true,
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Anterior',
+                doneBtnText: 'Finalizar',
+                steps: [
+                    { 
+                        element: '.header-subtitle', 
+                        popover: { 
+                            title: '¡Bienvenido!', 
+                            description: 'Este es el Editor de Itinerarios. Aquí podrás diseñar cada detalle de la experiencia para tu cliente.' 
+                        } 
+                    },
+                    { 
+                        element: '.sidebar', 
+                        popover: { 
+                            title: 'Elementos y Diseño', 
+                            description: 'Arrastra servicios o elementos de diseño directamente al lienzo central para ir construyendo el viaje.' 
+                        } 
+                    },
+                    { 
+                        element: '.canvas', 
+                        popover: { 
+                            title: 'Tu Lienzo', 
+                            description: 'Este es tu espacio de trabajo. Aquí es donde se divide y organiza todo el contenido de tu itinerario de forma visual.' 
+                        },
+                        onHighlightStarted: (element) => {
+                            // Ocultar temporalmente el banner para que solo se ilumine el lienzo (padding)
+                            const card = document.querySelector('.portada-card');
+                            if (card) card.style.opacity = '0.1';
+                            const tab = document.querySelector('.day-tab.portada-tab');
+                            if (tab) tab.click();
+                        },
+                        onDeselected: (element) => {
+                            const card = document.querySelector('.portada-card');
+                            if (card) card.style.opacity = '1';
+                        }
+                    },
+                    { 
+                        element: '.canvas-toolbar', 
+                        popover: { 
+                            title: 'Barra de Herramientas', 
+                            description: 'Desde aquí gestionas los días del viaje, añades nuevas secciones y navegas rápidamente por todo el itinerario.' 
+                        } 
+                    },
+                    { 
+                        element: '.portada-card', 
+                        popover: { 
+                            title: 'Banner Principal', 
+                            description: 'En esta sección defines la información básica (foto y fechas) que se mostrará en el gran banner de inicio de tu viaje.',
+                            position: 'bottom'
+                        },
+                        onHighlightStarted: (element) => {
+                            const tab = document.querySelector('.day-tab.portada-tab');
+                            if (tab) {
+                                tab.click();
+                                tab.classList.add('tutorial-extra-highlight');
+                            }
+                        },
+                        onDeselected: (element) => {
+                            const tab = document.querySelector('.day-tab.portada-tab');
+                            if (tab) tab.classList.remove('tutorial-extra-highlight');
+                        }
+                    },
+                    { 
+                        element: '#daySubbar', 
+                        popover: { 
+                            title: 'Configuración del Día', 
+                            description: 'Asigna la fecha correspondiente a cada día y comienza a añadir contenido para construir el itinerario perfecto.',
+                            position: 'bottom'
+                        },
+                        onHighlightStarted: (element) => {
+                            const tab = document.querySelector('.day-tab[data-day="0"]');
+                            if (tab) {
+                                tab.click();
+                                tab.classList.add('tutorial-extra-highlight');
+                            }
+                        },
+                        onDeselected: (element) => {
+                            const tab = document.querySelector('.day-tab[data-day="0"]');
+                            if (tab) tab.classList.remove('tutorial-extra-highlight');
+                        }
+                    },
+                    { 
+                        element: '#cierreCardMain', 
+                        popover: { 
+                            title: 'Portada de Cierre', 
+                            description: 'Esta es tu despedida predeterminada. Mostrará automáticamente tu nombre de autor personalizado en "Mi Perfil".',
+                            position: 'top'
+                        },
+                        onHighlightStarted: (element) => {
+                            const tab = document.querySelector('.day-tab.cierre-tab');
+                            if (tab) {
+                                tab.click();
+                                tab.classList.add('tutorial-extra-highlight');
+                            }
+                        },
+                        onDeselected: (element) => {
+                            const tab = document.querySelector('.day-tab.cierre-tab');
+                            if (tab) tab.classList.remove('tutorial-extra-highlight');
+                        }
+                    },
+                    { 
+                        element: '.cierre-remove-btn', 
+                        popover: { 
+                            title: 'Personaliza tu cierre', 
+                            description: 'Si lo prefieres, puedes usar este botón para ocultar el banner predeterminado y diseñar un cierre con tu estilo.',
+                            position: 'left'
+                        },
+                        onHighlightStarted: (element) => {
+                            const tab = document.querySelector('.day-tab.cierre-tab');
+                            if (tab) tab.click();
+                        }
+                    },
+                    { 
+                        element: '#btnPreviewTrip', 
+                        popover: { 
+                            title: 'Guardar y Vista Previa', 
+                            description: 'En todo momento podrás ir viendo los cambios en tiempo real de tu itinerario. Usa la vista previa para generar una idea clara de cómo va quedando el diseño del viaje.' 
+                        } 
+                    }
+                ],
+                onDestroyed: () => {
+                    localStorage.setItem('viantryp_tutorial_editor', 'true');
+                    // Limpieza de clases extra
+                    document.querySelectorAll('.tutorial-extra-highlight').forEach(el => el.classList.remove('tutorial-extra-highlight'));
+                    const tab = document.querySelector('.day-tab.portada-tab');
+                    if (tab) tab.click();
+                }
+            });
+
+            driverObj.drive();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Un pequeño delay para que el editor cargue su estado inicial
+            setTimeout(initEditorTutorial, 1500);
+        });
+    </script>
     <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>
     <script src="{{ asset('js/trips/pro-editor.js') }}?v={{ time() }}"></script>
 </body>

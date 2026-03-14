@@ -28,11 +28,19 @@
         'lavender' => ['light' => '#f6f0fa', 'border' => 'rgba(155,114,207,0.2)'],
     ];
 
+    $cierreGradients = [
+        'default' => 'linear-gradient(185deg, #0f172a, #1a7f77, #10a6b1)',
+        'ocean'   => 'linear-gradient(185deg, #091a2a, #1a5f8f, #2a7fb9)',
+        'gold'    => 'linear-gradient(185deg, #1a1400, #b08000, #d4a017)',
+        'sunset'  => 'linear-gradient(185deg, #1a1005, #c0552a, #d35400)',
+    ];
+
     $userTheme = auth()->user()->theme_color ?? 'default';
     $currentTheme = $themeColors[$userTheme] ?? $themeColors['default'];
     $currentAccent = $themeAccents[$userTheme] ?? $themeAccents['default'];
     $isGradient = str_contains($currentTheme, 'gradient');
     $avatarBg = $isGradient ? $currentTheme : ($avatarGradients[$userTheme] ?? $currentTheme);
+    $cierreBg = $isGradient ? $currentTheme : ($cierreGradients[$userTheme] ?? 'linear-gradient(185deg, #0f172a, #1a7f77, #10a6b1)');
 @endphp
 
 <style>
@@ -42,6 +50,7 @@
         --accent-light: {{ $currentAccent['light'] }};
         --accent-border: {{ $currentAccent['border'] }};
         --avatar-gradient: {{ $avatarBg }};
+        --cierre-bg: {{ $cierreBg }};
         @if(!$isGradient)
         --blue-700: {{ $currentTheme }};
         --teal: {{ $currentTheme }};
@@ -53,13 +62,18 @@
     }
 
     @if($isGradient)
-    .btn-primary, .btn-success, .btn-create, .topbar, .pvday-pill, .btn-viantryp, [data-theme] .theme-swatch.selected {
+    .btn-primary, .btn-success, .btn-create, .topbar, .pvday-pill, .btn-viantryp, [data-theme] .theme-swatch.selected, .cierre-card {
         background: {{ $currentTheme }} !important;
         border: none !important;
     }
     .avatar, .avatar-big {
         background: var(--avatar-gradient) !important;
         border: none !important;
+    }
+    .cierre-badge {
+        background: rgba(255,255,255,0.2) !important;
+        border-color: rgba(255,255,255,0.3) !important;
+        color: #fff !important;
     }
     .topbar-bg-decorators::before, .topbar-bg-decorators::after {
         background: {{ $currentTheme }} !important;
@@ -68,6 +82,16 @@
     @else
     .topbar, .pvday-pill, .topbar-bg-decorators::before, .btn-primary, .btn-viantryp {
         background-color: {{ $currentTheme }} !important;
+    }
+    .cierre-card {
+        background: var(--cierre-bg) !important;
+        border: none !important;
+    }
+    .cierre-badge {
+        background: {{ $currentAccent['border'] }} !important;
+        border-color: {{ $currentAccent['border'] }} !important;
+        color: #fff !important;
+        opacity: 0.9;
     }
     .avatar, .avatar-big {
         background: var(--avatar-gradient) !important;

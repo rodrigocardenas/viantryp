@@ -4,6 +4,7 @@
 
 @push('styles')
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
 <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -20,6 +21,65 @@
       --white: #ffffff;
     }
 
+    /* Driver.js Custom Styles */
+    .driver-popover {
+        background-color: var(--white);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        border: 1px solid var(--bdr);
+        font-family: 'Barlow', sans-serif;
+    }
+    .driver-popover-title {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 800;
+        font-size: 20px;
+        color: var(--ink);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .driver-popover-description {
+        font-size: 14px;
+        color: var(--gray);
+        line-height: 1.5;
+        margin-top: 8px;
+    }
+    .driver-popover-footer {
+        margin-top: 15px;
+    }
+    .driver-popover-btn {
+        background: var(--teal);
+        color: white;
+        text-shadow: none;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 12px;
+        transition: all 0.2s;
+    }
+    .driver-popover-btn:hover {
+        background: var(--teal2);
+    }
+    .driver-popover-close-btn {
+        color: var(--gray2);
+    }
+    .driver-popover-arrow {
+        border-color: var(--white);
+    }
+
+    .btn-help {
+        width: 32px; height: 32px; border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);
+        display: flex; align-items: center; justify-content: center;
+        color: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.2s;
+        text-decoration: none; font-size: 14px;
+    }
+    .btn-help:hover {
+        background: rgba(255,255,255,0.2); color: white; border-color: white;
+        transform: translateY(-1px);
+    }
+
     html, body {
       height: 100%;
       font-family: 'Barlow', sans-serif;
@@ -34,12 +94,10 @@
     ════════════════════════════════════════ */
     .topbar {
       position: sticky; top: 0; z-index: 200;
-      background: var(--white);
       height: 64px;
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 40px;
       flex-shrink: 0;
-      border-bottom: 1px solid var(--border);
     }
     .topbar-bg-decorators { display: none; }
     .topbar-bg-decorators::before {
@@ -59,6 +117,7 @@
     }
     .logo img {
       height: 28px; width: auto;
+      filter: brightness(0) invert(1);
     }
 
     .nav-links { display: flex; gap: 4px; }
@@ -71,15 +130,15 @@
 
     .topbar-right { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; }
     .ubadge {
-      display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px; border-left: 1px solid var(--border); margin-left:8px;
+      display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px; border-left: 1px solid rgba(255,255,255,0.15); margin-left:8px;
     }
     .avatar {
       width: 32px; height: 32px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--teal), var(--teal2));
+      background: var(--avatar-gradient);
       display: flex; align-items: center; justify-content: center;
       font-size: 11px; font-weight: 700; color: white; letter-spacing: 0.5px;
     }
-    .uname { font-size: 14px; font-weight: 600; color: #ffffffd9; }
+    .uname { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); }
     .btn-out {
       display: flex; align-items: center; gap: 6px;
       border: 1px solid rgba(255,255,255,0.16);
@@ -498,6 +557,9 @@
   </div>
   <div class="topbar-right">
     @auth
+    <a href="javascript:void(0)" onclick="initTutorial(true)" class="btn-help" title="Ayuda / Tutorial" style="margin-right: 4px;">
+        <i class="fas fa-question-circle"></i>
+    </a>
     <div class="user-profile-dropdown" style="position: relative;">
         <div class="ubadge" id="profileTrigger" style="cursor: pointer;">
           <div class="avatar" id="navAvatar" style="overflow: hidden;">
@@ -508,7 +570,7 @@
             @endif
           </div>
           <span class="uname">{{ auth()->user()->name }}</span>
-          <i class="fas fa-chevron-down" style="font-size: 10px; color: var(--gray);"></i>
+          <i class="fas fa-chevron-down" style="font-size: 10px; color: rgba(255,255,255,0.4);"></i>
         </div>
         
         <div id="profileMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid var(--border); text-align: left;">
@@ -812,6 +874,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
 <script>
     function filterTrips(filter) {
         window.location.href = `{{ route('trips.index') }}?filter=${filter}`;
@@ -1655,8 +1718,62 @@
         }
     }
 
+    function initTutorial(force = false) {
+        const driver = window.driver.js.driver;
+        const hasSeenTutorial = localStorage.getItem('viantryp_tutorial_trips');
+
+        if (hasSeenTutorial && !force) return;
+
+        const driverObj = driver({
+            showProgress: true,
+            animate: true,
+            allowClose: true,
+            nextBtnText: 'Siguiente',
+            prevBtnText: 'Anterior',
+            doneBtnText: 'Finalizar',
+            steps: [
+                { 
+                    element: '.hero-title', 
+                    popover: { 
+                        title: '¡Bienvenido!', 
+                        description: 'Este es tu Panel de Control. Aquí podrás gestionar todos tus itinerarios de forma profesional.' 
+                    } 
+                },
+                { 
+                    element: '.btn-create', 
+                    popover: { 
+                        title: 'Crear Viaje', 
+                        description: 'Utiliza este botón para comenzar a diseñar una nueva experiencia para tus clientes.' 
+                    } 
+                },
+                { 
+                    element: '.sbox', 
+                    popover: { 
+                        title: 'Buscador Inteligente', 
+                        description: 'Encuentra cualquier viaje rápidamente por nombre, destino o cliente.' 
+                    } 
+                },
+                { 
+                    element: '.tbl-wrap', 
+                    popover: { 
+                        title: 'Gestión de Viajes', 
+                        description: 'Aquí verás tus itinerarios. Configura tu vista a tu manera: cambia el tamaño de las columnas, ordénalas o escóndelas según lo que necesites.' 
+                    } 
+                }
+            ],
+            onDestroyed: () => {
+                localStorage.setItem('viantryp_tutorial_trips', 'true');
+            }
+        });
+
+        driverObj.drive();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         initTableResizer();
+        
+        // Pequeño delay para dejar que las animaciones de la tabla terminen
+        setTimeout(initTutorial, 800);
     });
 </script>
 @endpush
