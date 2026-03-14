@@ -155,11 +155,15 @@ class TripController extends Controller
             return response()->json(['success' => false, 'message' => 'Este viaje no es PRO'], 400);
         }
 
+        if (!$trip->pro_state) {
+            return response()->json(['success' => false, 'message' => 'El viaje no tiene contenido diseñado aún. Por favor, edítalo primero.'], 400);
+        }
+
         return response()->json([
             'success' => true,
             'pro_state' => $trip->pro_state,
             'status' => $trip->status,
-            'user_name' => $trip->user->name ?? 'Viantryp'
+            'user_name' => $trip->user->display_name ?? 'Viantryp'
         ]);
     }
 

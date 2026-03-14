@@ -29,6 +29,10 @@
         proState.status = window.proStatus;
         proState.origin = window.location.origin;
         proState.themeColor = "{{ $trip->user->theme_color ?? 'default' }}";
+        proState.displayNameType = "{{ $trip->user->display_name_type ?? 'personal' }}";
+        proState.agencyLogo = "{{ $trip->user->agency_logo ? asset('storage/' . $trip->user->agency_logo) : '' }}";
+        proState.agencyName = @json($trip->user->agency_name ?? '');
+        proState.userFullName = @json($trip->user->name . ' ' . $trip->user->last_name);
         window.shareToken = @json(request()->route('token'));
     </script>
     <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>

@@ -66,9 +66,6 @@
         background: {{ $currentTheme }} !important;
         border: none !important;
     }
-    .btn-save-pro {
-        border: 1px solid #ffffff1a !important;
-    }
     .avatar, .avatar-big {
         background: var(--avatar-gradient) !important;
         border: none !important;
@@ -86,18 +83,17 @@
     .topbar, .pvday-pill, .topbar-bg-decorators::before, .btn-primary, .btn-viantryp {
         background-color: {{ $currentTheme }} !important;
     }
-    .btn-save-pro {
-        border: 1px solid #ffffff1a !important;
+    .btn-viantryp {
+        border: 1px solid rgb(156 26 26 / 10%) !important;
     }
     .cierre-card {
         background: var(--cierre-bg) !important;
         border: none !important;
     }
     .cierre-badge {
-        background: {{ $currentAccent['border'] }} !important;
-        border-color: {{ $currentAccent['border'] }} !important;
+        background: var(--accent) !important;
+        border-color: rgba(255,255,255,0.3) !important;
         color: #fff !important;
-        opacity: 0.9;
     }
     .avatar, .avatar-big {
         background: var(--avatar-gradient) !important;

@@ -888,7 +888,11 @@ function openPreview() {
     userName: window.viantrypUserName || '',
     origin: window.location.origin,
     status: window.proStatus,
-    themeColor: window.viantrypThemeColor || 'default'
+    themeColor: window.viantrypThemeColor || 'default',
+    displayNameType: window.viantrypDisplayNameType || 'personal',
+    agencyLogo: window.viantrypAgencyLogo || '',
+    agencyName: window.viantrypAgencyName || '',
+    userFullName: window.viantrypUserFullName || ''
   });
   const blob = new Blob([previewHTML], { type: 'text/html' });
   const url = URL.createObjectURL(blob);

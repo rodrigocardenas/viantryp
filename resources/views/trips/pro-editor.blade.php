@@ -63,15 +63,11 @@
             transform: translateY(-1px);
         }
 
+        /* Multi-element highlight helper - Refined: removed green border */
         .tutorial-extra-highlight {
             z-index: 1000004 !important; /* Above Driver.js overlay */
             position: relative !important;
             transition: all 0.2s ease !important;
-        }
-        
-        /* Hide user name in topbar badge */
-        .topbar-right .uname {
-            display: none !important;
         }
     </style>
     @auth
@@ -80,6 +76,10 @@
     <script>
         window.viantrypUserName = "{{ auth()->user()->display_name ?? 'Invitado' }}";
         window.viantrypThemeColor = "{{ auth()->user()->theme_color ?? 'default' }}";
+        window.viantrypDisplayNameType = "{{ auth()->user()->display_name_type ?? 'personal' }}";
+        window.viantrypAgencyLogo = "{{ auth()->user()->agency_logo ? asset('storage/' . auth()->user()->agency_logo) : '' }}";
+        window.viantrypAgencyName = @json(auth()->user()->agency_name ?? '');
+        window.viantrypUserFullName = @json(auth()->user()->name . ' ' . auth()->user()->last_name);
         window.tripId = {{ $trip->id ?? 'null' }};
         window.proStatus = "{{ $trip->status ?? 'draft' }}";
         window.proState = @json($trip->pro_state ?? null);
@@ -109,7 +109,7 @@
           </button>
       </div>
       <div class="topbar-actions">
-          <button class="btn-viantryp btn-save-pro" onclick="manualSaveProTrip()" style="color: white; border: none; white-space: nowrap; box-shadow: 0 3px 14px rgba(26, 106, 120, .2) !important;">
+          <button class="btn-viantryp" onclick="manualSaveProTrip()" style="color: white; white-space: nowrap; box-shadow: 0 3px 14px rgba(26, 106, 120, .2) !important;">
               <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
           </button>
           <button id="btnPreviewTrip" class="btn-viantryp" onclick="openPreview()" style="color: white !important;">
@@ -130,8 +130,8 @@
                   {{ auth()->user()->display_initials }}
               @endif
             </div>
-            <span class="uname" style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85);">{{ auth()->user()->display_name }}</span>
-            <i class="fas fa-chevron-down" style="font-size: 10px; color: #fafafa;"></i>
+            <span class="uname" style="display: none; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85);">{{ auth()->user()->display_name }}</span>
+            <i class="fas fa-chevron-down" style="font-size: 10px; color: #fbfbfb;"></i>
           </div>
           
           <div id="profileMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid #e2e8ef; text-align: left;">

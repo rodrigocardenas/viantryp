@@ -1,5 +1,5 @@
 function buildPreviewHTML(data) {
-  const { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor } = data;
+  const { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor, displayNameType, agencyLogo, agencyName, userFullName } = data;
 
   const statusMap = {
     'draft': { label: 'En Diseño', bg: '#e0f2fe', color: '#1d5fa8', bdr: '#bae6fd' },
@@ -411,7 +411,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-portada-meta-cell:last-child{border-right:none}
 .pv-pm-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
 .pv-pm-value{font-size:15px;font-weight:700;color:var(--text)}
-.pv-pm-value.highlight{color:var(--accent)}
+.pv-pm-value.highlight{color:#0f172a}
 
 /* LAYOUT */
 .pv-layout{display:grid;grid-template-columns:250px 1fr;max-width:1100px;margin:0 auto;padding:32px 24px 60px;align-items:start;gap:0}
@@ -509,7 +509,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-cierre{background:var(--accent-bg);border-radius:var(--radius);padding:40px 32px;text-align:center;color:#fff;display:flex;flex-direction:column;align-items:center;gap:12px;box-shadow:var(--shadow)}
 .pv-cierre-plane{font-size:50px;animation:float 3s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.pv-cierre-badge{background:var(--accent-light);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:5px 15px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.8px;text-transform:uppercase}
+.pv-cierre-badge{background:var(--accent);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:5px 15px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.8px;text-transform:uppercase}
 .pv-cierre-title{font-family:'Poppins',sans-serif;font-size:24px;font-weight:800;color:#fff}
 .pv-cierre-sub{font-size:13px;color:rgba(255,255,255,.5);max-width:360px;line-height:1.6}
 .pv-cierre-stats{display:flex;gap:22px;margin-top:6px}
@@ -562,12 +562,49 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-day{animation:fadeUp .35s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .pv-day:nth-child(1){animation-delay:.04s}.pv-day:nth-child(2){animation-delay:.08s}.pv-day:nth-child(3){animation-delay:.12s}.pv-day:nth-child(4){animation-delay:.16s}.pv-day:nth-child(5){animation-delay:.2s}
+    @font-face {
+        font-family: 'Dongra Script';
+        src: url('${origin}/fonts/Dongra Script.ttf') format('truetype');
+    }
+
+    .public-preview-header {
+        background: var(--accent-bg);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        padding: 0px 100px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+    }
+
+    .gps-logo-text {
+        color: #fff;
+        font-weight: 400;
+        font-size: 22px;
+        font-family: 'Dongra Script', cursive !important;
+        line-height: 1;
+    }
+
+    .gps-logo-img {
+        max-width: 140px;
+        height: auto;
+        max-height: 60px;
+        filter: brightness(0) invert(1);
+        object-fit: contain;
+    }
 </style>
 </head>
 <body>
 ${isPublicLink ? `
-<div class="public-preview-header" style="background:var(--accent-bg);position:sticky;top:0;z-index:100;padding:0px 100px;display:flex;justify-content:space-between;align-items:center;height:60px;">
-    <img src="${origin || ''}/images/LOGO%20GPS.png" alt="GPS Logo" class="gps-logo" style="width:70px;height:auto;filter:brightness(0) invert(1);object-fit:contain;">
+<div class="public-preview-header">
+    ${(displayNameType === 'agency' && (agencyLogo || agencyName)) 
+      ? (agencyLogo 
+          ? `<img src="${agencyLogo}" alt="${agencyName}" class="gps-logo-img">`
+          : `<span class="gps-logo-text">${agencyName}</span>`)
+      : `<span class="gps-logo-text">${userFullName || userName}</span>`
+    }
     <img src="${origin || ''}/images/logo-viantryp.png" alt="Viantryp Logo" class="viantryp-logo" style="width:80px;height:auto;filter:brightness(0) invert(1);object-fit:contain;">
 </div>
 ` : `

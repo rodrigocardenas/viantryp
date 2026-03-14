@@ -73,7 +73,7 @@
                     {{ collect(explode(' ', auth()->user()->name))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('') }}
                 @endif
               </div>
-              <i class="fas fa-chevron-down" style="font-size: 10px; color: var(--gray);"></i>
+              <i class="fas fa-chevron-down" style="font-size: 10px; color: #fbfbfb;"></i>
             </div>
             
             <div id="profileMenuEditor" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid #e2e8ef;">

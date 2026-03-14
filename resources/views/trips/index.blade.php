@@ -570,7 +570,7 @@
             @endif
           </div>
           <span class="uname">{{ auth()->user()->display_name }}</span>
-          <i class="fas fa-chevron-down" style="font-size: 10px; color: #fafafa;"></i>
+          <i class="fas fa-chevron-down" style="font-size: 10px; color: #fbfbfb;"></i>
         </div>
         
         <div id="profileMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid var(--border); text-align: left;">
@@ -914,13 +914,14 @@
                     proState.status = data.status || 'draft';
                     proState.userName = data.user_name || 'Viantryp';
                     proState.origin = window.location.origin;
+                    proState.themeColor = '{{ auth()->user()->theme_color ?? "default" }}';
 
                     const previewHTML = buildPreviewHTML(proState);
                     const blob = new Blob([previewHTML], { type: 'text/html' });
                     const url = URL.createObjectURL(blob);
                     window.open(url, '_blank');
                 } else {
-                    alert('Error al cargar los datos del viaje PRO: ' + (data.message || 'Error desconocido'));
+                    alert(data.message || 'Error desconocido al cargar el viaje PRO');
                 }
             } catch (error) {
                 console.error('Error fetching PRO data:', error);
