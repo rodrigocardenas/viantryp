@@ -10,7 +10,7 @@
     <script>
         // Set up variables for pro-viewer.js
         window.tripId = {{ $trip->id }};
-        window.viantrypUserName = @json($trip->user->name ?? 'Viantryp');
+        window.viantrypUserName = @json($trip->user->display_name ?? 'Viantryp');
         window.proStatus = "{{ $trip->status }}";
         
         let proState = @json($trip->pro_state);

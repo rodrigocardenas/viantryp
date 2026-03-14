@@ -48,10 +48,13 @@ body {
 }
 
 .topbar-bg-decorators {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    overflow: hidden;
-    pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 .topbar-bg-decorators::before {
@@ -150,7 +153,7 @@ body {
 
 .topbar-actions {
   display: flex;
-  gap: 16px;
+  gap: 10px;
   align-items: center;
   z-index: 1;
 }
@@ -664,7 +667,8 @@ body {
 }
 
 .day-tab.portada-tab {
-  color: #c0552a; /* Muted Coral */
+  color: #c0552a;
+  /* Muted Coral */
   padding: 5px 13px
 }
 
@@ -679,7 +683,8 @@ body {
 }
 
 .day-tab.cierre-tab {
-  color: #1a7182; /* Deep Teal */
+  color: #1a7182;
+  /* Deep Teal */
   padding: 5px 13px
 }
 

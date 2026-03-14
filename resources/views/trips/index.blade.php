@@ -566,11 +566,11 @@
             @if(auth()->user()->avatar)
                 <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
             @else
-                {{ collect(explode(' ', auth()->user()->name))->map(function($word) { return strtoupper(substr($word, 0, 1)); })->take(2)->join('') }}
+                {{ auth()->user()->display_initials }}
             @endif
           </div>
-          <span class="uname">{{ auth()->user()->name }}</span>
-          <i class="fas fa-chevron-down" style="font-size: 10px; color: rgba(255,255,255,0.4);"></i>
+          <span class="uname">{{ auth()->user()->display_name }}</span>
+          <i class="fas fa-chevron-down" style="font-size: 10px; color: #fafafa;"></i>
         </div>
         
         <div id="profileMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid var(--border); text-align: left;">

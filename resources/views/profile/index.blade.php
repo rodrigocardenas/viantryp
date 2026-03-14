@@ -496,7 +496,7 @@
       <div class="card profile-card">
         <div class="avatar-wrapper">
           <div class="avatar-big" id="avatarBig">
-            <span id="avatarInitial" style="{{ $user->avatar ? 'display:none' : '' }}">{{ collect(explode(' ', $user->name))->map(fn($word) => strtoupper(substr($word, 0, 1)))->take(1)->first() }}</span>
+            <span id="avatarInitial" style="{{ $user->avatar ? 'display:none' : '' }}">{{ $user->display_initials }}</span>
             <img id="avatarImg" src="{{ $user->avatar ? asset('storage/' . $user->avatar) : '' }}" alt="" style="{{ $user->avatar ? '' : 'display:none' }}">
           </div>
           <div class="avatar-edit-btn" title="Subir foto">
@@ -507,7 +507,7 @@
           </div>
           <input type="file" id="avatarUpload" accept="image/*" style="display:none">
         </div>
-        <div class="profile-name" id="profileName">{{ $user->name }} {{ $user->last_name }}</div>
+        <div class="profile-name" id="profileName">{{ $user->display_name }}</div>
         <div class="profile-email">{{ $user->email }}</div>
         <div class="plan-badge">
           <div class="plan-dot"></div>
@@ -579,6 +579,14 @@
             <label>Sobre mí</label>
             <textarea id="inputBio" placeholder="Cuéntale a tus clientes sobre tu experiencia como consultor de viajes...">{{ $user->bio }}</textarea>
           </div>
+          
+          <div class="form-group" style="margin-top: 24px; padding: 16px; background: var(--accent-light); border-radius: 12px; border: 1px solid var(--accent-border);">
+            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; text-transform: none; letter-spacing: normal; color: var(--accent-dark); margin-bottom: 0; font-family: 'Barlow', sans-serif;">
+              <input type="radio" name="displayNameType" value="personal" {{ $user->display_name_type == 'personal' ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: var(--accent);">
+              <span style="font-size: 14px;">Presentarme con mi <strong>nombre personal</strong> en mis propuestas y perfil.</span>
+            </label>
+          </div>
+
           <div class="btn-row">
             <button class="btn-save" id="savePersonalInfo">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -625,6 +633,14 @@
               <img id="logoPreview" class="logo-preview" src="" alt="" style="display:none">
             </div>
           </div>
+
+          <div class="form-group" style="margin-top: 24px; padding: 16px; background: var(--accent-light); border-radius: 12px; border: 1px solid var(--accent-border);">
+            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; text-transform: none; letter-spacing: normal; color: var(--accent-dark); margin-bottom: 0; font-family: 'Barlow', sans-serif;">
+              <input type="radio" name="displayNameType" value="agency" {{ $user->display_name_type == 'agency' ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: var(--accent);">
+              <span style="font-size: 14px;">Presentarme con el <strong>nombre de mi agencia</strong> en mis propuestas y perfil.</span>
+            </label>
+          </div>
+
           <div class="btn-row">
             <button class="btn-save" id="saveAgencyInfo">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -783,7 +799,8 @@
         last_name: document.getElementById('inputApellido').value,
         phone: document.getElementById('inputPhone').value,
         country: document.getElementById('inputCountry').value,
-        bio: document.getElementById('inputBio').value
+        bio: document.getElementById('inputBio').value,
+        display_name_type: document.querySelector('input[name="displayNameType"]:checked').value
       };
 
       fetch('{{ route('profile.update.personal') }}', {
@@ -807,7 +824,8 @@
         agency_name: document.getElementById('inputAgencia').value,
         agency_website: document.getElementById('inputWebsite').value,
         agency_whatsapp: document.getElementById('inputWhatsapp').value,
-        agency_slogan: document.getElementById('inputSlogan').value
+        agency_slogan: document.getElementById('inputSlogan').value,
+        display_name_type: document.querySelector('input[name="displayNameType"]:checked').value
       };
 
       fetch('{{ route('profile.update.agency') }}', {
@@ -866,14 +884,7 @@
     if (inputApellido) inputApellido.addEventListener('input', updateName);
 
     function updateName() {
-      var n = inputNombre ? inputNombre.value : '';
-      var a = inputApellido ? inputApellido.value : '';
-      var full = (n + ' ' + a).trim();
-      document.getElementById('profileName').textContent = full || 'Tu Nombre';
-      var initial = (n[0] || '?').toUpperCase();
-      document.getElementById('avatarInitial').textContent = initial;
-      var navAvatar = document.getElementById('navAvatar');
-      if (navAvatar) navAvatar.textContent = initial;
+      updateDisplayNames();
     }
 
     // AGENCIA en tiempo real
@@ -883,7 +894,56 @@
         var val = inputAgencia.value;
         document.getElementById('previewAgencyName').textContent = val || 'Mi Agencia';
         document.getElementById('previewLogoLetter').textContent = (val[0] || 'V').toUpperCase();
+        updateDisplayNames();
       });
+    }
+
+    // DISPLAY NAME PREFERENCE in real-time
+    document.querySelectorAll('input[name="displayNameType"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        var val = this.value;
+        // Sync radios between sections
+        document.querySelectorAll('input[name="displayNameType"]').forEach(r => {
+            if (r.value === val) r.checked = true;
+        });
+        updateDisplayNames();
+      });
+    });
+
+    function updateDisplayNames() {
+      var typeEl = document.querySelector('input[name="displayNameType"]:checked');
+      if (!typeEl) return;
+      var type = typeEl.value;
+      var nameVal = '';
+      var initials = '';
+
+      if (type === 'personal') {
+        var n = inputNombre ? inputNombre.value : '';
+        var a = inputApellido ? inputApellido.value : '';
+        nameVal = (n + ' ' + a).trim() || 'Tu Nombre';
+        initials = ((n[0] || '?') + (a[0] || '')).toUpperCase();
+      } else {
+        var aName = inputAgencia ? inputAgencia.value : '';
+        nameVal = aName || 'Mi Agencia';
+        var words = nameVal.split(' ').filter(w => w.length > 0);
+        initials = (words[0] ? words[0][0] : 'V').toUpperCase() + (words[1] ? words[1][0] : '').toUpperCase();
+      }
+
+      document.getElementById('profileName').textContent = nameVal;
+      document.getElementById('avatarInitial').textContent = initials;
+      
+      // Update topbar names
+      document.querySelectorAll('.uname').forEach(el => el.textContent = nameVal);
+      
+      // Update topbar initials (if no avatar)
+      var avatarImg = document.getElementById('avatarImg');
+      if (!avatarImg || !avatarImg.src || avatarImg.style.display === 'none') {
+          document.querySelectorAll('.ubadge .avatar').forEach(avatar => {
+              if (!avatar.querySelector('img')) {
+                  avatar.textContent = initials;
+              }
+          });
+      }
     }
 
     // LOGO UPLOAD

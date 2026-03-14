@@ -22,6 +22,7 @@ class ProfileController extends Controller
             'phone' => 'nullable|string|max:20',
             'country' => 'nullable|string|max:100',
             'bio' => 'nullable|string|max:1000',
+            'display_name_type' => 'nullable|string|in:personal,agency',
         ]);
 
         $user->update([
@@ -30,6 +31,7 @@ class ProfileController extends Controller
             'phone' => $validated['phone'],
             'country' => $validated['country'],
             'bio' => $validated['bio'],
+            'display_name_type' => $validated['display_name_type'] ?? $user->display_name_type,
         ]);
 
         return response()->json(['success' => true, 'message' => 'Información personal actualizada']);
@@ -43,6 +45,7 @@ class ProfileController extends Controller
             'agency_website' => 'nullable|string|max:255',
             'agency_whatsapp' => 'nullable|string|max:20',
             'agency_slogan' => 'nullable|string|max:255',
+            'display_name_type' => 'nullable|string|in:personal,agency',
         ]);
 
         $user->update($validated);

@@ -66,6 +66,9 @@
         background: {{ $currentTheme }} !important;
         border: none !important;
     }
+    .btn-save-pro {
+        border: 1px solid #ffffff1a !important;
+    }
     .avatar, .avatar-big {
         background: var(--avatar-gradient) !important;
         border: none !important;
@@ -82,6 +85,9 @@
     @else
     .topbar, .pvday-pill, .topbar-bg-decorators::before, .btn-primary, .btn-viantryp {
         background-color: {{ $currentTheme }} !important;
+    }
+    .btn-save-pro {
+        border: 1px solid #ffffff1a !important;
     }
     .cierre-card {
         background: var(--cierre-bg) !important;

@@ -33,6 +33,7 @@ class User extends Authenticatable
         'agency_slogan',
         'agency_logo',
         'theme_color',
+        'display_name_type',
     ];
 
     /**
@@ -56,5 +57,23 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getDisplayNameAttribute()
+    {
+        return ($this->display_name_type === 'agency' && !empty($this->agency_name)) 
+            ? $this->agency_name 
+            : $this->name;
+    }
+
+    public function getDisplayInitialsAttribute()
+    {
+        $name = $this->display_name;
+        return collect(explode(' ', $name))
+            ->map(function($word) {
+                return mb_strtoupper(mb_substr($word, 0, 1));
+            })
+            ->take(2)
+            ->join('');
     }
 }

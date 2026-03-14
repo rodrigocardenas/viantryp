@@ -63,18 +63,22 @@
             transform: translateY(-1px);
         }
 
-        /* Multi-element highlight helper - Refined: removed green border */
         .tutorial-extra-highlight {
             z-index: 1000004 !important; /* Above Driver.js overlay */
             position: relative !important;
             transition: all 0.2s ease !important;
+        }
+        
+        /* Hide user name in topbar badge */
+        .topbar-right .uname {
+            display: none !important;
         }
     </style>
     @auth
         @include('layouts.theme-styles')
     @endauth
     <script>
-        window.viantrypUserName = "{{ auth()->user()->name ?? 'Invitado' }}";
+        window.viantrypUserName = "{{ auth()->user()->display_name ?? 'Invitado' }}";
         window.viantrypThemeColor = "{{ auth()->user()->theme_color ?? 'default' }}";
         window.tripId = {{ $trip->id ?? 'null' }};
         window.proStatus = "{{ $trip->status ?? 'draft' }}";
@@ -105,7 +109,7 @@
           </button>
       </div>
       <div class="topbar-actions">
-          <button class="btn-viantryp" onclick="manualSaveProTrip()" style="color: white; border: none; white-space: nowrap; box-shadow: 0 3px 14px rgba(26, 106, 120, .2) !important;">
+          <button class="btn-viantryp btn-save-pro" onclick="manualSaveProTrip()" style="color: white; border: none; white-space: nowrap; box-shadow: 0 3px 14px rgba(26, 106, 120, .2) !important;">
               <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
           </button>
           <button id="btnPreviewTrip" class="btn-viantryp" onclick="openPreview()" style="color: white !important;">
@@ -123,11 +127,11 @@
               @if(auth()->user()->avatar)
                   <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
               @else
-                  {{ collect(explode(' ', auth()->user()->name))->map(function($word) { return strtoupper(substr($word, 0, 1)); })->take(2)->join('') }}
+                  {{ auth()->user()->display_initials }}
               @endif
             </div>
-            <span class="uname" style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85);">{{ auth()->user()->name }}</span>
-            <i class="fas fa-chevron-down" style="font-size: 10px; color: rgba(255,255,255,0.4);"></i>
+            <span class="uname" style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85);">{{ auth()->user()->display_name }}</span>
+            <i class="fas fa-chevron-down" style="font-size: 10px; color: #fafafa;"></i>
           </div>
           
           <div id="profileMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid #e2e8ef; text-align: left;">
@@ -370,7 +374,7 @@
             <div class="cierre-icon"><i class="fa-solid fa-plane-up"></i></div>
             <div class="cierre-badge">¡ITINERARIO COMPLETO!</div>
             <div class="cierre-title" id="cierreTitleDisplay">Tour por Europa 2025</div>
-            <div class="cierre-sub">Este itinerario fue creado por <strong id="cierreAutor">{{ auth()->user()->name }}</strong>. ¡Que tengas un viaje increíble!</div>
+            <div class="cierre-sub">Este itinerario fue creado por <strong id="cierreAutor">{{ auth()->user()->display_name }}</strong>. ¡Que tengas un viaje increíble!</div>
           </div>
           <div id="cierreCardPlaceholder" class="cierre-hidden-placeholder" style="display:none">
             <div style="color:var(--text-dim);font-size:12.5px;margin-bottom:8px">El cierre predeterminado ha sido ocultado</div>
