@@ -44,6 +44,12 @@
         </div>
     @endif
 
+    @if(isset($tutorialOnclick))
+    <a href="javascript:void(0)" onclick="{{ $tutorialOnclick }}" class="btn-help" title="Ayuda / Tutorial" style="margin-right: 8px;">
+        <i class="fas fa-question-circle"></i>
+    </a>
+    @endif
+
     @auth
     <div class="user-profile-dropdown" style="position: relative;">
         <div class="ubadge" id="profileTrigger" style="cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;">
@@ -168,6 +174,56 @@
     }
     .btn-out:hover { background: rgba(255,255,255,0.09); color: white; }
     .btn-out svg { width: 13px; height: 13px; }
+
+    .btn-help {
+        width: 32px; height: 32px; border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);
+        display: flex; align-items: center; justify-content: center;
+        color: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.2s;
+        text-decoration: none; font-size: 14px;
+    }
+    .btn-help:hover {
+        background: rgba(255,255,255,0.2); color: white; border-color: white;
+        transform: translateY(-1px);
+    }
+
+    /* Driver.js Custom Styles (Consistent with Dashboard) */
+    .driver-popover {
+        background-color: #ffffff !important;
+        border-radius: 16px !important;
+        padding: 20px !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+        border: 1px solid #e2e8ef !important;
+        font-family: 'Barlow', sans-serif !important;
+    }
+    .driver-popover-title {
+        font-family: 'Barlow Condensed', sans-serif !important;
+        font-weight: 800 !important;
+        font-size: 20px !important;
+        color: #1a2e2c !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+    }
+    .driver-popover-description {
+        font-size: 14px !important;
+        color: #64748b !important;
+        line-height: 1.5 !important;
+        margin-top: 8px !important;
+    }
+    .driver-popover-btn {
+        background: var(--accent, #1a9a8a) !important;
+        color: white !important;
+        text-shadow: none !important;
+        border: none !important;
+        padding: 6px 14px !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        transition: all 0.2s !important;
+    }
+    .driver-popover-btn:hover { background: var(--accent-dark, #115e57) !important; }
+    .driver-popover-close-btn { color: #8f9db0 !important; }
+    .driver-popover-arrow { border-color: #ffffff !important; }
 
     @media (max-width: 768px) {
         .topbar { padding: 0 15px; }

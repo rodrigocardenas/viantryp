@@ -1,10 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Viantryp — Perfil')
+@section('title', 'Viantryp | Mi Perfil')
 
 @push('styles')
 @include('layouts.theme-styles')
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
 <style>
   :root {
     --accent-light: #e6f4f3;
@@ -15,6 +16,11 @@
     --muted: #7a9290;
     --border: #e0ecea;
     --avatar-bg: var(--accent);
+  }
+
+  @font-face {
+    font-family: 'Dongra Script';
+    src: url('/fonts/Dongra Script.ttf') format('truetype');
   }
 
   /* THEME OVERRIDES FOR LOCAL VARS */
@@ -76,6 +82,9 @@
     text-align: center;
     padding: 32px 24px 24px;
   }
+
+    .avatar-delete-btn:hover { opacity: 1; transform: scale(1.1); }
+    .avatar-delete-btn svg { width: 12px; height: 12px; stroke: white; fill: none; stroke-width: 2.5; }
 
   .avatar-wrapper {
     position: relative;
@@ -365,24 +374,26 @@
     font-weight: 700;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     transition: background 0.3s;
+    min-height: 42px;
   }
 
-  .preview-logo-box {
-    width: 22px;
-    height: 22px;
-    background: rgba(255,255,255,0.25);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 9px;
-    font-weight: 800;
-    overflow: hidden;
+  .preview-header img {
+    max-height: 32px;
+    width: auto;
+    filter: brightness(0) invert(1);
+    object-fit: contain;
   }
 
-  .preview-logo-box img { width: 100%; height: 100%; object-fit: contain; }
+  .preview-header span {
+    font-family: 'Dongra Script', cursive !important;
+    font-size: 18px;
+    color: white;
+    font-weight: 400;
+  }
+
 
   .preview-body {
     background: white;
@@ -483,7 +494,7 @@
 @endpush
 
 @section('content')
-<x-header />
+<x-header tutorialOnclick="initProfileTutorial(true)" />
 
 <div class="page-wrapper">
   <h1 class="page-title">Mi Perfil</h1>
@@ -580,7 +591,7 @@
             <textarea id="inputBio" placeholder="Cuéntale a tus clientes sobre tu experiencia como consultor de viajes...">{{ $user->bio }}</textarea>
           </div>
           
-          <div class="form-group" style="margin-top: 24px; padding: 16px; background: var(--accent-light); border-radius: 12px; border: 1px solid var(--accent-border);">
+          <div class="form-group" id="personalNameOption" style="margin-top: 24px; padding: 16px; background: var(--accent-light); border-radius: 12px; border: 1px solid var(--accent-border);">
             <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; text-transform: none; letter-spacing: normal; color: var(--accent-dark); margin-bottom: 0; font-family: 'Barlow', sans-serif;">
               <input type="radio" name="displayNameType" value="personal" {{ $user->display_name_type == 'personal' ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: var(--accent);">
               <span style="font-size: 14px;">Presentarme con mi <strong>nombre personal</strong> en mis propuestas y perfil.</span>
@@ -634,7 +645,7 @@
             </div>
           </div>
 
-          <div class="form-group" style="margin-top: 24px; padding: 16px; background: var(--accent-light); border-radius: 12px; border: 1px solid var(--accent-border);">
+          <div class="form-group" id="agencyNameOption" style="margin-top: 24px; padding: 16px; background: var(--accent-light); border-radius: 12px; border: 1px solid var(--accent-border);">
             <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; text-transform: none; letter-spacing: normal; color: var(--accent-dark); margin-bottom: 0; font-family: 'Barlow', sans-serif;">
               <input type="radio" name="displayNameType" value="agency" {{ $user->display_name_type == 'agency' ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: var(--accent);">
               <span style="font-size: 14px;">Presentarme con el <strong>nombre de mi agencia</strong> en mis propuestas y perfil.</span>
@@ -694,12 +705,8 @@
           <!-- Preview mini -->
           <div class="itinerary-preview">
             <div class="preview-label">Vista previa del itinerario</div>
-            <div class="preview-header">
-              <div class="preview-logo-box" id="previewLogoBox">
-                <img id="previewLogoImg" src="{{ $user->agency_logo ? asset('storage/' . $user->agency_logo) : '' }}" alt="" style="{{ $user->agency_logo ? '' : 'display:none;' }}width:100%;height:100%;object-fit:contain">
-                <span id="previewLogoLetter" style="{{ $user->agency_logo ? 'display:none' : '' }}">{{ substr($user->agency_name ?? 'V', 0, 1) }}</span>
-              </div>
-              <span id="previewAgencyName">{{ $user->agency_name ?? 'Mi Agencia' }}</span>
+            <div class="preview-header" id="previewHeaderContent">
+              <!-- Dynamic content -->
             </div>
             <div class="preview-body">
               <div class="preview-day">
@@ -891,9 +898,6 @@
     var inputAgencia = document.getElementById('inputAgencia');
     if (inputAgencia) {
       inputAgencia.addEventListener('input', function() {
-        var val = inputAgencia.value;
-        document.getElementById('previewAgencyName').textContent = val || 'Mi Agencia';
-        document.getElementById('previewLogoLetter').textContent = (val[0] || 'V').toUpperCase();
         updateDisplayNames();
       });
     }
@@ -932,6 +936,23 @@
       document.getElementById('profileName').textContent = nameVal;
       document.getElementById('avatarInitial').textContent = initials;
       
+      // Update preview header
+      var previewHeader = document.getElementById('previewHeaderContent');
+      if (previewHeader) {
+          if (type === 'agency') {
+              var logoUrl = document.getElementById('logoPreview') ? document.getElementById('logoPreview').getAttribute('src') : null;
+              var agencyName = inputAgencia ? inputAgencia.value : '{{ $user->agency_name }}';
+              
+              if (logoUrl && logoUrl.trim() !== '') {
+                  previewHeader.innerHTML = `<img src="${logoUrl}" alt="Logo">`;
+              } else {
+                  previewHeader.innerHTML = `<span>${agencyName || 'Mi Agencia'}</span>`;
+              }
+          } else {
+              previewHeader.innerHTML = `<span>${nameVal}</span>`;
+          }
+      }
+      
       // Update topbar names
       document.querySelectorAll('.uname').forEach(el => el.textContent = nameVal);
       
@@ -969,10 +990,7 @@
                 preview.style.display = 'block';
                 document.getElementById('logoPlaceholder').style.display = 'none';
                 
-                var previewImg = document.getElementById('previewLogoImg');
-                previewImg.src = res.url;
-                previewImg.style.display = 'block';
-                document.getElementById('previewLogoLetter').style.display = 'none';
+                updateDisplayNames();
                 showToast('Logo actualizado');
             }
         });
@@ -1042,6 +1060,84 @@
             }
         });
     }
+
+    // Auto-start tutorial
+    setTimeout(() => {
+        if (typeof initProfileTutorial === 'function') {
+            initProfileTutorial();
+        }
+    }, 1200);
   });
+
+  function initProfileTutorial(force = false) {
+    if (!window.driver) return;
+    const driver = window.driver.js.driver;
+    const hasSeenTutorial = localStorage.getItem('viantryp_tutorial_profile');
+
+    if (hasSeenTutorial && !force) return;
+
+    const driverObj = driver({
+        showProgress: true,
+        animate: true,
+        allowClose: true,
+        nextBtnText: 'Siguiente',
+        prevBtnText: 'Anterior',
+        doneBtnText: 'Finalizar',
+        steps: [
+            { 
+                element: '.page-title', 
+                popover: { 
+                    title: '¡Tu Perfil!', 
+                    description: 'Aquí es donde sucede la magia de la personalización. Configura cómo te ven tus clientes y el estilo de tus propuestas.' 
+                } 
+            },
+            { 
+                element: '#personalNameOption', 
+                popover: { 
+                    title: 'Identidad Personal', 
+                    description: 'Si prefieres que tus propuestas tengan un toque más cercano usando tu nombre y apellido, marca esta opción.',
+                    position: 'top'
+                },
+                onHighlightStarted: () => {
+                   document.querySelector('.nav-item[data-section="info"]').click();
+                }
+            },
+            { 
+                element: '#agencyNameOption', 
+                popover: { 
+                    title: 'Identidad de Agencia', 
+                    description: '¿Trabajas bajo una marca? Sube el logo de tu agencia y selecciona esta opción para que todas tus propuestas salgan con tu imagen corporativa.',
+                    position: 'top'
+                },
+                onHighlightStarted: () => {
+                   document.querySelector('.nav-item[data-section="agencia"]').click();
+                }
+            },
+            { 
+                element: '#themeGrid', 
+                popover: { 
+                    title: 'Personalización Visual', 
+                    description: '¡Dale color a tus viajes! Elige el tema que mejor represente tu estilo. Verás el cambio reflejado al instante en la vista previa de abajo.' 
+                },
+                onHighlightStarted: () => {
+                   document.querySelector('.nav-item[data-section="tema"]').click();
+                }
+            },
+            { 
+                element: '.itinerary-preview', 
+                popover: { 
+                    title: 'Vista Previa en Vivo', 
+                    description: 'Así es como se verá la cabecera de tus itinerarios. Asegúrate de que todo luzca perfecto antes de enviar una propuesta.' 
+                } 
+            }
+        ],
+        onDestroyed: () => {
+            localStorage.setItem('viantryp_tutorial_profile', 'true');
+        }
+    });
+
+    driverObj.drive();
+  }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
 @endpush
