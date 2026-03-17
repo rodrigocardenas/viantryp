@@ -797,7 +797,7 @@ class TripController extends Controller
      */
     public function inviteCollaborator(Request $request, Trip $trip): JsonResponse
     {
-        if ($trip->user_id !== Auth::id()) {
+        if ($trip->user_id != Auth::id()) {
             return response()->json(['success' => false, 'message' => 'No autorizado'], 403);
         }
 

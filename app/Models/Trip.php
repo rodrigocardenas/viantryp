@@ -488,7 +488,7 @@ class Trip extends Model
     public function canEdit(?int $userId): bool
     {
         if (!$userId) return false;
-        if ($this->user_id === $userId) return true;
+        if ($this->user_id == $userId) return true;
 
         return $this->collaborators()
             ->where('user_id', $userId)
@@ -502,7 +502,7 @@ class Trip extends Model
      */
     public function canView(?int $userId): bool
     {
-        if ($userId && $this->user_id === $userId) return true;
+        if ($userId && $this->user_id == $userId) return true;
 
         if ($userId) {
             return $this->collaborators()

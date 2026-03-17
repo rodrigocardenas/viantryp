@@ -927,13 +927,15 @@
                                 <i class="fas fa-ellipsis-v"></i>
                             </button>
                             <div class="acts-menu" id="menu-{{ $trip->id }}">
+                                @if($trip->user_id == Auth::id())
                                 <div class="acts-menu-item" onclick="openSharingModal({{ $trip->id }}, 'viewer')">
                                     <i class="fas fa-eye"></i> Compartir para ver
                                 </div>
                                 <div class="acts-menu-item" onclick="openSharingModal({{ $trip->id }}, 'editor')">
                                     <i class="fas fa-edit"></i> Compartir para editar
                                 </div>
-                                @if($trip->user_id === Auth::id())
+                                @endif
+                                @if($trip->user_id == Auth::id())
                                 <div class="acts-menu-item" onclick="openTransferModal({{ $trip->id }})">
                                     <i class="fas fa-exchange-alt"></i> Cambiar propietario
                                 </div>
