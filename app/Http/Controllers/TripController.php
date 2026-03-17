@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Mail\SendTripLink;
+use App\Models\TripCollaborator;
+use App\Mail\TripCollaborationInvite;
 
 class TripController extends Controller
 {
@@ -23,10 +25,19 @@ class TripController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Trip::with(['user', 'persons'])->where('user_id', Auth::id());
+        $userId = Auth::id();
+        $filter = $request->get('filter', 'personal'); // Changed default to personal
+
+        if ($filter === 'shared') {
+            $query = Trip::whereHas('collaborators', function($q) use ($userId) {
+                $q->where('user_id', $userId)->whereNotNull('accepted_at');
+            })->with(['user', 'persons']);
+        } else {
+            $query = Trip::with(['user', 'persons'])->where('user_id', $userId);
+        }
 
         // Calculate stats before filtering
-        $allTripsQuery = Trip::where('user_id', Auth::id());
+        $allTripsQuery = Trip::where('user_id', $userId);
         $stats = [
             'total' => (clone $allTripsQuery)->count(),
             'draft' => (clone $allTripsQuery)->where('status', 'draft')->count(),
@@ -37,8 +48,8 @@ class TripController extends Controller
         ];
 
         // Apply status filter
-        $filter = $request->get('filter', 'all');
-        $query->byStatus($filter);
+        $status = $request->get('status', 'all');
+        $query->byStatus($status);
 
         // Apply search
         $search = $request->get('search');
@@ -58,8 +69,9 @@ class TripController extends Controller
 
         return view('trips.index', [
             'trips' => $trips,
-            'activeTab' => $filter,
-            'headerTitle' => $headerTitles[$filter] ?? 'Todos los Viajes',
+            'activeTab' => $status,
+            'activeMainTab' => $filter,
+            'headerTitle' => $headerTitles[$status] ?? 'Todos los Viajes',
             'stats' => $stats
         ]);
     }
@@ -131,9 +143,9 @@ class TripController extends Controller
      */
     public function edit(Trip $trip): View
     {
-        // Ensure the trip belongs to the authenticated user
-        if ($trip->user_id !== Auth::id()) {
-            abort(403);
+        // Ensure the trip belongs to the authenticated user or has edit permission
+        if (!$trip->canEdit(Auth::id())) {
+            abort(403, 'No tienes permiso para editar este viaje.');
         }
 
         return view('trips.pro-editor', [
@@ -346,8 +358,8 @@ class TripController extends Controller
      */
     public function duplicate(Trip $trip): JsonResponse
     {
-        // Ensure the trip belongs to the authenticated user
-        if ($trip->user_id !== Auth::id()) {
+        // Ensure the trip belongs to the authenticated user or has view permission
+        if (!$trip->canView(Auth::id())) {
             return response()->json([
                 'success' => false,
                 'message' => 'No tienes permiso para duplicar este viaje.'
@@ -475,11 +487,11 @@ class TripController extends Controller
      */
     public function saveProState(Request $request, Trip $trip): JsonResponse
     {
-        // Ensure the trip belongs to the authenticated user
-        if ($trip->user_id !== Auth::id()) {
+        // Ensure the trip belongs to the authenticated user or has edit permission
+        if (!$trip->canEdit(Auth::id())) {
             return response()->json([
                 'success' => false,
-                'message' => 'No tienes permiso para compartir este viaje.'
+                'message' => 'No tienes permiso para guardar cambios en este viaje.'
             ], 403);
         }
 
@@ -765,7 +777,7 @@ class TripController extends Controller
 
         }
         catch (\Exception $e) {
-            \Log::error('Unsplash API Error: ' . $e->getMessage());
+            Log::error('Unsplash API Error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Internal server error while fetching images.'
@@ -774,4 +786,116 @@ class TripController extends Controller
     }
 
 
+    /**
+     * Invite a collaborator to a trip
+     */
+    public function inviteCollaborator(Request $request, Trip $trip): JsonResponse
+    {
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'No autorizado'], 403);
+        }
+
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'role' => 'required|in:editor,viewer'
+        ]);
+
+        $token = \Illuminate\Support\Str::random(40);
+
+        \App\Models\TripCollaborator::updateOrCreate(
+            ['trip_id' => $trip->id, 'email' => $validated['email']],
+            [
+                'role' => $validated['role'],
+                'token' => $token,
+                'accepted_at' => null // Reset if re-inviting
+            ]
+        );
+
+        $inviteUrl = route('trips.accept-invite', ['token' => $token]);
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($validated['email'])->send(new \App\Mail\TripCollaborationInvite($trip, $validated['role'], $inviteUrl));
+            return response()->json(['success' => true, 'message' => 'Invitación enviada con éxito.']);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error sending collaboration invite: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Error al enviar el correo.'], 500);
+        }
+    }
+
+    /**
+     * Accept a collaboration invitation
+     */
+    public function acceptInvite(string $token)
+    {
+        if (!\Illuminate\Support\Facades\Auth::check()) {
+            return redirect()->route('login')->with('info', 'Por favor, inicia sesión para aceptar la invitación.');
+        }
+
+        $collaborator = \App\Models\TripCollaborator::where('token', $token)->first();
+
+        if (!$collaborator) {
+            abort(404, 'Invitación no válida.');
+        }
+
+        if ($collaborator->email !== \Illuminate\Support\Facades\Auth::user()->email) {
+            abort(403, 'Esta invitación no es para tu correo actual.');
+        }
+
+        $collaborator->update([
+            'user_id' => \Illuminate\Support\Facades\Auth::id(),
+            'accepted_at' => now(),
+            'token' => null // Clear token after acceptance
+        ]);
+
+        return redirect()->route('trips.index', ['filter' => 'shared'])
+            ->with('success', "Ahora colaboras en el viaje: {$collaborator->trip->title}");
+    }
+
+    /**
+     * Transfer ownership of a trip to another user
+     */
+    public function transferOwnership(Request $request, Trip $trip): JsonResponse
+    {
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'No autorizado'], 403);
+        }
+
+        $validated = $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $newOwner = \App\Models\User::where('email', $validated['email'])->first();
+
+        if (!$newOwner) {
+            return response()->json(['success' => false, 'message' => 'El usuario no existe en el sistema.'], 404);
+        }
+
+        if ($newOwner->id === Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'Ya eres el propietario de este viaje.'], 400);
+        }
+
+        $oldOwnerId = $trip->user_id;
+
+        // Perform transfer
+        $trip->user_id = $newOwner->id;
+        $trip->save();
+
+        // Ensure old owner remains as editor
+        TripCollaborator::updateOrCreate(
+            ['trip_id' => $trip->id, 'user_id' => $oldOwnerId],
+            [
+                'email' => Auth::user()->email,
+                'role' => 'editor',
+                'accepted_at' => now(),
+                'token' => null
+            ]
+        );
+
+        // Remove new owner from collaborators if they were there
+        TripCollaborator::where('trip_id', $trip->id)
+            ->where('user_id', $newOwner->id)
+            ->delete();
+
+        return response()->json(['success' => true, 'message' => "Viaje transferido a {$newOwner->name} exitosamente."]);
+    }
 }

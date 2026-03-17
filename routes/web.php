@@ -69,6 +69,9 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/{trip}/send-email', [TripController::class , 'sendEmail'])->name('trips.send-email');
     Route::post('trips/bulk-delete', [TripController::class , 'bulkDelete'])->name('trips.bulk-delete');
     Route::post('trips/bulk-duplicate', [TripController::class , 'bulkDuplicate'])->name('trips.bulk-duplicate');
+    Route::post('trips/{trip}/invite', [TripController::class , 'inviteCollaborator'])->name('trips.invite');
+    Route::post('trips/{trip}/transfer', [TripController::class , 'transferOwnership'])->name('trips.transfer');
+    Route::get('trips/accept-invite/{token}', [TripController::class , 'acceptInvite'])->name('trips.accept-invite');
 
     // Document routes
     Route::delete('documents/{document}', [\App\Http\Controllers\TripDocumentController::class , 'destroy'])->name('documents.destroy');

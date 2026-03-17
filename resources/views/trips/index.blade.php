@@ -522,6 +522,105 @@
         /* Empty state adaptation */
         .empty { padding: 40px 15px; }
     }
+
+    /* SEGMENTED CONTROL */
+    .segmented-control-container {
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 24px;
+        margin-top: 8px;
+    }
+    .segmented-control {
+        position: relative;
+        display: flex;
+        background: #f1f1f1;
+        padding: 4px;
+        border-radius: 12px;
+        width: fit-content;
+        user-select: none;
+    }
+    .segment-item {
+        position: relative;
+        padding: 8px 18px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--gray);
+        cursor: pointer;
+        z-index: 1;
+        transition: color 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .segment-item.active {
+        color: var(--teal);
+    }
+    .segment-item i {
+        font-size: 14px;
+    }
+    .segment-slider {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        height: calc(100% - 8px);
+        background: white;
+        border-radius: 9px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 0;
+    }
+
+    /* ACTIONS MENU */
+    .acts-menu-container {
+        position: relative;
+        display: inline-block;
+    }
+    .acts-menu {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: white;
+        border: 1px solid var(--bdr);
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        z-index: 100;
+        min-width: 180px;
+        display: none;
+        overflow: hidden;
+        margin-top: 5px;
+    }
+    .acts-menu.show {
+        display: block;
+        animation: slideDown 0.2s ease;
+    }
+    .acts-menu-item {
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--ink);
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .acts-menu-item:hover {
+        background: var(--sand);
+    }
+    .acts-menu-item i {
+        width: 16px;
+        color: var(--gray2);
+    }
+    .acts-menu-item.danger {
+        color: #d94040;
+    }
+    .acts-menu-item.danger i {
+        color: #d94040;
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 </style>
 @endpush
 
@@ -638,6 +737,20 @@
     <h1 class="hero-title">Panel de Control</h1>
     <p class="hero-sub">Diseña tus itinerarios y gestiona tus viajes de forma profesional.</p>
 
+    <div class="segmented-control-container">
+        <div class="segmented-control">
+            <div class="segment-slider" id="segmentSlider"></div>
+            <div class="segment-item {{ $activeMainTab === 'personal' ? 'active' : '' }}" onclick="switchTripsTab('personal', this)">
+                <i class="fas fa-suitcase-rolling"></i>
+                Mis viajes
+            </div>
+            <div class="segment-item {{ $activeMainTab === 'shared' ? 'active' : '' }}" onclick="switchTripsTab('shared', this)">
+                <i class="fas fa-users"></i>
+                Compartidos
+            </div>
+        </div>
+    </div>
+
   <div class="toolbar">
     <div class="sbox">
       <span class="sico">
@@ -752,14 +865,23 @@
             </div>
             <div class="resizer"></div>
           </th>
-          <th class="sortable" style="user-select: none;">
-            Vistas 
+          <th class="sortable" style="user-select: none; {{ $activeMainTab === 'shared' ? 'min-width: 130px;' : '' }}">
+            @if($activeMainTab === 'shared')
+                Propietario
+            @else
+                Vistas 
+            @endif
             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
             </div>
             <div class="header-dropdown" onclick="event.stopPropagation()">
-                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'asc', 'number')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg> Ordenar Mayor a Menor</div>
-                <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'desc', 'number')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg> Ordenar Menor a Mayor</div>
+                @if($activeMainTab === 'shared')
+                    <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'asc', 'string')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg> Ordenar A - Z</div>
+                    <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'desc', 'string')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg> Ordenar Z - A</div>
+                @else
+                    <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'asc', 'number')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg> Ordenar Mayor a Menor</div>
+                    <div class="header-dropdown-item" onclick="sortTableFromMenu(this, 'desc', 'number')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg> Ordenar Menor a Mayor</div>
+                @endif
                 <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
                 <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg> Ocultar campo</div>
             </div>
@@ -833,12 +955,21 @@
                       </select>
                     </td>
                     <td>
-                      <div style="display: flex; align-items: center; gap: 6px; color: var(--gray2); font-weight: 500; font-size: 12px;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; opacity: 0.7;">
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                        </svg> 
-                        {{ $trip->views_count ?? 0 }}
-                      </div>
+                      @if($activeMainTab === 'shared')
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="owner-avatar" style="width: 24px; height: 24px; border-radius: 50%; background: var(--sand); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; border: 1px solid var(--bdr);">
+                                {{ strtoupper(substr($trip->user->name, 0, 1) . substr($trip->user->last_name, 0, 1)) }}
+                            </div>
+                            <span style="font-size: 12px; font-weight: 500; color: var(--ink);">{{ $trip->user->name }}</span>
+                        </div>
+                      @else
+                        <div style="display: flex; align-items: center; gap: 6px; color: var(--gray2); font-weight: 500; font-size: 12px;">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; opacity: 0.7;">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                          </svg> 
+                          {{ $trip->views_count ?? 0 }}
+                        </div>
+                      @endif
                     </td>
                     <td class="acts-cell" onclick="event.stopPropagation()">
                       <div class="acts">
@@ -851,9 +982,31 @@
                         <button class="abt share" data-tip="Enviar al cliente" onclick="shareTripIndex({{ $trip->id }}, '{{ $trip->share_token }}')">
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                         </button>
-                        <button class="abt del" data-tip="Eliminar" onclick="delRow({{ $trip->id }})">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-                        </button>
+                        
+                        <div class="acts-menu-container">
+                            <button class="abt" onclick="toggleActsMenu(event, {{ $trip->id }})" title="Más opciones">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="acts-menu" id="menu-{{ $trip->id }}">
+                                <div class="acts-menu-item" onclick="openSharingModal({{ $trip->id }}, 'viewer')">
+                                    <i class="fas fa-eye"></i> Compartir para ver
+                                </div>
+                                <div class="acts-menu-item" onclick="openSharingModal({{ $trip->id }}, 'editor')">
+                                    <i class="fas fa-edit"></i> Compartir para editar
+                                </div>
+                                @if($trip->user_id === Auth::id())
+                                <div class="acts-menu-item" onclick="openTransferModal({{ $trip->id }})">
+                                    <i class="fas fa-exchange-alt"></i> Cambiar propietario
+                                </div>
+                                <div class="acts-menu-item" onclick="duplicateTrip({{ $trip->id }})">
+                                    <i class="fas fa-copy"></i> Duplicar viaje
+                                </div>
+                                <div class="acts-menu-item danger" onclick="delRow({{ $trip->id }})">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </div>
+                                @endif
+                            </div>
+                        </div>
                       </div>
                     </td>
                 </tr>
@@ -879,7 +1032,9 @@
 <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
 <script>
     function filterTrips(filter) {
-        window.location.href = `{{ route('trips.index') }}?filter=${filter}`;
+        const url = new URL(window.location.href);
+        url.searchParams.set('status', filter);
+        window.location.href = url.toString();
     }
 
     function searchTripsRows(query) {
@@ -1743,6 +1898,13 @@
                     } 
                 },
                 { 
+                    element: '.segmented-control', 
+                    popover: { 
+                        title: 'Navegación de Viajes', 
+                        description: 'Alterna entre tus viajes personales y aquellos que han sido compartidos contigo.' 
+                    } 
+                },
+                { 
                     element: '.btn-create', 
                     popover: { 
                         title: 'Crear Viaje', 
@@ -1772,8 +1934,208 @@
         driverObj.drive();
     }
 
+    function switchTripsTab(tab, el) {
+        window.location.href = `{{ route('trips.index') }}?filter=${tab}`;
+    }
+
+    function duplicateTrip(tripId) {
+        fetch(`{{ url('trips') }}/${tripId}/duplicate`, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
+        })
+        .then(r => r.json())
+        .then(d => {
+            if (d.success) {
+                showNotification('Viaje Duplicado', 'El viaje ha sido duplicado exitosamente.');
+                setTimeout(() => location.reload(), 800);
+            }
+        });
+    }
+
+    function toggleActsMenu(event, tripId) {
+        event.stopPropagation();
+        const menu = document.getElementById(`menu-${tripId}`);
+        const allMenus = document.querySelectorAll('.acts-menu');
+        
+        allMenus.forEach(m => {
+            if (m.id !== `menu-${tripId}`) m.classList.remove('show');
+        });
+        
+        menu.classList.toggle('show');
+        
+        // Close menu when clicking outside
+        const closeHandler = (e) => {
+            if (!menu.contains(e.target)) {
+                menu.classList.remove('show');
+                document.removeEventListener('click', closeHandler);
+            }
+        };
+        document.addEventListener('click', closeHandler);
+    }
+
+    function openSharingModal(tripId, role) {
+        const roleLabel = role === 'editor' ? 'EDICIÓN' : 'LECTURA';
+        const roleText = role === 'editor' ? 'podrá realizar cambios en el itinerario PRO.' : 'solo podrá ver la propuesta del viaje.';
+        const themeColor = '{{ auth()->user()->theme_color ?? "default" }}';
+        
+        const modalHtml = `
+            <div id="shareTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
+                <div style="background:white; width:90%; max-width:400px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
+                    <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
+                        <h3 style="margin:0; font-size:18px;">Compartir para ${role === 'editor' ? 'editar' : 'ver'}</h3>
+                        <p style="margin:5px 0 0; font-size:12px; opacity:0.9;">Permisos de ${roleLabel}</p>
+                    </div>
+                    <div style="padding:24px;">
+                        <form id="shareTripForm">
+                            <input type="hidden" name="role" value="${role}">
+                            <div style="margin-bottom:16px;">
+                                <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px;">Correo electrónico del colaborador</label>
+                                <input type="email" name="email" required placeholder="ejemplo@correo.com" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none;">
+                                <p style="font-size:11px; color:var(--gray2); margin-top:8px;">
+                                    <strong>Nota:</strong> El usuario ${roleText}
+                                </p>
+                            </div>
+                            <div style="display:flex; gap:12px; margin-top:24px;">
+                                <button type="button" onclick="document.getElementById('shareTripModal').remove()" style="flex:1; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
+                                <button type="submit" style="flex:1; height:44px; border:none; background:var(--accent); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px; box-shadow:0 4px 12px rgba(26,106,120,0.2);">Enviar Invitación</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        const form = document.getElementById('shareTripForm');
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+            const formData = new FormData(form);
+            const data = {
+                email: formData.get('email'),
+                role: formData.get('role')
+            };
+
+            try {
+                const response = await fetch(`{{ url('trips') }}/${tripId}/invite`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert(result.message);
+                    document.getElementById('shareTripModal').remove();
+                } else {
+                    alert('Error: ' + (result.message || 'No se pudo enviar la invitación'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Ocurrió un error al intentar enviar la invitación.');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        };
+    }
+
+    function openTransferModal(tripId) {
+        const modalHtml = `
+            <div id="transferTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
+                <div style="background:white; width:90%; max-width:400px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
+                    <div style="background:#1e293b; padding:20px; color:white; text-align:center;">
+                        <h3 style="margin:0; font-size:18px;">Cambiar Propietario</h3>
+                        <p style="margin:5px 0 0; font-size:12px; opacity:0.9;">Transferir el viaje a otro agente</p>
+                    </div>
+                    <div style="padding:24px;">
+                        <form id="transferTripForm">
+                            <div style="margin-bottom:16px;">
+                                <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px;">Correo del nuevo dueño</label>
+                                <input type="email" name="email" required placeholder="agente@viantryp.com" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none;">
+                                <div style="background:#fff7ed; padding:12px; border-radius:8px; border:1px solid #ffedd5; margin-top:16px;">
+                                    <p style="font-size:11px; color:#9a3412; margin:0;">
+                                        <strong>⚠ Importante:</strong> Al transferir, el viaje pasará a tu pestaña de <b>Compartidos</b> y tú quedarás como editor. La marca y colores del viaje cambiarán al perfil del nuevo dueño.
+                                    </p>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:12px; margin-top:24px;">
+                                <button type="button" onclick="document.getElementById('transferTripModal').remove()" style="flex:1; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
+                                <button type="submit" style="flex:1; height:44px; border:none; background:#1e293b; color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px;">Transferir Viaje</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        const form = document.getElementById('transferTripForm');
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            if(!confirm('¿Estás seguro de transferir la propiedad? Esta acción no se puede deshacer fácilmente.')) return;
+            
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+
+            const formData = new FormData(form);
+            const data = { email: formData.get('email') };
+
+            try {
+                const response = await fetch(`{{ url('trips') }}/${tripId}/transfer`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showNotification('Transferencia Exitosa', result.message);
+                    document.getElementById('transferTripModal').remove();
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    alert('Error: ' + (result.message || 'No se pudo realizar la transferencia'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Ocurrió un error al intentar transferir el viaje.');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        };
+    }
+
+    function initSegmentSlider() {
+        const activeItem = document.querySelector('.segment-item.active');
+        const slider = document.getElementById('segmentSlider');
+        if (activeItem && slider) {
+            slider.style.width = activeItem.offsetWidth + 'px';
+            slider.style.left = activeItem.offsetLeft + 'px';
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         initTableResizer();
+        initSegmentSlider();
         
         // Pequeño delay para dejar que las animaciones de la tabla terminen
         setTimeout(initTutorial, 800);

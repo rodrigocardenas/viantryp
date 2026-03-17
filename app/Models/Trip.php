@@ -469,12 +469,49 @@ class Trip extends Model
         return route('trips.share', ['token' => $this->share_token]);
     }
 
-    /**
-     * Get the documents for the trip
-     */
     public function documents()
     {
         return $this->hasMany(TripDocument::class);
+    }
+
+    /**
+     * Get the collaborators for the trip
+     */
+    public function collaborators()
+    {
+        return $this->hasMany(TripCollaborator::class);
+    }
+
+    /**
+     * Check if a specific user can edit this trip
+     */
+    public function canEdit(?int $userId): bool
+    {
+        if (!$userId) return false;
+        if ($this->user_id === $userId) return true;
+
+        return $this->collaborators()
+            ->where('user_id', $userId)
+            ->where('role', 'editor')
+            ->whereNotNull('accepted_at')
+            ->exists();
+    }
+
+    /**
+     * Check if a specific user can view this trip (either as owner, collaborator or via token)
+     */
+    public function canView(?int $userId): bool
+    {
+        if ($userId && $this->user_id === $userId) return true;
+
+        if ($userId) {
+            return $this->collaborators()
+                ->where('user_id', $userId)
+                ->whereNotNull('accepted_at')
+                ->exists();
+        }
+
+        return false;
     }
 
     /**
