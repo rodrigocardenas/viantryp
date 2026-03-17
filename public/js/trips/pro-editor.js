@@ -7,6 +7,7 @@ let currentDay = 'portada';
 let dayCount = 3, numericDayCount = 3, nextDayNumber = 4; // nextDayNumber always increments up
 let dragType = null, dragLabel = null, dragSourceIndex = null, dragSourceContainer = null;
 let pendingType = null, editingIndex = null, starRating = 0;
+let dragTabSourceIndex = null;
 let portadaAdultos = 2, portadaNinos = 0;
 let portadaPhotoUrl = '';
 const GIPHY_API_KEY = 'ga2U6DfG1RcG9EESPkiPph7sMM0uhrdy';
@@ -360,6 +361,66 @@ document.getElementById('dayTabs').addEventListener('click', e => {
   renderCanvas();
 });
 
+// Day Tabs Drag-and-Drop
+const tabsCont = document.getElementById('dayTabs');
+tabsCont.addEventListener('dragstart', e => {
+  const tab = e.target.closest('.day-tab:not(.portada-tab):not(.cierre-tab)');
+  if (!tab) { e.preventDefault(); return; }
+  dragTabSourceIndex = parseInt(tab.dataset.day);
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', dragTabSourceIndex);
+  setTimeout(() => tab.style.opacity = '0.4', 0);
+});
+tabsCont.addEventListener('dragend', e => {
+  const tab = e.target.closest('.day-tab');
+  if (tab) tab.style.opacity = '';
+  dragTabSourceIndex = null;
+  tabsCont.querySelectorAll('.day-tab').forEach(t => t.style.border = '');
+});
+tabsCont.addEventListener('dragover', e => {
+  e.preventDefault();
+  const tab = e.target.closest('.day-tab:not(.portada-tab):not(.cierre-tab)');
+  tabsCont.querySelectorAll('.day-tab').forEach(t => t.style.borderLeft = '');
+  if (tab && dragTabSourceIndex !== null && parseInt(tab.dataset.day) !== dragTabSourceIndex) {
+    tab.style.borderLeft = '2px solid var(--accent)';
+  }
+});
+tabsCont.addEventListener('dragleave', e => {
+  // Clear border from target when leaving the container or moving to another tab
+  if (e.target === tabsCont) {
+    tabsCont.querySelectorAll('.day-tab').forEach(t => t.style.borderLeft = '');
+  }
+});
+tabsCont.addEventListener('drop', e => {
+  e.preventDefault();
+  const targetTab = e.target.closest('.day-tab:not(.portada-tab):not(.cierre-tab)');
+  if (!targetTab || dragTabSourceIndex === null) return;
+  
+  const to = parseInt(targetTab.dataset.day);
+  if (to === dragTabSourceIndex) return;
+
+  // Move in arrays
+  const movedDay = days.splice(dragTabSourceIndex, 1)[0];
+  days.splice(to, 0, movedDay);
+  
+  const movedDate = dayDates.splice(dragTabSourceIndex, 1)[0];
+  dayDates.splice(to, 0, movedDate);
+
+  // Update currentDay if it was one of the involved
+  if (currentDay === dragTabSourceIndex) {
+    currentDay = to;
+  } else if (typeof currentDay === 'number') {
+    // If currentDay was between source and target, it shifts
+    if (dragTabSourceIndex < currentDay && to >= currentDay) currentDay--;
+    else if (dragTabSourceIndex > currentDay && to <= currentDay) currentDay++;
+  }
+
+  unsavedChanges = true;
+  renderTabs();
+  renderCanvas();
+  autoSaveProTrip();
+});
+
 document.getElementById('addDayBtn').addEventListener('click', () => {
   days.push([]); dayDates.push('');
   currentDay = days.length - 1;
@@ -454,8 +515,8 @@ function renderTabs() {
 
   // Days
   days.forEach((_, i) => {
-    html += `<button class="day-tab ${currentDay === i ? 'active' : ''}" data-day="${i}">
-      <span class="day-tab-label">Día ${i + 1}</span>
+    html += `<button class="day-tab ${currentDay === i ? 'active' : ''}" data-day="${i}" draggable="true" style="cursor:grab">
+      <span class="day-tab-label"><span style="display:inline-flex; gap:1px; margin-right:7px; opacity:0.4; font-size:10px;"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></span>Día ${i + 1}</span>
       <span class="day-tab-delete" onclick="confirmDeleteDay(${i},event)" title="Eliminar día"><i class="fa-solid fa-times"></i></span>
     </button>`;
   });
@@ -969,7 +1030,10 @@ if (window.proState) {
     renderCanvas();
   });
 } else {
-  renderCanvas();
+  document.addEventListener('DOMContentLoaded', () => {
+    renderTabs();
+    renderCanvas();
+  });
 }
 
 function toggleSidebar() {
