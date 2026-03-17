@@ -34,6 +34,7 @@ class User extends Authenticatable
         'agency_logo',
         'theme_color',
         'display_name_type',
+        'tutorials_seen',
     ];
 
     /**
@@ -56,6 +57,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'tutorials_seen' => 'array',
         ];
     }
 

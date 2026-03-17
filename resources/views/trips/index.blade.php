@@ -1899,7 +1899,8 @@
 
     function initTutorial(force = false) {
         const driver = window.driver.js.driver;
-        const hasSeenTutorial = localStorage.getItem('viantryp_tutorial_trips');
+        const tutorialsSeen = window.ViantrypTutorials || [];
+        const hasSeenTutorial = tutorialsSeen.includes('trips');
 
         if (hasSeenTutorial && !force) return;
 
@@ -1948,7 +1949,19 @@
                 }
             ],
             onDestroyed: () => {
-                localStorage.setItem('viantryp_tutorial_trips', 'true');
+                if (!hasSeenTutorial) {
+                    fetch('{{ route("profile.complete.tutorial") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ tutorial: 'trips' })
+                    });
+                    if (!window.ViantrypTutorials.includes('trips')) {
+                        window.ViantrypTutorials.push('trips');
+                    }
+                }
             }
         });
 

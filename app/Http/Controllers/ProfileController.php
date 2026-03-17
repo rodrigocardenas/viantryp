@@ -107,4 +107,19 @@ class ProfileController extends Controller
         }
         return response()->json(['success' => false, 'message' => 'No hay avatar para eliminar'], 400);
     }
+    public function completeTutorial(Request $request)
+    {
+        $user = auth()->user();
+        $validated = $request->validate([
+            'tutorial' => 'required|string|max:50',
+        ]);
+
+        $tutorials = $user->tutorials_seen ?? [];
+        if (!in_array($validated['tutorial'], $tutorials)) {
+            $tutorials[] = $validated['tutorial'];
+            $user->update(['tutorials_seen' => $tutorials]);
+        }
+
+        return response()->json(['success' => true]);
+    }
 }

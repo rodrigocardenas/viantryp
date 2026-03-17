@@ -462,7 +462,8 @@
     <script>
         function initEditorTutorial(force = false) {
             const driver = window.driver.js.driver;
-            const hasSeenTutorial = localStorage.getItem('viantryp_tutorial_editor');
+            const tutorialsSeen = window.ViantrypTutorials || [];
+            const hasSeenTutorial = tutorialsSeen.includes('editor');
 
             if (hasSeenTutorial && !force) return;
 
@@ -591,7 +592,19 @@
                     }
                 ],
                 onDestroyed: () => {
-                    localStorage.setItem('viantryp_tutorial_editor', 'true');
+                    if (!hasSeenTutorial) {
+                        fetch('{{ route("profile.complete.tutorial") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({ tutorial: 'editor' })
+                        });
+                        if (!window.ViantrypTutorials.includes('editor')) {
+                            window.ViantrypTutorials.push('editor');
+                        }
+                    }
                     // Limpieza de clases extra
                     document.querySelectorAll('.tutorial-extra-highlight').forEach(el => el.classList.remove('tutorial-extra-highlight'));
                     const tab = document.querySelector('.day-tab.portada-tab');

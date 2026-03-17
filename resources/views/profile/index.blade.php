@@ -1072,7 +1072,8 @@
   function initProfileTutorial(force = false) {
     if (!window.driver) return;
     const driver = window.driver.js.driver;
-    const hasSeenTutorial = localStorage.getItem('viantryp_tutorial_profile');
+    const tutorialsSeen = window.ViantrypTutorials || [];
+    const hasSeenTutorial = tutorialsSeen.includes('profile');
 
     if (hasSeenTutorial && !force) return;
 
@@ -1132,7 +1133,19 @@
             }
         ],
         onDestroyed: () => {
-            localStorage.setItem('viantryp_tutorial_profile', 'true');
+            if (!hasSeenTutorial) {
+                fetch('{{ route("profile.complete.tutorial") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ tutorial: 'profile' })
+                });
+                if (!window.ViantrypTutorials.includes('profile')) {
+                    window.ViantrypTutorials.push('profile');
+                }
+            }
         }
     });
 
