@@ -53,7 +53,7 @@
     @auth
     <!-- Notification Bell -->
     <div class="notifications-dropdown" style="position: relative; margin-right: 8px;">
-        <button id="notiTrigger" class="btn-help" title="Notificaciones" style="position: relative; background: transparent; border: 1px solid rgba(0,0,0,0.1); color: var(--dark);">
+        <button id="notiTrigger" class="btn-help" title="Notificaciones" style="position: relative;">
             <i class="fas fa-bell"></i>
             <span id="notiBadge" style="display: none; position: absolute; top: -5px; right: -5px; background: #c0392b; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; font-weight: 700; align-items: center; justify-content: center;">0</span>
         </button>
@@ -273,13 +273,13 @@
 
     .btn-help {
         width: 32px; height: 32px; border-radius: 50%;
-        border: 1px solid rgba(0,0,0,0.1); background: rgba(0,0,0,0.03);
+        border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);
         display: flex; align-items: center; justify-content: center;
-        color: var(--dark); cursor: pointer; transition: all 0.2s;
+        color: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.2s;
         text-decoration: none; font-size: 14px;
     }
     .btn-help:hover {
-        background: rgba(0,0,0,0.06); color: var(--teal); border-color: var(--teal);
+        background: rgba(255,255,255,0.2); color: white; border-color: white;
         transform: translateY(-1px);
     }
 
