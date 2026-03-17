@@ -807,10 +807,12 @@ class TripController extends Controller
         ]);
 
         $token = \Illuminate\Support\Str::random(40);
+        $invitedUser = \App\Models\User::where('email', $validated['email'])->first();
 
         \App\Models\TripCollaborator::updateOrCreate(
             ['trip_id' => $trip->id, 'email' => $validated['email']],
             [
+                'user_id' => $invitedUser ? $invitedUser->id : null,
                 'role' => $validated['role'],
                 'token' => $token,
                 'accepted_at' => null // Reset if re-inviting
@@ -823,7 +825,6 @@ class TripController extends Controller
             \Illuminate\Support\Facades\Mail::to($validated['email'])->send(new \App\Mail\TripCollaborationInvite($trip, $validated['role'], $inviteUrl));
             
             // Send database notification if user exists
-            $invitedUser = \App\Models\User::where('email', $validated['email'])->first();
             if ($invitedUser) {
                 $invitedUser->notify(new \App\Notifications\TripSharedNotification($trip, Auth::user(), $validated['role'], $inviteUrl));
             }
