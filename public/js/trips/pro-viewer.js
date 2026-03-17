@@ -34,7 +34,7 @@ function buildPreviewHTML(data) {
   };
   const currentTheme = themes[themeColor] || themes['default'];
   const isGradient = currentTheme.includes('gradient');
-  
+
   const cierreGradients = {
     'default': 'linear-gradient(185deg, #0f172a, #1a7f77, #10a6b1)',
     'ocean': 'linear-gradient(185deg, #091a2a, #1a5f8f, #2a7fb9)',
@@ -392,7 +392,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 
 /* TOPBAR */
 .pv-topbar{position:sticky;top:0;z-index:100;background:var(--accent-bg);border-bottom:none;padding:0 28px;height:52px;display:flex;align-items:center;gap:16px}
-.pv-logo{font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;background:linear-gradient(135deg,#e0f2fe,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
+.pv-logo{font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;color:#fff;flex-shrink:0}
 .pv-topbar-title{font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pv-back-btn{padding:6px 14px;border:1.5px solid rgba(255,255,255,0.2);border-radius:8px;font-size:12.5px;color:#fff;cursor:pointer;background:none;font-family:'Poppins',sans-serif;transition:all .14s;text-decoration:none;flex-shrink:0}
 .pv-back-btn:hover{border-color:#38bdf8;color:#38bdf8;background:rgba(255,255,255,0.1)}
@@ -581,17 +581,15 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 
     .gps-logo-text {
         color: #fff;
-        font-weight: 400;
-        font-size: 22px;
-        font-family: 'Dongra Script', cursive !important;
+        font-weight: 600;
+        font-size: 13px;
         line-height: 1;
     }
 
     .gps-logo-img {
         max-width: 140px;
         height: auto;
-        max-height: 60px;
-        filter: brightness(0) invert(1);
+        max-height: 50px;
         object-fit: contain;
     }
 </style>
@@ -599,18 +597,27 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <body>
 ${isPublicLink ? `
 <div class="public-preview-header">
-    ${(displayNameType === 'agency' && (agencyLogo || agencyName)) 
-      ? (agencyLogo 
-          ? `<img src="${agencyLogo}" alt="${agencyName}" class="gps-logo-img">`
-          : `<span class="gps-logo-text">${agencyName}</span>`)
-      : `<span class="gps-logo-text">${userFullName || userName}</span>`
-    }
+    ${(displayNameType === 'agency' && (agencyLogo || agencyName))
+        ? `<div style="display:flex;align-items:center;gap:12px;">
+           ${agencyLogo ? `<img src="${agencyLogo}" alt="${agencyName}" class="gps-logo-img">` : ''}
+           ${agencyName ? `<span class="gps-logo-text" style="font-size:13px;">${agencyName}</span>` : ''}
+         </div>`
+        : `<span class="gps-logo-text">${userFullName || userName}</span>`
+      }
     <img src="${origin || ''}/images/logo-viantryp.png" alt="Viantryp Logo" class="viantryp-logo" style="width:80px;height:auto;filter:brightness(0) invert(1);object-fit:contain;">
 </div>
 ` : `
 <div class="pv-topbar">
-  <div class="pv-logo" style="display:flex;align-items:center;"><img src="${origin || ''}/images/logo-viantryp.png" alt="Viantryp Logo" style="height:22px; filter:brightness(0) invert(1); display:block;"></div>
-  <div class="pv-topbar-title">${title}</div>
+  <div class="pv-logo" style="display:flex;align-items:center;">
+    ${(displayNameType === 'agency' && (agencyLogo || agencyName))
+        ? `<div style="display:flex;align-items:center;gap:12px;">
+           ${agencyLogo ? `<img src="${agencyLogo}" alt="${agencyName}" class="gps-logo-img" style="max-height:30px;">` : ''}
+           ${agencyName ? `<span class="gps-logo-text" style="font-size:13px;">${agencyName}</span>` : ''}
+         </div>`
+        : `<span class="gps-logo-text">${userFullName || userName}</span>`
+      }
+  </div>
+  <div style="flex:1"></div>
   <div class="pv-topbar-actions" style="display:flex;gap:12px;">
       <button class="pv-share-btn" onclick="shareProTrip()" style="background:#fff;color:#0f172a;border:none;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-share-nodes"></i> <span class="pv-back-text">Compartir</span></button>
       <button class="pv-back-btn" onclick="window.close()" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;"><i class="fa-solid fa-times" style="font-size:16px"></i> <span class="pv-back-text">Cerrar</span></button>
