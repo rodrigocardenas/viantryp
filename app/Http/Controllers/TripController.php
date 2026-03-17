@@ -30,8 +30,10 @@ class TripController extends Controller
 
         if ($filter === 'shared') {
             $query = Trip::whereHas('collaborators', function($q) use ($userId) {
-                $q->where('user_id', $userId)->whereNotNull('accepted_at');
-            })->with(['user', 'persons']);
+                $q->where('user_id', $userId);
+            })->with(['user', 'persons', 'collaborators' => function($q) use ($userId) {
+                $q->where('user_id', $userId);
+            }]);
         } else {
             $query = Trip::with(['user', 'persons'])->where('user_id', $userId);
         }
@@ -819,6 +821,13 @@ class TripController extends Controller
 
         try {
             \Illuminate\Support\Facades\Mail::to($validated['email'])->send(new \App\Mail\TripCollaborationInvite($trip, $validated['role'], $inviteUrl));
+            
+            // Send database notification if user exists
+            $invitedUser = \App\Models\User::where('email', $validated['email'])->first();
+            if ($invitedUser) {
+                $invitedUser->notify(new \App\Notifications\TripSharedNotification($trip, Auth::user(), $validated['role'], $inviteUrl));
+            }
+            
             return response()->json(['success' => true, 'message' => 'Invitación enviada con éxito.']);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Error sending collaboration invite: ' . $e->getMessage());

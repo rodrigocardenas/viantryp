@@ -51,6 +51,25 @@
     @endif
 
     @auth
+    <!-- Notification Bell -->
+    <div class="notifications-dropdown" style="position: relative; margin-right: 8px;">
+        <button id="notiTrigger" class="btn-help" title="Notificaciones" style="position: relative; background: transparent; border: 1px solid rgba(0,0,0,0.1); color: var(--dark);">
+            <i class="fas fa-bell"></i>
+            <span id="notiBadge" style="display: none; position: absolute; top: -5px; right: -5px; background: #c0392b; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; font-weight: 700; align-items: center; justify-content: center;">0</span>
+        </button>
+        <div id="notiMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 280px; overflow: hidden; z-index: 1000; border: 1px solid #e2e8ef;">
+            <div style="padding: 12px 16px; border-bottom: 1px solid #e2e8ef; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; font-weight: 700; color: var(--dark); text-transform: uppercase; letter-spacing: 0.5px;">Notificaciones</span>
+                <button onclick="markNotificationsAsRead()" style="border: none; background: transparent; color: var(--teal); font-size: 11px; font-weight: 600; cursor: pointer;">Marcar como leídas</button>
+            </div>
+            <div id="notiList" style="max-height: 320px; overflow-y: auto;">
+                <!-- Notifications will be loaded here -->
+                <div style="padding: 20px; text-align: center; color: var(--gray2); font-size: 12px;">Cargando...</div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="user-profile-dropdown" style="position: relative;">
         <div class="ubadge" id="profileTrigger" style="cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;">
           <div class="avatar" id="navAvatar" style="overflow: hidden;">
@@ -114,10 +133,87 @@
                 }
             };
 
+            const initNotis = () => {
+                const trigger = document.getElementById('notiTrigger');
+                const menu = document.getElementById('notiMenu');
+                const badge = document.getElementById('notiBadge');
+                const list = document.getElementById('notiList');
+
+                if (!trigger || !menu) return;
+
+                const fetchNotis = () => {
+                    fetch('{{ route("notifications.get") }}')
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d.unread_count > 0) {
+                                badge.textContent = d.unread_count;
+                                badge.style.display = 'flex';
+                            } else {
+                                badge.style.display = 'none';
+                            }
+
+                            if (d.notifications.length === 0) {
+                                list.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--gray2); font-size: 12px;">No tienes notificaciones nuevas</div>';
+                            } else {
+                                list.innerHTML = d.notifications.map(n => `
+                                    <div style="padding: 12px 16px; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: background 0.2s; ${n.read_at ? '' : 'background: #f0f9f8;'}" onclick="handleNotiClick('${n.id}', '${n.data.invite_url}')">
+                                        <div style="font-size: 13px; color: var(--dark); font-weight: ${n.read_at ? '400' : '600'}; margin-bottom: 4px;">${n.data.message}</div>
+                                        <div style="font-size: 11px; color: var(--gray2);">${new Date(n.created_at).toLocaleString()}</div>
+                                    </div>
+                                `).join('');
+                            }
+                        });
+                };
+
+                window.handleNotiClick = (id, url) => {
+                    fetch(`/notifications/mark-read/${id}`, {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
+                    }).finally(() => {
+                        window.location.href = url;
+                    });
+                };
+
+                trigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isVisible = menu.style.display === 'block';
+                    menu.style.display = isVisible ? 'none' : 'block';
+                    if (!isVisible) fetchNotis();
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!trigger.contains(e.target) && !menu.contains(e.target)) {
+                        menu.style.display = 'none';
+                    }
+                });
+
+                // Initial fetch for badge
+                fetchNotis();
+                // Refresh every 2 minutes
+                setInterval(fetchNotis, 120000);
+            };
+
+            window.markNotificationsAsRead = () => {
+                fetch('{{ route("notifications.mark-read") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                }).then(() => {
+                    document.getElementById('notiBadge').style.display = 'none';
+                    document.getElementById('notiMenu').style.display = 'none';
+                });
+            };
+
             if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initMenu);
+                document.addEventListener('DOMContentLoaded', () => {
+                    initMenu();
+                    initNotis();
+                });
             } else {
                 initMenu();
+                initNotis();
             }
         })();
     </script>
@@ -177,13 +273,13 @@
 
     .btn-help {
         width: 32px; height: 32px; border-radius: 50%;
-        border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(0,0,0,0.1); background: rgba(0,0,0,0.03);
         display: flex; align-items: center; justify-content: center;
-        color: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.2s;
+        color: var(--dark); cursor: pointer; transition: all 0.2s;
         text-decoration: none; font-size: 14px;
     }
     .btn-help:hover {
-        background: rgba(255,255,255,0.2); color: white; border-color: white;
+        background: rgba(0,0,0,0.06); color: var(--teal); border-color: var(--teal);
         transform: translateY(-1px);
     }
 

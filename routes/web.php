@@ -85,6 +85,23 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/avatar', [\App\Http\Controllers\ProfileController::class, 'uploadAvatar'])->name('profile.upload.avatar');
     Route::post('/profile/avatar/delete', [\App\Http\Controllers\ProfileController::class, 'deleteAvatar'])->name('profile.delete.avatar');
     Route::post('/profile/logo', [\App\Http\Controllers\ProfileController::class, 'uploadLogo'])->name('profile.upload.logo');
+
+    Route::get('/notifications', function() {
+        return response()->json([
+            'notifications' => auth()->user()->notifications()->latest()->take(10)->get(),
+            'unread_count' => auth()->user()->unreadNotifications->count()
+        ]);
+    })->name('notifications.get');
+
+    Route::post('/notifications/mark-read/{id}', function($id) {
+        auth()->user()->unreadNotifications->where('id', $id)->markAsRead();
+        return response()->json(['success' => true]);
+    })->name('notifications.mark-read-single');
+
+    Route::post('/notifications/mark-read', function() {
+        auth()->user()->unreadNotifications->markAsRead();
+        return response()->json(['success' => true]);
+    })->name('notifications.mark-read');
 });
 
 // Google Places API routes (outside auth middleware for AJAX requests)

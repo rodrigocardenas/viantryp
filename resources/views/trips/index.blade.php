@@ -649,82 +649,7 @@
     }
 @endphp
 
-<!-- ══ TOPBAR ══ -->
-<header class="topbar">
-  <div class="topbar-left">
-    <a href="{{ route('home') }}" class="logo">
-      <img src="/images/logo-viantryp.png" alt="Viantryp">
-    </a>
-  </div>
-  <div class="topbar-right">
-    @auth
-    <a href="javascript:void(0)" onclick="initTutorial(true)" class="btn-help" title="Ayuda / Tutorial" style="margin-right: 4px;">
-        <i class="fas fa-question-circle"></i>
-    </a>
-    <div class="user-profile-dropdown" style="position: relative;">
-        <div class="ubadge" id="profileTrigger" style="cursor: pointer;">
-          <div class="avatar" id="navAvatar" style="overflow: hidden;">
-            @if(auth()->user()->avatar)
-                <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-            @else
-                {{ auth()->user()->display_initials }}
-            @endif
-          </div>
-          <span class="uname">{{ auth()->user()->display_name }}</span>
-          <i class="fas fa-chevron-down" style="font-size: 10px; color: #fbfbfb;"></i>
-        </div>
-        
-        <div id="profileMenu" class="dropdown-menu-content" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid var(--border); text-align: left;">
-            <a href="{{ route('trips.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--dark); text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
-                <i class="fas fa-suitcase-rolling" style="color: #64748b; font-size: 15px;"></i>
-                Mis viajes
-            </a>
-            <div style="height: 1px; background: var(--border);"></div>
-            <a href="{{ route('profile.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--dark); text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
-                <i class="fas fa-user-circle" style="color: #64748b; font-size: 15px;"></i>
-                Mi perfil
-            </a>
-            <div style="height: 1px; background: var(--border);"></div>
-            <form method="POST" action="{{ route('logout') }}" id="logout-form" style="margin: 0;">
-                @csrf
-                <button type="submit" class="dropdown-item" style="width: 100%; border: none; background: transparent; display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: #c0392b; cursor: pointer; text-align: left; font-size: 13px; font-weight: 500; transition: background 0.2s; font-family: 'Barlow', sans-serif;">
-                    <i class="fas fa-sign-out-alt" style="font-size: 15px;"></i>
-                    Cerrar sesión
-                </button>
-            </form>
-        </div>
-    </div>
-    
-    <script>
-        (function() {
-            const initMenu = () => {
-                const trigger = document.getElementById('profileTrigger');
-                const menu = document.getElementById('profileMenu');
-                if (trigger && menu) {
-                    trigger.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        const isVisible = menu.style.display === 'block';
-                        menu.style.display = isVisible ? 'none' : 'block';
-                    });
-                    document.addEventListener('click', function(e) {
-                        if (!trigger.contains(e.target) && !menu.contains(e.target)) {
-                            menu.style.display = 'none';
-                        }
-                    });
-                    const items = menu.querySelectorAll('.dropdown-item');
-                    items.forEach(item => {
-                        item.addEventListener('mouseover', () => item.style.background = '#f8fafc');
-                        item.addEventListener('mouseout', () => item.style.background = 'transparent');
-                    });
-                }
-            };
-            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initMenu);
-            else initMenu();
-        })();
-    </script>
-    @endauth
-  </div>
-</header>
+<x-header :tutorialOnclick="'initTutorial(true)'" />
 
 
 <!-- ══ CONTENT ══ -->
@@ -956,11 +881,20 @@
                     </td>
                     <td>
                       @if($activeMainTab === 'shared')
+                        @php
+                            $myCollab = $trip->collaborators->first();
+                            $isPending = $myCollab && !$myCollab->accepted_at;
+                        @endphp
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <div class="owner-avatar" style="width: 24px; height: 24px; border-radius: 50%; background: var(--sand); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; border: 1px solid var(--bdr);">
                                 {{ strtoupper(substr($trip->user->name, 0, 1) . substr($trip->user->last_name, 0, 1)) }}
                             </div>
-                            <span style="font-size: 12px; font-weight: 500; color: var(--ink);">{{ $trip->user->name }}</span>
+                            <div>
+                                <div style="font-size: 12px; font-weight: 600; color: var(--ink);">{{ $trip->user->name }}</div>
+                                @if($isPending)
+                                    <span style="font-size: 10px; color: #c0392b; font-weight: 700; text-transform: uppercase;">Invitación Pendiente</span>
+                                @endif
+                            </div>
                         </div>
                       @else
                         <div style="display: flex; align-items: center; gap: 6px; color: var(--gray2); font-weight: 500; font-size: 12px;">
@@ -973,6 +907,11 @@
                     </td>
                     <td class="acts-cell" onclick="event.stopPropagation()">
                       <div class="acts">
+                        @if($activeMainTab === 'shared' && isset($isPending) && $isPending)
+                            <a href="{{ route('trips.accept-invite', ['token' => $myCollab->token]) }}" class="btn-create" style="padding: 6px 12px; font-size: 11px; height: 28px; background: var(--teal); border: none; color: white; border-radius: 6px; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                                <i class="fas fa-check"></i> Aceptar
+                            </a>
+                        @endif
                         <button class="abt view" data-tip="Ver propuesta" onclick="previewTrip({{ $trip->id }})">
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
