@@ -235,7 +235,7 @@ document.getElementById('unsplashSearch').addEventListener('keydown', e => { if 
 
 // CONFIGS
 const C = {
-  flight: { icon: '<i class="fa-solid fa-plane"></i>', label: 'Vuelo', color: 'var(--primary-blue)', bg: '#e0f2fe', fields: [{ k: 'origen', l: 'Ciudad origen', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'destino', l: 'Ciudad destino', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'aerolinea', l: 'Aerolínea', t: 'text', ph: 'Air France' }, { k: 'vuelo', l: 'No. de vuelo', t: 'text', ph: 'AF9474' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'clase', l: 'Clase', t: 'select', ph: 'Selecciona...', opts: ['Económica', 'Ejecutiva', 'Primera'] }, { k: 'precio', l: 'Precio', t: 'number', ph: '800' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'VLO-12345' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
+  flight: { icon: '<i class="fa-solid fa-plane"></i>', label: 'Vuelo', color: 'var(--primary-blue)', bg: '#e0f2fe', fields: [{ k: 'origen', l: 'Ciudad origen', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'destino', l: 'Ciudad destino', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'aerolinea', l: 'Aerolínea', t: 'text', ph: 'Air France', airlineApi: true }, { k: 'vuelo', l: 'No. de vuelo', t: 'text', ph: 'AF9474' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'clase', l: 'Clase', t: 'select', ph: 'Selecciona...', opts: ['Económica', 'Ejecutiva', 'Primera'] }, { k: 'precio', l: 'Precio', t: 'number', ph: '800' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'VLO-12345' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
   alojamiento: { icon: '<i class="fa-solid fa-hotel"></i>', label: 'Alojamiento', color: '#f0567a', bg: '#fde8ee', hasStars: true, fields: [{ k: 'nombre', l: 'Nombre del hotel', t: 'text', ph: 'Hotel Luxe París', fw: true }, { k: 'checkin', l: 'Check-in', t: 'date' }, { k: 'checkout', l: 'Check-out', t: 'date' }, { k: 'habitacion', l: 'Tipo habitación', t: 'select', ph: 'Selecciona...', opts: ['Sencilla', 'Doble', 'Suite', 'Familiar'] }, { k: 'alimentacion', l: 'Alimentación', t: 'select', ph: 'Selecciona...', opts: ['Solo alojamiento', 'Desayuno incluido', 'Media pensión', 'Pensión completa', 'Todo incluido'] }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...' }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', fw: true }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ALJ-12345' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '150' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Desayuno incluido...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
   transporte: { icon: '<i class="fa-solid fa-car"></i>', label: 'Transporte', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'tipo', l: 'Tipo', t: 'select', opts: ['Auto de alquiler', 'Taxi/Uber', 'Tren', 'Bus', 'Ferry', 'Moto'] }, { k: 'proveedor', l: 'Proveedor', t: 'text', ph: 'Hertz, Renfe...' }, { k: 'origen', l: 'Desde', t: 'text', ph: 'Aeropuerto CDG' }, { k: 'destino', l: 'Hasta', t: 'text', ph: 'Hotel Centro' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'precio', l: 'Precio', t: 'number', ph: '50' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TRL-12345' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Confirmación...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
   actividad: { icon: '<i class="fa-solid fa-bullseye"></i>', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', hasStars: true, fields: [{ k: 'nombre', l: 'Nombre actividad', t: 'text', ph: 'Cena con vista, Tour privado...', fw: true }, { k: 'direccion', l: 'Lugar (Google Maps)', t: 'text', ph: 'Torre Eiffel, Museo del Louvre...', fw: true }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '25' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
@@ -860,7 +860,7 @@ function buildField(field, data) {
       fg.appendChild(btn);
     }
 
-    if (field.airportApi) {
+    if (field.airportApi || field.airlineApi) {
       const drop = document.createElement('div'); drop.className = 'api-autocomplete-drop'; drop.style = 'position:absolute; background:#fff; border:1px solid #ccc; border-radius:4px; max-height:200px; overflow-y:auto; z-index:100; display:none; width:100%; box-shadow:0 4px 6px rgba(0,0,0,0.1); margin-top:2px;';
       fg.style.position = 'relative';
       fg.appendChild(drop);
@@ -870,7 +870,8 @@ function buildField(field, data) {
         const q = e.target.value.trim();
         if (q.length < 3) { drop.style.display = 'none'; return; }
         timeout = setTimeout(() => {
-          fetch(`/api/airports?q=${encodeURIComponent(q)}`)
+          const endpoint = field.airportApi ? '/api/airports' : '/api/airlines';
+          fetch(`${endpoint}?q=${encodeURIComponent(q)}`)
             .then(res => res.json())
             .then(data => {
               drop.innerHTML = '';
@@ -878,12 +879,12 @@ function buildField(field, data) {
               data.forEach(it => {
                 const item = document.createElement('div');
                 item.style = 'padding:8px 12px; cursor:pointer; font-size:14px; border-bottom:1px solid #eee; display:flex; flex-direction:column; gap:2px;';
-                item.innerHTML = `<strong>${it.text}</strong><span style="font-size:12px;color:#666">${it.city || ''}${it.country ? ', ' + it.country : ''}</span>`;
+                item.innerHTML = `<strong>${it.text}</strong><span style="font-size:12px;color:#666">${it.city || ''}${it.city && it.country ? ', ' : ''}${it.country || ''}</span>`;
                 item.onmouseenter = () => item.style.background = '#f5f5f5';
                 item.onmouseleave = () => item.style.background = '#transparent';
                 item.onclick = () => {
                   inp.value = it.text;
-                  inp.dataset.city = it.city || '';
+                  if (it.city) inp.dataset.city = it.city;
                   drop.style.display = 'none';
                 };
                 drop.appendChild(item);

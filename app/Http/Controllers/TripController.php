@@ -370,7 +370,9 @@ class TripController extends Controller
         $newTrip->title = $trip->title . ' (Copia)';
         $newTrip->status = Trip::STATUS_DRAFT;
         $newTrip->user_id = Auth::id(); // Ensure the duplicate belongs to the current user
-        $newTrip->code = null; // Clear the unique code to avoid constraint violation
+        $newTrip->code = null; 
+        $newTrip->share_token = null;
+        $newTrip->short_token = null;
         $newTrip->save();
 
         // Generate a new unique code for the duplicated trip
@@ -443,7 +445,9 @@ class TripController extends Controller
             $newTrip->title = $trip->title . ' (Copia)';
             $newTrip->status = Trip::STATUS_DRAFT;
             $newTrip->user_id = Auth::id(); // Ensure the duplicate belongs to the current user
-            $newTrip->code = null; // Clear the unique code to avoid constraint violation
+            $newTrip->code = null;
+            $newTrip->share_token = null;
+            $newTrip->short_token = null;
             $newTrip->save();
 
             // Generate a new unique code for the duplicated trip

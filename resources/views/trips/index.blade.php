@@ -1280,9 +1280,30 @@
         if(ids.length === 0) return;
         fetch(`{{ url('trips/bulk-duplicate') }}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+            headers: { 
+                'Content-Type': 'application/json', 
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({ trip_ids: ids })
-        }).then(r => r.json()).then(d => { if(d.success) location.reload(); });
+        })
+        .then(async r => {
+            if (!r.ok) {
+                const err = await r.json();
+                throw new Error(err.message || 'Error del servidor');
+            }
+            return r.json();
+        })
+        .then(d => {
+            if (d.success) {
+                showNotification('Viajes Duplicados', 'Los viajes seleccionados han sido duplicados.');
+                setTimeout(() => location.reload(), 1000);
+            }
+        })
+        .catch(err => {
+            console.error('Bulk duplication error:', err);
+            alert('Error al duplicar viajes: ' + err.message);
+        });
     }
 
     function editTripCode(tripId, currentCode) {
@@ -1939,16 +1960,33 @@
     }
 
     function duplicateTrip(tripId) {
+        showNotification('Procesando', 'Duplicando el viaje seleccionado...', 'info');
+        
         fetch(`{{ url('trips') }}/${tripId}/duplicate`, {
             method: 'POST',
-            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
+            headers: { 
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
+            }
         })
-        .then(r => r.json())
+        .then(async r => {
+            if (!r.ok) {
+                const err = await r.json();
+                throw new Error(err.message || 'Error del servidor');
+            }
+            return r.json();
+        })
         .then(d => {
             if (d.success) {
                 showNotification('Viaje Duplicado', 'El viaje ha sido duplicado exitosamente.');
                 setTimeout(() => location.reload(), 800);
+            } else {
+                alert('Error: ' + d.message);
             }
+        })
+        .catch(err => {
+            console.error('Duplication error:', err);
+            alert('No se pudo duplicar el viaje: ' + err.message);
         });
     }
 
