@@ -441,12 +441,13 @@
         .btn-out { font-size: 11px; padding: 6px 12px; gap: 4px; }
         .btn-out svg { width: 12px; height: 12px; }
         .topbar-right { flex-direction: row-reverse; gap: 12px; }
+        .btn-help { display: none !important; }
         .ubadge { padding: 0; border: none; margin: 0; }
 
         /* Mobile Trips Card Layout */
         .toolbar { flex-direction: column; align-items: stretch; }
         .sbox { max-width: 100%; }
-        .toolbar .btn-primary { display: none !important; }
+        .toolbar .btn-create { display: none !important; }
 
         .tbl-wrap { background: transparent; border: none; box-shadow: none; border-radius: 0; }
         table, thead, tbody, th, td, tr { display: block; }
@@ -473,10 +474,11 @@
         .trip-name { font-size: 18px; line-height: 1.2; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
         
         /* Status Pill Re-styling for Card Header */
-        .trip-row > td:nth-child(7) { position: absolute; top: 20px; right: 20px; padding: 0; border: none; width: auto; z-index: 10; }
+        .trip-row > td:nth-child(7) { position: relative; top: 0; right: 0; padding: 4px 0 0 0; border: none; width: auto; z-index: 10; margin-top: -8px; }
         .status-select { 
             padding: 4px 26px 4px 10px; font-size: 11.5px; 
             border-radius: 6px; pointer-events: auto;
+            width: fit-content;
         }
 
         /* Destiny */

@@ -69,6 +69,9 @@
             position: relative !important;
             transition: all 0.2s ease !important;
         }
+        @media (max-width: 768px) {
+            .btn-help { display: none !important; }
+        }
     </style>
     @auth
         @include('layouts.theme-styles')

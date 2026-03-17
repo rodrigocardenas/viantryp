@@ -233,5 +233,6 @@
         .btn-out svg { width: 12px; height: 12px; margin: 0; }
         .ubadge { padding-right: 0; border: none; margin-left: 0; }
         .topbar-right { flex-direction: row-reverse; gap: 15px; }
+        .btn-help { display: none !important; }
     }
 </style>
