@@ -269,23 +269,33 @@ class TripController extends Controller
             $trip->update(['title' => $value]);
         }
         elseif ($field === 'client_email') {
-            // Find the client person linked to this trip and update it, or create if doesn't exist
-            $client = $trip->persons()->where('type', 'client')->first();
-            if ($client) {
-                if (empty($value)) {
+            if (empty($value)) {
+                // If clearing email, we can just null it out on the existing client if any
+                $client = $trip->persons()->where('type', 'client')->first();
+                if ($client) {
                     $client->update(['email' => null]);
                 }
-                else {
-                    $client->update(['email' => $value]);
+            } else {
+                // Check if a person with this email already exists
+                $existingPerson = Person::where('email', $value)->first();
+                if ($existingPerson) {
+                    // Switch trip to this existing person
+                    $trip->persons()->where('type', 'client')->detach();
+                    $trip->persons()->attach($existingPerson->id);
+                } else {
+                    // Update current client or create new one
+                    $client = $trip->persons()->where('type', 'client')->first();
+                    if ($client) {
+                        $client->update(['email' => $value]);
+                    } else {
+                        $newClient = Person::create([
+                            'name' => 'Cliente',
+                            'email' => $value,
+                            'type' => 'client'
+                        ]);
+                        $trip->persons()->attach($newClient->id);
+                    }
                 }
-            }
-            else if (!empty($value)) {
-                $newClient = Person::create([
-                    'name' => 'Cliente', // Default name
-                    'email' => $value,
-                    'type' => 'client'
-                ]);
-                $trip->persons()->attach($newClient->id);
             }
         }
         elseif ($field === 'client_name') {
@@ -296,7 +306,7 @@ class TripController extends Controller
             else if (!empty($value)) {
                 $newClient = Person::create([
                     'name' => $value,
-                    'email' => null,
+                    'email' => null, // Now allowed after migration
                     'type' => 'client'
                 ]);
                 $trip->persons()->attach($newClient->id);
