@@ -160,8 +160,8 @@ class TripController extends Controller
      */
     public function getProData(Trip $trip): JsonResponse
     {
-        // Ensure the trip belongs to the authenticated user
-        if ($trip->user_id !== Auth::id()) {
+        // Ensure the trip belongs to the authenticated user or has permission
+        if (!$trip->canView(Auth::id())) {
             return response()->json(['success' => false, 'message' => 'No autorizado'], 403);
         }
 
@@ -177,7 +177,8 @@ class TripController extends Controller
             'success' => true,
             'pro_state' => $trip->pro_state,
             'status' => $trip->status,
-            'user_name' => $trip->user->display_name ?? 'Viantryp'
+            'user_name' => $trip->user->display_name ?? 'Viantryp',
+            'theme_color' => $trip->user->theme_color ?? '#2b2d42'
         ]);
     }
 

@@ -1012,7 +1012,7 @@
                     proState.status = data.status || 'draft';
                     proState.userName = data.user_name || 'Viantryp';
                     proState.origin = window.location.origin;
-                    proState.themeColor = '{{ auth()->user()->theme_color ?? "default" }}';
+                    proState.themeColor = data.theme_color || '#2b2d42';
 
                     const previewHTML = buildPreviewHTML(proState);
                     const blob = new Blob([previewHTML], { type: 'text/html' });
