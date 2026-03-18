@@ -1013,6 +1013,10 @@
                     proState.userName = data.user_name || 'Viantryp';
                     proState.origin = window.location.origin;
                     proState.themeColor = data.theme_color || '#2b2d42';
+                    proState.displayNameType = data.display_name_type || 'personal';
+                    proState.agencyLogo = data.agency_logo || '';
+                    proState.agencyName = data.agency_name || '';
+                    proState.userFullName = data.user_full_name || '';
 
                     const previewHTML = buildPreviewHTML(proState);
                     const blob = new Blob([previewHTML], { type: 'text/html' });

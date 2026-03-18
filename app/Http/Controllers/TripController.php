@@ -178,7 +178,11 @@ class TripController extends Controller
             'pro_state' => $trip->pro_state,
             'status' => $trip->status,
             'user_name' => $trip->user->display_name ?? 'Viantryp',
-            'theme_color' => $trip->user->theme_color ?? '#2b2d42'
+            'user_full_name' => ($trip->user->name ?? '') . ' ' . ($trip->user->last_name ?? ''),
+            'theme_color' => $trip->user->theme_color ?? '#2b2d42',
+            'display_name_type' => $trip->user->display_name_type ?? 'personal',
+            'agency_logo' => $trip->user->agency_logo ? asset('storage/' . $trip->user->agency_logo) : null,
+            'agency_name' => $trip->user->agency_name ?? ''
         ]);
     }
 
