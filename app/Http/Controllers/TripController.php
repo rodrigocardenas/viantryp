@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Controllers\AirlineController;
+use App\Http\Controllers\GooglePlacesController;
+use App\Notifications\TripOwnershipTransferredNotification;
 use App\Mail\SendTripLink;
 use App\Models\TripCollaborator;
 use App\Mail\TripCollaborationInvite;
@@ -914,6 +917,9 @@ class TripController extends Controller
         TripCollaborator::where('trip_id', $trip->id)
             ->where('user_id', $newOwner->id)
             ->delete();
+
+        // Notify new owner
+        $newOwner->notify(new TripOwnershipTransferredNotification($trip, Auth::user()));
 
         return response()->json(['success' => true, 'message' => "Viaje transferido a {$newOwner->name} exitosamente."]);
     }
