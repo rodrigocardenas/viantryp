@@ -87,8 +87,11 @@ class TripController extends Controller
      */
     public function createPro(): View
     {
+        $isFirstTrip = Trip::where('user_id', Auth::id())->count() === 0;
+
         return view('trips.pro-editor', [
-            'trip' => null
+            'trip' => null,
+            'isFirstTrip' => $isFirstTrip
         ]);
     }
 
@@ -153,8 +156,11 @@ class TripController extends Controller
             abort(403, 'No tienes permiso para editar este viaje.');
         }
 
+        $isFirstTrip = Trip::where('user_id', Auth::id())->count() <= 1;
+
         return view('trips.pro-editor', [
-            'trip' => $trip->load(['persons'])
+            'trip' => $trip->load(['persons']),
+            'isFirstTrip' => $isFirstTrip
         ]);
     }
 
@@ -922,5 +928,44 @@ class TripController extends Controller
         $newOwner->notify(new TripOwnershipTransferredNotification($trip, Auth::user()));
 
         return response()->json(['success' => true, 'message' => "Viaje transferido a {$newOwner->name} exitosamente."]);
+    }
+
+    /**
+     * Get collaborators for a trip
+     */
+    public function getCollaborators(Trip $trip): JsonResponse
+    {
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'No autorizado'], 403);
+        }
+
+        $collaborators = $trip->collaborators()->get(['id', 'email', 'role', 'accepted_at']);
+
+        return response()->json([
+            'success' => true,
+            'collaborators' => $collaborators
+        ]);
+    }
+
+    /**
+     * Remove a collaborator from a trip
+     */
+    public function removeCollaborator(Request $request, Trip $trip): JsonResponse
+    {
+        if ($trip->user_id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'No autorizado'], 403);
+        }
+
+        $validated = $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $deleted = $trip->collaborators()->where('email', $validated['email'])->delete();
+
+        if ($deleted) {
+            return response()->json(['success' => true, 'message' => 'Colaborador eliminado exitosamente.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Colaborador no encontrado.'], 404);
     }
 }

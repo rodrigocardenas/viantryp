@@ -84,6 +84,8 @@
         window.viantrypAgencyLogo = "{{ auth()->user()->agency_logo ? asset('storage/' . auth()->user()->agency_logo) : '' }}";
         window.viantrypAgencyName = @json(auth()->user()->agency_name ?? '');
         window.viantrypUserFullName = @json(auth()->user()->name . ' ' . auth()->user()->last_name);
+        window.ViantrypTutorials = @json(auth()->user()->tutorials_seen ?? []);
+        window.isFirstTrip = @json($isFirstTrip ?? false);
         window.tripId = {{ $trip->id ?? 'null' }};
         window.proStatus = "{{ $trip->status ?? 'draft' }}";
         window.proState = @json($trip->pro_state ?? null);
@@ -465,7 +467,8 @@
             const tutorialsSeen = window.ViantrypTutorials || [];
             const hasSeenTutorial = tutorialsSeen.includes('editor');
 
-            if (hasSeenTutorial && !force) return;
+            // Auto-open only if NOT seen yet AND it's the first trip
+            if (!force && (hasSeenTutorial || !window.isFirstTrip)) return;
 
             const driverObj = driver({
                 showProgress: true,

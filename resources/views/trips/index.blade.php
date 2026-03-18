@@ -684,12 +684,14 @@
       <input type="text" placeholder="Buscar por ID, nombre, cliente..." id="searchInput" oninput="searchTripsRows(this.value)"/>
     </div>
     
+    @if($activeMainTab !== 'shared')
     <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
         <button onclick="showCreateTripModal()" class="btn-create">
           <i class="fas fa-plus"></i>
           <span>Crear viaje</span>
         </button>
     </div>
+    @endif
   </div>
 
   <div class="bulk-actions" id="bulk-actions">
@@ -928,11 +930,11 @@
                             </button>
                             <div class="acts-menu" id="menu-{{ $trip->id }}">
                                 @if($trip->user_id == Auth::id())
-                                <div class="acts-menu-item" onclick="openSharingModal({{ $trip->id }}, 'viewer')">
-                                    <i class="fas fa-eye"></i> Compartir para ver
-                                </div>
                                 <div class="acts-menu-item" onclick="openSharingModal({{ $trip->id }}, 'editor')">
                                     <i class="fas fa-edit"></i> Compartir para editar
+                                </div>
+                                <div class="acts-menu-item" onclick="openCollaboratorsModal({{ $trip->id }})">
+                                    <i class="fas fa-users"></i> Ver colaboradores
                                 </div>
                                 @endif
                                 @if($trip->user_id == Auth::id())
@@ -1868,7 +1870,21 @@
                     element: '.segmented-control', 
                     popover: { 
                         title: 'Navegación de Viajes', 
-                        description: 'Alterna entre tus viajes personales y aquellos que han sido compartidos contigo.' 
+                        description: 'Organizamos tus viajes en dos secciones principales para que siempre tengas el control.' 
+                    } 
+                },
+                { 
+                    element: '.segment-item:nth-child(2)', 
+                    popover: { 
+                        title: 'Mis Viajes', 
+                        description: 'Aquí encontrarás todos los itinerarios que has creado tú. Eres el propietario de esta información.' 
+                    } 
+                },
+                { 
+                    element: '.segment-item:nth-child(3)', 
+                    popover: { 
+                        title: 'Compartidos', 
+                        description: 'En esta pestaña verás los viajes que otros agentes han compartido contigo para colaborar.' 
                     } 
                 },
                 { 
@@ -2126,6 +2142,99 @@
         if (activeItem && slider) {
             slider.style.width = activeItem.offsetWidth + 'px';
             slider.style.left = activeItem.offsetLeft + 'px';
+        }
+    }
+
+    function openCollaboratorsModal(tripId) {
+        // Create modal structure
+        const modalHtml = `
+            <div id="collaboratorsModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
+                <div style="background:white; width:90%; max-width:450px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
+                    <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
+                        <h3 style="margin:0; font-size:18px;">Colaboradores del viaje</h3>
+                        <p style="margin:5px 0 0; font-size:12px; opacity:0.9;">Gestiona quién tiene acceso a este viaje</p>
+                    </div>
+                    <div style="padding:24px;" id="collaboratorsListContainer">
+                        <div style="text-align:center; padding:20px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--accent);"></i>
+                        </div>
+                    </div>
+                    <div style="padding:0 24px 24px;">
+                        <button type="button" onclick="document.getElementById('collaboratorsModal').remove()" style="width:100%; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        loadCollaborators(tripId);
+    }
+
+    async function loadCollaborators(tripId) {
+        const container = document.getElementById('collaboratorsListContainer');
+        try {
+            const response = await fetch(`{{ url('trips') }}/${tripId}/collaborators`);
+            const data = await response.json();
+
+            if (data.success) {
+                if (data.collaborators.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:20px; color:var(--gray2);">
+                            <p style="margin:0;">No hay colaboradores activos para este viaje.</p>
+                        </div>
+                    `;
+                } else {
+                    let html = '<div style="display:flex; flex-direction:column; gap:12px;">';
+                    data.collaborators.forEach(collab => {
+                        html += `
+                            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; border:1px solid var(--bdr); border-radius:10px; background:#f9fafb;">
+                                <div style="display:flex; flex-direction:column;">
+                                    <span style="font-size:13px; font-weight:600; color:var(--ink);">${collab.email}</span>
+                                    <span style="font-size:11px; color:var(--gray2); text-transform:uppercase;">${collab.role === 'editor' ? 'Editor' : 'Lector'} ${collab.accepted_at ? '' : '(Pendiente)'}</span>
+                                </div>
+                                <button onclick="removeCollaborator(${tripId}, '${collab.email}')" style="background:transparent; border:none; color:#d94040; cursor:pointer; padding:5px; transition:opacity 0.2s;" title="Eliminar acceso">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    container.innerHTML = html;
+                }
+            } else {
+                container.innerHTML = `<p style="color:#d94040; font-size:13px; text-align:center;">${data.message || 'Error al cargar colaboradores'}</p>`;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            container.innerHTML = '<p style="color:#d94040; font-size:13px; text-align:center;">Ocurrió un error al cargar la lista.</p>';
+        }
+    }
+
+    async function removeCollaborator(tripId, email) {
+        if (!confirm(`¿Estás seguro de que quieres dejar de compartir el viaje con ${email}?`)) return;
+
+        try {
+            const response = await fetch(`{{ url('trips') }}/${tripId}/collaborators/remove`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ email: email })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                showNotification('Acceso Revocado', result.message);
+                loadCollaborators(tripId);
+            } else {
+                alert('Error: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al intentar eliminar al colaborador.');
         }
     }
 

@@ -72,6 +72,8 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/{trip}/invite', [TripController::class , 'inviteCollaborator'])->name('trips.invite');
     Route::post('trips/{trip}/transfer', [TripController::class , 'transferOwnership'])->name('trips.transfer');
     Route::get('trips/accept-invite/{token}', [TripController::class , 'acceptInvite'])->name('trips.accept-invite');
+    Route::get('trips/{trip}/collaborators', [TripController::class, 'getCollaborators'])->name('trips.collaborators.get');
+    Route::post('trips/{trip}/collaborators/remove', [TripController::class, 'removeCollaborator'])->name('trips.collaborators.remove');
 
     // Document routes
     Route::delete('documents/{document}', [\App\Http\Controllers\TripDocumentController::class , 'destroy'])->name('documents.destroy');
