@@ -44,6 +44,13 @@
         </div>
     @endif
 
+    @if(isset($secondaryAction))
+    <a href="{{ $secondaryAction['url'] }}" class="secondary-nav-link" title="{{ $secondaryAction['text'] }}" style="margin-right: 8px;">
+        @if(isset($secondaryAction['icon'])) <i class="{{ $secondaryAction['icon'] }}" style="margin-right:6px;"></i> @endif
+        {{ $secondaryAction['text'] }}
+    </a>
+    @endif
+
     @if(isset($tutorialOnclick))
     <a href="javascript:void(0)" onclick="{{ $tutorialOnclick }}" class="btn-help" title="Ayuda / Tutorial" style="margin-right: 8px;">
         <i class="fas fa-question-circle"></i>
@@ -250,6 +257,30 @@
     .nav-link.active { color: var(--teal); background: rgba(26,154,138,0.05); }
 
     .topbar-right { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; }
+
+    .secondary-nav-link {
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        padding: 6px 18px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        transition: all 0.15s;
+        font-family: 'Barlow', sans-serif;
+        height: 32px;
+    }
+    .secondary-nav-link:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-color: white !important;
+        color: white !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
     .ubadge {
       display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px; border-left: 1px solid var(--border); margin-left: 8px;
     }
@@ -329,6 +360,6 @@
         .btn-out svg { width: 12px; height: 12px; margin: 0; }
         .ubadge { padding-right: 0; border: none; margin-left: 0; }
         .topbar-right { flex-direction: row-reverse; gap: 15px; }
-        .btn-help { display: none !important; }
+        .btn-help, .secondary-nav-link { display: none !important; }
     }
 </style>

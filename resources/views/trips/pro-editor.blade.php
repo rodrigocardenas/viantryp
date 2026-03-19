@@ -70,6 +70,34 @@
             position: relative !important;
             transition: all 0.2s ease !important;
         }
+        .secondary-nav-link {
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.15s;
+            font-family: 'Barlow', sans-serif;
+            height: 32px;
+            z-index: 1;
+        }
+        .secondary-nav-link:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border-color: white !important;
+            color: white !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .secondary-nav-link i {
+            margin-right: 6px;
+        }
+
         @media (max-width: 768px) {
             .btn-help { display: none !important; }
         }
@@ -115,10 +143,10 @@
           </button>
       </div>
       <div class="topbar-actions">
-          <button class="btn-viantryp" onclick="manualSaveProTrip()" style="color: white; white-space: nowrap; box-shadow: 0 3px 14px rgba(26, 106, 120, .2) !important;">
+          <button class="secondary-nav-link" onclick="manualSaveProTrip()">
               <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
           </button>
-          <button id="btnPreviewTrip" class="btn-viantryp" onclick="openPreview()" style="color: white !important;">
+          <button id="btnPreviewTrip" class="secondary-nav-link" onclick="openPreview()">
               <i class="fa-solid fa-eye"></i> Vista previa
           </button>
       </div>
@@ -292,7 +320,6 @@
         </div>
       </div>
       <div style="flex:1"></div>
-      <span style="font-size:11.5px;color:var(--text-dim)" id="itemCount">Portada del viaje</span>
     </div>
     <!-- DAY DATE SUBBAR -->
     <div class="day-subbar hidden" id="daySubbar">

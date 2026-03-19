@@ -485,16 +485,28 @@
   .tab-section { display: none; }
   .tab-section.active { display: block; }
 
-  @media (max-width: 768px) {
-    .grid { grid-template-columns: 1fr; }
-    .form-row { grid-template-columns: 1fr; }
-    .theme-grid { grid-template-columns: repeat(5, 1fr); }
-  }
-</style>
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .theme-grid { grid-template-columns: repeat(5, 1fr); }
+    }
+
+    /* Multi-element highlight helper */
+    .tutorial-extra-highlight {
+      z-index: 1000004 !important; /* Above Driver.js overlay */
+      position: relative !important;
+      transition: all 0.2s ease !important;
+      background: var(--accent-light) !important;
+      color: var(--accent) !important;
+    }
+  </style>
 @endpush
 
 @section('content')
-<x-header tutorialOnclick="initProfileTutorial(true)" />
+<x-header 
+  tutorialOnclick="initProfileTutorial(true)" 
+  :secondaryAction="['url' => route('trips.index'), 'text' => 'Ir a Mis Viajes']" 
+/>
 
 <div class="page-wrapper">
   <h1 class="page-title">Mi Perfil</h1>
@@ -1100,7 +1112,12 @@
                     position: 'top'
                 },
                 onHighlightStarted: () => {
-                   document.querySelector('.nav-item[data-section="info"]').click();
+                   const btn = document.querySelector('.nav-item[data-section="info"]');
+                   btn.click();
+                   btn.classList.add('tutorial-extra-highlight');
+                },
+                onDeselected: () => {
+                   document.querySelector('.nav-item[data-section="info"]').classList.remove('tutorial-extra-highlight');
                 }
             },
             { 
@@ -1111,7 +1128,12 @@
                     position: 'top'
                 },
                 onHighlightStarted: () => {
-                   document.querySelector('.nav-item[data-section="agencia"]').click();
+                   const btn = document.querySelector('.nav-item[data-section="agencia"]');
+                   btn.click();
+                   btn.classList.add('tutorial-extra-highlight');
+                },
+                onDeselected: () => {
+                   document.querySelector('.nav-item[data-section="agencia"]').classList.remove('tutorial-extra-highlight');
                 }
             },
             { 
@@ -1121,7 +1143,12 @@
                     description: '¡Dale color a tus viajes! Elige el tema que mejor represente tu estilo. Verás el cambio reflejado al instante en la vista previa de abajo.' 
                 },
                 onHighlightStarted: () => {
-                   document.querySelector('.nav-item[data-section="tema"]').click();
+                   const btn = document.querySelector('.nav-item[data-section="tema"]');
+                   btn.click();
+                   btn.classList.add('tutorial-extra-highlight');
+                },
+                onDeselected: () => {
+                   document.querySelector('.nav-item[data-section="tema"]').classList.remove('tutorial-extra-highlight');
                 }
             },
             { 
@@ -1129,6 +1156,14 @@
                 popover: { 
                     title: 'Vista Previa en Vivo', 
                     description: 'Así es como se verá la cabecera de tus itinerarios. Asegúrate de que todo luzca perfecto antes de enviar una propuesta.' 
+                } 
+            },
+            { 
+                element: '.secondary-nav-link', 
+                popover: { 
+                    title: '¡Empieza a Crear!', 
+                    description: 'Cuando ya tengas todo personalizado y ajustado, haz clic aquí en "Ir a Mis Viajes" para empezar a crear tus itinerarios y diseñarlos.',
+                    position: 'bottom'
                 } 
             }
         ],
