@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class RegisterController extends Controller
@@ -59,6 +60,13 @@ class RegisterController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        // Envío de correo de bienvenida
+        try {
+            $user->notify(new \App\Notifications\WelcomeNotification($user));
+        } catch (\Exception $e) {
+            \Log::error('Error enviando correo de bienvenida: ' . $e->getMessage());
+        }
 
         Auth::login($user);
         RateLimiter::clear($throttleKey);
