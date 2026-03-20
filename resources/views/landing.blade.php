@@ -589,9 +589,9 @@
     <div class="hero-blob blob-2"></div>
     <div class="hero-blob blob-3"></div>
   </div>
-  <div class="hero-badge">✦ Plataforma para agencias de viajes</div>
-  <h1>Diseña itinerarios<br><em>impactantes</em> en minutos</h1>
-  <p>Transforma tus propuestas de viaje en experiencias digitales interactivas. Centraliza hoteles, vuelos, actividades y documentos en una plataforma elegante que sorprende a tus clientes.</p>
+  <div class="hero-badge">✦Lleva tus viajes a otro nivel</div>
+  <h1>Diseña tus viajes<br><em>en cuestión</em> de minutos</h1>
+  <p>Organiza rutas, vuelos y estancias en una plataforma elegante e intuitiva. Ya sea para tu próximo gran viaje personal o para escalar tu negocio, Viantryp es el lienzo donde tus itinerarios cobran vida.</p>
   <div class="hero-actions">
     @auth
         <a href="{{ route('trips.index') }}" class="btn-primary">Ir a mis viajes →</a>
@@ -696,29 +696,29 @@
   <div class="container">
     <div class="reveal" style="text-align: left; margin-bottom: 5rem;">
       <div class="section-label">Proceso</div>
-      <h2 class="section-title">De la idea al cliente<br>en 3 pasos</h2>
+      <h2 class="section-title">Plasma tu gran viaje<br>en solo 3 pasos</h2>
     </div>
     
     <div class="creative-steps">
       <div class="creative-step reveal d1">
         <div class="step-giant-num">01</div>
         <div class="step-card">
-          <h3>Crea el itinerario</h3>
-          <p>Usa nuestro editor visual para estructurar el viaje día a día. Arrastra y suelta destinos y rutas con total libertad.</p>
+          <h3>Construye el itinerario</h3>
+          <p>Usa nuestro editor visual para estructurar tu viaje día a día. Arrastra destinos, rutas y fotos con total libertad</p>
         </div>
       </div>
       <div class="creative-step reveal d2">
         <div class="step-giant-num">02</div>
         <div class="step-card">
-          <h3>Personaliza</h3>
-          <p>Añade marcas, colores y documentos exclusivos. Haz que cada propuesta refleje la identidad de tu agencia.</p>
+          <h3>Dale tu toque</h3>
+          <p>Personaliza colores, añade documentos importantes o tu marca personal. Haz que cada itinerario cuente una historia única.</p>
         </div>
       </div>
       <div class="creative-step reveal d3">
         <div class="step-giant-num">03</div>
         <div class="step-card">
-          <h3>Comparte</h3>
-          <p>Un solo enlace para verlo todo. Sin apps ni PDFs pesados, accesible al instante desde cualquier lugar.</p>
+          <h3>Llévalo contigo</h3>
+          <p>Comparte un solo enlace inteligente. Sin archivos pesados ni apps extra; toda la información accesible desde cualquier lugar.</p>
         </div>
       </div>
     </div>
@@ -730,9 +730,9 @@
   <div class="container">
     <div class="travel-grid">
       <div class="travel-text reveal">
-        <div class="section-label">Experiencia del Viajero</div>
-        <h2 class="section-title">Todo lo que tu viajero necesita saber, en un solo lugar</h2>
-        <p class="section-desc">Una experiencia digital moderna y dinámica que transforma tus presentaciones de viajes en piezas únicas, accesibles desde cualquier dispositivo.</p>
+        <div class="section-label">Visualiza tu viaje de forma moderna</div>
+        <h2 class="section-title">Todo lo que necesitas, en un solo lugar</h2>
+        <p class="section-desc">Una experiencia digital moderna y dinámica que transforma tus viajes en piezas únicas, accesibles desde cualquier dispositivo.</p>
       </div>
       
       <div class="reveal d2">
@@ -1213,7 +1213,7 @@
   <div class="container">
     <div class="cta-box reveal">
       <div class="section-label">¿Listo para empezar?</div>
-      <h2>Tu próxima propuesta,<br>lista en minutos</h2>
+      <h2>Tu próxima aventura,<br>lista en minutos</h2>
       <div class="cta-actions">
         <a href="{{ route('register') }}" class="btn-primary">Crear cuenta gratis →</a>
         <a href="#contacto" class="btn-secondary">Hablar con el equipo</a>
@@ -1228,7 +1228,7 @@
   <div class="container reveal">
     <div class="section-label">Contacto</div>
     <h2 class="section-title">¿Tienes preguntas?</h2>
-    <p class="section-desc" style="margin:0 auto 2.5rem;">Más que una plataforma, somos tu aliado en tus viajes. <br>Escríbenos.</p>
+    <p class="section-desc" style="margin:0 auto 2.5rem;">Más que una plataforma, somos el aliado en tus viajes. <br>Escríbenos.</p>
     <a href="mailto:hola@viantryp.com" class="contact-email">hola@viantryp.com</a>
   </div>
 </section>
