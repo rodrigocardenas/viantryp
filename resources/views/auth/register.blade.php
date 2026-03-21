@@ -105,7 +105,7 @@
         padding: 0.4rem 0.6rem !important;
         white-space: nowrap;
       }
-      .nav-right { gap: 0.4rem; margin-right: 0.5rem; }
+      .nav-right { gap: 0.1rem; margin-right: 0.5rem; }
     }
 
     /* ─── SPLIT LAYOUT ─── */
@@ -468,7 +468,7 @@
           en minutos.
         </h1>
         <p class="left-sub">
-          La herramienta que agencias pequeñas y consultores independientes necesitaban. Sin complicaciones, sin horas perdidas.
+          La plataforma que redefine el diseño de itinerario de viajes. Sin complicaciones técnicas. Sin horas perdidas en diseño manual.
         </p>
       </div>
 
@@ -480,8 +480,8 @@
             </svg>
           </div>
           <div class="perk-text">
-            <strong>Itinerarios en minutos</strong>
-            <span>Genera propuestas completas con IA, listas para enviar a tu cliente.</span>
+            <strong>Itinerarios en tan solo minutos</strong>
+            <span> Organiza destinos, estancias y trayectos en un lienzo que entiende el ritmo de tus viajes.</span>
           </div>
         </li>
         <li class="perk">
@@ -492,8 +492,8 @@
             </svg>
           </div>
           <div class="perk-text">
-            <strong>Diseño profesional</strong>
-            <span>Propuestas visualmente atractivas que impresionan desde el primer vistazo.</span>
+            <strong>Sincronización total en un solo lugar</strong>
+            <span>Archivos, soportes y guías vinculados directamente a tu itinerario y siempre accesibles.</span>
           </div>
         </li>
         <li class="perk">
@@ -505,8 +505,8 @@
             </svg>
           </div>
           <div class="perk-text">
-            <strong>Hecho para hispanohablantes</strong>
-            <span>Todo en español, pensado para el mercado latinoamericano y europeo.</span>
+            <strong>Compartir en tiempo real</strong>
+            <span>Un enlace con el que puedas acceder a tu itinerario sin importar dónde estés.</span>
           </div>
         </li>
       </ul>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Viantryp | Home</title>
 <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   :root {
@@ -394,7 +394,7 @@
   /* ── SOLUTIONS SECTION ── */
   .solutions { padding: 5rem 0; background: var(--white); overflow: hidden; }
   .solutions-header { text-align: center; margin-bottom: 3rem; }
-  .solutions-title { font-size: 2.8rem; font-weight: 800; color: var(--navy); margin-bottom: 1rem; letter-spacing: -0.02em; }
+  .solutions-title { font-family: 'Inter', sans-serif; font-size: 2.8rem; font-weight: 800; color: var(--navy); margin-bottom: 1rem; letter-spacing: -0.02em; }
   .solutions-title span { color: var(--teal); }
   .solutions-desc { font-size: 1.15rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; line-height: 1.6; }
 
@@ -684,7 +684,7 @@
       nav { padding: 1rem; justify-content: space-between; }
       .nav-links { display: none; }
       .nav-logo img { height: 26px !important; }
-      .nav-right { gap: 0.4rem; margin-right: 0.5rem; }
+      .nav-right { gap: 0.1rem; margin-right: 0.5rem; }
       .nav-login, .nav-cta {
         font-size: 12px !important;
         padding: 0.4rem 0.6rem !important;
@@ -696,7 +696,45 @@
       .cta-note { font-size: 0.87rem !important; }
       .section-desc { font-size: 0.8rem !important; }
       .pricing-grid { grid-template-columns: 1fr; }
+      
+      .hero h1 { font-size: 2.2rem !important; line-height: 1.2 !important; }
+      .hero p { font-size: 1rem !important; margin: 1.5rem 0 !important; }
+      .hero-actions { flex-direction: column; width: 100%; gap: 1rem; }
+      .hero-actions .btn-primary, .hero-actions .btn-secondary { width: 100%; justify-content: center; }
+      .how { padding: 4rem 1.5rem !important; }
+      .creative-steps { gap: 2.5rem !important; }
+      .creative-step { flex-direction: column !important; gap: 1rem !important; }
+      .step-giant-num { font-size: 3rem !important; opacity: 0.2 !important; margin-bottom: -1.5rem !important; }
+      .plan-savings-spacer { display: none !important; }
+      
+      .cta-box { padding: 2.5rem 1.5rem !important; }
+      .cta-box h2 { font-size: 1.8rem !important; line-height: 1.2 !important; }
+      .cta-box p { font-size: 0.9rem !important; }
+      .cta-actions { flex-direction: column; width: 100%; gap: 1rem; }
+      .cta-actions .btn-primary, .cta-actions .btn-secondary { width: 100%; justify-content: center; }
+      
+      footer { padding: 3rem 1.5rem !important; }
+      .footer-inner { flex-direction: column !important; text-align: center !important; gap: 2rem !important; }
+      .footer-links { flex-direction: column !important; gap: 1rem !important; }
     }
+  
+  /* MOBILE MENU STYLES */
+  .mobile-menu-toggle {
+    display: none; background: none; border: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 5px; z-index: 1001;
+  }
+  .mobile-menu-toggle span { width: 22px; height: 2px; background: var(--navy); border-radius: 2px; transition: 0.3s; }
+  
+  .mobile-menu {
+    position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100vh; 
+    background: white; z-index: 2000; padding: 60px 30px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+  }
+  .mobile-menu.active { right: 0; }
+  .mobile-menu-close { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; color: var(--navy); cursor: pointer; }
+  .mobile-nav-links { list-style: none; display: flex; flex-direction: column; gap: 20px; }
+  .mobile-nav-links a { text-decoration: none; font-size: 18px; font-weight: 700; color: var(--navy); }
+  
+  .plan-savings-spacer { height: 22px; margin-bottom: 2rem; display: block; }
 </style>
 </head>
 <body>
@@ -711,6 +749,23 @@
     <li><a href="#precios">Precios</a></li>
   </ul>
   <div class="nav-right">
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="mobile-menu" id="mobileMenu">
+       <button class="mobile-menu-close" id="mobileMenuClose">✕</button>
+       <ul class="mobile-nav-links">
+         <li><a href="#como-funciona">Cómo funciona</a></li>
+         <li><a href="#precios">Precios</a></li>
+         @auth
+           <li><a href="{{ route('trips.index') }}">Ir a Mis Viajes</a></li>
+           <li><a href="{{ route('profile.index') }}">Mi Perfil</a></li>
+         @else
+           <li><a href="{{ route('login') }}">Iniciar Sesión</a></li>
+           <li><a href="{{ route('register') }}">Comenzar Gratis</a></li>
+         @endauth
+       </ul>
+    </div>
     @auth
         <div style="display: flex; align-items: center; gap: 1.25rem;">
             <a href="{{ route('trips.index') }}" class="nav-login">Ir a Mis Viajes</a>
@@ -752,23 +807,43 @@
                 const initMenu = () => {
                     const trigger = document.getElementById('profileTrigger');
                     const menu = document.getElementById('profileMenu');
+                    const mobileToggle = document.getElementById('mobileMenuToggle');
+                    const mobileClose = document.getElementById('mobileMenuClose');
+                    const mobileMenu = document.getElementById('mobileMenu');
+                    const mobileLinks = mobileMenu?.querySelectorAll('a');
+
                     if (trigger && menu) {
                         trigger.addEventListener('click', function(e) {
                             e.stopPropagation();
                             const isVisible = menu.style.display === 'block';
                             menu.style.display = isVisible ? 'none' : 'block';
                         });
-                        document.addEventListener('click', function(e) {
-                            if (!trigger.contains(e.target) && !menu.contains(e.target)) {
-                                menu.style.display = 'none';
-                            }
-                        });
-                        const items = menu.querySelectorAll('.dropdown-item');
-                        items.forEach(item => {
-                            item.addEventListener('mouseover', () => item.style.background = '#f8fafc');
-                            item.addEventListener('mouseout', () => item.style.background = 'transparent');
-                        });
                     }
+
+                    if (mobileToggle && mobileMenu) {
+                        mobileToggle.addEventListener('click', () => {
+                            mobileMenu.classList.add('active');
+                            document.body.style.overflow = 'hidden';
+                        });
+                        const closeMenu = () => {
+                            mobileMenu.classList.remove('active');
+                            document.body.style.overflow = '';
+                        };
+                        mobileClose?.addEventListener('click', closeMenu);
+                        mobileLinks?.forEach(link => link.addEventListener('click', closeMenu));
+                    }
+
+                    document.addEventListener('click', function(e) {
+                        if (trigger && menu && !trigger.contains(e.target) && !menu.contains(e.target)) {
+                            menu.style.display = 'none';
+                        }
+                    });
+
+                    const items = menu?.querySelectorAll('.dropdown-item');
+                    items?.forEach(item => {
+                        item.addEventListener('mouseover', () => item.style.background = '#f8fafc');
+                        item.addEventListener('mouseout', () => item.style.background = 'transparent');
+                    });
                 };
                 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initMenu);
                 else initMenu();
@@ -872,7 +947,7 @@
             <!-- PREVIEW HERO -->
             <div class="vt-preview-hero">
               <div class="vt-preview-hero-inner">
-                <div class="vt-preview-hero-title">Escapada a Dubai <span class="vt-badge">RESERVADO</span></div>
+                <div class="vt-preview-hero-title">Viaje a Dubai 🛫 <span class="vt-badge"><i class="fas fa-circle" style="font-size: 6px; vertical-align: middle; margin-right: 4px;"></i> RESERVADO</span></div>
                 <div class="vt-preview-hero-stats">
                   <div class="stat"><span>FECHAS</span><strong>14 may — 21 may</strong></div>
                   <div class="stat"><span>VIAJEROS</span><strong>2 personas</strong></div>
@@ -901,6 +976,20 @@
                     <div class="vt-empty-icon">🗺️</div>
                     <div class="vt-empty-title">Tu itinerario está vacío</div>
                     <div class="vt-empty-sub">Arrastra elementos desde el panel<br>izquierdo para comenzar</div>
+                  </div>
+                  <div class="vt-preview-header" id="vtPreviewHeader">
+                    <div class="vt-preview-header-item">
+                      <span class="vt-preview-header-label">FECHAS</span>
+                      <span class="vt-preview-header-value">14 may — 21 may</span>
+                    </div>
+                    <div class="vt-preview-header-item">
+                      <span class="vt-preview-header-label">VIAJEROS</span>
+                      <span class="vt-preview-header-value">2 personas</span>
+                    </div>
+                    <div class="vt-preview-header-item">
+                      <span class="vt-preview-header-label">TOTAL</span>
+                      <span class="vt-preview-header-value">USD $5,478.00</span>
+                    </div>
                   </div>
                   <div class="vt-items" id="vtItems"></div>
                   <div class="vt-drop-hint" id="vtDropHint">+ Arrastra más elementos aquí</div>
@@ -1109,7 +1198,7 @@
   .vt-sidebar { width: 184px; background: white; border-right: 1px solid #e2e8ef; overflow-y: auto; flex-shrink: 0; padding-bottom: 12px; }
   .vt-root.is-preview .vt-preview-sidebar { display: flex; flex-direction: column; width: 180px; background: #fff; border-right: 1px solid #eef2f6; flex-shrink: 0; padding: 20px 0; }
   .vt-preview-sidebar { display: none; }
-  .vt-preview-sidebar-label { font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 1px; padding: 0 20px 15px; }
+  .vt-preview-sidebar-label { font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 1px; padding: 10px 20px 15px; }
   .vt-preview-day-item { padding: 12px 20px; font-size: 13px; color: #64748b; cursor: pointer; transition: all 0.2s; border-left: 3px solid transparent; }
   .vt-preview-day-item:hover { background: #f8fafc; color: var(--navy); }
   .vt-preview-day-item.active { background: #f0f9ff; color: #0284c7; border-left-color: #0284c7; font-weight: 700; }
@@ -1300,11 +1389,71 @@
   
   .mockup-inner { position: relative; background: #f5f7fa; }
 
+  @media (max-width: 992px) {
+    .vt-editor-sidebar { display: none !important; }
+    .vt-body { flex-direction: column; overflow: visible; gap: 0; }
+    .vt-sidebar { width: 100%; border-right: none; border-bottom: 1px solid #e2e8ef; height: auto; padding: 0; }
+    .vt-root { height: auto; min-height: 500px; }
+    .vt-main-wrap { height: auto; min-height: 600px; }
+    .vt-preview-mode .vt-preview-header { display: grid; }
+    .vt-preview-header-item:not(:last-child) { border-right: 1px solid #f0f2f5; }
+    
+    /* Mobile font refinements as requested */
+    .vt-root.is-preview .vt-preview-hero { padding: 10px 15px !important; }
+    .vt-root.is-preview .vt-preview-hero-title { font-size: 22px !important; margin-bottom: 15px !important; }
+    .vt-root.is-preview .vt-preview-hero-stats .stat strong { font-size: 7px !important; }
+    .vt-root.is-preview .vt-preview-hero-stats .stat span { font-size: 6px !important; }
+    .vt-root.is-preview .vt-preview-hero-stats { padding: 8px 0 !important; }
+    
+    .vt-canvas { padding: 5px 0 !important; }
+    .vt-preview-header { margin: 10px 15px !important; padding: 12px 15px !important; }
+    .vt-root.is-preview .vt-preview-sidebar { padding-top: 0 !important; }
+    .vt-root.is-preview .vt-preview-day-heading { padding: 10px !important; }
+    
+    /* Ensure editor sidebar is hidden in preview mode on mobile */
+    .vt-root.is-preview .vt-sidebar { display: none !important; }
+  }
+
+  /* ── PREVIEW MOCKUP HEADER (MOBILE) ── */
+  .vt-preview-header {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    display: none; /* Only shown in preview mode via media query */
+    grid-template-columns: repeat(3, 1fr);
+    text-align: center;
+    border: 1px solid #f0f2f5;
+  }
+  .vt-preview-header-item { display: flex; flex-direction: column; gap: 4px; }
+  .vt-preview-header-label { font-size: 10px; font-weight: 800; color: #b0bcc8; text-transform: uppercase; letter-spacing: 0.5px; }
+  .vt-preview-header-value { font-size: 13px; font-weight: 800; color: #0d1f2d; }
+
+  .vt-day-badge {
+    background: #1a7a8a;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-right: 12px;
+    box-shadow: 0 4px 10px rgba(26, 122, 138, 0.2);
+  }
+  .vt-day-title { font-size: 14px; font-weight: 700; color: #0d1f2d; vertical-align: middle; }
+
   @media (max-width: 768px) {
-    .vt-body { flex-direction: column; overflow: visible; }
-    .vt-sidebar { width: 100%; border-right: none; border-bottom: 1px solid #e2e8ef; height: auto; padding-bottom: 15px; }
-    .vt-root { height: auto; min-height: 600px; }
-    .vt-main-wrap { height: 450px; }
+    .pricing-grid { grid-template-columns: 1fr; padding: 0 1rem; }
+    .pricing { padding: 4rem 1rem; }
+    .plan-savings-spacer { display: none !important; }
+    .solutions-title { font-size: 2rem; }
+    .solutions-desc { font-size: 1rem; padding: 0 1rem; }
+    .solutions-tabs { gap: 0.5rem; }
+    .sol-tab { padding: 0.5rem 1rem; font-size: 0.85rem; }
+    .solutions-card { padding: 2rem 1.5rem; }
+    .sol-tagline { font-size: 1.5rem; }
   }
 
   /* ── TRAVELER EXPERIENCE SECTION ── */
@@ -1367,6 +1516,7 @@
     .phone-wrap { width: 112px; right: 0px; bottom: 0; }
     .laptop-wrap { width: 100%; transform: none; margin: 0 auto; }
   }
+.plan-savings-spacer { height: 22px; margin-bottom: 2rem; display: block; }
 </style>
 
 <script>
@@ -1516,6 +1666,13 @@
           }
 
           if (isPreview) {
+            if (item.id === items[0].id) {
+               const dayLabel = document.createElement('div');
+               dayLabel.innerHTML = `<span class="vt-day-badge">DÍA ${currentDay + 1}</span> <span class="vt-day-title">${days[currentDay].title.split(': ')[1] || days[currentDay].title}</span>`;
+               dayLabel.style.margin = '20px 0 15px 15px';
+               dayLabel.style.textAlign = 'left';
+               list.appendChild(dayLabel);
+            }
             renderRichCard(el, item);
           } else {
             renderEditorCard(el, item);
@@ -1544,35 +1701,51 @@
     function renderRichCard(el, item) {
       if (item.type === 'Vuelo') {
         el.innerHTML = `
-          <div class="vt-item-flight-rich">
-            <div class="flight-header">
-              <span><i class="fas fa-plane"></i> Vuelo ${item.name}</span>
-              <span class="flight-badge">${item.flight || 'EX-0383'}</span>
+          <div class="vt-item-flight-rich" style="padding: 15px; background: white; border-radius: 12px; border: 1px solid #eef2f6; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+            <div style="display: flex; align-items: center; gap: 8px; color: #1a7a8a; font-weight: 700; font-size: 13px; margin-bottom: 15px;">
+              <i class="fas fa-plane"></i> Vuelo ${item.name}
             </div>
-            <div class="flight-main">
-              <div class="time"><strong>14:30</strong><span>Barcelona (BCN)</span></div>
-              <div class="plane-icon"><i class="fas fa-plane"></i></div>
-              <div class="time"><strong>21:55</strong><span>Dubai (DXB)</span></div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+              <div style="text-align: left;">
+                <div style="font-size: 20px; font-weight: 800; color: #0d1f2d;">14:30</div>
+                <div style="font-size: 13px; font-weight: 800; color: #0d1f2d; margin: 2px 0;">Barcelona-El Prat (BCN)</div>
+                <div style="font-size: 11px; color: #9aabb8;">jueves, 14 de mayo</div>
+              </div>
+              <div style="text-align: center; color: #b0bcc8; padding-top: 10px;">
+                <i class="fas fa-plane" style="font-size: 18px; opacity: 0.5;"></i>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 20px; font-weight: 800; color: #0d1f2d;">21:55</div>
+                <div style="font-size: 13px; font-weight: 700; color: #0d1f2d; margin: 2px 0;">Dubái (DXB)</div>
+                <div style="font-size: 11px; color: #9aabb8; text-align: right;">jueves, 14 de mayo</div>
+              </div>
             </div>
-            <div class="flight-footer">
-              <i class="fas fa-info-circle"></i> Equipaje incluido: ✓ Personal · ✓ Mano · ✕ Bodega
+            <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f0f2f5; padding-top: 12px; margin-top: 12px;">
+              <div style="font-size: 11px; color: #9aabb8;">Emirates Airlines</div>
+              <div style="background: #1a7a8a; color: white; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 4px;">EX 0383</div>
             </div>
           </div>`;
       } else if (item.type === 'Alojamiento') {
         el.innerHTML = `
-          <div class="vt-item-hotel-rich">
-            <div class="hotel-title"><i class="fas fa-hotel"></i> ${item.name}</div>
-            <div class="hotel-stars">⭐⭐⭐⭐⭐</div>
-            <div class="hotel-detail">${item.detail}</div>
-            <div class="hotel-location"><i class="fas fa-map-marker-alt"></i> ${item.location || 'Dubai Oceanfront'}</div>
+          <div style="padding: 15px; background: white; border-radius: 12px; border: 1px solid #eef2f6; width: 100%; display: flex; gap: 15px; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+             <div style="width: 60px; height: 60px; border-radius: 10px; background: #fff3e0; display: flex; align-items: center; justify-content: center; font-size: 24px;">🏨</div>
+             <div style="flex: 1;">
+               <div style="font-size: 10px; font-weight: 800; color: #f57c00; text-transform: uppercase; letter-spacing: 0.5px;">Alojamiento</div>
+               <div style="font-size: 15px; font-weight: 800; color: #0d1f2d;">${item.name}</div>
+               <div style="font-size: 12px; color: #9aabb8; margin-top: 2px;">${item.location || 'Dubai'} · ★★★★★</div>
+             </div>
           </div>`;
       } else {
         const isVisual = item.type === 'Imagen' || item.type === 'Gif';
         el.innerHTML = `
-          <div class="vt-item-generic-rich">
-            <div class="generic-title"><i class="${getIcon(item.type)}"></i> ${item.name}</div>
-            <div class="generic-detail">${item.detail}</div>
-            ${isVisual ? `<img src="${item.detail}" style="width:100%; border-radius:8px; margin-top:10px;">` : ''}
+          <div style="padding: 15px; background: white; border-radius: 12px; border: 1px solid #eef2f6; width: 100%; display: flex; gap: 15px; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+             <div style="width: 44px; height: 44px; border-radius: 10px; background: ${item.bg}30; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #1a9a8a;">${item.icon}</div>
+             <div style="flex: 1;">
+               <div style="font-size: 9px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">${item.type}</div>
+               <div style="font-size: 14px; font-weight: 700; color: #0d1f2d;">${item.name}</div>
+               <div style="font-size: 12px; color: #7a8898; margin-top: 2px;">${item.detail}</div>
+               ${isVisual ? `<img src="${item.detail}" style="width:100%; border-radius:8px; margin-top:10px; border: 1px solid #f0f2f5;">` : ''}
+             </div>
           </div>`;
       }
     }
@@ -1654,7 +1827,7 @@
           <span class="price-val">0</span>
         </div>
         <div class="plan-desc-special">Para exploradores y curiosos</div>
-        <div style="height: 2rem;"></div>
+        <div class="plan-savings-spacer"></div>
         <ul class="plan-features">
           <li>Hasta 3 itinerarios activos</li>
           <li>Límite de 10 archivos adjuntos</li>
@@ -1710,14 +1883,14 @@
         <div class="plan-name">Enterprise</div>
         <div class="plan-price" style="font-size: 20px; line-height: 1.2; margin-bottom: 0.5rem;">Precios flexibles</div>
         <div class="plan-desc-special">Seguridad y escala profunda</div>
-        <div style="height: 2rem;"></div>
+        <div class="plan-savings-spacer"></div>
         <div class="plan-sub">Todo lo de Business & Teams, más:</div>
         <ul class="plan-features">
           <li>Dominio personalizado</li>
           <li>Soporte dedicado y SLA</li>
           <li>Integraciones API avanzadas</li>
         </ul>
-        <a href="{{ route('register') }}" class="plan-btn">Comenzar ahora</a>
+        <a href="mailto:hola@viantryp.com" class="plan-btn">Habla con Ventas</a>
       </div>
     </div>
   </div>
@@ -1731,9 +1904,8 @@
       <h2>Tu próxima aventura,<br>lista en minutos</h2>
       <div class="cta-actions">
         <a href="{{ route('register') }}" class="btn-primary">Crear cuenta gratis →</a>
-        <a href="{{ route('register') }}" class="btn-secondary">Unirse ahora</a>
+        <a href="mailto:hola@viantryp.com" class="btn-secondary">Contáctanos</a>
       </div>
-      <p class="cta-note">Sin tarjeta de crédito · Cancela cuando quieras · Soporte en español</p>
     </div>
   </div>
 </section>

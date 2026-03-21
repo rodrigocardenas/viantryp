@@ -120,7 +120,7 @@
         padding: 0.4rem 0.6rem !important;
         white-space: nowrap;
       }
-      .nav-right { gap: 0.4rem; margin-right: 0.5rem; }
+      .nav-right { gap: 0.1rem; margin-right: 0.5rem; }
     }
 
     /* ─── MAIN ─── */
