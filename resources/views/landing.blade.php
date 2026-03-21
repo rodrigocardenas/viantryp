@@ -1654,7 +1654,7 @@
           <span class="price-val">0</span>
         </div>
         <div class="plan-desc-special">Para exploradores y curiosos</div>
-        <div class="plan-savings" style="opacity: 0; margin-bottom: 2rem;">&nbsp;</div>
+        <div style="height: 2rem;"></div>
         <ul class="plan-features">
           <li>Hasta 3 itinerarios activos</li>
           <li>Límite de 10 archivos adjuntos</li>
@@ -1710,7 +1710,7 @@
         <div class="plan-name">Enterprise</div>
         <div class="plan-price" style="font-size: 20px; line-height: 1.2; margin-bottom: 0.5rem;">Precios flexibles</div>
         <div class="plan-desc-special">Seguridad y escala profunda</div>
-        <div class="plan-savings" style="opacity: 0; margin-bottom: 2rem;">&nbsp;</div>
+        <div style="height: 2rem;"></div>
         <div class="plan-sub">Todo lo de Business & Teams, más:</div>
         <ul class="plan-features">
           <li>Dominio personalizado</li>
