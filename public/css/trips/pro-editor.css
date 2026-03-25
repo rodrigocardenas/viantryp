@@ -2397,14 +2397,24 @@ body {
 .rte-editor:focus {
   background: #fafbff;
 }
-.rte-editor ul {
+.rte-editor ul, .texto-content ul {
   padding-left: 20px;
   margin: 10px 0;
 }
-.rte-editor li {
+.rte-editor li, .texto-content li {
   margin-bottom: 5px;
 }
-.rte-editor b {
+.rte-editor b, .rte-editor strong, .texto-content b, .texto-content strong {
   font-weight: 700;
   color: var(--text);
+}
+.rte-editor i, .rte-editor em, .texto-content i, .texto-content em {
+  font-style: italic;
+}
+.rte-editor a, .texto-content a {
+  color: #0ea5e9;
+  text-decoration: underline;
+}
+.rte-editor p, .texto-content p {
+  margin-bottom: 8px;
 }

@@ -273,8 +273,14 @@ function showDropInd(index, before) { clearDropIndicators(); const items = [...c
 function clearDropIndicators() { canvasItems.querySelectorAll('.drop-indicator').forEach(d => d.remove()) }
 
 // Drag-drop + reorder for portada/cierre item containers
-function setupContainerDrag(containerId, itemsArr) {
+function setupContainerDrag(containerId) {
   const cont = document.getElementById(containerId);
+
+  function getItemsArr() {
+    if (containerId === 'portadaItems') return portadaItems;
+    if (containerId === 'cierreItems') return cierreItems;
+    return [];
+  }
 
   function getClosestInCont(y) {
     const items = [...cont.querySelectorAll('.canvas-item')];
@@ -306,6 +312,7 @@ function setupContainerDrag(containerId, itemsArr) {
     cont.querySelectorAll('.drop-indicator').forEach(d => d.remove());
     if (dragSourceIndex !== null && dragSourceContainer === containerId) {
       const items = [...cont.querySelectorAll('.canvas-item')];
+      const itemsArr = getItemsArr();
       const cl = getClosestInCont(e.clientY);
       let to = cl.before ? cl.index : cl.index + 1;
       if (to > dragSourceIndex) to--;
@@ -318,8 +325,8 @@ function setupContainerDrag(containerId, itemsArr) {
     if (dragType) openModal(dragType);
   });
 }
-setupContainerDrag('portadaItems', portadaItems);
-setupContainerDrag('cierreItems', cierreItems);
+setupContainerDrag('portadaItems');
+setupContainerDrag('cierreItems');
 ['portadaCanvas', 'cierreCanvas'].forEach(cid => {
   document.getElementById(cid).addEventListener('dragover', e => { e.preventDefault() });
   document.getElementById(cid).addEventListener('drop', e => { e.preventDefault(); if (dragType) openModal(dragType) });
