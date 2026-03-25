@@ -248,7 +248,7 @@
     </a>
 
     <div class="nav-links">
-      <a href="{{ route('home') }}#como-funciona" class="nav-link">Cómo funciona</a>
+      <a href="{{ route('home') }}#como-funciona" class="nav-link">Cómo funciona (Demo)</a>
       <a href="{{ route('home') }}#precios"       class="nav-link">Precios</a>
       <a href="{{ route('home') }}#contacto"      class="nav-link">Contacto</a>
     </div>

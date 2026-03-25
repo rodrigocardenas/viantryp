@@ -124,7 +124,7 @@
   <div class="topbar-bg-decorators"></div>
   <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Elementos"><i class="fa-solid fa-bars"></i></button>
   
-  <a href="{{ route('trips.index') }}" class="logo-link">
+  <a href="{{ route('home') }}" class="logo-link">
       <img src="/images/logo-viantryp.png" alt="Viantryp" class="topbar-logo-img">
   </a>
 

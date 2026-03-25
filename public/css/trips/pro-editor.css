@@ -2350,3 +2350,61 @@ body {
     display: none
   }
 }
+
+/* RTE (Rich Text Editor) */
+.rte-container {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+  margin-top: 4px;
+}
+.rte-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.rte-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .14s;
+}
+.rte-btn:hover {
+  background: var(--surface3);
+  color: var(--text);
+  border-color: var(--border);
+}
+.rte-editor {
+  padding: 12px;
+  min-height: 120px;
+  max-height: 300px;
+  overflow-y: auto;
+  outline: none;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.rte-editor:focus {
+  background: #fafbff;
+}
+.rte-editor ul {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+.rte-editor li {
+  margin-bottom: 5px;
+}
+.rte-editor b {
+  font-weight: 700;
+  color: var(--text);
+}

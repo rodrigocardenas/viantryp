@@ -39,6 +39,15 @@ Route::get('/', function () {
     return view('landing');
 })->name('home');
 
+// Public info pages
+Route::get('/sobre-nosotros', fn() => view('pages.about'))->name('about');
+Route::get('/partners', fn() => redirect(route('about') . '#partners'))->name('partners');
+Route::get('/contacto', fn() => view('pages.contact'))->name('contact');
+Route::get('/terminos-de-uso', fn() => view('pages.terms'))->name('terms');
+Route::get('/privacidad', fn() => view('pages.privacy'))->name('privacy');
+Route::get('/rgpd', fn() => view('pages.gdpr'))->name('gdpr');
+Route::get('/seguridad', fn() => view('pages.security'))->name('security');
+
 // Protected routes (require authentication)
 Route::middleware('auth')->group(function () {
     // Trip routes

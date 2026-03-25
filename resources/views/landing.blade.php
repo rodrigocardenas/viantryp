@@ -51,14 +51,30 @@
     text-decoration: none;
   }
   .nav-logo span { color: var(--teal); }
-  .nav-links { display: flex; gap: 2rem; list-style: none; margin-left: auto; margin-right: 1.5rem; }
-  .nav-links a {
-    font-size: 0.9rem; font-weight: 500; color: var(--text-soft);
-    text-decoration: none; transition: color 0.2s;
+  .nav-links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
-  .nav-links a:hover { color: var(--navy); }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--navy);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 8px;
+    transition: background 0.18s, color 0.18s;
+  }
+  .nav-links a:hover { background: var(--off-white); color: var(--teal); }
   .nav-right { display: flex; align-items: center; gap: 0.75rem; }
   .nav-login {
+    font-family: 'Barlow', sans-serif;
     font-size: 0.88rem; font-weight: 500;
     color: var(--navy); text-decoration: none;
     padding: 0.55rem 1.2rem; border-radius: 100px;
@@ -67,6 +83,7 @@
   }
   .nav-login:hover { background: var(--light-gray); border-color: #ccc; }
   .nav-cta {
+    font-family: 'Barlow', sans-serif;
     font-size: 0.88rem; font-weight: 700;
     color: var(--white); text-decoration: none;
     padding: 0.6rem 1.4rem; border-radius: 100px;
@@ -168,7 +185,7 @@
   }
   .btn-primary:hover { background: var(--teal-dark); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(26,122,138,0.28); }
   .btn-secondary {
-    background: var(--white); border: 1.5px solid var(--mid-gray);
+    background: transparent; border: 1px solid var(--mid-gray);
     color: var(--navy); padding: 14px 21px; border-radius: 100px;
     font-weight: 500; font-size: 1rem; text-decoration: none; transition: all 0.2s;
   }
@@ -338,7 +355,7 @@
     letter-spacing: 0.05em; white-space: nowrap; text-transform: uppercase;
     box-shadow: 0 4px 12px rgba(138,184,32,0.3);
   }
-  .plan-name { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.2rem; }
+  .plan-name { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.2rem; }
   .plan.featured .plan-name { color: #5dcfe0; }
   .plan-price { 
     font-family: 'Syne', sans-serif; 
@@ -588,7 +605,7 @@
     letter-spacing: 0.05em; white-space: nowrap; text-transform: uppercase;
     box-shadow: 0 4px 12px rgba(138,184,32,0.3);
   }
-  .plan-name { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.2rem; }
+  .plan-name { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.2rem; }
   .plan.featured .plan-name { color: #5dcfe0; }
   .plan-price { 
     font-family: 'Syne', sans-serif; 
@@ -606,8 +623,10 @@
   .plan.featured .plan-price .period { color: rgba(255,255,255,0.4); }
   .price-note { font-size: 10px; color: var(--text-muted); margin-bottom: 0.5rem; transition: opacity 0.2s; }
   .plan.featured .price-note { color: rgba(255,255,255,0.4); }
-  .plan-desc-special { font-size: 13px; font-weight: 600; color: var(--text-soft); margin-bottom: 0.5rem; display: block; }
+  .plan-desc-special { font-size: 11px; font-weight: 600; color: var(--text-soft); margin-bottom: 1.5rem; display: block; }
   .plan.featured .plan-desc-special { color: rgba(255,255,255,0.8); }
+  .plan-trial-note { font-size: 11px; color: var(--text-muted); margin-top: 0.8rem; text-align: center; display: block; }
+  .plan.featured .plan-trial-note { color: rgba(255,255,255,0.4); }
   .plan-savings { 
     font-size: 0.78rem; 
     font-weight: 700; 
@@ -658,17 +677,113 @@
 
 
   /* ── FOOTER ── */
-  footer { background: var(--navy); padding: 1.5rem 1.5rem; }
+  footer { background: var(--navy); padding: 4rem 1.5rem 2rem; }
   .footer-inner {
-    max-width: 1100px; margin: 0 auto;
-    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;
+    max-width: 1200px; margin: 0 auto;
   }
-  .footer-logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--white); }
-  .footer-logo span { color: var(--lime); }
-  .footer-links { display: flex; gap: 2rem; }
-  .footer-links a { font-size: 0.84rem; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--white); }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 2.5rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .footer-brand { }
+  .footer-brand-desc {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.7;
+    margin: 1rem 0 1.5rem;
+    max-width: 230px;
+  }
+  .footer-subscribe {
+    display: flex;
+    gap: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.12);
+    max-width: 280px;
+  }
+  .footer-subscribe input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: none;
+    outline: none;
+    padding: 5px;
+    font-size: 0.8rem;
+    color: white;
+    font-family: 'Inter', sans-serif;
+  }
+  .footer-subscribe input::placeholder { color: rgba(255,255,255,0.3); }
+  .footer-subscribe button {
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 0.65rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .footer-subscribe button:hover { background: var(--teal-dark); }
+  .footer-col { padding-left: 1.5rem; }
+  .footer-col-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 1.2rem;
+  }
+  .footer-col-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .footer-col-links a {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.45);
+    text-decoration: none;
+    transition: color 0.2s;
+    display: inline-block;
+  }
+  .footer-col-links a:hover { color: rgba(255,255,255,0.9); }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
   .footer-copy { font-size: 0.76rem; color: rgba(255,255,255,0.25); }
+  .footer-social { display: flex; gap: 0.75rem; }
+  .footer-social a {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.4);
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .footer-social a:hover { background: var(--teal); border-color: var(--teal); color: white; }
+
+  @media (max-width: 900px) {
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .footer-brand { grid-column: 1 / -1; }
+    .footer-brand-desc { max-width: 100%; }
+    .footer-subscribe { max-width: 100%; }
+  }
+  @media (max-width: 550px) {
+    .footer-top { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+  }
 
   /* ── REVEAL ── */
   .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -685,11 +800,10 @@
       .nav-links { display: none; }
       .nav-logo img { height: 26px !important; }
       .nav-right { gap: 0.1rem; margin-right: 0.5rem; }
-      .nav-login, .nav-cta {
-        font-size: 12px !important;
-        padding: 0.4rem 0.6rem !important;
-        white-space: nowrap;
-      }
+      .nav-right .nav-login, .nav-right .nav-cta { display: none !important; }
+      #profileTrigger span { display: none; }
+      .nav-auth-container { display: none !important; }
+      .mobile-menu-toggle { display: flex !important; margin-left: auto; }
       .hero-stats { gap: 1.8rem; flex-wrap: wrap; justify-content: center; }
       .hero { padding-top: 6rem; padding-bottom: 3rem; }
       .section-title { font-size: 1.8rem !important; }
@@ -705,7 +819,10 @@
       .creative-steps { gap: 2.5rem !important; }
       .creative-step { flex-direction: column !important; gap: 1rem !important; }
       .step-giant-num { font-size: 3rem !important; opacity: 0.2 !important; margin-bottom: -1.5rem !important; }
-      .plan-savings-spacer { display: none !important; }
+       .plan-savings-spacer { display: none !important; }
+       .plan-features { margin-bottom: 1.5rem !important; flex: none !important; }
+       .plan { padding: 2rem 1.5rem !important; }
+       .plan-trial-note { margin-top: 0.5rem !important; }
       
       .cta-box { padding: 2.5rem 1.5rem !important; }
       .cta-box h2 { font-size: 1.8rem !important; line-height: 1.2 !important; }
@@ -713,9 +830,7 @@
       .cta-actions { flex-direction: column; width: 100%; gap: 1rem; }
       .cta-actions .btn-primary, .cta-actions .btn-secondary { width: 100%; justify-content: center; }
       
-      footer { padding: 3rem 1.5rem !important; }
-      .footer-inner { flex-direction: column !important; text-align: center !important; gap: 2rem !important; }
-      .footer-links { flex-direction: column !important; gap: 1rem !important; }
+      footer { padding: 3rem 1.5rem 2rem !important; }
     }
   
   /* MOBILE MENU STYLES */
@@ -725,16 +840,16 @@
   .mobile-menu-toggle span { width: 22px; height: 2px; background: var(--navy); border-radius: 2px; transition: 0.3s; }
   
   .mobile-menu {
-    position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100vh; 
-    background: white; z-index: 2000; padding: 60px 30px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+    position: fixed; top: 0; right: -100%; width: 80%; max-width: 200px; height: 100vh; 
+    background: white; z-index: 2000; padding: 60px 20px 30px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1); display: flex; flex-direction: column;
   }
   .mobile-menu.active { right: 0; }
-  .mobile-menu-close { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; color: var(--navy); cursor: pointer; }
-  .mobile-nav-links { list-style: none; display: flex; flex-direction: column; gap: 20px; }
-  .mobile-nav-links a { text-decoration: none; font-size: 18px; font-weight: 700; color: var(--navy); }
+  .mobile-menu-close { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; color: var(--navy); cursor: pointer; }
+  .mobile-nav-links { list-style: none; display: flex; flex-direction: column; gap: 15px; flex-grow: 1; margin-top: 10px; }
+  .mobile-nav-links a { text-decoration: none; font-size: 14px; font-weight: 600; color: var(--navy); font-family: 'Barlow', sans-serif; }
   
-  .plan-savings-spacer { height: 22px; margin-bottom: 2rem; display: block; }
+  .plan-savings-spacer { height: 12px; margin-bottom: 3.5rem; display: block; }
 </style>
 </head>
 <body>
@@ -745,33 +860,18 @@
     <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 32px; width: auto; filter: invert(1) hue-rotate(180deg) contrast(1.5);">
   </a>
   <ul class="nav-links">
-    <li><a href="#como-funciona">Cómo funciona</a></li>
+    <li><a href="#como-funciona">Cómo funciona (Demo)</a></li>
     <li><a href="#precios">Precios</a></li>
+    <li><a href="{{ route('about') }}">Nosotros</a></li>
+    <li><a href="{{ route('contact') }}">Contacto</a></li>
   </ul>
   <div class="nav-right">
-    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menú">
-      <span></span><span></span><span></span>
-    </button>
-    <div class="mobile-menu" id="mobileMenu">
-       <button class="mobile-menu-close" id="mobileMenuClose">✕</button>
-       <ul class="mobile-nav-links">
-         <li><a href="#como-funciona">Cómo funciona</a></li>
-         <li><a href="#precios">Precios</a></li>
-         @auth
-           <li><a href="{{ route('trips.index') }}">Ir a Mis Viajes</a></li>
-           <li><a href="{{ route('profile.index') }}">Mi Perfil</a></li>
-         @else
-           <li><a href="{{ route('login') }}">Iniciar Sesión</a></li>
-           <li><a href="{{ route('register') }}">Comenzar Gratis</a></li>
-         @endauth
-       </ul>
-    </div>
     @auth
-        <div style="display: flex; align-items: center; gap: 1.25rem;">
+        <div class="nav-auth-container" style="display: flex; align-items: center; gap: 1.25rem;">
             <a href="{{ route('trips.index') }}" class="nav-login">Ir a Mis Viajes</a>
             
             <div class="user-profile-dropdown" style="position: relative;">
-                <div id="profileTrigger" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <div id="profileTrigger" style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
                     <span style="font-size: 12px; font-weight: 600; color: var(--navy);">
                         {{ auth()->user()->name }}
                     </span>
@@ -807,10 +907,6 @@
                 const initMenu = () => {
                     const trigger = document.getElementById('profileTrigger');
                     const menu = document.getElementById('profileMenu');
-                    const mobileToggle = document.getElementById('mobileMenuToggle');
-                    const mobileClose = document.getElementById('mobileMenuClose');
-                    const mobileMenu = document.getElementById('mobileMenu');
-                    const mobileLinks = mobileMenu?.querySelectorAll('a');
 
                     if (trigger && menu) {
                         trigger.addEventListener('click', function(e) {
@@ -818,19 +914,6 @@
                             const isVisible = menu.style.display === 'block';
                             menu.style.display = isVisible ? 'none' : 'block';
                         });
-                    }
-
-                    if (mobileToggle && mobileMenu) {
-                        mobileToggle.addEventListener('click', () => {
-                            mobileMenu.classList.add('active');
-                            document.body.style.overflow = 'hidden';
-                        });
-                        const closeMenu = () => {
-                            mobileMenu.classList.remove('active');
-                            document.body.style.overflow = '';
-                        };
-                        mobileClose?.addEventListener('click', closeMenu);
-                        mobileLinks?.forEach(link => link.addEventListener('click', closeMenu));
                     }
 
                     document.addEventListener('click', function(e) {
@@ -853,6 +936,9 @@
         <a href="{{ route('login') }}" class="nav-login">Iniciar sesión</a>
         <a href="{{ route('register') }}" class="nav-cta">Comenzar gratis</a>
     @endauth
+    <button class="mobile-menu-toggle" id="mobileMenuBtn">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
@@ -1516,7 +1602,9 @@
     .phone-wrap { width: 112px; right: 0px; bottom: 0; }
     .laptop-wrap { width: 100%; transform: none; margin: 0 auto; }
   }
-.plan-savings-spacer { height: 22px; margin-bottom: 2rem; display: block; }
+  @media (min-width: 769px) {
+    .plan-savings-spacer { height: 70px; display: block; }
+  }
 </style>
 
 <script>
@@ -1821,25 +1909,26 @@
     <div class="pricing-grid">
       <!-- Free Forever -->
       <div class="plan reveal d1">
-        <div class="plan-name">Free Forever</div>
+        <div class="plan-name">Esencial</div>
+        <div class="plan-desc-special">Exploradores y viajeros</div>
         <div class="plan-price">
           <span class="currency">$</span>
           <span class="price-val">0</span>
         </div>
-        <div class="plan-desc-special">Para exploradores y curiosos</div>
         <div class="plan-savings-spacer"></div>
         <ul class="plan-features">
           <li>Hasta 3 itinerarios activos</li>
-          <li>Límite de 10 archivos adjuntos</li>
-          <li>Editor Visual "Drag & Drop"</li>
-          <li>Enlace con marca Viantryp</li>
+          <li>Límite de 10 archivos adjuntos por itinerario</li>
+          <li>Plantillas básicas para diseño de itinerarios</li>
+          <li>Enlace para compartir tu itinerario online</li>
         </ul>
         <a href="{{ route('register') }}" class="plan-btn">Comenzar gratis</a>
       </div>
 
       <!-- Unlimited -->
       <div class="plan reveal d2">
-        <div class="plan-name">Unlimited</div>
+        <div class="plan-name">Avanzado</div>
+        <div class="plan-desc-special">Diseño sin límites</div>
         <div class="plan-price">
           <span class="currency">$</span>
           <span class="price-val" data-monthly="19.00" data-annual="15.00">15.00</span>
@@ -1847,20 +1936,22 @@
         </div>
         <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente">Facturado anualmente</div>
         <div class="plan-savings" style="opacity: 1;">Ahorras $48 al año</div>
-        <div class="plan-sub">Todo lo del Free Forever, más:</div>
+        <div class="plan-sub">Todo lo del plan Esencial, más:</div>
         <ul class="plan-features">
-          <li>Itinerarios y archivos ilimitados</li>
-          <li>Tu logo en el itinerario</li>
-          <li>Link de viaje personalizado</li>
-          <li>Soporte básico</li>
+          <li>Hasta 10 itinerarios por cuenta</li>
+          <li>Archivos adjuntos ilimitados</li>
+          <li>Tener un máximo de 2 editores por itinerario</li>
+          <li>Personalización de marca en los link de tus viajes</li>
         </ul>
         <a href="{{ route('register') }}" class="plan-btn">Comenzar ahora</a>
+        <div class="plan-trial-note">14 días de prueba gratuita</div>
       </div>
 
       <!-- Business & Teams -->
       <div class="plan featured reveal d3">
         <div class="plan-badge">Más popular</div>
-        <div class="plan-name">Business & Teams</div>
+        <div class="plan-name">Colaborativo Pro</div>
+        <div class="plan-desc-special">Potencia para agencias</div>
         <div class="plan-price">
           <span class="currency">$</span>
           <span class="price-val" data-monthly="34.00" data-annual="27.00">27.00</span>
@@ -1868,29 +1959,31 @@
         </div>
         <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente">Facturado anualmente</div>
         <div class="plan-savings" style="opacity: 1;">Ahorras $84 al año</div>
-        <div class="plan-sub">Todo lo del Unlimited, más:</div>
+        <div class="plan-sub">Todo lo del plan Avanzado, más:</div>
         <ul class="plan-features">
-          <li>Viantryp AI para generar rutas</li>
-          <li>Colaboración entre equipos</li>
+          <li> Acceso a plantillas ilimitadas para diseño de itinerarios</li>
+          <li>Colaboradores y editores de viajes ilimitados</li>
           <li>Gestión de roles y permisos</li>
           <li>Integraciones vía API básicas</li>
         </ul>
         <a href="{{ route('register') }}" class="plan-btn primary">Comenzar ahora</a>
+        <div class="plan-trial-note">14 días de prueba gratuita</div>
       </div>
 
-      <!-- Enterprise -->
+      <!-- Corporativo -->
       <div class="plan reveal d4">
-        <div class="plan-name">Enterprise</div>
+        <div class="plan-name">Corporativo</div>
+        <div class="plan-desc-special">Escala y seguridad</div>
         <div class="plan-price" style="font-size: 20px; line-height: 1.2; margin-bottom: 0.5rem;">Precios flexibles</div>
-        <div class="plan-desc-special">Seguridad y escala profunda</div>
         <div class="plan-savings-spacer"></div>
-        <div class="plan-sub">Todo lo de Business & Teams, más:</div>
+        <!-- Removido plan-sub para alinear con features -->
         <ul class="plan-features">
           <li>Dominio personalizado</li>
           <li>Soporte dedicado y SLA</li>
           <li>Integraciones API avanzadas</li>
         </ul>
         <a href="mailto:hola@viantryp.com" class="plan-btn">Habla con Ventas</a>
+        <div class="plan-trial-note">Agenda una demo</div>
       </div>
     </div>
   </div>
@@ -1914,14 +2007,62 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-logo" style="display:flex; align-items:center;">
-      <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 32px; width: auto; filter: brightness(0) invert(1);">
+    <div class="footer-top">
+
+      <!-- BRAND COL -->
+      <div class="footer-brand">
+        <div style="display:flex; align-items:center;">
+          <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 30px; width: auto; filter: brightness(0) invert(1);">
+        </div>
+        <p class="footer-brand-desc">La plataforma que transforma itinerarios de viaje en experiencias digitales modernas.</p>
+        <div class="footer-subscribe">
+          <input type="email" placeholder="Tu email profesional">
+          <button type="button">Suscribirse</button>
+        </div>
+      </div>
+
+      <!-- PRODUCTO -->
+      <div class="footer-col">
+        <div class="footer-col-title">Producto</div>
+        <ul class="footer-col-links">
+          <li><a href="#demo">Demo interactiva</a></li>
+          <li><a href="#como-funciona">Funcionalidades</a></li>
+          <li><a href="#precios">Precios</a></li>
+          <li><a href="#soluciones">Soluciones</a></li>
+        </ul>
+      </div>
+
+      <!-- EMPRESA -->
+      <div class="footer-col">
+        <div class="footer-col-title">Empresa</div>
+        <ul class="footer-col-links">
+          <li><a href="{{ route('about') }}">Sobre nosotros</a></li>
+          <li><a href="{{ route('about') }}#partners">Partners</a></li>
+          <li><a href="{{ route('contact') }}">Contacto</a></li>
+        </ul>
+      </div>
+
+      <!-- LEGAL -->
+      <div class="footer-col">
+        <div class="footer-col-title">Legal</div>
+        <ul class="footer-col-links">
+          <li><a href="{{ route('terms') }}">Términos de uso</a></li>
+          <li><a href="{{ route('privacy') }}">Privacidad</a></li>
+          <li><a href="{{ route('gdpr') }}">RGPD</a></li>
+          <li><a href="{{ route('security') }}">Seguridad</a></li>
+        </ul>
+      </div>
+
+    </div><!-- /.footer-top -->
+
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 Viantryp. Todos los derechos reservados.</div>
+      <div class="footer-social">
+        <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="Twitter"><i class="fab fa-x-twitter"></i></a>
+      </div>
     </div>
-    <div class="footer-links">
-      <a href="#como-funciona">Cómo funciona</a>
-      <a href="#precios">Precios</a>
-    </div>
-    <div class="footer-copy">© 2026 Viantryp. Hecho con ♥.</div>
   </div>
 </footer>
 
@@ -2112,5 +2253,49 @@
     });
   });
 </script>
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu-close" id="mobileMenuClose">&times;</button>
+    <ul class="mobile-nav-links">
+      <li><a href="#como-funciona">Cómo funciona (Demo)</a></li>
+      <li><a href="#precios">Precios</a></li>
+      <li><a href="{{ route('about') }}">Nosotros</a></li>
+      <li><a href="{{ route('contact') }}">Contacto</a></li>
+    </ul>
+
+    <div class="mobile-auth" style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--mid-gray); display: flex; flex-direction: column; gap: 10px;">
+      @auth
+        <div style="font-size:12px; font-weight:600; color:var(--text-soft); text-align:center;">Hola, {{ auth()->user()->name }}</div>
+        <a href="{{ route('trips.index') }}" class="nav-cta" style="width: 100%; justify-content: center; text-align: center; padding: 10px;">Mis viajes</a>
+        <form method="POST" action="{{ route('logout') }}" style="margin: 0; width: 100%;">
+            @csrf
+            <button type="submit" style="width: 100%; border: 1px solid var(--mid-gray); border-radius: 100px; background: transparent; padding: 10px; color: #c0392b; cursor: pointer; text-align: center; font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif;">
+                Cerrar sesión
+            </button>
+        </form>
+      @else
+        <a href="{{ route('register') }}" class="nav-cta" style="width: 100%; display: block; text-align: center; padding: 10px; margin-bottom: 5px;">Comenzar gratis</a>
+        <a href="{{ route('login') }}" class="nav-login" style="width: 100%; text-align: center; padding: 10px;">Iniciar sesión</a>
+      @endauth
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('mobileMenuBtn');
+      const close = document.getElementById('mobileMenuClose');
+      const menu = document.getElementById('mobileMenu');
+      
+      if (btn && close && menu) {
+        btn.addEventListener('click', () => menu.classList.add('active'));
+        close.addEventListener('click', () => menu.classList.remove('active'));
+        
+        menu.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            menu.classList.remove('active');
+          });
+        });
+      }
+    });
+  </script>
 </body>
 </html>

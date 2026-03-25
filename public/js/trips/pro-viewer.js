@@ -517,7 +517,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .pv-cierre-badge{background:var(--accent);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:5px 15px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.8px;text-transform:uppercase}
 .pv-cierre-title{font-family:'Poppins',sans-serif;font-size:24px;font-weight:800;color:#fff}
-.pv-cierre-sub{font-size:13px;color:rgba(255,255,255,.5);max-width:360px;line-height:1.6}
+.pv-cierre-sub{font-size:13px;color:rgba(255,255,255,.5);max-width:480px;line-height:1.6}
 .pv-cierre-stats{display:flex;gap:22px;margin-top:6px}
 .pvcs{text-align:center}
 .pvcs-n{font-family:'Poppins',sans-serif;font-size:24px;font-weight:800;color:var(--primary-blue)}

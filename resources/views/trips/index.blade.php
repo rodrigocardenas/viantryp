@@ -515,9 +515,15 @@
         
         .abt.view::before { content: 'Ver'; }
         .abt.share::before { content: 'Compartir'; }
+        .abt.more::before { content: 'Más'; }
         
         .abt.del { flex: 0 0 42px; }
         .abt svg { width: 15px; height: 15px; }
+
+        .acts-menu-container { flex: 1; display: flex; }
+        .acts-menu-container .abt { flex: 1; width: 100%; }
+        
+        .trip-row.menu-open { z-index: 1000 !important; }
 
         /* Empty state adaptation */
         .empty { padding: 40px 15px; }
@@ -925,7 +931,7 @@
                         </button>
                         
                         <div class="acts-menu-container">
-                            <button class="abt" onclick="toggleActsMenu(event, {{ $trip->id }})" title="Más opciones">
+                            <button class="abt more" onclick="toggleActsMenu(event, {{ $trip->id }})" title="Más opciones">
                                 <i class="fas fa-ellipsis-v"></i>
                             </button>
                             <div class="acts-menu" id="menu-{{ $trip->id }}">
@@ -1968,21 +1974,32 @@
         event.stopPropagation();
         const menu = document.getElementById(`menu-${tripId}`);
         const allMenus = document.querySelectorAll('.acts-menu');
+        const row = menu.closest('.trip-row');
+        const allRows = document.querySelectorAll('.trip-row');
         
-        allMenus.forEach(m => {
-            if (m.id !== `menu-${tripId}`) m.classList.remove('show');
-        });
+        const isOpening = !menu.classList.contains('show');
+
+        // Close all other menus and remove active class from all rows
+        allMenus.forEach(m => m.classList.remove('show'));
+        allRows.forEach(r => r.classList.remove('menu-open'));
         
-        menu.classList.toggle('show');
-        
-        // Close menu when clicking outside
-        const closeHandler = (e) => {
-            if (!menu.contains(e.target)) {
-                menu.classList.remove('show');
-                document.removeEventListener('click', closeHandler);
-            }
-        };
-        document.addEventListener('click', closeHandler);
+        if (isOpening) {
+            menu.classList.add('show');
+            if (row) row.classList.add('menu-open');
+            
+            // Close menu when clicking outside
+            const closeHandler = (e) => {
+                if (!menu.contains(e.target)) {
+                    menu.classList.remove('show');
+                    if (row) row.classList.remove('menu-open');
+                    document.removeEventListener('click', closeHandler);
+                }
+            };
+            // Use timeout to avoid immediate trigger if the click event bubbles
+            setTimeout(() => {
+                document.addEventListener('click', closeHandler);
+            }, 10);
+        }
     }
 
     function openSharingModal(tripId, role) {

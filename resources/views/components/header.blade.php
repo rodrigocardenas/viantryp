@@ -1,7 +1,7 @@
 <header class="topbar">
   <div class="topbar-bg-decorators"></div>
   <div class="topbar-left">
-    <a href="{{ route('trips.index') }}" class="logo">
+    <a href="{{ route('home') }}" class="logo">
       <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 28px; width: auto;">
     </a>
   </div>

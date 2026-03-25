@@ -241,7 +241,7 @@ const C = {
   actividad: { icon: '<i class="fa-solid fa-bullseye"></i>', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', hasStars: true, fields: [{ k: 'nombre', l: 'Nombre actividad', t: 'text', ph: 'Cena con vista, Tour privado...', fw: true }, { k: 'direccion', l: 'Lugar (Google Maps)', t: 'text', ph: 'Torre Eiffel, Museo del Louvre...', fw: true }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '25' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
   comida: { icon: '<i class="fa-solid fa-utensils"></i>', label: 'Comida', color: '#f96b3a', bg: '#ffe8e0', hasStars: true, fields: [{ k: 'restaurante', l: 'Restaurante', t: 'text', ph: 'Le Jules Verne', fw: true }, { k: 'tipo', l: 'Tipo', t: 'select', opts: ['Desayuno', 'Almuerzo', 'Cena', 'Brunch', 'Snack'] }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...' }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', fw: true }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'estado_reserva', l: 'Reservación', t: 'select', opts: ['Sí, confirmada', 'Pendiente', 'No aplica'] }, { k: 'precio', l: 'Precio', t: 'number', ph: '80' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'RES-12345' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Menú degustación...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
   tour: { icon: '<i class="fa-solid fa-map-location-dot"></i>', label: 'Tour', color: '#8b5cf6', bg: '#f5f3ff', fields: [{ k: 'nombre', l: 'Nombre del tour', t: 'text', ph: 'Tour Versalles' }, { k: 'operador', l: 'Operador', t: 'text', ph: 'Get Your Guide' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['2h', '4h', 'Medio día', 'Día completo', '2 días', '3+ días'] }, { k: 'personas', l: 'No. personas', t: 'text', ph: '2' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '120' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TOU-12345' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Incluye entrada, guía...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }, { k: 'adjunto', l: 'Archivo adjunto (PDF/Img)', t: 'file-upload', fw: true }] },
-  texto: { icon: '<i class="fa-solid fa-font"></i>', label: 'Caja de texto', color: '#64748b', bg: '#f1f5f9', fields: [{ k: 'contenido', l: 'Contenido', t: 'textarea', ph: 'Escribe aquí...' }, { k: 'alineacion', l: 'Alineación', t: 'select', opts: ['Izquierda', 'Centro', 'Derecha'] }] },
+  texto: { icon: '<i class="fa-solid fa-font"></i>', label: 'Caja de texto', color: '#64748b', bg: '#f1f5f9', fields: [{ k: 'contenido', l: 'Contenido', t: 'richtext', ph: 'Escribe aquí...' }, { k: 'alineacion', l: 'Alineación', t: 'select', opts: ['Izquierda', 'Centro', 'Derecha'] }] },
   titulo: { icon: '✦', label: 'Título', color: '#1a1a2e', bg: '#f0f1f7', fields: [{ k: 'texto', l: 'Texto del título', t: 'text', ph: 'Día 1 — Llegada a París' }, { k: 'subtitulo', l: 'Subtítulo (opcional)', t: 'text', ph: 'Una ciudad de luz...' }] },
   separador: { icon: '—', label: 'Separador', color: '#94a3b8', bg: '#f1f5f9', fields: [{ k: 'estilo', l: 'Estilo', t: 'select', opts: ['Línea simple', 'Línea con diamante', 'Punteado', 'Gradiente'] }, { k: 'etiqueta', l: 'Etiqueta (opcional)', t: 'text', ph: 'Mañana' }] },
   imagen: { icon: '<i class="fa-regular fa-image"></i>', label: 'Imagen', color: 'var(--primary-blue)', bg: '#e0f2fe', fields: [{ k: 'url', l: 'URL de imagen', t: 'text', ph: 'https://...' }, { k: 'caption', l: 'Pie de foto', t: 'text', ph: 'Torre Eiffel al atardecer' }, { k: 'tamano', l: 'Tamaño', t: 'select', opts: ['Pequeño', 'Mediano', 'Grande', 'Completo'] }] },
@@ -723,7 +723,7 @@ function openModal(type, editIdx = null) {
   document.getElementById('modalSubtitle').textContent = editIdx !== null ? 'Modifica los datos' : 'Completa los datos del elemento';
   modalBody.innerHTML = '';
   const fields = cfg.fields;
-  for (let i = 0; i < fields.length; i++) { const f = fields[i], next = fields[i + 1]; if (f.t === 'textarea' || f.t === 'color-picker' || f.fw) { modalBody.appendChild(buildField(f, existData)) } else if (next && next.t !== 'textarea' && next.t !== 'color-picker' && !next.fw) { const row = document.createElement('div'); row.className = 'form-row'; row.appendChild(buildField(f, existData)); row.appendChild(buildField(next, existData)); modalBody.appendChild(row); i++ } else { modalBody.appendChild(buildField(f, existData)) } }
+  for (let i = 0; i < fields.length; i++) { const f = fields[i], next = fields[i + 1]; if (f.t === 'textarea' || f.t === 'color-picker' || f.t === 'richtext' || f.fw) { modalBody.appendChild(buildField(f, existData)) } else if (next && next.t !== 'textarea' && next.t !== 'color-picker' && next.t !== 'richtext' && !next.fw) { const row = document.createElement('div'); row.className = 'form-row'; row.appendChild(buildField(f, existData)); row.appendChild(buildField(next, existData)); modalBody.appendChild(row); i++ } else { modalBody.appendChild(buildField(f, existData)) } }
   if (cfg.hasStars) { const sg = document.createElement('div'); sg.className = 'form-group'; sg.innerHTML = '<label class="form-label">Calificación</label>'; const sr = document.createElement('div'); sr.className = 'star-rating'; const init = existData.stars || 0; for (let s = 1; s <= 5; s++) { const star = document.createElement('span'); star.className = 'star' + (s <= init ? ' active' : ''); star.textContent = '★'; star.dataset.val = s; star.addEventListener('click', () => { starRating = parseInt(star.dataset.val); sr.querySelectorAll('.star').forEach((st, idx) => st.classList.toggle('active', idx < starRating)) }); sr.appendChild(star) } starRating = init; sg.appendChild(sr); modalBody.appendChild(sg) }
   modalOverlay.classList.add('open');
   setTimeout(() => {
@@ -773,6 +773,20 @@ function buildField(field, data) {
   const lbl = document.createElement('label'); lbl.className = 'form-label'; lbl.textContent = field.l; fg.appendChild(lbl);
   const val = data[field.k] || '';
   if (field.t === 'textarea') { const ta = document.createElement('textarea'); ta.className = 'form-textarea'; ta.placeholder = field.ph || ''; ta.value = val; ta.dataset.key = field.k; fg.appendChild(ta) }
+  else if (field.t === 'richtext') {
+    const wrap = document.createElement('div'); wrap.className = 'rte-container';
+    wrap.innerHTML = `
+      <div class="rte-toolbar">
+        <button type="button" class="rte-btn" onclick="execRTE('bold')" title="Negrita"><i class="fa-solid fa-bold"></i></button>
+        <button type="button" class="rte-btn" onclick="execRTE('italic')" title="Cursiva"><i class="fa-solid fa-italic"></i></button>
+        <button type="button" class="rte-btn" onclick="execRTE('insertUnorderedList')" title="Viñetas"><i class="fa-solid fa-list-ul"></i></button>
+        <button type="button" class="rte-btn" onclick="execRTE('createLink')" title="Enlace"><i class="fa-solid fa-link"></i></button>
+        <button type="button" class="rte-btn" onclick="execRTE('unlink')" title="Quitar enlace"><i class="fa-solid fa-link-slash"></i></button>
+      </div>
+      <div class="rte-editor" contenteditable="true" data-key="${field.k}">${val || ''}</div>
+    `;
+    fg.appendChild(wrap);
+  }
   else if (field.t === 'select') { const sel = document.createElement('select'); sel.className = 'form-select'; sel.dataset.key = field.k; if (field.ph) { const op = document.createElement('option'); op.value = ''; op.textContent = field.ph; op.selected = !val; sel.appendChild(op); } field.opts.forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt; if (opt === val) o.selected = true; sel.appendChild(o) }); fg.appendChild(sel) }
   else if (field.t === 'color-picker') { const row = document.createElement('div'); row.className = 'color-row'; field.opts.forEach((color, ci) => { const sw = document.createElement('div'); sw.className = 'color-swatch' + (data[field.k] === color || (!data[field.k] && ci === 0) ? ' selected' : ''); sw.style.background = color; sw.dataset.color = color; sw.dataset.key = field.k; sw.addEventListener('click', () => { row.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected')); sw.classList.add('selected') }); row.appendChild(sw) }); fg.appendChild(row) }
   else if (field.t === 'file-upload') {
@@ -910,7 +924,8 @@ document.getElementById('modalCancel').addEventListener('click', closeModal);
 document.getElementById('modalSave').addEventListener('click', () => {
   const data = {};
   modalBody.querySelectorAll('[data-key]').forEach(el => {
-    data[el.dataset.key] = el.value;
+    if (el.classList.contains('rte-editor')) data[el.dataset.key] = el.innerHTML;
+    else data[el.dataset.key] = el.value;
     if (el.dataset.city) data[el.dataset.key + '_city'] = el.dataset.city;
   });
   modalBody.querySelectorAll('.color-swatch.selected').forEach(sw => { data[sw.dataset.key] = sw.dataset.color });
@@ -1112,4 +1127,14 @@ async function performProSave(isSilent = true) {
     if (!isSilent) showToast('❌', 'Error de conexión al guardar');
     return false;
   }
+}
+function execRTE(cmd) {
+  if (cmd === 'createLink') {
+    const url = prompt('Ingresa la URL del enlace:');
+    if (url) document.execCommand(cmd, false, url);
+  } else {
+    document.execCommand(cmd, false, null);
+  }
+  const editor = document.querySelector('.rte-editor');
+  if (editor) editor.focus();
 }
