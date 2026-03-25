@@ -41,6 +41,7 @@ Route::get('/', function () {
 
 // Public info pages
 Route::get('/contacto', fn() => view('pages.contact'))->name('contact');
+Route::post('/contacto', [\App\Http\Controllers\ContactController::class, 'submit'])->name('contact.submit');
 Route::get('/terminos-de-uso', fn() => view('pages.terms'))->name('terms');
 Route::get('/privacidad', fn() => view('pages.privacy'))->name('privacy');
 Route::get('/rgpd', fn() => view('pages.gdpr'))->name('gdpr');

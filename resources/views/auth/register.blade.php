@@ -638,7 +638,7 @@
           <div class="terms-row">
             <input type="checkbox" id="terms" name="terms" required />
             <label for="terms">
-              Acepto los <a href="#terminos">Términos y Condiciones</a> y la <a href="#privacidad">Política de Privacidad</a> de Viantryp
+              Acepto los <a href="{{ route('terms') }}" target="_blank">Términos y Condiciones</a> y la <a href="{{ route('privacy') }}" target="_blank">Política de Privacidad</a> de Viantryp
             </label>
           </div>
           @error('terms')

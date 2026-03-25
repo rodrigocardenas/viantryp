@@ -60,24 +60,31 @@
           <h3 style="font-family:'Inter',sans-serif; font-size:1.25rem; font-weight:800; color:var(--navy); margin-bottom:0.4rem; letter-spacing:-0.02em;">Envíanos un mensaje</h3>
           <p style="font-size:0.88rem; color:var(--text-soft); margin-bottom:2rem;">Completa el formulario y te contactaremos lo antes posible.</p>
 
-          <form action="mailto:hola@viantryp.com" method="GET" style="display:flex; flex-direction:column; gap:1.2rem;">
+          @if(session('success'))
+            <div style="background:#dcfce7; color:#15803d; padding:1rem; border-radius:10px; margin-bottom:1.2rem; font-weight:600; font-size:0.9rem;">
+              <i class="fas fa-check-circle" style="margin-right:0.5rem;"></i> {{ session('success') }}
+            </div>
+          @endif
+
+          <form action="{{ route('contact.submit') }}" method="POST" style="display:flex; flex-direction:column; gap:1.2rem;">
+            @csrf
             <div class="form-row">
               <div>
                 <label style="font-size:0.82rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;">Nombre *</label>
-                <input type="text" placeholder="Tu nombre" style="width:100%; padding:0.75rem 1rem; border:1.5px solid var(--mid-gray); border-radius:10px; font-size:0.9rem; font-family:'Inter',sans-serif; outline:none; transition:border-color 0.2s; color:var(--text);" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--mid-gray)'">
+                <input type="text" name="name" placeholder="Tu nombre" required style="width:100%; padding:0.75rem 1rem; border:1.5px solid var(--mid-gray); border-radius:10px; font-size:0.9rem; font-family:'Inter',sans-serif; outline:none; transition:border-color 0.2s; color:var(--text);" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--mid-gray)'">
               </div>
               <div>
                 <label style="font-size:0.82rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;">Agencia / Empresa</label>
-                <input type="text" placeholder="Nombre de tu agencia" style="width:100%; padding:0.75rem 1rem; border:1.5px solid var(--mid-gray); border-radius:10px; font-size:0.9rem; font-family:'Inter',sans-serif; outline:none; transition:border-color 0.2s; color:var(--text);" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--mid-gray)'">
+                <input type="text" name="agency" placeholder="Nombre de tu agencia" style="width:100%; padding:0.75rem 1rem; border:1.5px solid var(--mid-gray); border-radius:10px; font-size:0.9rem; font-family:'Inter',sans-serif; outline:none; transition:border-color 0.2s; color:var(--text);" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--mid-gray)'">
               </div>
             </div>
             <div>
               <label style="font-size:0.82rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;">Email *</label>
-              <input type="email" placeholder="tu@agencia.com" style="width:100%; padding:0.75rem 1rem; border:1.5px solid var(--mid-gray); border-radius:10px; font-size:0.9rem; font-family:'Inter',sans-serif; outline:none; transition:border-color 0.2s; color:var(--text);" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--mid-gray)'">
+              <input type="email" name="email" placeholder="tu@agencia.com" required style="width:100%; padding:0.75rem 1rem; border:1.5px solid var(--mid-gray); border-radius:10px; font-size:0.9rem; font-family:'Inter',sans-serif; outline:none; transition:border-color 0.2s; color:var(--text);" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--mid-gray)'">
             </div>
             <div>
               <label style="font-size:0.82rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;">Motivo de contacto</label>
-              <select style="width:100%; padding:0.75rem 1rem; border:1.5px solid var(--mid-gray); border-radius:10px; font-size:0.9rem; font-family:'Inter',sans-serif; outline:none; color:var(--text); background:white; transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--mid-gray)'">
+              <select name="reason" style="width:100%; padding:0.75rem 1rem; border:1.5px solid var(--mid-gray); border-radius:10px; font-size:0.9rem; font-family:'Inter',sans-serif; outline:none; color:var(--text); background:white; transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--mid-gray)'">
                 <option value="">Selecciona un motivo</option>
                 <option>Demo personalizada</option>
                 <option>Consulta sobre precios</option>
@@ -89,7 +96,7 @@
             </div>
             <div>
               <label style="font-size:0.82rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;">Mensaje *</label>
-              <textarea placeholder="Cuéntanos cómo podemos ayudarte..." rows="5" style="width:100%; padding:0.75rem 1rem; border:1.5px solid var(--mid-gray); border-radius:10px; font-size:0.9rem; font-family:'Inter',sans-serif; outline:none; resize:vertical; transition:border-color 0.2s; color:var(--text);" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--mid-gray)'"></textarea>
+              <textarea name="message" placeholder="Cuéntanos cómo podemos ayudarte..." required rows="5" style="width:100%; padding:0.75rem 1rem; border:1.5px solid var(--mid-gray); border-radius:10px; font-size:0.9rem; font-family:'Inter',sans-serif; outline:none; resize:vertical; transition:border-color 0.2s; color:var(--text);" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--mid-gray)'"></textarea>
             </div>
             <button type="submit" class="btn-primary" style="justify-content:center; margin-top:0.4rem; cursor:pointer; border:none;">
               Enviar mensaje

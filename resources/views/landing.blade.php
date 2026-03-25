@@ -2002,7 +2002,7 @@
       <h2>Tu próxima aventura,<br>lista en minutos</h2>
       <div class="cta-actions">
         <a href="{{ route('register') }}" class="btn-primary">Crear cuenta gratis →</a>
-        <a href="mailto:hola@viantryp.com" class="btn-secondary">Contáctanos</a>
+        <a href="{{ route('contact') }}" class="btn-secondary">Contáctanos</a>
       </div>
     </div>
   </div>
