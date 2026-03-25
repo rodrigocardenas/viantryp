@@ -49,7 +49,7 @@
     <!-- Roles -->
     <div class="reveal" style="margin-bottom:3rem;">
       <h2 style="font-family:'Inter',sans-serif; font-size:1.25rem; font-weight:800; color:var(--navy); margin-bottom:1.2rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">Roles de tratamiento</h2>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+      <div class="card-grid-2" style="gap:1rem;">
         <div style="background:var(--off-white); border-radius:14px; padding:1.5rem; border:1.5px solid var(--mid-gray);">
           <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.75rem;">
             <i class="fas fa-user" style="color:var(--teal);"></i>
@@ -81,7 +81,7 @@
     <!-- Rights -->
     <div class="reveal" style="margin-bottom:3rem;">
       <h2 style="font-family:'Inter',sans-serif; font-size:1.25rem; font-weight:800; color:var(--navy); margin-bottom:1.2rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">Tus derechos bajo el RGPD</h2>
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
+      <div class="card-grid-3" style="gap:1rem;">
         @foreach([
           ['fa-eye','Acceso','Solicita una copia completa de tus datos en formato JSON.'],
           ['fa-edit','Rectificación','Corrige cualquier dato incorrecto directamente desde tu perfil.'],
@@ -102,7 +102,7 @@
     </div>
 
     <!-- DPA + Transfers -->
-    <div class="reveal" style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2.5rem;">
+    <div class="reveal card-grid-2" style="gap:1.5rem; margin-bottom:2.5rem;">
       <div style="background:var(--off-white); border-radius:14px; padding:1.5rem; border:1.5px solid var(--mid-gray);">
         <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.75rem;">
           <i class="fas fa-file-contract" style="color:var(--teal);"></i>

@@ -16,20 +16,20 @@
 <!-- MISSION -->
 <section class="section">
   <div class="container">
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center;">
+    <div class="about-split">
       <div class="reveal">
         <span class="section-label">Qué hacemos</span>
         <h2 class="section-title">Viajes bien organizados,<br>sin el caos</h2>
         <p class="section-text">Creemos que planear un viaje debería ser tan emocionante como vivirlo. Por eso creamos Viantryp: una herramienta visual e intuitiva donde cualquier persona puede construir itinerarios hermosos y compartirlos con un solo enlace.</p>
         <p class="section-text">Sin PDFs. Sin hojas de cálculo. Sin grupos de WhatsApp infinitos. Solo un espacio limpio donde tus planes cobran vida.</p>
         <div class="btn-actions" style="margin-top:2rem;">
-          <a href="{{ route('home') }}#como-funciona" class="btn-primary">Cómo funciona (Demo) <i class="fas fa-arrow-right"></i></a>
+          <a href="{{ route('home') }}#demo" class="btn-primary">Cómo funciona <i class="fas fa-arrow-right"></i></a>
           <a href="{{ route('contact') }}" class="btn-secondary">Contáctanos</a>
         </div>
       </div>
       <div class="reveal d2">
         <div style="background:linear-gradient(135deg,var(--teal-light),var(--lime-bg)); border-radius:24px; padding:2.5rem; border:1.5px solid var(--mid-gray);">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2rem;">
+          <div class="card-grid-2" style="margin-bottom:2rem;">
             <div style="text-align:center;">
               <span style="font-family:'Inter',sans-serif; font-size:2.2rem; font-weight:800; color:var(--navy); display:block; letter-spacing:-0.03em;">-80%</span>
               <span style="font-size:0.82rem; color:var(--text-soft);">Tiempo de construcción de itinerarios</span>
@@ -99,7 +99,7 @@
 <!-- PRINCIPLES -->
 <section class="section">
   <div class="container">
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:start;">
+    <div class="about-split start">
       <div class="reveal">
         <span class="section-label">Nuestros principios</span>
         <h2 class="section-title">Por qué Viantryp<br>es diferente</h2>
@@ -125,7 +125,7 @@
       <h2 class="section-title">Organizaciones que<br>confían en Viantryp</h2>
       <p class="section-text" style="margin:0;">Trabajamos junto a agencias, empresas tecnológicas y comunidades de viajeros que comparten nuestra visión.</p>
     </div>
-    <div class="reveal" style="display:grid; grid-template-columns:repeat(5,1fr); gap:1.2rem; align-items:center; margin-bottom:2.5rem;">
+    <div class="reveal partners-grid">
       @foreach([
         ['fa-suitcase-rolling','TravelPro'],
         ['fa-plane','AirElite'],

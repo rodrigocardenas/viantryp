@@ -168,7 +168,7 @@
   .hero h1 em { font-style: normal; color: var(--teal); }
   .hero > p {
     position: relative; z-index: 1;
-    font-weight: 300; color: var(--text-soft);
+    font-size: 1.1rem; font-weight: 300; color: var(--text-soft);
     max-width: 800px; line-height: 1.75; margin-bottom: 2.8rem;
     animation: fadeDown 0.7s 0.24s ease both;
   }
@@ -780,9 +780,15 @@
     .footer-brand-desc { max-width: 100%; }
     .footer-subscribe { max-width: 100%; }
   }
-  @media (max-width: 550px) {
+  @media (max-width: 640px) {
     .footer-top { grid-template-columns: 1fr; }
     .footer-bottom { flex-direction: column; text-align: center; }
+    .footer-col-title { cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1rem; margin-bottom: 0; }
+    .footer-col-title::after { content: '\f078'; font-family: 'Font Awesome 5 Free'; font-weight: 900; font-size: 0.8rem; transition: transform 0.3s; }
+    .footer-col.active .footer-col-title::after { transform: rotate(180deg); }
+    .footer-col-links { display: none; padding-top: 1rem; padding-bottom: 1rem; }
+    .footer-col.active .footer-col-links { display: flex; }
+    .footer-col { padding-left: 0; }
   }
 
   /* ── REVEAL ── */
@@ -811,8 +817,8 @@
       .section-desc { font-size: 0.8rem !important; }
       .pricing-grid { grid-template-columns: 1fr; }
       
-      .hero h1 { font-size: 2.2rem !important; line-height: 1.2 !important; }
-      .hero p { font-size: 1rem !important; margin: 1.5rem 0 !important; }
+      .hero h1 { font-size: 2.5rem !important; line-height: 1.2 !important; }
+      .hero p { font-size: 1.2rem !important; margin: 1.5rem 0 !important; }
       .hero-actions { flex-direction: column; width: 100%; gap: 1rem; }
       .hero-actions .btn-primary, .hero-actions .btn-secondary { width: 100%; justify-content: center; }
       .how { padding: 4rem 1.5rem !important; }
@@ -860,7 +866,7 @@
     <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 32px; width: auto; filter: invert(1) hue-rotate(180deg) contrast(1.5);">
   </a>
   <ul class="nav-links">
-    <li><a href="#como-funciona">Cómo funciona (Demo)</a></li>
+    <li><a href="#demo">Cómo funciona</a></li>
     <li><a href="#precios">Precios</a></li>
     <li><a href="{{ route('about') }}">Nosotros</a></li>
     <li><a href="{{ route('contact') }}">Contacto</a></li>
@@ -952,7 +958,6 @@
     <div class="hero-blob blob-2"></div>
     <div class="hero-blob blob-3"></div>
   </div>
-  <div class="hero-badge">✦Lleva tus viajes a otro nivel</div>
   <h1>Diseña tus viajes<br><em>en cuestión</em> de minutos</h1>
   <p>Organiza rutas, vuelos y estancias en una plataforma elegante e intuitiva. Ya sea para tu próximo gran viaje personal o para escalar tu negocio, Viantryp es el lienzo donde tus itinerarios cobran vida.</p>
   <div class="hero-actions">
@@ -2072,6 +2077,17 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+  document.querySelectorAll('.footer-col-title').forEach(title => {
+    title.addEventListener('click', () => {
+      if(window.innerWidth <= 640) {
+        const col = title.parentElement;
+        const wasActive = col.classList.contains('active');
+        document.querySelectorAll('.footer-col').forEach(c => c.classList.remove('active'));
+        if(!wasActive) col.classList.add('active');
+      }
+    });
+  });
+
   // Pricing Toggle Logic
   (function() {
     const toggle = document.getElementById('priceToggle');
@@ -2256,7 +2272,7 @@
   <div class="mobile-menu" id="mobileMenu">
     <button class="mobile-menu-close" id="mobileMenuClose">&times;</button>
     <ul class="mobile-nav-links">
-      <li><a href="#como-funciona">Cómo funciona (Demo)</a></li>
+      <li><a href="#demo">Cómo funciona</a></li>
       <li><a href="#precios">Precios</a></li>
       <li><a href="{{ route('about') }}">Nosotros</a></li>
       <li><a href="{{ route('contact') }}">Contacto</a></li>

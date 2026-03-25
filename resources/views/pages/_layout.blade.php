@@ -121,7 +121,7 @@
   }
   .page-hero-title em { font-style: normal; color: #5dcfe0; }
   .page-hero-sub {
-    font-size: 1.05rem; color: rgba(255,255,255,0.58);
+    font-size: 15px; color: rgba(255,255,255,0.58);
     max-width: 560px; margin: 0 auto; line-height: 1.7;
   }
   .page-hero-dots {
@@ -198,6 +198,18 @@
   .btn-secondary:hover { border-color: var(--teal); color: var(--teal); }
   .btn-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
 
+  /* ── LAYOUT UTILS ── */
+  .about-split { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .about-split.start { align-items: flex-start; }
+  .contact-split { display: grid; grid-template-columns: 1fr 1.4fr; gap: 4rem; align-items: start; }
+  .partners-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.2rem; align-items: center; margin-bottom: 2.5rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  
+  /* ── LEGAL PAGES ── */
+  .legal-layout { display: grid; grid-template-columns: 220px 1fr; gap: 4rem; align-items: start; }
+  .legal-sidebar { position: sticky; top: 100px; }
+  .legal-content { max-width: 720px; }
+
   /* ── FOOTER ── */
   footer { background: var(--navy); padding: 4rem 1.5rem 2rem; }
   .footer-inner { max-width: 1200px; margin: 0 auto; }
@@ -245,11 +257,33 @@
     .footer-brand { grid-column: 1 / -1; }
     .footer-subscribe { max-width: 100%; }
     .card-grid-2, .card-grid-3 { grid-template-columns: 1fr; }
+    .about-split { grid-template-columns: 1fr; gap: 3rem; }
+    .contact-split { grid-template-columns: 1fr; gap: 3rem; }
+    .partners-grid { grid-template-columns: repeat(3, 1fr); }
+    .legal-layout { grid-template-columns: 1fr; gap: 2rem; }
+    .legal-sidebar { position: static; border-bottom: 1px solid var(--mid-gray); padding-bottom: 1.5rem; margin-bottom: 1rem; display: none; } /* Hidden on mobile to save space */
+  }
+  @media (max-width: 768px) {
+    .page-hero { padding: 4rem 1.5rem 3rem !important; }
+    .page-hero-title { font-size: 2.2rem !important; }
+    .page-hero-sub { font-size: 14px !important; }
+    .section { padding: 3.5rem 0 !important; }
+    .container { padding: 0 1.25rem !important; }
+    .section-title { font-size: 1.8rem !important; }
   }
   @media (max-width: 640px) {
     .footer-top { grid-template-columns: 1fr; }
     .footer-bottom { flex-direction: column; text-align: center; }
     .page-nav { padding: 0.9rem 1rem; }
+    .partners-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-row { grid-template-columns: 1fr; }
+    
+    .footer-col-title { cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1rem; margin-bottom: 0; }
+    .footer-col-title::after { content: '\f078'; font-family: 'Font Awesome 5 Free'; font-weight: 900; font-size: 0.8rem; transition: transform 0.3s; }
+    .footer-col.active .footer-col-title::after { transform: rotate(180deg); }
+    .footer-col-links { display: none; padding-top: 1rem; padding-bottom: 1rem; }
+    .footer-col.active .footer-col-links { display: flex; }
+    .footer-col { padding-left: 0; }
   }
 
   /* ── REVEAL ── */
@@ -266,7 +300,7 @@
     <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp" style="filter: invert(1) hue-rotate(180deg) contrast(1.5);">
   </a>
   <div class="page-nav-links">
-    <a href="{{ route('home') }}#como-funciona">Cómo funciona</a>
+    <a href="{{ route('home') }}#demo">Cómo funciona</a>
     <a href="{{ route('home') }}#precios">Precios</a>
     <a href="{{ route('about') }}">Nosotros</a>
     <a href="{{ route('contact') }}">Contacto</a>
@@ -405,12 +439,23 @@
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  document.querySelectorAll('.footer-col-title').forEach(title => {
+    title.addEventListener('click', () => {
+      if(window.innerWidth <= 640) {
+        const col = title.parentElement;
+        const wasActive = col.classList.contains('active');
+        document.querySelectorAll('.footer-col').forEach(c => c.classList.remove('active'));
+        if(!wasActive) col.classList.add('active');
+      }
+    });
+  });
 </script>
 @stack('scripts')
 <div class="mobile-menu" id="mobileMenuStatic">
   <button class="mobile-menu-close" id="mobileMenuCloseStatic">&times;</button>
   <ul class="mobile-nav-links">
-    <li><a href="{{ route('home') }}#como-funciona">Cómo funciona</a></li>
+    <li><a href="{{ route('home') }}#demo">Cómo funciona</a></li>
     <li><a href="{{ route('home') }}#precios">Precios</a></li>
     <li><a href="{{ route('about') }}">Nosotros</a></li>
     <li><a href="{{ route('contact') }}">Contacto</a></li>

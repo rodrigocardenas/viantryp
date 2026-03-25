@@ -439,7 +439,7 @@
       <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 32px; width: auto; filter: invert(1) hue-rotate(180deg) contrast(1.5);">
     </a>
     <div class="nav-links">
-      <a href="{{ route('home') }}#como-funciona" class="nav-link">Cómo funciona (Demo)</a>
+      <a href="{{ route('home') }}#demo" class="nav-link">Cómo funciona</a>
       <a href="{{ route('home') }}#precios"       class="nav-link">Precios</a>
       <a href="{{ route('home') }}#contacto"      class="nav-link">Contacto</a>
     </div>

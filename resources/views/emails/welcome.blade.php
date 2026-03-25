@@ -255,7 +255,7 @@
   <div class="footer">
     <img src="{{ config('app.url') }}/images/logo-viantryp.png" alt="Viantryp" style="height: 18px; width: auto; display: inline-block; opacity: 0.8; margin-bottom: 10px;">
     <div class="footer-links">
-      <a href="{{ url('/') }}#como-funciona" class="footer-link">Cómo funciona (Demo)</a>
+      <a href="{{ url('/') }}#demo" class="footer-link">Cómo funciona</a>
       <a href="{{ url('/') }}#precios" class="footer-link">Precios</a>
       <a href="mailto:hola@viantryp.com" class="footer-link">Contacto</a>
     </div>

@@ -16,7 +16,7 @@
 <!-- CONTACT GRID -->
 <section class="section">
   <div class="container">
-    <div style="display:grid; grid-template-columns:1fr 1.4fr; gap:4rem; align-items:start;">
+    <div class="contact-split">
 
       <!-- INFO LEFT -->
       <div class="reveal">
@@ -61,7 +61,7 @@
           <p style="font-size:0.88rem; color:var(--text-soft); margin-bottom:2rem;">Completa el formulario y te contactaremos lo antes posible.</p>
 
           <form action="mailto:hola@viantryp.com" method="GET" style="display:flex; flex-direction:column; gap:1.2rem;">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-row">
               <div>
                 <label style="font-size:0.82rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;">Nombre *</label>
                 <input type="text" placeholder="Tu nombre" style="width:100%; padding:0.75rem 1rem; border:1.5px solid var(--mid-gray); border-radius:10px; font-size:0.9rem; font-family:'Inter',sans-serif; outline:none; transition:border-color 0.2s; color:var(--text);" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--mid-gray)'">

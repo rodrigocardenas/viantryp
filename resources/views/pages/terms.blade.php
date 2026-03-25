@@ -28,10 +28,10 @@
 <!-- CONTENT -->
 <section class="section">
   <div class="container">
-    <div style="display:grid; grid-template-columns:220px 1fr; gap:4rem; align-items:start;">
+    <div class="legal-layout">
 
       <!-- STICKY INDEX -->
-      <div style="position:sticky; top:80px;">
+      <div class="legal-sidebar">
         <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:1rem;">Contenido</div>
         <ul style="list-style:none; display:flex; flex-direction:column; gap:0.5rem;">
           @foreach([
@@ -55,7 +55,7 @@
       </div>
 
       <!-- BODY -->
-      <div style="max-width:720px;">
+      <div class="legal-content">
 
         <div id="aceptacion" style="margin-bottom:2.5rem;">
           <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">1. Aceptación de los términos</h2>

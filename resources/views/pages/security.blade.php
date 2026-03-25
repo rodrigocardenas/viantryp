@@ -5,6 +5,19 @@
 
 @section('content')
 
+<style>
+  @media (max-width: 768px) {
+    .btn-security-mobile {
+      width: 200px !important;
+      white-space: normal !important;
+      text-align: center;
+      justify-content: center;
+      font-size: 0.85rem !important;
+      padding: 0.75rem 0.5rem !important;
+    }
+  }
+</style>
+
 <!-- HERO -->
 <div class="page-hero" style="padding:4rem 2rem 3.5rem;">
   <div class="page-hero-dots"></div>
@@ -52,12 +65,12 @@
 
     <!-- Responsible disclosure -->
     <div class="reveal" style="background:var(--navy); border-radius:20px; padding:2.5rem; display:flex; align-items:center; gap:2.5rem; flex-wrap:wrap;">
-      <div style="flex:1; min-width:260px;">
+      <div style="flex:1; min-width:150px;">
         <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#5dcfe0;display:block;margin-bottom:0.75rem;">Divulgación responsable</span>
         <h3 style="font-family:'Inter',sans-serif; font-size:1.15rem; font-weight:800; color:white; margin-bottom:0.6rem; letter-spacing:-0.02em;">¿Encontraste una vulnerabilidad?</h3>
         <p style="font-size:0.87rem; color:rgba(255,255,255,0.55); line-height:1.7; margin:0;">Reporta cualquier problema de seguridad a <a href="mailto:seguridad@viantryp.com" style="color:#5dcfe0;">seguridad@viantryp.com</a> antes de divulgarlo públicamente. Respondemos en menos de 24 h y reconocemos los reportes válidos en nuestro Hall of Fame.</p>
       </div>
-      <a href="mailto:seguridad@viantryp.com" class="btn-primary" style="flex-shrink:0; white-space:nowrap;">
+      <a href="mailto:seguridad@viantryp.com" class="btn-primary btn-security-mobile" style="flex-shrink:0; white-space:nowrap;">
         <i class="fas fa-bug"></i> Reportar vulnerabilidad
       </a>
     </div>
