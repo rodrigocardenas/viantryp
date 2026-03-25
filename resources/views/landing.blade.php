@@ -683,7 +683,7 @@
   }
   .footer-top {
     display: grid;
-    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr;
     gap: 2.5rem;
     padding-bottom: 3rem;
     border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -866,9 +866,9 @@
     <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 32px; width: auto; filter: invert(1) hue-rotate(180deg) contrast(1.5);">
   </a>
   <ul class="nav-links">
-    <li><a href="#demo">Cómo funciona</a></li>
+    <li><a href="#como-funciona">Cómo funciona</a></li>
+    <li><a href="#demo">Ver Demo</a></li>
     <li><a href="#precios">Precios</a></li>
-    <li><a href="{{ route('about') }}">Nosotros</a></li>
     <li><a href="{{ route('contact') }}">Contacto</a></li>
   </ul>
   <div class="nav-right">
@@ -2020,9 +2020,11 @@
           <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 30px; width: auto; filter: brightness(0) invert(1);">
         </div>
         <p class="footer-brand-desc">La plataforma que transforma itinerarios de viaje en experiencias digitales modernas.</p>
-        <div class="footer-subscribe">
-          <input type="email" placeholder="Tu email profesional">
-          <button type="button">Suscribirse</button>
+        <div class="footer-parte-de" style="margin-top: 2rem;">
+          <h4 style="font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 0.8rem;">PARTE DE</h4>
+          <div>
+            <img src="{{ asset('images/startub.png') }}" alt="StartUB! Universitat de Barcelona" style="height: 35px; filter: brightness(0) invert(1); opacity: 0.9;">
+          </div>
         </div>
       </div>
 
@@ -2037,16 +2039,6 @@
         </ul>
       </div>
 
-      <!-- EMPRESA -->
-      <div class="footer-col">
-        <div class="footer-col-title">Empresa</div>
-        <ul class="footer-col-links">
-          <li><a href="{{ route('about') }}">Sobre nosotros</a></li>
-          <li><a href="{{ route('about') }}#partners">Partners</a></li>
-          <li><a href="{{ route('contact') }}">Contacto</a></li>
-        </ul>
-      </div>
-
       <!-- LEGAL -->
       <div class="footer-col">
         <div class="footer-col-title">Legal</div>
@@ -2055,18 +2047,28 @@
           <li><a href="{{ route('privacy') }}">Privacidad</a></li>
           <li><a href="{{ route('gdpr') }}">RGPD</a></li>
           <li><a href="{{ route('security') }}">Seguridad</a></li>
+          <li class="contact-desktop-li" style="margin-top: 0.5rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.1);"><a href="{{ route('contact') }}">Contacto</a></li>
         </ul>
+      </div>
+
+      <!-- CONTACTO (MOBILE ONLY) -->
+      <style>
+        .contact-mobile-col { display: none; }
+        .contact-desktop-li { display: list-item; }
+        @media (max-width: 640px) {
+          .contact-mobile-col { display: block; margin-top: 0; padding-top: 0; }
+          .contact-desktop-li { display: none !important; }
+          .contact-mobile-col .footer-col-title::after { display: none !important; }
+        }
+      </style>
+      <div class="footer-col contact-mobile-col">
+        <a href="{{ route('contact') }}" class="footer-col-title" style="text-decoration:none; display:flex;">Contacto</a>
       </div>
 
     </div><!-- /.footer-top -->
 
     <div class="footer-bottom">
       <div class="footer-copy">© 2026 Viantryp. Todos los derechos reservados.</div>
-      <div class="footer-social">
-        <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="#" title="Twitter"><i class="fab fa-x-twitter"></i></a>
-      </div>
     </div>
   </div>
 </footer>
@@ -2272,9 +2274,9 @@
   <div class="mobile-menu" id="mobileMenu">
     <button class="mobile-menu-close" id="mobileMenuClose">&times;</button>
     <ul class="mobile-nav-links">
-      <li><a href="#demo">Cómo funciona</a></li>
+      <li><a href="#como-funciona">Cómo funciona</a></li>
+      <li><a href="#demo">Ver Demo</a></li>
       <li><a href="#precios">Precios</a></li>
-      <li><a href="{{ route('about') }}">Nosotros</a></li>
       <li><a href="{{ route('contact') }}">Contacto</a></li>
     </ul>
 

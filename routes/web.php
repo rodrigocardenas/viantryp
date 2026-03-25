@@ -40,8 +40,6 @@ Route::get('/', function () {
 })->name('home');
 
 // Public info pages
-Route::get('/sobre-nosotros', fn() => view('pages.about'))->name('about');
-Route::get('/partners', fn() => redirect(route('about') . '#partners'))->name('partners');
 Route::get('/contacto', fn() => view('pages.contact'))->name('contact');
 Route::get('/terminos-de-uso', fn() => view('pages.terms'))->name('terms');
 Route::get('/privacidad', fn() => view('pages.privacy'))->name('privacy');

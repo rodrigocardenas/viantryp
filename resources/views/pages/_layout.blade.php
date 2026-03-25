@@ -214,7 +214,7 @@
   footer { background: var(--navy); padding: 4rem 1.5rem 2rem; }
   .footer-inner { max-width: 1200px; margin: 0 auto; }
   .footer-top {
-    display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 2.5rem;
+    display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2.5rem;
     padding-bottom: 3rem; border-bottom: 1px solid rgba(255,255,255,0.08);
   }
   .footer-brand-desc { font-size: 0.875rem; color: rgba(255,255,255,0.5); line-height: 1.7; margin: 1rem 0 1.5rem; max-width: 230px; }
@@ -300,9 +300,9 @@
     <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp" style="filter: invert(1) hue-rotate(180deg) contrast(1.5);">
   </a>
   <div class="page-nav-links">
-    <a href="{{ route('home') }}#demo">Cómo funciona</a>
+    <a href="{{ route('home') }}#como-funciona">Cómo funciona</a>
+    <a href="{{ route('home') }}#demo">Ver Demo</a>
     <a href="{{ route('home') }}#precios">Precios</a>
-    <a href="{{ route('about') }}">Nosotros</a>
     <a href="{{ route('contact') }}">Contacto</a>
   </div>
   <div class="nav-right">
@@ -391,9 +391,11 @@
       <div class="footer-brand">
         <div><img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp" style="height: 28px; filter: brightness(0) invert(1);"></div>
         <p class="footer-brand-desc">La plataforma que transforma itinerarios de viaje en experiencias digitales modernas.</p>
-        <div class="footer-subscribe">
-          <input type="email" placeholder="Tu email profesional">
-          <button type="button">Suscribirse</button>
+        <div class="footer-parte-de" style="margin-top: 2rem;">
+          <h4 style="font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 0.8rem;">PARTE DE</h4>
+          <div>
+            <img src="{{ asset('images/startub.png') }}" alt="StartUB! Universitat de Barcelona" style="height: 35px; filter: brightness(0) invert(1); opacity: 0.9;">
+          </div>
         </div>
       </div>
       <div class="footer-col">
@@ -406,30 +408,32 @@
         </ul>
       </div>
       <div class="footer-col">
-        <div class="footer-col-title">Empresa</div>
-        <ul class="footer-col-links">
-          <li><a href="{{ route('about') }}">Sobre nosotros</a></li>
-          <li><a href="{{ route('about') }}#partners">Partners</a></li>
-          <li><a href="{{ route('contact') }}">Contacto</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
         <div class="footer-col-title">Legal</div>
         <ul class="footer-col-links">
           <li><a href="{{ route('terms') }}">Términos de uso</a></li>
           <li><a href="{{ route('privacy') }}">Privacidad</a></li>
           <li><a href="{{ route('gdpr') }}">RGPD</a></li>
           <li><a href="{{ route('security') }}">Seguridad</a></li>
+          <li class="contact-desktop-li" style="margin-top: 0.5rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.1);"><a href="{{ route('contact') }}">Contacto</a></li>
         </ul>
+      </div>
+      
+      <!-- CONTACTO (MOBILE ONLY) -->
+      <style>
+        .contact-mobile-col { display: none; }
+        .contact-desktop-li { display: list-item; }
+        @media (max-width: 640px) {
+          .contact-mobile-col { display: block; margin-top: 0; padding-top: 0; }
+          .contact-desktop-li { display: none !important; }
+          .contact-mobile-col .footer-col-title::after { display: none !important; }
+        }
+      </style>
+      <div class="footer-col contact-mobile-col">
+        <a href="{{ route('contact') }}" class="footer-col-title" style="text-decoration:none; display:flex;">Contacto</a>
       </div>
     </div>
     <div class="footer-bottom">
       <div class="footer-copy">© 2026 Viantryp. Todos los derechos reservados.</div>
-      <div class="footer-social">
-        <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="#" title="Twitter"><i class="fab fa-x-twitter"></i></a>
-      </div>
     </div>
   </div>
 </footer>
@@ -455,9 +459,9 @@
 <div class="mobile-menu" id="mobileMenuStatic">
   <button class="mobile-menu-close" id="mobileMenuCloseStatic">&times;</button>
   <ul class="mobile-nav-links">
-    <li><a href="{{ route('home') }}#demo">Cómo funciona</a></li>
+    <li><a href="{{ route('home') }}#como-funciona">Cómo funciona</a></li>
+    <li><a href="{{ route('home') }}#demo">Ver Demo</a></li>
     <li><a href="{{ route('home') }}#precios">Precios</a></li>
-    <li><a href="{{ route('about') }}">Nosotros</a></li>
     <li><a href="{{ route('contact') }}">Contacto</a></li>
   </ul>
 
