@@ -263,6 +263,18 @@ document.querySelectorAll('.element-card').forEach(card => {
       showToast('⚠️', 'Selecciona un día primero');
     }
   });
+
+  // Mobile: Single tap to add (since dblclick is not intuitive on touch)
+  card.addEventListener('click', (e) => {
+    if (window.innerWidth < 992) {
+      if (typeof currentDay === 'number' || currentDay === 'portada' || currentDay === 'cierre') {
+        openModal(card.dataset.type);
+        // Sidebar is persistent now, no need to toggle
+      } else {
+        showToast('⚠️', 'Selecciona un día primero');
+      }
+    }
+  });
 });
 document.addEventListener('dragover', e => { e.preventDefault(); dragGhost.style.left = (e.clientX + 12) + 'px'; dragGhost.style.top = (e.clientY - 18) + 'px' });
 canvasItems.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); if (dragSourceIndex !== null && dragSourceContainer === 'canvasItems') { const cl = getClosest([...canvasItems.querySelectorAll('.canvas-item')], e.clientY); showDropInd(cl.index, cl.before) } emptyState.classList.add('drag-over') });
@@ -745,6 +757,10 @@ function openModal(type, editIdx = null) {
   for (let i = 0; i < fields.length; i++) { const f = fields[i], next = fields[i + 1]; if (f.t === 'textarea' || f.t === 'color-picker' || f.t === 'richtext' || f.fw) { modalBody.appendChild(buildField(f, existData)) } else if (next && next.t !== 'textarea' && next.t !== 'color-picker' && next.t !== 'richtext' && !next.fw) { const row = document.createElement('div'); row.className = 'form-row'; row.appendChild(buildField(f, existData)); row.appendChild(buildField(next, existData)); modalBody.appendChild(row); i++ } else { modalBody.appendChild(buildField(f, existData)) } }
   if (cfg.hasStars) { const sg = document.createElement('div'); sg.className = 'form-group'; sg.innerHTML = '<label class="form-label">Calificación</label>'; const sr = document.createElement('div'); sr.className = 'star-rating'; const init = existData.stars || 0; for (let s = 1; s <= 5; s++) { const star = document.createElement('span'); star.className = 'star' + (s <= init ? ' active' : ''); star.textContent = '★'; star.dataset.val = s; star.addEventListener('click', () => { starRating = parseInt(star.dataset.val); sr.querySelectorAll('.star').forEach((st, idx) => st.classList.toggle('active', idx < starRating)) }); sr.appendChild(star) } starRating = init; sg.appendChild(sr); modalBody.appendChild(sg) }
   modalOverlay.classList.add('open');
+  
+  // Mobile: Sidebar is persistent in side-by-side mode, no need to hide it anymore.
+
+
   setTimeout(() => {
     const f = modalBody.querySelector('input,textarea,select'); if (f) f.focus();
 

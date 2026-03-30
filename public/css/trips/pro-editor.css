@@ -2173,181 +2173,272 @@ body {
 }
 
 /* ═══════════════════════════════════════════
-   RESPONSIVE — BUILDER
+   RESPONSIVE — BUILDER (SIDE-BY-SIDE MOD)
    ═══════════════════════════════════════════ */
-/* Sidebar toggling */
+
 .sidebar-toggle {
-  display: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-muted);
-  font-size: 18px;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0
+    display: none;
 }
 
 .sidebar-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, .35);
-  z-index: 299;
-  backdrop-filter: blur(3px)
+    display: none !important;
 }
 
-.sidebar-overlay.open {
-  display: block
-}
-
-@media(max-width:860px) {
+@media(max-width:991px) {
   :root {
-    --sidebar-w: 240px
+    --sidebar-w: 70px
   }
 
-  .itinerary-name-input {
-    min-width: 120px
-  }
-
-  .topbar .btn span {
-    display: none
-  }
-}
-
-@media(max-width:700px) {
   body {
-    overflow: auto;
-    height: auto
+    overflow: hidden;
+    height: 100vh;
   }
 
-  .main {
-    overflow: visible;
-    height: auto
-  }
-
-  /* Topbar */
   .topbar {
     padding: 0 12px;
-    gap: 8px
+    height: 52px;
   }
 
-  .topbar-div {
-    display: none
+  .header-subtitle, .topbar-div {
+     display: none !important;
+  }
+  
+  .logo-link img {
+      height: 22px;
   }
 
-  .itinerary-name-input {
-    min-width: 80px;
-    font-size: 13px
+  .topbar-left,
+  .topbar-actions .btn-help,
+  .topbar-actions .nav-link span,
+  .topbar-actions .secondary-nav-link:first-child span,
+  .ubadge i {
+      display: none !important;
   }
 
-  .sidebar-toggle {
-    display: flex
+  .topbar-actions .secondary-nav-link:last-child span {
+      display: inline-block !important;
+      font-size: 11px;
+      margin-left: 4px;
   }
 
-  /* Sidebar slides in as drawer */
+  /* Move avatar to the left of the topbar-right group */
+  .user-profile-dropdown {
+      order: -1;
+      margin-right: auto; /* Push others to the right */
+  }
+
+  .ubadge {
+      padding: 0 !important;
+      border: none !important;
+  }
+
+  .secondary-nav-link {
+      width: auto;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 8px;
+      justify-content: center;
+      border-radius: 8px;
+  }
+  
+  .topbar-actions .secondary-nav-link:first-child {
+      width: 32px;
+      padding: 0;
+  }
+  
+  .secondary-nav-link i {
+      margin: 0;
+  }
+
+  /* SIDEBAR AS NARROW ICON BAR */
   .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 300;
-    transform: translateX(-100%);
-    transition: transform .25s cubic-bezier(.4, 0, .2, 1);
-    width: min(var(--sidebar-w), 80vw);
-    box-shadow: var(--shadow-md)
+    width: var(--sidebar-w);
+    border-right: 1px solid var(--border);
+    position: relative;
+    transform: none;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    background: #f8fafc;
   }
 
-  .sidebar.open {
-    transform: translateX(0)
+  .sidebar-scroll {
+    padding: 12px 6px;
   }
 
-  /* Canvas fills full width */
+  .section-label {
+    display: none; /* Hide labels on mobile to save space */
+  }
+
+  .element-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .element-card {
+    width: 58px;
+    height: 62px;
+    padding: 12px 0;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    border-radius: 10px;
+    background: white;
+  }
+
+  .el-drag-handle, .el-sub, .el-name {
+    display: none !important; /* Icons only */
+  }
+
+  .el-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  /* CANVAS ADJUSTMENTS */
   .canvas-wrap {
-    width: 100%;
-    min-height: 0
+    flex: 1;
+    min-width: 0; /* Allow shrinking */
+  }
+
+  .canvas {
+    padding: 12px 10px 40px;
   }
 
   .canvas-toolbar {
-    padding: 0 12px;
-    gap: 6px;
+    padding: 0 8px;
+    height: 48px;
     overflow-x: auto;
-    flex-wrap: nowrap
+  }
+  
+  .canvas-toolbar::-webkit-scrollbar {
+      display: none;
   }
 
   .day-tabs {
     flex-wrap: nowrap;
-    overflow-x: auto;
-    flex-shrink: 1;
-    min-width: 0;
-    padding-bottom: 2px
   }
 
-  .day-tabs::-webkit-scrollbar {
-    height: 0
+  .day-tab {
+    padding: 5px 10px;
+    font-size: 11.5px;
+    white-space: nowrap;
   }
 
-  .canvas {
-    padding: 16px 14px 60px
-  }
-
-  .canvas-inner {
-    max-width: 100%
+  .day-tab-delete {
+    display: none; /* Simplify tabs on mobile */
   }
 
   .day-subbar {
-    padding: 0 12px;
-    gap: 8px
+    padding: 0 10px;
+    height: 44px;
+    gap: 10px;
+  }
+
+  .day-subbar-label {
+      font-size: 9px;
   }
 
   .day-date-input {
-    max-width: 180px
+    font-size: 12px;
+    padding: 4px 8px;
+    max-width: 130px;
   }
 
-  /* Portada responsive */
-  .portada-meta {
-    grid-template-columns: 1fr 1fr !important
-  }
-
-  .portada-travelers-row {
-    flex-wrap: wrap;
-    gap: 8px
+  /* PORTADA ON MOBILE */
+  .portada-hero {
+    height: 140px;
   }
 
   .portada-body {
-    padding: 14px 14px 18px
-  }
-
-  .portada-hero {
-    height: 160px
-  }
-
-  /* Modal */
-  .modal {
-    width: calc(100vw - 24px);
-    max-height: calc(100vh - 40px)
-  }
-
-  .form-row {
-    grid-template-columns: 1fr
-  }
-}
-
-@media(max-width:420px) {
-  .portada-meta {
-    grid-template-columns: 1fr !important
+    padding: 12px;
   }
 
   .portada-title-input {
-    font-size: 20px
+    font-size: 18px;
   }
 
-  .canvas-toolbar .add-day-btn span,
-  .canvas-toolbar .add-section-btn span {
-    display: none
+  .portada-meta {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+  }
+
+  /* CANVAS ITEMS ON MOBILE */
+  .item-inner {
+      padding: 12px !important;
+  }
+  
+  .item-icon {
+      width: 32px;
+      height: 32px;
+      font-size: 13px;
+  }
+
+  .item-actions {
+    opacity: 0.8 !important;
+    transform: scale(0.85);
+    right: 4px !important;
+    top: 4px !important;
+  }
+  
+  /* Reduced font sizes for mobile canvas info */
+  .item-title {
+      font-size: 13px !important;
+      line-height: 1.3 !important;
+  }
+  
+  .item-desc {
+      font-size: 11.5px !important;
+      line-height: 1.4 !important;
+  }
+  
+  .item-meta, .item-meta span {
+      font-size: 10px !important;
+  }
+  
+  .item-details-grid {
+      gap: 6px !important;
+  }
+
+  /* MODALS ON MOBILE (FULL SCREEN) */
+  .modal-overlay {
+      padding: 0;
+  }
+
+  .modal {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    transform: none !important;
+  }
+
+  .modal-body {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media(max-width:480px) {
+  :root {
+      --sidebar-w: 64px;
+  }
+  
+  .element-card {
+      width: 52px;
+      height: 54px;
   }
 }
 

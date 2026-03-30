@@ -209,7 +209,11 @@ function buildPreviewHTML(data) {
             <div class="pv-hotel-photo-slot">${cCarousel(d.photo_url, '<i class="fa-solid fa-hotel"></i>')}</div>
             <div class="pv-hotel-info-col">
               <div class="pv-hotel-title-row">
-                <div class="pv-hotel-name">${d.nombre || 'Hotel'}</div>
+                <div class="pv-hotel-name">
+                  <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.nombre || 'Hotel') + ' ' + (d.direccion || ''))}" target="_blank" class="pv-map-link">
+                    ${d.nombre || 'Hotel'} <i class="fa-solid fa-up-right-from-square"></i>
+                  </a>
+                </div>
                 ${d.stars ? `<div class="pv-stars-row">${starsHTML(d.stars)}<span class="pv-stars-score">(${Number.isInteger(d.stars) ? d.stars + '.0' : d.stars})</span></div>` : ''}
               </div>
               ${d.direccion ? `<div class="pv-hotel-addr"><i class="fa-solid fa-location-dot" style="color:var(--muted)"></i> ${d.direccion}</div>` : ''}
@@ -280,7 +284,11 @@ function buildPreviewHTML(data) {
           <div class="pv-media-layout">
             <div class="pv-media-photo-slot">${cCarousel(d.photo_url, '<i class="fa-solid fa-bullseye"></i>')}</div>
             <div class="pv-media-info-col">
-              <div class="pv-media-name" style="font-weight:700; font-size:16px; margin-bottom:2px;">${d.nombre || 'Actividad'}</div>
+              <div class="pv-media-name" style="font-weight:700; font-size:16px; margin-bottom:2px;">
+                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.nombre || 'Actividad') + ' ' + (d.direccion || d.lugar || ''))}" target="_blank" class="pv-map-link">
+                  ${d.nombre || 'Actividad'} <i class="fa-solid fa-up-right-from-square"></i>
+                </a>
+              </div>
               ${d.direccion || d.lugar ? `<div class="pv-media-addr" style="color:#666; font-weight:500; font-size:13px; margin-bottom:4px;"><i class="fa-solid fa-location-dot" style="color:var(--muted); margin-right:4px;"></i>${d.direccion || d.lugar}</div>` : ''}
               ${d.stars ? `<div class="pv-stars-row" style="margin-bottom:8px;">${starsHTML(d.stars)} <span class="pv-stars-score" style="font-size:12px; opacity:0.8;">(${Number.isInteger(d.stars) ? d.stars + '.0' : d.stars})</span></div>` : ''}
               
@@ -307,7 +315,11 @@ function buildPreviewHTML(data) {
             <div class="pv-media-photo-slot">${cCarousel(d.photo_url, '<i class="fa-solid fa-utensils"></i>')}</div>
             <div class="pv-media-info-col">
               <div class="pv-media-title-row">
-                <div class="pv-media-name">${d.restaurante || 'Restaurante'}</div>
+                <div class="pv-media-name">
+                  <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.restaurante || 'Restaurante') + ' ' + (d.direccion || d.ciudad || ''))}" target="_blank" class="pv-map-link">
+                    ${d.restaurante || 'Restaurante'} <i class="fa-solid fa-up-right-from-square"></i>
+                  </a>
+                </div>
                 ${d.stars ? `<div class="pv-stars-row">${starsHTML(d.stars)}<span class="pv-stars-score">(${Number.isInteger(d.stars) ? d.stars + '.0' : d.stars})</span></div>` : ''}
               </div>
               ${d.direccion || d.ciudad ? `<div class="pv-media-addr"><i class="fa-solid fa-location-dot" style="color:var(--muted)"></i> ${d.direccion || d.ciudad}</div>` : ''}
@@ -338,7 +350,11 @@ function buildPreviewHTML(data) {
             <div class="pv-media-photo-slot">${cCarousel(d.url || d.photo_url, '<i class="fa-solid fa-map-location-dot"></i>')}</div>
             <div class="pv-media-info-col">
               <div class="pv-media-title-row">
-                <div class="pv-media-name">${d.nombre || 'Tour'}</div>
+                <div class="pv-media-name">
+                  <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.nombre || 'Tour') + ' ' + (d.operador || ''))}" target="_blank" class="pv-map-link">
+                    ${d.nombre || 'Tour'} <i class="fa-solid fa-up-right-from-square"></i>
+                  </a>
+                </div>
               </div>
               ${d.operador ? `<div class="pv-media-addr"><i class="fa-solid fa-location-dot" style="color:var(--muted)"></i> ${d.operador}</div>` : ''}
               ${timeRange ? `<div class="pv-media-time"><i class="fa-solid fa-clock"></i> ${timeRange.includes(' - ') ? timeRange.replace(' - ', ' - Duración : ') : 'Duración : ' + timeRange}</div>` : ''}
@@ -516,6 +532,9 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-media-addr{font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:4px;margin-bottom:7px}
 .pv-media-time{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:5px;margin-bottom:6px;font-weight:500}
 .pv-media-desc{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:6px}
+.pv-map-link{color:inherit;text-decoration:none;transition:color 0.2s;display:inline-flex;align-items:center;gap:6px}
+.pv-map-link:hover{color:var(--accent);text-decoration:none}
+.pv-map-link i{font-size:0.85em;opacity:0.7}
 
 /* CIERRE */
 .pv-cierre{background:var(--accent-bg);border-radius:var(--radius);padding:40px 32px;text-align:center;color:#fff;display:flex;flex-direction:column;align-items:center;gap:12px;box-shadow:var(--shadow)}

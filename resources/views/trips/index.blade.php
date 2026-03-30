@@ -501,24 +501,25 @@
             display: flex; gap: 10px;
         }
         .acts-cell { text-align: left; }
-        .acts { justify-content: space-between; width: 100%; gap: 10px; }
+        .acts { justify-content: space-between; width: 100%; gap: 6px; }
         
         /* Specialized Mobile Buttons */
         .abt { 
-            width: auto; flex: 1; height: 38px; border-radius: 8px; font-size: 13px; 
+            width: auto; flex: 1; height: 36px; border-radius: 8px; font-size: 11.5px; 
             font-weight: 600; font-family: 'DM Sans', sans-serif; 
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
             color: var(--gray); border-color: var(--bdr); background: transparent;
+            padding: 0 4px;
         }
         .abt::after { display: none !important; } /* Hide tooltips */
-        .abt.edit { display: none; } /* User requested to hide edit on mobile */
         
         .abt.view::before { content: 'Ver'; }
+        .abt.edit::before { content: 'Editar'; }
         .abt.share::before { content: 'Compartir'; }
         .abt.more::before { content: 'Más'; }
         
-        .abt.del { flex: 0 0 42px; }
-        .abt svg { width: 15px; height: 15px; }
+        .abt.del { flex: 0 0 36px; }
+        .abt svg { width: 13px; height: 13px; flex-shrink: 0; }
 
         .acts-menu-container { flex: 1; display: flex; }
         .acts-menu-container .abt { flex: 1; width: 100%; }
@@ -930,6 +931,7 @@
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                         </button>
                         
+                        @if($activeMainTab !== 'shared')
                         <div class="acts-menu-container">
                             <button class="abt more" onclick="toggleActsMenu(event, {{ $trip->id }})" title="Más opciones">
                                 <i class="fas fa-ellipsis-v"></i>
@@ -956,6 +958,7 @@
                                 @endif
                             </div>
                         </div>
+                        @endif
                       </div>
                     </td>
                 </tr>

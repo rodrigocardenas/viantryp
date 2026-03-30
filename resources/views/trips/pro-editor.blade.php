@@ -139,15 +139,15 @@
   <div class="topbar-right">
       <div class="topbar-left">
           <button class="nav-link" style="border:none; cursor:pointer;" data-action="back" onclick="confirmExit()">
-              <i class="fas fa-arrow-left" style="margin-right:4px;"></i> Volver
+              <i class="fas fa-arrow-left" style="margin-right:4px;"></i> <span>Volver</span>
           </button>
       </div>
       <div class="topbar-actions">
           <button class="secondary-nav-link" onclick="manualSaveProTrip()">
-              <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
+              <i class="fa-solid fa-floppy-disk"></i> <span>Guardar cambios</span>
           </button>
           <button id="btnPreviewTrip" class="secondary-nav-link" onclick="openPreview()">
-              <i class="fa-solid fa-eye"></i> Vista previa
+              <i class="fa-solid fa-eye"></i> <span>Vista previa</span>
           </button>
       </div>
 
