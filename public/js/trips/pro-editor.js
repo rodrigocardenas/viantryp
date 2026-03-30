@@ -256,6 +256,13 @@ const emptyState = document.getElementById('emptyState');
 document.querySelectorAll('.element-card').forEach(card => {
   card.addEventListener('dragstart', e => { dragType = card.dataset.type; dragLabel = card.dataset.label; dragSourceIndex = null; card.classList.add('dragging'); e.dataTransfer.effectAllowed = 'copy'; e.dataTransfer.setDragImage(new Image(), 0, 0); const cfg = C[dragType]; document.getElementById('ghostIcon').textContent = cfg.icon; document.getElementById('ghostLabel').textContent = dragLabel; dragGhost.style.opacity = '1' });
   card.addEventListener('dragend', () => { card.classList.remove('dragging'); dragGhost.style.opacity = '0'; clearDropIndicators() });
+  card.addEventListener('dblclick', () => {
+    if (typeof currentDay === 'number' || currentDay === 'portada' || currentDay === 'cierre') {
+      openModal(card.dataset.type);
+    } else {
+      showToast('⚠️', 'Selecciona un día primero');
+    }
+  });
 });
 document.addEventListener('dragover', e => { e.preventDefault(); dragGhost.style.left = (e.clientX + 12) + 'px'; dragGhost.style.top = (e.clientY - 18) + 'px' });
 canvasItems.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); if (dragSourceIndex !== null && dragSourceContainer === 'canvasItems') { const cl = getClosest([...canvasItems.querySelectorAll('.canvas-item')], e.clientY); showDropInd(cl.index, cl.before) } emptyState.classList.add('drag-over') });
@@ -522,8 +529,9 @@ function renderTabs() {
 
   // Days
   days.forEach((_, i) => {
+    const dateStr = dayDates[i] ? fmtDateTab(dayDates[i]) : ('Día ' + (i + 1));
     html += `<button class="day-tab ${currentDay === i ? 'active' : ''}" data-day="${i}" draggable="true" style="cursor:grab">
-      <span class="day-tab-label"><span style="display:inline-flex; gap:1px; margin-right:7px; opacity:0.4; font-size:10px;"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></span>Día ${i + 1}</span>
+      <span class="day-tab-label"><span style="display:inline-flex; gap:1px; margin-right:7px; opacity:0.4; font-size:10px;"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></span>${dateStr}</span>
       <span class="day-tab-delete" onclick="confirmDeleteDay(${i},event)" title="Eliminar día"><i class="fa-solid fa-times"></i></span>
     </button>`;
   });
@@ -548,6 +556,7 @@ function saveDayDate() {
   const noDate = document.getElementById('dayNoDate');
   noDate.style.display = dayDates[currentDay] ? 'none' : '';
   unsavedChanges = true;
+  renderTabs();
   autoSaveProTrip();
 }
 
@@ -691,18 +700,21 @@ function unformatNumber(val) {
   return val.toString().replace(/\./g, '').replace(/,/g, '.');
 }
 function fmtDate(s) { if (!s) return ''; try { return new Date(s + 'T00:00:00').toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' }) } catch { return s } }
+function fmtDateTab(s) { if (!s) return ''; try { const d = new Date(s + 'T00:00:00'); return d.toLocaleDateString('es', { day: 'numeric', month: 'short' }) } catch { return s } }
 function editItem(idx) {
   const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
   openModal(arr[idx].type, idx);
 }
 function deleteItem(idx) {
-  if (currentDay === 'portada') portadaItems.splice(idx, 1);
-  else if (currentDay === 'cierre') cierreItems.splice(idx, 1);
-  else days[currentDay].splice(idx, 1);
-  unsavedChanges = true;
-  renderCanvas();
-  autoSaveProTrip();
-  showToast('<i class="fa-solid fa-trash-can"></i>', 'Elemento eliminado');
+  openConfirm('¿Eliminar elemento?', 'Esta acción no se puede deshacer.', () => {
+    if (currentDay === 'portada') portadaItems.splice(idx, 1);
+    else if (currentDay === 'cierre') cierreItems.splice(idx, 1);
+    else days[currentDay].splice(idx, 1);
+    unsavedChanges = true;
+    renderCanvas();
+    autoSaveProTrip();
+    showToast('<i class="fa-solid fa-trash-can"></i>', 'Elemento eliminado');
+  });
 }
 
 // MODAL

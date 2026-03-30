@@ -1503,6 +1503,17 @@
     
     /* Ensure editor sidebar is hidden in preview mode on mobile */
     .vt-root.is-preview .vt-sidebar { display: none !important; }
+
+    /* Improved mobile responsiveness for images and gifs in demo */
+    .vt-item img {
+      width: 100% !important;
+      height: auto !important;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .vt-item[data-type="Imagen"] img { width: ; }
+    .vt-item[data-type="Gif"] img { width: 95% !important; }
   }
 
   /* ── PREVIEW MOCKUP HEADER (MOBILE) ── */
@@ -1640,8 +1651,8 @@
       Título:      [{ type:'Título',      icon:'T',  bg:'#f5f5f5', name:'Día de llegada',             detail:'Bienvenidos a los Emiratos' }],
       Separador:   [{ type:'Separador',   icon:'—✦—',bg:'#f5f5f5', name:'— ✦ —',                      detail:'' }],
       Caja:        [{ type:'Caja',        icon:'🎨', bg:'#fce4ec', name:'Info Clima',                 detail:'32°C - Soleado' }],
-      Imagen:      [{ type:'Imagen',      icon:'🖼️', bg:'#fff8e1', name:'Foto Destino',               detail:'https://picsum.photos/600/300?dubai' }],
-      Gif:         [{ type:'Gif',         icon:'🎬', bg:'#f3e5f5', name:'Vibe Local',                detail:'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJocXQ3Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxx6xYf/giphy.gif' }],
+      Imagen:      [{ type:'Imagen',      icon:'🖼️', bg:'#fff8e1', name:'Dubai',               detail:'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1000&auto=format&fit=crop' }],
+      Gif:         [{ type:'Gif',         icon:'🎬', bg:'#f3e5f5', name:'Viaje',                      detail:'https://media.giphy.com/media/M9O2r21j1p2fMNDS5S/giphy.gif' }],
     };
 
     let currentDay = 0;
@@ -1784,7 +1795,7 @@
         <div class="vt-item-body">
           <div class="vt-item-type">${item.type}</div>
           <div class="vt-item-name">${item.name}</div>
-          ${isVisual ? `<img src="${item.detail}" style="width:100%; border-radius:6px; margin-top:5px; height:80px; object-fit:cover;">` : `<div class="vt-item-detail">${item.detail}</div>`}
+          ${isVisual ? `<img src="${item.detail}" style="width:100%; border-radius:6px; margin-top:5px; height:auto; max-height:120px; object-fit:cover;">` : `<div class="vt-item-detail">${item.detail}</div>`}
         </div>
         <div class="vt-item-actions">
           <button class="vt-item-btn del" onclick="vtRemove(${item.id})">✕</button>
@@ -1836,8 +1847,8 @@
              <div style="flex: 1;">
                <div style="font-size: 9px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">${item.type}</div>
                <div style="font-size: 14px; font-weight: 700; color: #0d1f2d;">${item.name}</div>
-               <div style="font-size: 12px; color: #7a8898; margin-top: 2px;">${item.detail}</div>
-               ${isVisual ? `<img src="${item.detail}" style="width:100%; border-radius:8px; margin-top:10px; border: 1px solid #f0f2f5;">` : ''}
+               ${isVisual ? '' : `<div style="font-size: 12px; color: #7a8898; margin-top: 2px;">${item.detail}</div>`}
+               ${isVisual ? `<img src="${item.detail}" style="width:100%; height:auto; border-radius:8px; margin-top:10px; border: 1px solid #f0f2f5;">` : ''}
              </div>
           </div>`;
       }
@@ -1912,83 +1923,121 @@
       </div>
     </div>
     <div class="pricing-grid">
-      <!-- Free Forever -->
+      <!-- Básico -->
       <div class="plan reveal d1">
-        <div class="plan-name">Esencial</div>
-        <div class="plan-desc-special">Exploradores y viajeros</div>
+        <div class="plan-badge" style="opacity:0; pointer-events:none; visibility:hidden;">Badge Spacer</div>
+        <div class="plan-name">Básico</div>
+        <div class="plan-desc-special">Para explorar Viantryp</div>
         <div class="plan-price">
           <span class="currency">$</span>
           <span class="price-val">0</span>
         </div>
-        <div class="plan-savings-spacer"></div>
+        <div class="price-note">Sin tarjeta de crédito</div>
+        <div class="plan-savings" style="opacity:0; pointer-events:none; visibility:hidden;">Savings Spacer</div>
+        <div class="plan-sub" style="opacity:0; pointer-events:none; visibility:hidden;">Sub Spacer</div>
         <ul class="plan-features">
-          <li>Hasta 3 itinerarios activos</li>
-          <li>Límite de 10 archivos adjuntos por itinerario</li>
-          <li>Plantillas básicas para diseño de itinerarios</li>
-          <li>Enlace para compartir tu itinerario online</li>
+          <li>1 itinerario activo</li>
+          <li>10 archivos adjuntos</li>
+          <li>Sin plantillas</li>
+          <li>Enlace para compartir viaje</li>
         </ul>
-        <a href="{{ route('register') }}" class="plan-btn">Comenzar gratis</a>
+        <a href="{{ route('register') }}" class="plan-btn">Empezar gratis</a>
       </div>
 
-      <!-- Unlimited -->
+      <!-- Esencial -->
       <div class="plan reveal d2">
-        <div class="plan-name">Avanzado</div>
-        <div class="plan-desc-special">Diseño sin límites</div>
+        <div class="plan-badge" style="opacity:0; pointer-events:none; visibility:hidden;">Badge Spacer</div>
+        <div class="plan-name">Esencial</div>
+        <div class="plan-desc-special">Viajeros frecuentes</div>
         <div class="plan-price">
           <span class="currency">$</span>
-          <span class="price-val" data-monthly="19.00" data-annual="15.00">15.00</span>
+          <span class="price-val" data-monthly="5.00" data-annual="4.00">4.00</span>
           <span class="period">/mes</span>
         </div>
         <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente">Facturado anualmente</div>
-        <div class="plan-savings" style="opacity: 1;">Ahorras $48 al año</div>
+        <div class="plan-savings" style="opacity: 1;">Ahorras $12 al año</div>
+        <div class="plan-sub" style="opacity:0; pointer-events:none; visibility:hidden;">Sub Spacer</div>
+        <ul class="plan-features">
+          <li>3 itinerarios activos</li>
+          <li>Plantillas básicas</li>
+          <li>50 archivos adjuntos</li>
+          <li>Enlace para compartir viaje</li>
+        </ul>
+        <a href="{{ route('register') }}" class="plan-btn">Elegir Esencial</a>
+      </div>
+
+      <!-- Avanzado -->
+      <div class="plan featured reveal d3">
+        <div class="plan-badge">Más popular</div>
+        <div class="plan-name">Avanzado</div>
+        <div class="plan-desc-special">Profesionales y agencias</div>
+        <div class="plan-price">
+          <span class="currency">$</span>
+          <span class="price-val" data-monthly="12.00" data-annual="9.00">9.00</span>
+          <span class="period">/mes</span>
+        </div>
+        <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente">Facturado anualmente</div>
+        <div class="plan-savings" style="opacity: 1;">Ahorras $36 al año</div>
         <div class="plan-sub">Todo lo del plan Esencial, más:</div>
         <ul class="plan-features">
-          <li>Hasta 10 itinerarios por cuenta</li>
+          <li>10 itinerarios activos</li>
           <li>Archivos adjuntos ilimitados</li>
-          <li>Tener un máximo de 2 editores por itinerario</li>
-          <li>Personalización de marca en los link de tus viajes</li>
+          <li>2 editores por itinerario</li>
+          <li>Plantillas avanzadas</li>
+          <li>Personalización de marca en links</li>
         </ul>
-        <a href="{{ route('register') }}" class="plan-btn">Comenzar ahora</a>
+        <a href="{{ route('register') }}" class="plan-btn primary">Elegir Avanzado</a>
         <div class="plan-trial-note">14 días de prueba gratuita</div>
       </div>
 
-      <!-- Business & Teams -->
-      <div class="plan featured reveal d3">
-        <div class="plan-badge">Más popular</div>
-        <div class="plan-name">Colaborativo Pro</div>
-        <div class="plan-desc-special">Potencia para agencias</div>
+      <!-- Colaborativo -->
+      <div class="plan reveal d4">
+        <div class="plan-badge" style="opacity:0; pointer-events:none; visibility:hidden;">Badge Spacer</div>
+        <div class="plan-name">Colaborativo</div>
+        <div class="plan-desc-special">Equipos y DMCs</div>
         <div class="plan-price">
           <span class="currency">$</span>
-          <span class="price-val" data-monthly="34.00" data-annual="27.00">27.00</span>
+          <span class="price-val" data-monthly="29.00" data-annual="22.00">22.00</span>
           <span class="period">/mes</span>
         </div>
         <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente">Facturado anualmente</div>
         <div class="plan-savings" style="opacity: 1;">Ahorras $84 al año</div>
         <div class="plan-sub">Todo lo del plan Avanzado, más:</div>
         <ul class="plan-features">
-          <li> Acceso a plantillas ilimitadas para diseño de itinerarios</li>
-          <li>Colaboradores y editores de viajes ilimitados</li>
+          <li>Itinerarios ilimitados</li>
+          <li>Plantillas ilimitadas</li>
+          <li>Colaboradores y editores ilimitados</li>
           <li>Gestión de roles y permisos</li>
-          <li>Integraciones vía API básicas</li>
+          <li>Integraciones API básicas</li>
         </ul>
-        <a href="{{ route('register') }}" class="plan-btn primary">Comenzar ahora</a>
-        <div class="plan-trial-note">14 días de prueba gratuita</div>
+        <a href="{{ route('register') }}" class="plan-btn">Elegir Colaborativo</a>
       </div>
+    </div>
 
-      <!-- Corporativo -->
-      <div class="plan reveal d4">
-        <div class="plan-name">Corporativo</div>
-        <div class="plan-desc-special">Escala y seguridad</div>
-        <div class="plan-price" style="font-size: 20px; line-height: 1.2; margin-bottom: 0.5rem;">Precios flexibles</div>
-        <div class="plan-savings-spacer"></div>
-        <!-- Removido plan-sub para alinear con features -->
-        <ul class="plan-features">
-          <li>Dominio personalizado</li>
-          <li>Soporte dedicado y SLA</li>
-          <li>Integraciones API avanzadas</li>
-        </ul>
-        <a href="mailto:hola@viantryp.com" class="plan-btn">Habla con Ventas</a>
-        <div class="plan-trial-note">Agenda una demo</div>
+    <!-- ENTERPRISE PLAN -->
+    <div class="enterprise-box reveal" style="margin-top: 2rem; background: #0f172a; border-radius: 24px; padding: 2.5rem; color: white; border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;">
+      <div style="position: absolute; top:0; right:0; width: 300px; height: 300px; background: radial-gradient(circle, rgba(26,122,138,0.1) 0%, transparent 70%); pointer-events: none;"></div>
+      
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 2rem;">
+        <div style="flex: 1; min-width: 300px;">
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+            <h3 style="font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800;">Corporativo</h3>
+          </div>
+          <p style="color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 1.5rem;">Grandes agencias · Tour operadores · DMCs con alto volumen</p>
+          
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9);"><i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Dominio personalizado</div>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9);"><i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Soporte dedicado y SLA</div>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9);"><i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Integraciones API avanzadas</div>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9);"><i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Onboarding dedicado</div>
+          </div>
+        </div>
+        
+        <div style="flex-shrink: 0;">
+          <a href="{{ route('contact') }}" class="plan-btn" style="border-color: rgba(255,255,255,0.2); color: white; padding: 1rem 2.5rem; border-radius: 12px; display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+            Hablar con ventas <i class="fas fa-arrow-up-right-from-square" style="font-size: 12px; opacity: 0.7;"></i>
+          </a>
+        </div>
       </div>
     </div>
   </div>
