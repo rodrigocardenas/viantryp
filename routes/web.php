@@ -46,6 +46,7 @@ Route::get('/terminos-de-uso', fn() => view('pages.terms'))->name('terms');
 Route::get('/privacidad', fn() => view('pages.privacy'))->name('privacy');
 Route::get('/rgpd', fn() => view('pages.gdpr'))->name('gdpr');
 Route::get('/seguridad', fn() => view('pages.security'))->name('security');
+Route::get('/api/places/photo', [GooglePlacesController::class, 'getPlacePhoto'])->name('places.photo');
 
 // Protected routes (require authentication)
 Route::middleware('auth')->group(function () {
@@ -115,7 +116,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Google Places API routes (outside auth middleware for AJAX requests)
-Route::post('api/places/details', [GooglePlacesController::class , 'getPlaceDetails'])->name('places.details');
+Route::match(['get', 'post'], 'api/places/details', [GooglePlacesController::class , 'getPlaceDetails'])->name('places.details');
 
 // Shared trip preview route (no authentication required)
 Route::get('trips/share/{token}', [TripController::class , 'share'])->name('trips.share');

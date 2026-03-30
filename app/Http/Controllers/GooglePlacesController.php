@@ -41,11 +41,11 @@ class GooglePlacesController extends Controller
                 ], 400);
             }
 
-            // Process photos to include full URLs
+            // Process photos to include proxy URLs (hiding API key)
             if (isset($data['result']['photos']) && is_array($data['result']['photos'])) {
                 foreach ($data['result']['photos'] as &$photo) {
                     if (isset($photo['photo_reference'])) {
-                        $photo['url'] = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=300&photoreference={$photo['photo_reference']}&key={$apiKey}";
+                        $photo['url'] = route('places.photo', ['ref' => $photo['photo_reference']]);
                     }
                 }
             }
@@ -57,5 +57,25 @@ class GooglePlacesController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function getPlacePhoto(Request $request)
+    {
+        $request->validate([
+            'ref' => 'required|string',
+        ]);
+
+        $photoreference = $request->input('ref');
+        $apiKey = config('services.google.places_api_key');
+
+        if (!$apiKey) {
+            return response()->json(['error' => 'API key missing'], 500);
+        }
+
+        $url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference={$photoreference}&key={$apiKey}";
+
+        // We can use cache here if we want to avoid redundant redirects, 
+        // but Google's URL usually redirects to a temporary one anyway.
+        return redirect($url);
     }
 }

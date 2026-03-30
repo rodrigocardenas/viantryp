@@ -786,10 +786,16 @@ function openModal(type, editIdx = null) {
           if (place.formatted_phone_number) setVal('phone', place.formatted_phone_number);
           if (place.website) setVal('website', place.website);
 
-          if (place.photos && place.photos.length > 0) {
-            const urls = place.photos.slice(0, 5).map(p => p.getUrl({ maxWidth: 400, maxHeight: 400 })).join(',');
-            setVal('photo_url', urls);
-          }
+          // Fetch permanent photo URLs from our server
+          fetch(`/api/places/details?place_id=${place.place_id}`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.photos && data.photos.length > 0) {
+                const urls = data.photos.slice(0, 5).map(p => p.url).join(',');
+                setVal('photo_url', urls);
+              }
+            })
+            .catch(err => console.error('Error fetching place details:', err));
 
           if (place.rating) {
             starRating = place.rating;
