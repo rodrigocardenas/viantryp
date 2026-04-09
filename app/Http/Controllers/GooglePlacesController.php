@@ -14,9 +14,11 @@ class GooglePlacesController extends Controller
     {
         $request->validate([
             'place_id' => 'required|string',
+            'include_photos' => 'nullable|boolean',
         ]);
 
         $placeId = $request->input('place_id');
+        $includePhotos = $request->boolean('include_photos', false);
         $apiKey = config('services.google.places_api_key');
 
         if (!$apiKey) {
@@ -26,9 +28,14 @@ class GooglePlacesController extends Controller
         }
 
         try {
+            $fields = 'name,formatted_address,rating,reviews,opening_hours,website,international_phone_number,price_level,types';
+            if ($includePhotos) {
+                $fields .= ',photos';
+            }
+
             $response = Http::get("https://maps.googleapis.com/maps/api/place/details/json", [
                 'place_id' => $placeId,
-                'fields' => 'name,formatted_address,photos,rating,reviews,opening_hours,website,international_phone_number,price_level,types',
+                'fields' => $fields,
                 'key' => $apiKey,
             ]);
 

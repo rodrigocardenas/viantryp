@@ -203,7 +203,7 @@ function buildPreviewHTML(data) {
       // ─────────────────────────────────────────────────────
       if (item.type === 'alojamiento') {
         const nights = d.checkin && d.checkout ? Math.round((new Date(d.checkout) - new Date(d.checkin)) / (1000 * 60 * 60 * 24)) : null;
-        return `<div class="pv-card">
+        return `<div class="pv-card" data-place-id="${d.place_id || ''}">
           <div class="pvc-section-label" style="color:var(--accent)"><i class="fa-solid fa-hotel"></i> Alojamiento</div>
           <div class="pv-hotel-layout">
             <div class="pv-hotel-photo-slot">${cCarousel(d.photo_url, '<i class="fa-solid fa-hotel"></i>')}</div>
@@ -279,7 +279,7 @@ function buildPreviewHTML(data) {
       if (item.type === 'actividad') {
         const dt = d.fecha ? fmtDateTime(d.fecha) : { day: '', time: '' };
         const timeRange = dt.time ? (d.duracion ? dt.time + ' - ' + d.duracion : dt.time) : '';
-        return `<div class="pv-card">
+        return `<div class="pv-card" data-place-id="${d.place_id || ''}">
           <div class="pvc-section-label" style="color:var(--accent)"><i class="fa-solid fa-bullseye"></i> Actividad</div>
           <div class="pv-media-layout">
             <div class="pv-media-photo-slot">${cCarousel(d.photo_url, '<i class="fa-solid fa-bullseye"></i>')}</div>
@@ -309,7 +309,7 @@ function buildPreviewHTML(data) {
 
       if (item.type === 'comida') {
         const dt = d.fecha ? fmtDateTime(d.fecha) : { day: '', time: '' };
-        return `<div class="pv-card">
+        return `<div class="pv-card" data-place-id="${d.place_id || ''}">
           <div class="pvc-section-label" style="color:var(--accent)"><i class="fa-solid fa-utensils"></i> Comida${d.tipo ? ' · ' + d.tipo : ''}</div>
           <div class="pv-media-layout">
             <div class="pv-media-photo-slot">${cCarousel(d.photo_url, '<i class="fa-solid fa-utensils"></i>')}</div>
@@ -344,7 +344,7 @@ function buildPreviewHTML(data) {
       if (item.type === 'tour') {
         const dt = d.fecha ? fmtDateTime(d.fecha) : { day: '', time: '' };
         const timeRange = dt.time ? (d.duracion ? dt.time + ' - ' + d.duracion : dt.time) : (d.duracion || '');
-        return `<div class="pv-card">
+        return `<div class="pv-card" data-place-id="${d.place_id || ''}">
           <div class="pvc-section-label" style="color:var(--accent)"><i class="fa-solid fa-map-location-dot"></i> Tour</div>
           <div class="pv-media-layout">
             <div class="pv-media-photo-slot">${cCarousel(d.url || d.photo_url, '<i class="fa-solid fa-map-location-dot"></i>')}</div>
@@ -724,6 +724,52 @@ links.forEach(link=>{
 
 const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const id=e.target.id;links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+id)})}})},{threshold:.25,rootMargin:'-60px 0px -40% 0px'});
 sections.forEach(s=>obs.observe(s));
+
+// ── LAZY LOAD GOOGLE PHOTOS ──
+async function lazyLoadPhotos() {
+  const cards = document.querySelectorAll('.pv-card[data-place-id]');
+  for (const card of cards) {
+    const placeId = card.dataset.placeId;
+    if (!placeId) continue;
+
+    // Only if it doesn't have an image already
+    const photoSlot = card.querySelector('.pv-hotel-photo-slot, .pv-media-photo-slot');
+    if (!photoSlot || photoSlot.querySelector('img')) continue;
+
+    try {
+      const res = await fetch(\`${origin}/api/places/details?place_id=\${placeId}&include_photos=true\`);
+      const data = await res.json();
+      if (data.photos && data.photos.length > 0) {
+        const urls = data.photos.slice(0, 5).map(p => p.url).join(',');
+        
+        // Re-render carousel logic
+        const icon = photoSlot.innerHTML; // fallback icon 
+        const urlsArr = urls.split(',').filter(u => u.trim());
+        
+        let newContent = '';
+        if (urlsArr.length === 1) {
+            newContent = \`<img src="\${urlsArr[0]}" style="width:100%;height:100%;object-fit:cover" />\`;
+        } else {
+            const slides = urlsArr.map((u, i) => \`<div class="pv-carousel-slide" style="display:\${i === 0 ? 'block' : 'none'};width:100%;height:100%;"><img src="\${u}" style="width:100%;height:100%;object-fit:cover" /></div>\`).join('');
+            const dots = urlsArr.map((u, i) => \`<span class="pv-carousel-dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:\${i === 0 ? '#fff' : 'rgba(255,255,255,0.5)'};margin:0 2px;cursor:pointer;" onclick="const p=this.closest('.pv-carousel');p.querySelectorAll('.pv-carousel-slide').forEach(s=>s.style.display='none');p.querySelectorAll('.pv-carousel-slide')[\${i}].style.display='block';p.querySelectorAll('.pv-carousel-dot').forEach(d=>d.style.background='rgba(255,255,255,0.5)');this.style.background='#fff';event.preventDefault();"></span>\`).join('');
+            newContent = \`<div class="pv-carousel" style="position:relative;width:100%;height:100%;overflow:hidden;border-radius:inherit;z-index:1;">
+                  \${slides}
+                  <div class="pv-carousel-nav" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);display:flex;justify-content:space-between;padding:0 5px;z-index:2;pointer-events:none;">
+                    <button type="button" style="background:rgba(0,0,0,0.5);color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;pointer-events:auto;" onclick="const p=this.closest('.pv-carousel');const s=p.querySelectorAll('.pv-carousel-slide');const d=p.querySelectorAll('.pv-carousel-dot');let idx=[...s].findIndex(el=>el.style.display==='block');s[idx].style.display='none';d[idx].style.background='rgba(255,255,255,0.5)';idx=(idx-1+s.length)%s.length;s[idx].style.display='block';d[idx].style.background='#fff';event.preventDefault();"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button type="button" style="background:rgba(0,0,0,0.5);color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;pointer-events:auto;" onclick="const p=this.closest('.pv-carousel');const s=p.querySelectorAll('.pv-carousel-slide');const d=p.querySelectorAll('.pv-carousel-dot');let idx=[...s].findIndex(el=>el.style.display==='block');s[idx].style.display='none';d[idx].style.background='rgba(255,255,255,0.5)';idx=(idx+1)%s.length;s[idx].style.display='block';d[idx].style.background='#fff';event.preventDefault();"><i class="fa-solid fa-chevron-right"></i></button>
+                  </div>
+                  <div class="pv-carousel-dots" style="position:absolute;bottom:8px;left:0;right:0;text-align:center;z-index:2;">\${dots}</div>
+                </div>\`;
+        }
+        photoSlot.innerHTML = newContent;
+      }
+    } catch(err) {
+      console.error('Lazy load error:', err);
+    }
+  }
+}
+window.addEventListener('DOMContentLoaded', lazyLoadPhotos);
+setTimeout(lazyLoadPhotos, 1000); // Fail-safe
 </script>
 ${!isPublicLink && tripId ? `
 <script>
