@@ -15,6 +15,7 @@ let selectedUnsplashUrl = null, unsplashTarget = 'portada';
 let selectedGiphyUrl = null, giphyTarget = 'canvas';
 let confirmCallback = null;
 let unsavedChanges = false;
+let currentPhotoTargetInput = null;
 
 // PORTADA
 function changePortadaCount(type, d) {
@@ -38,8 +39,9 @@ function clearPortadaPhoto(e) {
 }
 
 // UNSPLASH
-function openUnsplash(target = 'portada') {
+function openUnsplash(target = 'portada', targetInput = null) {
   unsplashTarget = target;
+  currentPhotoTargetInput = targetInput;
   selectedUnsplashUrl = null;
   document.getElementById('unsplashSelectBtn').disabled = true;
   document.getElementById('unsplashOverlay').classList.add('open');
@@ -107,12 +109,14 @@ function confirmUnsplash() {
       arr.push({ type: 'imagen', data: { url: selectedUnsplashUrl, caption: '', tamano: 'Mediano' } });
       renderCanvas();
       showToast('🖼️', 'Imagen agregada');
-    } else if (unsplashTarget === 'tour') {
       const inp = modalBody.querySelector('input[data-key="photo_url"]');
       if (inp) {
         inp.value = selectedUnsplashUrl;
         showToast('📸', 'Foto de tour aplicada');
       }
+    } else if (unsplashTarget === 'item_photo' && currentPhotoTargetInput) {
+      currentPhotoTargetInput.value = selectedUnsplashUrl;
+      showToast('📸', 'Foto aplicada');
     }
   }
   closeUnsplash();
@@ -791,7 +795,7 @@ function openModal(type, editIdx = null) {
             .then(res => res.json())
             .then(data => {
               if (data.photos && data.photos.length > 0) {
-                const urls = data.photos.slice(0, 5).map(p => p.url).join(',');
+                const urls = data.photos.slice(0, 3).map(p => p.url).join(',');
                 setVal('photo_url', urls);
               }
             })
@@ -808,6 +812,43 @@ function openModal(type, editIdx = null) {
       }
     }
   }, 220);
+}
+function handleItemPhotoUpload(e, targetInp) {
+  const f = e.target.files[0];
+  if (!f) return;
+  if (f.size > 5 * 1024 * 1024) { showToast('⚠️', 'La imagen no puede superar 5MB'); return; }
+
+  const originalContent = targetInp.value;
+  targetInp.value = 'Subiendo...';
+  targetInp.disabled = true;
+
+  const formData = new FormData();
+  formData.append('file', f);
+
+  const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  const tripId = window.tripId;
+  fetch(`/trips/${tripId}/upload-attachment`, {
+    method: 'POST',
+    headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+    body: formData
+  })
+    .then(res => res.json())
+    .then(res => {
+      targetInp.disabled = false;
+      if (res.success) {
+        targetInp.value = res.url;
+        showToast('✅', 'Foto subida');
+      } else {
+        targetInp.value = originalContent;
+        showToast('⚠️', res.message || 'Error al subir');
+      }
+    })
+    .catch(err => {
+      targetInp.disabled = false;
+      targetInp.value = originalContent;
+      console.error(err);
+      showToast('⚠️', 'Error de conexión');
+    });
 }
 function buildField(field, data) {
   const fg = document.createElement('div'); fg.className = 'form-group';
@@ -909,15 +950,40 @@ function buildField(field, data) {
   else {
     const inp = document.createElement('input'); inp.className = 'form-input'; inp.type = field.t || 'text'; inp.placeholder = field.ph || ''; inp.value = val; inp.dataset.key = field.k; fg.appendChild(inp);
 
-    // Phase 36: Unsplash button for Tour photo_url
-    if (field.k === 'photo_url' && pendingType === 'tour') {
-      const btn = document.createElement('button');
-      btn.className = 'btn-secondary';
-      btn.style = 'margin-top:8px; width:100%; font-size:12px; height:32px; display:flex; align-items:center; justify-content:center; gap:6px;';
-      btn.innerHTML = '<i class="fa-brands fa-unsplash"></i> Buscar en Unsplash';
-      btn.type = 'button';
-      btn.onclick = () => openUnsplash('tour');
-      fg.appendChild(btn);
+    // Photos: Unsplash and Upload buttons
+    if (field.k === 'photo_url' || (field.k === 'url' && pendingType === 'imagen')) {
+      const helpText = document.createElement('div');
+      helpText.style = 'margin-top:10px; margin-bottom:4px; font-size:11px; color:var(--text-muted); font-style:italic;';
+      helpText.textContent = 'Si no hay fotos disponibles, busca en Unsplash o sube una propia:';
+      fg.appendChild(helpText);
+
+      const btnGroup = document.createElement('div');
+      btnGroup.style = 'display:flex; gap:8px;';
+      
+      const uBtn = document.createElement('button');
+      uBtn.className = 'btn-secondary';
+      uBtn.style = 'flex:1; font-size:12px; height:32px; display:flex; align-items:center; justify-content:center; gap:6px;';
+      uBtn.innerHTML = '<i class="fa-brands fa-unsplash"></i> Unsplash';
+      uBtn.type = 'button';
+      uBtn.onclick = () => openUnsplash('item_photo', inp);
+      
+      const upBtn = document.createElement('button');
+      upBtn.className = 'btn-secondary';
+      upBtn.style = 'flex:1; font-size:12px; height:32px; display:flex; align-items:center; justify-content:center; gap:6px;';
+      upBtn.innerHTML = '<i class="fa-solid fa-upload"></i> Subir foto';
+      upBtn.type = 'button';
+      
+      const hiddenInp = document.createElement('input');
+      hiddenInp.type = 'file';
+      hiddenInp.accept = 'image/*';
+      hiddenInp.style.display = 'none';
+      hiddenInp.onchange = (e) => handleItemPhotoUpload(e, inp);
+      upBtn.onclick = () => hiddenInp.click();
+
+      btnGroup.appendChild(uBtn);
+      btnGroup.appendChild(upBtn);
+      btnGroup.appendChild(hiddenInp);
+      fg.appendChild(btnGroup);
     }
 
     if (field.airportApi || field.airlineApi) {

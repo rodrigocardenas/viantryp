@@ -2365,6 +2365,11 @@ body {
     gap: 8px;
   }
 
+  .portada-travelers-row {
+      flex-wrap: wrap;
+      gap: 8px;
+  }
+
   /* CANVAS ITEMS ON MOBILE */
   .item-inner {
       padding: 12px !important;
@@ -2439,6 +2444,22 @@ body {
   .element-card {
       width: 52px;
       height: 54px;
+  }
+
+  .mini-counter-btn {
+      width: 24px;
+      height: 26px;
+  }
+
+  .mini-counter-val {
+      min-width: 26px;
+      height: 26px;
+      font-size: 11px;
+  }
+
+  .portada-travelers-row {
+      gap: 5px;
+      justify-content: center;
   }
 }
 

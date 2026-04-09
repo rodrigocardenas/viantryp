@@ -42,7 +42,9 @@ class GooglePlacesController extends Controller
             }
 
             // Process photos to include proxy URLs (hiding API key)
+            // Limit to 3 photos to reduce API costs
             if (isset($data['result']['photos']) && is_array($data['result']['photos'])) {
+                $data['result']['photos'] = array_slice($data['result']['photos'], 0, 3);
                 foreach ($data['result']['photos'] as &$photo) {
                     if (isset($photo['photo_reference'])) {
                         $photo['url'] = route('places.photo', ['ref' => $photo['photo_reference']]);

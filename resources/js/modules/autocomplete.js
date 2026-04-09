@@ -375,8 +375,8 @@ export class GooglePlacesAutocomplete {
             } : null,
             rating: place.rating,
             types: place.types,
-            photos: place.photos ? place.photos.map(photo => ({
-                url: photo.getUrl({ maxWidth: 400, maxHeight: 400 }),
+            photos: place.photos ? place.photos.slice(0, 3).map(photo => ({
+                url: photo.getUrl({ maxWidth: 800 }),
                 width: photo.width,
                 height: photo.height
             })) : [],

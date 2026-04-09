@@ -1338,7 +1338,7 @@ export class ModalManager {
         html += '<div class="photo-carousel-container">';
         html += '<div class="photo-carousel-track">';
 
-        photos.slice(0, 8).forEach((photo, index) => { // Show up to 8 photos
+        photos.slice(0, 3).forEach((photo, index) => { // Show up to 3 photos (reduced from 8 for cost optimization)
             // Use the URL provided by the backend (Google Places Photo API)
             const photoUrl = photo.url || photo.photo_reference;
 
