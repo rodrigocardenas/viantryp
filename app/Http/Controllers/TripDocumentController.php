@@ -60,11 +60,13 @@ class TripDocumentController extends Controller
             abort(403, 'No tienes permiso para acceder a este documento.');
         }
 
-        $filePath = storage_path('app/public/' . $document->path);
+        $exists = Storage::disk('public')->exists($document->path);
 
-        if (!file_exists($filePath)) {
+        if (!$exists) {
             abort(404, 'Archivo no encontrado.');
         }
+
+        $filePath = Storage::disk('public')->path($document->path);
 
         // Return file for inline preview instead of forced download
         return response()->file($filePath, [
