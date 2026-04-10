@@ -60,12 +60,20 @@ function buildPreviewHTML(data) {
     return null;
   };
   const starsHTML = n => n ? Array.from({ length: 5 }, (_, i) => `<svg width="16" height="16" viewBox="0 0 24 24" fill="${i < n ? '#f59e0b' : '#d1d5db'}"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`).join('') : '';
+  const fixUrl = u => {
+    if (!u || !window.shareToken) return u;
+    if (u.includes('/documents/') && u.includes('/download')) {
+      return u + (u.includes('?') ? '&' : '?') + 'token=' + window.shareToken;
+    }
+    return u;
+  };
+
   const cCarousel = (photo_url, icon) => {
     if (!photo_url) return `<div class="pv-hotel-photo-ph">${icon}</div>`;
     let urls = photo_url.split(',').filter(u => u.trim());
     urls = urls.slice(0, 3); // Limit to 3 photos for cost optimization
-    if (urls.length === 1) return `<img src="${urls[0]}" style="width:100%;height:100%;object-fit:cover" loading="lazy" />`;
-    const slides = urls.map((u, i) => `<div class="pv-carousel-slide" style="display:${i === 0 ? 'block' : 'none'};width:100%;height:100%;"><img src="${u}" style="width:100%;height:100%;object-fit:cover" loading="lazy" /></div>`).join('');
+    if (urls.length === 1) return `<img src="${fixUrl(urls[0])}" style="width:100%;height:100%;object-fit:cover" loading="lazy" />`;
+    const slides = urls.map((u, i) => `<div class="pv-carousel-slide" style="display:${i === 0 ? 'block' : 'none'};width:100%;height:100%;"><img src="${fixUrl(u)}" style="width:100%;height:100%;object-fit:cover" loading="lazy" /></div>`).join('');
     const dots = urls.map((u, i) => `<span class="pv-carousel-dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${i === 0 ? '#fff' : 'rgba(255,255,255,0.5)'};margin:0 2px;cursor:pointer;" onclick="const p=this.closest('.pv-carousel');p.querySelectorAll('.pv-carousel-slide').forEach(s=>s.style.display='none');p.querySelectorAll('.pv-carousel-slide')[${i}].style.display='block';p.querySelectorAll('.pv-carousel-dot').forEach(d=>d.style.background='rgba(255,255,255,0.5)');this.style.background='#fff';event.preventDefault();"></span>`).join('');
     return `<div class="pv-carousel" style="position:relative;width:100%;height:100%;overflow:hidden;border-radius:inherit;z-index:1;">
           ${slides}
@@ -113,8 +121,7 @@ function buildPreviewHTML(data) {
 
       // ── IMAGEN ──
       if (item.type === 'imagen') {
-        const hasImg = d.url && d.url.startsWith('http');
-        return `<div class="pv-imagen">${hasImg ? `<img src="${d.url}" alt="${d.caption || ''}">` : '<div class="pv-img-ph"><i class="fa-regular fa-image"></i></div>'}${d.caption ? `<div class="pv-caption">${d.caption}</div>` : ''}</div>`;
+        return `<div class="pv-imagen">${d.url ? `<img src="${fixUrl(d.url)}" alt="${d.caption || ''}">` : '<div class="pv-img-ph"><i class="fa-regular fa-image"></i></div>'}${d.caption ? `<div class="pv-caption">${d.caption}</div>` : ''}</div>`;
       }
 
       // ── CAJA CON FONDO ──
@@ -661,7 +668,7 @@ ${hasPortada ? `
 <div class="pv-portada-wrap">
   <div class="pv-portada-card">
     ${portadaPhotoUrl
-        ? `<img class="pv-portada-img" src="${portadaPhotoUrl}" alt="${title}">`
+        ? `<img class="pv-portada-img" src="${fixUrl(portadaPhotoUrl)}" alt="${title}">`
         : `<div class="pv-portada-img-placeholder"><i class="fa-solid fa-earth-americas"></i></div>`
       }
     <div class="pv-portada-title-row">
