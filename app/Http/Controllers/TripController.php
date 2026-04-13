@@ -100,6 +100,14 @@ class TripController extends Controller
      */
     public function storePro(Request $request): JsonResponse
     {
+        if ($request->user()->hasReachedTripLimit()) {
+            return response()->json([
+                'success' => false,
+                'error_code' => 'LIMIT_REACHED',
+                'message' => 'Has alcanzado el límite de itinerarios de tu plan.'
+            ], 403);
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'client_name' => 'nullable|string|max:255',
@@ -561,6 +569,14 @@ class TripController extends Controller
             ], 403);
         }
 
+        if ($request->user()->hasReachedAttachmentLimit($trip)) {
+            return response()->json([
+                'success' => false,
+                'error_code' => 'LIMIT_REACHED',
+                'message' => 'Has alcanzado el límite de archivos adjuntos de tu plan.'
+            ], 403);
+        }
+
         $request->validate([
             'file' => 'required|file|max:10240|mimes:pdf,doc,docx,txt,jpg,jpeg,png,webp'
         ]);
@@ -819,6 +835,23 @@ class TripController extends Controller
             'email' => 'required|email',
             'role' => 'required|in:editor,viewer'
         ]);
+
+        if ($validated['role'] === 'editor') {
+            // Check if this email is already a collaborator for ANY trip of this user
+            $alreadyCollaborator = \DB::table('trip_collaborators')
+                ->join('trips', 'trip_collaborators.trip_id', '=', 'trips.id')
+                ->where('trips.user_id', Auth::id())
+                ->where('trip_collaborators.email', $validated['email'])
+                ->where('trip_collaborators.role', 'editor')
+                ->exists();
+
+            if (!$alreadyCollaborator && Auth::user()->hasReachedEditorLimit()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Has alcanzado el límite de editores de tu plan. Por favor, sube de nivel para añadir más colaboradores.'
+                ], 403);
+            }
+        }
 
         $token = \Illuminate\Support\Str::random(40);
         $invitedUser = \App\Models\User::where('email', $validated['email'])->first();

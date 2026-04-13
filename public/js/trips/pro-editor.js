@@ -897,6 +897,14 @@ function handleItemPhotoUpload(e, targetInp) {
       if (res.success) {
         targetInp.value = res.url;
         showToast('✅', 'Foto subida');
+      } else if (res.error_code === 'LIMIT_REACHED') {
+        targetInp.value = originalContent;
+        // The openUpgradeModal function is defined in the upgrade-modal component
+        if (typeof openUpgradeModal === 'function') {
+            openUpgradeModal();
+        } else {
+            showToast('⚠️', res.message || 'Límite alcanzado');
+        }
       } else {
         targetInp.value = originalContent;
         showToast('⚠️', res.message || 'Error al subir');

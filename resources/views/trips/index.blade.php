@@ -664,7 +664,7 @@
 
     <div class="hero-tag">
         <div class="htag-dot"></div>
-        Agente verificado
+        Plan {{ ucfirst(auth()->user()->plan) }}
     </div>
     <h1 class="hero-title">Panel de Control</h1>
     <p class="hero-sub">Diseña tus itinerarios y gestiona tus viajes de forma profesional.</p>
@@ -977,6 +977,7 @@
       </tbody>
     </table>
   </div>
+    <x-upgrade-modal />
 </div>
 @endsection
 
@@ -1046,6 +1047,10 @@
             window.location.href = `{{ url('trips') }}/${tripId}/edit`;
         }
     function showCreateTripModal() {
+        @if(auth()->user()->hasReachedTripLimit())
+            openUpgradeModal();
+            return;
+        @endif
         const themeColor = '{{ auth()->user()->theme_color ?? "default" }}';
         const themes = {
             'default': '#1c7182',
@@ -1136,6 +1141,9 @@
                 const result = await response.json();
                 if (result.success) {
                     window.location.href = result.redirect_url;
+                } else if (result.error_code === 'LIMIT_REACHED') {
+                    document.getElementById('createTripModal').remove();
+                    openUpgradeModal();
                 } else {
                     alert('Error al crear el viaje: ' + (result.message || 'Error desconocido'));
                     btn.disabled = false;
@@ -2066,12 +2074,17 @@
 
                 const result = await response.json();
                 if (result.success) {
-                    alert(result.message);
+                    showNotification('Invitación enviada', result.message);
                     document.getElementById('shareTripModal').remove();
                 } else {
-                    alert('Error: ' + (result.message || 'No se pudo enviar la invitación'));
-                    btn.disabled = false;
-                    btn.innerHTML = originalText;
+                    if (response.status === 403) {
+                        document.getElementById('shareTripModal').remove();
+                        openUpgradeModal();
+                    } else {
+                        showNotification('Error', (result.message || 'No se pudo enviar la invitación'));
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    }
                 }
             } catch (error) {
                 console.error('Error:', error);

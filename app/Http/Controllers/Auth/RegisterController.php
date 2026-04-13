@@ -59,6 +59,7 @@ class RegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'plan' => User::PLAN_BASICO,
         ]);
 
         // Envío de correo de bienvenida

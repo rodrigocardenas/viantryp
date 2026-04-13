@@ -650,6 +650,7 @@
             setTimeout(initEditorTutorial, 1500);
         });
     </script>
+    <x-upgrade-modal />
     <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>
     <script src="{{ asset('js/trips/pro-editor.js') }}?v={{ time() }}"></script>
 </body>

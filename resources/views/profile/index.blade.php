@@ -534,7 +534,7 @@
         <div class="profile-email">{{ $user->email }}</div>
         <div class="plan-badge">
           <div class="plan-dot"></div>
-          Plan Pro
+          Plan {{ ucfirst($user->plan) }}
         </div>
       </div>
 
@@ -551,6 +551,10 @@
         <button class="nav-item" data-section="tema">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10H2A10 10 0 0 1 12 2z"/><path d="M2 12h20"/></svg>
           Tema e Identidad
+        </button>
+        <button class="nav-item" data-section="subscription">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Planes y Suscripción
         </button>
         <div class="divider"></div>
         <button class="nav-item" data-section="seguridad">
@@ -763,15 +767,83 @@
               <input type="password" placeholder="••••••••">
             </div>
           </div>
-          <div class="btn-row" style="margin-bottom:32px">
+            <div class="btn-row" style="margin-bottom:32px">
             <button class="btn-save">Actualizar Contraseña</button>
           </div>
 
           <div class="divider" style="margin-bottom:28px"></div>
-
           <div class="section-label" style="color:#c0392b">Zona de Peligro</div>
           <p class="danger-text">Eliminar tu cuenta borrará permanentemente todos tus itinerarios, datos y configuración. Esta acción no se puede deshacer.</p>
           <button class="btn-danger-profile">Eliminar mi cuenta</button>
+        </div>
+      </div>
+
+      <!-- SUSCRIPCIÓN -->
+      <div class="card tab-section" id="section-subscription">
+        <div class="card-body">
+          <div class="section-label">Planes y Suscripción</div>
+          <div style="background: var(--accent-light); border: 1px solid var(--accent); border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 24px;">
+            <div style="font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Tu plan actual es</div>
+            <div style="font-size: 36px; font-weight: 800; color: var(--accent); font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 1px;">{{ $user->plan }}</div>
+            
+            <div style="margin-top: 24px; display: flex; justify-content: center;">
+              <button class="btn-save" onclick="openUpgradeModal()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 8px;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                Administrar mi plan
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Gestión de Suscripción</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+              <div style="padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: white;">
+                <div style="font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Itinerarios PRO</div>
+                <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 10px;">
+                  <span style="font-size: 20px; font-weight: 800; color: var(--text);">{{ $tripCount }}</span>
+                  <span style="font-size: 13px; color: var(--muted); font-weight: 600;">/ {{ $user->getPlanLimits()['max_trips'] >= 1000000 ? '∞' : $user->getPlanLimits()['max_trips'] }}</span>
+                </div>
+                <div style="height: 4px; background: #f1f5f9; border-radius: 10px; overflow: hidden;">
+                  @php $tripPerc = min(100, ($user->getPlanLimits()['max_trips'] > 0 ? ($tripCount / $user->getPlanLimits()['max_trips']) * 100 : 0)); @endphp
+                  <div style="width: {{ $tripPerc }}%; height: 100%; background: var(--accent); border-radius: 10px;"></div>
+                </div>
+              </div>
+
+              <div style="padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: white;">
+                <div style="font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Archivos por Viaje</div>
+                <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 10px;">
+                  <span style="font-size: 20px; font-weight: 800; color: var(--text);">{{ $maxAttachments }}</span>
+                  <span style="font-size: 13px; color: var(--muted); font-weight: 600;">/ {{ $user->getPlanLimits()['max_attachments'] >= 1000000 ? '∞' : $user->getPlanLimits()['max_attachments'] }}</span>
+                </div>
+                <div style="height: 4px; background: #f1f5f9; border-radius: 10px; overflow: hidden;">
+                  @php $attPerc = min(100, ($user->getPlanLimits()['max_attachments'] > 0 ? ($maxAttachments / $user->getPlanLimits()['max_attachments']) * 100 : 0)); @endphp
+                  <div style="width: {{ $attPerc }}%; height: 100%; background: #0ea5e9; border-radius: 10px;"></div>
+                </div>
+              </div>
+
+              <div style="padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: white;">
+                <div style="font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Editores Premium</div>
+                <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 10px;">
+                  <span style="font-size: 20px; font-weight: 800; color: var(--text);">{{ $editorCount }}</span>
+                  <span style="font-size: 13px; color: var(--muted); font-weight: 600;">/ {{ ($user->getPlanLimits()['max_editors'] ?? 0) >= 1000000 ? '∞' : ($user->getPlanLimits()['max_editors'] ?? 0) }}</span>
+                </div>
+                <div style="height: 4px; background: #f1f5f9; border-radius: 10px; overflow: hidden;">
+                  @php $editPerc = min(100, (($user->getPlanLimits()['max_editors'] ?? 0) > 0 ? ($editorCount / ($user->getPlanLimits()['max_editors'] ?? 0)) * 100 : 0)); @endphp
+                  <div style="width: {{ $editPerc }}%; height: 100%; background: #8b5cf6; border-radius: 10px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider" style="margin: 32px 0 24px 0;"></div>
+          
+          <div class="form-group">
+            <label>Historial de Pagos</label>
+            <div style="padding: 24px; background: var(--bg); border: 1px dashed var(--border); border-radius: 12px; text-align: center; color: var(--muted); font-size: 13px;">
+              <i class="fas fa-file-invoice-dollar" style="font-size: 24px; margin-bottom: 12px; display: block; opacity: 0.5;"></i>
+              No hay facturas disponibles en este momento.
+            </div>
+          </div>
         </div>
       </div>
 
@@ -784,6 +856,8 @@
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
   Cambios guardados exitosamente
 </div>
+
+<x-upgrade-modal />
 @endsection
 
 @push('scripts')
