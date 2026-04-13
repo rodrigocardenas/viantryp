@@ -42,7 +42,8 @@
     $planData = [
         'básico' => [
             'name' => 'Básico',
-            'price' => '$0',
+            'price_monthly' => 0,
+            'price_annual' => 0,
             'is_custom' => false,
             'limit_trips' => 1,
             'limit_attachments' => 10,
@@ -52,7 +53,8 @@
         ],
         'esencial' => [
             'name' => 'Esencial',
-            'price' => '$5.00',
+            'price_monthly' => 5,
+            'price_annual' => 4,
             'is_custom' => false,
             'limit_trips' => 3,
             'limit_attachments' => 50,
@@ -62,7 +64,8 @@
         ],
         'avanzado' => [
             'name' => 'Avanzado',
-            'price' => '$12.00',
+            'price_monthly' => 12,
+            'price_annual' => 9,
             'is_custom' => false,
             'limit_trips' => 10,
             'limit_attachments' => 1000000,
@@ -72,8 +75,9 @@
             'popular' => true
         ],
         'colaborativo' => [
-            'name' => 'Colaborativo.',
-            'price' => '$29.00',
+            'name' => 'Colaborativo',
+            'price_monthly' => 29,
+            'price_annual' => 22,
             'is_custom' => false,
             'limit_trips' => 1000000,
             'limit_attachments' => 1000000,
@@ -83,7 +87,8 @@
         ],
         'corporativo' => [
             'name' => 'Corp.',
-            'price' => 'Ventas',
+            'price_monthly' => 'Ventas',
+            'price_annual' => 'Ventas',
             'is_custom' => true,
             'limit_trips' => 1000000,
             'limit_attachments' => 1000000,
@@ -92,6 +97,13 @@
             'accent' => '#0f2a3a'
         ]
     ];
+
+    foreach($planData as $key => &$data) {
+        if (!$data['is_custom'] && $data['price_monthly'] > 0) {
+            $data['savings'] = ($data['price_monthly'] - $data['price_annual']) * 12;
+        }
+    }
+    unset($data);
 
     $tripProgress = min(100, ($tripCount / max(1, $limits['max_trips'])) * 100);
     $attachProgress = min(100, ($maxAttachments / max(1, $limits['max_attachments'])) * 100);
@@ -195,6 +207,13 @@
                 </div>
             </div>
 
+            <!-- PRICING TOGGLE -->
+            <div class="pricing-toggle-wrap">
+                <span class="toggle-label active" id="modalLabelMonthly">Mensual</span>
+                <div class="toggle-switch" id="modalPriceToggle"></div>
+                <span class="toggle-label" id="modalLabelAnnual">Anual <span class="annual-discount-pill">-25%</span></span>
+            </div>
+
             @if(request()->routeIs('profile.index'))
                 <!-- PLANS GRID (Management) -->
                 <div class="plans-management-grid">
@@ -212,7 +231,12 @@
                                 @if($isBlocked)
                                 <div class="p-blocked-badge">LÍMITE EXCEDIDO</div> @endif
                                 <div class="p-name">{{ $data['name'] }}</div>
-                                <div class="p-price">{{ $data['price'] }}@if(!$data['is_custom'])<small>/mes</small>@endif</div>
+                                <div class="p-price">
+                                    <span class="currency">$</span><span class="p-price-val" data-monthly="{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}" data-annual="{{ is_numeric($data['price_annual']) ? number_format($data['price_annual'], 2, '.', '') : $data['price_annual'] }}">{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}</span>@if(!$data['is_custom'])<small>/mes</small>@endif
+                                </div>
+                                @if(isset($data['savings']) && $data['savings'] > 0)
+                                    <div class="plan-savings-hint">Ahorras ${{ $data['savings'] }} al año</div>
+                                @endif
                                 <div class="p-benefits">
                                     @foreach($data['benefits'] as $b)
                                         <div class="p-benefit"><i class="fas fa-check"></i> {{ $b }}</div>
@@ -241,8 +265,11 @@
                             <div class="popular-badge">MÁS POPULAR</div> @endif
                         </div>
                         <div class="ns-price">
-                            <span class="amount">{{ $nextData['price'] }}</span>
+                            <span class="currency">$</span><span class="amount" data-monthly="{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}" data-annual="{{ is_numeric($nextData['price_annual']) ? number_format($nextData['price_annual'], 2, '.', '') : $nextData['price_annual'] }}">{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}</span>
                             @if(!$nextData['is_custom']) <span class="period">/mes</span> @endif
+                            @if(isset($nextData['savings']) && $nextData['savings'] > 0)
+                                <div class="plan-savings-hint" style="color: white; opacity: 0.9;">Ahorras ${{ $nextData['savings'] }} al año</div>
+                            @endif
                         </div>
                         <div class="benefits-list">
                             @foreach($nextData['benefits'] as $benefit)
@@ -611,6 +638,95 @@
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
 
+    /* PRICING TOGGLE STYLES */
+    .pricing-toggle-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin: 0 auto 24px;
+        background: #f8fafc;
+        padding: 8px 16px;
+        border-radius: 100px;
+        width: fit-content;
+        border: 1px solid #e2e8f0;
+    }
+
+    .toggle-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #94a3b8;
+        transition: 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .toggle-label.active {
+        color: #1a7a8a;
+    }
+
+    .toggle-switch {
+        position: relative;
+        width: 44px;
+        height: 24px;
+        background: #e2e8f0;
+        border-radius: 100px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .toggle-switch::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 18px;
+        height: 18px;
+        background: white;
+        border-radius: 50%;
+        transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .toggle-switch.annual {
+        background: #1a7a8a;
+    }
+
+    .toggle-switch.annual::after {
+        transform: translateX(20px);
+    }
+
+    .annual-discount-pill {
+        background: #ecfdf5;
+        color: #10b981;
+        font-size: 9px;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 100px;
+        margin-left: 4px;
+        border: 1px solid #d1fae5;
+    }
+
+    .plan-savings-hint {
+        font-size: 10px;
+        color: #10b981;
+        font-weight: 700;
+        margin-top: 4px;
+        opacity: 0;
+        transform: translateY(5px);
+        transition: 0.3s;
+        height: 0;
+        overflow: hidden;
+    }
+
+    .toggle-switch.annual ~ .plan-savings-hint,
+    #upgradePlanModal.annual-view .plan-savings-hint {
+        opacity: 1;
+        transform: translateY(0);
+        height: auto;
+        margin-top: 4px;
+    }
+
     /* GRID STYLES */
     .p-grid-container {
         display: grid;
@@ -771,6 +887,40 @@
         const modal = document.getElementById('upgradePlanModal');
         if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
     }
+
+    // Pricing Toggle Logic for Modal
+    (function() {
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('modalPriceToggle');
+            const modal = document.getElementById('upgradePlanModal');
+            const labelMonthly = document.getElementById('modalLabelMonthly');
+            const labelAnnual = document.getElementById('modalLabelAnnual');
+            const priceVals = document.querySelectorAll('.p-price-val, .ns-price .amount');
+            
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    const isAnnual = toggle.classList.toggle('annual');
+                    modal.classList.toggle('annual-view', isAnnual);
+                    labelAnnual.classList.toggle('active', isAnnual);
+                    labelMonthly.classList.toggle('active', !isAnnual);
+                    
+                    priceVals.forEach(v => {
+                        const target = isAnnual ? v.dataset.annual : v.dataset.monthly;
+                        if (target && target !== 'Ventas') {
+                            v.style.opacity = '0';
+                            setTimeout(() => {
+                                v.textContent = target; 
+                                v.style.opacity = '1';
+                            }, 150);
+                        }
+                    });
+                });
+                
+                // Transition support
+                priceVals.forEach(v => v.style.transition = 'opacity 0.2s');
+            }
+        });
+    })();
 
     async function updateUserPlan(planKey) {
         const target = planLimits[planKey];
