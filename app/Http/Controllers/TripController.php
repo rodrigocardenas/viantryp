@@ -569,7 +569,7 @@ class TripController extends Controller
             ], 403);
         }
 
-        if ($request->user()->hasReachedAttachmentLimit($trip)) {
+        if ($request->user()->hasReachedAttachmentLimit()) {
             return response()->json([
                 'success' => false,
                 'error_code' => 'LIMIT_REACHED',
@@ -613,6 +613,7 @@ class TripController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Archivo subido exitosamente.',
+            'document_id' => $document->id,
             'url' => route('documents.download', $document->id),
             'original_name' => $file->getClientOriginalName()
         ]);

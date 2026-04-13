@@ -6,15 +6,7 @@
     $currentPlan = strtolower($user->plan ?? 'básico');
     $tripCount = \App\Models\Trip::where('user_id', $user->id)->count();
 
-    // For attachments, we show the max usage in any trip
-    $maxAttachments = \DB::table('trip_documents')
-        ->join('trips', 'trip_documents.trip_id', '=', 'trips.id')
-        ->where('trips.user_id', $user->id)
-        ->where('trip_documents.type', 'pro_attachment')
-        ->groupBy('trip_documents.trip_id')
-        ->selectRaw('count(*) as aggregate')
-        ->get()
-        ->max('aggregate') ?? 0;
+
 
     $editorCount = \DB::table('trip_collaborators')
         ->join('trips', 'trip_collaborators.trip_id', '=', 'trips.id')
@@ -46,9 +38,8 @@
             'price_annual' => 0,
             'is_custom' => false,
             'limit_trips' => 1,
-            'limit_attachments' => 10,
             'limit_editors' => 0,
-            'benefits' => ['1 itinerario', '10 archivos', 'Link público', 'Banco de Imágenes gratuito'],
+            'benefits' => ['1 itinerario', 'Link público', 'Banco de Imágenes gratuito'],
             'accent' => '#64748b'
         ],
         'esencial' => [
@@ -57,9 +48,8 @@
             'price_annual' => 4,
             'is_custom' => false,
             'limit_trips' => 3,
-            'limit_attachments' => 50,
             'limit_editors' => 0,
-            'benefits' => ['3 itinerarios', '50 archivos adjuntos', 'Google Places Incluido'],
+            'benefits' => ['3 itinerarios', 'Google Places Incluido'],
             'accent' => '#1a7a8a'
         ],
         'avanzado' => [
@@ -68,9 +58,8 @@
             'price_annual' => 9,
             'is_custom' => false,
             'limit_trips' => 10,
-            'limit_attachments' => 1000000,
             'limit_editors' => 2,
-            'benefits' => ['10 itinerarios', '2 colaboradores de edición', 'Archivos ilimitados', 'Branding'],
+            'benefits' => ['10 itinerarios', '2 colaboradores de edición', 'Branding'],
             'accent' => '#1c7182',
             'popular' => true
         ],
@@ -80,7 +69,6 @@
             'price_annual' => 22,
             'is_custom' => false,
             'limit_trips' => 1000000,
-            'limit_attachments' => 1000000,
             'limit_editors' => 1000000,
             'benefits' => ['Itinerarios ilimitados', 'Colaboradores ilimitados', 'Roles/API'],
             'accent' => '#0e5a6a'
@@ -91,7 +79,6 @@
             'price_annual' => 'Ventas',
             'is_custom' => true,
             'limit_trips' => 1000000,
-            'limit_attachments' => 1000000,
             'limit_editors' => 1000000,
             'benefits' => ['Dominio Propio', 'SLA / Soporte', 'API Avanzada'],
             'accent' => '#0f2a3a'
@@ -106,13 +93,13 @@
     unset($data);
 
     $tripProgress = min(100, ($tripCount / max(1, $limits['max_trips'])) * 100);
-    $attachProgress = min(100, ($maxAttachments / max(1, $limits['max_attachments'])) * 100);
+
     $editorProgress = min(100, ($editorCount / max(1, $limits['max_editors'] ?? 1)) * 100);
 
     // Warning logic
     $warningMap = [
-        'básico' => 'Has alcanzado el límite. Sube a Esencial para crear más itinerarios.',
-        'esencial' => 'Has alcanzado el límite. Sube a Avanzado para obtener itinerarios ilimitados.',
+        'básico' => 'Has alcanzado el límite. Sube tu plan a Esencial para mejorar tus herramientas.',
+        'esencial' => 'Has alcanzado el límite. Sube tu plan a Avanzado para mejorar tus herramientas.',
         'avanzado' => 'Has alcanzado el límite. Sube tu plan a Colaborativo para mejorar tus herramientas.',
         'colaborativo' => 'Has alcanzado el límite. Para gran escala, contacta con nuestro equipo corporativo.'
     ];
@@ -123,7 +110,7 @@
     foreach ($planData as $key => $data) {
         $jsPlanLimits[$key] = [
             'trips' => $data['limit_trips'],
-            'attachments' => $data['limit_attachments'],
+
             'editors' => $data['limit_editors'],
             'name' => $data['name']
         ];
@@ -175,32 +162,23 @@
                     <div class="usage-card">
                         <div class="usage-label">Itinerarios</div>
                         <div class="usage-stats">
-                            <span class="current">{{ $tripCount }}</span><span
-                                class="limit">/{{ $limits['max_trips'] >= 1000000 ? '∞' : $limits['max_trips'] }}</span>
+                            <span class="current" id="modal-trip-count">{{ $tripCount }}</span><span
+                                class="limit" id="modal-trip-limit">/{{ $limits['max_trips'] >= 1000000 ? '∞' : $limits['max_trips'] }}</span>
                         </div>
                         <div class="progress-container">
-                            <div class="progress-bar {{ $tripProgress >= 100 ? 'limit-reached' : '' }}"
+                            <div class="progress-bar {{ $tripProgress >= 100 ? 'limit-reached' : '' }}" id="modal-trip-bar"
                                 style="width: {{ $tripProgress }}%"></div>
                         </div>
                     </div>
-                    <div class="usage-card">
-                        <div class="usage-label">Archivos</div>
-                        <div class="usage-stats">
-                            <span class="current">{{ $maxAttachments }}</span><span
-                                class="limit">/{{ $limits['max_attachments'] >= 1000000 ? '∞' : $limits['max_attachments'] }}</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar" style="width: {{ $attachProgress }}%; background: #10b981;"></div>
-                        </div>
-                    </div>
+
                     <div class="usage-card">
                         <div class="usage-label">Editores</div>
                         <div class="usage-stats">
-                            <span class="current">{{ $editorCount }}</span><span
-                                class="limit">/{{ ($limits['max_editors'] ?? 0) >= 1000000 ? '∞' : ($limits['max_editors'] ?? 0) }}</span>
+                            <span class="current" id="modal-editor-count">{{ $editorCount }}</span><span
+                                class="limit" id="modal-editor-limit">/{{ ($limits['max_editors'] ?? 0) >= 1000000 ? '∞' : ($limits['max_editors'] ?? 0) }}</span>
                         </div>
                         <div class="progress-container">
-                            <div class="progress-bar {{ $editorProgress >= 100 ? 'limit-reached' : '' }}" style="width: {{ $editorProgress }}%; background: #6366f1;"></div>
+                            <div class="progress-bar {{ $editorProgress >= 100 ? 'limit-reached' : '' }}" id="modal-editor-bar" style="width: {{ $editorProgress }}%; background: #6366f1;"></div>
                         </div>
                     </div>
 
@@ -222,7 +200,6 @@
                         @foreach($planData as $key => $data)
                             @php 
                                 $isBlocked = ($tripCount > $data['limit_trips']) || 
-                                             ($maxAttachments > $data['limit_attachments']) || 
                                              ($editorCount > $data['limit_editors']); 
                             @endphp
                             <div class="p-card {{ $currentPlan === $key ? 'active' : '' }} {{ $isBlocked ? 'blocked' : '' }}">
@@ -317,8 +294,7 @@
 <style>
     .upgrade-premium-modal {
         position: fixed;
-        top: 0;
-        left: 0;
+        inset: 0;
         width: 100%;
         height: 100%;
         display: flex;
@@ -326,18 +302,21 @@
         justify-content: center;
         background: rgba(15, 23, 42, 0.6);
         backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         z-index: 10000;
-        padding: 20px;
         font-family: 'Barlow', sans-serif;
+        border: none;
+        outline: none;
     }
 
     .upgrade-premium-modal .modal-content {
         background: #ffffff;
         border-radius: 28px;
         position: relative;
-        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.4);
         animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
         overflow: hidden;
+        margin: auto;
     }
 
     .modal-standard {
@@ -478,13 +457,13 @@
 
     .usage-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 16px;
         margin-bottom: 24px;
     }
 
     .usage-grid-compact {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
     }
     .usage-grid-compact .usage-card {
@@ -875,13 +854,55 @@
     const planLimits = @json($jsPlanLimits);
     const currentUsage = { 
         trips: {{ $tripCount }}, 
-        attachments: {{ $maxAttachments }},
+
         editors: {{ $editorCount }}
     };
 
-    function openUpgradeModal() {
+    async function openUpgradeModal() {
         const modal = document.getElementById('upgradePlanModal');
-        if (modal) { modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+        if (!modal) return;
+        
+        // Show modal immediately
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+
+        try {
+            // Fetch fresh usage data
+            const response = await fetch('{{ route("subscription.usage") }}');
+            const data = await response.json();
+            
+            if (data.success) {
+                // Update elements if they exist
+                const updateEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+                const updateBar = (id, perc, reached) => { 
+                    const el = document.getElementById(id); 
+                    if(el) { 
+                        el.style.width = perc + '%'; 
+                        if(reached) el.classList.add('limit-reached'); else el.classList.remove('limit-reached');
+                    } 
+                };
+
+                const usage = data.usage;
+                const limits = data.limits;
+
+                updateEl('modal-trip-count', usage.trips);
+                updateEl('modal-trip-limit', '/' + (limits.max_trips >= 1000000 ? '∞' : limits.max_trips));
+                updateBar('modal-trip-bar', Math.min(100, (usage.trips / Math.max(1, limits.max_trips)) * 100), usage.trips >= limits.max_trips);
+
+
+
+                updateEl('modal-editor-count', usage.editors);
+                updateEl('modal-editor-limit', '/' + (limits.max_editors >= 1000000 ? '∞' : limits.max_editors));
+                updateBar('modal-editor-bar', Math.min(100, (usage.editors / Math.max(1, limits.max_editors)) * 100), usage.editors >= limits.max_editors);
+                
+                // Update sync object for validation
+                currentUsage.trips = usage.trips;
+
+                currentUsage.editors = usage.editors;
+            }
+        } catch (err) {
+            console.error('Error fetching usage:', err);
+        }
     }
     function closeUpgradeModal() {
         const modal = document.getElementById('upgradePlanModal');
@@ -930,10 +951,7 @@
             alert(`No puedes bajar al plan ${target.name} porque tienes ${currentUsage.trips} itinerarios y el plan solo permite ${target.trips}.`); 
             return; 
         }
-        if (currentUsage.attachments > target.attachments) { 
-            alert(`No puedes bajar al plan ${target.name} porque tienes itinerarios con hasta ${currentUsage.attachments} archivos y el plan solo permite ${target.attachments}.`); 
-            return; 
-        }
+
         if (currentUsage.editors > target.editors) { 
             alert(`No puedes bajar al plan ${target.name} porque has invitado a ${currentUsage.editors} editores y el plan solo permite ${target.editors}. Por favor, elimina colaboradores antes de bajar de plan.`); 
             return; 

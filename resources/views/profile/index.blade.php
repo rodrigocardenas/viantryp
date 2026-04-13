@@ -809,17 +809,7 @@
                 </div>
               </div>
 
-              <div style="padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: white;">
-                <div style="font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Archivos por Viaje</div>
-                <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 10px;">
-                  <span style="font-size: 20px; font-weight: 800; color: var(--text);">{{ $maxAttachments }}</span>
-                  <span style="font-size: 13px; color: var(--muted); font-weight: 600;">/ {{ $user->getPlanLimits()['max_attachments'] >= 1000000 ? '∞' : $user->getPlanLimits()['max_attachments'] }}</span>
-                </div>
-                <div style="height: 4px; background: #f1f5f9; border-radius: 10px; overflow: hidden;">
-                  @php $attPerc = min(100, ($user->getPlanLimits()['max_attachments'] > 0 ? ($maxAttachments / $user->getPlanLimits()['max_attachments']) * 100 : 0)); @endphp
-                  <div style="width: {{ $attPerc }}%; height: 100%; background: #0ea5e9; border-radius: 10px;"></div>
-                </div>
-              </div>
+
 
               <div style="padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: white;">
                 <div style="font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Editores Premium</div>

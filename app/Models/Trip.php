@@ -195,6 +195,13 @@ class Trip extends Model
                 $trip->updateTemporaryDocumentIds($trip->items_data);
             }
         });
+
+        // Cascade delete documents when a trip is deleted
+        static::deleting(function ($trip) {
+            $trip->documents()->each(function($doc) {
+                $doc->delete(); // This triggers the deletion from storage if implemented in model or handled manually
+            });
+        });
     }
 
     /**

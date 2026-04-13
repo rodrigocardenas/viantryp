@@ -3975,7 +3975,7 @@
           <div class="plan-sub" style="opacity:0; pointer-events:none; visibility:hidden;">Sub Spacer</div>
           <ul class="plan-features">
             <li>1 itinerario activo</li>
-            <li>10 archivos adjuntos</li>
+
             <li>Enlace para compartir viaje</li>
             <li>Banco de imágenes gratuito</li>
           </ul>
@@ -3998,7 +3998,7 @@
           <div class="plan-sub" style="opacity:0; pointer-events:none; visibility:hidden;">Sub Spacer</div>
           <ul class="plan-features">
             <li>3 itinerarios activos</li>
-            <li>50 archivos adjuntos</li>
+
             <li>Google Places Incluido</li>
             <li>Enlace para compartir viaje</li>
           </ul>
@@ -4021,7 +4021,7 @@
           <div class="plan-sub">Todo lo del plan Esencial, más:</div>
           <ul class="plan-features">
             <li>10 itinerarios activos</li>
-            <li>Archivos adjuntos ilimitados</li>
+
             <li>2 colaboradores de edición</li>
             <li>Plantillas avanzadas</li>
             <li>Personalización de marca</li>

@@ -18,20 +18,41 @@ class ProfileController extends Controller
             ->distinct('trip_collaborators.email')
             ->count();
         
-        $maxAttachments = \DB::table('trip_documents')
-            ->select('trip_id', \DB::raw('count(*) as count'))
-            ->where('type', 'pro_attachment')
-            ->whereIn('trip_id', $user->trips()->pluck('id'))
-            ->groupBy('trip_id')
-            ->orderByDesc('count')
-            ->first()
-            ->count ?? 0;
+
 
         return view('profile.index', [
             'user' => $user,
             'tripCount' => $tripCount,
             'editorCount' => $editorCount,
-            'maxAttachments' => $maxAttachments
+        ]);
+    }
+
+    public function getUsage()
+    {
+        $user = auth()->user();
+        if (!$user) return response()->json(['success' => false], 401);
+
+        $tripCount = \App\Models\Trip::where('user_id', $user->id)->count();
+        $editorCount = \DB::table('trip_collaborators')
+            ->join('trips', 'trip_collaborators.trip_id', '=', 'trips.id')
+            ->where('trips.user_id', $user->id)
+            ->where('trip_collaborators.role', 'editor')
+            ->distinct('trip_collaborators.email')
+            ->count();
+
+
+        $limits = $user->getPlanLimits();
+
+        return response()->json([
+            'success' => true,
+            'usage' => [
+                'trips' => $tripCount,
+                'editors' => $editorCount,
+            ],
+            'limits' => [
+                'max_trips' => $limits['max_trips'],
+                'max_editors' => $limits['max_editors'] ?? 0,
+            ]
         ]);
     }
 
@@ -156,11 +177,11 @@ class ProfileController extends Controller
         
         // Define limits for validation
         $planLimits = [
-            'básico'       => ['trips' => 1, 'attachments' => 10, 'editors' => 0],
-            'esencial'      => ['trips' => 3, 'attachments' => 50, 'editors' => 0],
-            'avanzado'      => ['trips' => 10, 'attachments' => 1000000, 'editors' => 2],
-            'colaborativo'  => ['trips' => 1000000, 'attachments' => 1000000, 'editors' => 1000000],
-            'corporativo'   => ['trips' => 1000000, 'attachments' => 1000000, 'editors' => 1000000],
+            'básico'        => ['trips' => 1, 'editors' => 0],
+            'esencial'      => ['trips' => 3, 'editors' => 0],
+            'avanzado'      => ['trips' => 10, 'editors' => 2],
+            'colaborativo'  => ['trips' => 1000000, 'editors' => 1000000],
+            'corporativo'   => ['trips' => 1000000, 'editors' => 1000000],
         ];
 
         $targetLimits = $planLimits[$newPlan] ?? null;
@@ -175,22 +196,7 @@ class ProfileController extends Controller
                 ], 422);
             }
 
-            // Check Max Attachments in any trip
-            $maxAttachments = \DB::table('trip_documents')
-                ->join('trips', 'trip_documents.trip_id', '=', 'trips.id')
-                ->where('trips.user_id', $user->id)
-                ->where('trip_documents.type', 'pro_attachment')
-                ->groupBy('trip_documents.trip_id')
-                ->selectRaw('count(*) as aggregate')
-                ->get()
-                ->max('aggregate') ?? 0;
 
-            if ($maxAttachments > $targetLimits['attachments']) {
-                return response()->json([
-                    'success' => false, 
-                    'message' => "No puedes bajar al plan ".ucfirst($newPlan)." porque tienes itinerarios con {$maxAttachments} archivos y el plan solo permite {$targetLimits['attachments']}."
-                ], 422);
-            }
 
             // Check Current Editors
             $editorCount = \DB::table('trip_collaborators')

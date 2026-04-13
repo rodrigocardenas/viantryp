@@ -878,6 +878,23 @@ function handleItemPhotoUpload(e, targetInp) {
   if (f.size > 5 * 1024 * 1024) { showToast('⚠️', 'La imagen no puede superar 5MB'); return; }
 
   const originalContent = targetInp.value;
+
+  // If there was a previous uploaded file, delete it to free quota
+  const getDocIdFromUrl = (url) => {
+    if (!url) return null;
+    const match = url.match(/\/documents\/(\d+)\/download/);
+    return match ? match[1] : null;
+  };
+  const prevDocId = getDocIdFromUrl(originalContent);
+  const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+  if (prevDocId) {
+     fetch(`/documents/${prevDocId}`, {
+        method: 'DELETE',
+        headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
+     }).catch(e => console.error('Error deleting previous photo:', e));
+  }
+
   targetInp.value = 'Subiendo...';
   targetInp.disabled = true;
 
@@ -993,6 +1010,13 @@ function buildField(field, data) {
             statusText.innerHTML = `<i class="fa-solid fa-paperclip"></i> <a href="${res.url}" target="_blank" style="color:#0ea5d8;text-decoration:none;">${res.original_name}</a>`;
             removeBtn.style.display = 'block';
             showToast('✅', 'Archivo subido');
+          } else if (res.error_code === 'LIMIT_REACHED') {
+            statusText.innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="color:#64748b"></i> Sin adjunto';
+            if (typeof openUpgradeModal === 'function') {
+                openUpgradeModal();
+            } else {
+                showToast('⚠️', res.message || 'Límite alcanzado');
+            }
           } else {
             statusText.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color:#ef4444"></i> Error al subir';
             showToast('⚠️', res.message || 'Error al subir');

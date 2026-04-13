@@ -89,12 +89,12 @@ class User extends Authenticatable
         return match ($this->plan) {
             self::PLAN_BASICO => [
                 'max_trips' => 1,
-                'max_attachments' => 10,
+                'max_attachments' => 1000000,
                 'max_editors' => 0,
             ],
             self::PLAN_ESENCIAL => [
                 'max_trips' => 3,
-                'max_attachments' => 50,
+                'max_attachments' => 1000000,
                 'max_editors' => 0,
             ],
             self::PLAN_AVANZADO => [
@@ -109,7 +109,7 @@ class User extends Authenticatable
             ],
             default => [
                 'max_trips' => 1,
-                'max_attachments' => 10,
+                'max_attachments' => 1000000,
                 'max_editors' => 0,
             ],
         };
@@ -124,17 +124,9 @@ class User extends Authenticatable
         return $count >= $limits['max_trips'];
     }
 
-    public function hasReachedAttachmentLimit($trip): bool
+    public function hasReachedAttachmentLimit(): bool
     {
-        $limits = $this->getPlanLimits();
-        if ($limits['max_attachments'] >= 1000000) return false;
-
-        $tripId = is_numeric($trip) ? $trip : $trip->id;
-
-        $count = \App\Models\TripDocument::where('trip_id', $tripId)
-            ->where('type', 'pro_attachment')
-            ->count();
-        return $count >= $limits['max_attachments'];
+        return false;
     }
 
     public function hasReachedEditorLimit(): bool
