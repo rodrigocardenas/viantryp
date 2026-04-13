@@ -2172,9 +2172,9 @@ body {
   font-style: italic
 }
 
-/* ═══════════════════════════════════════════
-   RESPONSIVE — BUILDER (SIDE-BY-SIDE MOD)
-   ═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   RESPONSIVE â€” BUILDER (SIDE-BY-SIDE MOD)
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .sidebar-toggle {
     display: none;
@@ -2529,4 +2529,30 @@ body {
 }
 .rte-editor p, .texto-content p {
   margin-bottom: 8px;
+}
+/* Estilos para grupos de campos y tooltips */
+.field-group-box {
+  border: 1.5px dashed var(--border);
+  border-radius: 12px;
+  padding: 12px 15px 2px 15px;
+  margin-bottom: 20px;
+  background: var(--surface);
+  position: relative;
+}
+.info-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: var(--primary-blue);
+  color: white;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: help;
+  z-index: 5;
 }
