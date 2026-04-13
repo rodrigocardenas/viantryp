@@ -202,14 +202,16 @@ function buildPreviewHTML(data) {
           <div class="pv-chips-row">
             ${d.clase ? `<span class="pv-chip"><i class="fa-solid fa-couch"></i> ${d.clase}</span>` : ''}
             ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
-            <div class="pv-flight-mobile-details" style="display:none; align-items:center; gap:8px;">
-              ${d.aerolinea ? `<span style="font-size:12px; font-weight:500; color:var(--muted); opacity:0.8;">${d.aerolinea}</span>` : ''}
-              ${d.vuelo ? `<span style="background:var(--accent); color:#fff; padding:3px 8px; border-radius:6px; font-size:11px; font-weight:600; text-transform:uppercase;">${d.vuelo}</span>` : ''}
-            </div>
           </div>
           ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
           ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-          ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${fixUrl(d.adjunto_url)}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
+          ${d.adjunto_url ? `
+            <div style="margin-top:12px;">
+              <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
+              </a>
+            </div>
+          ` : ''}
         </div>`;
       }
 
@@ -247,7 +249,13 @@ function buildPreviewHTML(data) {
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${fixUrl(d.adjunto_url)}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
+              ${d.adjunto_url ? `
+                <div style="margin-top:12px;">
+                  <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
+                  </a>
+                </div>
+              ` : ''}
             </div>
           </div>
         </div>`;
@@ -281,10 +289,18 @@ function buildPreviewHTML(data) {
               ${lle.day ? `<div class="pv-route-sub">${lle.day}</div>` : ''}
             </div>
           </div>
-          ${d.precio ? `<div class="pv-chips-row"><span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span></div>` : ''}
+          <div class="pv-chips-row">
+            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
+          </div>
           ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
           ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-          ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${fixUrl(d.adjunto_url)}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
+          ${d.adjunto_url ? `
+            <div style="margin-top:12px;">
+              <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
+              </a>
+            </div>
+          ` : ''}
         </div>`;
       }
 
@@ -317,7 +333,13 @@ function buildPreviewHTML(data) {
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${fixUrl(d.adjunto_url)}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
+              ${d.adjunto_url ? `
+                <div style="margin-top:12px;">
+                  <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
+                  </a>
+                </div>
+              ` : ''}
             </div>
           </div>
         </div>`;
@@ -348,7 +370,13 @@ function buildPreviewHTML(data) {
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${fixUrl(d.adjunto_url)}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
+              ${d.adjunto_url ? `
+                <div style="margin-top:12px;">
+                  <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
+                  </a>
+                </div>
+              ` : ''}
             </div>
           </div>
         </div>`;
@@ -381,7 +409,13 @@ function buildPreviewHTML(data) {
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-              ${d.adjunto_url ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);"><a href="${fixUrl(d.adjunto_url)}" target="_blank" class="pv-attachment-btn"><i class="fa-solid fa-paperclip" style="margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</a></div>` : ''}
+              ${d.adjunto_url ? `
+                <div style="margin-top:12px;">
+                  <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
+                  </a>
+                </div>
+              ` : ''}
             </div>
           </div>
         </div>`;

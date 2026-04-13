@@ -1482,12 +1482,12 @@
                             font-weight: 700;
                             color: #1f2937;
                             margin: 0 0 0.5rem 0;
-                        ">Compartir Itinerario</h3>
+                        ">Compartir viaje</h3>
                         <p style="
                             color: #6b7280;
                             margin: 0;
                             font-size: 0.9rem;
-                        ">Copia el enlace para compartir este viaje</p>
+                        ">Cualquiera con este enlace podrá ver el itinerario.</p>
                     </div>
 
                     <div class="share-modal-body">
@@ -1500,7 +1500,7 @@
                                 font-weight: 600;
                                 color: #374151;
                                 margin-bottom: 0.5rem;
-                            ">Enlace de compartición:</label>
+                            ">Copiar enlace:</label>
                             <div class="share-url-input-group" style="
                                 display: flex;
                                 gap: 0.5rem;
@@ -1515,19 +1515,10 @@
                                     color: #374151;
                                     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
                                 ">
-                                <button id="copyShareUrlBtn" style="
-                                    padding: 0.75rem 1rem;
-                                    background: linear-gradient(135deg, #1a7a8a, #1e293b);
-                                    color: white;
-                                    border: none;
-                                    border-radius: 8px;
-                                    cursor: pointer;
-                                    font-weight: 600;
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 0.5rem;
-                                    transition: all 0.3s ease;
+                                <button id="copyShareUrlBtn" class="btn-create" style="
+                                    padding: 0 1.25rem;
                                     white-space: nowrap;
+                                    height: 44px;
                                 ">
                                     <i class="fas fa-copy"></i>
                                     Copiar
@@ -1576,23 +1567,23 @@
             try {
                 await navigator.clipboard.writeText(url);
                 copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
-                copyBtn.style.background = 'linear-gradient(135deg, #1e293b, #047857)';
+                copyBtn.style.background = '#047857';
 
                 // Reset button after 2 seconds
                 setTimeout(() => {
                     copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
-                    copyBtn.style.background = 'linear-gradient(135deg, #1a7a8a, #1e293b)';
+                    copyBtn.style.background = '';
                 }, 2000);
             } catch (error) {
                 // Fallback for older browsers
                 urlInput.select();
                 document.execCommand('copy');
                 copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
-                copyBtn.style.background = 'linear-gradient(135deg, #1e293b, #047857)';
+                copyBtn.style.background = '#047857';
 
                 setTimeout(() => {
                     copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
-                    copyBtn.style.background = 'linear-gradient(135deg, #1a7a8a, #1e293b)';
+                    copyBtn.style.background = '';
                 }, 2000);
             }
         });

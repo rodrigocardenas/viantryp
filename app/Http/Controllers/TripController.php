@@ -555,9 +555,8 @@ class TripController extends Controller
             'share_token' => $trip->share_token
         ]);
     }
-
     /**
-     * Upload attachment for PRO editor elements
+     * Upload attachment for PRO editor elements (PDF/Images)
      */
     public function uploadAttachment(Request $request, Trip $trip): JsonResponse
     {
@@ -569,6 +568,7 @@ class TripController extends Controller
             ], 403);
         }
 
+        // We use a high limit for total attachments as per user request to not restrict plan limits
         if ($request->user()->hasReachedAttachmentLimit()) {
             return response()->json([
                 'success' => false,
@@ -578,7 +578,7 @@ class TripController extends Controller
         }
 
         $request->validate([
-            'file' => 'required|file|max:10240|mimes:pdf,doc,docx,txt,jpg,jpeg,png,webp'
+            'file' => 'required|file|max:5120|mimes:pdf,jpg,jpeg,png,webp,doc,docx,txt'
         ]);
 
         $file = $request->file('file');
