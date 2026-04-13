@@ -423,32 +423,64 @@ tabsCont.addEventListener('dragleave', e => {
 });
 tabsCont.addEventListener('drop', e => {
   e.preventDefault();
-  const targetTab = e.target.closest('.day-tab:not(.portada-tab):not(.cierre-tab)');
-  if (!targetTab || dragTabSourceIndex === null) return;
+  const targetTab = e.target.closest('.day-tab');
+  if (!targetTab) return;
   
-  const to = parseInt(targetTab.dataset.day);
-  if (to === dragTabSourceIndex) return;
+  // Case A: Reordering Tabs
+  if (dragTabSourceIndex !== null) {
+      if (targetTab.classList.contains('portada-tab') || targetTab.classList.contains('cierre-tab')) return;
+      const to = parseInt(targetTab.dataset.day);
+      if (to === dragTabSourceIndex) return;
 
-  // Move in arrays
-  const movedDay = days.splice(dragTabSourceIndex, 1)[0];
-  days.splice(to, 0, movedDay);
-  
-  const movedDate = dayDates.splice(dragTabSourceIndex, 1)[0];
-  dayDates.splice(to, 0, movedDate);
+      const movedDay = days.splice(dragTabSourceIndex, 1)[0];
+      days.splice(to, 0, movedDay);
+      
+      const movedDate = dayDates.splice(dragTabSourceIndex, 1)[0];
+      dayDates.splice(to, 0, movedDate);
 
-  // Update currentDay if it was one of the involved
-  if (currentDay === dragTabSourceIndex) {
-    currentDay = to;
-  } else if (typeof currentDay === 'number') {
-    // If currentDay was between source and target, it shifts
-    if (dragTabSourceIndex < currentDay && to >= currentDay) currentDay--;
-    else if (dragTabSourceIndex > currentDay && to <= currentDay) currentDay++;
+      if (currentDay === dragTabSourceIndex) {
+        currentDay = to;
+      } else if (typeof currentDay === 'number') {
+        if (dragTabSourceIndex < currentDay && to >= currentDay) currentDay--;
+        else if (dragTabSourceIndex > currentDay && to <= currentDay) currentDay++;
+      }
+
+      unsavedChanges = true;
+      renderTabs();
+      renderCanvas();
+      autoSaveProTrip();
+      return;
   }
 
-  unsavedChanges = true;
-  renderTabs();
-  renderCanvas();
-  autoSaveProTrip();
+  // Case B: Moving Item to Different Day
+  if (dragSourceIndex !== null) {
+      const targetDayVal = targetTab.dataset.day;
+      const targetDay = targetDayVal === 'portada' ? 'portada' : targetDayVal === 'cierre' ? 'cierre' : parseInt(targetDayVal);
+      
+      // Determine source array
+      let sourceArr;
+      if (dragSourceContainer === 'portadaItems') sourceArr = portadaItems;
+      else if (dragSourceContainer === 'cierreItems') sourceArr = cierreItems;
+      else sourceArr = days[currentDay];
+
+      // Determine target array
+      let targetArr;
+      if (targetDay === 'portada') targetArr = portadaItems;
+      else if (targetDay === 'cierre') targetArr = cierreItems;
+      else targetArr = days[targetDay];
+
+      if (sourceArr === targetArr) return; // Dropped on same day tab
+
+      const [moved] = sourceArr.splice(dragSourceIndex, 1);
+      targetArr.push(moved);
+
+      currentDay = targetDay; // Switch to the day where the item was dropped
+      unsavedChanges = true;
+      renderTabs();
+      renderCanvas();
+      autoSaveProTrip();
+      showToast('<i class="fa-solid fa-arrow-right-arrow-left"></i>', 'Elemento movido de día');
+  }
 });
 
 document.getElementById('addDayBtn').addEventListener('click', () => {
@@ -556,6 +588,22 @@ function renderTabs() {
   html += `<button class="day-tab cierre-tab ${currentDay === 'cierre' ? 'active' : ''}" data-day="cierre"><span class="day-tab-label"><i class="fa-solid fa-moon" style="margin-right:4px"></i> Cierre</span></button>`;
 
   container.innerHTML = html;
+
+  // Important: Ad-hoc drop listeners for all tabs to support moving items
+  container.querySelectorAll('.day-tab').forEach(tab => {
+    tab.addEventListener('dragover', e => {
+      if (dragSourceIndex !== null) {
+        e.preventDefault();
+        tab.style.boxShadow = 'inset 0 0 0 2px var(--accent)';
+      }
+    });
+    tab.addEventListener('dragleave', () => {
+      tab.style.boxShadow = '';
+    });
+    tab.addEventListener('drop', () => {
+      tab.style.boxShadow = '';
+    });
+  });
 }
 
 function resetViajeros() {
@@ -655,14 +703,14 @@ function renderCanvas() {
 function buildItem(item, idx) {
   const cfg = C[item.type]; const el = document.createElement('div');
   el.className = `canvas-item tipo-${item.type}`; el.dataset.index = idx;
-  if (item.type === 'separador') { const lbl = item.data.etiqueta || ''; el.innerHTML = `<div class="item-inner"><div class="sep-line"></div>${lbl ? `<span class="sep-dot"></span><span style="font-size:11px;color:var(--text-dim);white-space:nowrap">${lbl}</span><span class="sep-dot"></span>` : '<span class="sep-dot"></span>'}<div class="sep-line"></div><div class="item-actions" style="margin-left:8px"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`; setupReorder(el, idx); return el }
-  if (item.type === 'titulo') { el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:3px;padding:18px 20px"><div class="titulo-text">${item.data.texto || 'Título'}</div>${item.data.subtitulo ? `<div style="font-size:13px;color:var(--text-muted)">${item.data.subtitulo}</div>` : ''}</div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
-  if (item.type === 'texto') { el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:5px;padding:14px 16px"><div class="texto-content" style="text-align:${(item.data.alineacion || 'Izquierda').toLowerCase()}">${item.data.contenido || 'Texto...'}</div></div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
-  if (item.type === 'imagen') { const hasImg = item.data.url && item.data.url.startsWith('http'); el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:9px;padding:11px"><div class="imagen-preview">${hasImg ? `<img src="${item.data.url}" alt="">` : '🖼️'}</div>${item.data.caption ? `<div style="font-size:12px;color:var(--text-muted);text-align:center">${item.data.caption}</div>` : ''}</div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
+  if (item.type === 'separador') { const lbl = item.data.etiqueta || ''; el.innerHTML = `<div class="item-inner"><div class="sep-line"></div>${lbl ? `<span class="sep-dot"></span><span style="font-size:11px;color:var(--text-dim);white-space:nowrap">${lbl}</span><span class="sep-dot"></span>` : '<span class="sep-dot"></span>'}<div class="sep-line"></div><div class="item-actions" style="margin-left:8px"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`; setupReorder(el, idx); return el }
+  if (item.type === 'titulo') { el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:3px;padding:18px 20px"><div class="titulo-text">${item.data.texto || 'Título'}</div>${item.data.subtitulo ? `<div style="font-size:13px;color:var(--text-muted)">${item.data.subtitulo}</div>` : ''}</div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
+  if (item.type === 'texto') { el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:5px;padding:14px 16px"><div class="texto-content" style="text-align:${(item.data.alineacion || 'Izquierda').toLowerCase()}">${item.data.contenido || 'Texto...'}</div></div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
+  if (item.type === 'imagen') { const hasImg = item.data.url && item.data.url.startsWith('http'); el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:9px;padding:11px"><div class="imagen-preview">${hasImg ? `<img src="${item.data.url}" alt="">` : '🖼️'}</div>${item.data.caption ? `<div style="font-size:12px;color:var(--text-muted);text-align:center">${item.data.caption}</div>` : ''}</div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
   if (item.type === 'caja') {
     const bg = item.data.color_fondo || '#7c6fef';
     el.style.background = bg + '12'; el.style.borderColor = bg + '40';
-    el.innerHTML = `<div class="item-inner" style="gap:11px"><div style="flex:1"><div class="item-title">${item.data.titulo || 'Caja con fondo'}</div><div class="texto-content" style="margin-top:3px">${item.data.contenido || ''}</div></div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
+    el.innerHTML = `<div class="item-inner" style="gap:11px"><div style="flex:1"><div class="item-title">${item.data.titulo || 'Caja con fondo'}</div><div class="texto-content" style="margin-top:3px">${item.data.contenido || ''}</div></div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
     setupReorder(el, idx); return el
   }
   if (item.type === 'gif') {
@@ -674,6 +722,7 @@ function buildItem(item, idx) {
     </div>
     <div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s">
       <button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+      <button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
       <button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
     </div>`;
     el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1');
@@ -682,7 +731,7 @@ function buildItem(item, idx) {
   }
   const d = item.data; let title = '', chips = [], sub = [];
   switch (item.type) { case 'flight': title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : 'Vuelo'; if (d.aerolinea) chips.push(d.aerolinea); if (d.vuelo) chips.push(d.vuelo); if (d.clase) chips.push(d.clase); if (d.salida) sub.push('🕐 ' + fmtDT(d.salida)); if (d.precio) chips.push('$' + d.precio); break; case 'alojamiento': title = d.nombre || 'Alojamiento'; if (d.direccion) sub.push('📍 ' + d.direccion); if (d.checkin) chips.push('In: ' + d.checkin); if (d.checkout) chips.push('Out: ' + d.checkout); if (d.habitacion) chips.push(d.habitacion); if (d.alimentacion) chips.push('🍽️ ' + d.alimentacion); if (d.stars) sub.push('⭐ ' + (Number.isInteger(d.stars) ? d.stars + '.0' : d.stars)); break; case 'transporte': title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : (d.tipo || 'Transporte'); if (d.tipo) chips.push(d.tipo); if (d.proveedor) chips.push(d.proveedor); if (d.fecha) sub.push('🕐 ' + fmtDT(d.fecha)); if (d.precio) chips.push('$' + d.precio); break; case 'actividad': title = d.nombre || 'Actividad'; if (d.lugar) sub.push('📍 ' + d.lugar); if (d.duracion) chips.push('⏱ ' + d.duracion); if (d.fecha) chips.push(fmtDT(d.fecha)); if (d.precio) chips.push('$' + d.precio); break; case 'comida': title = d.restaurante || 'Comida'; if (d.ciudad) sub.push('📍 ' + d.ciudad); if (d.tipo) chips.push(d.tipo); if (d.fecha) chips.push(fmtDT(d.fecha)); if (d.precio) chips.push('$' + d.precio); if (d.stars) sub.push('⭐ ' + (Number.isInteger(d.stars) ? d.stars + '.0' : d.stars)); break; case 'tour': title = d.nombre || 'Tour'; if (d.operador) sub.push('🏢 ' + d.operador); if (d.duracion) chips.push('⏱ ' + d.duracion); if (d.personas) chips.push('👥 ' + d.personas); if (d.precio) chips.push('$' + d.precio); break }
-  el.innerHTML = `<div class="item-inner"><div class="item-accent-bar" style="background:${cfg.color}"></div><div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div><div class="item-content"><div class="item-type-label" style="color:${cfg.color}">${cfg.label}</div><div class="item-title">${title}</div><div class="item-subtitle">${sub.map(s => `<span>${s}</span>`).join('')}${chips.map(c => `<span class="item-chip">${c}</span>`).join('')}</div>${d.notas ? `<div style="font-size:12px;color:var(--text-muted);margin-top:6px;display:flex;align-items:center;gap:4px;"><i class="fa-solid fa-circle-info" style="font-size:10px;opacity:0.7"></i> ${d.notas}</div>` : ''}${d.adjunto_url ? `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);width:100%;"><div style="display:inline-block;background:#fff;color:#0f172a;border:1px solid #e2e8f0;padding:4px 10px;border-radius:18px;font-size:11.5px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.05);"><i class="fa-solid fa-paperclip" style="color:var(--text-muted);margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</div></div>` : ''}</div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
+  el.innerHTML = `<div class="item-inner"><div class="item-accent-bar" style="background:${cfg.color}"></div><div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div><div class="item-content"><div class="item-type-label" style="color:${cfg.color}">${cfg.label}</div><div class="item-title">${title}</div><div class="item-subtitle">${sub.map(s => `<span>${s}</span>`).join('')}${chips.map(c => `<span class="item-chip">${c}</span>`).join('')}</div>${d.notas ? `<div style="font-size:12px;color:var(--text-muted);margin-top:6px;display:flex;align-items:center;gap:4px;"><i class="fa-solid fa-circle-info" style="font-size:10px;opacity:0.7"></i> ${d.notas}</div>` : ''}${d.adjunto_url ? `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);width:100%;"><div style="display:inline-block;background:#fff;color:#0f172a;border:1px solid #e2e8f0;padding:4px 10px;border-radius:18px;font-size:11.5px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.05);"><i class="fa-solid fa-paperclip" style="color:var(--text-muted);margin-right:4px"></i> ${d.adjunto_name || 'Ver adjunto'}</div></div>` : ''}</div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
   setupReorder(el, idx); return el;
 }
 function setupReorder(el, idx) {
@@ -731,6 +780,16 @@ function deleteItem(idx) {
     autoSaveProTrip();
     showToast('<i class="fa-solid fa-trash-can"></i>', 'Elemento eliminado');
   });
+}
+function duplicateItem(idx) {
+  const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
+  if (!arr[idx]) return;
+  const clone = JSON.parse(JSON.stringify(arr[idx]));
+  arr.splice(idx + 1, 0, clone);
+  unsavedChanges = true;
+  renderCanvas();
+  autoSaveProTrip();
+  showToast('<i class="fa-solid fa-copy"></i>', 'Elemento duplicado');
 }
 
 // MODAL
