@@ -24,7 +24,12 @@ function changePortadaCount(type, d) {
   document.getElementById('portadaTotal').textContent = portadaAdultos + portadaNinos;
   autoSaveProTrip();
 }
-function handlePortadaUpload(e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { portadaPhotoUrl = ev.target.result; setPortadaPhoto(ev.target.result) }; r.readAsDataURL(f) }
+function handlePortadaUpload(e) { 
+  const f = e.target.files[0]; 
+  if (!f) return; 
+  if (f.size > 5 * 1024 * 1024) { showToast('⚠️', 'La imagen no puede superar 5MB'); return; }
+  const r = new FileReader(); r.onload = ev => { portadaPhotoUrl = ev.target.result; setPortadaPhoto(ev.target.result) }; r.readAsDataURL(f) 
+}
 function setPortadaPhoto(url) {
   portadaPhotoUrl = url;
   const img = document.getElementById('portadaHeroImg');
@@ -966,7 +971,7 @@ function buildField(field, data) {
     if (data[field.k + '_url']) {
       statusText.innerHTML = `<i class="fa-solid fa-paperclip"></i> <a href="${data[field.k + '_url']}" target="_blank" style="color:#0ea5d8;text-decoration:none;">${data[field.k + '_name'] || 'Archivo subido'}</a>`;
     } else {
-      statusText.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Ningún archivo seleccionado';
+      statusText.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> PDF, Imagen o Word · <span style="font-weight:700">máx. 5 MB</span>';
     }
     infoCol.appendChild(statusText);
 
@@ -1011,6 +1016,7 @@ function buildField(field, data) {
           removeBtn.style.display = 'block';
           showToast('✅', 'Archivo adjunto');
         } else {
+          statusText.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> PDF, Imagen o Word · <span style="font-weight:700">máx. 5 MB</span>';
           showToast('⚠️', res.message || 'Error al subir');
         }
       })
@@ -1062,6 +1068,11 @@ function buildField(field, data) {
       btnGroup.appendChild(upBtn);
       btnGroup.appendChild(hiddenInp);
       fg.appendChild(btnGroup);
+
+      const limitText = document.createElement('div');
+      limitText.style = 'margin-top:5px; font-size:10px; color:var(--text-muted); text-align:right; font-style:italic;';
+      limitText.innerHTML = 'JPG, PNG o WEBP · <span style="font-weight:700">máx. 5 MB</span>';
+      fg.appendChild(limitText);
     }
 
     if (field.airportApi || field.airlineApi) {
