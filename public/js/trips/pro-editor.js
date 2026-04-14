@@ -803,7 +803,7 @@ const modalBody = document.getElementById('modalBody');
 
 function createInfoSpan(helpText, isUpgrade = false) {
   const infoSpan = document.createElement('span');
-  infoSpan.className = 'info-icon';
+  infoSpan.className = 'info-icon' + (isUpgrade ? ' info-basic' : '');
   let innerHTML = `
     <i class="fa-solid fa-circle-info"></i>
     <div class="info-popover">
@@ -812,7 +812,7 @@ function createInfoSpan(helpText, isUpgrade = false) {
   
   if (isUpgrade) {
     innerHTML += `
-      <button type="button" class="btn-upgrade-popover" onclick="if(typeof openUpgradeModal==='function')openUpgradeModal()">Mejora tu plan</button>
+      <button type="button" class="btn-upgrade-popover" onclick="window.location.href='/profile?tab=subscription'">Mejora tu plan</button>
     `;
   }
   

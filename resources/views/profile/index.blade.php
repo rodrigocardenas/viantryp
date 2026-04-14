@@ -867,6 +867,16 @@
       });
     });
 
+    // Manejo de pestaña por URL (ej: /profile?tab=subscription)
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab) {
+      const targetBtn = document.querySelector(`.nav-item[data-section="${tab}"]`);
+      if (targetBtn) {
+        setTimeout(() => targetBtn.click(), 100);
+      }
+    }
+
     // Toast helper
     function showToast(message) {
       var toast = document.getElementById('toastProfile');

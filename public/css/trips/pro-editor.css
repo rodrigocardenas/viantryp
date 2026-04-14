@@ -2715,7 +2715,16 @@ body {
 
 .btn-upgrade-popover:hover {
   background: var(--accent-hover, #16a69b);
-  transform: translateY(-1px);
+}
+
+/* Solo para Plan Básico: eliminar efectos de zoom y movimiento */
+.info-basic .info-popover {
+  transition: opacity 0.1s ease !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+.info-basic.active .info-popover {
+  transform: translateY(0) scale(1) !important;
 }
 
 .field-group-box {
