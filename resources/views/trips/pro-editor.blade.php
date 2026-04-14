@@ -141,64 +141,6 @@
       }
     }
 
-    /* Group Box for Google fields */
-    .field-group-box {
-      border: 1.5px dashed #e2e8ef;
-      border-radius: 16px;
-      padding: 16px;
-      background: #fafbfc;
-      margin: 10px 0 0px;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-
-    .field-group-box:hover {
-      border-color: var(--accent);
-      background: #fff;
-    }
-
-    /* Info icon next to labels */
-    .form-label-with-info {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .info-trigger {
-      color: #7c6fef;
-      cursor: pointer;
-      font-size: 14px;
-      transition: transform 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #edeaff;
-    }
-
-    .info-trigger:hover {
-      transform: scale(1.1);
-      background: #7c6fef;
-      color: #fff;
-    }
-
-    /* Informative Popover/Hint */
-    .plan-info-hint {
-      background: #1a2e2c;
-      color: #fff;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 12px;
-      line-height: 1.4;
-      position: absolute;
-      z-index: 10000;
-      width: 240px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      display: none;
-      pointer-events: none;
-    }
 
     .plan-info-hint::after {
       content: '';

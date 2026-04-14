@@ -249,7 +249,7 @@ const C = {
   transporte: { icon: '<i class="fa-solid fa-car"></i>', label: 'Transporte', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'tipo', l: 'Tipo', t: 'select', opts: ['Auto de alquiler', 'Taxi/Uber', 'Tren', 'Bus', 'Ferry', 'Moto'] }, { k: 'proveedor', l: 'Proveedor', t: 'text', ph: 'Hertz, Renfe...' }, { k: 'origen', l: 'Desde', t: 'text', ph: 'Aeropuerto CDG' }, { k: 'destino', l: 'Hasta', t: 'text', ph: 'Hotel Centro' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'precio', l: 'Precio', t: 'number', ph: '50' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TRL-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Confirmación...' }] },
   actividad: { icon: '<i class="fa-solid fa-bullseye"></i>', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', fields: [{ k: 'direccion', l: 'Lugar (Google Maps)', t: 'text', ph: 'Torre Eiffel, Museo del Louvre...', fw: true, hasInfo: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', group: 'google' }, { k: 'nombre', l: 'Nombre actividad', t: 'text', ph: 'Cena con vista, Tour privado...', fw: true }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '25' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
   comida: { icon: '<i class="fa-solid fa-utensils"></i>', label: 'Comida', color: '#f96b3a', bg: '#ffe8e0', fields: [{ k: 'restaurante', l: 'Restaurante', t: 'text', ph: 'Le Jules Verne', fw: true, hasInfo: true }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', group: 'google', fw: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', group: 'google' }, { k: 'tipo', l: 'Tipo', t: 'select', opts: ['Desayuno', 'Almuerzo', 'Cena', 'Brunch', 'Snack'] }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'RES-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '80' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Menú degustación...' }] },
-  tour: { icon: '<i class="fa-solid fa-map-location-dot"></i>', label: 'Tour', color: '#8b5cf6', bg: '#f5f3ff', fields: [{ k: 'nombre', l: 'Nombre del tour', t: 'text', ph: 'Tour Versalles' }, { k: 'operador', l: 'Operador', t: 'text', ph: 'Get Your Guide' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['2h', '4h', 'Medio día', 'Día completo', '2 días', '3+ días'] }, { k: 'personas', l: 'No. personas', t: 'text', ph: '2' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TOU-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '120' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Incluye entrada, guía...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
+  tour: { icon: '<i class="fa-solid fa-map-location-dot"></i>', label: 'Tour', color: '#8b5cf6', bg: '#f5f3ff', fields: [{ k: 'nombre', l: 'Nombre del tour', t: 'text', ph: 'Tour Versalles' }, { k: 'operador', l: 'Operador', t: 'text', ph: 'Get Your Guide' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['2h', '4h', 'Medio día', 'Día completo', '2 días', '3+ días'] }, { k: 'personas', l: 'No. personas', t: 'text', ph: '2' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TOU-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '120' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Incluye entrada, guía...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
   texto: { icon: '<i class="fa-solid fa-font"></i>', label: 'Caja de texto', color: '#64748b', bg: '#f1f5f9', fields: [{ k: 'contenido', l: 'Contenido', t: 'richtext', ph: 'Escribe aquí...' }, { k: 'alineacion', l: 'Alineación', t: 'select', opts: ['Izquierda', 'Centro', 'Derecha'] }] },
   titulo: { icon: '✦', label: 'Título', color: '#1a1a2e', bg: '#f0f1f7', fields: [{ k: 'texto', l: 'Texto del título', t: 'text', ph: 'Día 1 — Llegada a París' }, { k: 'subtitulo', l: 'Subtítulo (opcional)', t: 'text', ph: 'Una ciudad de luz...' }] },
   separador: { icon: '—', label: 'Separador', color: '#94a3b8', bg: '#f1f5f9', fields: [{ k: 'estilo', l: 'Estilo', t: 'select', opts: ['Línea simple', 'Línea con diamante', 'Punteado', 'Gradiente'] }, { k: 'etiqueta', l: 'Etiqueta (opcional)', t: 'text', ph: 'Mañana' }] },
@@ -801,19 +801,43 @@ function duplicateItem(idx) {
 const modalOverlay = document.getElementById('modalOverlay');
 const modalBody = document.getElementById('modalBody');
 
-function addPhotoFallback(container, type) {
-  const googleTypes = ['alojamiento', 'actividad', 'comida', 'tour'];
-  if (!googleTypes.includes(type)) return;
+function createInfoSpan(helpText) {
+  const infoSpan = document.createElement('span');
+  infoSpan.className = 'info-icon';
+  infoSpan.innerHTML = `
+    <i class="fa-solid fa-circle-info"></i>
+    <div class="info-popover">
+      <p>${helpText}</p>
+    </div>
+  `;
+  infoSpan.onclick = (e) => {
+    e.stopPropagation();
+    infoSpan.classList.toggle('active');
+  };
+  return infoSpan;
+}
 
-  const helpText = document.createElement('div');
-  helpText.style = 'margin-top:5px; margin-bottom:8px; font-size:12px; color:var(--text-muted); font-style:italic; line-height:1.4;';
-  helpText.textContent = 'Si la URL de foto está vacía, usa una imagen de Unsplash o sube la tuya.';
-  container.appendChild(helpText);
+function addPhotoFallback(container, type, showHelp = true, photoInp = null, appendToContainer = true) {
+  const googleTypes = ['alojamiento', 'actividad', 'comida', 'tour'];
+  if (!googleTypes.includes(type)) return null;
+
+  const isPremium = typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan !== 'básico';
+
+  if (showHelp) {
+    const helpText = document.createElement('div');
+    helpText.style = 'margin-top:5px; margin-bottom:8px; font-size:12px; color:var(--text-muted); font-style:italic; line-height:1.4;';
+
+    helpText.textContent = isPremium
+      ? 'Si no deseas usar la imagen predeterminada de Google Maps, puedes usar una imagen de Unsplash o subir la tuya.'
+      : 'Tu plan no incluye foto automática: completa la URL eligiendo una imagen desde Unsplash o subiendo una propia.';
+
+    container.appendChild(helpText);
+  }
 
   const btnGroup = document.createElement('div');
   btnGroup.style = 'display:flex; gap:10px; margin-bottom:20px;';
 
-  const photoInp = container.querySelector('input[data-key="photo_url"]');
+  if (!photoInp) photoInp = container.querySelector('input[data-key="photo_url"]');
 
   const uBtn = document.createElement('button');
   uBtn.className = 'btn-secondary';
@@ -834,10 +858,16 @@ function addPhotoFallback(container, type) {
 
   btnGroup.appendChild(uBtn);
   btnGroup.appendChild(upBtn);
-  container.appendChild(btnGroup);
+
+  if (appendToContainer) {
+    container.appendChild(btnGroup);
+  }
+  return btnGroup;
 }
 function openModal(type, editIdx = null) {
   if (typeof currentDay !== 'number' && currentDay !== 'portada' && currentDay !== 'cierre') return;
+
+  const isPremium = typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan !== 'básico';
 
   // Phase 36: Direct Unsplash for new images
   if (type === 'imagen' && editIdx === null) {
@@ -868,12 +898,17 @@ function openModal(type, editIdx = null) {
       const gbox = document.createElement('div');
       gbox.className = 'field-group-box';
 
-      // Info icon in the top right of the box
-      const infoSpan = document.createElement('span');
-      infoSpan.className = 'info-icon';
-      infoSpan.textContent = 'ⓘ';
-      infoSpan.title = "Si tienes un plan esencial o superior, estos campos se rellenarán automáticamente con Google Maps";
-      gbox.appendChild(infoSpan);
+      if (!isPremium) {
+        let helpText = 'Si tienes un plan esencial o superior, estos campos se rellenarán automáticamente con Google Maps.';
+        if (type === 'alojamiento') {
+          helpText = 'Si tienes un plan esencial o superior, estos campos se rellenarán automáticamente con Google Maps al escribir el nombre del hotel.';
+        } else if (type === 'actividad') {
+          helpText = 'Si tienes un plan esencial o superior, estos campos se rellenarán automáticamente con Google Maps al escribir el lugar de la actividad.';
+        } else if (type === 'comida') {
+          helpText = 'Si tienes un plan esencial o superior, estos campos se rellenarán automáticamente con Google Maps al escribir el nombre del restaurante.';
+        }
+        gbox.appendChild(createInfoSpan(helpText));
+      }
 
       modalBody.appendChild(gbox);
       currentTarget = gbox;
@@ -886,17 +921,79 @@ function openModal(type, editIdx = null) {
     }
 
     const next = fields[i + 1];
+    let fieldEl;
     if (f.t === 'textarea' || f.t === 'color-picker' || f.t === 'richtext' || f.t === 'stars' || f.fw) {
-      currentTarget.appendChild(buildField(f, existData));
+      if (type === 'tour' && f.k === 'photo_url') {
+        fieldEl = buildField(f, existData);
+        const label = fieldEl.querySelector('.form-label');
+        const photoInp = fieldEl.querySelector('input');
+        const btns = addPhotoFallback(fieldEl, type, false, photoInp, false);
+        if (label && btns) {
+          label.parentNode.insertBefore(btns, label.nextSibling);
+        }
+      } else {
+        fieldEl = buildField(f, existData);
+      }
+
+      // Premium info icons
+      if (isPremium && f.hasInfo) {
+        const lbl = fieldEl.querySelector('.form-label');
+        if (lbl) {
+          let pText = 'Tu plan añade automáticamente datos de Google Maps al recuadro inferior al escribir ';
+          if (type === 'alojamiento') pText += 'el nombre del hotel.';
+          else if (type === 'actividad') pText += 'el lugar de la actividad.';
+          else if (type === 'comida') pText += 'el nombre del restaurante.';
+          else pText += 'en este campo.';
+          lbl.appendChild(createInfoSpan(pText));
+        }
+      }
+
+      currentTarget.appendChild(fieldEl);
     } else if (next && !next.fw && next.t !== 'textarea' && next.t !== 'color-picker' && next.t !== 'richtext' && next.t !== 'stars' && next.group === f.group) {
       const row = document.createElement('div');
       row.className = 'form-row';
-      row.appendChild(buildField(f, existData));
-      row.appendChild(buildField(next, existData));
+
+      const f1 = buildField(f, existData);
+      if (isPremium && f.hasInfo) {
+        const lbl = f1.querySelector('.form-label');
+        if (lbl) {
+          let pText = 'Tu plan añade automáticamente datos de Google Maps al recuadro inferior al escribir ';
+          if (type === 'alojamiento') pText += 'el nombre del hotel.';
+          else if (type === 'actividad') pText += 'el lugar de la actividad.';
+          else if (type === 'comida') pText += 'el nombre del restaurante.';
+          lbl.appendChild(createInfoSpan(pText));
+        }
+      }
+
+      const f2 = buildField(next, existData);
+      if (isPremium && next.hasInfo) {
+        const lbl = f2.querySelector('.form-label');
+        if (lbl) {
+          let pText = 'Tu plan añade automáticamente datos de Google Maps al recuadro inferior al escribir ';
+          if (type === 'alojamiento') pText += 'el nombre del hotel.';
+          else if (type === 'actividad') pText += 'el lugar de la actividad.';
+          else if (type === 'comida') pText += 'el nombre del restaurante.';
+          lbl.appendChild(createInfoSpan(pText));
+        }
+      }
+
+      row.appendChild(f1);
+      row.appendChild(f2);
       currentTarget.appendChild(row);
       i++;
     } else {
-      currentTarget.appendChild(buildField(f, existData));
+      fieldEl = buildField(f, existData);
+      if (isPremium && f.hasInfo) {
+        const lbl = fieldEl.querySelector('.form-label');
+        if (lbl) {
+          let pText = 'Tu plan añade automáticamente datos de Google Maps al recuadro inferior al escribir ';
+          if (type === 'alojamiento') pText += 'el nombre del hotel.';
+          else if (type === 'actividad') pText += 'el lugar de la actividad.';
+          else if (type === 'comida') pText += 'el nombre del restaurante.';
+          lbl.appendChild(createInfoSpan(pText));
+        }
+      }
+      currentTarget.appendChild(fieldEl);
     }
   }
 
@@ -906,9 +1003,6 @@ function openModal(type, editIdx = null) {
   }
 
   modalOverlay.classList.add('open');
-
-  // Mobile: Sidebar is persistent in side-by-side mode, no need to hide it anymore.
-
 
   setTimeout(() => {
     const f = modalBody.querySelector('input,textarea,select'); if (f) f.focus();
