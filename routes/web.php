@@ -98,6 +98,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/avatar/delete', [\App\Http\Controllers\ProfileController::class, 'deleteAvatar'])->name('profile.delete.avatar');
     Route::post('/profile/logo', [\App\Http\Controllers\ProfileController::class, 'uploadLogo'])->name('profile.upload.logo');
     Route::post('/profile/plan', [\App\Http\Controllers\ProfileController::class, 'updatePlan'])->name('profile.update.plan');
+    Route::post('/profile/plan/verify-code', [\App\Http\Controllers\ProfileController::class, 'verifyPlanCode'])->name('profile.plan.verify-code');
+    Route::post('/profile/plan/request', [\App\Http\Controllers\ProfileController::class, 'requestPlanUpgrade'])->name('profile.plan.request');
 
     Route::get('/notifications', function() {
         return response()->json([

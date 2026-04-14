@@ -222,4 +222,79 @@ class ProfileController extends Controller
             'plan' => $newPlan
         ]);
     }
+
+    public function verifyPlanCode(Request $request)
+    {
+        $request->validate([
+            'plan' => 'required|string|in:básico,esencial,avanzado,colaborativo,corporativo',
+            'code' => 'required|string',
+        ]);
+
+        // Map plan keys to their .env variable
+        $planEnvKeys = [
+            'esencial'     => 'PLAN_CODE_ESENCIAL',
+            'avanzado'     => 'PLAN_CODE_AVANZADO',
+            'colaborativo' => 'PLAN_CODE_COLABORATIVO',
+            'corporativo'  => 'PLAN_CODE_CORPORATIVO',
+        ];
+
+        $plan = strtolower($request->plan);
+        $envKey = $planEnvKeys[$plan] ?? null;
+
+        if (!$envKey) {
+            // Plan 'básico' no requiere código (es gratuito / downgrade)
+            return $this->updatePlan($request);
+        }
+
+        $validCodes = array_filter(array_map('trim', explode(',', env($envKey, ''))));
+        $submittedCode = strtoupper(trim($request->code));
+
+        if (empty($validCodes) || !in_array($submittedCode, array_map('strtoupper', $validCodes))) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Código inválido para el plan ' . ucfirst($plan) . '. Verifica el código o solicita acceso a nuestro equipo.'
+            ], 422);
+        }
+
+        // Code is valid — proceed to update the plan
+        return $this->updatePlan($request);
+    }
+
+    public function requestPlanUpgrade(Request $request)
+    {
+        $request->validate([
+            'plan'          => 'required|string|in:básico,esencial,avanzado,colaborativo,corporativo',
+            'contact_name'  => 'required|string|max:255',
+            'contact_email' => 'required|email|max:255',
+            'contact_phone' => 'nullable|string|max:30',
+        ]);
+
+        $user = auth()->user();
+        $planNames = [
+            'básico'       => 'Básico',
+            'esencial'     => 'Esencial',
+            'avanzado'     => 'Avanzado',
+            'colaborativo' => 'Colaborativo',
+            'corporativo'  => 'Corporativo',
+        ];
+
+        $to = env('PLAN_REQUEST_EMAIL', env('MAIL_FROM_ADDRESS', 'hola@viantryp.com'));
+
+        \Illuminate\Support\Facades\Mail::send(
+            'emails.plan-request',
+            [
+                'requestedPlan' => $planNames[$request->plan] ?? $request->plan,
+                'contactName'   => $request->contact_name,
+                'contactEmail'  => $request->contact_email,
+                'contactPhone'  => $request->contact_phone,
+                'userEmail'     => $user->email,
+            ],
+            function ($message) use ($to, $request, $planNames) {
+                $message->to($to)
+                        ->subject('🚀 Solicitud de Plan ' . ($planNames[$request->plan] ?? $request->plan) . ' — Viantryp');
+            }
+        );
+
+        return response()->json(['success' => true, 'message' => '¡Solicitud enviada! Nuestro equipo se comunicará contigo pronto.']);
+    }
 }

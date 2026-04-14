@@ -291,6 +291,93 @@
     </div>
 </div>
 
+<!-- ============================================================ -->
+<!-- PLAN GATE MODAL -->
+<!-- ============================================================ -->
+<div id="planGateModal" style="display:none; position:fixed; inset:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:10001; align-items:center; justify-content:center; font-family:'Barlow',sans-serif;">
+    <div style="background:#fff; border-radius:24px; width:100%; max-width:460px; margin:auto; box-shadow:0 40px 100px -20px rgba(0,0,0,0.4); animation:modalPop 0.35s cubic-bezier(0.175,0.885,0.32,1.1); position:relative; overflow:hidden;">
+
+        <!-- Close btn -->
+        <button onclick="closePlanGateModal()" style="position:absolute;top:12px;right:12px;background:#f1f5f9;border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#64748b;cursor:pointer;z-index:10;">×</button>
+
+        <!-- STEP 1: Code Entry -->
+        <div id="planGateStep1" style="padding:32px;">
+            <div style="width:52px;height:52px;background:#f0f9f8;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+                <i class="fas fa-key" style="font-size:22px;color:#1a7a8a;"></i>
+            </div>
+            <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Cambio de Plan</div>
+            <h2 style="margin:0 0 8px;font-size:22px;font-weight:900;color:#0f172a;">Ingresa tu código de acceso</h2>
+            <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.6;">Para cambiar al plan <strong id="gateTargetPlanName" style="color:#1a7a8a;"></strong>, ingresa el código que te proporcionó nuestro equipo.</p>
+
+            <div style="margin-bottom:12px;">
+                <input
+                    type="text"
+                    id="planAccessCodeInput"
+                    placeholder="Ej: VIA-2024-XYZ"
+                    autocomplete="off"
+                    style="width:100%;box-sizing:border-box;background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:14px 16px;font-size:16px;font-weight:700;letter-spacing:3px;text-transform:uppercase;font-family:'Barlow',sans-serif;color:#0f172a;outline:none;transition:border-color 0.2s;"
+                    oninput="this.value=this.value.toUpperCase()"
+                />
+                <div id="planCodeError" style="display:none;margin-top:8px;font-size:13px;color:#ef4444;font-weight:600;"></div>
+            </div>
+
+            <button onclick="submitPlanCode()" id="planCodeSubmitBtn" style="width:100%;background:#1a7a8a;color:white;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;transition:0.2s;margin-bottom:16px;">
+                <span id="planCodeSubmitLabel">Verificar código →</span>
+            </button>
+
+            <div style="text-align:center;">
+                <button onclick="switchToPlanRequest()" style="background:none;border:none;color:#1a7a8a;font-size:13px;font-weight:700;cursor:pointer;text-decoration:underline;font-family:'Barlow',sans-serif;">¿No tienes código? Solicitar acceso →</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: Request Form -->
+        <div id="planGateStep2" style="display:none;padding:32px;">
+            <div style="width:52px;height:52px;background:#fffbeb;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+                <i class="fas fa-envelope" style="font-size:22px;color:#f59e0b;"></i>
+            </div>
+            <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Solicitud de Plan</div>
+            <h2 style="margin:0 0 8px;font-size:22px;font-weight:900;color:#0f172a;">Solicitar plan <span id="gateTargetPlanName2" style="color:#1a7a8a;"></span></h2>
+            <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.6;">Déjanos tus datos y nuestro equipo se pondrá en contacto contigo para activar tu plan.</p>
+
+            <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+                <div>
+                    <label style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Nombre completo *</label>
+                    <input type="text" id="reqName" placeholder="Tu nombre" style="width:100%;box-sizing:border-box;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Barlow',sans-serif;color:#0f172a;outline:none;transition:border-color 0.2s;">
+                </div>
+                <div>
+                    <label style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Teléfono / WhatsApp</label>
+                    <input type="tel" id="reqPhone" placeholder="+57 300 000 0000" style="width:100%;box-sizing:border-box;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Barlow',sans-serif;color:#0f172a;outline:none;transition:border-color 0.2s;">
+                </div>
+                <div>
+                    <label style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Correo de contacto *</label>
+                    <input type="email" id="reqEmail" placeholder="tu@correo.com" style="width:100%;box-sizing:border-box;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Barlow',sans-serif;color:#0f172a;outline:none;transition:border-color 0.2s;">
+                </div>
+            </div>
+
+            <div id="planReqError" style="display:none;margin-bottom:12px;font-size:13px;color:#ef4444;font-weight:600;"></div>
+
+            <button onclick="submitPlanRequest()" id="planReqSubmitBtn" style="width:100%;background:#f59e0b;color:white;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;transition:0.2s;margin-bottom:16px;">
+                <span id="planReqSubmitLabel">Enviar solicitud →</span>
+            </button>
+
+            <div style="text-align:center;">
+                <button onclick="switchToCodeStep()" style="background:none;border:none;color:#64748b;font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;">← Tengo un código</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: Success -->
+        <div id="planGateStep3" style="display:none;padding:40px 32px;text-align:center;">
+            <div style="width:64px;height:64px;background:#ecfdf5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+                <i class="fas fa-check" style="font-size:26px;color:#10b981;"></i>
+            </div>
+            <h2 style="margin:0 0 10px;font-size:22px;font-weight:900;color:#0f172a;">¡Solicitud enviada!</h2>
+            <p style="margin:0 0 28px;font-size:14px;color:#64748b;line-height:1.6;">Nuestro equipo ha recibido tu solicitud y se pondrá en contacto contigo a la brevedad para activar tu plan.</p>
+            <button onclick="closePlanGateModal()" style="background:#1a7a8a;color:white;border:none;border-radius:12px;padding:14px 32px;font-size:14px;font-weight:700;cursor:pointer;">Entendido</button>
+        </div>
+
+    </div>
+</div>
+
 <style>
     .upgrade-premium-modal {
         position: fixed;
@@ -991,32 +1078,160 @@
         });
     })();
 
-    async function updateUserPlan(planKey) {
+    // ─── Plan Gate Logic ───────────────────────────────────────────────────────
+    let _pendingPlanKey = null;
+
+    function updateUserPlan(planKey) {
         const target = planLimits[planKey];
         if (!target) return;
-        
-        if (currentUsage.trips > target.trips) { 
-            alert(`No puedes bajar al plan ${target.name} porque tienes ${currentUsage.trips} itinerarios y el plan solo permite ${target.trips}.`); 
-            return; 
+
+        // Corporativo → redireccionar a Contáctanos directamente
+        if (planKey === 'corporativo') {
+            window.location.href = '{{ route("contact") }}';
+            return;
         }
 
-        if (currentUsage.editors > target.editors) { 
-            alert(`No puedes bajar al plan ${target.name} porque has invitado a ${currentUsage.editors} editores y el plan solo permite ${target.editors}. Por favor, elimina colaboradores antes de bajar de plan.`); 
-            return; 
+        // Usage limit checks (downgrade guard)
+        if (currentUsage.trips > target.trips) {
+            alert(`No puedes bajar al plan ${target.name} porque tienes ${currentUsage.trips} itinerarios y el plan solo permite ${target.trips}.`);
+            return;
+        }
+        if (currentUsage.editors > target.editors) {
+            alert(`No puedes bajar al plan ${target.name} porque has invitado a ${currentUsage.editors} editores y el plan solo permite ${target.editors}. Por favor, elimina colaboradores antes de bajar de plan.`);
+            return;
         }
 
-        const overlay = document.getElementById('modalLoadingOverlay');
-        overlay.style.display = 'flex';
+        // Open the gate modal instead of directly changing the plan
+        _pendingPlanKey = planKey;
+        document.getElementById('gateTargetPlanName').textContent = target.name;
+        document.getElementById('gateTargetPlanName2').textContent = target.name;
+
+        // Reset state
+        document.getElementById('planAccessCodeInput').value = '';
+        document.getElementById('planCodeError').style.display = 'none';
+        document.getElementById('planReqError').style.display = 'none';
+        document.getElementById('reqName').value = '';
+        document.getElementById('reqPhone').value = '';
+        document.getElementById('reqEmail').value = '';
+
+        // Pre-fill contact email from known user email
+        const userEmailEl = document.querySelector('.user-email');
+        if (userEmailEl) document.getElementById('reqEmail').value = userEmailEl.textContent.trim();
+
+        showPlanGateStep(1);
+        document.getElementById('planGateModal').style.display = 'flex';
+    }
+
+    function closePlanGateModal() {
+        document.getElementById('planGateModal').style.display = 'none';
+        _pendingPlanKey = null;
+    }
+
+    function showPlanGateStep(n) {
+        [1,2,3].forEach(i => {
+            const el = document.getElementById('planGateStep' + i);
+            if (el) el.style.display = i === n ? 'block' : 'none';
+        });
+    }
+
+    function switchToPlanRequest() { showPlanGateStep(2); }
+    function switchToCodeStep()    { showPlanGateStep(1); }
+
+    async function submitPlanCode() {
+        const code = document.getElementById('planAccessCodeInput').value.trim();
+        if (!code) {
+            showGateCodeError('Por favor ingresa el código de acceso.');
+            return;
+        }
+        const btn = document.getElementById('planCodeSubmitBtn');
+        const label = document.getElementById('planCodeSubmitLabel');
+        btn.disabled = true;
+        label.textContent = 'Verificando...';
+
         try {
-            const response = await fetch('{{ route("profile.update.plan") }}', {
+            const res = await fetch('{{ route("profile.plan.verify-code") }}', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
-                body: JSON.stringify({ plan: planKey })
+                body: JSON.stringify({ plan: _pendingPlanKey, code })
             });
-            const result = await response.json();
-            if (result.success) { window.location.reload(); } else { alert('Error: ' + result.message); overlay.style.display = 'none'; }
-        } catch (error) { overlay.style.display = 'none'; }
+            const data = await res.json();
+            if (data.success) {
+                window.location.reload();
+            } else {
+                showGateCodeError(data.message || 'Código inválido.');
+            }
+        } catch(e) {
+            showGateCodeError('Error de conexión. Intenta nuevamente.');
+        } finally {
+            btn.disabled = false;
+            label.textContent = 'Verificar código →';
+        }
     }
+
+    function showGateCodeError(msg) {
+        const el = document.getElementById('planCodeError');
+        el.textContent = msg;
+        el.style.display = 'block';
+    }
+
+    async function submitPlanRequest() {
+        const name  = document.getElementById('reqName').value.trim();
+        const email = document.getElementById('reqEmail').value.trim();
+        const phone = document.getElementById('reqPhone').value.trim();
+
+        if (!name || !email) {
+            const errEl = document.getElementById('planReqError');
+            errEl.textContent = 'Nombre y correo son obligatorios.';
+            errEl.style.display = 'block';
+            return;
+        }
+
+        const btn = document.getElementById('planReqSubmitBtn');
+        const label = document.getElementById('planReqSubmitLabel');
+        btn.disabled = true;
+        label.textContent = 'Enviando...';
+        document.getElementById('planReqError').style.display = 'none';
+
+        try {
+            const res = await fetch('{{ route("profile.plan.request") }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
+                body: JSON.stringify({ plan: _pendingPlanKey, contact_name: name, contact_email: email, contact_phone: phone })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showPlanGateStep(3);
+            } else {
+                const errEl = document.getElementById('planReqError');
+                errEl.textContent = data.message || 'Error al enviar. Intenta de nuevo.';
+                errEl.style.display = 'block';
+            }
+        } catch(e) {
+            const errEl = document.getElementById('planReqError');
+            errEl.textContent = 'Error de conexión. Intenta nuevamente.';
+            errEl.style.display = 'block';
+        } finally {
+            btn.disabled = false;
+            label.textContent = 'Enviar solicitud →';
+        }
+    }
+
+    // Close gate modal on backdrop click
+    document.addEventListener('DOMContentLoaded', function() {
+        const gateModal = document.getElementById('planGateModal');
+        if (gateModal) {
+            gateModal.addEventListener('click', function(e) {
+                if (e.target === gateModal) closePlanGateModal();
+            });
+        }
+        // Enter key in code input
+        const codeInput = document.getElementById('planAccessCodeInput');
+        if (codeInput) {
+            codeInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') submitPlanCode();
+            });
+        }
+    });
 
     document.addEventListener('DOMContentLoaded', function () {
         const modal = document.getElementById('upgradePlanModal');
