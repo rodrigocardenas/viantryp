@@ -1741,7 +1741,6 @@
       display: flex;
       flex-direction: column;
       gap: 15px;
-      flex-grow: 1;
       margin-top: 10px;
     }
 
@@ -1927,42 +1926,48 @@
                   <div class="vt-grid">
                     <div class="vt-card" draggable="true" data-type="Vuelo">
                       <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span></div>
+                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                      </div>
                       <div class="vt-card-icon icon-flight">✈️</div>
                       <div class="vt-card-name">Vuelo</div>
                       <div class="vt-card-sub">Agregar vuelo</div>
                     </div>
                     <div class="vt-card" draggable="true" data-type="Alojamiento">
                       <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span></div>
+                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                      </div>
                       <div class="vt-card-icon icon-hotel">🏨</div>
                       <div class="vt-card-name">Alojamiento</div>
                       <div class="vt-card-sub">Hotel u hospedaje</div>
                     </div>
                     <div class="vt-card" draggable="true" data-type="Traslado">
                       <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span></div>
+                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                      </div>
                       <div class="vt-card-icon icon-car">🚗</div>
                       <div class="vt-card-name">Traslado</div>
                       <div class="vt-card-sub">Bus, tren u otro</div>
                     </div>
                     <div class="vt-card" draggable="true" data-type="Actividad">
                       <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span></div>
+                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                      </div>
                       <div class="vt-card-icon icon-act">🎯</div>
                       <div class="vt-card-name">Actividad</div>
                       <div class="vt-card-sub">Tour o experiencia</div>
                     </div>
                     <div class="vt-card" draggable="true" data-type="Comida">
                       <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span></div>
+                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                      </div>
                       <div class="vt-card-icon icon-food">🍽️</div>
                       <div class="vt-card-name">Comida</div>
                       <div class="vt-card-sub">Restaurante y más</div>
                     </div>
                     <div class="vt-card" draggable="true" data-type="Tour">
                       <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span></div>
+                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                      </div>
                       <div class="vt-card-icon icon-tour">🗺️</div>
                       <div class="vt-card-name">Tour</div>
                       <div class="vt-card-sub">Guías y grupos</div>
@@ -1972,42 +1977,48 @@
                   <div class="vt-grid">
                     <div class="vt-card" draggable="true" data-type="Texto">
                       <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span></div>
+                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                      </div>
                       <div class="vt-card-icon icon-txt">Aa</div>
                       <div class="vt-card-name">Texto</div>
                       <div class="vt-card-sub">Caja de texto</div>
                     </div>
                     <div class="vt-card" draggable="true" data-type="Título">
                       <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span></div>
+                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                      </div>
                       <div class="vt-card-icon icon-title">T</div>
                       <div class="vt-card-name">Título</div>
                       <div class="vt-card-sub">Encabezado</div>
                     </div>
                     <div class="vt-card" draggable="true" data-type="Separador">
                       <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span></div>
+                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                      </div>
                       <div class="vt-card-icon icon-sep" style="font-size:7px">—✦—</div>
                       <div class="vt-card-name">Separador</div>
                       <div class="vt-card-sub">División</div>
                     </div>
                     <div class="vt-card" draggable="true" data-type="Caja">
                       <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span></div>
+                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                      </div>
                       <div class="vt-card-icon icon-box">🎨</div>
                       <div class="vt-card-name">Caja</div>
                       <div class="vt-card-sub">Notas fondo</div>
                     </div>
                     <div class="vt-card" draggable="true" data-type="Imagen">
                       <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span></div>
+                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                      </div>
                       <div class="vt-card-icon icon-img">🖼️</div>
                       <div class="vt-card-name">Imagen</div>
                       <div class="vt-card-sub">Subir foto</div>
                     </div>
                     <div class="vt-card" draggable="true" data-type="Gif">
                       <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span></div>
+                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                      </div>
                       <div class="vt-card-icon icon-gif">🎬</div>
                       <div class="vt-card-name">Gif</div>
                       <div class="vt-card-sub">Animación</div>
@@ -4074,17 +4085,20 @@
             <div style="display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin-bottom: 1.5rem;">
               <div
                 style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9);">
-                <i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Dominio personalizado</div>
+                <i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Dominio personalizado
+              </div>
               <div
                 style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9);">
-                <i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Soporte dedicado y SLA</div>
+                <i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Soporte dedicado y SLA
+              </div>
               <div
                 style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9);">
                 <i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Integraciones API avanzadas
               </div>
               <div
                 style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9);">
-                <i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Onboarding dedicado</div>
+                <i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Onboarding dedicado
+              </div>
             </div>
           </div>
 
@@ -4410,10 +4424,11 @@
     </ul>
 
     <div class="mobile-auth"
-      style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--mid-gray); display: flex; flex-direction: column; gap: 10px;">
+      style="margin-top: 300px; padding-top: 20px; border-top: 1px solid var(--mid-gray); display: flex; flex-direction: column; gap: 10px;">
       @auth
         <div style="font-size:12px; font-weight:600; color:var(--text-soft); text-align:center;">Hola,
-          {{ auth()->user()->name }}</div>
+          {{ auth()->user()->name }}
+        </div>
         <a href="{{ route('trips.index') }}" class="nav-cta"
           style="width: 100%; justify-content: center; text-align: center; padding: 10px;">Mis viajes</a>
         <form method="POST" action="{{ route('logout') }}" style="margin: 0; width: 100%;">

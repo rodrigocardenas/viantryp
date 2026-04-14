@@ -174,7 +174,9 @@
       font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.1;
       color: #000000; letter-spacing: -0.5px; margin-bottom: 8px; text-transform: uppercase;
     }
-    .hero-sub { font-size: 15px; font-weight: 400; color: var(--gray); margin-bottom: 24px; }
+    .hero-sub { font-size: 15px; font-weight: 400; color: var(--gray); margin-bottom: 0; }
+    .hero-header-mobile { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 10px; }
+    .btn-mobile-only { display: none !important; }
 
     /* STAT CHIPS */
     .stat-chips { display: flex; gap: 8px; padding-bottom: 0; }
@@ -448,6 +450,8 @@
         .toolbar { flex-direction: column; align-items: stretch; }
         .sbox { max-width: 100%; }
         .toolbar .btn-create { display: none !important; }
+        .btn-mobile-only { display: flex !important; margin-left: auto; }
+        .hero-header-mobile { flex-wrap: wrap; }
 
         .tbl-wrap { background: transparent; border: none; box-shadow: none; border-radius: 0; }
         table, thead, tbody, th, td, tr { display: block; }
@@ -667,7 +671,13 @@
         Plan {{ ucfirst(auth()->user()->plan) }}
     </div>
     <h1 class="hero-title">Panel de Control</h1>
-    <p class="hero-sub">Diseña tus itinerarios y gestiona tus viajes de forma profesional.</p>
+    <div class="hero-header-mobile">
+        <p class="hero-sub">Diseña tus itinerarios y gestiona tus viajes de forma profesional.</p>
+        <button onclick="showCreateTripModal()" class="btn-create btn-mobile-only">
+          <i class="fas fa-plus"></i>
+          <span>Crear viaje</span>
+        </button>
+    </div>
 
     <div class="segmented-control-container">
         <div class="segmented-control">

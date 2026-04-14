@@ -74,9 +74,9 @@
             'accent' => '#0e5a6a'
         ],
         'corporativo' => [
-            'name' => 'Corp.',
-            'price_monthly' => 'Ventas',
-            'price_annual' => 'Ventas',
+            'name' => 'Corporativo',
+            'price_monthly' => 'Hablar con Ventas',
+            'price_annual' => 'Hablar con Ventas',
             'is_custom' => true,
             'limit_trips' => 1000000,
             'limit_editors' => 1000000,
@@ -208,8 +208,8 @@
                                 @if($isBlocked)
                                 <div class="p-blocked-badge">LÍMITE EXCEDIDO</div> @endif
                                 <div class="p-name">{{ $data['name'] }}</div>
-                                <div class="p-price">
-                                    <span class="currency">$</span><span class="p-price-val" data-monthly="{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}" data-annual="{{ is_numeric($data['price_annual']) ? number_format($data['price_annual'], 2, '.', '') : $data['price_annual'] }}">{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}</span>@if(!$data['is_custom'])<small>/mes</small>@endif
+                                <div class="p-price" style="{{ !is_numeric($data['price_monthly']) ? 'font-size: 16px;' : '' }}">
+                                    @if(is_numeric($data['price_monthly']))<span class="currency">$</span>@endif<span class="p-price-val" data-monthly="{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}" data-annual="{{ is_numeric($data['price_annual']) ? number_format($data['price_annual'], 2, '.', '') : $data['price_annual'] }}">{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}</span>@if(!$data['is_custom'])<small>/mes</small>@endif
                                 </div>
                                 @if(isset($data['savings']) && $data['savings'] > 0)
                                     <div class="plan-savings-hint">Ahorras ${{ $data['savings'] }} al año</div>
@@ -241,8 +241,8 @@
                             @if(isset($nextData['popular']))
                             <div class="popular-badge">MÁS POPULAR</div> @endif
                         </div>
-                        <div class="ns-price">
-                            <span class="currency">$</span><span class="amount" data-monthly="{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}" data-annual="{{ is_numeric($nextData['price_annual']) ? number_format($nextData['price_annual'], 2, '.', '') : $nextData['price_annual'] }}">{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}</span>
+                        <div class="ns-price" style="{{ !is_numeric($nextData['price_monthly']) ? 'font-size: 18px;' : '' }}">
+                            @if(is_numeric($nextData['price_monthly']))<span class="currency">$</span>@endif<span class="amount" data-monthly="{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}" data-annual="{{ is_numeric($nextData['price_annual']) ? number_format($nextData['price_annual'], 2, '.', '') : $nextData['price_annual'] }}">{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}</span>
                             @if(!$nextData['is_custom']) <span class="period">/mes</span> @endif
                             @if(isset($nextData['savings']) && $nextData['savings'] > 0)
                                 <div class="plan-savings-hint" style="color: white; opacity: 0.9;">Ahorras ${{ $nextData['savings'] }} al año</div>
@@ -839,13 +839,61 @@
         }
     }
 
-    @media (max-width: 640px) {
-        .p-grid-container {
-            grid-template-columns: 1fr 1fr;
+    @media (max-width: 768px) {
+        .upgrade-premium-modal .modal-content {
+            width: 95%;
+            margin: 10px auto;
+            max-height: 95vh;
+            overflow-y: auto;
         }
 
         .modal-wide {
             max-width: 100%;
+        }
+
+        .p-grid-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 16px;
+            padding: 10px 10px 30px;
+            margin: 0 -5px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .p-grid-container::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .p-card {
+            flex-shrink: 0;
+            width: 270px;
+            scroll-snap-align: center;
+        }
+
+        .usage-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .modal-user-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .benefits-list {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .p-card {
+            width: 82%;
+        }
+        
+        .modal-body {
+            padding: 20px 15px;
         }
     }
 </style>
