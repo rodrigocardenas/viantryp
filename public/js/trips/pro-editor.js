@@ -801,15 +801,24 @@ function duplicateItem(idx) {
 const modalOverlay = document.getElementById('modalOverlay');
 const modalBody = document.getElementById('modalBody');
 
-function createInfoSpan(helpText) {
+function createInfoSpan(helpText, isUpgrade = false) {
   const infoSpan = document.createElement('span');
   infoSpan.className = 'info-icon';
-  infoSpan.innerHTML = `
+  let innerHTML = `
     <i class="fa-solid fa-circle-info"></i>
     <div class="info-popover">
       <p>${helpText}</p>
-    </div>
   `;
+  
+  if (isUpgrade) {
+    innerHTML += `
+      <button type="button" class="btn-upgrade-popover" onclick="if(typeof openUpgradeModal==='function')openUpgradeModal()">Mejora tu plan</button>
+    `;
+  }
+  
+  innerHTML += `</div>`;
+  infoSpan.innerHTML = innerHTML;
+  
   infoSpan.onclick = (e) => {
     e.stopPropagation();
     infoSpan.classList.toggle('active');
@@ -899,15 +908,15 @@ function openModal(type, editIdx = null) {
       gbox.className = 'field-group-box';
 
       if (!isPremium) {
-        let helpText = 'Si tienes un plan esencial o superior, estos campos se rellenarán automáticamente con Google Maps.';
+        let helpText = 'Si tienes un <strong>plan esencial o superior</strong>, estos campos se rellenarán automáticamente con Google Maps.';
         if (type === 'alojamiento') {
-          helpText = 'Si tienes un plan esencial o superior, estos campos se rellenarán automáticamente con Google Maps al escribir el nombre del hotel.';
+          helpText = 'Si tienes un <strong>plan esencial o superior</strong>, estos campos se rellenarán automáticamente con Google Maps al escribir el nombre del hotel.';
         } else if (type === 'actividad') {
-          helpText = 'Si tienes un plan esencial o superior, estos campos se rellenarán automáticamente con Google Maps al escribir el lugar de la actividad.';
+          helpText = 'Si tienes un <strong>plan esencial o superior</strong>, estos campos se rellenarán automáticamente con Google Maps al escribir el lugar de la actividad.';
         } else if (type === 'comida') {
-          helpText = 'Si tienes un plan esencial o superior, estos campos se rellenarán automáticamente con Google Maps al escribir el nombre del restaurante.';
+          helpText = 'Si tienes un <strong>plan esencial o superior</strong>, estos campos se rellenarán automáticamente con Google Maps al escribir el nombre del restaurante.';
         }
-        gbox.appendChild(createInfoSpan(helpText));
+        gbox.appendChild(createInfoSpan(helpText, true));
       }
 
       modalBody.appendChild(gbox);
