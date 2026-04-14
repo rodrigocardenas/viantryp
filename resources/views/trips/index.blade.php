@@ -438,11 +438,11 @@
     .bar-inner { width: 4px; height: 100%; border-radius: 2px; }
 
     @media (max-width: 768px) {
-        .topbar { padding: 0 15px; }
+        .topbar { padding: 0 10px; }
         .uname { display: none; }
         .btn-out { font-size: 11px; padding: 6px 12px; gap: 4px; }
         .btn-out svg { width: 12px; height: 12px; }
-        .topbar-right { flex-direction: row-reverse; gap: 12px; }
+        .topbar-right { flex-direction: row-reverse; gap: 2px; }
         .btn-help { display: none !important; }
         .ubadge { padding: 0; border: none; margin: 0; }
 
