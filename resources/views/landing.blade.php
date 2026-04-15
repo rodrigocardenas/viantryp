@@ -4013,7 +4013,7 @@
             <li>Google Places Incluido</li>
             <li>Enlace para compartir viaje</li>
           </ul>
-          <a href="{{ route('register') }}" class="plan-btn">Elegir Esencial</a>
+          <a href="{{ route('plans.redirect') }}" class="plan-btn">Elegir Esencial</a>
         </div>
 
         <!-- Avanzado -->
@@ -4037,7 +4037,7 @@
             <li>Plantillas avanzadas</li>
             <li>Personalización de marca</li>
           </ul>
-          <a href="{{ route('register') }}" class="plan-btn primary">Elegir Avanzado</a>
+          <a href="{{ route('plans.redirect') }}" class="plan-btn primary">Elegir Avanzado</a>
           <div class="plan-trial-note">14 días de prueba gratuita</div>
         </div>
 
@@ -4062,7 +4062,7 @@
             <li>Gestión de roles y permisos</li>
             <li>Integraciones API básicas</li>
           </ul>
-          <a href="{{ route('register') }}" class="plan-btn">Elegir Colaborativo</a>
+          <a href="{{ route('plans.redirect') }}" class="plan-btn">Elegir Colaborativo</a>
         </div>
       </div>
 

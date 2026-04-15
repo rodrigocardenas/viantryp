@@ -1164,6 +1164,19 @@
         });
     }
 
+    // Auto-open upgrade modal if ?upgrade=true
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('upgrade') === 'true') {
+        const upgradeNavBtn = document.querySelector('[data-section="subscription"]');
+        if (upgradeNavBtn) upgradeNavBtn.click();
+        
+        setTimeout(() => {
+            if (typeof openUpgradeModal === 'function') {
+                openUpgradeModal();
+            }
+        }, 500);
+    }
+
     // Auto-start tutorial
     setTimeout(() => {
         if (typeof initProfileTutorial === 'function') {

@@ -48,6 +48,11 @@ Route::get('/rgpd', fn() => view('pages.gdpr'))->name('gdpr');
 Route::get('/seguridad', fn() => view('pages.security'))->name('security');
 Route::get('/api/places/photo', [GooglePlacesController::class, 'getPlacePhoto'])->name('places.photo');
 
+// Planes redirect from landing page
+Route::middleware('auth')->get('/planes-redirect', function () {
+    return redirect()->route('profile.index', ['upgrade' => 'true']);
+})->name('plans.redirect');
+
 // Protected routes (require authentication)
 Route::middleware('auth')->group(function () {
     // Trip routes
