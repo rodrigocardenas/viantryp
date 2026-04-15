@@ -132,7 +132,7 @@
                 <div class="user-info">
                     <div class="avatar user-avatar">
                         @if($user->avatar)
-                            <img src="{{ asset('storage/' . $user->avatar) }}" alt="">
+                            <img src="{{ str_starts_with($user->avatar, 'http') ? $user->avatar : asset('storage/' . $user->avatar) }}" alt="">
                         @else
                             {{ $user->display_initials }}
                         @endif
