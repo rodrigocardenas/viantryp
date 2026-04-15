@@ -1165,8 +1165,8 @@
     }
 
     // Auto-open upgrade modal if ?upgrade=true
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('upgrade') === 'true') {
+    const upgradeUrlParams = new URLSearchParams(window.location.search);
+    if (upgradeUrlParams.get('upgrade') === 'true') {
         const upgradeNavBtn = document.querySelector('[data-section="subscription"]');
         if (upgradeNavBtn) upgradeNavBtn.click();
         
