@@ -528,7 +528,11 @@
           <div class="avatar-delete-btn" id="avatarDeleteBtn" title="Eliminar foto" style="{{ $user->avatar ? '' : 'display:none' }}">
             <svg viewBox="0 0 24 24"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
           </div>
-          <input type="file" id="avatarUpload" accept="image/*" style="display:none">
+          <input type="file" id="avatarUpload" accept="image/jpeg, image/png, image/webp" style="display:none">
+        </div>
+        <div style="text-align: center; font-size: 11px; color: var(--text-dim); margin-top: 8px;">
+          Formatos: JPG, PNG, WEBP (Ideal 1:1)<br>
+          Tamaño máximo: 2 MB
         </div>
         <div class="profile-name" id="profileName">{{ $user->display_name }}</div>
         <div class="profile-email">{{ $user->email }}</div>
@@ -1089,6 +1093,19 @@
       avatarInput.addEventListener('change', function() {
         var file = this.files[0];
         if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+            showToast('La imagen es muy pesada. Máximo 2MB.');
+            this.value = '';
+            return;
+        }
+
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            showToast('Formato no válido. Usa JPG, PNG o WEBP.');
+            this.value = '';
+            return;
+        }
 
         const formData = new FormData();
         formData.append('avatar', file);
