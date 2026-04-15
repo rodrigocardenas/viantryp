@@ -520,7 +520,7 @@
         <div class="avatar-wrapper">
           <div class="avatar-big" id="avatarBig">
             <span id="avatarInitial" style="{{ $user->avatar ? 'display:none' : '' }}">{{ $user->display_initials }}</span>
-            <img id="avatarImg" src="{{ $user->avatar ? asset('storage/' . $user->avatar) : '' }}" alt="" style="{{ $user->avatar ? '' : 'display:none' }}">
+            <img id="avatarImg" src="{{ $user->avatar ? (str_starts_with($user->avatar, 'http') ? $user->avatar : asset('storage/' . $user->avatar)) : '' }}" alt="" style="{{ $user->avatar ? '' : 'display:none' }}">
           </div>
           <div class="avatar-edit-btn" title="Subir foto">
             <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>

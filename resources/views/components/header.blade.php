@@ -100,7 +100,7 @@
                     style="cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;">
                     <div class="avatar" id="navAvatar" style="overflow: hidden;">
                         @if(auth()->user()->avatar)
-                            <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt=""
+                            <img src="{{ str_starts_with(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" alt=""
                                 style="width: 100%; height: 100%; object-fit: cover;">
                         @else
                                     {{ collect(explode(' ', auth()->user()->name))->map(function ($word) {
