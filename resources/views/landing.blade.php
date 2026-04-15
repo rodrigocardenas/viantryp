@@ -1785,8 +1785,12 @@
                 {{ auth()->user()->name }}
               </span>
               <div
-                style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--teal); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; text-decoration: none; border: 2px solid var(--teal-light); transition: transform 0.2s;">
-                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--teal); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; text-decoration: none; border: 2px solid var(--teal-light); transition: transform 0.2s; overflow: hidden;">
+                @if(auth()->user()->avatar)
+                  <img src="{{ str_starts_with(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                @else
+                  {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                @endif
               </div>
             </div>
 
