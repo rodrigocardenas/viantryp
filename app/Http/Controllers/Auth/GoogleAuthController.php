@@ -48,6 +48,9 @@ class GoogleAuthController extends Controller
                         'avatar' => $googleUser->getAvatar(),
                         'password' => bcrypt(uniqid()), // Random password for OAuth users
                     ]);
+
+                    // Enviar notificación de bienvenida
+                    $user->notify(new \App\Notifications\WelcomeNotification($user));
                 }
             }
 
