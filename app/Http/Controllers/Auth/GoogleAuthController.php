@@ -29,7 +29,12 @@ class GoogleAuthController extends Controller
             // Check if user already exists
             $user = User::where('google_id', $googleUser->getId())->first();
 
-            if (!$user) {
+            if ($user) {
+                // Sincronizar el avatar de Google cada vez que el usuario inicia sesión.
+                if ($googleUser->getAvatar()) {
+                    $user->update(['avatar' => $googleUser->getAvatar()]);
+                }
+            } else {
                 // Check if user exists with same email
                 $user = User::where('email', $googleUser->getEmail())->first();
 
