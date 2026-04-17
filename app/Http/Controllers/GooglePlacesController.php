@@ -45,9 +45,35 @@ class GooglePlacesController extends Controller
             // Limit to 3 photos to reduce API costs
             if (isset($data['result']['photos']) && is_array($data['result']['photos'])) {
                 $data['result']['photos'] = array_slice($data['result']['photos'], 0, 3);
+                $disk = \Illuminate\Support\Facades\Storage::disk('public');
+                
                 foreach ($data['result']['photos'] as &$photo) {
                     if (isset($photo['photo_reference'])) {
-                        $photo['url'] = route('places.photo', ['ref' => $photo['photo_reference']]);
+                        $photoreference = $photo['photo_reference'];
+                        $filename = md5($photoreference) . '.jpg';
+                        $path = "places/{$filename}";
+                        
+                        // Download the photo immediately if we don't have it saved
+                        if (!$disk->exists($path)) {
+                            $imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference={$photoreference}&key={$apiKey}";
+                            try {
+                                $imgResponse = Http::timeout(10)->get($imgUrl);
+                                if ($imgResponse->successful()) {
+                                    $disk->put($path, $imgResponse->body());
+                                }
+                            } catch (\Exception $e) {
+                                \Illuminate\Support\Facades\Log::error('Google Places Pre-fetch Photo Download Error: ' . $e->getMessage());
+                            }
+                        }
+                        
+                        if ($disk->exists($path)) {
+                            // If successfully saved, the URL we return to the frontend is the DIRECT local url!
+                            // This guarantees the frontend saves the URL of our own server in the DB forever.
+                            $photo['url'] = asset("storage/{$path}");
+                        } else {
+                            // Ultimate fallback
+                            $photo['url'] = route('places.photo', ['ref' => $photoreference]);
+                        }
                     }
                 }
             }
@@ -74,10 +100,33 @@ class GooglePlacesController extends Controller
             return response()->json(['error' => 'API key missing'], 500);
         }
 
+        // Generate a unique filename based on the photo reference
+        $filename = md5($photoreference) . '.jpg';
+        $disk = \Illuminate\Support\Facades\Storage::disk('public');
+        $path = "places/{$filename}";
+
+        // If we already downloaded this photo, serve it from our own local cache
+        if ($disk->exists($path)) {
+            return redirect(asset("storage/{$path}"));
+        }
+
         $url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference={$photoreference}&key={$apiKey}";
 
-        // We can use cache here if we want to avoid redundant redirects, 
-        // but Google's URL usually redirects to a temporary one anyway.
+        try {
+            // First time this photo is requested, download it from Google
+            $response = Http::get($url);
+            
+            if ($response->successful()) {
+                // Save it to disk so we never pay for it again
+                $disk->put($path, $response->body());
+                return redirect(asset("storage/{$path}"));
+            }
+        } catch (\Exception $e) {
+            // If download fails, we fall through to the old redirect mechanism
+            \Illuminate\Support\Facades\Log::error('Google Places Photo Download Error: ' . $e->getMessage());
+        }
+
+        // Fallback: redirect directly to Google (incurs cost, but ensures image loads if cache fails)
         return redirect($url);
     }
 }

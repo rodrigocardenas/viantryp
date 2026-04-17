@@ -794,7 +794,13 @@ export class ModalManager {
         if (this.currentElementType === 'hotel' && this.selectedHotelData) {
             data.hotel_id = this.selectedHotelData.place_id;
             data.hotel_name = this.selectedHotelData.name;
-            data.hotel_data = this.selectedHotelData;
+            
+            // Merge detailed information (including photos) with basic place data
+            data.hotel_data = {
+                ...this.selectedHotelData,
+                ...(this.selectedHotelDetails || {})
+            };
+            
             // Include additional Google Places data
             data.place_id = this.selectedHotelData.place_id;
             data.formatted_address = this.selectedHotelData.formatted_address;
@@ -1535,5 +1541,7 @@ export class ModalManager {
         this.editingElement = null; // Reset editing element reference
         this.selectedHotelData = null;
         this.selectedActivityData = null;
+        this.selectedHotelDetails = null;
+        this.selectedActivityDetails = null;
     }
 }
