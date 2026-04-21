@@ -737,7 +737,8 @@ function buildItem(item, idx) {
   const d = item.data; let title = '', chips = [], sub = [];
   switch (item.type) {
     case 'flight':
-      title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : 'Vuelo';
+      const getCity = str => str ? (str.includes('(') ? str.split('(')[1].split(')')[0] : str.split(' -')[0]) : '';
+      title = (d.origen && d.destino) ? `${getCity(d.origen)} → ${getCity(d.destino)}` : 'Vuelo';
       if (d.salida) sub.push('<i class="fa-solid fa-plane-departure"></i> ' + fmtDT(d.salida));
       if (d.llegada) sub.push('<i class="fa-solid fa-plane-arrival"></i> ' + fmtDT(d.llegada));
       if (d.aerolinea) chips.push(d.aerolinea);

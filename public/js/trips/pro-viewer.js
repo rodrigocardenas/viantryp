@@ -173,8 +173,9 @@ function buildPreviewHTML(data) {
         const lle = d.llegada ? fmtDateTime(d.llegada) : { day: '', time: '' };
 
         // Use d.origen_city/d.destino_city directly if it exists, otherwise fallback to parsing origin
-        const oriCity = d.origen_city || (d.origen ? d.origen.split(' (')[0] : '');
-        const desCity = d.destino_city || (d.destino ? d.destino.split(' (')[0] : '');
+        const getCity = str => str ? (str.includes('(') ? str.split('(')[1].split(')')[0] : str.split(' -')[0]) : '';
+        const oriCity = d.origen_city || getCity(d.origen);
+        const desCity = d.destino_city || getCity(d.destino);
 
         return `<div class="pv-card">
           <div class="pvc-section-label" style="color:var(--accent); display:flex; justify-content:space-between; align-items:center;">
