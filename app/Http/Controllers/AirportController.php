@@ -33,16 +33,14 @@ class AirportController extends Controller
         $airports = $query->limit(30)->get();
 
         $results = $airports->map(function ($airport) {
-            $displayText = $airport->name;
-            if ($airport->iata_code) {
-                $displayText .= " ({$airport->iata_code})";
-            }
+            $city = $airport->city ?: 'Ciudad desconocida';
+            $displayText = "{$city} ({$airport->iata_code}) - {$airport->name}";
 
             return [
-            'id' => $displayText, // We use the full text as ID to match current logic
-            'text' => $displayText,
-            'city' => $airport->city,
-            'country' => $airport->country
+                'id' => $displayText,
+                'text' => $displayText,
+                'city' => $airport->city,
+                'country' => $airport->country
             ];
         });
 

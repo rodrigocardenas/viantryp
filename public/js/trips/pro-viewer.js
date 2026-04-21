@@ -173,7 +173,7 @@ function buildPreviewHTML(data) {
         const lle = d.llegada ? fmtDateTime(d.llegada) : { day: '', time: '' };
 
         // Use d.origen_city/d.destino_city directly if it exists, otherwise fallback to parsing origin
-        const getCity = str => str ? (str.includes('(') ? str.split('(')[1].split(')')[0] : str.split(' -')[0]) : '';
+        const getCity = str => str ? (str.includes('(') ? str.split('(')[0].trim() : str.split(' -')[0].trim()) : '';
         const oriCity = d.origen_city || getCity(d.origen);
         const desCity = d.destino_city || getCity(d.destino);
 
