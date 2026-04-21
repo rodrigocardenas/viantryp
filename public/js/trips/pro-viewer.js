@@ -203,10 +203,10 @@ function buildPreviewHTML(data) {
             ${d.clase ? `<span class="pv-chip"><i class="fa-solid fa-couch"></i> ${d.clase}</span>` : ''}
             ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
           </div>
-          ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
-          ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
+          ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
+          ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
           ${d.adjunto_url ? `
-            <div style="margin-top:12px;">
+            <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
               <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
                 <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
               </a>
@@ -236,28 +236,32 @@ function buildPreviewHTML(data) {
               </div>
               ${d.direccion ? `<div class="pv-hotel-addr"><i class="fa-solid fa-location-dot" style="color:var(--muted)"></i> ${d.direccion}</div>` : ''}
               <div class="pv-hotel-details">
-                ${d.checkin ? `<div class="pv-hd-row"><span class="pv-hd-label">Check-in:</span> ${fmtDayMonthWeekday(d.checkin)} - 15:00</div>` : ''}
-                ${d.checkout ? `<div class="pv-hd-row"><span class="pv-hd-label">Check-out:</span> ${fmtDayMonthWeekday(d.checkout)} - 11:00</div>` : ''}
-                ${nights ? `<div class="pv-hd-row">${nights} noche${nights !== 1 ? 's' : ''}</div>` : ''}
-                ${d.habitacion ? `<div class="pv-hd-icon-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v11m0-6h18m0-5v11M5 7h14a2 2 0 0 1 2 2v2H3V9a2 2 0 0 1 2-2z"/></svg> ${d.habitacion}</div>` : ''}
-                ${d.alimentacion ? `<div class="pv-hd-icon-row" style="display:flex;align-items:center;gap:6px"><i class="fa-solid fa-utensils" style="width:14px;text-align:center;font-size:12px"></i> <span>${d.alimentacion}</span></div>` : ''}
+                ${d.checkin ? `<div class="pv-hd-row"><span class="pv-hd-label">Check-in:</span> ${fmtDayMonthWeekday(d.checkin)}</div>` : ''}
+                ${d.checkout ? `<div class="pv-hd-row"><span class="pv-hd-label">Check-out:</span> ${fmtDayMonthWeekday(d.checkout)}</div>` : ''}
+                ${(nights || d.habitacion || d.alimentacion) ? `
+                <div style="display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:2px;">
+                  ${nights ? `<div class="pv-hd-icon-row"><i class="fa-solid fa-moon" style="width:14px;text-align:center;font-size:12px"></i> <span>${nights} noche${nights !== 1 ? 's' : ''}</span></div>` : ''}
+                  ${d.habitacion ? `<div class="pv-hd-icon-row"><i class="fa-solid fa-bed" style="width:14px;text-align:center;font-size:12px"></i> <span>${d.habitacion}</span></div>` : ''}
+                  ${d.alimentacion ? `<div class="pv-hd-icon-row"><i class="fa-solid fa-utensils" style="width:14px;text-align:center;font-size:12px"></i> <span>${d.alimentacion}</span></div>` : ''}
+                </div>
+                ` : ''}
               </div>
               <div class="pv-hotel-btns">
                 ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn" style="text-decoration:none"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
                 ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn" style="text-decoration:none"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
                 ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
               </div>
-              ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
-              ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-              ${d.adjunto_url ? `
-                <div style="margin-top:12px;">
-                  <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                    <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
-                  </a>
-                </div>
-              ` : ''}
+              ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
+              ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
             </div>
           </div>
+          ${d.adjunto_url ? `
+            <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+              <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
+              </a>
+            </div>
+          ` : ''}
         </div>`;
       }
 
@@ -292,10 +296,10 @@ function buildPreviewHTML(data) {
           <div class="pv-chips-row">
             ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
           </div>
-          ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
-          ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
+          ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
+          ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
           ${d.adjunto_url ? `
-            <div style="margin-top:12px;">
+            <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
               <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
                 <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
               </a>
@@ -331,17 +335,17 @@ function buildPreviewHTML(data) {
                 ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
                 ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
               </div>
-              ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
-              ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-              ${d.adjunto_url ? `
-                <div style="margin-top:12px;">
-                  <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                    <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
-                  </a>
-                </div>
-              ` : ''}
+              ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
+              ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
             </div>
           </div>
+          ${d.adjunto_url ? `
+            <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+              <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
+              </a>
+            </div>
+          ` : ''}
         </div>`;
       }
 
@@ -368,17 +372,17 @@ function buildPreviewHTML(data) {
                 ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
                 ${d.estado_reserva && d.estado_reserva !== 'No aplica' ? `<span class="pv-action-btn"><i class="fa-solid fa-calendar-check"></i> ${d.estado_reserva}</span>` : ''}
               </div>
-              ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
-              ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-              ${d.adjunto_url ? `
-                <div style="margin-top:12px;">
-                  <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                    <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
-                  </a>
-                </div>
-              ` : ''}
+              ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
+              ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
             </div>
           </div>
+          ${d.adjunto_url ? `
+            <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+              <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
+              </a>
+            </div>
+          ` : ''}
         </div>`;
       }
 
@@ -407,17 +411,17 @@ function buildPreviewHTML(data) {
                 ${d.personas ? `<span class="pv-chip"><i class="fa-solid fa-users"></i> ${d.personas} personas</span>` : ''}
                 ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
               </div>
-              ${d.reserva ? `<div class="pv-notes-row" style="border-top:none;padding-top:0;margin-top:8px"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
-              ${d.notas ? `<div class="pv-notes-row"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
-              ${d.adjunto_url ? `
-                <div style="margin-top:12px;">
-                  <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                    <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
-                  </a>
-                </div>
-              ` : ''}
+              ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
+              ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
             </div>
           </div>
+          ${d.adjunto_url ? `
+            <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+              <a href="${fixUrl(d.adjunto_url)}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border:1px solid #d1d5db; border-radius:30px; background:#fff; color:#1f2937; text-decoration:none; font-weight:700; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                <i class="fa-solid fa-paperclip"></i> ${d.adjunto_name || 'Ver adjunto'}
+              </a>
+            </div>
+          ` : ''}
         </div>`;
       }
 

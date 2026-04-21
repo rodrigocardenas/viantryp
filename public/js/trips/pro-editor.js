@@ -735,8 +735,58 @@ function buildItem(item, idx) {
     setupReorder(el, idx); return el;
   }
   const d = item.data; let title = '', chips = [], sub = [];
-  switch (item.type) { case 'flight': title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : 'Vuelo'; if (d.aerolinea) chips.push(d.aerolinea); if (d.vuelo) chips.push(d.vuelo); if (d.clase) chips.push(d.clase); if (d.salida) sub.push('🕐 ' + fmtDT(d.salida)); if (d.precio) chips.push('$' + d.precio); break; case 'alojamiento': title = d.nombre || 'Alojamiento'; if (d.direccion) sub.push('📍 ' + d.direccion); if (d.checkin) chips.push('In: ' + d.checkin); if (d.checkout) chips.push('Out: ' + d.checkout); if (d.habitacion) chips.push(d.habitacion); if (d.alimentacion) chips.push('🍽️ ' + d.alimentacion); if (d.stars) sub.push('⭐ ' + (Number.isInteger(d.stars) ? d.stars + '.0' : d.stars)); break; case 'transporte': title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : (d.tipo || 'Transporte'); if (d.tipo) chips.push(d.tipo); if (d.proveedor) chips.push(d.proveedor); if (d.fecha) sub.push('🕐 ' + fmtDT(d.fecha)); if (d.precio) chips.push('$' + d.precio); break; case 'actividad': title = d.nombre || 'Actividad'; if (d.lugar) sub.push('📍 ' + d.lugar); if (d.duracion) chips.push('⏱ ' + d.duracion); if (d.fecha) chips.push(fmtDT(d.fecha)); if (d.precio) chips.push('$' + d.precio); break; case 'comida': title = d.restaurante || 'Comida'; if (d.ciudad) sub.push('📍 ' + d.ciudad); if (d.tipo) chips.push(d.tipo); if (d.fecha) chips.push(fmtDT(d.fecha)); if (d.precio) chips.push('$' + d.precio); if (d.stars) sub.push('⭐ ' + (Number.isInteger(d.stars) ? d.stars + '.0' : d.stars)); break; case 'tour': title = d.nombre || 'Tour'; if (d.operador) sub.push('🏢 ' + d.operador); if (d.duracion) chips.push('⏱ ' + d.duracion); if (d.personas) chips.push('👥 ' + d.personas); if (d.precio) chips.push('$' + d.precio); break }
-  el.innerHTML = `<div class="item-inner"><div class="item-accent-bar" style="background:${cfg.color}"></div><div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div><div class="item-content"><div class="item-type-label" style="color:${cfg.color}">${cfg.label}</div><div class="item-title">${title}</div><div class="item-subtitle">${sub.map(s => `<span>${s}</span>`).join('')}${chips.map(c => `<span class="item-chip">${c}</span>`).join('')}</div>${d.notas ? `<div style="font-size:12px;color:var(--text-muted);margin-top:6px;display:flex;align-items:center;gap:4px;"><i class="fa-solid fa-circle-info" style="font-size:10px;opacity:0.7"></i> ${d.notas}</div>` : ''}</div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
+  switch (item.type) {
+    case 'flight':
+      title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : 'Vuelo';
+      if (d.salida) sub.push('<i class="fa-solid fa-plane-departure"></i> ' + fmtDT(d.salida));
+      if (d.llegada) sub.push('<i class="fa-solid fa-plane-arrival"></i> ' + fmtDT(d.llegada));
+      if (d.aerolinea) chips.push(d.aerolinea);
+      if (d.vuelo) chips.push(d.vuelo);
+      if (d.clase) chips.push(d.clase);
+      if (d.precio) chips.push('$' + d.precio);
+      break;
+    case 'alojamiento':
+      title = d.nombre || 'Alojamiento';
+      if (d.direccion) sub.push('<i class="fa-solid fa-location-dot"></i> ' + d.direccion);
+      if (d.checkin) chips.push('<i class="fa-solid fa-right-to-bracket"></i> ' + fmtDT(d.checkin.includes('T') ? d.checkin : d.checkin + 'T15:00:00'));
+      if (d.checkout) chips.push('<i class="fa-solid fa-right-from-bracket"></i> ' + fmtDT(d.checkout.includes('T') ? d.checkout : d.checkout + 'T12:00:00'));
+      if (d.habitacion) chips.push('<i class="fa-solid fa-bed"></i> ' + d.habitacion);
+      if (d.alimentacion) chips.push('<i class="fa-solid fa-utensils"></i> ' + d.alimentacion);
+      if (d.precio) chips.push('$' + d.precio);
+      break;
+    case 'transporte':
+      title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : (d.tipo || 'Transporte');
+      if (d.tipo) sub.push('<i class="fa-solid fa-car"></i> ' + d.tipo);
+      if (d.salida) sub.push('<i class="fa-solid fa-clock"></i> ' + fmtDT(d.salida));
+      if (d.llegada) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.llegada));
+      if (d.proveedor) chips.push(d.proveedor);
+      if (d.precio) chips.push('$' + d.precio);
+      break;
+    case 'actividad':
+      title = d.nombre || 'Actividad';
+      if (d.direccion) sub.push('<i class="fa-solid fa-location-dot"></i> ' + d.direccion);
+      if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.fecha));
+      if (d.duracion) chips.push('<i class="fa-solid fa-stopwatch"></i> ' + d.duracion);
+      if (d.precio) chips.push('$' + d.precio);
+      break;
+    case 'comida':
+      title = d.restaurante || 'Comida';
+      if (d.direccion) sub.push('<i class="fa-solid fa-location-dot"></i> ' + d.direccion);
+      if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.fecha));
+      if (d.tipo) chips.push('<i class="fa-solid fa-utensils"></i> ' + d.tipo);
+      if (d.precio) chips.push('$' + d.precio);
+      break;
+    case 'tour':
+      title = d.nombre || 'Tour';
+      if (d.operador) sub.push('<i class="fa-solid fa-building"></i> ' + d.operador);
+      if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.fecha));
+      if (d.duracion) chips.push('<i class="fa-solid fa-stopwatch"></i> ' + d.duracion);
+      if (d.personas) chips.push('<i class="fa-solid fa-users"></i> ' + d.personas);
+      if (d.precio) chips.push('$' + d.precio);
+      break;
+  }
+  if (d.adjunto) chips.push('<i class="fa-solid fa-paperclip"></i> 1');
+  el.innerHTML = `<div class="item-inner"><div class="item-accent-bar" style="background:${cfg.color}"></div><div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div><div class="item-content"><div class="item-type-label" style="color:${cfg.color}">${cfg.label}</div><div class="item-title">${title}</div><div class="item-subtitle" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px;">${sub.length ? `<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:8px;">${sub.map(s => `<span>${s}</span>`).join('')}</div>` : ''}${chips.length ? `<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:8px;">${chips.map(c => `<span class="item-chip">${c}</span>`).join('')}</div>` : ''}</div>${d.notas ? `<div style="font-size:12px;color:var(--text-muted);margin-top:6px;display:flex;align-items:center;justify-content:flex-start;gap:4px;"><i class="fa-solid fa-circle-info" style="font-size:10px;opacity:0.7"></i> ${d.notas}</div>` : ''}</div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
   setupReorder(el, idx); return el;
 }
 function setupReorder(el, idx) {
