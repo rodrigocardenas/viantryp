@@ -1439,6 +1439,80 @@
             z-index: 0;
         }
 
+        /* TRIAL BANNER */
+        .trial-banner {
+            background: linear-gradient(135deg, #1a9a8a 0%, #0c4a5b 100%);
+            border-radius: 16px;
+            padding: 16px 24px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            box-shadow: 0 10px 25px rgba(26, 154, 138, 0.15);
+            animation: slideDownFade 0.5s ease;
+        }
+
+        @keyframes slideDownFade {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .trial-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .trial-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .trial-text h4 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            font-size: 18px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .trial-text p {
+            font-size: 13.5px;
+            margin: 2px 0 0;
+            opacity: 0.9;
+        }
+
+        .trial-cta {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-trial-upgrade {
+            background: white;
+            color: #0c4a5b;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-trial-upgrade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
         /* ACTIONS MENU */
         .acts-menu-container {
             position: relative;
@@ -1538,11 +1612,30 @@
 
 
     <!-- ══ CONTENT ══ -->
-    <div class="content">
+    <main class="content">
+        @if(auth()->user()->isTrialActive() && auth()->user()->getTrialDaysRemaining() <= 3)
+            <div class="trial-banner">
+                <div class="trial-banner-content">
+                    <div class="trial-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div class="trial-text">
+                        <h4>Prueba gratuita del Plan Avanzado</h4>
+                        <p>Te quedan <strong>{{ auth()->user()->getTrialDaysRemaining() }} {{ auth()->user()->getTrialDaysRemaining() == 1 ? 'día' : 'días' }}</strong> para disfrutar de todas las herramientas avanzadas.</p>
+                    </div>
+                </div>
+                <div class="trial-cta">
+                    <button onclick="openUpgradeModal()" class="btn-trial-upgrade">Mejorar mi plan ahora →</button>
+                </div>
+            </div>
+        @endif
 
         <div class="hero-tag">
             <div class="htag-dot"></div>
             Plan {{ ucfirst(auth()->user()->plan) }}
+            @if(auth()->user()->isTrialActive())
+                (Prueba)
+            @endif
         </div>
         <h1 class="hero-title">Panel de Control</h1>
         <div class="hero-header-mobile">
@@ -2931,7 +3024,7 @@
                         }
                     },
                     {
-                        element: '.btn-create',
+                        element: window.innerWidth > 768 ? '.toolbar .btn-create' : '.btn-mobile-only',
                         popover: {
                             title: 'Crear Viaje',
                             description: 'Utiliza este botón para comenzar a diseñar una nueva experiencia para tus clientes.'

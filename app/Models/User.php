@@ -47,6 +47,7 @@ class User extends Authenticatable
         'display_name_type',
         'tutorials_seen',
         'plan',
+        'trial_ends_at',
     ];
 
     public const PLAN_BASICO = 'básico';
@@ -76,7 +77,19 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'tutorials_seen' => 'array',
+            'trial_ends_at' => 'datetime',
         ];
+    }
+
+    public function isTrialActive(): bool
+    {
+        return $this->trial_ends_at && $this->trial_ends_at->isFuture();
+    }
+
+    public function getTrialDaysRemaining(): int
+    {
+        if (!$this->trial_ends_at) return 0;
+        return max(0, now()->diffInDays($this->trial_ends_at, false));
     }
 
     public function trips()
@@ -86,7 +99,14 @@ class User extends Authenticatable
 
     public function getPlanLimits(): array
     {
-        return match ($this->plan) {
+        $effectivePlan = $this->plan;
+
+        // If trial is active, they get Advanced limits
+        if ($this->isTrialActive() && $this->plan === self::PLAN_BASICO) {
+            $effectivePlan = self::PLAN_AVANZADO;
+        }
+
+        return match ($effectivePlan) {
             self::PLAN_BASICO => [
                 'max_trips' => 1,
                 'max_attachments' => 1000000,

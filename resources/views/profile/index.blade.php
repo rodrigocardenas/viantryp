@@ -536,9 +536,13 @@
         </div>
         <div class="profile-name" id="profileName">{{ $user->display_name }}</div>
         <div class="profile-email">{{ $user->email }}</div>
-        <div class="plan-badge">
-          <div class="plan-dot"></div>
-          Plan {{ ucfirst($user->plan) }}
+        <div class="plan-badge" style="{{ $user->isTrialActive() ? 'background:var(--accent); color:white;' : '' }}">
+          <div class="plan-dot" style="{{ $user->isTrialActive() ? 'background:white;' : '' }}"></div>
+          @if($user->isTrialActive())
+            Avanzado (Prueba)
+          @else
+            Plan {{ ucfirst($user->plan) }}
+          @endif
         </div>
       </div>
 
@@ -788,7 +792,12 @@
           <div class="section-label">Planes y Suscripción</div>
           <div style="background: var(--accent-light); border: 1px solid var(--accent); border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 24px;">
             <div style="font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Tu plan actual es</div>
-            <div style="font-size: 36px; font-weight: 800; color: var(--accent); font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 1px;">{{ $user->plan }}</div>
+            <div style="font-size: 36px; font-weight: 800; color: var(--accent); font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 1px;">
+              {{ $user->plan }} 
+              @if($user->isTrialActive())
+                <span style="font-size: 18px; display: block; margin-top: -5px; opacity: 0.8;">(Prueba Gratuita 7 Días)</span>
+              @endif
+            </div>
             
             <div style="margin-top: 24px; display: flex; justify-content: center;">
               <button class="btn-save" onclick="openUpgradeModal()">
@@ -968,9 +977,28 @@
     document.querySelectorAll('.theme-option[data-theme]').forEach(function(el) {
       el.addEventListener('click', function() {
         var theme = el.getAttribute('data-theme');
+        var color = el.querySelector('.theme-swatch').style.background;
+        
         document.body.setAttribute('data-theme', theme === 'default' ? '' : theme);
         document.querySelectorAll('.theme-option').forEach(function(o) { o.classList.remove('selected'); });
         el.classList.add('selected');
+        
+        // Real-time preview update
+        const previewHeader = document.querySelector('.preview-header');
+        if (previewHeader) {
+          previewHeader.style.background = color || '#1a7f77';
+        }
+        
+        // Update accent dots in preview
+        document.querySelectorAll('.preview-day-dot').forEach(dot => {
+          dot.style.background = color || '#1a7f77';
+        });
+
+        // Update avatar background in sidebar for instant feel
+        const avatarBig = document.querySelector('.avatar-big');
+        if (avatarBig) {
+          avatarBig.style.background = color || '#1a7f77';
+        }
       });
     });
 
@@ -1263,10 +1291,22 @@
                 } 
             },
             { 
+                element: '.nav-item[data-section="subscription"]', 
+                popover: { 
+                    title: 'Planes y Suscripción', 
+                    description: 'Aquí puedes ver los límites de tu plan actual, gestionar tus pagos y mejorar tu suscripción para obtener más itinerarios y colaboradores.',
+                    position: 'right'
+                },
+                onHighlightStarted: () => {
+                   const btn = document.querySelector('.nav-item[data-section="subscription"]');
+                   btn.click();
+                }
+            },
+            { 
                 element: '.secondary-nav-link', 
                 popover: { 
                     title: '¡Empieza a Crear!', 
-                    description: 'Cuando ya tengas todo personalizado y ajustado, haz clic aquí en "Ir a Mis Viajes" para empezar a crear tus itinerarios y diseñarlos.',
+                    description: '¡Todo listo! Haz clic aquí en "Ir a Mis Viajes" para empezar a diseñar tus itinerarios profesionales y sorprender a tus clientes.',
                     position: 'bottom'
                 } 
             }

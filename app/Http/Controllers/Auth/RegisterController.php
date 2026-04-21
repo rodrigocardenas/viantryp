@@ -60,6 +60,7 @@ class RegisterController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'plan' => User::PLAN_BASICO,
+            'trial_ends_at' => now()->addDays(7),
         ]);
 
         // Envío de correo de bienvenida

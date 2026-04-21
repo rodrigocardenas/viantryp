@@ -142,8 +142,12 @@
                         <div class="user-email">{{ $user->email }}</div>
                     </div>
                 </div>
-                <div class="plan-badge-pill">
-                    Plan {{ ucfirst($currentPlan) }}
+                <div class="plan-badge-pill" style="{{ $user->isTrialActive() ? 'background:#1a9a8a; color:white; border-color:#0c4a5b;' : '' }}">
+                    @if($user->isTrialActive())
+                        Prueba Avanzado ({{ $user->getTrialDaysRemaining() }}d)
+                    @else
+                        Plan {{ ucfirst($currentPlan) }}
+                    @endif
                 </div>
             </div>
 
