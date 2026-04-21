@@ -48,6 +48,7 @@ class User extends Authenticatable
         'tutorials_seen',
         'plan',
         'trial_ends_at',
+        'initial_plan_chosen_at',
     ];
 
     public const PLAN_BASICO = 'básico';
@@ -78,6 +79,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'tutorials_seen' => 'array',
             'trial_ends_at' => 'datetime',
+            'initial_plan_chosen_at' => 'datetime',
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -296,5 +297,36 @@ class ProfileController extends Controller
         );
 
         return response()->json(['success' => true, 'message' => '¡Solicitud enviada! Nuestro equipo se comunicará contigo pronto.']);
+    }
+
+    public function chooseInitialPlan(Request $request)
+    {
+        $user = auth()->user();
+        if ($user->initial_plan_chosen_at) {
+            return response()->json(['success' => false, 'message' => 'Plan inicial ya seleccionado.'], 403);
+        }
+
+        $validated = $request->validate([
+            'plan' => 'required|string|in:básico,esencial,avanzado,colaborativo,corporativo',
+        ]);
+
+        $plan = $validated['plan'];
+        $updateData = [
+            'plan' => $plan,
+            'initial_plan_chosen_at' => now(),
+        ];
+
+        // Only Advanced plan gets the 7-day trial
+        if ($plan === User::PLAN_AVANZADO) {
+            $updateData['trial_ends_at'] = now()->addDays(7);
+        }
+
+        $user->update($updateData);
+
+        return response()->json([
+            'success' => true, 
+            'message' => 'Plan seleccionado correctamente. ¡Disfruta de Viantryp!',
+            'plan' => $plan
+        ]);
     }
 }

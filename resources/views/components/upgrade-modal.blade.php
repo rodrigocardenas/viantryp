@@ -1097,11 +1097,19 @@
 
         // Usage limit checks (downgrade guard)
         if (currentUsage.trips > target.trips) {
-            alert(`No puedes bajar al plan ${target.name} porque tienes ${currentUsage.trips} itinerarios y el plan solo permite ${target.trips}.`);
+            alert(`No puedes bajar al plan ${target.name} porque tienes ${currentUsage.trips} itinerarios y el plan solo permite ${target.trips}. Por favor, elimina itinerarios antes de cambiar de plan.`);
             return;
         }
         if (currentUsage.editors > target.editors) {
-            alert(`No puedes bajar al plan ${target.name} porque has invitado a ${currentUsage.editors} editores y el plan solo permite ${target.editors}. Por favor, elimina colaboradores antes de bajar de plan.`);
+            alert(`No puedes bajar al plan ${target.name} porque has invitado a ${currentUsage.editors} editores y el plan solo permite ${target.editors}. Por favor, elimina colaboradores antes de cambiar de plan.`);
+            return;
+        }
+
+        // Plan Básico → Cambio directo sin código
+        if (planKey === 'básico') {
+            if (confirm(`¿Estás seguro de que deseas cambiar al plan Básico? Tus límites se ajustarán a ${target.trips} itinerario y ${target.editors} colaboradores.`)) {
+                submitDirectPlanUpdate(planKey);
+            }
             return;
         }
 
@@ -1140,6 +1148,24 @@
 
     function switchToPlanRequest() { showPlanGateStep(2); }
     function switchToCodeStep()    { showPlanGateStep(1); }
+    
+    async function submitDirectPlanUpdate(planKey) {
+        try {
+            const res = await fetch('{{ route("profile.update.plan") }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
+                body: JSON.stringify({ plan: planKey })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert(data.message || 'Error al actualizar el plan.');
+            }
+        } catch(e) {
+            alert('Error de conexión.');
+        }
+    }
 
     async function submitPlanCode() {
         const code = document.getElementById('planAccessCodeInput').value.trim();
@@ -1160,7 +1186,11 @@
             });
             const data = await res.json();
             if (data.success) {
-                window.location.reload();
+                if (typeof window.planGateSuccessCallback === 'function') {
+                    window.planGateSuccessCallback(data.plan);
+                } else {
+                    window.location.reload();
+                }
             } else {
                 showGateCodeError(data.message || 'Código inválido.');
             }

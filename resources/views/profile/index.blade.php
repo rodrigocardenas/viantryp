@@ -861,6 +861,7 @@
 </div>
 
 <x-upgrade-modal />
+<x-welcome-modal />
 @endsection
 
 @push('scripts')
@@ -1205,12 +1206,14 @@
         }, 500);
     }
 
-    // Auto-start tutorial
+    // Auto-start tutorial (Solo si ya eligió su plan inicial)
+    @if($user->initial_plan_chosen_at)
     setTimeout(() => {
         if (typeof initProfileTutorial === 'function') {
             initProfileTutorial();
         }
     }, 1200);
+    @endif
   });
 
   function initProfileTutorial(force = false) {
