@@ -247,7 +247,7 @@ class ProfileController extends Controller
             return $this->updatePlan($request);
         }
 
-        $validCodes = array_filter(array_map('trim', explode(',', env($envKey, ''))));
+        $validCodes = array_filter(array_map('trim', explode(',', config("plans.codes.{$plan}", ''))));
         $submittedCode = strtoupper(trim($request->code));
 
         if (empty($validCodes) || !in_array($submittedCode, array_map('strtoupper', $validCodes))) {
