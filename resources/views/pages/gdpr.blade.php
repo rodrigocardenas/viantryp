@@ -108,7 +108,7 @@
           <i class="fas fa-file-contract" style="color:var(--teal);"></i>
           <strong style="color:var(--navy); font-size:0.9rem;">DPA para profesionales</strong>
         </div>
-        <p style="font-size:0.87rem; color:var(--text-soft); line-height:1.6; margin:0;">Si gestionas datos de clientes en Viantryp y necesitas un Acuerdo de Procesamiento de Datos firmado, escríbenos a <a href="mailto:legal@viantryp.com" style="color:var(--teal);">legal@viantryp.com</a>. Lo enviamos en 5 días hábiles.</p>
+        <p style="font-size:0.87rem; color:var(--text-soft); line-height:1.6; margin:0;">Si gestionas datos de clientes en Viantryp y necesitas un Acuerdo de Procesamiento de Datos firmado, escríbenos a <a href="mailto:hola@viantryp.com" style="color:var(--teal);">hola@viantryp.com</a>. Lo enviamos en 5 días hábiles.</p>
       </div>
       <div style="background:var(--off-white); border-radius:14px; padding:1.5rem; border:1.5px solid var(--mid-gray);">
         <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.75rem;">
@@ -121,7 +121,7 @@
 
     <div class="reveal" style="font-size:0.87rem; color:var(--text-muted); padding:1rem 1.2rem; background:var(--off-white); border-radius:10px; border:1px solid var(--mid-gray);">
       <i class="fas fa-envelope" style="margin-right:0.4rem; color:var(--teal);"></i>
-      Contacto RGPD: <a href="mailto:privacidad@viantryp.com" style="color:var(--teal);">privacidad@viantryp.com</a>
+      Contacto RGPD: <a href="mailto:hola@viantryp.com" style="color:var(--teal);">hola@viantryp.com</a>
       <span style="margin:0 0.5rem; color:var(--mid-gray);">·</span>
       Respondemos en máximo 5 días hábiles.
     </div>

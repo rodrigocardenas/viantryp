@@ -92,7 +92,7 @@
         <div id="derechos" style="margin-bottom:2.5rem;">
           <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">Tus derechos</h2>
           <p class="section-text">Como usuario de Viantryp — seas viajero individual, miembro de un grupo o profesional — tienes derecho a: acceder a tus datos, corregir información incorrecta, descargar una copia de tu contenido (portabilidad), eliminar tu cuenta y datos de forma permanente, y oponerte al tratamiento en ciertos casos.</p>
-          <p class="section-text" style="margin-bottom:0;">Ejerce cualquiera de estos derechos escribiendo a <a href="mailto:privacidad@viantryp.com" style="color:var(--teal);">privacidad@viantryp.com</a>. Respondemos en un máximo de 5 días hábiles.</p>
+          <p class="section-text" style="margin-bottom:0;">Ejerce cualquiera de estos derechos escribiendo a <a href="mailto:hola@viantryp.com" style="color:var(--teal);">hola@viantryp.com</a>. Respondemos en un máximo de 5 días hábiles.</p>
         </div>
 
         <div id="retencion" style="margin-bottom:2.5rem;">
@@ -102,7 +102,7 @@
 
         <div id="contacto-privacidad">
           <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">Contacto</h2>
-          <p class="section-text" style="margin-bottom:0;">Para cualquier consulta sobre privacidad escríbenos a <a href="mailto:privacidad@viantryp.com" style="color:var(--teal);">privacidad@viantryp.com</a>. Somos un equipo pequeño y cercano — te responderemos de forma humana, no con plantillas.</p>
+          <p class="section-text" style="margin-bottom:0;">Para cualquier consulta sobre privacidad escríbenos a <a href="mailto:hola@viantryp.com" style="color:var(--teal);">hola@viantryp.com</a>. Somos un equipo pequeño y cercano — te responderemos de forma humana, no con plantillas.</p>
         </div>
 
       </div>
