@@ -89,7 +89,7 @@
   .avatar-wrapper {
     position: relative;
     display: inline-block;
-    margin-bottom: 16px;
+    margin-bottom: 0px;
   }
 
   .avatar-big {
@@ -161,6 +161,7 @@
     font-size: 20px;
     font-weight: 700;
     color: var(--text);
+    margin-top: 16px;
     margin-bottom: 4px;
   }
 
@@ -530,8 +531,7 @@
           </div>
           <input type="file" id="avatarUpload" accept="image/jpeg, image/png, image/webp" style="display:none">
         </div>
-        <div style="text-align: center; font-size: 11px; color: var(--text-dim); margin-top: 8px;">
-          Formatos: JPG, PNG, WEBP (Ideal 1:1)<br>
+        <div style="text-align: center; font-size: 11px; color: var(--text-dim); margin-top: 2px;">
           Tamaño máximo: 2 MB
         </div>
         <div class="profile-name" id="profileName">{{ $user->display_name }}</div>
@@ -539,7 +539,7 @@
         <div class="plan-badge" style="{{ $user->isTrialActive() ? 'background:var(--accent); color:white;' : '' }}">
           <div class="plan-dot" style="{{ $user->isTrialActive() ? 'background:white;' : '' }}"></div>
           @if($user->isTrialActive())
-            Avanzado (Prueba)
+            Avanzado (Prueba hasta {{ $user->trial_ends_at->format('d/m/Y') }})
           @else
             Plan {{ ucfirst($user->plan) }}
           @endif
@@ -795,7 +795,7 @@
             <div style="font-size: 36px; font-weight: 800; color: var(--accent); font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 1px;">
               {{ $user->plan }} 
               @if($user->isTrialActive())
-                <span style="font-size: 18px; display: block; margin-top: -5px; opacity: 0.8;">(Prueba Gratuita 7 Días)</span>
+                <span style="font-size: 18px; display: block; margin-top: -5px; opacity: 0.8;">(Prueba Gratuita hasta {{ $user->trial_ends_at->format('d/m/Y') }})</span>
               @endif
             </div>
             

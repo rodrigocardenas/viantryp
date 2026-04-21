@@ -1634,7 +1634,7 @@
             <div class="htag-dot"></div>
             Plan {{ ucfirst(auth()->user()->plan) }}
             @if(auth()->user()->isTrialActive())
-                (Prueba)
+                : prueba gratuita hasta {{ auth()->user()->trial_ends_at->format('d/m/Y') }}
             @endif
         </div>
         <h1 class="hero-title">Panel de Control</h1>
