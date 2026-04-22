@@ -24,7 +24,7 @@
       padding-bottom: 24px;
       text-align: left;
     }
-    .logo-img { height: 32px; width: auto; display: block; border: 0; }
+    .logo-img { height: 40px; width: auto; display: block; border: 0; }
 
     /* ── GREETING & INTRO ── */
     .hero { margin-bottom: 32px; }
@@ -123,7 +123,7 @@
     <!-- HEADER -->
     <div class="header">
       <a href="{{ config('app.url') }}" style="text-decoration:none;">
-        <img src="{{ config('app.url') }}/images/logo-viantryp-clean.png" alt="Viantryp" class="logo-img">
+        <img src="{{ config('app.url') }}/images/logo-viantryp-v2.png" alt="Viantryp" class="logo-img">
       </a>
     </div>
 
