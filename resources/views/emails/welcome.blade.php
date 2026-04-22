@@ -176,7 +176,7 @@
   <!-- TOPBAR -->
   <div class="topbar">
     <a href="{{ config('app.url') }}" style="display:block; text-decoration:none;">
-      <img src="{{ config('app.url') }}/images/logo-viantryp.png" alt="Viantryp" style="height: 24px; width: auto; display: block; border:0;">
+      <img src="{{ config('app.url') }}/images/logo-viantryp-black.png" alt="Viantryp" style="height: 24px; width: auto; display: block; border:0;">
     </a>
     <span class="nav-faint">Correo de bienvenida</span>
   </div>
@@ -230,18 +230,7 @@
 
     </div>
 
-    <!-- Plan -->
-    <div class="plan-card">
-      <div class="plan-ico">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      </div>
-      <div class="plan-info">
-        <div class="plan-tag">Plan activo</div>
-        <div class="plan-name">Free Forever</div>
-        <div class="plan-sub">Hasta 3 itinerarios · Editor visual incluido</div>
-      </div>
-      <a href="{{ url('/') }}#precios" class="plan-cta">Mejorar →</a>
-    </div>
+
 
     <!-- Quote -->
     <div class="quote">
@@ -253,7 +242,7 @@
 
   <!-- FOOTER -->
   <div class="footer">
-    <img src="{{ config('app.url') }}/images/logo-viantryp.png" alt="Viantryp" style="height: 18px; width: auto; display: inline-block; opacity: 0.8; margin-bottom: 10px;">
+    <img src="{{ config('app.url') }}/images/logo-viantryp-black.png" alt="Viantryp" style="height: 18px; width: auto; display: inline-block; opacity: 0.8; margin-bottom: 10px;">
     <div class="footer-links">
       <a href="{{ url('/') }}#demo" class="footer-link">Cómo funciona</a>
       <a href="{{ url('/') }}#precios" class="footer-link">Precios</a>
