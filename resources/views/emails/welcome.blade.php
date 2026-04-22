@@ -10,112 +10,78 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: #f4f7f9;
+      background: #f8fafc;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       -webkit-font-smoothing: antialiased;
-      padding: 40px 16px 64px;
+      padding: 48px 16px;
       color: #334155;
     }
 
-    .wrap { max-width: 580px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+    .wrap { max-width: 580px; margin: 0 auto; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
 
-    /* ── TOPBAR ── */
-    .topbar {
-      background: white;
-      padding: 28px 40px;
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid #f1f5f9;
-    }
-    .nav-tag { font-size: 11px; font-weight: 700; color: #94a3b8; letter-spacing: 0.5px; text-transform: uppercase; }
-
-    /* ── HERO ── */
-    .hero {
-      background: white;
-      padding: 56px 40px 48px;
+    /* ── HEADER ── */
+    .header {
+      padding: 40px 40px 20px;
       text-align: center;
-      position: relative;
     }
-    
-    .badge {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: #eef8f7;
-      border: 1px solid #ccede8;
-      border-radius: 999px;
-      padding: 6px 16px;
-      font-size: 11px; font-weight: 800;
-      letter-spacing: 1px; text-transform: uppercase;
-      color: #1a9a8a;
-      margin-bottom: 28px;
-    }
-    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #1a9a8a; }
-
-    .hero-title {
-      font-weight: 900; font-size: 42px; line-height: 1.1;
-      letter-spacing: -1.5px; color: #0f172a;
-      margin-bottom: 20px;
-    }
-    .hero-title .accent { color: #1a9a8a; }
-
-    .hero-sub {
-      font-size: 16px; line-height: 1.6; color: #64748b;
-      max-width: 420px;
-      margin: 0 auto 36px;
-    }
-
-    .cta-btn {
-      display: inline-block;
-      background: linear-gradient(135deg, #1a9a8a 0%, #147a6e 100%);
-      color: #ffffff !important;
-      text-decoration: none;
-      font-size: 16px; font-weight: 700;
-      padding: 16px 42px; border-radius: 100px;
-      box-shadow: 0 4px 14px rgba(26, 154, 138, 0.3);
-    }
+    .logo-img { height: 36px; width: auto; display: inline-block; border: 0; }
 
     /* ── BODY ── */
     .body {
-      padding: 40px;
+      padding: 0 40px 40px;
       background: white;
     }
 
-    .greeting { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 12px; letter-spacing: -0.3px; }
-    .intro { font-size: 15px; line-height: 1.65; color: #64748b; margin-bottom: 40px; }
+    .greeting { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 12px; letter-spacing: -0.4px; }
+    .intro { font-size: 15px; line-height: 1.6; color: #64748b; margin-bottom: 40px; }
 
-    /* features Section */
+    /* FEATURES */
+    .feat-section { margin-bottom: 40px; }
     .feat-label {
-      font-size: 12px; font-weight: 800; letter-spacing: 1.5px;
+      font-size: 12px; font-weight: 800; letter-spacing: 1.2px;
       text-transform: uppercase; color: #94a3b8; margin-bottom: 24px;
-      text-align: center;
     }
-    .feats { display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px; }
+    .feats { display: flex; flex-direction: column; gap: 16px; }
     
     .feat-card {
-      background: #f8fafc;
+      background: #fbfcfd;
       border: 1px solid #f1f5f9;
-      border-radius: 16px;
-      padding: 24px;
+      border-radius: 12px;
+      padding: 20px;
       display: flex;
       align-items: flex-start;
-      gap: 18px;
+      gap: 16px;
     }
     .feat-ico {
-      width: 44px; height: 44px; border-radius: 12px;
+      width: 40px; height: 40px; border-radius: 10px;
       flex-shrink: 0; display: flex; align-items: center; justify-content: center;
     }
-    .feat-ico svg { width: 22px; height: 22px; }
+    .feat-ico svg { width: 20px; height: 20px; }
     .feat-ico.green { background: #e0f2f1; color: #1a9a8a; }
     .feat-ico.navy  { background: #e2e8f0; color: #0f172a; }
     .feat-ico.lime  { background: #f0f9f1; color: #25904a; }
     
     .feat-body { flex: 1; }
     .feat-name { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
-    .feat-desc { font-size: 14px; line-height: 1.6; color: #64748b; }
+    .feat-desc { font-size: 14px; line-height: 1.55; color: #64748b; }
+
+    /* CTA */
+    .cta-area { text-align: center; padding-top: 10px; }
+    .cta-btn {
+      display: inline-block;
+      background: #1a9a8a;
+      color: #ffffff !important;
+      text-decoration: none;
+      font-size: 16px; font-weight: 700;
+      padding: 16px 48px; border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(26, 154, 138, 0.2);
+    }
 
     /* ── FOOTER ── */
     .footer {
       background: #f8fafc;
       border-top: 1px solid #f1f5f9;
-      padding: 48px 40px;
+      padding: 40px;
       text-align: center;
     }
     .footer-links {
@@ -123,15 +89,15 @@
       width: 100%;
       margin-bottom: 32px;
       border-collapse: separate;
-      border-spacing: 10px 0;
+      border-spacing: 12px 0;
     }
     .footer-link-cell {
       display: table-cell;
       width: 33.33%;
-      padding: 10px;
+      padding: 12px;
       background: white;
       border: 1px solid #f1f5f9;
-      border-radius: 10px;
+      border-radius: 8px;
     }
     .footer-link {
       font-size: 13px;
@@ -147,7 +113,7 @@
       line-height: 1.8;
     }
     .footer-contact {
-      margin-top: 20px;
+      margin-top: 24px;
       font-size: 13px;
       color: #64748b;
     }
@@ -157,64 +123,62 @@
 <body>
 <div class="wrap">
 
-  <!-- TOPBAR -->
-  <div class="topbar">
-    <a href="{{ config('app.url') }}" style="display:block; text-decoration:none;">
-      <img src="{{ config('app.url') }}/images/logo-viantryp-premium.png" alt="Viantryp" style="height: 28px; width: auto; display: block; border:0;">
+  <!-- HEADER -->
+  <div class="header">
+    <a href="{{ config('app.url') }}" style="text-decoration:none;">
+      <img src="{{ config('app.url') }}/images/logo-viantryp-clean.png" alt="Viantryp" class="logo-img">
     </a>
-    <span class="nav-tag">Bienvenida</span>
-  </div>
-
-  <!-- HERO -->
-  <div class="hero">
-    <div class="badge"><span class="badge-dot"></span>✦ Tu aventura comienza aquí</div>
-    <h1 class="hero-title">Diseña viajes<br><span class="accent">inolvidables</span></h1>
-    <p class="hero-sub">Viantryp es tu lienzoparapara crear itinerarios interactivos que tus clientes o amigos amarán.</p>
-    <a href="{{ route('trips.index') }}" class="cta-btn">Ir a mis viajes →</a>
   </div>
 
   <!-- BODY -->
   <div class="body">
 
     <p class="greeting">Hola, {{ $name }} 👋</p>
-    <p class="intro">Tu cuenta ha sido creada exitosamente. Estamos emocionados de ayudarte a transformar la forma en que planificas y compartes tus aventuras.</p>
+    <p class="intro">Tu cuenta ha sido creada exitosamente. Estamos emocionados de ayudarte a transformar la forma en que planificas y compartes tus <strong>viajes</strong>.</p>
 
-    <div class="feat-label">Lo que puedes hacer ahora</div>
-    <div class="feats">
+    <div class="feat-section">
+      <div class="feat-label">Qué puedes hacer ahora</div>
+      <div class="feats">
 
-      <!-- Card 1 -->
-      <div class="feat-card">
-        <div class="feat-ico green">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        <!-- Card 1 -->
+        <div class="feat-card">
+          <div class="feat-ico green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </div>
+          <div class="feat-body">
+            <div class="feat-name">Editor Visual Inteligente</div>
+            <div class="feat-desc">Crea rutas profesionales en minutos. Arrastra y suelta destinos, hoteles y actividades con facilidad.</div>
+          </div>
         </div>
-        <div class="feat-body">
-          <div class="feat-name">Editor Visual Inteligente</div>
-          <div class="feat-desc">Crea rutas profesionales en minutos. Arrastra y suelta destinos, hoteles y actividades con facilidad.</div>
+
+        <!-- Card 2 -->
+        <div class="feat-card">
+          <div class="feat-ico navy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <div class="feat-body">
+            <div class="feat-name">Enlaces Interactivos</div>
+            <div class="feat-desc">Comparte tus viajes mediante un link elegante. Tus clientes podrán verlo desde cualquier dispositivo móvil.</div>
+          </div>
         </div>
+
+        <!-- Card 3 -->
+        <div class="feat-card">
+          <div class="feat-ico lime">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="feat-body">
+            <div class="feat-name">Documentación en un solo lugar</div>
+            <div class="feat-desc">Adjunta reservas, tickets y vouchers directamente en el itinerario. Todo organizado, nada perdido.</div>
+          </div>
+        </div>
+
       </div>
+    </div>
 
-      <!-- Card 2 -->
-      <div class="feat-card">
-        <div class="feat-ico navy">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-        </div>
-        <div class="feat-body">
-          <div class="feat-name">Enlaces Interactivos</div>
-          <div class="feat-desc">Comparte tus viajes mediante un link elegante. Tus clientes podrán verlo desde cualquier dispositivo móvil.</div>
-        </div>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="feat-card">
-        <div class="feat-ico lime">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        </div>
-        <div class="feat-body">
-          <div class="feat-name">Documentación en un solo lugar</div>
-          <div class="feat-desc">Adjunta reservas, tickets y vouchers directamente en el itinerario. Todo organizado, nada perdido.</div>
-        </div>
-      </div>
-
+    <!-- CTA -->
+    <div class="cta-area">
+      <a href="{{ route('trips.index') }}" class="cta-btn">Ir a mis viajes →</a>
     </div>
 
   </div>
