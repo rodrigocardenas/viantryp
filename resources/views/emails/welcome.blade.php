@@ -120,13 +120,6 @@
 <div class="container">
 
   <div style="padding: 20px 0;">
-    <!-- HEADER -->
-    <div class="header">
-      <a href="{{ config('app.url') }}" style="text-decoration:none;">
-        <img src="{{ config('app.url') }}/images/logo-viantryp-v2.png" alt="Viantryp" class="logo-img">
-      </a>
-    </div>
-
     <!-- HERO -->
     <div class="hero">
       <h1 class="greeting">Hola, {{ $name }}</h1>
