@@ -66,7 +66,7 @@
     .cta-area { text-align: center; margin-bottom: 48px; }
     .cta-btn {
       display: inline-block;
-      background: #11998e; /* Teal from image */
+      background: #11998e;
       color: #ffffff !important;
       text-decoration: none;
       font-size: 16px; font-weight: 700;
@@ -75,94 +75,126 @@
 
     /* ── FOOTER ── */
     .footer {
-      padding-top: 24px;
+      background: #f8fafc;
+      border-top: 1px solid #f1f5f9;
+      padding: 48px 40px;
       text-align: center;
     }
     .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 32px;
-      margin-bottom: 24px;
+      display: table;
+      width: 100%;
+      margin-bottom: 32px;
+      border-collapse: separate;
+      border-spacing: 10px 0;
+    }
+    .footer-link-cell {
+      display: table-cell;
+      width: 33.33%;
+      padding: 10px;
+      background: white;
+      border: 1px solid #f1f5f9;
+      border-radius: 10px;
     }
     .footer-link {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 700;
       color: #1a9a8a;
       text-decoration: none;
+      display: block;
     }
+    
+    .footer-copy {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.8;
+    }
+    .footer-contact {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #64748b;
+    }
+    .footer-contact a { color: #1a9a8a; text-decoration: none; font-weight: 600; }
   </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- HEADER -->
-  <div class="header">
-    <a href="{{ config('app.url') }}" style="text-decoration:none;">
-      <img src="{{ config('app.url') }}/images/logo-viantryp-clean.png" alt="Viantryp" class="logo-img">
-    </a>
-  </div>
+  <div style="padding: 20px 0;">
+    <!-- HEADER -->
+    <div class="header">
+      <a href="{{ config('app.url') }}" style="text-decoration:none;">
+        <img src="{{ config('app.url') }}/images/logo-viantryp-clean.png" alt="Viantryp" class="logo-img">
+      </a>
+    </div>
 
-  <!-- HERO -->
-  <div class="hero">
-    <h1 class="greeting">Hola, {{ $name }}</h1>
-    <p class="intro">Tu cuenta ha sido creada exitosamente. Estamos emocionados de ayudarte a transformar la forma en que planificas y compartes tus <strong>viajes</strong>.</p>
-  </div>
+    <!-- HERO -->
+    <div class="hero">
+      <h1 class="greeting">Hola, {{ $name }}</h1>
+      <p class="intro">Tu cuenta ha sido creada exitosamente. Estamos emocionados de ayudarte a transformar la forma en que planificas y compartes tus <strong>viajes</strong>.</p>
+    </div>
 
-  <hr class="divider">
+    <hr class="divider">
 
-  <!-- FEATURES -->
-  <div class="feat-section">
-    <span class="feat-label">QUÉ PUEDES HACER AHORA</span>
-    
-    <div class="feats">
-      <!-- Feature 1 -->
-      <div class="feat-card">
-        <div class="feat-ico">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    <!-- FEATURES -->
+    <div class="feat-section">
+      <span class="feat-label">QUÉ PUEDES HACER AHORA</span>
+      
+      <div class="feats">
+        <!-- Card 1 -->
+        <div class="feat-card">
+          <div class="feat-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </div>
+          <div class="feat-body">
+            <div class="feat-name">Editor visual <span class="accent">Drag &amp; Drop</span></div>
+            <div class="feat-desc">Crea rutas profesionales en minutos. Arrastra y suelta destinos, hoteles y actividades con facilidad.</div>
+          </div>
         </div>
-        <div class="feat-body">
-          <div class="feat-name">Editor visual <span class="accent">Drag &amp; Drop</span></div>
-          <div class="feat-desc">Crea rutas profesionales en minutos. Arrastra y suelta destinos, hoteles y actividades con facilidad.</div>
-        </div>
-      </div>
 
-      <!-- Feature 2 -->
-      <div class="feat-card">
-        <div class="feat-ico">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        <!-- Card 2 -->
+        <div class="feat-card">
+          <div class="feat-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <div class="feat-body">
+            <div class="feat-name">Enlace interactivo <span class="accent">personal</span></div>
+            <div class="feat-desc">Comparte tus viajes mediante un link elegante. Tus clientes podrán verlo desde cualquier dispositivo móvil.</div>
+          </div>
         </div>
-        <div class="feat-body">
-          <div class="feat-name">Enlace interactivo <span class="accent">personal</span></div>
-          <div class="feat-desc">Comparte tus viajes mediante un link elegante. Tus clientes podrán verlo desde cualquier dispositivo móvil.</div>
-        </div>
-      </div>
 
-      <!-- Feature 3 -->
-      <div class="feat-card">
-        <div class="feat-ico">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        </div>
-        <div class="feat-body">
-          <div class="feat-name">Documentación en <span class="accent">un solo lugar</span></div>
-          <div class="feat-desc">Adjunta reservas, tickets y vouchers directamente en el itinerario. Todo organizado, nada perdido.</div>
+        <!-- Card 3 -->
+        <div class="feat-card">
+          <div class="feat-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="feat-body">
+            <div class="feat-name">Documentación en <span class="accent">un solo lugar</span></div>
+            <div class="feat-desc">Adjunta reservas, tickets y vouchers directamente en el itinerario. Todo organizado, nada perdido.</div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- CTA -->
-  <div class="cta-area">
-    <a href="{{ route('trips.index') }}" class="cta-btn">Ir a mis viajes →</a>
-  </div>
+    <!-- CTA -->
+    <div class="cta-area">
+      <a href="{{ route('trips.index') }}" class="cta-btn">Ir a mis viajes →</a>
+    </div>
 
-  <hr class="divider">
+    <hr class="divider">
 
-  <!-- FOOTER -->
-  <div class="footer">
-    <div class="footer-links">
-      <a href="{{ url('/') }}#demo" class="footer-link">Cómo funciona</a>
-      <a href="{{ url('/') }}#precios" class="footer-link">Precios</a>
-      <a href="mailto:hola@viantryp.com" class="footer-link">Contacto</a>
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="footer-links">
+        <div class="footer-link-cell"><a href="{{ url('/') }}#demo" class="footer-link">Cómo funciona</a></div>
+        <div class="footer-link-cell"><a href="{{ url('/') }}#precios" class="footer-link">Precios</a></div>
+        <div class="footer-link-cell"><a href="mailto:hola@viantryp.com" class="footer-link">Contacto</a></div>
+      </div>
+
+      <p class="footer-copy">© {{ date('Y') }} Viantryp · Diseña experiencias, colecciona momentos.<br>Este es un correo automático enviado a {{ $user_email }}.<br>Si recibiste este correo por error, puedes ignorarlo.</p>
+      
+      <div class="footer-contact">
+        ¿Necesitas ayuda? Escríbenos a <a href="mailto:hola@viantryp.com">hola@viantryp.com</a>
+      </div>
     </div>
   </div>
 
