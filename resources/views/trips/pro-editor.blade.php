@@ -151,6 +151,25 @@
       border-right: 6px solid transparent;
       border-bottom: 6px solid #1a2e2c;
     }
+    .item-attach-footer {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      background: #f8fafc;
+      color: #64748b;
+      font-weight: 500;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .item-attach-footer {
+        font-size: 12px;
+      }
+    }
   </style>
   @auth
     @include('layouts.theme-styles')

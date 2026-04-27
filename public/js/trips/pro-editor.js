@@ -749,11 +749,10 @@ function buildItem(item, idx) {
       break;
     case 'alojamiento':
       title = d.nombre || 'Alojamiento';
-      if (d.direccion) sub.push('<i class="fa-solid fa-location-dot"></i> ' + d.direccion);
-      if (d.checkin) chips.push('<i class="fa-solid fa-right-to-bracket"></i> ' + fmtDT(d.checkin.includes('T') ? d.checkin : d.checkin + 'T15:00:00'));
-      if (d.checkout) chips.push('<i class="fa-solid fa-right-from-bracket"></i> ' + fmtDT(d.checkout.includes('T') ? d.checkout : d.checkout + 'T12:00:00'));
-      if (d.habitacion) chips.push('<i class="fa-solid fa-bed"></i> ' + d.habitacion);
+      if (d.checkin) sub.push('<i class="fa-solid fa-right-to-bracket"></i> ' + fmtDT(d.checkin.includes('T') ? d.checkin : d.checkin + 'T15:00:00'));
+      if (d.checkout) sub.push('<i class="fa-solid fa-right-from-bracket"></i> ' + fmtDT(d.checkout.includes('T') ? d.checkout : d.checkout + 'T12:00:00'));
       if (d.alimentacion) chips.push('<i class="fa-solid fa-utensils"></i> ' + d.alimentacion);
+      if (d.habitacion) chips.push('<i class="fa-solid fa-bed"></i> ' + d.habitacion);
       if (d.precio) chips.push('$' + d.precio);
       break;
     case 'transporte':
@@ -789,14 +788,17 @@ function buildItem(item, idx) {
     case 'documents':
       title = d.documents_title || 'Documentos';
       if (d.documents_description) sub.push(d.documents_description);
-      const docs = d.documents ? (typeof d.documents === 'string' ? JSON.parse(d.documents) : d.documents) : [];
-      if (docs.length > 0) {
-        chips.push(`<i class="fa-solid fa-paperclip"></i> ${docs.length} archivo(s)`);
-      }
       break;
   }
-  if (d.adjunto) chips.push('<i class="fa-solid fa-paperclip"></i> 1');
-  el.innerHTML = `<div class="item-inner"><div class="item-accent-bar" style="background:${cfg.color}"></div><div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div><div class="item-content"><div class="item-type-label" style="color:${cfg.color}">${cfg.label}</div><div class="item-title">${title}</div><div class="item-subtitle" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px;">${sub.length ? `<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:8px;">${sub.map(s => `<span>${s}</span>`).join('')}</div>` : ''}${chips.length ? `<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:8px;">${chips.map(c => `<span class="item-chip">${c}</span>`).join('')}</div>` : ''}</div>${d.notas ? `<div style="font-size:12px;color:var(--text-muted);margin-top:6px;display:flex;align-items:center;justify-content:flex-start;gap:4px;"><i class="fa-solid fa-circle-info" style="font-size:10px;opacity:0.7"></i> ${d.notas}</div>` : ''}</div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
+  const docs = item.type === 'documents' ? (d.documents ? (typeof d.documents === 'string' ? JSON.parse(d.documents) : d.documents) : []) : [];
+  let attachFooter = '';
+  if (item.type === 'documents' && docs.length > 0) {
+    attachFooter = `<div class="item-attach-footer"><i class="fa-solid fa-paperclip" style="font-size:10px;"></i> ${docs.length} archivo(s)</div>`;
+  } else if (d.adjunto_url || d.adjunto) {
+    attachFooter = `<div class="item-attach-footer"><i class="fa-solid fa-paperclip" style="font-size:10px;"></i> 1 archivo</div>`;
+  }
+
+  el.innerHTML = `<div class="item-inner"><div class="item-accent-bar" style="background:${cfg.color}"></div><div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div><div class="item-content"><div class="item-type-label" style="color:${cfg.color}">${cfg.label}</div><div class="item-title">${title}</div><div class="item-subtitle" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px;">${sub.length ? `<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:8px;">${sub.map(s => `<span>${s}</span>`).join('')}</div>` : ''}${chips.length ? `<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:8px;">${chips.map(c => `<span class="item-chip">${c}</span>`).join('')}</div>` : ''}</div><div style="font-size:12px;color:var(--text-muted);margin-top:6px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;">${d.notas ? `<div style="display:flex;align-items:center;gap:4px;"><i class="fa-solid fa-circle-info" style="font-size:10px;opacity:0.7"></i> ${d.notas}</div>` : ''}${attachFooter}</div></div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
   setupReorder(el, idx); return el;
 }
 function setupReorder(el, idx) {
