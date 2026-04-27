@@ -545,8 +545,19 @@
       gap: 1.5rem;
       max-width: 1240px;
       width: 100%;
-      margin: 3.5rem auto 0;
       align-items: stretch;
+      padding-top: 1.5rem;
+    }
+
+    .annual-discount-pill {
+      background: #ecfdf5;
+      color: #10b981;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin-left: 4px;
+      border: 1px solid #d1fae5;
     }
 
     .plan {
@@ -753,7 +764,26 @@
       }
 
       .pricing-grid {
-        grid-template-columns: 1fr;
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 1.25rem;
+        padding: 2.5rem 1.5rem 3rem;
+        margin: 0 -1rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        grid-template-columns: none;
+        /* Disable grid */
+      }
+
+      .pricing-grid::-webkit-scrollbar {
+        display: none;
+      }
+
+      .plan {
+        flex-shrink: 0;
+        width: 82%;
+        scroll-snap-align: center;
       }
     }
 
@@ -3368,7 +3398,7 @@
     @media (max-width: 768px) {
       .pricing-grid {
         grid-template-columns: 1fr;
-        padding: 0 1rem;
+        padding: 25px 1rem;
       }
 
       .pricing {
@@ -3971,10 +4001,9 @@
         <p class="section-desc" style="margin:0 auto 3rem;">Sin sorpresas. Cancela cuando quieras.</p>
 
         <div class="pricing-toggle-wrap reveal">
-          <span class="toggle-label" id="labelMonthly">Mensual</span>
-          <div class="toggle-switch annual" id="priceToggle"></div>
-          <span class="toggle-label active" id="labelAnnual">Anual</span>
-          <span class="annual-discount">Ahorra hasta 25%</span>
+          <span class="toggle-label active" id="labelMonthly">Mensual</span>
+          <div class="toggle-switch" id="priceToggle"></div>
+          <span class="toggle-label" id="labelAnnual">Anual <span class="annual-discount-pill">-25%</span></span>
         </div>
       </div>
       <div class="pricing-grid">
@@ -4006,12 +4035,12 @@
           <div class="plan-desc-special">Viajeros frecuentes</div>
           <div class="plan-price">
             <span class="currency">$</span>
-            <span class="price-val" data-monthly="5.00" data-annual="4.00">4.00</span>
+            <span class="price-val" data-monthly="5.00" data-annual="4.00">5.00</span>
             <span class="period">/mes</span>
           </div>
           <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente">Facturado
-            anualmente</div>
-          <div class="plan-savings" style="opacity: 1;">Ahorras $12 al año</div>
+            mensualmente</div>
+          <div class="plan-savings" style="opacity: 0;">Ahorras $12 al año</div>
           <div class="plan-sub" style="opacity:0; pointer-events:none; visibility:hidden;">Sub Spacer</div>
           <ul class="plan-features">
             <li>3 itinerarios activos</li>
@@ -4029,12 +4058,12 @@
           <div class="plan-desc-special">Profesionales y agencias</div>
           <div class="plan-price">
             <span class="currency">$</span>
-            <span class="price-val" data-monthly="12.00" data-annual="9.00">9.00</span>
+            <span class="price-val" data-monthly="12.00" data-annual="9.00">12.00</span>
             <span class="period">/mes</span>
           </div>
           <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente">Facturado
-            anualmente</div>
-          <div class="plan-savings" style="opacity: 1;">Ahorras $36 al año</div>
+            mensualmente</div>
+          <div class="plan-savings" style="opacity: 0;">Ahorras $36 al año</div>
           <div class="plan-sub">Todo lo del plan Esencial, más:</div>
           <ul class="plan-features">
             <li>10 itinerarios activos</li>
@@ -4054,12 +4083,12 @@
           <div class="plan-desc-special">Equipos y DMCs</div>
           <div class="plan-price">
             <span class="currency">$</span>
-            <span class="price-val" data-monthly="29.00" data-annual="22.00">22.00</span>
+            <span class="price-val" data-monthly="29.00" data-annual="22.00">29.00</span>
             <span class="period">/mes</span>
           </div>
           <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente">Facturado
-            anualmente</div>
-          <div class="plan-savings" style="opacity: 1;">Ahorras $84 al año</div>
+            mensualmente</div>
+          <div class="plan-savings" style="opacity: 0;">Ahorras $84 al año</div>
           <div class="plan-sub">Todo lo del plan Avanzado, más:</div>
           <ul class="plan-features">
             <li>Itinerarios ilimitados</li>
