@@ -256,7 +256,7 @@ const C = {
   imagen: { icon: '<i class="fa-regular fa-image"></i>', label: 'Imagen', color: 'var(--primary-blue)', bg: '#e0f2fe', fields: [{ k: 'url', l: 'URL de imagen', t: 'text', ph: 'https://...' }, { k: 'caption', l: 'Pie de foto', t: 'text', ph: 'Torre Eiffel al atardecer' }, { k: 'tamano', l: 'Tamaño', t: 'select', opts: ['Pequeño', 'Mediano', 'Grande', 'Completo'] }] },
   gif: { icon: '<i class="fa-solid fa-bolt"></i>', label: 'GIF', color: '#ce3df3', bg: '#f9f0ff', fields: [{ k: 'url', l: 'URL del GIF', t: 'text', ph: 'https://...', fw: true }, { k: 'caption', l: 'Pie de GIF', t: 'text', ph: '¡Increíble!' }] },
   caja: { icon: '<i class="fa-solid fa-palette"></i>', label: 'Caja con fondo', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'titulo', l: 'Título', t: 'text', ph: 'Tip importante' }, { k: 'contenido', l: 'Contenido', t: 'textarea', ph: 'Información relevante...' }, { k: 'color_fondo', l: 'Color de fondo', t: 'color-picker', opts: ['var(--primary-blue)', '#f0567a', '#22c87a', '#f59e0b', '#0ea5d8', '#f96b3a'] }] },
-  documents: { icon: '<i class="fa-solid fa-file-lines"></i>', label: 'Documentos', color: '#0ea5d8', bg: '#e0f7ff', fields: [{ k: 'documents_title', l: 'Título de la Sección', t: 'text', ph: 'Ej: Documentos de Viaje, Vouchers, etc.', fw: true }, { k: 'documents_description', l: 'Descripción o Instrucciones', t: 'textarea', ph: 'Ej: Aquí puedes descargar tus documentos importantes...', fw: true }, { k: 'documents', l: 'Documentos', t: 'multi-file-upload', fw: true }] }
+  documents: { icon: '<i class="fa-solid fa-file-lines"></i>', label: 'Documentos', color: '#0ea5d8', bg: '#e0f7ff', fields: [{ k: 'documents_title', l: 'Título de la Sección', t: 'text', ph: 'Ej: Documentos de Viaje, Vouchers, etc.', fw: true }, { k: 'documents_description', l: 'Descripción o Instrucciones', t: 'textarea', ph: 'Ej: Aquí puedes descargar tus documentos importantes...', fw: true }, { k: 'documents', l: 'Documentos (Máx. 5 archivos, 5MB c/u)', t: 'multi-file-upload', fw: true }] }
 };
 
 // DRAG
@@ -1369,6 +1369,12 @@ function buildField(field, data) {
     fileInp.onchange = (e) => {
       const filesToUpload = Array.from(e.target.files);
       if (filesToUpload.length === 0) return;
+
+      const currentFiles = JSON.parse(hiddenInput.value);
+      if (currentFiles.length + filesToUpload.length > 5) {
+        showToast('⚠️', 'Máximo 5 archivos por sección');
+        return;
+      }
 
       addBtn.disabled = true;
       addBtn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px;"></div> Subiendo...';
