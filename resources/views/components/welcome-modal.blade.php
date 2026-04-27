@@ -106,19 +106,15 @@
             </div>
 
             <!-- PLANS GRID -->
-            <div class="p-grid-container"
-                style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px;">
+            <div class="p-grid-container">
                 @foreach($planData as $key => $data)
-                    <div class="p-card {{ isset($data['popular']) ? 'active' : '' }}"
-                        style="display: flex; flex-direction: column; height: 100%; {{ isset($data['popular']) ? 'border: 2px solid var(--accent); background: #f0f9f8;' : '' }}">
+                    <div class="p-card {{ isset($data['popular']) ? 'active' : '' }}">
                         @if(isset($data['popular']))
-                            <div class="p-popular"
-                                style="background:#0f2a3a; color:white; font-size:9px; top:-10px; font-weight:800; padding:4px 10px;">
-                                PROBAR GRATIS</div>
+                            <div class="p-popular">PROBAR GRATIS</div>
                         @endif
 
                         <div class="p-name">{{ $data['name'] }}</div>
-                        <div class="p-price" style="{{ !is_numeric($data['price_monthly']) ? 'font-size: 14px;' : '' }}">
+                        <div class="p-price" style="{{ !is_numeric($data['price_monthly']) ? 'font-size: 16px;' : '' }}">
                             @if(is_numeric($data['price_monthly']))<span class="currency">$</span>@endif<span
                                 class="p-price-val"
                                 data-monthly="{{ is_numeric($data['price_monthly']) ? $data['price_monthly'] : $data['price_monthly'] }}"
@@ -126,15 +122,13 @@
                         </div>
 
                         @if(isset($data['savings']) && $data['savings'] > 0)
-                            <div class="plan-savings-hint"
-                                style="opacity: 0; height: 0; overflow: hidden; transition: 0.3s; font-size: 10px; color: #10b981; font-weight: 700;">
+                            <div class="plan-savings-hint">
                                 Ahorras ${{ $data['savings'] }} al año</div>
                         @endif
 
-                        <div class="p-benefits" style="flex: 1; margin: 15px 0;">
+                        <div class="p-benefits">
                             @foreach($data['benefits'] as $b)
-                                <div class="p-benefit"
-                                    style="font-size: 10px; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; color: #475569; font-weight: 600;">
+                                <div class="p-benefit">
                                     <i class="fas fa-check"></i> {{ $b }}
                                 </div>
                             @endforeach
@@ -145,21 +139,161 @@
                         </div>
 
                         @if($key === 'corporativo')
-                            <button onclick="window.location.href='{{ route('contact') }}'" class="p-btn"
-                                style="margin-top: auto;">Contactar</button>
+                            <button onclick="window.location.href='{{ route('contact') }}'" class="p-btn">Contactar</button>
                         @elseif($key === 'básico' || $key === 'avanzado')
                             <button onclick="confirmInitialPlan('{{ $key }}')"
                                 class="p-btn {{ $key === 'avanzado' ? 'current' : '' }}"
-                                style="margin-top: auto; {{ $key === 'avanzado' ? 'background: var(--accent); color: white;' : 'border-color: #cbd5e1;' }}">
+                                style="{{ $key === 'avanzado' ? 'background: var(--accent); color: white;' : '' }}">
                                 {{ $key === 'avanzado' ? 'Probar 7 Días Gratis' : 'Elegir Plan' }}
                             </button>
                         @else
-                            <button onclick="checkInitialPlanGate('{{ $key }}')" class="p-btn" style="margin-top: auto;">Elegir
+                            <button onclick="checkInitialPlanGate('{{ $key }}')" class="p-btn">Elegir
                                 Plan</button>
                         @endif
                     </div>
                 @endforeach
             </div>
+
+            <style>
+                .p-grid-container {
+                    display: grid;
+                    grid-template-columns: repeat(5, 1fr);
+                    gap: 12px;
+                    margin-bottom: 20px;
+                }
+
+                .p-card {
+                    background: #ffffff;
+                    border: 1px solid #eef2f6;
+                    border-radius: 20px;
+                    padding: 20px 16px;
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    transition: 0.3s ease;
+                    position: relative;
+                }
+
+                .p-card.active {
+                    border: 2px solid var(--accent, #1a7a8a);
+                    background: #f0f9f8;
+                }
+
+                .p-popular {
+                    position: absolute;
+                    top: -10px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #0f2a3a;
+                    color: white;
+                    font-size: 8px;
+                    font-weight: 800;
+                    padding: 4px 10px;
+                    border-radius: 100px;
+                    z-index: 2;
+                }
+
+                .p-name {
+                    font-size: 13px;
+                    font-weight: 800;
+                    color: #64748b;
+                    margin-bottom: 8px;
+                    text-transform: uppercase;
+                }
+
+                .p-price {
+                    font-size: 20px;
+                    font-weight: 900;
+                    color: #0f172a;
+                    margin-bottom: 12px;
+                }
+
+                .p-price small {
+                    font-size: 10px;
+                    color: #94a3b8;
+                }
+
+                .p-benefits {
+                    flex-grow: 1;
+                    margin: 15px 0;
+                }
+
+                .p-benefit {
+                    font-size: 10px;
+                    color: #475569;
+                    font-weight: 600;
+                    margin-bottom: 4px;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                }
+
+                .p-btn {
+                    width: 100%;
+                    padding: 8px;
+                    border-radius: 10px;
+                    border: 1.5px solid #e2e8f0;
+                    background: white;
+                    color: #0f172a;
+                    font-size: 11px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    margin-top: auto;
+                    transition: 0.2s;
+                }
+
+                .p-btn.current {
+                    background: var(--accent, #1a7a8a);
+                    color: white;
+                    border-color: var(--accent, #1a7a8a);
+                }
+
+                .plan-savings-hint {
+                    font-size: 10px;
+                    color: #10b981;
+                    font-weight: 700;
+                    margin-top: 4px;
+                    opacity: 0;
+                    height: 0;
+                    overflow: hidden;
+                    transition: 0.3s;
+                }
+
+                @media (max-width: 992px) {
+                    .p-grid-container {
+                        grid-template-columns: repeat(3, 1fr);
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .p-grid-container {
+                        display: flex;
+                        overflow-x: auto;
+                        scroll-snap-type: x mandatory;
+                        gap: 16px;
+                        padding: 10px 10px 30px;
+                        margin: 0 -15px;
+                        -webkit-overflow-scrolling: touch;
+                        scrollbar-width: none;
+                    }
+
+                    .p-grid-container::-webkit-scrollbar {
+                        display: none;
+                    }
+
+                    .p-card {
+                        flex-shrink: 0;
+                        width: 270px;
+                        scroll-snap-align: center;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .p-card {
+                        width: 82%;
+                    }
+                }
+            </style>
 
             <div style="text-align: center;">
                 <p style="font-size: 11px; color: #94a3b8; font-weight: 500;">
