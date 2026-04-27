@@ -1873,7 +1873,7 @@
       <div class="hero-blob blob-3"></div>
     </div>
     <h1>Diseña tus viajes<br><em>en cuestión</em> de minutos</h1>
-    <p>Organiza rutas, vuelos y estancias en una plataforma elegante e intuitiva. Ya sea para tu próximo gran viaje
+    <p>Organiza rutas, vuelos y estancias en una plataforma simple e intuitiva. Ya sea para tu próximo gran viaje
       personal o para escalar tu negocio, Viantryp es el lienzo donde tus itinerarios cobran vida.</p>
     <div class="hero-actions">
       @auth
