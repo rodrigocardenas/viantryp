@@ -255,7 +255,8 @@ const C = {
   separador: { icon: '—', label: 'Separador', color: '#94a3b8', bg: '#f1f5f9', fields: [{ k: 'estilo', l: 'Estilo', t: 'select', opts: ['Línea simple', 'Línea con diamante', 'Punteado', 'Gradiente'] }, { k: 'etiqueta', l: 'Etiqueta (opcional)', t: 'text', ph: 'Mañana' }] },
   imagen: { icon: '<i class="fa-regular fa-image"></i>', label: 'Imagen', color: 'var(--primary-blue)', bg: '#e0f2fe', fields: [{ k: 'url', l: 'URL de imagen', t: 'text', ph: 'https://...' }, { k: 'caption', l: 'Pie de foto', t: 'text', ph: 'Torre Eiffel al atardecer' }, { k: 'tamano', l: 'Tamaño', t: 'select', opts: ['Pequeño', 'Mediano', 'Grande', 'Completo'] }] },
   gif: { icon: '<i class="fa-solid fa-bolt"></i>', label: 'GIF', color: '#ce3df3', bg: '#f9f0ff', fields: [{ k: 'url', l: 'URL del GIF', t: 'text', ph: 'https://...', fw: true }, { k: 'caption', l: 'Pie de GIF', t: 'text', ph: '¡Increíble!' }] },
-  caja: { icon: '<i class="fa-solid fa-palette"></i>', label: 'Caja con fondo', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'titulo', l: 'Título', t: 'text', ph: 'Tip importante' }, { k: 'contenido', l: 'Contenido', t: 'textarea', ph: 'Información relevante...' }, { k: 'color_fondo', l: 'Color de fondo', t: 'color-picker', opts: ['var(--primary-blue)', '#f0567a', '#22c87a', '#f59e0b', '#0ea5d8', '#f96b3a'] }] }
+  caja: { icon: '<i class="fa-solid fa-palette"></i>', label: 'Caja con fondo', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'titulo', l: 'Título', t: 'text', ph: 'Tip importante' }, { k: 'contenido', l: 'Contenido', t: 'textarea', ph: 'Información relevante...' }, { k: 'color_fondo', l: 'Color de fondo', t: 'color-picker', opts: ['var(--primary-blue)', '#f0567a', '#22c87a', '#f59e0b', '#0ea5d8', '#f96b3a'] }] },
+  documents: { icon: '<i class="fa-solid fa-file-lines"></i>', label: 'Documentos', color: '#0ea5d8', bg: '#e0f7ff', fields: [{ k: 'documents_title', l: 'Título de la Sección', t: 'text', ph: 'Ej: Documentos de Viaje, Vouchers, etc.', fw: true }, { k: 'documents_description', l: 'Descripción o Instrucciones', t: 'textarea', ph: 'Ej: Aquí puedes descargar tus documentos importantes...', fw: true }, { k: 'documents', l: 'Documentos', t: 'multi-file-upload', fw: true }] }
 };
 
 // DRAG
@@ -785,6 +786,14 @@ function buildItem(item, idx) {
       if (d.personas) chips.push('<i class="fa-solid fa-users"></i> ' + d.personas);
       if (d.precio) chips.push('$' + d.precio);
       break;
+    case 'documents':
+      title = d.documents_title || 'Documentos';
+      if (d.documents_description) sub.push(d.documents_description);
+      const docs = d.documents ? (typeof d.documents === 'string' ? JSON.parse(d.documents) : d.documents) : [];
+      if (docs.length > 0) {
+        chips.push(`<i class="fa-solid fa-paperclip"></i> ${docs.length} archivo(s)`);
+      }
+      break;
   }
   if (d.adjunto) chips.push('<i class="fa-solid fa-paperclip"></i> 1');
   el.innerHTML = `<div class="item-inner"><div class="item-accent-bar" style="background:${cfg.color}"></div><div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div><div class="item-content"><div class="item-type-label" style="color:${cfg.color}">${cfg.label}</div><div class="item-title">${title}</div><div class="item-subtitle" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px;">${sub.length ? `<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:8px;">${sub.map(s => `<span>${s}</span>`).join('')}</div>` : ''}${chips.length ? `<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:8px;">${chips.map(c => `<span class="item-chip">${c}</span>`).join('')}</div>` : ''}</div>${d.notas ? `<div style="font-size:12px;color:var(--text-muted);margin-top:6px;display:flex;align-items:center;justify-content:flex-start;gap:4px;"><i class="fa-solid fa-circle-info" style="font-size:10px;opacity:0.7"></i> ${d.notas}</div>` : ''}</div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
@@ -1298,6 +1307,114 @@ function buildField(field, data) {
     wrap.appendChild(hiddenUrl);
     wrap.appendChild(hiddenName);
     fg.appendChild(wrap);
+  }
+  else if (field.t === 'multi-file-upload') {
+    const wrap = document.createElement('div');
+    wrap.className = 'multi-file-upload-container';
+    wrap.style = 'border:1.5px dashed var(--border);border-radius:10px;padding:15px;background:var(--surface);';
+
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.dataset.key = field.k;
+    hiddenInput.value = val || '[]';
+    wrap.appendChild(hiddenInput);
+
+    const listCont = document.createElement('div');
+    listCont.className = 'uploaded-files-list';
+    listCont.style = 'margin-bottom:12px;display:flex;flex-direction:column;gap:8px;';
+    wrap.appendChild(listCont);
+
+    const renderFileList = () => {
+      const files = JSON.parse(hiddenInput.value);
+      listCont.innerHTML = '';
+      if (files.length === 0) {
+        listCont.innerHTML = '<div style="font-size:12px;color:var(--text-dim);text-align:center;padding:10px;">No hay archivos seleccionados</div>';
+      }
+      files.forEach((file, idx) => {
+        const item = document.createElement('div');
+        item.style = 'display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;border:1px solid var(--border);border-radius:8px;font-size:13px;';
+        item.innerHTML = `
+          <i class="fa-solid fa-file" style="color:var(--accent);"></i>
+          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${file.original_name || file.name}</span>
+          <button type="button" style="background:none;border:none;color:#ef4444;cursor:pointer;padding:4px;"><i class="fa-solid fa-trash"></i></button>
+        `;
+        item.querySelector('button').onclick = () => {
+          files.splice(idx, 1);
+          hiddenInput.value = JSON.stringify(files);
+          renderFileList();
+          // Optionally delete from server if it has an ID
+          const docId = file.id;
+          if (docId) {
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            fetch(`/documents/${docId}`, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': csrf } }).catch(e => console.error(e));
+          }
+        };
+        listCont.appendChild(item);
+      });
+    };
+
+    const fileInp = document.createElement('input');
+    fileInp.type = 'file';
+    fileInp.multiple = true;
+    fileInp.accept = '.pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.txt';
+    fileInp.style.display = 'none';
+
+    const addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'btn-secondary';
+    addBtn.style = 'width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;padding:10px;border-radius:8px;';
+    addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Añadir archivos';
+    addBtn.onclick = () => fileInp.click();
+
+    fileInp.onchange = (e) => {
+      const filesToUpload = Array.from(e.target.files);
+      if (filesToUpload.length === 0) return;
+
+      addBtn.disabled = true;
+      addBtn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px;"></div> Subiendo...';
+
+      const uploadPromises = filesToUpload.map(f => {
+        if (f.size > 5 * 1024 * 1024) return Promise.resolve({ error: `El archivo ${f.name} supera los 5MB` });
+        const formData = new FormData();
+        formData.append('file', f);
+        const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        return fetch(`/trips/${window.tripId}/upload-attachment`, {
+          method: 'POST',
+          headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+          body: formData
+        }).then(res => res.json());
+      });
+
+      Promise.all(uploadPromises).then(results => {
+        const currentFiles = JSON.parse(hiddenInput.value);
+        results.forEach(res => {
+          if (res.success) {
+            currentFiles.push({
+              id: res.url.match(/\/documents\/(\d+)\/download/)?.[1],
+              url: res.url,
+              original_name: res.original_name
+            });
+          } else if (res.error) {
+            showToast('⚠️', res.error);
+          }
+        });
+        hiddenInput.value = JSON.stringify(currentFiles);
+        renderFileList();
+        addBtn.disabled = false;
+        addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Añadir archivos';
+        showToast('✅', 'Archivos actualizados');
+      }).catch(err => {
+        console.error(err);
+        addBtn.disabled = false;
+        addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Añadir archivos';
+        showToast('⚠️', 'Error al subir archivos');
+      });
+    };
+
+    wrap.appendChild(addBtn);
+    wrap.appendChild(fileInp);
+    fg.appendChild(wrap);
+    renderFileList();
   }
   else {
     const inp = document.createElement('input'); inp.className = 'form-input'; inp.type = field.t || 'text'; inp.placeholder = field.ph || ''; inp.value = val; inp.dataset.key = field.k; fg.appendChild(inp);

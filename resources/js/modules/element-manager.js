@@ -182,6 +182,8 @@ class ElementManager {
                 const amount = data.total_amount || '0.00';
                 return `${symbol}${parseFloat(amount).toFixed(2)} ${data.currency || 'USD'}`;
             }
+            case 'documents':
+                return data.documents_title || 'Documentos';
             default:
                 return 'Elemento';
         }
@@ -237,6 +239,8 @@ class ElementManager {
                 return 'Resumen automático del viaje';
             case 'total':
                 return data.price_breakdown || 'Precio total del viaje';
+            case 'documents':
+                return data.documents_description || (data.documents ? `${data.documents.length} archivos` : 'Sin archivos');
             default:
                 return '';
         }

@@ -213,7 +213,8 @@ export class TimelineManager {
             'transport': 'icon-transport',
             'note': 'icon-note',
             'summary': 'icon-summary',
-            'total': 'icon-total'
+            'total': 'icon-total',
+            'documents': 'icon-documents'
         };
         return iconMap[type] || 'icon-note';
     }
@@ -226,7 +227,8 @@ export class TimelineManager {
             'transport': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
             'note': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1em; height: 1em;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>',
             'summary': '<i class="fas fa-list-check" style="font-size: 1.25em;"></i>',
-            'total': '<i class="fas fa-dollar-sign" style="font-size: 1.25em;"></i>'
+            'total': '<i class="fas fa-dollar-sign" style="font-size: 1.25em;"></i>',
+            'documents': '<i class="fa-solid fa-file-lines" style="font-size: 1.25em;"></i>'
         };
         return iconMap[type] || iconMap['note'];
     }
@@ -239,7 +241,8 @@ export class TimelineManager {
             'transport': 'Transporte',
             'note': 'Nota',
             'summary': 'Resumen',
-            'total': 'Total'
+            'total': 'Total',
+            'documents': 'Documentos'
         };
         return labels[type] || type;
     }
@@ -275,6 +278,8 @@ export class TimelineManager {
                 const amount = data.total_amount || '0.00';
                 return `${symbol}${parseFloat(amount).toFixed(2)} ${data.currency || 'USD'}`;
             }
+            case 'documents':
+                return data.documents_title || 'Documentos';
             default:
                 return 'Elemento';
         }
@@ -334,6 +339,8 @@ export class TimelineManager {
                 div.innerHTML = content;
                 const text = div.textContent || div.innerText || '';
                 return text.length > 50 ? text.substring(0, 50) + '...' : text;
+            case 'documents':
+                return data.documents_description || (data.documents ? `${data.documents.length} archivos` : 'Sin archivos');
             default:
                 return '';
         }

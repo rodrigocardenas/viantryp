@@ -344,6 +344,15 @@
                 <div class="el-sub">Guías y grupos</div>
               </div>
             </div>
+            <div class="element-card type-documentos" draggable="true" data-type="documents" data-label="Documentos">
+              <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                  class="fa-solid fa-ellipsis-vertical"></i></div>
+              <div class="el-icon"><i class="fa-solid fa-file-lines"></i></div>
+              <div class="el-info">
+                <div class="el-name">Documentos</div>
+                <div class="el-sub">Pasaportes, PDF y más</div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="sidebar-section">

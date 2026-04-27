@@ -6,6 +6,7 @@
     "transport": "Transporte",
     "note": "Nota",
     "summary": "Resumen",
-    "total": "Total"
+    "total": "Total",
+    "documents": "Documentos"
   }
 }

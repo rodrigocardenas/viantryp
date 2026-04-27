@@ -426,6 +426,49 @@ function buildPreviewHTML(data) {
         </div>`;
       }
 
+      // ── DOCUMENTOS ──
+      if (item.type === 'documents') {
+        let docList = [];
+        try {
+          let raw = d.documents || d.files;
+          if (typeof raw === 'string' && raw.trim().startsWith('[')) {
+            docList = JSON.parse(raw);
+          } else if (Array.isArray(raw)) {
+            docList = raw;
+          } else if (raw) {
+            docList = [raw];
+          }
+        } catch (e) {
+          console.error('Error parsing documents:', e);
+        }
+
+        return `<div class="pv-card">
+          <div class="pvc-section-label" style="color:var(--accent)"><i class="fa-solid fa-folder-open"></i> ${d.documents_title || 'Documentos'}</div>
+          ${d.documents_description ? `<div class="pv-media-desc" style="margin-bottom:12px">${d.documents_description}</div>` : ''}
+          <div class="pv-docs-list" style="display:flex; flex-direction:column; gap:8px;">
+            ${docList.map(doc => {
+              const isObj = typeof doc === 'object' && doc !== null;
+              const docId = isObj ? doc.id : doc;
+              const docName = isObj ? (doc.original_name || doc.name) : 'Documento';
+              const docUrl = (isObj && doc.url) ? doc.url : (origin + '/documents/' + docId + '/download');
+              
+              if (!docId && !isObj) return '';
+
+              return `
+                <a href="${fixUrl(docUrl)}" target="_blank" style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; color:#1e293b; text-decoration:none; font-size:13px; transition:all 0.2s;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:16px;"></i>
+                    <span style="font-weight:600;">${docName}</span>
+                  </div>
+                  <i class="fa-solid fa-download" style="color:var(--muted); font-size:12px;"></i>
+                </a>
+              `;
+            }).join('')}
+            ${docList.length === 0 ? '<div style="font-size:12px; color:var(--muted); text-align:center; padding:10px;">No hay documentos adjuntos</div>' : ''}
+          </div>
+        </div>`;
+      }
+
       return '';
     }).join('');
   }

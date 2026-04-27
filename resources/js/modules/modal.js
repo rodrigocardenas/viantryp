@@ -12,7 +12,8 @@ const elementLabelsData = {
     "total": "Total",
     "title": "Título",
     "text": "Párrafo",
-    "extra": "Info Extra"
+    "extra": "Info Extra",
+    "documents": "Documentos"
 };
 
 const elementFormsData = {
@@ -25,7 +26,8 @@ const elementFormsData = {
     "total": "<div class=\"form-group\"><label for=\"total-amount\">Precio total del viaje *</label><input type=\"number\" id=\"total-amount\" class=\"form-input\" placeholder=\"0\" min=\"0\" step=\"0.01\" required></div><div class=\"form-group\"><label for=\"currency\">Moneda *</label><select id=\"currency\" class=\"form-input\" required><option value=\"\">Seleccionar moneda</option><option value=\"USD\">USD - Dólar Estadounidense</option><option value=\"EUR\">EUR - Euro</option><option value=\"CLP\">CLP - Peso Chileno</option><option value=\"ARS\">ARS - Peso Argentino</option><option value=\"PEN\">PEN - Sol Peruano</option><option value=\"COP\">COP - Peso Colombiano</option><option value=\"MXN\">MXN - Peso Mexicano</option></select></div><div class=\"form-group\"><label class=\"checkbox-label\"><input type=\"checkbox\" id=\"place-at-end\"><span class=\"checkmark\"></span>Colocar al final del itinerario</label><small class=\"form-text\">Si no se marca, se colocará al inicio (después del resumen)</small></div><div class=\"form-group\"><label for=\"price-breakdown\">Desglose del precio (opcional)</label><textarea id=\"price-breakdown\" class=\"form-input\" rows=\"4\" placeholder=\"Ej: Vuelos: $500, Hoteles: $800, Actividades: $300, Transporte: $200\"></textarea></div>",
     "title": "<div class=\"form-group\"><label for=\"title-content\">Texto del Titular</label><input type=\"text\" id=\"title-content\" class=\"form-input\" placeholder=\"Ej: Día libre en la ciudad\"></div>",
     "text": "<div class=\"form-group\"><label for=\"paragraph-content\">Párrafo</label><textarea id=\"paragraph-content\" class=\"form-input\" rows=\"4\" placeholder=\"Escribe aquí el contenido del párrafo...\"></textarea></div>",
-    "extra": "<div class=\"form-group\"><label for=\"extra-title\">Título de Información</label><input type=\"text\" id=\"extra-title\" class=\"form-input\" placeholder=\"Ej: Políticas de Cancelación\"></div><div class=\"form-group\"><label for=\"extra-content\">Detalles</label><textarea id=\"extra-content\" class=\"form-input\" rows=\"4\" placeholder=\"Información importante...\"></textarea></div>"
+    "extra": "<div class=\"form-group\"><label for=\"extra-title\">Título de Información</label><input type=\"text\" id=\"extra-title\" class=\"form-input\" placeholder=\"Ej: Políticas de Cancelación\"></div><div class=\"form-group\"><label for=\"extra-content\">Detalles</label><textarea id=\"extra-content\" class=\"form-input\" rows=\"4\" placeholder=\"Información importante...\"></textarea></div>",
+    "documents": "<div class=\"form-group\"><label for=\"documents-title\">Título de la Sección</label><input type=\"text\" id=\"documents-title\" class=\"form-input\" placeholder=\"Ej: Documentos de Viaje, Vouchers, etc.\"></div><div class=\"form-group\"><label for=\"documents-description\">Descripción o Instrucciones</label><textarea id=\"documents-description\" class=\"form-input\" rows=\"3\" placeholder=\"Ej: Aquí puedes descargar tus documentos importantes...\"></textarea></div><div class=\"form-group\"><label for=\"documents-files\">Subir Archivos</label><input type=\"file\" id=\"documents-files\" class=\"form-input\" multiple accept=\".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.webp\"><small class=\"form-text\">Sube PDFs, Documentos o Imágenes relacionados</small></div>"
 };
 
 export class ModalManager {
@@ -41,7 +43,8 @@ export class ModalManager {
             flight: [],
             hotel: [],
             activity: [],
-            transport: []
+            transport: [],
+            documents: []
         };
         this.hotelAutocomplete = null;
         this.activityAutocomplete = null;
@@ -203,6 +206,10 @@ export class ModalManager {
             extra: {
                 'extra_title': 'extra-title',
                 'extra_content': 'extra-content'
+            },
+            documents: {
+                'documents_title': 'documents-title',
+                'documents_description': 'documents-description'
             }
         };
 
@@ -785,9 +792,24 @@ export class ModalManager {
             }
         });
 
-        // Include uploaded documents for this element type
+        // Include documents (merge existing and newly uploaded)
+        let allDocs = [];
+        if (Array.isArray(this.existingDocuments)) {
+            allDocs = [...this.existingDocuments];
+        }
         if (this.uploadedDocuments[this.currentElementType] && this.uploadedDocuments[this.currentElementType].length > 0) {
-            data.documents = this.uploadedDocuments[this.currentElementType].map(doc => doc.id);
+            allDocs = [...allDocs, ...this.uploadedDocuments[this.currentElementType]];
+        }
+
+        if (allDocs.length > 0) {
+            if (this.currentElementType === 'documents') {
+                data.documents = allDocs.map(doc => ({
+                    id: doc.id,
+                    original_name: doc.original_name || doc.name || 'Archivo'
+                }));
+            } else {
+                data.documents = allDocs.map(doc => doc.id);
+            }
         }
 
         // Include selected hotel data if this is a hotel element
