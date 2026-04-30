@@ -3398,7 +3398,7 @@
     @media (max-width: 768px) {
       .pricing-grid {
         grid-template-columns: 1fr;
-        padding: 25px 1rem;
+        padding: 25px 1rem
       }
 
       .pricing {

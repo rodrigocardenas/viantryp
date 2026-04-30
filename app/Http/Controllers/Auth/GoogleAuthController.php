@@ -52,6 +52,8 @@ class GoogleAuthController extends Controller
                         'google_id' => $googleUser->getId(),
                         'avatar' => $googleUser->getAvatar(),
                         'password' => bcrypt(uniqid()), // Random password for OAuth users
+                        'plan' => User::PLAN_BASICO,
+                        'country' => request()->header('cf-ipcountry') ?? null,
                     ]);
 
                     // Enviar notificación de bienvenida

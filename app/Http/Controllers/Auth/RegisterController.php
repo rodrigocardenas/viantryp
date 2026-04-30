@@ -60,6 +60,7 @@ class RegisterController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'plan' => User::PLAN_BASICO,
+            'country' => $request->header('cf-ipcountry') ?? null,
         ]);
 
         // Envío de correo de bienvenida
