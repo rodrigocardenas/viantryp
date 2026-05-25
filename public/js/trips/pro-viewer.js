@@ -202,7 +202,7 @@ function buildPreviewHTML(data) {
           </div>
           <div class="pv-chips-row">
             ${d.clase ? `<span class="pv-chip"><i class="fa-solid fa-couch"></i> ${d.clase}</span>` : ''}
-            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
+            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} USD</span>` : ''}
           </div>
           ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
           ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -250,7 +250,7 @@ function buildPreviewHTML(data) {
               <div class="pv-hotel-btns">
                 ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn" style="text-decoration:none"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
                 ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn" style="text-decoration:none"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
-                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
+                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${d.precio} USD</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -295,7 +295,7 @@ function buildPreviewHTML(data) {
             </div>
           </div>
           <div class="pv-chips-row">
-            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
+            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} USD</span>` : ''}
           </div>
           ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
           ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -334,7 +334,7 @@ function buildPreviewHTML(data) {
               <div class="pv-hotel-btns" style="margin-top:10px">
                 ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
                 ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
-                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
+                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${d.precio} USD</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -370,7 +370,7 @@ function buildPreviewHTML(data) {
               <div class="pv-hotel-btns" style="margin-top:10px">
                 ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
                 ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
-                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
+                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${d.precio} USD</span>` : ''}
                 ${d.estado_reserva && d.estado_reserva !== 'No aplica' ? `<span class="pv-action-btn"><i class="fa-solid fa-calendar-check"></i> ${d.estado_reserva}</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
@@ -410,7 +410,7 @@ function buildPreviewHTML(data) {
               ${d.descripcion ? `<div class="pv-media-desc">${d.descripcion}</div>` : ''}
               <div class="pv-chips-row" style="margin-top:8px">
                 ${d.personas ? `<span class="pv-chip"><i class="fa-solid fa-users"></i> ${d.personas} personas</span>` : ''}
-                ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} ${moneda}</span>` : ''}
+                ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} USD</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -776,7 +776,7 @@ ${hasPortada ? `
       </div>
       <div class="pv-portada-meta-cell">
         <div class="pv-pm-label">Total</div>
-        <div class="pv-pm-value highlight">${precio ? moneda + ' $' + Number(precio).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—'}</div>
+        <div class="pv-pm-value highlight">${precio ? '$' + Number(precio).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD' : '—'}</div>
       </div>
     </div>
   </div>

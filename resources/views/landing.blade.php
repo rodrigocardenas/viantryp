@@ -4101,6 +4101,10 @@
         </div>
       </div>
 
+      <div class="pricing-disclaimer reveal" style="text-align: center; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 13px; color: #64748b; font-weight: 500;">
+        * Todos los precios están expresados en USD (Dólares Estadounidenses)
+      </div>
+
       <!-- ENTERPRISE PLAN -->
       <div class="enterprise-box reveal"
         style="margin-top: 2rem; background: #0f172a; border-radius: 24px; padding: 2.5rem; color: white; border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;">

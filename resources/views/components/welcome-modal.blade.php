@@ -154,6 +154,10 @@
                 @endforeach
             </div>
 
+            <div class="pricing-disclaimer" style="text-align: center; margin-top: 20px; margin-bottom: 10px; font-size: 11px; color: #94a3b8; font-weight: 500;">
+                * Todos los precios están expresados en USD (Dólares Estadounidenses)
+            </div>
+
             <style>
                 .p-grid-container {
                     display: grid;

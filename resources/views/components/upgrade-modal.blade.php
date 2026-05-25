@@ -277,7 +277,11 @@
                 @endif
             @endif
 
-            <div class="modal-footer-links">
+            <div class="pricing-disclaimer" style="text-align: center; margin-top: 15px; margin-bottom: 5px; font-size: 11px; color: #94a3b8; font-weight: 500;">
+                * Todos los precios están expresados en USD (Dólares Estadounidenses)
+            </div>
+
+            <div class="modal-footer-links" style="margin-top: 10px;">
                 Tiempos de facturación en <a href="{{ route('home') }}#precios" target="_blank">Nuestros Planes
                     &rarr;</a>
             </div>

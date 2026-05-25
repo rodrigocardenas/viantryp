@@ -745,7 +745,7 @@ function buildItem(item, idx) {
       if (d.aerolinea) chips.push(d.aerolinea);
       if (d.vuelo) chips.push(d.vuelo);
       if (d.clase) chips.push(d.clase);
-      if (d.precio) chips.push('$' + d.precio);
+      if (d.precio) chips.push('$' + d.precio + ' USD');
       break;
     case 'alojamiento':
       title = d.nombre || 'Alojamiento';
@@ -753,7 +753,7 @@ function buildItem(item, idx) {
       if (d.checkout) sub.push('<i class="fa-solid fa-right-from-bracket"></i> ' + fmtDT(d.checkout.includes('T') ? d.checkout : d.checkout + 'T12:00:00'));
       if (d.alimentacion) chips.push('<i class="fa-solid fa-utensils"></i> ' + d.alimentacion);
       if (d.habitacion) chips.push('<i class="fa-solid fa-bed"></i> ' + d.habitacion);
-      if (d.precio) chips.push('$' + d.precio);
+      if (d.precio) chips.push('$' + d.precio + ' USD');
       break;
     case 'transporte':
       title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : (d.tipo || 'Transporte');
@@ -761,21 +761,21 @@ function buildItem(item, idx) {
       if (d.salida) sub.push('<i class="fa-solid fa-clock"></i> ' + fmtDT(d.salida));
       if (d.llegada) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.llegada));
       if (d.proveedor) chips.push(d.proveedor);
-      if (d.precio) chips.push('$' + d.precio);
+      if (d.precio) chips.push('$' + d.precio + ' USD');
       break;
     case 'actividad':
       title = d.nombre || 'Actividad';
       if (d.direccion) sub.push('<i class="fa-solid fa-location-dot"></i> ' + d.direccion);
       if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.fecha));
       if (d.duracion) chips.push('<i class="fa-solid fa-stopwatch"></i> ' + d.duracion);
-      if (d.precio) chips.push('$' + d.precio);
+      if (d.precio) chips.push('$' + d.precio + ' USD');
       break;
     case 'comida':
       title = d.restaurante || 'Comida';
       if (d.direccion) sub.push('<i class="fa-solid fa-location-dot"></i> ' + d.direccion);
       if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.fecha));
       if (d.tipo) chips.push('<i class="fa-solid fa-utensils"></i> ' + d.tipo);
-      if (d.precio) chips.push('$' + d.precio);
+      if (d.precio) chips.push('$' + d.precio + ' USD');
       break;
     case 'tour':
       title = d.nombre || 'Tour';
@@ -783,7 +783,7 @@ function buildItem(item, idx) {
       if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.fecha));
       if (d.duracion) chips.push('<i class="fa-solid fa-stopwatch"></i> ' + d.duracion);
       if (d.personas) chips.push('<i class="fa-solid fa-users"></i> ' + d.personas);
-      if (d.precio) chips.push('$' + d.precio);
+      if (d.precio) chips.push('$' + d.precio + ' USD');
       break;
     case 'documents':
       title = d.documents_title || 'Documentos';

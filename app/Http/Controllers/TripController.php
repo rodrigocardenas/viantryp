@@ -560,8 +560,8 @@ class TripController extends Controller
      */
     public function uploadAttachment(Request $request, Trip $trip): JsonResponse
     {
-        // Ensure the trip belongs to the authenticated user
-        if ($trip->user_id !== Auth::id()) {
+        // Ensure the trip belongs to the authenticated user or has edit permission
+        if (!$trip->canEdit(Auth::id())) {
             return response()->json([
                 'success' => false,
                 'message' => 'No tienes permiso para subir documentos a este viaje.'
@@ -661,8 +661,8 @@ class TripController extends Controller
      */
     public function uploadCover(Request $request, Trip $trip): JsonResponse
     {
-        // Ensure the trip belongs to the authenticated user
-        if ($trip->user_id !== Auth::id()) {
+        // Ensure the trip belongs to the authenticated user or has edit permission
+        if (!$trip->canEdit(Auth::id())) {
             return response()->json(['success' => false, 'message' => 'No tienes permiso para actualizar este viaje.'], 403);
         }
 

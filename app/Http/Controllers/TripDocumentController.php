@@ -17,8 +17,11 @@ class TripDocumentController extends Controller
      */
     public function destroy(TripDocument $document): JsonResponse
     {
-        // Ensure the document belongs to the authenticated user
-        if ($document->user_id !== Auth::id()) {
+        // Ensure the user has permission to delete: either they uploaded it, own the trip, or are an editor of the trip
+        $canDelete = Auth::id() === $document->user_id || 
+                     ($document->trip && (Auth::id() === $document->trip->user_id || $document->trip->canEdit(Auth::id())));
+
+        if (!$canDelete) {
             return response()->json([
                 'success' => false,
                 'message' => 'No tienes permiso para eliminar este documento.'
@@ -44,10 +47,10 @@ class TripDocumentController extends Controller
     {
         $token = $request->query('token');
 
-        // Access control: either authenticated owner or public access via valid trip token
+        // Access control: either authenticated owner/collaborator or public access via valid trip token
         $isAuthorized = false;
 
-        if (Auth::check() && $document->user_id === Auth::id()) {
+        if (Auth::check() && ($document->user_id === Auth::id() || ($document->trip && $document->trip->canView(Auth::id())))) {
             $isAuthorized = true;
         } elseif ($token) {
             $trip = Trip::findByShareToken($token);
