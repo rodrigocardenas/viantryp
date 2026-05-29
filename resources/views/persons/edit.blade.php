@@ -41,7 +41,7 @@
                 <label for="type" class="block text-sm font-medium text-gray-700">Tipo *</label>
                 <select name="type" id="type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
                     <option value="">Seleccionar tipo</option>
-                    <option value="client" {{ old('type', $person->type) === 'client' ? 'selected' : '' }}>Cliente</option>
+                    <option value="client" {{ old('type', $person->type) === 'client' ? 'selected' : '' }}>Viajero</option>
                     <option value="agent" {{ old('type', $person->type) === 'agent' ? 'selected' : '' }}>Agente</option>
                 </select>
                 @error('type')

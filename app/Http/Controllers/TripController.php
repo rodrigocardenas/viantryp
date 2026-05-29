@@ -67,7 +67,7 @@ class TripController extends Controller
             'all' => 'Todos los Viajes',
             'draft' => 'Viajes en Diseño',
             'sent' => 'Propuestas Enviadas',
-            'reserved' => 'Viajes Reservados',
+            'reserved' => 'Viajes Pagados Parcialmente',
             'completed' => 'Viajes Completados',
             'discarded' => 'Viajes Descartados'
         ];
@@ -325,7 +325,7 @@ class TripController extends Controller
                         $client->update(['email' => $value]);
                     } else {
                         $newClient = Person::create([
-                            'name' => 'Cliente',
+                            'name' => 'Viajero',
                             'email' => $value,
                             'type' => 'client'
                         ]);
@@ -337,7 +337,7 @@ class TripController extends Controller
         elseif ($field === 'client_name') {
             $client = $trip->persons()->where('type', 'client')->first();
             if ($client) {
-                $client->update(['name' => $value ?: 'Cliente']);
+                $client->update(['name' => $value ?: 'Viajero']);
             }
             else if (!empty($value)) {
                 $newClient = Person::create([
@@ -1001,5 +1001,36 @@ class TripController extends Controller
         }
 
         return response()->json(['success' => false, 'message' => 'Colaborador no encontrado.'], 404);
+    }
+
+    /**
+     * Leave a shared trip collaboration
+     */
+    public function leaveCollaboration(Trip $trip): JsonResponse
+    {
+        $userId = Auth::id();
+        $userEmail = Auth::user()->email;
+
+        // Verify that the user is actually a collaborator on this trip
+        $collaborator = $trip->collaborators()
+            ->where(function($q) use ($userId, $userEmail) {
+                $q->where('user_id', $userId)
+                  ->orWhere('email', $userEmail);
+            })->first();
+
+        if (!$collaborator) {
+            return response()->json(['success' => false, 'message' => 'No colaboras en este viaje'], 403);
+        }
+
+        // Send a notification to the owner of the trip BEFORE deleting the collaboration
+        $owner = $trip->user;
+        if ($owner) {
+            $owner->notify(new \App\Notifications\CollaboratorLeftTripNotification($trip, Auth::user()));
+        }
+
+        // Delete the collaboration entry
+        $collaborator->delete();
+
+        return response()->json(['success' => true, 'message' => 'Has dejado de colaborar en este viaje exitosamente.']);
     }
 }

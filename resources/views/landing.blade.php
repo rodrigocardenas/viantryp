@@ -2075,7 +2075,7 @@
                     <div class="vt-preview-hero-inner">
                       <div class="vt-preview-hero-title">Viaje a Dubai 🛫 <span class="vt-badge"><i
                             class="fas fa-circle"
-                            style="font-size: 6px; vertical-align: middle; margin-right: 4px;"></i> RESERVADO</span>
+                            style="font-size: 6px; vertical-align: middle; margin-right: 4px;"></i> PAGADO PARCIALMENTE</span>
                       </div>
                       <div class="vt-preview-hero-stats">
                         <div class="stat"><span>FECHAS</span><strong>14 may — 21 may</strong></div>

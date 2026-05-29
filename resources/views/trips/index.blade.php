@@ -1018,6 +1018,13 @@
             box-shadow: 0 3px 10px rgba(40, 120, 212, 0.18);
         }
 
+        .abt.share-edit:hover {
+            border-color: #ea580c;
+            color: #ea580c;
+            background: rgba(234, 88, 12, 0.07);
+            box-shadow: 0 3px 10px rgba(234, 88, 12, 0.18);
+        }
+
         .abt.del:hover {
             border-color: #d94040;
             color: #d94040;
@@ -1297,23 +1304,32 @@
                 display: none;
             }
 
-            /* Action Buttons Block */
+            /* Owner/Views Block */
             .trip-row>td:nth-child(8) {
+                padding: 8px 0 0 0;
+                margin-top: 8px;
+                border: none;
+                display: flex;
+                align-items: center;
+            }
+
+            /* Action Buttons Block */
+            .acts-cell {
                 padding: 16px 0 0 0;
                 margin-top: 16px;
                 border-top: 1px solid #f0f2f5;
                 display: flex;
                 gap: 10px;
-            }
-
-            .acts-cell {
                 text-align: left;
             }
 
             .acts {
-                justify-content: space-between;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 width: 100%;
                 gap: 6px;
+                flex-wrap: wrap;
             }
 
             /* Specialized Mobile Buttons */
@@ -1349,12 +1365,22 @@
                 content: 'Editar';
             }
 
-            .abt.share::before {
+            .abt.share-edit::before {
                 content: 'Compartir';
             }
 
+            .abt.share::before {
+                content: 'Enlace';
+            }
+
             .abt.more::before {
-                content: 'Más';
+                display: none !important;
+            }
+
+            .abt.more {
+                flex: 0 0 36px !important;
+                width: 36px !important;
+                padding: 0 !important;
             }
 
             .abt.del {
@@ -1413,10 +1439,16 @@
             color: var(--gray);
             cursor: pointer;
             z-index: 1;
-            transition: color 0.3s;
+            transition: color 0.2s, background-color 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .segment-item:not(.active):hover {
+            background: rgba(0, 0, 0, 0.045);
+            border-radius: 9px;
+            color: var(--ink);
         }
 
         .segment-item.active {
@@ -1600,7 +1632,7 @@
             $labels = [
                 'draft' => 'En Diseño',
                 'sent' => 'Propuesta',
-                'reserved' => 'Reservado',
+                'reserved' => 'Pagado Parcialmente',
                 'completed' => 'Pago Completo',
                 'discarded' => 'Descartado',
             ];
@@ -1671,7 +1703,7 @@
                         <path d="M21 21l-4.35-4.35" />
                     </svg>
                 </span>
-                <input type="text" placeholder="Buscar por ID, nombre, cliente..." id="searchInput"
+                <input type="text" placeholder="Buscar por ID, nombre, viajero..." id="searchInput"
                     oninput="searchTripsRows(this.value)" />
             </div>
 
@@ -1705,13 +1737,7 @@
             </div>
         </div>
 
-        <div id="table-options-bar" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-            <button id="show-columns-btn"
-                style="background: white; color: var(--ink); display: none; padding: 8px 14px; border: 1px solid var(--bdr); border-radius: 10px; font-weight: 500; font-size: 12px; cursor: pointer; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.2s;"
-                onclick="showAllColumns()">
-                <i class="fas fa-eye" style="color: var(--gray); font-size: 11px;"></i> Mostrar columnas ocultas
-            </button>
-        </div>
+
 
         <!-- Table -->
         <div class="tbl-wrap">
@@ -1736,12 +1762,6 @@
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M12 5v14M5 12l7 7 7-7" />
                                     </svg> Ordenar Z - A</div>
-                                <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
-                                <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2">
-                                        <path
-                                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" />
-                                    </svg> Ocultar campo</div>
                             </div>
                             <div class="resizer"></div>
                         </th>
@@ -1761,12 +1781,6 @@
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M12 5v14M5 12l7 7 7-7" />
                                     </svg> Ordenar Z - A</div>
-                                <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
-                                <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2">
-                                        <path
-                                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" />
-                                    </svg> Ocultar campo</div>
                             </div>
                             <div class="resizer"></div>
                         </th>
@@ -1786,17 +1800,11 @@
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M12 5v14M5 12l7 7 7-7" />
                                     </svg> Ordenar Z - A</div>
-                                <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
-                                <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2">
-                                        <path
-                                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" />
-                                    </svg> Ocultar campo</div>
                             </div>
                             <div class="resizer"></div>
                         </th>
                         <th class="sortable" style="user-select: none;">
-                            Cliente
+                            Viajero
                             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M6 9l6 6 6-6" />
@@ -1811,12 +1819,6 @@
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M12 5v14M5 12l7 7 7-7" />
                                     </svg> Ordenar Z - A</div>
-                                <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
-                                <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2">
-                                        <path
-                                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" />
-                                    </svg> Ocultar campo</div>
                             </div>
                             <div class="resizer"></div>
                         </th>
@@ -1836,17 +1838,11 @@
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M12 5v14M5 12l7 7 7-7" />
                                     </svg> Ordenar Z - A</div>
-                                <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
-                                <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2">
-                                        <path
-                                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" />
-                                    </svg> Ocultar campo</div>
                             </div>
                             <div class="resizer"></div>
                         </th>
                         <th class="sortable"
-                            style="user-select: none; {{ $activeMainTab === 'shared' ? 'min-width: 130px;' : '' }}">
+                            style="user-select: none; width: {{ $activeMainTab === 'shared' ? '190px' : '75px' }}; min-width: {{ $activeMainTab === 'shared' ? '190px' : '75px' }};">
                             @if($activeMainTab === 'shared')
                                 Propietario
                             @else
@@ -1877,16 +1873,10 @@
                                             <path d="M12 5v14M5 12l7 7 7-7" />
                                         </svg> Ordenar Menor a Mayor</div>
                                 @endif
-                                <div style="border-top: 1px solid var(--bdr); margin: 6px 0;"></div>
-                                <div class="header-dropdown-item" onclick="hideColumn(this)"><svg viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2">
-                                        <path
-                                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" />
-                                    </svg> Ocultar campo</div>
                             </div>
                             <div class="resizer"></div>
                         </th>
-                        <th class="right" style="min-width: 180px;">Acciones</th>
+                        <th class="right" style="min-width: {{ $activeMainTab === 'shared' ? '140px' : '225px' }};">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tbody">
@@ -1955,7 +1945,7 @@
                                         onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_name')"
                                         title="Haz clic para editar">
                                         <span class="name-display"
-                                            id="name-display-{{ $trip->id }}">{{ $client ? $client->name : 'Sin cliente' }}</span>
+                                            id="name-display-{{ $trip->id }}">{{ $client ? $client->name : 'Sin viajero' }}</span>
                                         <input type="text" class="field-input code-input" id="name-input-{{ $trip->id }}"
                                             style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 13px; text-transform: none;"
                                             onblur="saveTripField({{ $trip->id }}, 'client_name')"
@@ -1980,7 +1970,7 @@
                                         onchange="changeTripStatus({{ $trip->id }}, this.value)">
                                         <option value="draft" {{ $trip->status === 'draft' ? 'selected' : '' }}>En diseño</option>
                                         <option value="sent" {{ $trip->status === 'sent' ? 'selected' : '' }}>Propuesta</option>
-                                        <option value="reserved" {{ $trip->status === 'reserved' ? 'selected' : '' }}>Reservado
+                                        <option value="reserved" {{ $trip->status === 'reserved' ? 'selected' : '' }}>Pagado Parcialmente
                                         </option>
                                         <option value="completed" {{ $trip->status === 'completed' ? 'selected' : '' }}>Pago Completo
                                         </option>
@@ -2038,51 +2028,64 @@
                                                 <circle cx="12" cy="12" r="3" />
                                             </svg>
                                         </button>
-                                        <button class="abt edit" data-tip="Editar" onclick="editTrip({{ $trip->id }})">
+                                        <button class="abt edit" data-tip="Editar propuesta" onclick="editTrip({{ $trip->id }})">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                             </svg>
                                         </button>
-                                        <button class="abt share" data-tip="Enviar al cliente"
+                                        <button class="abt share" data-tip="Ver enlace del viaje"
                                             onclick="shareTripIndex({{ $trip->id }}, '{{ $trip->share_token }}')">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="22" y1="2" x2="11" y2="13" />
-                                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                                             </svg>
                                         </button>
+                                        @if($trip->user_id == Auth::id())
+                                            <button class="abt share-edit" data-tip="Compartir para editar"
+                                                onclick="openSharingModal({{ $trip->id }}, 'editor')">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                                    <circle cx="8.5" cy="7" r="4" />
+                                                    <line x1="20" y1="8" x2="20" y2="14" />
+                                                    <line x1="23" y1="11" x2="17" y2="11" />
+                                                </svg>
+                                            </button>
+                                        @endif
 
-                                        @if($activeMainTab !== 'shared')
                                             <div class="acts-menu-container">
                                                 <button class="abt more" onclick="toggleActsMenu(event, {{ $trip->id }})"
-                                                    title="Más opciones">
+                                                    data-tip="Más opciones" title="Más opciones">
                                                     <i class="fas fa-ellipsis-v"></i>
                                                 </button>
                                                 <div class="acts-menu" id="menu-{{ $trip->id }}">
-                                                    @if($trip->user_id == Auth::id())
-                                                        <div class="acts-menu-item" onclick="openSharingModal({{ $trip->id }}, 'editor')">
-                                                            <i class="fas fa-edit"></i> Compartir para editar
-                                                        </div>
-                                                        <div class="acts-menu-item" onclick="openCollaboratorsModal({{ $trip->id }})">
-                                                            <i class="fas fa-users"></i> Ver colaboradores
-                                                        </div>
-                                                    @endif
-                                                    @if($trip->user_id == Auth::id())
-                                                        <div class="acts-menu-item" onclick="openTransferModal({{ $trip->id }})">
-                                                            <i class="fas fa-exchange-alt"></i> Cambiar propietario
-                                                        </div>
-                                                        <div class="acts-menu-item" onclick="duplicateTrip({{ $trip->id }})">
-                                                            <i class="fas fa-copy"></i> Duplicar viaje
-                                                        </div>
-                                                        <div class="acts-menu-item danger" onclick="delRow({{ $trip->id }})">
+                                                    @if($activeMainTab === 'shared')
+                                                        <div class="acts-menu-item danger" onclick="confirmLeaveCollaboration({{ $trip->id }}, '{{ $trip->title }}')">
                                                             <i class="fas fa-trash"></i> Eliminar
                                                         </div>
+                                                    @else
+                                                        @if($trip->user_id == Auth::id())
+                                                            <div class="acts-menu-item" onclick="openCollaboratorsModal({{ $trip->id }})">
+                                                                <i class="fas fa-users"></i> Ver colaboradores
+                                                            </div>
+                                                        @endif
+                                                        @if($trip->user_id == Auth::id())
+                                                            <div class="acts-menu-item" onclick="openTransferModal({{ $trip->id }})">
+                                                                <i class="fas fa-exchange-alt"></i> Cambiar propietario
+                                                            </div>
+                                                            <div class="acts-menu-item" onclick="duplicateTrip({{ $trip->id }})">
+                                                                <i class="fas fa-copy"></i> Duplicar viaje
+                                                            </div>
+                                                            <div class="acts-menu-item danger" onclick="delRow({{ $trip->id }})">
+                                                                <i class="fas fa-trash"></i> Eliminar
+                                                            </div>
+                                                        @endif
                                                     @endif
                                                 </div>
                                             </div>
-                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -2220,11 +2223,11 @@
                                     <input type="text" name="title" required placeholder="Ej: Luna de Miel en Bali" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none; transition:border-color 0.2s;">
                                 </div>
                                 <div style="margin-bottom:16px;">
-                                    <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px; letter-spacing:0.5px;">Nombre del Cliente</label>
+                                    <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px; letter-spacing:0.5px;">Nombre del Viajero</label>
                                     <input type="text" name="client_name" placeholder="Ej: Juan Pérez" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none; transition:border-color 0.2s;">
                                 </div>
                                 <div style="margin-bottom:20px;">
-                                    <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px; letter-spacing:0.5px;">Correo del Cliente</label>
+                                    <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px; letter-spacing:0.5px;">Correo del Viajero</label>
                                     <input type="email" name="client_email" placeholder="ejemplo@correo.com" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none; transition:border-color 0.2s;">
                                 </div>
                                 <div style="display:flex; gap:12px;">
@@ -2326,6 +2329,34 @@
                 .then(r => r.json())
                 .then(d => {
                     if (d.success) location.reload();
+                });
+        }
+
+        function confirmLeaveCollaboration(tripId, tripTitle) {
+            const message = `¿Estás seguro de que quieres eliminar el viaje "${tripTitle}"?\n\nAl hacerlo, ya no aparecerá en tu pestaña de viajes compartidos y se le notificará automáticamente al propietario del viaje que has dejado de colaborar.`;
+            if (!confirm(message)) return;
+            
+            showNotification('Procesando', 'Eliminando viaje de compartidos...', 'info');
+            
+            fetch(`{{ url('trips') }}/${tripId}/collaborators/leave`, {
+                method: 'POST',
+                headers: { 
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.success) {
+                        showNotification('Éxito', d.message, 'success');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showNotification('Error', d.message || 'No se pudo eliminar el viaje.', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Error', 'Error de red al intentar eliminar el viaje.', 'error');
                 });
         }
 
@@ -2467,7 +2498,7 @@
                 // Start with empty value if placeholder text is present
                 if (fieldName === 'client_email' && displaySpan.textContent.trim() === 'Añadir correo') {
                     inputField.value = '';
-                } else if (fieldName === 'client_name' && displaySpan.textContent.trim() === 'Sin cliente') {
+                } else if (fieldName === 'client_name' && displaySpan.textContent.trim() === 'Sin viajero') {
                     inputField.value = '';
                 } else {
                     inputField.value = displaySpan.textContent.trim();
@@ -2505,7 +2536,7 @@
             const newValue = inputField.value.trim();
             let currentValue = displaySpan.textContent.trim();
             if (fieldName === 'client_email' && currentValue === 'Añadir correo') currentValue = '';
-            if (fieldName === 'client_name' && currentValue === 'Sin cliente') currentValue = '';
+            if (fieldName === 'client_name' && currentValue === 'Sin viajero') currentValue = '';
 
             if (newValue === currentValue) {
                 inputField.style.display = 'none';
@@ -2522,7 +2553,7 @@
                     if (fieldName === 'client_email' && !newValue) {
                         displaySpan.textContent = 'Añadir correo';
                     } else if (fieldName === 'client_name' && !newValue) {
-                        displaySpan.textContent = 'Sin cliente';
+                        displaySpan.textContent = 'Sin viajero';
                     } else {
                         displaySpan.textContent = newValue;
                     }
@@ -2821,62 +2852,7 @@
             sortTable(columnIndex, type, dir);
         }
 
-        function hideColumn(item) {
-            const th = item.closest('th');
-            const colIndex = th.cellIndex;
-            const table = document.getElementById('mainTable');
 
-            th.style.display = 'none';
-            const rows = table.rows;
-            for (let i = 0; i < rows.length; i++) {
-                if (rows[i].cells[colIndex]) {
-                    rows[i].cells[colIndex].style.display = 'none';
-                }
-            }
-
-            document.getElementById('show-columns-btn').style.display = 'flex';
-
-            const hiddenCols = JSON.parse(localStorage.getItem('tripsTableHiddenCols') || '[]');
-            if (!hiddenCols.includes(colIndex)) {
-                hiddenCols.push(colIndex);
-                localStorage.setItem('tripsTableHiddenCols', JSON.stringify(hiddenCols));
-            }
-        }
-
-        function showAllColumns() {
-            const table = document.getElementById('mainTable');
-            const rows = table.rows;
-            const headers = table.querySelectorAll('th');
-
-            // Disable fixed layout temporarily to help browser recalculate
-            table.style.tableLayout = 'auto';
-
-            for (let i = 0; i < rows.length; i++) {
-                for (let j = 0; j < rows[i].cells.length; j++) {
-                    rows[i].cells[j].style.display = '';
-                }
-            }
-
-            // Re-apply saved widths
-            const savedWidths = JSON.parse(localStorage.getItem('tripsTableWidths') || '{}');
-            let hasWidths = false;
-            headers.forEach((th, index) => {
-                if (savedWidths[index]) {
-                    th.style.width = savedWidths[index];
-                    hasWidths = true;
-                } else {
-                    th.style.width = '';
-                }
-            });
-
-            // Re-enable fixed layout if we had saved widths
-            if (hasWidths) {
-                table.style.tableLayout = 'fixed';
-            }
-
-            document.getElementById('show-columns-btn').style.display = 'none';
-            localStorage.removeItem('tripsTableHiddenCols');
-        }
 
         // Column Resizer Logic
         function initTableResizer() {
@@ -2962,22 +2938,6 @@
             if (Object.keys(savedWidths).length > 0) {
                 table.style.tableLayout = 'fixed';
             }
-
-            const hiddenCols = JSON.parse(localStorage.getItem('tripsTableHiddenCols') || '[]');
-            if (hiddenCols.length > 0) {
-                hiddenCols.forEach(colIndex => {
-                    if (headers[colIndex]) {
-                        headers[colIndex].style.display = 'none';
-                        const rows = table.rows;
-                        for (let i = 0; i < rows.length; i++) {
-                            if (rows[i].cells[colIndex]) {
-                                rows[i].cells[colIndex].style.display = 'none';
-                            }
-                        }
-                    }
-                });
-                document.getElementById('show-columns-btn').style.display = 'flex';
-            }
         }
 
         function initTutorial(force = false) {
@@ -3027,21 +2987,21 @@
                         element: window.innerWidth > 768 ? '.toolbar .btn-create' : '.btn-mobile-only',
                         popover: {
                             title: 'Crear Viaje',
-                            description: 'Utiliza este botón para comenzar a diseñar una nueva experiencia para tus clientes.'
+                            description: 'Utiliza este botón para comenzar a diseñar una nueva experiencia para tus viajeros.'
                         }
                     },
                     {
                         element: '.sbox',
                         popover: {
                             title: 'Buscador Inteligente',
-                            description: 'Encuentra cualquier viaje rápidamente por nombre, destino o cliente.'
+                            description: 'Encuentra cualquier viaje rápidamente por nombre, destino o viajero.'
                         }
                     },
                     {
                         element: '.tbl-wrap',
                         popover: {
                             title: 'Gestión de Viajes',
-                            description: 'Aquí verás tus itinerarios. Configura tu vista a tu manera: cambia el tamaño de las columnas, ordénalas o escóndelas según lo que necesites.'
+                            description: 'Aquí verás tus itinerarios. Configura tu vista a tu manera: cambia el tamaño de las columnas u ordénalas según lo que necesites.'
                         }
                     }
                 ],

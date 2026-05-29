@@ -27,11 +27,11 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="client-name">Nombre del Cliente</label>
-                    <input type="text" id="client-name" name="client_name" placeholder="Nombre del cliente">
+                    <label for="client-name">Nombre del Viajero</label>
+                    <input type="text" id="client-name" name="client_name" placeholder="Nombre del viajero">
                 </div>
                 <div class="form-group">
-                    <label for="client-email">Correo del Cliente</label>
+                    <label for="client-email">Correo del Viajero</label>
                     <input type="email" id="client-email" name="client_email" placeholder="correo@ejemplo.com">
                 </div>
             </div>
@@ -315,7 +315,7 @@ function createTrip() {
 
                 let html = '';
                 if (client) {
-                    html += `<div class="info-item"><label>Cliente:</label><span>${client.name} (${client.email})</span></div>`;
+                    html += `<div class="info-item"><label>Viajero:</label><span>${client.name} (${client.email})</span></div>`;
                 }
                 if (agent) {
                     html += `<div class="info-item"><label>Responsable:</label><span>${agent.name}</span></div>`;

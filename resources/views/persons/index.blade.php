@@ -38,7 +38,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $person->phone ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $person->type === 'client' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' }}">
-                                {{ $person->type === 'client' ? 'Cliente' : 'Agente' }}
+                                {{ $person->type === 'client' ? 'Viajero' : 'Agente' }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">

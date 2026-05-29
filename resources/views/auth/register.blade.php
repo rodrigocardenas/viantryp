@@ -587,7 +587,7 @@
           <div class="field">
             <label for="password">Contraseña</label>
             <div class="input-wrap @error('password') has-error @enderror">
-              <input id="password" name="password" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" oninput="checkPw(this.value)" required />
+              <input id="password" name="password" type="password" placeholder="Mínimo 8 caracteres, 1 mayúscula y 1 símbolo" autocomplete="new-password" oninput="checkPw(this.value)" required />
               <button class="toggle-pw input-icon" onclick="togglePw('password','eye1')" type="button">
                 <svg id="eye1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -604,15 +604,12 @@
                 <div class="strength-bar" id="bar1"></div>
                 <div class="strength-bar" id="bar2"></div>
                 <div class="strength-bar" id="bar3"></div>
-                <div class="strength-bar" id="bar4"></div>
               </div>
               <div class="strength-label" id="strength-label">Escribe tu contraseña</div>
               <div class="pw-reqs">
                 <div class="req" id="req-len"><span class="req-dot"></span>8 caracteres</div>
-                <div class="req" id="req-upper"><span class="req-dot"></span>Mayúscula</div>
-                <div class="req" id="req-lower"><span class="req-dot"></span>Minúscula</div>
-                <div class="req" id="req-num"><span class="req-dot"></span>Número</div>
-                <div class="req" id="req-special"><span class="req-dot"></span>Carácter especial</div>
+                <div class="req" id="req-upper"><span class="req-dot"></span>1 Mayúscula</div>
+                <div class="req" id="req-special"><span class="req-dot"></span>1 Símbolo</div>
               </div>
             </div>
           </div>
@@ -684,41 +681,35 @@
       const reqs = {
         len:     val.length >= 8,
         upper:   /[A-Z]/.test(val),
-        lower:   /[a-z]/.test(val),
-        num:     /[0-9]/.test(val),
-        special: /[@$!%*?&#^()_\-+=]/.test(val)
+        special: /[^A-Za-z0-9]/.test(val)
       };
 
       Object.entries(reqs).forEach(([key, met]) => {
-        document.getElementById('req-' + key).classList.toggle('met', met);
+        const el = document.getElementById('req-' + key);
+        if (el) el.classList.toggle('met', met);
       });
 
       const score = Object.values(reqs).filter(Boolean).length;
-      const bars = [document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3'), document.getElementById('bar4')];
+      const bars = [document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3')];
       const label = document.getElementById('strength-label');
 
       bars.forEach(b => b.className = 'strength-bar');
 
-      if (score <= 1) {
+      if (score === 1) {
         bars[0].classList.add('weak');
-        label.textContent = 'Muy débil';
-        label.style.color = '#e74c3c';
-      } else if (score === 2) {
-        bars[0].classList.add('weak'); bars[1].classList.add('weak');
         label.textContent = 'Débil';
         label.style.color = '#e74c3c';
-      } else if (score === 3) {
-        bars[0].classList.add('medium'); bars[1].classList.add('medium'); bars[2].classList.add('medium');
+      } else if (score === 2) {
+        bars[0].classList.add('medium'); bars[1].classList.add('medium');
         label.textContent = 'Regular';
         label.style.color = '#f39c12';
-      } else if (score === 4) {
-        bars.slice(0,4).forEach(b => b.classList.add('medium'));
-        label.textContent = 'Buena';
-        label.style.color = '#f39c12';
-      } else {
+      } else if (score === 3) {
         bars.forEach(b => b.classList.add('strong'));
         label.textContent = '¡Contraseña segura!';
         label.style.color = '#27ae60';
+      } else {
+        label.textContent = 'Escribe tu contraseña';
+        label.style.color = 'var(--gray)';
       }
     }
   </script>

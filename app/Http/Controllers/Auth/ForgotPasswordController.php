@@ -60,10 +60,16 @@ class ForgotPasswordController extends Controller
                 'required',
                 'confirmed',
                 'min:8',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/'
+                'regex:/^(?=.*[A-Z])(?=.*[^A-Za-z0-9])/'
             ],
         ], [
-            'password.regex' => 'La contraseña debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial.',
+            'token.required' => 'El token de recuperación es obligatorio.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'El correo electrónico debe ser una dirección válida.',
+            'email.max' => 'El correo electrónico no puede tener más de 255 caracteres.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
+            'password.regex' => 'La contraseña debe contener al menos una letra mayúscula y un símbolo.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
         ]);
 

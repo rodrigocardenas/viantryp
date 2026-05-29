@@ -29,6 +29,16 @@ class SyncUserRegistration implements ShouldQueue
      */
     public function handle(DiscordService $discord, GoogleSheetService $googleSheets): void
     {
+        $email = $this->user->email;
+        $isTest = str_ends_with($email, '@test.com') 
+            || str_ends_with($email, '@viantryp.com') 
+            || str_contains($email, '+test');
+
+        if ($isTest) {
+            \Log::info("SyncUserRegistration skipped for test user: {$email}");
+            return;
+        }
+
         // 1. Enviar a Discord
         try {
             $discord->sendUserRegistrationNotification($this->user);

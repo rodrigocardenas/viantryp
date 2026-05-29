@@ -730,7 +730,7 @@
             element: '.header-subtitle',
             popover: {
               title: '¡Bienvenido!',
-              description: 'Este es el Editor de Itinerarios. Aquí podrás diseñar cada detalle de la experiencia para tu cliente.'
+              description: 'Este es el Editor de Itinerarios. Aquí podrás diseñar cada detalle de la experiencia para tu viajero.'
             }
           },
           {

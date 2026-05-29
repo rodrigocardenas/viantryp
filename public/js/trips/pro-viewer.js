@@ -4,7 +4,7 @@ function buildPreviewHTML(data) {
   const statusMap = {
     'draft': { label: 'En Diseño', bg: '#e0f2fe', color: '#1d5fa8', bdr: '#bae6fd' },
     'sent': { label: 'Propuesta', bg: '#e8f8ff', color: '#0284c7', bdr: '#bae6fd' },
-    'reserved': { label: 'Reservado', bg: '#dcfce7', color: '#15803d', bdr: '#bbf7d0' },
+    'reserved': { label: 'Pagado Parcialmente', bg: '#dcfce7', color: '#15803d', bdr: '#bbf7d0' },
     'completed': { label: 'Pago Completo', bg: '#eef2f6', color: '#0f766e', bdr: '#cbd5e1' },
     'discarded': { label: 'Descartado', bg: '#fee2e2', color: '#b43030', bdr: '#fecaca' }
   };
