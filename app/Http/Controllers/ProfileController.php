@@ -84,17 +84,26 @@ class ProfileController extends Controller
     public function updateAgency(Request $request)
     {
         $user = auth()->user();
-        $validated = $request->validate([
+        $rules = [
             'agency_name' => 'nullable|string|max:255',
             'agency_website' => 'nullable|string|max:255',
             'agency_whatsapp' => 'nullable|string|max:20',
             'agency_slogan' => 'nullable|string|max:255',
             'display_name_type' => 'nullable|string|in:personal,agency',
-        ]);
+        ];
 
+        if ($user->account_type === 'agency') {
+            $rules['name'] = 'required|string|max:255';
+            $rules['last_name'] = 'nullable|string|max:255';
+            $rules['phone'] = 'nullable|string|max:20';
+            $rules['country'] = 'nullable|string|max:100';
+            $rules['bio'] = 'nullable|string|max:1000';
+        }
+
+        $validated = $request->validate($rules);
         $user->update($validated);
 
-        return response()->json(['success' => true, 'message' => 'Información de la agencia actualizada']);
+        return response()->json(['success' => true, 'message' => 'Información de la agencia y agente actualizada']);
     }
 
     public function updateTheme(Request $request)
@@ -308,11 +317,16 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'plan' => 'required|string|in:básico,esencial,avanzado,colaborativo,corporativo',
+            'account_type' => 'required|string|in:personal,agency',
         ]);
 
         $plan = $validated['plan'];
+        $accountType = $validated['account_type'];
+
         $updateData = [
             'plan' => $plan,
+            'account_type' => $accountType,
+            'display_name_type' => $accountType,
             'initial_plan_chosen_at' => now(),
         ];
 
@@ -325,8 +339,27 @@ class ProfileController extends Controller
 
         return response()->json([
             'success' => true, 
-            'message' => 'Plan seleccionado correctamente. ¡Disfruta de Viantryp!',
+            'message' => 'Plan y tipo de cuenta seleccionados correctamente. ¡Disfruta de Viantryp!',
             'plan' => $plan
+        ]);
+    }
+
+    public function changeAccountType(Request $request)
+    {
+        $user = auth()->user();
+        $validated = $request->validate([
+            'account_type' => 'required|string|in:personal,agency',
+        ]);
+
+        $type = $validated['account_type'];
+        $user->update([
+            'account_type' => $type,
+            'display_name_type' => $type,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tipo de cuenta cambiado a ' . ($type === 'personal' ? 'Personal' : 'Agencia')
         ]);
     }
 }

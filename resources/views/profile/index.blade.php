@@ -548,14 +548,17 @@
 
       <!-- Sidebar Nav -->
       <div class="card sidebar-nav">
-        <button class="nav-item active" data-section="info">
-          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          Información Personal
-        </button>
-        <button class="nav-item" data-section="agencia">
-          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-          Mi Agencia
-        </button>
+        @if($user->account_type === 'personal')
+          <button class="nav-item active" data-section="info">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Información Personal
+          </button>
+        @else
+          <button class="nav-item active" data-section="agencia">
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            Mi Agencia
+          </button>
+        @endif
         <button class="nav-item" data-section="tema">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10H2A10 10 0 0 1 12 2z"/><path d="M2 12h20"/></svg>
           Tema e Identidad
@@ -576,18 +579,13 @@
     <div class="main-content">
 
       <!-- INFORMACIÓN PERSONAL -->
+      @if($user->account_type === 'personal')
       <div class="card tab-section active" id="section-info">
         <div class="card-body">
           <div class="section-label">Información Personal</div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Nombre</label>
-              <input type="text" id="inputNombre" value="{{ $user->name }}">
-            </div>
-            <div class="form-group">
-              <label>Apellido</label>
-              <input type="text" id="inputApellido" value="{{ $user->last_name }}">
-            </div>
+          <div class="form-group">
+            <label>Nombre completo</label>
+            <input type="text" id="inputNombre" value="{{ trim($user->name . ' ' . $user->last_name) }}">
           </div>
           <div class="form-group">
             <label>Correo Electrónico</label>
@@ -612,16 +610,9 @@
           </div>
           <div class="form-group">
             <label>Sobre mí</label>
-            <textarea id="inputBio" placeholder="Cuéntale a tus clientes sobre tu experiencia como consultor de viajes...">{{ $user->bio }}</textarea>
+            <textarea id="inputBio" placeholder="Cuéntale a tus viajeros sobre tu experiencia como consultor de viajes...">{{ $user->bio }}</textarea>
           </div>
           
-          <div class="form-group" id="personalNameOption" style="margin-top: 24px; padding: 16px; background: var(--accent-light); border-radius: 12px; border: 1px solid var(--accent-border);">
-            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; text-transform: none; letter-spacing: normal; color: var(--accent-dark); margin-bottom: 0; font-family: 'Barlow', sans-serif;">
-              <input type="radio" name="displayNameType" value="personal" {{ $user->display_name_type == 'personal' ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: var(--accent);">
-              <span style="font-size: 14px;">Presentarme con mi <strong>nombre personal</strong> en mis propuestas y perfil.</span>
-            </label>
-          </div>
-
           <div class="btn-row">
             <button class="btn-save" id="savePersonalInfo">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -629,24 +620,76 @@
             </button>
             <button class="btn-secondary">Cancelar</button>
           </div>
+
+          <div style="border-top: 1px solid #f0f2f5; margin: 30px 0 20px; padding-top: 24px;"></div>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0; flex-wrap: wrap; gap: 16px;">
+            <div style="flex: 1; min-width: 250px;">
+              <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin: 0 0 4px; font-family: 'DM Sans', sans-serif;">¿Trabajas como negocio o agencia de viajes?</h3>
+              <p style="font-size: 12px; color: #64748b; margin: 0; line-height: 1.4; font-weight: 500;">
+                Cambia tu tipo de perfil para habilitar la personalización de marca corporativa, subir tu logo, sitio web, eslogan y presentarte profesionalmente ante tus viajeros.
+              </p>
+            </div>
+            <button type="button" onclick="requestChangeAccountType('agency')" class="p-btn" style="width: auto; margin: 0; padding: 10px 20px; background: var(--accent); color: white; border-color: var(--accent); border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.2s;">
+              Cambiar a Perfil de Agencia
+            </button>
+          </div>
         </div>
       </div>
+      @endif
 
       <!-- AGENCIA -->
-      <div class="card tab-section" id="section-agencia">
+      @if($user->account_type === 'agency')
+      <div class="card tab-section {{ $user->account_type === 'agency' ? 'active' : '' }}" id="section-agencia">
         <div class="card-body">
-          <div class="section-label">Datos de la Agencia</div>
+          
+          <!-- DATOS DEL AGENTE O ENCARGADO DE LA CUENTA -->
+          <div class="section-label" style="margin-bottom: 8px;">Datos del Agente o Encargado de la Cuenta</div>
+          <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">Estos son tus datos como administrador y representante principal de la cuenta.</p>
+          
+          <div class="form-group">
+            <label>Nombre completo</label>
+            <input type="text" id="inputNombre" value="{{ trim($user->name . ' ' . $user->last_name) }}">
+          </div>
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" value="{{ auth()->user()->email }}" disabled>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Teléfono del Agente</label>
+              <input type="tel" id="inputPhone" value="{{ $user->phone }}" placeholder="+57 300 000 0000">
+            </div>
+            <div class="form-group">
+              <label>País del Agente</label>
+              <select id="inputCountry">
+                <option value="Colombia" {{ $user->country == 'Colombia' ? 'selected' : '' }}>Colombia</option>
+                <option value="México" {{ $user->country == 'México' ? 'selected' : '' }}>México</option>
+                <option value="Argentina" {{ $user->country == 'Argentina' ? 'selected' : '' }}>Argentina</option>
+                <option value="España" {{ $user->country == 'España' ? 'selected' : '' }}>España</option>
+                <option value="Chile" {{ $user->country == 'Chile' ? 'selected' : '' }}>Chile</option>
+                <option value="Perú" {{ $user->country == 'Perú' ? 'selected' : '' }}>Perú</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid #f0f2f5; margin-bottom: 24px; padding-top: 24px;"></div>
+
+          <!-- DATOS DE LA AGENCIA -->
+          <div class="section-label" style="margin-bottom: 8px;">Datos de la Agencia</div>
+          <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">Personaliza la imagen y los datos de contacto corporativos de tu negocio.</p>
+          
           <div class="form-group">
             <label>Nombre de la Agencia</label>
             <input type="text" id="inputAgencia" value="{{ $user->agency_name }}">
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Sitio Web</label>
+              <label>Sitio Web de la Agencia</label>
               <input type="text" id="inputWebsite" value="{{ $user->agency_website }}" placeholder="https://miagencia.com">
             </div>
             <div class="form-group">
-              <label>WhatsApp</label>
+              <label>WhatsApp de la Agencia</label>
               <input type="tel" id="inputWhatsapp" value="{{ $user->agency_whatsapp }}" placeholder="+57 300 000 0000">
             </div>
           </div>
@@ -654,7 +697,7 @@
             <label>Eslogan</label>
             <input type="text" id="inputSlogan" value="{{ $user->agency_slogan }}" placeholder="Tu agencia de confianza para viajar el mundo">
           </div>
-          <div class="form-group">
+          <div class="form-group" style="margin-bottom: 30px;">
             <label>Logo de la Agencia</label>
             <div class="logo-upload-area" id="logoDropArea">
               <input type="file" accept="image/*">
@@ -665,25 +708,59 @@
                 <div class="upload-text">Sube el logo de tu agencia</div>
                 <div class="upload-hint">PNG, SVG o JPG · Máx. 2MB · Recomendado 200×200px</div>
               </div>
-              <img id="logoPreview" class="logo-preview" src="" alt="" style="display:none">
+              <img id="logoPreview" class="logo-preview" src="{{ $user->agency_logo ? (str_starts_with($user->agency_logo, 'http') ? $user->agency_logo : asset('storage/' . $user->agency_logo)) : '' }}" alt="" style="{{ $user->agency_logo ? '' : 'display:none' }}">
             </div>
           </div>
 
-          <div class="form-group" id="agencyNameOption" style="margin-top: 24px; padding: 16px; background: var(--accent-light); border-radius: 12px; border: 1px solid var(--accent-border);">
-            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; text-transform: none; letter-spacing: normal; color: var(--accent-dark); margin-bottom: 0; font-family: 'Barlow', sans-serif;">
-              <input type="radio" name="displayNameType" value="agency" {{ $user->display_name_type == 'agency' ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: var(--accent);">
-              <span style="font-size: 14px;">Presentarme con el <strong>nombre de mi agencia</strong> en mis propuestas y perfil.</span>
-            </label>
+          <!-- OPCIONES DE PRESENTACIÓN -->
+          <div style="margin-top: 28px; margin-bottom: 28px;">
+            <label style="font-size: 14px; font-weight: 600; color: var(--text); text-transform: none; margin-bottom: 4px; display: block; letter-spacing: normal; font-family: 'DM Sans', sans-serif;">¿Cómo quieres presentarte en tus propuestas y perfil?</label>
+            <p style="font-size: 12.5px; color: var(--muted); margin: 0 0 16px; line-height: 1.4; font-weight: 500;">Elige la identidad visual que verán tus viajeros en sus itinerarios.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <!-- Option Agent -->
+                <label class="presentation-option-label" id="label-present-agent" style="display: flex; flex-direction: column; padding: 14px 16px; background: white; border: 1.5px solid {{ $user->display_name_type === 'personal' ? 'var(--accent)' : 'var(--border)' }}; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); text-transform: none; letter-spacing: normal;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+                        <input type="radio" name="displayNameType" value="personal" {{ $user->display_name_type === 'personal' ? 'checked' : '' }} style="width: 15px; height: 15px; accent-color: var(--accent);" onchange="updatePresentationBorder()">
+                        <span style="font-size: 13.5px; font-weight: 600; color: var(--text);">Presentación de agente</span>
+                    </div>
+                    <span style="font-size: 11.5px; color: var(--muted); line-height: 1.4; padding-left: 25px;">Mostrar tu nombre personal y foto de perfil.</span>
+                </label>
+                
+                <!-- Option Agency -->
+                <label class="presentation-option-label" id="label-present-agency" style="display: flex; flex-direction: column; padding: 14px 16px; background: white; border: 1.5px solid {{ $user->display_name_type === 'agency' ? 'var(--accent)' : 'var(--border)' }}; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); text-transform: none; letter-spacing: normal;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+                        <input type="radio" name="displayNameType" value="agency" {{ $user->display_name_type === 'agency' ? 'checked' : '' }} style="width: 15px; height: 15px; accent-color: var(--accent);" onchange="updatePresentationBorder()">
+                        <span style="font-size: 13.5px; font-weight: 600; color: var(--text);">Presentación de agencia</span>
+                    </div>
+                    <span style="font-size: 11.5px; color: var(--muted); line-height: 1.4; padding-left: 25px;">Mostrar el logo, nombre corporativo y eslogan.</span>
+                </label>
+            </div>
           </div>
 
           <div class="btn-row">
             <button class="btn-save" id="saveAgencyInfo">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-              Guardar Agencia
+              Guardar Información
+            </button>
+          </div>
+
+          <div style="border-top: 1px solid #f0f2f5; margin: 30px 0 20px; padding-top: 24px;"></div>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0; flex-wrap: wrap; gap: 16px;">
+            <div style="flex: 1; min-width: 250px;">
+              <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin: 0 0 4px; font-family: 'DM Sans', sans-serif;">¿Usas Viantryp solo para viajes personales?</h3>
+              <p style="font-size: 12px; color: #64748b; margin: 0; line-height: 1.4; font-weight: 500;">
+                Si prefieres un perfil simplificado y no necesitas las herramientas de marca de empresa ni subir logo, puedes desactivar la vista de marca corporativa en cualquier momento.
+              </p>
+            </div>
+            <button type="button" onclick="requestChangeAccountType('personal')" class="p-btn" style="width: auto; margin: 0; padding: 10px 20px; background: var(--accent); color: white; border-color: var(--accent); border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.2s;">
+              Cambiar a Perfil Personal
             </button>
           </div>
         </div>
       </div>
+      @endif
 
       <!-- TEMA -->
       <div class="card tab-section" id="section-tema">
@@ -900,42 +977,72 @@
     }
 
     // SAVE PERSONAL INFO
-    document.getElementById('savePersonalInfo').addEventListener('click', function() {
-      const data = {
-        name: document.getElementById('inputNombre').value,
-        last_name: document.getElementById('inputApellido').value,
-        phone: document.getElementById('inputPhone').value,
-        country: document.getElementById('inputCountry').value,
-        bio: document.getElementById('inputBio').value,
-        display_name_type: document.querySelector('input[name="displayNameType"]:checked').value
-      };
+    const savePersonalBtn = document.getElementById('savePersonalInfo');
+    if (savePersonalBtn) {
+      savePersonalBtn.addEventListener('click', function() {
+        const fullName = document.getElementById('inputNombre').value.trim();
+        const parts = fullName.split(/\s+/);
+        const firstName = parts[0] || '';
+        const lastName = parts.slice(1).join(' ') || '';
 
-      fetch('{{ route('profile.update.personal') }}', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-      .then(res => res.json())
-      .then(res => {
-        if(res.success) showToast(res.message);
+        const data = {
+          name: firstName,
+          last_name: lastName,
+          phone: document.getElementById('inputPhone').value,
+          country: document.getElementById('inputCountry').value,
+          bio: document.getElementById('inputBio').value,
+          display_name_type: 'personal'
+        };
+
+        fetch('{{ route('profile.update.personal') }}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(res => {
+          if(res.success) {
+            showToast(res.message);
+            const nameDisplay = document.getElementById('profileName');
+            if (nameDisplay) {
+              nameDisplay.textContent = data.name;
+            }
+          }
+        });
       });
-    });
+    }
 
     // SAVE AGENCY INFO
-    document.getElementById('saveAgencyInfo').addEventListener('click', function() {
-      const data = {
-        agency_name: document.getElementById('inputAgencia').value,
-        agency_website: document.getElementById('inputWebsite').value,
-        agency_whatsapp: document.getElementById('inputWhatsapp').value,
-        agency_slogan: document.getElementById('inputSlogan').value,
-        display_name_type: document.querySelector('input[name="displayNameType"]:checked').value
-      };
+    const saveAgencyBtn = document.getElementById('saveAgencyInfo');
+    if (saveAgencyBtn) {
+      saveAgencyBtn.addEventListener('click', function() {
+        const data = {
+          agency_name: document.getElementById('inputAgencia').value,
+          agency_website: document.getElementById('inputWebsite').value,
+          agency_whatsapp: document.getElementById('inputWhatsapp').value,
+          agency_slogan: document.getElementById('inputSlogan').value,
+          display_name_type: document.querySelector('input[name="displayNameType"]:checked').value
+        };
 
-      fetch('{{ route('profile.update.agency') }}', {
+        @if($user->account_type === 'agency')
+          const fullName = document.getElementById('inputNombre').value.trim();
+          const parts = fullName.split(/\s+/);
+          const firstName = parts[0] || '';
+          const lastName = parts.slice(1).join(' ') || '';
+
+          data.name = firstName;
+          data.last_name = lastName;
+          data.phone = document.getElementById('inputPhone').value;
+          data.country = document.getElementById('inputCountry').value;
+          const bioEl = document.getElementById('inputBio');
+          data.bio = bioEl ? bioEl.value : '{{ addslashes($user->bio) }}';
+        @endif
+
+        fetch('{{ route('profile.update.agency') }}', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -949,6 +1056,7 @@
         if(res.success) showToast(res.message);
       });
     });
+    }
 
     // SAVE THEME
     document.getElementById('saveTheme').addEventListener('click', function() {
@@ -1005,10 +1113,8 @@
 
     // NOMBRE en tiempo real
     var inputNombre = document.getElementById('inputNombre');
-    var inputApellido = document.getElementById('inputApellido');
     if (inputNombre) inputNombre.addEventListener('input', updateName);
-    if (inputApellido) inputApellido.addEventListener('input', updateName);
-
+ 
     function updateName() {
       updateDisplayNames();
     }
@@ -1029,22 +1135,75 @@
         document.querySelectorAll('input[name="displayNameType"]').forEach(r => {
             if (r.value === val) r.checked = true;
         });
+        updatePresentationBorder();
         updateDisplayNames();
       });
     });
 
+    function updatePresentationBorder() {
+        const typeEl = document.querySelector('input[name="displayNameType"]:checked');
+        if (!typeEl) return;
+        const isPersonal = typeEl.value === 'personal';
+        const agentLabel = document.getElementById('label-present-agent');
+        const agencyLabel = document.getElementById('label-present-agency');
+        
+        if (agentLabel && agencyLabel) {
+            if (isPersonal) {
+                agentLabel.style.borderColor = 'var(--accent)';
+                agentLabel.style.background = 'var(--accent-light)';
+                agencyLabel.style.borderColor = 'var(--border)';
+                agencyLabel.style.background = 'white';
+            } else {
+                agentLabel.style.borderColor = 'var(--border)';
+                agentLabel.style.background = 'white';
+                agencyLabel.style.borderColor = 'var(--accent)';
+                agencyLabel.style.background = 'var(--accent-light)';
+            }
+        }
+    }
+
+    // Call initially to set correct active border color
+    updatePresentationBorder();
+
+    window.requestChangeAccountType = function(targetType) {
+        let msg = `¿Estás seguro de que quieres cambiar tu tipo de cuenta a ${targetType === 'personal' ? 'Perfil Personal' : 'Perfil de Agencia'}?`;
+        if (!confirm(msg)) return;
+
+        fetch('{{ route('profile.change-account-type') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ account_type: targetType })
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.success) {
+                showToast(res.message);
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                alert(res.message || 'Error al cambiar el tipo de cuenta');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Error de red al intentar cambiar el tipo de cuenta');
+        });
+    };
+
     function updateDisplayNames() {
       var typeEl = document.querySelector('input[name="displayNameType"]:checked');
-      if (!typeEl) return;
-      var type = typeEl.value;
+      var type = typeEl ? typeEl.value : '{{ $user->account_type }}';
       var nameVal = '';
       var initials = '';
 
       if (type === 'personal') {
-        var n = inputNombre ? inputNombre.value : '';
-        var a = inputApellido ? inputApellido.value : '';
-        nameVal = (n + ' ' + a).trim() || 'Tu Nombre';
-        initials = ((n[0] || '?') + (a[0] || '')).toUpperCase();
+        var fullName = inputNombre ? inputNombre.value.trim() : '';
+        nameVal = fullName || 'Tu Nombre';
+        var words = fullName.split(/\s+/).filter(w => w.length > 0);
+        initials = (words[0] ? words[0][0] : '?').toUpperCase() + (words[1] ? words[1][0] : '').toUpperCase();
       } else {
         var aName = inputAgencia ? inputAgencia.value : '';
         nameVal = aName || 'Mi Agencia';
@@ -1052,8 +1211,11 @@
         initials = (words[0] ? words[0][0] : 'V').toUpperCase() + (words[1] ? words[1][0] : '').toUpperCase();
       }
 
-      document.getElementById('profileName').textContent = nameVal;
-      document.getElementById('avatarInitial').textContent = initials;
+      const profileNameEl = document.getElementById('profileName');
+      if (profileNameEl) profileNameEl.textContent = nameVal;
+      
+      const avatarInitialEl = document.getElementById('avatarInitial');
+      if (avatarInitialEl) avatarInitialEl.textContent = initials;
       
       // Update preview header
       var previewHeader = document.getElementById('previewHeaderContent');
@@ -1239,77 +1401,84 @@
                     description: 'Aquí es donde sucede la magia de la personalización. Configura cómo te ven tus clientes y el estilo de tus propuestas.' 
                 } 
             },
+            @if($user->account_type === 'personal')
             { 
-                element: '#personalNameOption', 
+                element: '#savePersonalInfo', 
                 popover: { 
-                    title: 'Identidad Personal', 
-                    description: 'Si prefieres que tus propuestas tengan un toque más cercano usando tu nombre y apellido, marca esta opción.',
+                    title: 'Información Personal', 
+                    description: 'Configura tus datos básicos de perfil personal para que se muestren de forma simplificada en tus itinerarios.',
                     position: 'top'
                 },
                 onHighlightStarted: () => {
                    const btn = document.querySelector('.nav-item[data-section="info"]');
-                   btn.click();
-                   btn.classList.add('tutorial-extra-highlight');
-                },
-                onDeselected: () => {
-                   document.querySelector('.nav-item[data-section="info"]').classList.remove('tutorial-extra-highlight');
+                   if (btn) btn.click();
                 }
             },
+            @else
             { 
-                element: '#agencyNameOption', 
+                element: '#label-present-agent', 
                 popover: { 
-                    title: 'Identidad de Agencia', 
-                    description: '¿Trabajas bajo una marca? Sube el logo de tu agencia y selecciona esta opción para que todas tus propuestas salgan con tu imagen corporativa.',
+                    title: 'Identidad de Agente', 
+                    description: 'Si prefieres presentarte ante tus clientes usando tu nombre y foto personal, marca "Presentación de Agente".',
                     position: 'top'
                 },
                 onHighlightStarted: () => {
                    const btn = document.querySelector('.nav-item[data-section="agencia"]');
-                   btn.click();
-                   btn.classList.add('tutorial-extra-highlight');
-                },
-                onDeselected: () => {
-                   document.querySelector('.nav-item[data-section="agencia"]').classList.remove('tutorial-extra-highlight');
+                   if (btn) btn.click();
                 }
             },
+            { 
+                element: '#label-present-agency', 
+                popover: { 
+                    title: 'Identidad de Agencia', 
+                    description: '¿Prefieres usar tu marca corporativa? Sube el logo de tu agencia y selecciona esta opción para mostrar tu imagen empresarial en los itinerarios.',
+                    position: 'top'
+                }
+            },
+            @endif
             { 
                 element: '#themeGrid', 
                 popover: { 
                     title: 'Personalización Visual', 
-                    description: '¡Dale color a tus viajes! Elige el tema que mejor represente tu estilo. Verás el cambio reflejado al instante en la vista previa de abajo.' 
+                    description: '¡Dale color a tus propuestas! Elige el tema cromático que mejor represente tu estilo o marca de viajes. Verás el cambio reflejado al instante.',
+                    position: 'top'
                 },
                 onHighlightStarted: () => {
                    const btn = document.querySelector('.nav-item[data-section="tema"]');
-                   btn.click();
-                   btn.classList.add('tutorial-extra-highlight');
+                   if (btn) {
+                       btn.click();
+                       btn.classList.add('tutorial-extra-highlight');
+                   }
                 },
                 onDeselected: () => {
-                   document.querySelector('.nav-item[data-section="tema"]').classList.remove('tutorial-extra-highlight');
+                   const btn = document.querySelector('.nav-item[data-section="tema"]');
+                   if (btn) btn.classList.remove('tutorial-extra-highlight');
                 }
             },
             { 
                 element: '.itinerary-preview', 
                 popover: { 
                     title: 'Vista Previa en Vivo', 
-                    description: 'Así es como se verá la cabecera de tus itinerarios. Asegúrate de que todo luzca perfecto antes de enviar una propuesta.' 
+                    description: 'Observa al instante cómo luce la cabecera de tu itinerario con los colores y presentación que has seleccionado.' 
                 } 
             },
             { 
                 element: '.nav-item[data-section="subscription"]', 
                 popover: { 
                     title: 'Planes y Suscripción', 
-                    description: 'Aquí puedes ver los límites de tu plan actual, gestionar tus pagos y mejorar tu suscripción para obtener más itinerarios y colaboradores.',
+                    description: 'Revisa los límites de tu plan actual, gestiona tus facturas y mejora tu suscripción cuando lo necesites.',
                     position: 'right'
                 },
                 onHighlightStarted: () => {
                    const btn = document.querySelector('.nav-item[data-section="subscription"]');
-                   btn.click();
+                   if (btn) btn.click();
                 }
             },
             { 
                 element: '.secondary-nav-link', 
                 popover: { 
-                    title: '¡Empieza a Crear!', 
-                    description: '¡Todo listo! Haz clic aquí en "Ir a Mis Viajes" para empezar a diseñar tus itinerarios profesionales y sorprender a tus clientes.',
+                    title: '¡Empieza a Diseñar!', 
+                    description: '¡Excelente! Haz clic aquí en "Ir a Mis Viajes" para comenzar a crear propuestas profesionales increíbles para tus clientes.',
                     position: 'bottom'
                 } 
             }

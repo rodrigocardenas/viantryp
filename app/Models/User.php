@@ -45,6 +45,7 @@ class User extends Authenticatable
         'agency_logo',
         'theme_color',
         'display_name_type',
+        'account_type',
         'tutorials_seen',
         'plan',
         'trial_ends_at',

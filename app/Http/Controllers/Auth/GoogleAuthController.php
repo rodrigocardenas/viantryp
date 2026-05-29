@@ -45,9 +45,15 @@ class GoogleAuthController extends Controller
                         'avatar' => $googleUser->getAvatar(),
                     ]);
                 } else {
+                    $fullName = $googleUser->getName();
+                    $parts = explode(' ', trim($fullName));
+                    $name = $parts[0] ?? '';
+                    $lastName = count($parts) > 1 ? implode(' ', array_slice($parts, 1)) : '';
+
                     // Create new user
                     $user = User::create([
-                        'name' => $googleUser->getName(),
+                        'name' => $name,
+                        'last_name' => $lastName,
                         'email' => $googleUser->getEmail(),
                         'google_id' => $googleUser->getId(),
                         'avatar' => $googleUser->getAvatar(),
