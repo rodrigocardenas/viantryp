@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --bg: #f4f5f9;
   --surface: #fff;
   --surface2: #f0f1f7;
@@ -2735,7 +2735,12 @@ body {
   background: #f6f6f6;
   border: 1px solid var(--border);
   border-radius: 20px;
-  margin: 12px 0;
+  margin: 0;
   position: relative;
   transition: all 0.3s ease;
+}
+
+.form-input.field-error, .form-textarea.field-error, .form-select.field-error, .rte-editor.field-error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
 }

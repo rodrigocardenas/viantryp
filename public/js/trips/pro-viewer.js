@@ -222,6 +222,8 @@ function buildPreviewHTML(data) {
       // ─────────────────────────────────────────────────────
       if (item.type === 'alojamiento') {
         const nights = d.checkin && d.checkout ? Math.round((new Date(d.checkout) - new Date(d.checkin)) / (1000 * 60 * 60 * 24)) : null;
+        const cIn = d.checkin ? fmtDateTime(d.checkin.includes('T') || d.checkin.includes(' ') ? d.checkin : d.checkin + 'T15:00:00') : null;
+        const cOut = d.checkout ? fmtDateTime(d.checkout.includes('T') || d.checkout.includes(' ') ? d.checkout : d.checkout + 'T12:00:00') : null;
         return `<div class="pv-card">
           <div class="pvc-section-label" style="color:var(--accent)"><i class="fa-solid fa-hotel"></i> Alojamiento</div>
           <div class="pv-hotel-layout">
@@ -237,8 +239,8 @@ function buildPreviewHTML(data) {
               </div>
               ${d.direccion ? `<div class="pv-hotel-addr"><i class="fa-solid fa-location-dot" style="color:var(--muted)"></i> ${d.direccion}</div>` : ''}
               <div class="pv-hotel-details">
-                ${d.checkin ? `<div class="pv-hd-row"><span class="pv-hd-label">Check-in:</span> ${fmtDayMonthWeekday(d.checkin)}</div>` : ''}
-                ${d.checkout ? `<div class="pv-hd-row"><span class="pv-hd-label">Check-out:</span> ${fmtDayMonthWeekday(d.checkout)}</div>` : ''}
+                ${cIn ? `<div class="pv-hd-row"><span class="pv-hd-label">Check-in:</span> ${cIn.day}${cIn.time ? ' a las ' + cIn.time : ''}</div>` : ''}
+                ${cOut ? `<div class="pv-hd-row"><span class="pv-hd-label">Check-out:</span> ${cOut.day}${cOut.time ? ' a las ' + cOut.time : ''}</div>` : ''}
                 ${(nights || d.habitacion || d.alimentacion) ? `
                 <div style="display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:2px;">
                   ${nights ? `<div class="pv-hd-icon-row"><i class="fa-solid fa-moon" style="width:14px;text-align:center;font-size:12px"></i> <span>${nights} noche${nights !== 1 ? 's' : ''}</span></div>` : ''}

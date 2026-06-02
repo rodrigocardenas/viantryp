@@ -1,10 +1,10 @@
 // STATE
-let days = [[], [], []];
-let dayDates = ['', '', '']; // per-day date strings (yyyy-mm-dd)
+let days = [[]];
+let dayDates = ['']; // per-day date strings (yyyy-mm-dd)
 let portadaItems = [];
 let cierreItems = [];
 let currentDay = 'portada';
-let dayCount = 3, numericDayCount = 3, nextDayNumber = 4; // nextDayNumber always increments up
+let dayCount = 1, numericDayCount = 1, nextDayNumber = 2; // nextDayNumber always increments up
 let dragType = null, dragLabel = null, dragSourceIndex = null, dragSourceContainer = null;
 let pendingType = null, editingIndex = null, starRating = 0;
 let dragTabSourceIndex = null;
@@ -117,10 +117,12 @@ function confirmUnsplash() {
       const inp = modalBody.querySelector('input[data-key="photo_url"]');
       if (inp) {
         inp.value = selectedUnsplashUrl;
+        inp.dispatchEvent(new Event('input', { bubbles: true }));
         showToast('📸', 'Foto de tour aplicada');
       }
     } else if (unsplashTarget === 'item_photo' && currentPhotoTargetInput) {
       currentPhotoTargetInput.value = selectedUnsplashUrl;
+      currentPhotoTargetInput.dispatchEvent(new Event('input', { bubbles: true }));
       showToast('📸', 'Foto aplicada');
     }
   }
@@ -245,11 +247,11 @@ document.getElementById('unsplashSearch').addEventListener('keydown', e => { if 
 // CONFIGS
 const C = {
   flight: { icon: '<i class="fa-solid fa-plane"></i>', label: 'Vuelo', color: 'var(--primary-blue)', bg: '#e0f2fe', fields: [{ k: 'origen', l: 'Ciudad origen', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'destino', l: 'Ciudad destino', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'aerolinea', l: 'Aerolínea', t: 'text', ph: 'Air France', airlineApi: true }, { k: 'vuelo', l: 'No. de vuelo', t: 'text', ph: 'AF9474' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'clase', l: 'Clase', t: 'select', ph: 'Selecciona...', opts: ['Económica', 'Ejecutiva', 'Primera'] }, { k: 'precio', l: 'Precio', t: 'number', ph: '800' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'VLO-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
-  alojamiento: { icon: '<i class="fa-solid fa-hotel"></i>', label: 'Alojamiento', color: '#f0567a', bg: '#fde8ee', fields: [{ k: 'nombre', l: 'Nombre del hotel', t: 'text', ph: 'Hotel Luxe París', fw: true, hasInfo: true }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', group: 'google', fw: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', group: 'google' }, { k: 'checkin', l: 'Check-in', t: 'date' }, { k: 'checkout', l: 'Check-out', t: 'date' }, { k: 'habitacion', l: 'Tipo habitación', t: 'select', ph: 'Selecciona...', opts: ['Sencilla', 'Doble', 'Suite', 'Familiar'] }, { k: 'alimentacion', l: 'Alimentación', t: 'select', ph: 'Selecciona...', opts: ['Solo alojamiento', 'Desayuno incluido', 'Media pensión', 'Pensión completa', 'Todo incluido'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ALJ-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '150' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Desayuno incluido...' }] },
+  alojamiento: { icon: '<i class="fa-solid fa-hotel"></i>', label: 'Alojamiento', color: '#f0567a', bg: '#fde8ee', fields: [{ k: 'tipo_alojamiento', l: 'Tipo de Alojamiento', t: 'select', opts: ['Hotel', 'Airbnb u otro'], fw: true }, { k: 'nombre', l: 'Nombre del hotel', t: 'text', ph: 'Hotel Luxe París', fw: true, hasInfo: true }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', group: 'google', fw: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'checkin', l: 'Check-in', t: 'datetime-local' }, { k: 'checkout', l: 'Check-out', t: 'datetime-local' }, { k: 'habitacion', l: 'Tipo habitación', t: 'select', ph: 'Selecciona...', opts: ['Sencilla', 'Doble', 'Triple', 'Suite', 'Alojamiento entero', 'Habitaciones mixtas'] }, { k: 'alimentacion', l: 'Alimentación', t: 'select', ph: 'Selecciona...', opts: ['Solo alojamiento', 'Desayuno incluido', 'Media pensión', 'Pensión completa', 'Todo incluido'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ALJ-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '150' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Desayuno incluido...' }] },
   transporte: { icon: '<i class="fa-solid fa-car"></i>', label: 'Transporte', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'tipo', l: 'Tipo', t: 'select', opts: ['Auto de alquiler', 'Taxi/Uber', 'Tren', 'Bus', 'Ferry', 'Moto'] }, { k: 'proveedor', l: 'Proveedor', t: 'text', ph: 'Hertz, Renfe...' }, { k: 'origen', l: 'Desde', t: 'text', ph: 'Aeropuerto CDG' }, { k: 'destino', l: 'Hasta', t: 'text', ph: 'Hotel Centro' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'precio', l: 'Precio', t: 'number', ph: '50' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TRL-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Confirmación...' }] },
-  actividad: { icon: '<i class="fa-solid fa-bullseye"></i>', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', fields: [{ k: 'direccion', l: 'Lugar (Google Maps)', t: 'text', ph: 'Torre Eiffel, Museo del Louvre...', fw: true, hasInfo: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', group: 'google' }, { k: 'nombre', l: 'Nombre actividad', t: 'text', ph: 'Cena con vista, Tour privado...', fw: true }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '25' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
-  comida: { icon: '<i class="fa-solid fa-utensils"></i>', label: 'Comida', color: '#f96b3a', bg: '#ffe8e0', fields: [{ k: 'restaurante', l: 'Restaurante', t: 'text', ph: 'Le Jules Verne', fw: true, hasInfo: true }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', group: 'google', fw: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', group: 'google' }, { k: 'tipo', l: 'Tipo', t: 'select', opts: ['Desayuno', 'Almuerzo', 'Cena', 'Brunch', 'Snack'] }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'RES-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '80' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Menú degustación...' }] },
-  tour: { icon: '<i class="fa-solid fa-map-location-dot"></i>', label: 'Tour', color: '#8b5cf6', bg: '#f5f3ff', fields: [{ k: 'nombre', l: 'Nombre del tour', t: 'text', ph: 'Tour Versalles' }, { k: 'operador', l: 'Operador', t: 'text', ph: 'Get Your Guide' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['2h', '4h', 'Medio día', 'Día completo', '2 días', '3+ días'] }, { k: 'personas', l: 'No. personas', t: 'text', ph: '2' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TOU-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '120' }, { k: 'photo_url', l: 'URL de foto', t: 'text', ph: 'https://...', fw: true }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Incluye entrada, guía...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
+  actividad: { icon: '<i class="fa-solid fa-bullseye"></i>', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', fields: [{ k: 'nombre', l: 'Nombre actividad', t: 'text', ph: 'Cena con vista, Tour privado...', fw: true }, { k: 'direccion', l: 'Lugar (Google Maps)', t: 'text', ph: 'Torre Eiffel, Museo del Louvre...', fw: true, hasInfo: true }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'website', l: 'Link de la actividad', t: 'text', ph: 'https://...', fw: true }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '25' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
+  comida: { icon: '<i class="fa-solid fa-utensils"></i>', label: 'Comida', color: '#f96b3a', bg: '#ffe8e0', fields: [{ k: 'restaurante', l: 'Restaurante', t: 'text', ph: 'Le Jules Verne', fw: true, hasInfo: true }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', group: 'google', fw: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'tipo', l: 'Tipo', t: 'select', opts: ['Desayuno', 'Almuerzo', 'Cena', 'Brunch', 'Snack'] }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'RES-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '80' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Menú degustación...' }] },
+  tour: { icon: '<i class="fa-solid fa-map-location-dot"></i>', label: 'Tour', color: '#8b5cf6', bg: '#f5f3ff', fields: [{ k: 'nombre', l: 'Nombre del tour', t: 'text', ph: 'Tour Versalles' }, { k: 'operador', l: 'Operador', t: 'text', ph: 'Get Your Guide' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['2h', '4h', 'Medio día', 'Día completo', '2 días', '3+ días'] }, { k: 'personas', l: 'No. personas', t: 'number', ph: '2' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TOU-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '120' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', fw: true }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Incluye entrada, guía...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
   texto: { icon: '<i class="fa-solid fa-font"></i>', label: 'Caja de texto', color: '#64748b', bg: '#f1f5f9', fields: [{ k: 'contenido', l: 'Contenido', t: 'richtext', ph: 'Escribe aquí...' }, { k: 'alineacion', l: 'Alineación', t: 'select', opts: ['Izquierda', 'Centro', 'Derecha'] }] },
   titulo: { icon: '✦', label: 'Título', color: '#1a1a2e', bg: '#f0f1f7', fields: [{ k: 'texto', l: 'Texto del título', t: 'text', ph: 'Día 1 — Llegada a París' }, { k: 'subtitulo', l: 'Subtítulo (opcional)', t: 'text', ph: 'Una ciudad de luz...' }] },
   separador: { icon: '—', label: 'Separador', color: '#94a3b8', bg: '#f1f5f9', fields: [{ k: 'estilo', l: 'Estilo', t: 'select', opts: ['Línea simple', 'Línea con diamante', 'Punteado', 'Gradiente'] }, { k: 'etiqueta', l: 'Etiqueta (opcional)', t: 'text', ph: 'Mañana' }] },
@@ -489,33 +491,7 @@ tabsCont.addEventListener('drop', e => {
   }
 });
 
-document.getElementById('addDayBtn').addEventListener('click', () => {
-  days.push([]); dayDates.push('');
-  currentDay = days.length - 1;
-  unsavedChanges = true;
-  renderTabs();
-  renderCanvas();
-  autoSaveProTrip();
-  showToast('📅', 'Día ' + days.length + ' agregado');
-});
 
-document.getElementById('addSectionBtn').addEventListener('click', e => { e.stopPropagation(); document.getElementById('sectionDropdown').classList.toggle('open') });
-document.addEventListener('click', () => document.getElementById('sectionDropdown').classList.remove('open'));
-
-function addSection(type) {
-  document.getElementById('sectionDropdown').classList.remove('open');
-  if (type === 'portada') {
-    if (document.querySelector('.portada-tab')) return showToast('⚠️', 'La portada ya existe');
-    currentDay = 'portada';
-    renderTabs();
-    renderCanvas(); showToast('🌅', 'Portada agregada');
-  } else {
-    if (document.querySelector('.cierre-tab')) return showToast('⚠️', 'El cierre ya existe');
-    currentDay = 'cierre';
-    renderTabs();
-    renderCanvas(); showToast('✨', 'Cierre agregado');
-  }
-}
 
 // DELETE SECTION (portada/cierre)
 function confirmDeleteSection(type, e) {
@@ -590,13 +566,42 @@ function renderTabs() {
     </button>`;
   });
 
+  // Inline Add Day Button
+  html += `<button class="add-day-btn" id="addDayBtn" type="button" style="margin: 0 4px; padding: 4px 10px;"><i class="fa-solid fa-plus"></i> Día</button>`;
+
   // Cierre
   html += `<button class="day-tab cierre-tab ${currentDay === 'cierre' ? 'active' : ''}" data-day="cierre"><span class="day-tab-label"><i class="fa-solid fa-moon" style="margin-right:4px"></i> Cierre</span></button>`;
 
   container.innerHTML = html;
 
+  // Bind click listener to the dynamically created Add Day button
+  const newAddDayBtn = container.querySelector('#addDayBtn');
+  if (newAddDayBtn) {
+    newAddDayBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      days.push([]);
+      let nextDate = '';
+      if (days.length > 1) {
+        const prevDate = dayDates[days.length - 2];
+        if (prevDate) {
+          nextDate = addDaysToDate(prevDate, 1);
+        }
+      } else {
+        const pi = document.getElementById('portadaFechaInicio');
+        if (pi && pi.value) nextDate = pi.value;
+      }
+      dayDates.push(nextDate);
+      currentDay = days.length - 1;
+      unsavedChanges = true;
+      renderTabs();
+      renderCanvas();
+      autoSaveProTrip();
+      showToast('📅', 'Día ' + days.length + ' agregado');
+    });
+  }
+
   // Important: Ad-hoc drop listeners for all tabs to support moving items
-  container.querySelectorAll('.day-tab').forEach(tab => {
+  container.querySelectorAll('.day-tab:not(#addDayBtn)').forEach(tab => {
     tab.addEventListener('dragover', e => {
       if (dragSourceIndex !== null) {
         e.preventDefault();
@@ -798,7 +803,32 @@ function buildItem(item, idx) {
     attachFooter = `<div class="item-attach-footer"><i class="fa-solid fa-paperclip" style="font-size:10px;"></i> 1 archivo</div>`;
   }
 
-  el.innerHTML = `<div class="item-inner"><div class="item-accent-bar" style="background:${cfg.color}"></div><div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div><div class="item-content"><div class="item-type-label" style="color:${cfg.color}">${cfg.label}</div><div class="item-title">${title}</div><div class="item-subtitle" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px;">${sub.length ? `<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:8px;">${sub.map(s => `<span>${s}</span>`).join('')}</div>` : ''}${chips.length ? `<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:8px;">${chips.map(c => `<span class="item-chip">${c}</span>`).join('')}</div>` : ''}</div><div style="font-size:12px;color:var(--text-muted);margin-top:6px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;">${d.notas ? `<div style="display:flex;align-items:center;gap:4px;"><i class="fa-solid fa-circle-info" style="font-size:10px;opacity:0.7"></i> ${d.notas}</div>` : ''}${attachFooter}</div></div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
+  const showThumb = item.type === 'tour';
+  const firstPhoto = (d && d.photo_url) ? d.photo_url.split(',')[0].trim() : '';
+  const photoThumb = (showThumb && firstPhoto) ? `<div class="item-card-photo" style="width:50px;height:50px;border-radius:8px;overflow:hidden;flex-shrink:0;border:1px solid var(--border);margin-left:8px;box-shadow:var(--shadow-sm);"><img src="${firstPhoto}" style="width:100%;height:100%;object-fit:cover;" /></div>` : '';
+
+  el.innerHTML = `<div class="item-inner">
+    <div class="item-accent-bar" style="background:${cfg.color}"></div>
+    <div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div>
+    <div class="item-content">
+      <div class="item-type-label" style="color:${cfg.color}">${cfg.label}</div>
+      <div class="item-title">${title}</div>
+      <div class="item-subtitle" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px;">
+        ${sub.length ? `<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:8px;">${sub.map(s => `<span>${s}</span>`).join('')}</div>` : ''}
+        ${chips.length ? `<div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:8px;">${chips.map(c => `<span class="item-chip">${c}</span>`).join('')}</div>` : ''}
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:6px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;">
+        ${d.notas ? `<div style="display:flex;align-items:center;gap:4px;"><i class="fa-solid fa-circle-info" style="font-size:10px;opacity:0.7"></i> ${d.notas}</div>` : ''}
+        ${attachFooter}
+      </div>
+    </div>
+    ${photoThumb}
+  </div>
+  <div class="item-actions" style="position:absolute;right:12px;top:12px;">
+    <button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+    <button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+    <button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+  </div>`;
   setupReorder(el, idx); return el;
 }
 function setupReorder(el, idx) {
@@ -833,6 +863,16 @@ function unformatNumber(val) {
 }
 function fmtDate(s) { if (!s) return ''; try { return new Date(s + 'T00:00:00').toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' }) } catch { return s } }
 function fmtDateTab(s) { if (!s) return ''; try { const d = new Date(s + 'T00:00:00'); return d.toLocaleDateString('es', { day: 'numeric', month: 'short' }) } catch { return s } }
+function addDaysToDate(dateStr, daysToAdd) {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + daysToAdd);
+    return d.toISOString().split('T')[0];
+  } catch {
+    return dateStr;
+  }
+}
 function editItem(idx) {
   const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
   openModal(arr[idx].type, idx);
@@ -871,16 +911,16 @@ function createInfoSpan(helpText, isUpgrade = false) {
     <div class="info-popover">
       <p>${helpText}</p>
   `;
-  
+
   if (isUpgrade) {
     innerHTML += `
       <button type="button" class="btn-upgrade-popover" onclick="window.location.href='/profile?tab=subscription'">Mejora tu plan</button>
     `;
   }
-  
+
   innerHTML += `</div>`;
   infoSpan.innerHTML = innerHTML;
-  
+
   infoSpan.onclick = (e) => {
     e.stopPropagation();
     infoSpan.classList.toggle('active');
@@ -896,6 +936,7 @@ function addPhotoFallback(container, type, showHelp = true, photoInp = null, app
 
   if (showHelp) {
     const helpText = document.createElement('div');
+    helpText.className = 'photo-fallback-help';
     helpText.style = 'margin-top:5px; margin-bottom:8px; font-size:12px; color:var(--text-muted); font-style:italic; line-height:1.4;';
 
     helpText.textContent = isPremium
@@ -1086,30 +1127,70 @@ function openModal(type, editIdx = null) {
       if (nameInp) {
         const autocomplete = new window.google.maps.places.Autocomplete(nameInp, { types: ['establishment'] });
 
-        // Fix z-index for pac-container
-        nameInp.addEventListener('input', () => { setTimeout(() => { document.querySelectorAll('.pac-container').forEach(c => { c.style.zIndex = '1000000'; c.style.position = 'fixed'; const rect = nameInp.getBoundingClientRect(); c.style.top = rect.bottom + 'px'; c.style.left = rect.left + 'px'; c.style.width = rect.width + 'px'; }); }, 50); });
+        // Fix z-index for pac-container and hide it for Airbnb
+        nameInp.addEventListener('input', () => {
+          setTimeout(() => {
+            const isAirbnb = type === 'alojamiento' && modalBody.querySelector('select[data-key="tipo_alojamiento"]')?.value === 'Airbnb u otro';
+            document.querySelectorAll('.pac-container').forEach(c => {
+              if (isAirbnb) {
+                c.style.display = 'none';
+              } else {
+                c.style.zIndex = '1000000';
+                c.style.position = 'fixed';
+                const rect = nameInp.getBoundingClientRect();
+                c.style.top = rect.bottom + 'px';
+                c.style.left = rect.left + 'px';
+                c.style.width = rect.width + 'px';
+                c.style.display = '';
+              }
+            });
+          }, 50);
+        });
 
         autocomplete.addListener('place_changed', () => {
+          if (type === 'alojamiento') {
+            const selectTipo = modalBody.querySelector('select[data-key="tipo_alojamiento"]');
+            if (selectTipo && selectTipo.value === 'Airbnb u otro') {
+              return; // Do not fetch from Google Places if Airbnb
+            }
+          }
           const place = autocomplete.getPlace();
           if (!place || !place.place_id) return;
 
           if (place.name) nameInp.value = place.name;
 
-          const setVal = (k, v) => { const el = modalBody.querySelector('input[data-key="' + k + '"]'); if (el) { el.value = v; } };
+          const setVal = (k, v) => { const el = modalBody.querySelector('input[data-key="' + k + '"]'); if (el) { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); } };
           if (place.formatted_address && type !== 'actividad') setVal('direccion', place.formatted_address);
           if (place.formatted_phone_number) setVal('phone', place.formatted_phone_number);
           if (place.website) setVal('website', place.website);
 
           // Fetch permanent photo URLs from our server
+          const previewCont = modalBody.querySelector('.photo-preview-container');
+          if (previewCont) {
+            previewCont.innerHTML = `
+              <div class="photo-loading-spinner" style="border: 1.5px dashed var(--border); border-radius: 10px; padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: var(--surface2);">
+                <div class="spinner" style="width: 24px; height: 24px; border: 3px solid rgba(20, 184, 166, 0.1); border-top-color: #14b8a6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <span>Buscando foto del lugar...</span>
+              </div>
+            `;
+          }
+
           fetch(`/api/places/details?place_id=${place.place_id}`)
             .then(res => res.json())
             .then(data => {
               if (data.photos && data.photos.length > 0) {
-                const urls = data.photos.slice(0, 3).map(p => p.url).join(',');
+                const urls = data.photos.slice(0, 1).map(p => p.url).join(',');
                 setVal('photo_url', urls);
+              } else {
+                const inp = modalBody.querySelector('input[data-key="photo_url"]');
+                if (inp) inp.dispatchEvent(new Event('input', { bubbles: true }));
               }
             })
-            .catch(err => console.error('Error fetching place details:', err));
+            .catch(err => {
+              console.error('Error fetching place details:', err);
+              const inp = modalBody.querySelector('input[data-key="photo_url"]');
+              if (inp) inp.dispatchEvent(new Event('input', { bubbles: true }));
+            });
 
           if (place.rating) {
             starRating = place.rating;
@@ -1122,6 +1203,85 @@ function openModal(type, editIdx = null) {
             }
           }
         });
+      }
+    }
+
+    // Add Alojamiento tipo toggle logic
+    if (type === 'alojamiento') {
+      const selectTipo = modalBody.querySelector('select[data-key="tipo_alojamiento"]');
+      if (selectTipo) {
+        const handleTipoChange = () => {
+          const val = selectTipo.value || 'Hotel';
+          const isHotel = val === 'Hotel';
+          
+          // Update Nombre label
+          const nameInp = modalBody.querySelector('input[data-key="nombre"]');
+          if (nameInp) {
+            const parent = nameInp.closest('.form-group');
+            const lbl = parent ? parent.querySelector('.form-label') : null;
+            if (lbl) {
+              const infoIcon = lbl.querySelector('.info-icon');
+              lbl.innerHTML = isHotel ? 'Nombre del hotel' : 'Nombre del alojamiento';
+              if (isHotel && infoIcon) {
+                lbl.appendChild(infoIcon);
+              }
+            }
+          }
+
+          // Toggle visibility of specific fields inside the google group box
+          const gBox = modalBody.querySelector('.field-group-box');
+          if (gBox) {
+            if (isHotel) {
+              gBox.style.background = '';
+              gBox.style.border = '';
+              gBox.style.padding = '';
+              gBox.style.borderRadius = '';
+              gBox.style.margin = '';
+            } else {
+              gBox.style.background = 'transparent';
+              gBox.style.border = 'none';
+              gBox.style.padding = '0';
+              gBox.style.borderRadius = '0';
+              gBox.style.margin = '0';
+            }
+
+            // Hide/show Phone, Website, Calificación (Stars)
+            const fieldsToToggle = ['phone', 'website', 'stars'];
+            fieldsToToggle.forEach(k => {
+              const fieldEl = gBox.querySelector(`[data-key="${k}"]`) || gBox.querySelector(`.star-rating input[data-key="${k}"]`);
+              if (fieldEl) {
+                const fg = fieldEl.closest('.form-group') || fieldEl.closest('.form-row');
+                if (fg) fg.style.display = isHotel ? '' : 'none';
+              }
+            });
+
+            // Toggle infoIcon/help text inside google box if any
+            const infoSpan = gBox.querySelector('.info-icon');
+            if (infoSpan) {
+              infoSpan.style.display = isHotel ? '' : 'none';
+            }
+            const helpText = gBox.querySelector('div[style*="margin-top:5px"]');
+            if (helpText) {
+              helpText.style.display = isHotel ? '' : 'none';
+            }
+          }
+
+          // Update photo fallback help text dynamically
+          const helpText = modalBody.querySelector('.photo-fallback-help');
+          if (helpText) {
+            if (isHotel) {
+              const isPremium = typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan !== 'básico';
+              helpText.textContent = isPremium
+                ? 'Si no deseas usar la imagen predeterminada de Google Maps, puedes usar una imagen de Unsplash o subir la tuya.'
+                : 'Tu plan no incluye foto automática: completa la URL eligiendo una imagen desde Unsplash o subiendo una propia.';
+            } else {
+              helpText.textContent = 'Adjunta una imagen del alojamiento o elige una desde Unsplash.';
+            }
+          }
+        };
+
+        selectTipo.addEventListener('change', handleTipoChange);
+        handleTipoChange(); // run immediately
       }
     }
   }, 220);
@@ -1149,7 +1309,18 @@ function handleItemPhotoUpload(e, targetInp) {
     }).catch(e => console.error('Error deleting previous photo:', e));
   }
 
-  targetInp.value = 'Subiendo...';
+  // Visual loading state
+  const previewCont = targetInp.parentNode.querySelector('.photo-preview-container');
+  if (previewCont) {
+    previewCont.innerHTML = `
+      <div class="photo-loading-spinner" style="border: 1.5px dashed var(--border); border-radius: 10px; padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: var(--surface2);">
+        <div class="spinner" style="width: 24px; height: 24px; border: 3px solid rgba(20, 184, 166, 0.1); border-top-color: #14b8a6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <span>Subiendo foto...</span>
+      </div>
+    `;
+  }
+
+  targetInp.value = '';
   targetInp.disabled = true;
 
   const formData = new FormData();
@@ -1166,22 +1337,26 @@ function handleItemPhotoUpload(e, targetInp) {
       targetInp.disabled = false;
       if (res.success) {
         targetInp.value = res.url;
+        targetInp.dispatchEvent(new Event('input', { bubbles: true }));
         showToast('✅', 'Foto subida');
-      } else if (res.error_code === 'LIMIT_REACHED') {
-        targetInp.value = originalContent;
-        if (typeof openUpgradeModal === 'function') {
-          openUpgradeModal();
-        } else {
-          showToast('⚠️', res.message || 'Límite alcanzado');
-        }
       } else {
         targetInp.value = originalContent;
-        showToast('⚠️', res.message || 'Error al subir');
+        targetInp.dispatchEvent(new Event('input', { bubbles: true }));
+        if (res.error_code === 'LIMIT_REACHED') {
+          if (typeof openUpgradeModal === 'function') {
+            openUpgradeModal();
+          } else {
+            showToast('⚠️', res.message || 'Límite alcanzado');
+          }
+        } else {
+          showToast('⚠️', res.message || 'Error al subir');
+        }
       }
     })
     .catch(err => {
       targetInp.disabled = false;
       targetInp.value = originalContent;
+      targetInp.dispatchEvent(new Event('input', { bubbles: true }));
       console.error(err);
       showToast('⚠️', 'Error de conexión');
     });
@@ -1192,7 +1367,21 @@ function buildField(field, data) {
   lbl.textContent = field.l;
   fg.appendChild(lbl);
 
-  const val = data[field.k] || '';
+  let val = data[field.k] || '';
+  if (!val && typeof currentDay === 'number' && dayDates[currentDay]) {
+    const dayDate = dayDates[currentDay];
+    if (field.t === 'date') {
+      val = dayDate;
+    } else if (field.t === 'datetime-local') {
+      if (field.k === 'checkin') {
+        val = dayDate + 'T15:00';
+      } else if (field.k === 'checkout') {
+        val = dayDate + 'T12:00';
+      } else {
+        val = dayDate + 'T12:00';
+      }
+    }
+  }
 
   if (field.t === 'stars') {
     const sr = document.createElement('div');
@@ -1425,7 +1614,103 @@ function buildField(field, data) {
     renderFileList();
   }
   else {
-    const inp = document.createElement('input'); inp.className = 'form-input'; inp.type = field.t || 'text'; inp.placeholder = field.ph || ''; inp.value = val; inp.dataset.key = field.k; fg.appendChild(inp);
+    let inp;
+    if (field.k === 'photo_url') {
+      inp = document.createElement('input');
+      inp.type = 'text';
+      inp.style.display = 'none';
+      inp.value = val;
+      inp.dataset.key = field.k;
+      fg.appendChild(inp);
+
+      const previewCont = document.createElement('div');
+      previewCont.className = 'photo-preview-container';
+      previewCont.style = 'margin-top: 8px; margin-bottom: 8px;';
+      fg.appendChild(previewCont);
+
+      const renderThumbs = () => {
+        previewCont.innerHTML = '';
+        const currentVal = inp.value || '';
+        const urls = currentVal.split(',').filter(u => u.trim());
+
+        if (urls.length === 0) {
+          previewCont.innerHTML = `
+            <div class="photo-placeholder" style="border: 1.5px dashed var(--border); border-radius: 10px; padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: var(--surface2);">
+              <i class="fa-regular fa-image" style="font-size: 24px; opacity: 0.6;"></i>
+              <span>Sin foto seleccionada</span>
+            </div>
+          `;
+        } else {
+          const list = document.createElement('div');
+          list.style = 'display: flex; flex-wrap: wrap; gap: 10px;';
+
+          urls.forEach((url, index) => {
+            const thumb = document.createElement('div');
+            thumb.style = 'position: relative; width: 80px; height: 80px; border-radius: 10px; overflow: hidden; border: 1.5px solid var(--border); box-shadow: var(--shadow-sm); transition: transform 0.2s;';
+            thumb.onmouseenter = () => thumb.style.transform = 'scale(1.03)';
+            thumb.onmouseleave = () => thumb.style.transform = 'scale(1)';
+
+            const img = document.createElement('img');
+            img.src = url;
+            img.style = 'width: 100%; height: 100%; object-fit: cover;';
+            thumb.appendChild(img);
+
+            const delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.style = 'position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; border-radius: 50%; background: rgba(15, 23, 42, 0.6); border: none; color: white; display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; transition: all 0.2s; backdrop-filter: blur(4px);';
+            delBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            delBtn.title = 'Eliminar foto';
+            delBtn.onmouseenter = () => { delBtn.style.background = '#ef4444'; delBtn.style.transform = 'scale(1.1)'; };
+            delBtn.onmouseleave = () => { delBtn.style.background = 'rgba(15, 23, 42, 0.6)'; delBtn.style.transform = 'scale(1)'; };
+            delBtn.onclick = (e) => {
+              e.stopPropagation();
+              const newUrls = urls.filter((_, idx) => idx !== index);
+              inp.value = newUrls.join(',');
+              inp.dispatchEvent(new Event('input', { bubbles: true }));
+            };
+            thumb.appendChild(delBtn);
+            list.appendChild(thumb);
+          });
+          previewCont.appendChild(list);
+        }
+      };
+
+      renderThumbs();
+      inp.addEventListener('input', renderThumbs);
+    }
+    else {
+      inp = document.createElement('input');
+      inp.className = 'form-input';
+      inp.type = field.t || 'text';
+      inp.placeholder = field.ph || '';
+      inp.value = val;
+      inp.dataset.key = field.k;
+      fg.appendChild(inp);
+
+      // Block invalid keys and sanitize input interactively
+      const isNumericField = field.t === 'number' || field.k === 'precio' || field.k === 'personas' || field.k === 'stars';
+      if (isNumericField) {
+        inp.addEventListener('keypress', e => {
+          if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab' && e.key !== 'Enter') {
+            e.preventDefault();
+          }
+        });
+        inp.addEventListener('input', () => {
+          inp.value = inp.value.replace(/[^0-9]/g, '');
+        });
+      } else if (field.t === 'tel' || field.k === 'phone') {
+        inp.addEventListener('keypress', e => {
+          if (!/[0-9+\s\-]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab' && e.key !== 'Enter') {
+            e.preventDefault();
+          }
+        });
+        inp.addEventListener('input', () => {
+          inp.value = inp.value.replace(/[^0-9+\s\-]/g, '');
+        });
+      } else if (field.t === 'email' || field.k === 'email' || field.k === 'correo') {
+        inp.type = 'email';
+      }
+    }
 
     if (field.airportApi || field.airlineApi) {
       const drop = document.createElement('div'); drop.className = 'api-autocomplete-drop'; drop.style = 'position:absolute; background:#fff; border:1px solid #ccc; border-radius:4px; max-height:200px; overflow-y:auto; z-index:100; display:none; width:100%; box-shadow:0 4px 6px rgba(0,0,0,0.1); margin-top:2px;';
@@ -1471,11 +1756,52 @@ document.getElementById('modalCancel').addEventListener('click', closeModal);
 // modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal() });
 document.getElementById('modalSave').addEventListener('click', () => {
   const data = {};
+  let hasError = false;
+
+  // Clear previous validation styles
+  modalBody.querySelectorAll('.form-input, .form-textarea, .form-select, .rte-editor').forEach(el => el.classList.remove('field-error'));
+
   modalBody.querySelectorAll('[data-key]').forEach(el => {
-    if (el.classList.contains('rte-editor')) data[el.dataset.key] = el.innerHTML;
-    else data[el.dataset.key] = el.value;
-    if (el.dataset.city) data[el.dataset.key + '_city'] = el.dataset.city;
+    const key = el.dataset.key;
+    const value = (el.classList.contains('rte-editor') ? el.innerHTML : el.value || '').trim();
+
+    // 1. Validate numbers/prices/stars
+    const isNumericField = key === 'precio' || key === 'personas' || key === 'stars' || el.type === 'number';
+    if (isNumericField && value !== '') {
+      if (!/^\d+$/.test(value)) {
+        el.classList.add('field-error');
+        hasError = true;
+      }
+    }
+
+    // 2. Validate phone
+    const isPhoneField = key === 'phone' || el.type === 'tel';
+    if (isPhoneField && value !== '') {
+      if (!/^[0-9+\s\-()]+$/.test(value)) {
+        el.classList.add('field-error');
+        hasError = true;
+      }
+    }
+
+    // 3. Validate email
+    const isEmailField = key === 'email' || key === 'correo' || el.type === 'email';
+    if (isEmailField && value !== '') {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        el.classList.add('field-error');
+        hasError = true;
+      }
+    }
+
+    if (el.classList.contains('rte-editor')) data[key] = el.innerHTML;
+    else data[key] = el.value;
+    if (el.dataset.city) data[key + '_city'] = el.dataset.city;
   });
+
+  if (hasError) {
+    showToast('⚠️', 'Por favor verifica los campos marcados en rojo.');
+    return;
+  }
+
   modalBody.querySelectorAll('.color-swatch.selected').forEach(sw => { data[sw.dataset.key] = sw.dataset.color });
   if (starRating > 0) data.stars = starRating;
   const type = editingIndex !== null ? (currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay])[editingIndex].type : pendingType;
@@ -1578,11 +1904,34 @@ if (window.proState) {
     document.getElementById('portadaTotal').textContent = portadaAdultos + portadaNinos;
 
     const pi = document.getElementById('portadaFechaInicio');
-    if (pi && s.fechaInicio) pi.value = s.fechaInicio;
+    if (pi) {
+      if (s.fechaInicio) pi.value = s.fechaInicio;
+      pi.addEventListener('change', () => {
+        const startDate = pi.value;
+        if (startDate) {
+          for (let i = 0; i < days.length; i++) {
+            dayDates[i] = addDaysToDate(startDate, i);
+          }
+          renderTabs();
+          renderCanvas();
+        }
+      });
+    }
     const pf = document.getElementById('portadaFechaFin');
     if (pf && s.fechaFin) pf.value = s.fechaFin;
     const pp = document.getElementById('portadaPrecio');
-    if (pp && s.precio) pp.value = formatNumber(s.precio);
+    if (pp) {
+      if (s.precio) pp.value = formatNumber(s.precio);
+      pp.addEventListener('keypress', e => {
+        if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab' && e.key !== 'Enter') {
+          e.preventDefault();
+        }
+      });
+      pp.addEventListener('input', () => {
+        let val = pp.value.replace(/\D/g, '');
+        pp.value = formatNumber(val);
+      });
+    }
     const pm = document.getElementById('portadaMoneda');
     if (pm && s.moneda) pm.value = s.moneda;
 
@@ -1600,6 +1949,41 @@ if (window.proState) {
   });
 } else {
   document.addEventListener('DOMContentLoaded', () => {
+    const pi = document.getElementById('portadaFechaInicio');
+    if (pi) {
+      pi.addEventListener('change', () => {
+        const startDate = pi.value;
+        if (startDate) {
+          for (let i = 0; i < days.length; i++) {
+            dayDates[i] = addDaysToDate(startDate, i);
+          }
+          renderTabs();
+          renderCanvas();
+        }
+      });
+    }
+    const pp = document.getElementById('portadaPrecio');
+    if (pp) {
+      pp.addEventListener('keypress', e => {
+        if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab' && e.key !== 'Enter') {
+          e.preventDefault();
+        }
+      });
+      pp.addEventListener('input', () => {
+        let val = pp.value.replace(/\D/g, '');
+        pp.value = formatNumber(val);
+      });
+    }
+    const pf = document.getElementById('portadaFechaFin');
+    const pm = document.getElementById('portadaMoneda');
+    const titleInp = document.getElementById('portadaTitle');
+
+    // Listeners para inputs de cabecera
+    const headerInputs = [pi, pf, pp, pm, titleInp];
+    headerInputs.forEach(inp => {
+      if (inp) inp.addEventListener('input', () => autoSaveProTrip());
+    });
+
     renderTabs();
     renderCanvas();
   });

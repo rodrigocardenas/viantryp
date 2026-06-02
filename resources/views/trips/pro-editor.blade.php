@@ -454,30 +454,11 @@
                   class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></span>Día
               1</span><span class="day-tab-delete" onclick="confirmDeleteDay(0,event)" title="Eliminar día"><i
                 class="fa-solid fa-trash-can"></i></span></button>
-          <button class="day-tab" data-day="1" draggable="true" style="cursor:grab"><span class="day-tab-label"><span
-                style="display:inline-flex; gap:1px; margin-right:7px; opacity:0.4; font-size:10px;"><i
-                  class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></span>Día
-              2</span><span class="day-tab-delete" onclick="confirmDeleteDay(1,event)" title="Eliminar día"><i
-                class="fa-solid fa-trash-can"></i></span></button>
-          <button class="day-tab" data-day="2" draggable="true" style="cursor:grab"><span class="day-tab-label"><span
-                style="display:inline-flex; gap:1px; margin-right:7px; opacity:0.4; font-size:10px;"><i
-                  class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></span>Día
-              3</span><span class="day-tab-delete" onclick="confirmDeleteDay(2,event)" title="Eliminar día"><i
-                class="fa-solid fa-trash-can"></i></span></button>
+          <button class="add-day-btn" id="addDayBtn" type="button" style="margin: 0 4px; padding: 4px 10px;"><i class="fa-solid fa-plus"></i> Día</button>
           <button class="day-tab cierre-tab" data-day="cierre"><span class="day-tab-label"><i
                 class="fa-solid fa-flag-checkered"></i> Cierre</span><span class="day-tab-delete portada-cierre-delete"
               onclick="confirmDeleteSection('cierre',event)" title="Eliminar cierre"><i
                 class="fa-solid fa-trash-can"></i></span></button>
-        </div>
-        <div style="display:flex;gap:6px;position:relative">
-          <button class="add-day-btn" id="addDayBtn">+ Día</button>
-          <button class="add-section-btn" id="addSectionBtn"><i class="fa-solid fa-plus"></i> Sección ▾</button>
-          <div class="section-dropdown" id="sectionDropdown">
-            <div class="section-option" onclick="addSection('portada')"><span><i class="fa-solid fa-image"></i></span>
-              Portada</div>
-            <div class="section-option" onclick="addSection('cierre')"><span><i
-                  class="fa-solid fa-flag-checkered"></i></span> Cierre</div>
-          </div>
         </div>
         <div style="flex:1"></div>
       </div>

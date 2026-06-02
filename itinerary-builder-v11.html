@@ -2050,21 +2050,10 @@
               onclick="confirmDeleteSection('portada',event)" title="Eliminar portada">🗑</span></button>
           <button class="day-tab" data-day="0"><span class="day-tab-label">Día 1</span><span class="day-tab-delete"
               onclick="confirmDeleteDay(0,event)" title="Eliminar día">🗑</span></button>
-          <button class="day-tab" data-day="1"><span class="day-tab-label">Día 2</span><span class="day-tab-delete"
-              onclick="confirmDeleteDay(1,event)" title="Eliminar día">🗑</span></button>
-          <button class="day-tab" data-day="2"><span class="day-tab-label">Día 3</span><span class="day-tab-delete"
-              onclick="confirmDeleteDay(2,event)" title="Eliminar día">🗑</span></button>
+          <button class="add-day-btn" id="addDayBtn" type="button" style="margin: 0 4px; padding: 4px 10px;"><i class="fa-solid fa-plus"></i> Día</button>
           <button class="day-tab cierre-tab" data-day="cierre"><span class="day-tab-label">✨ Cierre</span><span
               class="day-tab-delete portada-cierre-delete" onclick="confirmDeleteSection('cierre',event)"
               title="Eliminar cierre">🗑</span></button>
-        </div>
-        <div style="display:flex;gap:6px;position:relative">
-          <button class="add-day-btn" id="addDayBtn">+ Día</button>
-          <button class="add-section-btn" id="addSectionBtn">+ Sección ▾</button>
-          <div class="section-dropdown" id="sectionDropdown">
-            <div class="section-option" onclick="addSection('portada')"><span>🌅</span> Portada</div>
-            <div class="section-option" onclick="addSection('cierre')"><span>✨</span> Cierre</div>
-          </div>
         </div>
         <div style="flex:1"></div>
         <span style="font-size:11.5px;color:var(--text-dim)" id="itemCount">Portada del viaje</span>
@@ -2275,12 +2264,12 @@
 
   <script>
     // STATE
-    let days = [[], [], []];
-    let dayDates = ['', '', '']; // per-day date strings (yyyy-mm-dd)
+    let days = [[]];
+    let dayDates = ['']; // per-day date strings (yyyy-mm-dd)
     let portadaItems = [];
     let cierreItems = [];
     let currentDay = 'portada';
-    let dayCount = 3, numericDayCount = 3, nextDayNumber = 4; // nextDayNumber always increments up
+    let dayCount = 1, numericDayCount = 1, nextDayNumber = 2; // nextDayNumber always increments up
     let dragType = null, dragLabel = null, dragSourceIndex = null, dragSourceContainer = null;
     let pendingType = null, editingIndex = null, starRating = 0;
     let portadaAdultos = 2, portadaNinos = 0;
@@ -2321,11 +2310,11 @@
     // CONFIGS
     const C = {
       flight: { icon: '✈️', label: 'Vuelo', color: '#7c6fef', bg: '#edeaff', fields: [{ k: 'origen', l: 'Ciudad origen', t: 'text', ph: 'Bogotá' }, { k: 'destino', l: 'Ciudad destino', t: 'text', ph: 'París' }, { k: 'aerolinea', l: 'Aerolínea', t: 'text', ph: 'Air France' }, { k: 'vuelo', l: 'No. de vuelo', t: 'text', ph: 'AF9474' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'clase', l: 'Clase', t: 'select', opts: ['Económica', 'Ejecutiva', 'Primera'] }, { k: 'precio', l: 'Precio (USD)', t: 'text', ph: '800' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
-      alojamiento: { icon: '🏨', label: 'Alojamiento', color: '#f0567a', bg: '#fde8ee', hasStars: true, fields: [{ k: 'nombre', l: 'Nombre del hotel', t: 'text', ph: 'Hotel Luxe París' }, { k: 'ciudad', l: 'Ciudad', t: 'text', ph: 'París' }, { k: 'checkin', l: 'Check-in', t: 'date' }, { k: 'checkout', l: 'Check-out', t: 'date' }, { k: 'habitacion', l: 'Tipo habitación', t: 'select', opts: ['Sencilla', 'Doble', 'Suite', 'Familiar'] }, { k: 'precio', l: 'Precio/noche (USD)', t: 'text', ph: '200' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Desayuno incluido...' }] },
+      alojamiento: { icon: '🏨', label: 'Alojamiento', color: '#f0567a', bg: '#fde8ee', hasStars: true, fields: [{ k: 'nombre', l: 'Nombre del hotel', t: 'text', ph: 'Hotel Luxe París' }, { k: 'ciudad', l: 'Ciudad', t: 'text', ph: 'París' }, { k: 'checkin', l: 'Check-in', t: 'date' }, { k: 'checkout', l: 'Check-out', t: 'date' }, { k: 'habitacion', l: 'Tipo habitación', t: 'select', opts: ['Sencilla', 'Doble', 'Triple', 'Suite', 'Alojamiento entero', 'Habitaciones mixtas'] }, { k: 'precio', l: 'Precio/noche (USD)', t: 'text', ph: '200' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Desayuno incluido...' }] },
       transporte: { icon: '🚗', label: 'Transporte', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'tipo', l: 'Tipo', t: 'select', opts: ['Auto de alquiler', 'Taxi/Uber', 'Tren', 'Bus', 'Ferry', 'Moto'] }, { k: 'proveedor', l: 'Proveedor', t: 'text', ph: 'Hertz, Renfe...' }, { k: 'origen', l: 'Desde', t: 'text', ph: 'Aeropuerto CDG' }, { k: 'destino', l: 'Hasta', t: 'text', ph: 'Hotel Centro' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'precio', l: 'Precio (USD)', t: 'text', ph: '50' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Confirmación...' }] },
       actividad: { icon: '🎯', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', fields: [{ k: 'nombre', l: 'Nombre', t: 'text', ph: 'Visita Torre Eiffel' }, { k: 'lugar', l: 'Lugar', t: 'text', ph: 'París, Francia' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'precio', l: 'Precio (USD)', t: 'text', ph: '25' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...' }] },
       comida: { icon: '🍽️', label: 'Comida', color: '#f96b3a', bg: '#ffe8e0', hasStars: true, fields: [{ k: 'restaurante', l: 'Restaurante', t: 'text', ph: 'Le Jules Verne' }, { k: 'ciudad', l: 'Ciudad', t: 'text', ph: 'París' }, { k: 'tipo', l: 'Tipo', t: 'select', opts: ['Desayuno', 'Almuerzo', 'Cena', 'Brunch', 'Snack'] }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'reserva', l: 'Reservación', t: 'select', opts: ['Sí, confirmada', 'Pendiente', 'No aplica'] }, { k: 'precio', l: 'Presupuesto (USD)', t: 'text', ph: '80' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Menú degustación...' }] },
-      tour: { icon: '🗺️', label: 'Tour', color: '#0ea5d8', bg: '#d9f5ff', fields: [{ k: 'nombre', l: 'Nombre del tour', t: 'text', ph: 'Tour Versalles' }, { k: 'operador', l: 'Operador', t: 'text', ph: 'Get Your Guide' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['2h', '4h', 'Medio día', 'Día completo', '2 días', '3+ días'] }, { k: 'personas', l: 'No. personas', t: 'text', ph: '2' }, { k: 'precio', l: 'Precio total (USD)', t: 'text', ph: '120' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Incluye entrada, guía...' }] },
+      tour: { icon: '🗺️', label: 'Tour', color: '#0ea5d8', bg: '#d9f5ff', fields: [{ k: 'nombre', l: 'Nombre del tour', t: 'text', ph: 'Tour Versalles' }, { k: 'operador', l: 'Operador', t: 'text', ph: 'Get Your Guide' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['2h', '4h', 'Medio día', 'Día completo', '2 días', '3+ días'] }, { k: 'personas', l: 'No. personas', t: 'number', ph: '2' }, { k: 'precio', l: 'Precio total (USD)', t: 'text', ph: '120' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Incluye entrada, guía...' }] },
       texto: { icon: '📝', label: 'Caja de texto', color: '#64748b', bg: '#f1f5f9', fields: [{ k: 'contenido', l: 'Contenido', t: 'richtext', ph: 'Escribe aquí...' }, { k: 'alineacion', l: 'Alineación', t: 'select', opts: ['Izquierda', 'Centro', 'Derecha'] }] },
       titulo: { icon: '✦', label: 'Título', color: '#1a1a2e', bg: '#f0f1f7', fields: [{ k: 'texto', l: 'Texto del título', t: 'text', ph: 'Día 1 — Llegada a París' }, { k: 'subtitulo', l: 'Subtítulo (opcional)', t: 'text', ph: 'Una ciudad de luz...' }, { k: 'emoji', l: 'Emoji decorativo', t: 'text', ph: '🗼' }] },
       separador: { icon: '—', label: 'Separador', color: '#94a3b8', bg: '#f1f5f9', fields: [{ k: 'estilo', l: 'Estilo', t: 'select', opts: ['Línea simple', 'Línea con diamante', 'Punteado', 'Gradiente'] }, { k: 'etiqueta', l: 'Etiqueta (opcional)', t: 'text', ph: 'Mañana' }] },
