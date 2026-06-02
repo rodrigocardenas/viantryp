@@ -1657,7 +1657,7 @@
                     </div>
                 </div>
                 <div class="trial-cta">
-                    <button onclick="openUpgradeModal()" class="btn-trial-upgrade">Mejorar mi plan ahora →</button>
+                    <button onclick="openUpgradeModal(true)" class="btn-trial-upgrade">Mejorar mi plan ahora →</button>
                 </div>
             </div>
         @endif

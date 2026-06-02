@@ -196,85 +196,83 @@
                 <span class="toggle-label" id="modalLabelAnnual">Anual <span class="annual-discount-pill">-25%</span></span>
             </div>
 
-            @if(request()->routeIs('profile.index'))
-                <!-- PLANS GRID (Management) -->
-                <div class="plans-management-grid">
-                    <div class="section-title">CAMBIAR O MEJORAR PLAN</div>
-                    <div class="p-grid-container">
-                        @foreach($planData as $key => $data)
-                            @php 
-                                $isBlocked = ($tripCount > $data['limit_trips']) || 
-                                             ($editorCount > $data['limit_editors']); 
-                            @endphp
-                            <div class="p-card {{ $currentPlan === $key ? 'active' : '' }} {{ $isBlocked ? 'blocked' : '' }}">
-                                @if(isset($data['popular']))
-                                <div class="p-popular">MÁS POPULAR</div> @endif
-                                @if($isBlocked)
-                                <div class="p-blocked-badge">LÍMITE EXCEDIDO</div> @endif
-                                <div class="p-name">{{ $data['name'] }}</div>
-                                <div class="p-price" style="{{ !is_numeric($data['price_monthly']) ? 'font-size: 16px;' : '' }}">
-                                    @if(is_numeric($data['price_monthly']))<span class="currency">$</span>@endif<span class="p-price-val" data-monthly="{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}" data-annual="{{ is_numeric($data['price_annual']) ? number_format($data['price_annual'], 2, '.', '') : $data['price_annual'] }}">{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}</span>@if(!$data['is_custom'])<small>/mes</small>@endif
-                                </div>
-                                @if(isset($data['savings']) && $data['savings'] > 0)
-                                    <div class="plan-savings-hint">Ahorras ${{ $data['savings'] }} al año</div>
-                                @endif
-                                <div class="p-benefits">
-                                    @foreach($data['benefits'] as $b)
-                                        <div class="p-benefit"><i class="fas fa-check"></i> {{ $b }}</div>
-                                    @endforeach
-                                </div>
-                                <button
-                                    onclick="{{ $data['name'] === 'Corp.' ? 'window.location.href=\'' . route('contact') . '\'' : 'updateUserPlan(\'' . $key . '\')' }}"
-                                    class="p-btn {{ $currentPlan === $key ? 'current' : '' }} {{ $isBlocked ? 'blocked' : '' }}"
-                                    {{ $currentPlan === $key ? 'disabled' : '' }}>
-                                    {{ $currentPlan === $key ? 'Actual' : ($isBlocked ? 'Bloqueado' : ($data['name'] === 'Corp.' ? 'Contactar' : 'Elegir')) }}
-                                </button>
+            <!-- PLANS GRID (Management) -->
+            <div class="plans-management-grid">
+                <div class="section-title">CAMBIAR O MEJORAR PLAN</div>
+                <div class="p-grid-container">
+                    @foreach($planData as $key => $data)
+                        @php 
+                            $isBlocked = ($tripCount > $data['limit_trips']) || 
+                                         ($editorCount > $data['limit_editors']); 
+                        @endphp
+                        <div class="p-card {{ $currentPlan === $key ? 'active' : '' }} {{ $isBlocked ? 'blocked' : '' }}">
+                            @if(isset($data['popular']))
+                            <div class="p-popular">MÁS POPULAR</div> @endif
+                            @if($isBlocked)
+                            <div class="p-blocked-badge">LÍMITE EXCEDIDO</div> @endif
+                            <div class="p-name">{{ $data['name'] }}</div>
+                            <div class="p-price" style="{{ !is_numeric($data['price_monthly']) ? 'font-size: 16px;' : '' }}">
+                                @if(is_numeric($data['price_monthly']))<span class="currency">$</span>@endif<span class="p-price-val" data-monthly="{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}" data-annual="{{ is_numeric($data['price_annual']) ? number_format($data['price_annual'], 2, '.', '') : $data['price_annual'] }}">{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}</span>@if(!$data['is_custom'])<small>/mes</small>@endif
+                            </div>
+                            @if(isset($data['savings']) && $data['savings'] > 0)
+                                <div class="plan-savings-hint">Ahorras ${{ $data['savings'] }} al año</div>
+                            @endif
+                            <div class="p-benefits">
+                                @foreach($data['benefits'] as $b)
+                                    <div class="p-benefit"><i class="fas fa-check"></i> {{ $b }}</div>
+                                @endforeach
+                            </div>
+                            <button
+                                onclick="{{ $data['name'] === 'Corp.' ? 'window.location.href=\'' . route('contact') . '\'' : 'updateUserPlan(\'' . $key . '\')' }}"
+                                class="p-btn {{ $currentPlan === $key ? 'current' : '' }} {{ $isBlocked ? 'blocked' : '' }}"
+                                {{ $currentPlan === $key ? 'disabled' : '' }}>
+                                {{ $currentPlan === $key ? 'Actual' : ($isBlocked ? 'Bloqueado' : ($data['name'] === 'Corp.' ? 'Contactar' : 'Elegir')) }}
+                            </button>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- NEXT STEP CARD (Targeted) -->
+            @if($nextData)
+                <div class="next-step-card" style="background: {{ $userTheme }};">
+                    <div class="ns-header">
+                        <div class="ns-titles">
+                            <div class="ns-label">SIGUIENTE PASO</div>
+                            <div class="ns-plan-name">{{ $nextData['name'] }}</div>
+                        </div>
+                        @if(isset($nextData['popular']))
+                        <div class="popular-badge">MÁS POPULAR</div> @endif
+                    </div>
+                    <div class="ns-price" style="{{ !is_numeric($nextData['price_monthly']) ? 'font-size: 18px;' : '' }}">
+                        @if(is_numeric($nextData['price_monthly']))<span class="currency">$</span>@endif<span class="amount" data-monthly="{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}" data-annual="{{ is_numeric($nextData['price_annual']) ? number_format($nextData['price_annual'], 2, '.', '') : $nextData['price_annual'] }}">{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}</span>
+                        @if(!$nextData['is_custom']) <span class="period">/mes</span> @endif
+                        @if(isset($nextData['savings']) && $nextData['savings'] > 0)
+                            <div class="plan-savings-hint" style="color: white; opacity: 0.9;">Ahorras ${{ $nextData['savings'] }} al año</div>
+                        @endif
+                    </div>
+                    <div class="benefits-list">
+                        @foreach($nextData['benefits'] as $benefit)
+                            <div class="benefit-item">
+                                <div class="benefit-check"><i class="fas fa-check"></i></div>
+                                <span>{{ $benefit }}</span>
                             </div>
                         @endforeach
                     </div>
+                    <div class="ns-cta-container">
+                        <button
+                            onclick="{{ $nextData['name'] === 'Corp.' ? 'window.location.href=\'' . route('contact') . '\'' : 'updateUserPlan(\'' . $nextKey . '\')' }}"
+                            class="btn-upgrade-main">
+                            {{ $nextData['name'] === 'Corp.' ? 'Hablar con ventas — Contactar' : 'Mejorar a ' . $nextData['name'] . ' →' }}
+                        </button>
+                    </div>
                 </div>
             @else
-                <!-- NEXT STEP CARD (Targeted) -->
-                @if($nextData)
-                    <div class="next-step-card" style="background: {{ $userTheme }};">
-                        <div class="ns-header">
-                            <div class="ns-titles">
-                                <div class="ns-label">SIGUIENTE PASO</div>
-                                <div class="ns-plan-name">{{ $nextData['name'] }}</div>
-                            </div>
-                            @if(isset($nextData['popular']))
-                            <div class="popular-badge">MÁS POPULAR</div> @endif
-                        </div>
-                        <div class="ns-price" style="{{ !is_numeric($nextData['price_monthly']) ? 'font-size: 18px;' : '' }}">
-                            @if(is_numeric($nextData['price_monthly']))<span class="currency">$</span>@endif<span class="amount" data-monthly="{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}" data-annual="{{ is_numeric($nextData['price_annual']) ? number_format($nextData['price_annual'], 2, '.', '') : $nextData['price_annual'] }}">{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}</span>
-                            @if(!$nextData['is_custom']) <span class="period">/mes</span> @endif
-                            @if(isset($nextData['savings']) && $nextData['savings'] > 0)
-                                <div class="plan-savings-hint" style="color: white; opacity: 0.9;">Ahorras ${{ $nextData['savings'] }} al año</div>
-                            @endif
-                        </div>
-                        <div class="benefits-list">
-                            @foreach($nextData['benefits'] as $benefit)
-                                <div class="benefit-item">
-                                    <div class="benefit-check"><i class="fas fa-check"></i></div>
-                                    <span>{{ $benefit }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                        <div class="ns-cta-container">
-                            <button
-                                onclick="{{ $nextData['name'] === 'Corp.' ? 'window.location.href=\'' . route('contact') . '\'' : 'updateUserPlan(\'' . $nextKey . '\')' }}"
-                                class="btn-upgrade-main">
-                                {{ $nextData['name'] === 'Corp.' ? 'Hablar con ventas — Contactar' : 'Mejorar a ' . $nextData['name'] . ' →' }}
-                            </button>
-                        </div>
-                    </div>
-                @else
-                    <div
-                        style="padding: 30px; background: #f8fafc; border-radius: 20px; text-align: center; border: 1px dashed #e2e8f0;">
-                        <div style="font-weight: 800; color: #0f172a; margin-bottom: 5px;">¡Plan Máximo Activado!</div>
-                        <div style="font-size: 13px; color: #64748b;">Disfrutas de todas las funciones corporativas.</div>
-                    </div>
-                @endif
+                <div class="next-step-card-max"
+                    style="padding: 30px; background: #f8fafc; border-radius: 20px; text-align: center; border: 1px dashed #e2e8f0;">
+                    <div style="font-weight: 800; color: #0f172a; margin-bottom: 5px;">¡Plan Máximo Activado!</div>
+                    <div style="font-size: 13px; color: #64748b;">Disfrutas de todas las funciones corporativas.</div>
+                </div>
             @endif
 
             <div class="pricing-disclaimer" style="text-align: center; margin-top: 15px; margin-bottom: 5px; font-size: 11px; color: #94a3b8; font-weight: 500;">
@@ -991,6 +989,43 @@
             padding: 20px 15px;
         }
     }
+    /* Dynamic toggle logic for all plans vs next step */
+    .upgrade-premium-modal:not(.show-all-plans) .plans-management-grid {
+        display: none !important;
+    }
+    .upgrade-premium-modal:not(.show-all-plans) .next-step-card,
+    .upgrade-premium-modal:not(.show-all-plans) .next-step-card-max {
+        display: block !important;
+    }
+    .upgrade-premium-modal:not(.show-all-plans) .usage-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+    .upgrade-premium-modal:not(.show-all-plans) .usage-card {
+        padding: 12px !important;
+    }
+    .upgrade-premium-modal:not(.show-all-plans) .usage-stats .current {
+        font-size: 16px !important;
+    }
+    
+    .upgrade-premium-modal.show-all-plans .plans-management-grid {
+        display: block !important;
+    }
+    .upgrade-premium-modal.show-all-plans .next-step-card,
+    .upgrade-premium-modal.show-all-plans .next-step-card-max,
+    .upgrade-premium-modal.show-all-plans .upgrade-alert {
+        display: none !important;
+    }
+    .upgrade-premium-modal.show-all-plans .usage-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+    }
+    .upgrade-premium-modal.show-all-plans .usage-card {
+        padding: 16px !important;
+    }
+    .upgrade-premium-modal.show-all-plans .usage-stats .current {
+        font-size: 20px !important;
+    }
 </style>
 
 <script>
@@ -1001,9 +1036,25 @@
         editors: {{ $editorCount }}
     };
 
-    async function openUpgradeModal() {
+    async function openUpgradeModal(showAll = null) {
         const modal = document.getElementById('upgradePlanModal');
         if (!modal) return;
+        
+        const shouldShowAll = showAll !== null ? showAll : {{ request()->routeIs('profile.index') ? 'true' : 'false' }};
+        const modalContent = modal.querySelector('.modal-content');
+        if (shouldShowAll) {
+            modal.classList.add('show-all-plans');
+            if (modalContent) {
+                modalContent.classList.remove('modal-standard');
+                modalContent.classList.add('modal-wide');
+            }
+        } else {
+            modal.classList.remove('show-all-plans');
+            if (modalContent) {
+                modalContent.classList.remove('modal-wide');
+                modalContent.classList.add('modal-standard');
+            }
+        }
         
         // Show modal immediately
         modal.style.display = 'flex';

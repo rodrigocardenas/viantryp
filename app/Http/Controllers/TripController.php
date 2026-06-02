@@ -31,14 +31,23 @@ class TripController extends Controller
         $userId = Auth::id();
         $filter = $request->get('filter', 'personal'); // Changed default to personal
 
+        // Lightweight columns needed to render the list in index.blade.php
+        // Omit pro_state, items_data, and days_dates which are heavy JSONs
+        $columns = [
+            'id', 'user_id', 'code', 'title', 'start_date', 'end_date',
+            'travelers', 'destination', 'status', 'summary', 'price',
+            'currency', 'cover_image_url', 'share_token', 'short_token',
+            'is_pro', 'views_count', 'created_at', 'updated_at'
+        ];
+
         if ($filter === 'shared') {
-            $query = Trip::whereHas('collaborators', function($q) use ($userId) {
+            $query = Trip::select($columns)->whereHas('collaborators', function($q) use ($userId) {
                 $q->where('user_id', $userId);
             })->with(['user', 'persons', 'collaborators' => function($q) use ($userId) {
                 $q->where('user_id', $userId);
             }]);
         } else {
-            $query = Trip::with(['user', 'persons'])->where('user_id', $userId);
+            $query = Trip::select($columns)->with(['user', 'persons'])->where('user_id', $userId);
         }
 
         // Calculate stats before filtering
