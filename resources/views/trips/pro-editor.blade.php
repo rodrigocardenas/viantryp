@@ -188,6 +188,7 @@
     window.tripId = {{ $trip->id ?? 'null' }};
     window.proStatus = "{{ $trip->status ?? 'draft' }}";
     window.proState = @json($trip->pro_state ?? null);
+    window.viantrypGoogleClientId = "{{ config('services.google.client_id') }}";
   </script>
 </head>
 

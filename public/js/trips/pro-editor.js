@@ -2032,7 +2032,8 @@ function openPreview() {
     displayNameType: window.viantrypDisplayNameType || 'personal',
     agencyLogo: window.viantrypAgencyLogo || '',
     agencyName: window.viantrypAgencyName || '',
-    userFullName: window.viantrypUserFullName || ''
+    userFullName: window.viantrypUserFullName || '',
+    googleClientId: window.viantrypGoogleClientId || ''
   });
   const blob = new Blob([previewHTML], { type: 'text/html' });
   const url = URL.createObjectURL(blob);

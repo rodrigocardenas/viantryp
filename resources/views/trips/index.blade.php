@@ -2130,7 +2130,7 @@
             });
         }
     </script>
-    <script src="{{ asset('js/trips/pro-viewer.js') }}"></script>
+    <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>
     <script>
         function previewTrip(tripId) {
             openProPreview(tripId);
@@ -2160,6 +2160,7 @@
                     proState.agencyLogo = data.agency_logo || '';
                     proState.agencyName = data.agency_name || '';
                     proState.userFullName = data.user_full_name || '';
+                    proState.googleClientId = "{{ config('services.google.client_id') }}";
 
                     const previewHTML = buildPreviewHTML(proState);
                     const blob = new Blob([previewHTML], { type: 'text/html' });

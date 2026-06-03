@@ -34,6 +34,7 @@
         proState.agencyLogo = "{{ $trip->user->agency_logo ? asset('storage/' . $trip->user->agency_logo) : '' }}";
         proState.agencyName = @json($trip->user->agency_name ?? '');
         proState.userFullName = @json($trip->user->name . ' ' . $trip->user->last_name);
+        proState.googleClientId = "{{ config('services.google.client_id') }}";
         window.shareToken = @json(request()->route('token'));
     </script>
     <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>

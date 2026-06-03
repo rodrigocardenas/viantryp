@@ -1,5 +1,5 @@
 function buildPreviewHTML(data) {
-  const { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor, displayNameType, agencyLogo, agencyName, userFullName } = data;
+  const { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor, displayNameType, agencyLogo, agencyName, userFullName, googleClientId } = data;
 
   const statusMap = {
     'draft': { label: 'En Diseño', bg: '#e0f2fe', color: '#1d5fa8', bdr: '#bae6fd' },
@@ -790,6 +790,12 @@ ${hasPortada ? `
   <aside class="pv-nav">
     <div class="pv-nav-title">Itinerario</div>
     ${sidebarNav}
+    <div class="pv-nav-calendar-section" style="padding: 14px 18px; border-top: 1px solid var(--border);">
+      <button class="pv-cal-btn" onclick="openGoogleCalendarModal()" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px 14px; background:var(--accent); color:#fff; border:none; border-radius:10px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; transition:all 0.2s; box-shadow:0 4px 12px var(--accent-light);">
+        <i class="fa-solid fa-calendar-plus" style="font-size:14px;"></i>
+        Agregar a Google Calendar
+      </button>
+    </div>
   </aside>
   <main class="pv-content">
     ${daysHTML}
@@ -804,6 +810,73 @@ ${hasPortada ? `
     `: ''}
   </main>
 </div>
+
+<!-- Google Calendar Modal -->
+<div id="viantrypCalendarModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.4);backdrop-filter:blur(8px);z-index:10000;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s ease;">
+  <div style="background:#fff;border-radius:24px;width:90%;max-width:480px;padding:32px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);transform:translateY(20px);transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);text-align:left;position:relative;border:1px solid #f1f5f9;font-family:'Poppins',sans-serif;">
+    <button onclick="closeGoogleCalendarModal()" style="position:absolute;top:20px;right:20px;background:none;border:none;font-size:24px;color:#94a3b8;cursor:pointer;line-height:1;transition:color 0.2s;" onmouseover="this.style.color='#475569'" onmouseout="this.style.color='#94a3b8'">×</button>
+    
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+      <div style="width:48px;height:48px;background:var(--accent-light);color:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">
+        <i class="fa-solid fa-calendar-days"></i>
+      </div>
+      <div>
+        <h3 style="margin:0;font-size:18px;font-weight:700;color:#0f172a;">Agregar al Calendario</h3>
+        <p style="margin:2px 0 0;font-size:12px;color:#64748b;">Elige cómo quieres añadir el viaje a tu agenda</p>
+      </div>
+    </div>
+
+    <!-- Info text or errors if dates are missing -->
+    <div id="calModalDatesWarning" style="display:none;background:#fffbeb;border:1px solid #fef3c7;border-radius:12px;padding:12px 14px;color:#b45309;font-size:12px;line-height:1.5;margin-bottom:20px;font-weight:500;">
+      <i class="fa-solid fa-triangle-exclamation" style="margin-right:6px;"></i>
+      Este viaje no tiene fechas de inicio definidas. Asígnale fechas en el editor para poder sincronizar las actividades en días específicos.
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
+      <!-- Direct Sync Button Card -->
+      <div id="googleDirectSyncCard" style="border:1.5px solid #e2e8f0;border-radius:16px;padding:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.background='#f8fafc';" onmouseout="this.style.borderColor='#e2e8f0';this.style.background='transparent';" onclick="syncWithGoogleCalendar()">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+          <svg style="width:20px;height:20px;" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span style="font-size:13.5px;font-weight:600;color:#1e293b;">Sincronizar directamente con Google</span>
+        </div>
+        <p style="margin:0;font-size:11.5px;color:#64748b;line-height:1.45;padding-left:32px;">Importa todos los eventos automáticamente en tu Google Calendar.</p>
+        
+        <!-- Client ID missing notice -->
+        <div id="clientIdMissingNotice" style="display:none;margin-top:8px;font-size:11px;color:#94a3b8;font-style:italic;padding-left:32px;">
+          Sincronización automática deshabilitada por falta de Google Client ID en el servidor.
+        </div>
+      </div>
+
+      <!-- ICS Download Card -->
+      <div style="border:1.5px solid #e2e8f0;border-radius:16px;padding:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.background='#f8fafc';" onmouseout="this.style.borderColor='#e2e8f0';this.style.background='transparent';" onclick="triggerICSDownload()">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+          <div style="font-size:18px;color:#64748b;display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-file-arrow-down"></i></div>
+          <span style="font-size:13.5px;font-weight:600;color:#1e293b;">Descargar archivo de calendario (.ics)</span>
+        </div>
+        <p style="margin:0;font-size:11.5px;color:#64748b;line-height:1.45;padding-left:30px;">Descarga el archivo estándar e impórtalo en Outlook, Apple Calendar o Google Calendar.</p>
+      </div>
+    </div>
+
+    <!-- Sync progress bar/feedback inside the modal -->
+    <div id="syncProgressContainer" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:16px;margin-bottom:20px;">
+      <div style="display:flex;justify-content:between;align-items:center;margin-bottom:8px;font-size:12px;font-weight:600;color:#334155;">
+        <span id="syncProgressText">Conectando...</span>
+        <span id="syncProgressPercent" style="margin-left:auto;color:var(--accent);">0%</span>
+      </div>
+      <div style="width:100%;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;">
+        <div id="syncProgressBar" style="width:0%;height:100%;background:var(--accent);transition:width 0.2s ease;"></div>
+      </div>
+    </div>
+
+    <button onclick="closeGoogleCalendarModal()" style="width:100%;padding:12px;border-radius:12px;border:none;background:#f1f5f9;color:#475569;font-weight:600;font-size:13px;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">Cancelar</button>
+  </div>
+</div>
+
 <script>
 const links=document.querySelectorAll('.pvnav-link');
 const sections=document.querySelectorAll('.pv-day');
@@ -822,6 +895,470 @@ links.forEach(link=>{
 
 const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const id=e.target.id;links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+id)})}})},{threshold:.25,rootMargin:'-60px 0px -40% 0px'});
 sections.forEach(s=>obs.observe(s));
+
+// Trip Data context for calendar
+const tripData = ${JSON.stringify(data).replace(/</g, '\\x3c')};
+
+// Load GAPI and GSI
+function loadGapiAndGsi(callback) {
+  if (window.google && window.google.accounts) {
+    callback();
+    return;
+  }
+  const script = document.createElement('script');
+  script.src = 'https://accounts.google.com/gsi/client';
+  script.async = true;
+  script.defer = true;
+  script.onload = () => {
+    callback();
+  };
+  document.head.appendChild(script);
+}
+
+function getGoogleAccessToken(clientId, callback) {
+  loadGapiAndGsi(() => {
+    try {
+      const tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: 'https://www.googleapis.com/auth/calendar.events',
+        callback: (response) => {
+          if (response.error !== undefined) {
+            console.error('Error obtaining Google access token:', response);
+            alert('Error al obtener acceso a Google Calendar: ' + response.error);
+            return;
+          }
+          callback(response.access_token);
+        },
+      });
+      tokenClient.requestAccessToken({ prompt: 'consent' });
+    } catch (e) {
+      console.error('Error initializing Google GIS Client:', e);
+      alert('Error de configuración de Google OAuth. Por favor verifica el Client ID.');
+    }
+  });
+}
+
+async function addEventToGoogleCalendar(accessToken, eventData) {
+  const url = 'https://www.googleapis.com/calendar/v3/calendars/primary/events';
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + accessToken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(eventData)
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error('Google API Error: ' + errorText);
+  }
+  return await response.json();
+}
+
+function extractEventsForCalendar(data) {
+  try {
+    const events = [];
+    if (!data) {
+      return { error: 'No hay datos del viaje.' };
+    }
+    const title = data.title || 'Itinerario';
+    const days = data.days || {};
+    const dayDates = data.dayDates || [];
+    const numericTabs = data.numericTabs || [];
+
+    if (!dayDates || dayDates.length === 0 || !dayDates[0]) {
+      return { error: 'El viaje no tiene una fecha de inicio configurada.' };
+    }
+
+    if (!numericTabs || !Array.isArray(numericTabs)) {
+      return { error: 'El viaje no tiene días válidos configurados.' };
+    }
+
+    const daysObj = days || {};
+
+    numericTabs.forEach((tab) => {
+      if (!tab) return;
+      const dayIndex = tab.idx;
+      if (dayIndex === undefined) return;
+      const dayDate = dayDates[dayIndex];
+      if (!dayDate) return;
+
+      const items = daysObj[dayIndex] || [];
+      if (!Array.isArray(items)) return;
+
+      items.forEach(item => {
+        if (!item || !item.data) return;
+        const d = item.data;
+
+        let event = {
+          summary: '',
+          description: '',
+          location: '',
+          start: {},
+          end: {}
+        };
+
+        const parseTimeAndDate = (dateOrTimeVal, defaultTime = '09:00') => {
+          if (dateOrTimeVal === undefined || dateOrTimeVal === null || dateOrTimeVal === '') {
+            return { date: dayDate, time: defaultTime, isTimeSpecified: false };
+          }
+          const dateOrTimeStr = String(dateOrTimeVal).trim();
+          if (dateOrTimeStr.includes('T')) {
+            const parts = dateOrTimeStr.split('T');
+            return { date: parts[0], time: parts[1].substring(0, 5), isTimeSpecified: true };
+          }
+          if (dateOrTimeStr.includes(' ')) {
+            const parts = dateOrTimeStr.split(/\s+/);
+            if (parts[0].includes('-') || parts[0].includes('/')) {
+              return { date: parts[0], time: parts[1].substring(0, 5), isTimeSpecified: true };
+            } else {
+              return { date: dayDate, time: parts[0].substring(0, 5), isTimeSpecified: true };
+            }
+          }
+          if (dateOrTimeStr.includes(':')) {
+            return { date: dayDate, time: dateOrTimeStr.substring(0, 5), isTimeSpecified: true };
+          }
+          if (dateOrTimeStr.includes('-') || dateOrTimeStr.includes('/')) {
+            return { date: dateOrTimeStr, time: defaultTime, isTimeSpecified: false };
+          }
+          return { date: dayDate, time: defaultTime, isTimeSpecified: false };
+        };
+
+        const addDuration = (dateTimeStr, durationVal) => {
+          const dt = new Date(dateTimeStr);
+          let durationMin = 60;
+          if (durationVal !== undefined && durationVal !== null && durationVal !== '') {
+            const durationStr = String(durationVal).trim();
+            const hoursMatch = durationStr.match(/(\d+)\s*h/i);
+            const minsMatch = durationStr.match(/(\d+)\s*m/i);
+            if (hoursMatch || minsMatch) {
+              durationMin = 0;
+              if (hoursMatch) durationMin += parseInt(hoursMatch[1]) * 60;
+              if (minsMatch) durationMin += parseInt(minsMatch[1]);
+            } else if (durationStr.includes(':')) {
+              const parts = durationStr.split(':');
+              durationMin = (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
+            } else if (parseInt(durationStr)) {
+              durationMin = parseInt(durationStr) * 60;
+            }
+          }
+          dt.setMinutes(dt.getMinutes() + durationMin);
+          const pad = (n) => String(n).padStart(2, '0');
+          return dt.getFullYear() + '-' + pad(dt.getMonth() + 1) + '-' + pad(dt.getDate()) + 'T' + pad(dt.getHours()) + ':' + pad(dt.getMinutes()) + ':00';
+        };
+
+        if (item.type === 'flight') {
+          const sal = parseTimeAndDate(d.salida, '10:00');
+          const lle = parseTimeAndDate(d.llegada, '12:00');
+          const startISO = sal.date + 'T' + sal.time + ':00';
+          const endISO = lle.date + 'T' + lle.time + ':00';
+
+          event.summary = '✈️ Vuelo: ' + (d.origen_city || d.origen || 'Origen') + ' → ' + (d.destino_city || d.destino || 'Destino');
+          event.description = 'Aerolínea: ' + (d.aerolinea || '—') + '\\nNúmero de Vuelo: ' + (d.vuelo || '—') + '\\nReserva: ' + (d.reserva || '—') + '\\nNotas: ' + (d.notes || '—');
+          event.location = (d.origen || '') + ' a ' + (d.destino || '');
+          event.start = { dateTime: startISO };
+          event.end = { dateTime: endISO };
+        }
+        else if (item.type === 'alojamiento') {
+          const cIn = parseTimeAndDate(d.checkin, '15:00');
+          const cOut = parseTimeAndDate(d.checkout, '11:00');
+          
+          event.summary = '🏨 Alojamiento: ' + (d.nombre || 'Hotel');
+          event.description = 'Habitación: ' + (d.habitacion || '—') + '\\nRégimen: ' + (d.alimentacion || '—') + '\\nReserva: ' + (d.reserva || '—') + '\\nNotas: ' + (d.notes || '—');
+          event.location = d.direccion || '';
+          
+          if (cIn.isTimeSpecified || cOut.isTimeSpecified) {
+            event.start = { dateTime: cIn.date + 'T' + cIn.time + ':00' };
+            event.end = { dateTime: cOut.date + 'T' + cOut.time + ':00' };
+          } else {
+            event.start = { date: cIn.date };
+            let endDate = cOut.date;
+            if (endDate === cIn.date) {
+              const nextDay = new Date(cIn.date + 'T00:00:00');
+              nextDay.setDate(nextDay.getDate() + 1);
+              const pad = (n) => String(n).padStart(2, '0');
+              endDate = nextDay.getFullYear() + '-' + pad(nextDay.getMonth() + 1) + '-' + pad(nextDay.getDate());
+            }
+            event.end = { date: endDate };
+          }
+        }
+        else if (item.type === 'transporte') {
+          const sal = parseTimeAndDate(d.salida || d.fecha, '09:00');
+          const lle = parseTimeAndDate(d.llegada, '10:00');
+          const startISO = sal.date + 'T' + sal.time + ':00';
+          const endISO = lle.date + 'T' + lle.time + ':00';
+
+          event.summary = '🚆 ' + (d.tipo || 'Transporte') + ': ' + (d.origen || 'Origen') + ' → ' + (d.destino || 'Destino');
+          event.description = 'Proveedor: ' + (d.proveedor || '—') + '\\nReserva: ' + (d.reserva || '—') + '\\nNotas: ' + (d.notes || '—');
+          event.location = (d.origen || '') + ' a ' + (d.destino || '');
+          event.start = { dateTime: startISO };
+          event.end = { dateTime: endISO };
+        }
+        else if (item.type === 'actividad') {
+          const dt = parseTimeAndDate(d.fecha, '10:00');
+          const startISO = dt.date + 'T' + dt.time + ':00';
+          const endISO = addDuration(startISO, d.duracion);
+
+          event.summary = '🎯 Actividad: ' + (d.nombre || 'Actividad');
+          event.description = 'Duración: ' + (d.duracion || '—') + '\\nNotas: ' + (d.notes || '—');
+          event.location = d.direccion || d.lugar || '';
+          event.start = { dateTime: startISO };
+          event.end = { dateTime: endISO };
+        }
+        else if (item.type === 'comida') {
+          const dt = parseTimeAndDate(d.fecha, '13:00');
+          const startISO = dt.date + 'T' + dt.time + ':00';
+          const endISO = addDuration(startISO, '1.5h');
+
+          event.summary = '🍴 Comida: ' + (d.restaurante || 'Restaurante') + (d.tipo ? ' (' + d.tipo + ')' : '');
+          event.description = 'Estado de Reserva: ' + (d.estado_reserva || '—') + '\\nNotas: ' + (d.notes || '—');
+          event.location = d.direccion || d.ciudad || '';
+          event.start = { dateTime: startISO };
+          event.end = { dateTime: endISO };
+        }
+        else if (item.type === 'tour') {
+          const dt = parseTimeAndDate(d.fecha, '09:00');
+          const startISO = dt.date + 'T' + dt.time + ':00';
+          const endISO = addDuration(startISO, d.duracion || '3h');
+
+          event.summary = '🗺️ Tour: ' + (d.nombre || 'Tour');
+          event.description = 'Operador: ' + (d.operador || '—') + '\\nDuración: ' + (d.duracion || '—') + '\\nReserva: ' + (d.reserva || '—') + '\\nNotas: ' + (d.notes || '—');
+          event.location = d.operador || '';
+          event.start = { dateTime: startISO };
+          event.end = { dateTime: endISO };
+        }
+
+        if (event.summary) {
+          const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+          if (event.start.dateTime) {
+            event.start.timeZone = userTimeZone;
+            event.end.timeZone = userTimeZone;
+          }
+          events.push(event);
+        }
+      });
+    });
+
+    return { events };
+  } catch (err) {
+    console.error('Error parsing calendar events:', err);
+    return { error: 'Error interno al procesar los eventos del calendario: ' + err.message };
+  }
+}
+
+function downloadICSFile(tripTitle, events) {
+  try {
+    let icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Viantryp//Itinerary Calendar//ES',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH'
+    ];
+
+    const formatICSDate = (dtObj) => {
+      if (dtObj.date) return dtObj.date.replace(/-/g, '');
+      if (dtObj.dateTime) return dtObj.dateTime.replace(/[-:]/g, '').substring(0, 15);
+      return '';
+    };
+
+    events.forEach((ev, idx) => {
+      const isAllDay = !!ev.start.date;
+      const dtStartStr = formatICSDate(ev.start);
+      const dtEndStr = formatICSDate(ev.end);
+      
+      icsContent.push('BEGIN:VEVENT');
+      icsContent.push('UID:viantryp-' + idx + '-' + Date.now() + '@viantryp.com');
+      
+      const nowStr = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      icsContent.push('DTSTAMP:' + nowStr);
+      
+      if (isAllDay) {
+        icsContent.push('DTSTART;VALUE=DATE:' + dtStartStr);
+        icsContent.push('DTEND;VALUE=DATE:' + dtEndStr);
+      } else {
+        icsContent.push('DTSTART:' + dtStartStr);
+        icsContent.push('DTEND:' + dtEndStr);
+      }
+      
+      const escapeText = (t) => t ? t.replace(/\\\\/g, '\\\\\\\\').replace(/,/g, '\\\\,').replace(/;/g, '\\\\;').replace(/\\n/g, '\\\\n') : '';
+      
+      icsContent.push('SUMMARY:' + escapeText(ev.summary));
+      if (ev.description) icsContent.push('DESCRIPTION:' + escapeText(ev.description));
+      if (ev.location) icsContent.push('LOCATION:' + escapeText(ev.location));
+      icsContent.push('END:VEVENT');
+    });
+
+    icsContent.push('END:VCALENDAR');
+
+    const fullContent = icsContent.join('\\r\\n');
+    const blob = new Blob([fullContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const safeTitle = (tripTitle || 'viaje').toLowerCase().replace(/[^a-z0-9]/g, '_');
+    link.download = safeTitle + '_itinerario.ics';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error('Error in downloadICSFile:', err);
+    alert('Error al descargar el archivo ICS: ' + err.message);
+  }
+}
+
+window.openGoogleCalendarModal = function() {
+  try {
+    const m = document.getElementById('viantrypCalendarModal');
+    if (!m) {
+      alert('No se pudo encontrar el contenedor del modal del calendario.');
+      return;
+    }
+    
+    const dateCheck = extractEventsForCalendar(tripData);
+    const datesWarning = document.getElementById('calModalDatesWarning');
+    const googleBtnCard = document.getElementById('googleDirectSyncCard');
+    
+    if (dateCheck.error) {
+      if (datesWarning) datesWarning.style.display = 'block';
+    } else {
+      if (datesWarning) datesWarning.style.display = 'none';
+    }
+
+    const clientIdNotice = document.getElementById('clientIdMissingNotice');
+    if (!tripData.googleClientId) {
+      if (clientIdNotice) clientIdNotice.style.display = 'block';
+      if (googleBtnCard) {
+        googleBtnCard.style.opacity = '0.5';
+        googleBtnCard.style.pointerEvents = 'none';
+      }
+    } else {
+      if (clientIdNotice) clientIdNotice.style.display = 'none';
+      if (googleBtnCard) {
+        googleBtnCard.style.opacity = '1';
+        googleBtnCard.style.pointerEvents = 'auto';
+      }
+    }
+
+    m.style.display = 'flex';
+    setTimeout(() => {
+      m.style.opacity = '1';
+      const innerDiv = m.querySelector('div');
+      if (innerDiv) {
+        innerDiv.style.transform = 'translateY(0)';
+      }
+    }, 10);
+  } catch (err) {
+    console.error('Error in openGoogleCalendarModal:', err);
+    alert('Error al intentar abrir el modal del calendario: ' + err.message);
+  }
+};
+
+window.closeGoogleCalendarModal = function() {
+  try {
+    const m = document.getElementById('viantrypCalendarModal');
+    if (!m) return;
+    m.style.opacity = '0';
+    const innerDiv = m.querySelector('div');
+    if (innerDiv) {
+      innerDiv.style.transform = 'translateY(20px)';
+    }
+    setTimeout(() => { m.style.display = 'none'; }, 250);
+  } catch (err) {
+    console.error('Error in closeGoogleCalendarModal:', err);
+  }
+};
+
+window.triggerICSDownload = function() {
+  try {
+    const parsed = extractEventsForCalendar(tripData);
+    if (parsed.error) {
+      alert(parsed.error);
+      return;
+    }
+    const events = parsed.events || [];
+    if (events.length === 0) {
+      alert('No hay actividades válidas para agregar en este viaje.');
+      return;
+    }
+    downloadICSFile(tripData.title, events);
+    closeGoogleCalendarModal();
+  } catch (err) {
+    console.error('Error in triggerICSDownload:', err);
+    alert('Error al generar la descarga del calendario: ' + err.message);
+  }
+};
+
+window.syncWithGoogleCalendar = function() {
+  try {
+    if (!tripData.googleClientId) {
+      alert('La sincronización de Google Calendar no está disponible.');
+      return;
+    }
+
+    const parsed = extractEventsForCalendar(tripData);
+    if (parsed.error) {
+      alert(parsed.error);
+      return;
+    }
+
+    const events = parsed.events;
+    if (!events || events.length === 0) {
+      alert('No hay actividades para agregar en este viaje.');
+      return;
+    }
+
+    const progressCont = document.getElementById('syncProgressContainer');
+    const progressText = document.getElementById('syncProgressText');
+    const progressPercent = document.getElementById('syncProgressPercent');
+    const progressBar = document.getElementById('syncProgressBar');
+
+    getGoogleAccessToken(tripData.googleClientId, async (accessToken) => {
+      try {
+        if (!accessToken) {
+          alert('No se obtuvo el token de acceso de Google.');
+          return;
+        }
+
+        if (progressCont) progressCont.style.display = 'block';
+        if (progressText) progressText.innerText = 'Sincronizando actividades...';
+        
+        let successCount = 0;
+        
+        for (let i = 0; i < events.length; i++) {
+          const ev = events[i];
+          if (progressText) progressText.innerText = 'Agregando evento ' + (i + 1) + ' de ' + events.length + '...';
+          
+          const percent = Math.round(((i + 1) / events.length) * 100);
+          if (progressPercent) progressPercent.innerText = percent + '%';
+          if (progressBar) progressBar.style.width = percent + '%';
+
+          try {
+            await addEventToGoogleCalendar(accessToken, ev);
+            successCount++;
+          } catch (err) {
+            console.error('Error adding event to Google Calendar:', err);
+          }
+        }
+
+        if (progressText) progressText.innerText = '¡Sincronizado! ' + successCount + ' de ' + events.length + ' agregados.';
+        setTimeout(() => {
+          alert('Se sincronizaron con éxito ' + successCount + ' actividades en tu Google Calendar.');
+          closeGoogleCalendarModal();
+          if (progressCont) progressCont.style.display = 'none';
+          if (progressBar) progressBar.style.width = '0%';
+        }, 1000);
+      } catch (innerErr) {
+        console.error('Error during calendar sync iteration:', innerErr);
+        alert('Error durante la sincronización: ' + innerErr.message);
+      }
+    });
+  } catch (err) {
+    console.error('Error in syncWithGoogleCalendar:', err);
+    alert('Error al iniciar la sincronización de Google: ' + err.message);
+  }
+};
 </script>
 ${!isPublicLink && tripId ? `
 <script>
