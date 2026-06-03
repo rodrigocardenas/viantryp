@@ -3212,6 +3212,32 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     display: none;
 }
 
+.pv-cal-btn, .pv-map-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    background: #ffffff;
+    color: #445c7d;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+.pv-cal-btn:hover, .pv-map-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #2b3e57;
+}
+.pv-cal-btn:active, .pv-map-btn:active {
+    transform: translateY(1px);
+}
+
 @media (max-width: 760px) {
     .pv-mobile-only-header {
         display: block;
@@ -3298,44 +3324,29 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         gap: 8px;
         margin-top: 12px;
     }
-    .pv-cal-btn-mobile {
+    .pv-cal-btn-mobile, .pv-map-btn-mobile {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
         width: 100%;
         padding: 10px 12px;
-        background: var(--accent);
-        color: #fff;
-        border: none;
+        background: #ffffff;
+        color: #445c7d;
+        border: 1.5px solid var(--border);
         border-radius: 10px;
         font-size: 11px;
         font-weight: 600;
         cursor: pointer;
         font-family: inherit;
-        transition: all 0.2s;
-        box-shadow: 0 4px 12px rgba(124,111,239,.3);
+        transition: all 0.2s ease;
     }
-    .pv-map-btn-mobile {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        width: 100%;
-        padding: 10px 12px;
-        background: #0f172a;
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        font-size: 11px;
-        font-weight: 600;
-        cursor: pointer;
-        font-family: inherit;
-        transition: all 0.2s;
-        box-shadow: 0 4px 12px rgba(15,23,42,0.15);
+    .pv-cal-btn-mobile:hover, .pv-map-btn-mobile:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #2b3e57;
     }
-    .pv-cal-btn-mobile:active,
-    .pv-map-btn-mobile:active {
+    .pv-cal-btn-mobile:active, .pv-map-btn-mobile:active {
         transform: translateY(1px);
     }
 }
