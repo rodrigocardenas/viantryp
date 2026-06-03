@@ -16,6 +16,7 @@ let selectedGiphyUrl = null, giphyTarget = 'canvas';
 let confirmCallback = null;
 let unsavedChanges = false;
 let currentPhotoTargetInput = null;
+let lastAutoCalculatedSum = 0;
 
 // PORTADA
 function changePortadaCount(type, d) {
@@ -585,6 +586,11 @@ function renderTabs() {
         const prevDate = dayDates[days.length - 2];
         if (prevDate) {
           nextDate = addDaysToDate(prevDate, 1);
+        } else {
+          const pi = document.getElementById('portadaFechaInicio');
+          if (pi && pi.value) {
+            nextDate = addDaysToDate(pi.value, days.length - 1);
+          }
         }
       } else {
         const pi = document.getElementById('portadaFechaInicio');
@@ -668,6 +674,7 @@ document.getElementById('confirmOverlay').addEventListener('click', e => { if (e
 
 // RENDER
 function renderCanvas() {
+  updatePortadaPriceFromServices();
   const portadaCanvas = document.getElementById('portadaCanvas');
   const cierreCanvas = document.getElementById('cierreCanvas');
   const regularCanvas = document.getElementById('regularCanvas');
@@ -703,12 +710,114 @@ function renderCanvas() {
   document.getElementById('dayNoDate').style.display = dateVal ? 'none' : '';
 
   regularCanvas.style.display = 'block';
+  if (typeof currentDay === 'number' && days[currentDay]) {
+    sortDayItemsChronologically(days[currentDay]);
+  }
   const items = days[currentDay] || [];
   canvasItems.innerHTML = '';
   emptyState.classList.toggle('hidden', items.length > 0);
   document.getElementById('dropHint').style.display = items.length > 0 ? 'block' : 'none';
 
   items.forEach((item, idx) => canvasItems.appendChild(buildItem(item, idx)));
+}
+
+// HELPER FUNCTIONS FOR CHRONOLOGICAL SORT & TIME DISPLAY
+function getItemDateTime(item) {
+  if (!item || !item.data) return null;
+  const d = item.data;
+  switch (item.type) {
+    case 'flight': return d.salida || null;
+    case 'alojamiento': return d.checkin || null;
+    case 'transporte': return d.salida || null;
+    case 'actividad': return d.fecha || null;
+    case 'comida': return d.fecha || null;
+    case 'tour': return d.fecha || null;
+    default: return null;
+  }
+}
+
+function getItemTimeStr(item) {
+  const dt = getItemDateTime(item);
+  if (!dt) return '';
+  const parts = dt.split('T');
+  if (parts.length > 1) {
+    return parts[1].substring(0, 5); // "14:00"
+  }
+  const spaceParts = dt.split(' ');
+  if (spaceParts.length > 1 && spaceParts[1].includes(':')) {
+    return spaceParts[1].substring(0, 5);
+  }
+  return '';
+}
+
+function sortDayItemsChronologically(arr) {
+  if (!arr || arr.length <= 1) return;
+  const itemsWithDates = [];
+  const indices = [];
+  arr.forEach((item, idx) => {
+    const dt = getItemDateTime(item);
+    if (dt) {
+      itemsWithDates.push({ item, dt });
+      indices.push(idx);
+    }
+  });
+  itemsWithDates.sort((a, b) => a.dt.localeCompare(b.dt));
+  itemsWithDates.forEach((wrapped, idx) => {
+    const originalIdx = indices[idx];
+    arr[originalIdx] = wrapped.item;
+  });
+}
+
+function calculateTripServicesTotal() {
+  let total = 0;
+  if (typeof days !== 'undefined' && days) {
+    days.forEach(dayItems => {
+      if (dayItems) {
+        dayItems.forEach(item => {
+          if (item && item.data && item.data.precio) {
+            const price = parseFloat(item.data.precio);
+            if (!isNaN(price)) {
+              total += price;
+            }
+          }
+        });
+      }
+    });
+  }
+  if (typeof portadaItems !== 'undefined' && portadaItems) {
+    portadaItems.forEach(item => {
+      if (item && item.data && item.data.precio) {
+        const price = parseFloat(item.data.precio);
+        if (!isNaN(price)) total += price;
+      }
+    });
+  }
+  if (typeof cierreItems !== 'undefined' && cierreItems) {
+    cierreItems.forEach(item => {
+      if (item && item.data && item.data.precio) {
+        const price = parseFloat(item.data.precio);
+        if (!isNaN(price)) total += price;
+      }
+    });
+  }
+  return total;
+}
+
+function updatePortadaPriceFromServices() {
+  const priceInput = document.getElementById('portadaPrecio');
+  if (!priceInput) return;
+  
+  const currentSum = calculateTripServicesTotal();
+  const currentValNum = parseFloat(unformatNumber(priceInput.value)) || 0;
+  
+  if (currentValNum === 0 || currentValNum === lastAutoCalculatedSum) {
+    if (currentSum > 0) {
+      priceInput.value = formatNumber(currentSum);
+    } else if (currentSum === 0 && currentValNum === lastAutoCalculatedSum) {
+      priceInput.value = '';
+    }
+  }
+  lastAutoCalculatedSum = currentSum;
 }
 
 function buildItem(item, idx) {
@@ -807,7 +916,11 @@ function buildItem(item, idx) {
   const firstPhoto = (d && d.photo_url) ? d.photo_url.split(',')[0].trim() : '';
   const photoThumb = (showThumb && firstPhoto) ? `<div class="item-card-photo" style="width:50px;height:50px;border-radius:8px;overflow:hidden;flex-shrink:0;border:1px solid var(--border);margin-left:8px;box-shadow:var(--shadow-sm);"><img src="${firstPhoto}" style="width:100%;height:100%;object-fit:cover;" /></div>` : '';
 
+  const timeStr = getItemTimeStr(item);
+  const timeHtml = timeStr ? `<div class="item-time-label">${timeStr}</div>` : '';
+
   el.innerHTML = `<div class="item-inner">
+    ${timeHtml}
     <div class="item-accent-bar" style="background:${cfg.color}"></div>
     <div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div>
     <div class="item-content">
@@ -1368,17 +1481,25 @@ function buildField(field, data) {
   fg.appendChild(lbl);
 
   let val = data[field.k] || '';
-  if (!val && typeof currentDay === 'number' && dayDates[currentDay]) {
-    const dayDate = dayDates[currentDay];
-    if (field.t === 'date') {
-      val = dayDate;
-    } else if (field.t === 'datetime-local') {
-      if (field.k === 'checkin') {
-        val = dayDate + 'T15:00';
-      } else if (field.k === 'checkout') {
-        val = dayDate + 'T12:00';
-      } else {
-        val = dayDate + 'T12:00';
+  if (!val && typeof currentDay === 'number') {
+    let dayDate = dayDates[currentDay];
+    if (!dayDate) {
+      const pi = document.getElementById('portadaFechaInicio');
+      if (pi && pi.value) {
+        dayDate = addDaysToDate(pi.value, currentDay);
+      }
+    }
+    if (dayDate) {
+      if (field.t === 'date') {
+        val = dayDate;
+      } else if (field.t === 'datetime-local') {
+        if (field.k === 'llegada' || field.k === 'checkout') {
+          val = '';
+        } else if (field.k === 'checkin') {
+          val = dayDate + 'T15:00';
+        } else {
+          val = dayDate + 'T00:00';
+        }
       }
     }
   }
@@ -1879,7 +2000,12 @@ function openPreview() {
 // Initial Load
 if (window.proState) {
   const s = window.proState;
-  if (s.days) days = s.days;
+  if (s.days) {
+    days = s.days;
+    days.forEach(dayItems => {
+      if (dayItems) sortDayItemsChronologically(dayItems);
+    });
+  }
   if (s.dayDates) dayDates = s.dayDates;
   if (s.portadaItems) portadaItems = s.portadaItems;
   if (s.cierreItems) cierreItems = s.cierreItems;
@@ -1890,6 +2016,9 @@ if (window.proState) {
   // Ensure days array has at least 1 day if empty, or match numeric tabs
   if (!days || days.length === 0) days = [[]];
   if (!dayDates || dayDates.length === 0) dayDates = [''];
+  while (dayDates.length < days.length) {
+    dayDates.push('');
+  }
 
   // Adjust day counts
   numericDayCount = days.length;
@@ -1906,6 +2035,14 @@ if (window.proState) {
     const pi = document.getElementById('portadaFechaInicio');
     if (pi) {
       if (s.fechaInicio) pi.value = s.fechaInicio;
+      const startDate = pi.value;
+      if (startDate) {
+        for (let i = 0; i < days.length; i++) {
+          if (!dayDates[i]) {
+            dayDates[i] = addDaysToDate(startDate, i);
+          }
+        }
+      }
       pi.addEventListener('change', () => {
         const startDate = pi.value;
         if (startDate) {
@@ -1944,6 +2081,7 @@ if (window.proState) {
       if (inp) inp.addEventListener('input', () => autoSaveProTrip());
     });
 
+    lastAutoCalculatedSum = calculateTripServicesTotal();
     renderTabs();
     renderCanvas();
   });
@@ -1988,6 +2126,23 @@ if (window.proState) {
     renderCanvas();
   });
 }
+
+// Bind click handler for portada price refresh
+document.addEventListener('DOMContentLoaded', () => {
+  const refreshBtn = document.getElementById('portadaPriceRefresh');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+      const currentSum = calculateTripServicesTotal();
+      const priceInput = document.getElementById('portadaPrecio');
+      if (priceInput) {
+        priceInput.value = currentSum > 0 ? formatNumber(currentSum) : '';
+        lastAutoCalculatedSum = currentSum;
+        autoSaveProTrip();
+        showToast('🔄', 'Sumatoria de servicios restablecida');
+      }
+    });
+  }
+});
 
 function toggleSidebar() {
   const sb = document.querySelector('.sidebar');

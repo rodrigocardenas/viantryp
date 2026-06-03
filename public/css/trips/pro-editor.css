@@ -2744,3 +2744,51 @@ body {
   border-color: #ef4444 !important;
   box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
 }
+
+/* ITEM TIME LABEL STYLE */
+.item-time-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #000000;
+  white-space: nowrap;
+  min-width: 42px;
+  align-self: center;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+@media(max-width:991px) {
+  .item-time-label {
+    min-width: 36px;
+    font-size: 10px;
+  }
+}
+
+/* PORTADA PRICE REFRESH BUTTON */
+.portada-price-refresh-btn {
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+.portada-price-refresh-btn:hover {
+  background: var(--surface2);
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: rotate(30deg);
+}
+.portada-price-refresh-btn i {
+  font-size: 13px;
+}

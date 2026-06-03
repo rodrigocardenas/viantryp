@@ -151,6 +151,7 @@
       border-right: 6px solid transparent;
       border-bottom: 6px solid #1a2e2c;
     }
+
     .item-attach-footer {
       display: flex;
       align-items: center;
@@ -233,8 +234,9 @@
             style="cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px;">
             <div class="avatar" id="navAvatar" style="overflow: hidden;">
               @if(auth()->user()->avatar)
-                <img src="{{ str_starts_with(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" alt=""
-                  style="width: 100%; height: 100%; object-fit: cover;">
+                <img
+                  src="{{ str_starts_with(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}"
+                  alt="" style="width: 100%; height: 100%; object-fit: cover;">
               @else
                 {{ auth()->user()->display_initials }}
               @endif
@@ -454,7 +456,8 @@
                   class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></span>Día
               1</span><span class="day-tab-delete" onclick="confirmDeleteDay(0,event)" title="Eliminar día"><i
                 class="fa-solid fa-trash-can"></i></span></button>
-          <button class="add-day-btn" id="addDayBtn" type="button" style="margin: 0 4px; padding: 4px 10px;"><i class="fa-solid fa-plus"></i> Día</button>
+          <button class="add-day-btn" id="addDayBtn" type="button" style="margin: 0 4px; padding: 4px 10px;"><i
+              class="fa-solid fa-plus"></i> Día</button>
           <button class="day-tab cierre-tab" data-day="cierre"><span class="day-tab-label"><i
                 class="fa-solid fa-flag-checkered"></i> Cierre</span><span class="day-tab-delete portada-cierre-delete"
               onclick="confirmDeleteSection('cierre',event)" title="Eliminar cierre"><i
@@ -552,21 +555,38 @@
                   </div>
                 </div>
                 <div class="portada-divider"></div>
-                <div class="portada-price-section" style="max-width:200px;margin:0 auto;text-align:center">
+                <div class="portada-price-section" style="max-width:245px;margin:0 auto;text-align:center">
                   <div class="portada-meta-label"
-                    style="display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:4px"><span><i
-                        class="fa-solid fa-money-bill-wave"></i> Valor total</span> <button class="pfield-clear-sm"
-                      onclick="document.getElementById('portadaPrecio').value=''" title="Borrar">🗑</button></div>
-                  <div style="display:flex;gap:5px">
+                    style="display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:4px">
+                    <span><i class="fa-solid fa-money-bill-wave"></i> Valor total de tu viaje</span>
+                  </div>
+                  <div style="display:flex;gap:5px;align-items:center;">
+                    <button type="button" class="portada-price-refresh-btn" id="portadaPriceRefresh"
+                      title="Actualizar sumatoria de servicios">
+                      <i class="fa-solid fa-rotate"></i>
+                    </button>
                     <input type="text" class="portada-meta-input" id="portadaPrecio" placeholder="0"
                       style="flex:1;min-width:0;text-align:center">
-                    <select class="portada-meta-input" id="portadaMoneda" style="width:72px;padding:7px 5px">
-                      <option>COP</option>
-                      <option>USD</option>
-                      <option>EUR</option>
-                      <option>MXN</option>
-                      <option>ARS</option>
+                    <select class="portada-meta-input" id="portadaMoneda" style="width:82px;padding:7px 5px">
+                      <option value="USD">USD ($)</option>
+                      <option value="COP">COP ($)</option>
+                      <option value="MXN">MXN ($)</option>
+                      <option value="ARS">ARS ($)</option>
+                      <option value="CLP">CLP ($)</option>
+                      <option value="PEN">PEN (S/)</option>
+                      <option value="BRL">BRL (R$)</option>
+                      <option value="UYU">UYU ($U)</option>
+                      <option value="VES">VES (Bs.)</option>
+                      <option value="DOP">DOP (RD$)</option>
+                      <option value="GTQ">GTQ (Q)</option>
+                      <option value="CRC">CRC (₡)</option>
+                      <option value="EUR">EUR (€)</option>
                     </select>
+                  </div>
+                  <div
+                    style="font-size: 8.5px; color: #64748b; margin-top: 8px; line-height: 1.35; text-align: center;">
+                    El valor se calcula sumando los precios de los servicios de tu itinerario. Puedes cambiarlo
+                    manualmente si lo deseas y, con el botón de refrescar, recuperar la suma automática.
                   </div>
                 </div>
               </div>
@@ -578,25 +598,23 @@
             <div class="canvas-items" id="portadaItems" style="margin-top:8px"></div>
           </div>
           <div class="cierre-canvas" id="cierreCanvas" style="display:none">
-            <div class="cierre-card" id="cierreCardMain">
-              <button class="cierre-remove-btn" onclick="hideCierreCard()" title="Ocultar tarjeta de cierre"><i
-                  class="fa-solid fa-trash"></i></button>
-              <div class="cierre-icon"><i class="fa-solid fa-plane-up"></i></div>
-              <div class="cierre-badge">¡ITINERARIO COMPLETO!</div>
-              <div class="cierre-title" id="cierreTitleDisplay">Tour por Europa 2025</div>
-              <div class="cierre-sub">Este itinerario fue creado por <strong
-                  id="cierreAutor">{{ auth()->user()->display_name }}</strong>. ¡Que tengas un viaje increíble!</div>
-            </div>
-            <div id="cierreCardPlaceholder" class="cierre-hidden-placeholder" style="display:none">
-              <div style="color:var(--text-dim);font-size:12.5px;margin-bottom:8px">El cierre predeterminado ha sido
-                ocultado</div>
-              <button class="btn btn-ghost" style="font-size:11px;padding:5px 12px;border:1px solid var(--border)"
-                onclick="showCierreCard()">Restaurar diseño original</button>
-            </div>
             <div class="canvas-items" id="cierreItems" style="margin-top:8px"></div>
             <div id="cierreDropHint"
               style="margin-top:10px;border:2px dashed var(--border);border-radius:var(--radius);padding:14px 20px;text-align:center;color:var(--text-dim);font-size:12.5px;transition:all .2s">
               <i class="fa-solid fa-plus"></i> Arrastra elementos adicionales al cierre
+            </div>
+            <div class="cierre-card" id="cierreCardMain" style="margin-top:20px">
+              <button class="cierre-remove-btn" onclick="hideCierreCard()" title="Ocultar tarjeta de cierre"><i
+                  class="fa-solid fa-trash"></i></button>
+              <div class="cierre-title" id="cierreTitleDisplay">Tour por Europa 2025</div>
+              <div class="cierre-sub">Este itinerario fue creado por <strong
+                  id="cierreAutor">{{ auth()->user()->display_name }}</strong>. ¡Que tengas un viaje increíble!</div>
+            </div>
+            <div id="cierreCardPlaceholder" class="cierre-hidden-placeholder" style="display:none;margin-top:20px">
+              <div style="color:var(--text-dim);font-size:12.5px;margin-bottom:8px">El cierre predeterminado ha sido
+                ocultado</div>
+              <button class="btn btn-ghost" style="font-size:11px;padding:5px 12px;border:1px solid var(--border)"
+                onclick="showCierreCard()">Restaurar diseño original</button>
             </div>
           </div>
           <div id="regularCanvas" style="display:none">

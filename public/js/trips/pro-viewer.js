@@ -794,15 +794,13 @@ ${hasPortada ? `
   <main class="pv-content">
     ${daysHTML}
     ${hasCierre ? `
+      ${cierreItems && cierreItems.length ? `<div class="pv-cierre-extra-items" style="margin-bottom:20px">${renderPreviewItems(cierreItems)}</div>` : ''}
       ${showDefaultCierre ? `
       <div class="pv-cierre">
-        <div class="pv-cierre-plane"><i class="fa-solid fa-plane"></i></div>
-        <div class="pv-cierre-badge">¡ITINERARIO COMPLETO!</div>
         <div class="pv-cierre-title">${title}</div>
         <div class="pv-cierre-sub">Este itinerario fue creado por <b>${userName || window.viantrypUserName || 'Viantryp'}</b>.<br>¡Que tengas un viaje extraordinario!</div>
       </div>
       ` : ''}
-    ${cierreItems && cierreItems.length ? `<div class="pv-cierre-extra-items">${renderPreviewItems(cierreItems)}</div>` : ''}
     `: ''}
   </main>
 </div>
