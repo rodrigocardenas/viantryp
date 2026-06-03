@@ -874,7 +874,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
             padding: 10px 12px;
             background: #ffffff;
             color: #445c7d;
-            border: 1.5px solid var(--border);
+            border: 1.5px solid #445c7d;
             border-radius: 10px;
             font-size: 12px;
             font-weight: 600;
@@ -1063,7 +1063,8 @@ ${hasPortada ? `
 
     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
       <!-- Direct Sync Button Card -->
-      <div id="googleDirectSyncCard" style="border:1.5px solid #e2e8f0;border-radius:16px;padding:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.background='#f8fafc';" onmouseout="this.style.borderColor='#e2e8f0';this.style.background='transparent';" onclick="syncWithGoogleCalendar()">
+      <div id="googleDirectSyncCard" style="position:relative;border:1.5px solid #e2e8f0;border-radius:16px;padding:16px;cursor:not-allowed;transition:all 0.2s;opacity:0.55;pointer-events:none;">
+        <span style="position:absolute;top:-10px;left:16px;background:#64748b;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:20px;">Próximamente</span>
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
           <svg style="width:20px;height:20px;" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
