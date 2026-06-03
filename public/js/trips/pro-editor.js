@@ -1278,40 +1278,29 @@ function openModal(type, editIdx = null) {
     const f = modalBody.querySelector('input,textarea,select'); if (f) f.focus();
 
     // Google Places Autocomplete API
-    const googleTypes = ['alojamiento', 'actividad', 'comida'];
+    const googleTypes = ['actividad', 'comida'];
     if (googleTypes.includes(type) && window.google && window.google.maps && window.google.maps.places) {
-      const keyMap = { alojamiento: 'nombre', actividad: 'direccion', comida: 'restaurante' };
+      const keyMap = { actividad: 'direccion', comida: 'restaurante' };
       const nameInp = modalBody.querySelector('input[data-key="' + keyMap[type] + '"]');
       if (nameInp) {
         const autocomplete = new window.google.maps.places.Autocomplete(nameInp, { types: ['establishment'] });
 
-        // Fix z-index for pac-container and hide it for Airbnb
+        // Fix z-index for pac-container
         nameInp.addEventListener('input', () => {
           setTimeout(() => {
-            const isAirbnb = type === 'alojamiento' && modalBody.querySelector('select[data-key="tipo_alojamiento"]')?.value === 'Airbnb u otro';
             document.querySelectorAll('.pac-container').forEach(c => {
-              if (isAirbnb) {
-                c.style.display = 'none';
-              } else {
-                c.style.zIndex = '1000000';
-                c.style.position = 'fixed';
-                const rect = nameInp.getBoundingClientRect();
-                c.style.top = rect.bottom + 'px';
-                c.style.left = rect.left + 'px';
-                c.style.width = rect.width + 'px';
-                c.style.display = '';
-              }
+              c.style.zIndex = '1000000';
+              c.style.position = 'fixed';
+              const rect = nameInp.getBoundingClientRect();
+              c.style.top = rect.bottom + 'px';
+              c.style.left = rect.left + 'px';
+              c.style.width = rect.width + 'px';
+              c.style.display = '';
             });
           }, 50);
         });
 
         autocomplete.addListener('place_changed', () => {
-          if (type === 'alojamiento') {
-            const selectTipo = modalBody.querySelector('select[data-key="tipo_alojamiento"]');
-            if (selectTipo && selectTipo.value === 'Airbnb u otro') {
-              return; // Do not fetch from Google Places if Airbnb
-            }
-          }
           const place = autocomplete.getPlace();
           if (!place || !place.place_id) return;
 
@@ -1362,6 +1351,51 @@ function openModal(type, editIdx = null) {
           }
         });
       }
+    }
+
+    // Google Places Autocomplete for Transporte (Desde / Hasta)
+    if (type === 'transporte' && window.google && window.google.maps && window.google.maps.places) {
+      ['origen', 'destino'].forEach(key => {
+        const inp = modalBody.querySelector('input[data-key="' + key + '"]');
+        if (inp) {
+          const autocomplete = new window.google.maps.places.Autocomplete(inp, {});
+          
+          inp.addEventListener('input', () => {
+            delete inp.dataset.address;
+            setTimeout(() => {
+              document.querySelectorAll('.pac-container').forEach(c => {
+                c.style.zIndex = '1000000';
+                c.style.position = 'fixed';
+                const rect = inp.getBoundingClientRect();
+                c.style.top = rect.bottom + 'px';
+                c.style.left = rect.left + 'px';
+                c.style.width = rect.width + 'px';
+                c.style.display = '';
+              });
+            }, 50);
+          });
+
+          autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+            if (!place) return;
+            
+            // Show friendly name in the input box, save full geocodable address in dataset
+            if (place.name) {
+              inp.value = place.name;
+            } else if (place.formatted_address) {
+              inp.value = place.formatted_address;
+            }
+            
+            if (place.formatted_address) {
+              inp.dataset.address = place.formatted_address;
+            } else if (place.name) {
+              inp.dataset.address = place.name;
+            }
+            
+            inp.dispatchEvent(new Event('input', { bubbles: true }));
+          });
+        }
+      });
     }
 
     // Add Alojamiento tipo toggle logic
@@ -1434,6 +1468,125 @@ function openModal(type, editIdx = null) {
                 : 'Tu plan no incluye foto automática: completa la URL eligiendo una imagen desde Unsplash o subiendo una propia.';
             } else {
               helpText.textContent = 'Adjunta una imagen del alojamiento o elige una desde Unsplash.';
+            }
+          }
+
+          // Setup Google Autocomplete dynamically
+          if (window.google && window.google.maps && window.google.maps.places) {
+            const addrInp = modalBody.querySelector('input[data-key="direccion"]');
+            
+            // Helper to clone input to strip old autocomplete event listeners
+            const cleanInput = (inp) => {
+              if (!inp) return null;
+              const cleanInp = inp.cloneNode(true);
+              cleanInp.value = inp.value;
+              inp.parentNode.replaceChild(cleanInp, inp);
+              return cleanInp;
+            };
+
+            const activeNameInp = nameInp ? cleanInput(nameInp) : null;
+            const activeAddrInp = addrInp ? cleanInput(addrInp) : null;
+
+            if (isHotel && activeNameInp) {
+              const autocompleteNombre = new window.google.maps.places.Autocomplete(activeNameInp, { types: ['establishment'] });
+              
+              activeNameInp.addEventListener('input', () => {
+                setTimeout(() => {
+                  document.querySelectorAll('.pac-container').forEach(c => {
+                    c.style.zIndex = '1000000';
+                    c.style.position = 'fixed';
+                    const rect = activeNameInp.getBoundingClientRect();
+                    c.style.top = rect.bottom + 'px';
+                    c.style.left = rect.left + 'px';
+                    c.style.width = rect.width + 'px';
+                    c.style.display = '';
+                  });
+                }, 50);
+              });
+
+              autocompleteNombre.addListener('place_changed', () => {
+                const place = autocompleteNombre.getPlace();
+                if (!place || !place.place_id) return;
+
+                if (place.name) activeNameInp.value = place.name;
+
+                const setVal = (k, v) => {
+                  const el = modalBody.querySelector('input[data-key="' + k + '"]');
+                  if (el) {
+                    el.value = v;
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                  }
+                };
+                if (place.formatted_address) setVal('direccion', place.formatted_address);
+                if (place.formatted_phone_number) setVal('phone', place.formatted_phone_number);
+                if (place.website) setVal('website', place.website);
+
+                // Fetch permanent photo URLs from our server
+                const previewCont = modalBody.querySelector('.photo-preview-container');
+                if (previewCont) {
+                  previewCont.innerHTML = `
+                    <div class="photo-loading-spinner" style="border: 1.5px dashed var(--border); border-radius: 10px; padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: var(--surface2);">
+                      <div class="spinner" style="width: 24px; height: 24px; border: 3px solid rgba(20, 184, 166, 0.1); border-top-color: #14b8a6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                      <span>Buscando foto del lugar...</span>
+                    </div>
+                  `;
+                }
+
+                fetch(`/api/places/details?place_id=${place.place_id}`)
+                  .then(res => res.json())
+                  .then(data => {
+                    if (data.success && data.photos && data.photos.length > 0) {
+                      const urls = data.photos.slice(0, 1).map(p => p.url).join(',');
+                      setVal('photo_url', urls);
+                    } else {
+                      const inp = modalBody.querySelector('input[data-key="photo_url"]');
+                      if (inp) inp.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                  })
+                  .catch(err => {
+                    console.error('Error fetching place details:', err);
+                    const inp = modalBody.querySelector('input[data-key="photo_url"]');
+                    if (inp) inp.dispatchEvent(new Event('input', { bubbles: true }));
+                  });
+
+                if (place.rating) {
+                  starRating = place.rating;
+                  const sr = modalBody.querySelector('.star-rating');
+                  if (sr) {
+                    const rounded = Math.round(starRating);
+                    sr.querySelectorAll('.star').forEach((st, idx) => st.classList.toggle('active', idx < rounded));
+                    const hid = sr.querySelector('input[type="hidden"]');
+                    if (hid) hid.value = rounded;
+                  }
+                }
+              });
+            } else if (!isHotel && activeAddrInp) {
+              const autocompleteDireccion = new window.google.maps.places.Autocomplete(activeAddrInp, { types: ['geocode'] });
+              
+              activeAddrInp.addEventListener('input', () => {
+                setTimeout(() => {
+                  document.querySelectorAll('.pac-container').forEach(c => {
+                    c.style.zIndex = '1000000';
+                    c.style.position = 'fixed';
+                    const rect = activeAddrInp.getBoundingClientRect();
+                    c.style.top = rect.bottom + 'px';
+                    c.style.left = rect.left + 'px';
+                    c.style.width = rect.width + 'px';
+                    c.style.display = '';
+                  });
+                }, 50);
+              });
+
+              autocompleteDireccion.addListener('place_changed', () => {
+                const place = autocompleteDireccion.getPlace();
+                if (!place) return;
+                if (place.formatted_address) {
+                  activeAddrInp.value = place.formatted_address;
+                } else if (place.name) {
+                  activeAddrInp.value = place.name;
+                }
+                activeAddrInp.dispatchEvent(new Event('input', { bubbles: true }));
+              });
             }
           }
         };
@@ -1851,6 +2004,8 @@ function buildField(field, data) {
       inp.placeholder = field.ph || '';
       inp.value = val;
       inp.dataset.key = field.k;
+      if (data && data[field.k + '_city']) inp.dataset.city = data[field.k + '_city'];
+      if (data && data[field.k + '_address']) inp.dataset.address = data[field.k + '_address'];
       fg.appendChild(inp);
 
       // Block invalid keys and sanitize input interactively
@@ -1961,6 +2116,7 @@ document.getElementById('modalSave').addEventListener('click', () => {
     if (el.classList.contains('rte-editor')) data[key] = el.innerHTML;
     else data[key] = el.value;
     if (el.dataset.city) data[key + '_city'] = el.dataset.city;
+    if (el.dataset.address) data[key + '_address'] = el.dataset.address;
   });
 
   if (hasError) {

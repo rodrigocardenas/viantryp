@@ -44,7 +44,7 @@ class SecurityHeaders
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
             "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
             "img-src 'self' data: blob: https:",
-            "connect-src 'self' https://maps.googleapis.com https://api.unsplash.com https://api.giphy.com",
+            "connect-src 'self' https://maps.googleapis.com https://api.unsplash.com https://api.giphy.com https://nominatim.openstreetmap.org",
             "frame-src 'self' https://accounts.google.com",
             "media-src 'self' https://*.giphy.com",
             "object-src 'none'",

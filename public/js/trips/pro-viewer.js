@@ -790,10 +790,16 @@ ${hasPortada ? `
   <aside class="pv-nav">
     <div class="pv-nav-title">Itinerario</div>
     ${sidebarNav}
-    <div class="pv-nav-calendar-section" style="padding: 14px 18px; border-top: 1px solid var(--border);">
+    <div class="pv-nav-calendar-section" style="padding: 14px 18px 0; border-top: 1px solid var(--border);">
       <button class="pv-cal-btn" onclick="openGoogleCalendarModal()" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px 14px; background:var(--accent); color:#fff; border:none; border-radius:10px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; transition:all 0.2s; box-shadow:0 4px 12px var(--accent-light);">
         <i class="fa-solid fa-calendar-plus" style="font-size:14px;"></i>
         Agregar a Google Calendar
+      </button>
+    </div>
+    <div class="pv-nav-map-section" style="padding: 10px 18px 14px;">
+      <button class="pv-map-btn" onclick="openInteractiveMapModal()" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px 14px; background:#0f172a; color:#fff; border:none; border-radius:10px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; transition:all 0.2s; box-shadow:0 4px 12px rgba(15,23,42,0.15);">
+        <i class="fa-solid fa-map-location-dot" style="font-size:14px;"></i>
+        Ver mapa del viaje
       </button>
     </div>
   </aside>
@@ -876,6 +882,170 @@ ${hasPortada ? `
     <button onclick="closeGoogleCalendarModal()" style="width:100%;padding:12px;border-radius:12px;border:none;background:#f1f5f9;color:#475569;font-weight:600;font-size:13px;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">Cancelar</button>
   </div>
 </div>
+
+<!-- Interactive Map Modal -->
+<div id="viantrypMapModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.4);backdrop-filter:blur(8px);z-index:10000;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s ease;font-family:\'Poppins\',sans-serif;">
+  <div style="background:#fff;border-radius:24px;width:95%;max-width:1100px;height:85vh;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);transform:translateY(20px);transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);display:flex;flex-direction:column;position:relative;border:1px solid #f1f5f9;overflow:hidden;">
+    
+    <!-- Modal Header -->
+    <div style="padding:20px 24px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;background:var(--accent-light);color:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">
+          <i class="fa-solid fa-map-location-dot"></i>
+        </div>
+        <div>
+          <h3 style="margin:0;font-size:16px;font-weight:700;color:#0f172a;">Mapa del Viaje</h3>
+          <p style="margin:2px 0 0;font-size:11px;color:#64748b;">Visualiza los puntos y el itinerario de tu viaje</p>
+        </div>
+      </div>
+      <button onclick="closeInteractiveMapModal()" style="margin-left:auto;background:#f1f5f9;border:none;width:32px;height:32px;border-radius:50%;font-size:18px;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" onmouseover="this.style.background=\'#e2e8f0\';this.style.color=\'#0f172a\'" onmouseout="this.style.background=\'#f1f5f9\';this.style.color=\'#64748b\'">✕</button>
+    </div>
+
+    <!-- Modal Body (Split Layout) -->
+    <div style="flex:1;display:flex;overflow:hidden;position:relative;" id="mapModalSplitBody">
+      
+      <!-- Loader Overlay -->
+      <div id="mapModalLoader" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.9);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+        <div style="width:40px;height:40px;border:4px solid #f1f5f9;border-top-color:var(--accent);border-radius:50%;animation:mapSpinner 1s linear infinite;"></div>
+        <div style="text-align:center;">
+          <div id="mapModalLoaderText" style="font-size:13px;font-weight:600;color:#1e293b;">Cargando mapa interactivo...</div>
+          <div id="mapModalLoaderProgress" style="font-size:11px;color:#64748b;margin-top:4px;">Iniciando componentes...</div>
+        </div>
+      </div>
+      
+      <!-- Left Sidebar (Locations List) -->
+      <div id="mapModalSidebar" style="width:300px;border-right:1px solid #f1f5f9;overflow-y:auto;background:#f8fafc;padding:16px;display:flex;flex-direction:column;gap:12px;flex-shrink:0;">
+        <!-- Filled dynamically -->
+      </div>
+      
+      <!-- Right Map Canvas -->
+      <div id="viantrypMapCanvas" style="flex:1;height:100%;background:#f1f5f9;position:relative;z-index:1;">
+        <!-- Leaflet Map Container -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes mapSpinner {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.map-sidebar-day-title {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.8px;
+  margin: 12px 0 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.map-sidebar-day-title:first-child {
+  margin-top: 0;
+}
+.map-sidebar-item {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s;
+}
+.map-sidebar-item:hover {
+  border-color: var(--accent);
+  background: #f0faf9;
+  transform: translateY(-1px);
+}
+.map-sidebar-item-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.map-sidebar-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.map-sidebar-item-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e293b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.map-sidebar-item-addr {
+  font-size: 10px;
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+.viantryp-custom-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  transition: all 0.2s;
+}
+.viantryp-custom-marker:hover {
+  transform: scale(1.15);
+  z-index: 1000 !important;
+}
+.viantryp-map-popup-card {
+  font-family: \'Poppins\', sans-serif;
+  padding: 4px;
+}
+.viantryp-map-popup-type {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+.viantryp-map-popup-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+.viantryp-map-popup-addr {
+  font-size: 10px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+.viantryp-map-popup-meta {
+  font-size: 9.5px;
+  color: #94a3b8;
+  display: flex;
+  gap: 8px;
+}
+@media (max-width: 768px) {
+  #mapModalSplitBody {
+    flex-direction: column-reverse;
+  }
+  #mapModalSidebar {
+    width: 100% !important;
+    height: 180px !important;
+    border-right: none !important;
+    border-top: 1px solid #f1f5f9 !important;
+  }
+}
+</style>
 
 <script>
 const links=document.querySelectorAll('.pvnav-link');
@@ -1357,6 +1527,458 @@ window.syncWithGoogleCalendar = function() {
   } catch (err) {
     console.error('Error in syncWithGoogleCalendar:', err);
     alert('Error al iniciar la sincronización de Google: ' + err.message);
+  }
+};
+
+// Map script logic
+let viantrypMapInstance = null;
+
+const mapMarkerTypes = {
+  flight: { color: '#3b82f6', icon: 'fa-plane' },
+  alojamiento: { color: '#0d9488', icon: 'fa-hotel' },
+  transporte: { color: '#10b981', icon: 'fa-bus' },
+  actividad: { color: '#8b5cf6', icon: 'fa-bullseye' },
+  comida: { color: '#f97316', icon: 'fa-utensils' },
+  tour: { color: '#ef4444', icon: 'fa-route' }
+};
+
+function loadLeaflet(callback) {
+  if (window.L) {
+    callback();
+    return;
+  }
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css';
+  document.head.appendChild(link);
+
+  const script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js';
+  script.onload = () => {
+    callback();
+  };
+  document.head.appendChild(script);
+}
+
+async function geocodeAddress(address) {
+  if (!address || !address.trim()) return null;
+  const cleanAddr = address.trim();
+  const cacheKey = 'vt_geo_' + btoa(unescape(encodeURIComponent(cleanAddr)));
+  
+  const cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    try {
+      return JSON.parse(cached);
+    } catch (e) {}
+  }
+  
+  const queryList = [cleanAddr];
+  
+  // 1. Extraer IATA en paréntesis, ej. "Madrid Barajas (MAD)"
+  const parenMatch = cleanAddr.match(/\\(([^)]+)\\)/);
+  if (parenMatch) {
+    const code = parenMatch[1].trim();
+    if (code.length === 3 && /^[A-Z]{3}$/i.test(code)) {
+      queryList.push('Aeropuerto ' + code.toUpperCase());
+      queryList.push(code.toUpperCase() + ' Airport');
+    }
+  }
+  
+  // 2. Extraer partes por guiones o barras diagonales (común en aeropuertos, ej. "BOG - Aeropuerto El Dorado")
+  if (cleanAddr.includes('-') || cleanAddr.includes('/')) {
+    const separators = /[-/]/;
+    const parts = cleanAddr.split(separators).map(p => p.trim());
+    parts.forEach(part => {
+      if (part.length === 3 && /^[A-Z]{3}$/i.test(part)) {
+        queryList.push('Aeropuerto ' + part.toUpperCase());
+        queryList.push(part.toUpperCase() + ' Airport');
+      } else if (part.length > 3) {
+        queryList.push(part);
+        // Si no dice aeropuerto ni estación, agregar versión con aeropuerto
+        const lower = part.toLowerCase();
+        if (!lower.includes('aeropuerto') && !lower.includes('airport') && !lower.includes('estacion') && !lower.includes('station')) {
+          queryList.push('Aeropuerto ' + part);
+        }
+      }
+    });
+  }
+  
+  // 3. Si es un código IATA de 3 letras directo
+  if (cleanAddr.length === 3 && /^[A-Z]{3}$/i.test(cleanAddr)) {
+    queryList.unshift('Aeropuerto ' + cleanAddr.toUpperCase());
+    queryList.push(cleanAddr.toUpperCase() + ' Airport');
+  }
+
+  // 4. Si contiene comas (ej. direcciones estructuradas de Google)
+  if (cleanAddr.includes(',')) {
+    const parts = cleanAddr.split(',');
+    if (parts.length > 1) {
+      queryList.push(parts.slice(-2).join(',').trim());
+      queryList.push(parts[parts.length - 1].trim());
+    }
+  }
+  
+  // 5. Limpieza general de paréntesis como fallback
+  if (cleanAddr.includes('(')) {
+    const outside = cleanAddr.replace(/\\(.*?\\)/g, '').trim();
+    if (outside) queryList.push(outside);
+  }
+
+  // Filtrar duplicados y vacíos
+  const uniqueQueries = [...new Set(queryList.map(q => q.trim()).filter(q => q.length > 0))];
+
+  for (const query of uniqueQueries) {
+    try {
+      const response = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(query), {
+        headers: {
+          'Accept-Language': 'es'
+        }
+      });
+      if (response.ok) {
+        const results = await response.json();
+        if (results && results.length > 0) {
+          const coords = {
+            lat: parseFloat(results[0].lat),
+            lon: parseFloat(results[0].lon)
+          };
+          localStorage.setItem(cacheKey, JSON.stringify(coords));
+          return coords;
+        }
+      }
+    } catch (err) {
+      console.error('Error in Nominatim geocoding:', err);
+    }
+    // Breve pausa para cumplir políticas de uso de Nominatim
+    await new Promise(r => setTimeout(r, 200));
+  }
+  return null;
+}
+
+function extractMapPoints(data) {
+  const points = [];
+  const { days, dayDates, numericTabs } = data;
+  if (!numericTabs) return points;
+
+  numericTabs.forEach((tab, tabIdx) => {
+    const dayIndex = tab.idx;
+    const dayLabel = 'Día ' + (tabIdx + 1);
+    const items = days[dayIndex] || [];
+    if (!Array.isArray(items)) return;
+
+    items.forEach(item => {
+      if (!item || !item.data) return;
+      const d = item.data;
+
+      let name = '';
+      let address = '';
+      let type = item.type;
+      let timeStr = '';
+
+      if (item.type === 'flight') {
+        if (d.origen) {
+          points.push({
+            name: (d.origen_city || d.origen) + ' (Origen)',
+            address: d.origen,
+            type: 'flight',
+            dayLabel: dayLabel,
+            time: d.salida ? d.salida.split('T')[1] || d.salida : ''
+          });
+        }
+        if (d.destino) {
+          points.push({
+            name: (d.destino_city || d.destino) + ' (Destino)',
+            address: d.destino,
+            type: 'flight',
+            dayLabel: dayLabel,
+            time: d.llegada ? d.llegada.split('T')[1] || d.llegada : ''
+          });
+        }
+        return;
+      }
+      else if (item.type === 'alojamiento') {
+        name = d.nombre || 'Alojamiento';
+        const parts = [];
+        if (d.direccion) parts.push(d.direccion);
+        if (d.ciudad) parts.push(d.ciudad);
+        address = parts.length > 0 ? parts.join(', ') : '';
+        timeStr = d.checkin ? 'Check-in: ' + d.checkin : '';
+      }
+      else if (item.type === 'transporte') {
+        if (d.origen) {
+          points.push({
+            name: d.origen + ' (Origen)',
+            address: d.origen_address || d.origen,
+            type: 'transporte',
+            dayLabel: dayLabel,
+            time: d.salida || d.fecha || ''
+          });
+        }
+        if (d.destino) {
+          points.push({
+            name: d.destino + ' (Destino)',
+            address: d.destino_address || d.destino,
+            type: 'transporte',
+            dayLabel: dayLabel,
+            time: d.llegada || ''
+          });
+        }
+        return;
+      }
+      else if (item.type === 'actividad') {
+        name = d.nombre || 'Actividad';
+        const parts = [];
+        if (d.direccion) parts.push(d.direccion);
+        if (d.lugar) parts.push(d.lugar);
+        address = parts.length > 0 ? parts.join(', ') : '';
+        timeStr = d.fecha || '';
+      }
+      else if (item.type === 'comida') {
+        name = d.restaurante || 'Comida';
+        const parts = [];
+        if (d.direccion) parts.push(d.direccion);
+        if (d.ciudad) parts.push(d.ciudad);
+        address = parts.length > 0 ? parts.join(', ') : '';
+        timeStr = d.fecha || '';
+      }
+      else if (item.type === 'tour') {
+        name = d.nombre || 'Tour';
+        const parts = [];
+        if (d.direccion) parts.push(d.direccion);
+        if (d.operador) parts.push(d.operador);
+        address = parts.length > 0 ? parts.join(', ') : '';
+        timeStr = d.fecha || '';
+      }
+
+      if (address && address.trim()) {
+        points.push({
+          name: name,
+          address: address,
+          type: type,
+          dayLabel: dayLabel,
+          time: timeStr
+        });
+      }
+    });
+  });
+  return points;
+}
+
+function populateMapSidebar(points) {
+  const sidebar = document.getElementById('mapModalSidebar');
+  if (!sidebar) return;
+  sidebar.innerHTML = '';
+
+  let currentDay = '';
+
+  points.forEach((pt) => {
+    if (pt.dayLabel !== currentDay) {
+      currentDay = pt.dayLabel;
+      const title = document.createElement('div');
+      title.className = 'map-sidebar-day-title';
+      title.innerText = currentDay;
+      sidebar.appendChild(title);
+    }
+
+    const item = document.createElement('div');
+    item.className = 'map-sidebar-item';
+    const cfg = mapMarkerTypes[pt.type] || { color: '#64748b', icon: 'fa-location-dot' };
+    
+    item.innerHTML = [
+      '<div class="map-sidebar-item-icon" style="background:' + cfg.color + '15; color:' + cfg.color + ';">',
+        '<i class="fa-solid ' + cfg.icon + '"></i>',
+      '</div>',
+      '<div class="map-sidebar-item-info">',
+        '<div class="map-sidebar-item-title">' + pt.name + '</div>',
+        '<div class="map-sidebar-item-addr">' + pt.address + '</div>',
+      '</div>'
+    ].join('');
+
+    item.onclick = () => {
+      if (viantrypMapInstance) {
+        viantrypMapInstance.flyTo([pt.lat, pt.lon], 15, { duration: 1.5 });
+        viantrypMapInstance.eachLayer(layer => {
+          if (layer instanceof L.Marker) {
+            const latlng = layer.getLatLng();
+            if (Math.abs(latlng.lat - pt.lat) < 0.0001 && Math.abs(latlng.lng - pt.lon) < 0.0001) {
+              layer.openPopup();
+            }
+          }
+        });
+      }
+    };
+    sidebar.appendChild(item);
+  });
+}
+
+function renderLeafletMap(points) {
+  viantrypMapInstance = L.map('viantrypMapCanvas', {
+    zoomControl: true,
+    scrollWheelZoom: true
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(viantrypMapInstance);
+
+  const markerBounds = [];
+  const routeCoords = [];
+
+  points.forEach((pt) => {
+    const latlng = [pt.lat, pt.lon];
+    markerBounds.push(latlng);
+    routeCoords.push(latlng);
+
+    const cfg = mapMarkerTypes[pt.type] || { color: '#64748b', icon: 'fa-location-dot' };
+
+    const customIcon = L.divIcon({
+      html: [
+        '<div class="viantryp-custom-marker" style="background:' + cfg.color + ';">',
+          '<i class="fa-solid ' + cfg.icon + '"></i>',
+        '</div>'
+      ].join(''),
+      className: 'leaflet-custom-marker-wrapper',
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+      popupAnchor: [0, -15]
+    });
+
+    const popupContent = [
+      '<div class="viantryp-map-popup-card">',
+        '<div class="viantryp-map-popup-type" style="color:' + cfg.color + '; font-weight:700; font-size:9px; text-transform:uppercase;">' + pt.type + '</div>',
+        '<div class="viantryp-map-popup-title" style="font-weight:700; font-size:13px; color:#0f172a;">' + pt.name + '</div>',
+        '<div class="viantryp-map-popup-addr" style="font-size:10px; color:#64748b;">' + pt.address + '</div>',
+        '<div class="viantryp-map-popup-meta" style="font-size:9px; color:#94a3b8; display:flex; gap:8px; margin-top:4px;">',
+          '<span><i class="fa-regular fa-calendar"></i> ' + pt.dayLabel + '</span>',
+          pt.time ? '<span><i class="fa-regular fa-clock"></i> ' + pt.time + '</span>' : '',
+        '</div>',
+      '</div>'
+    ].join('');
+
+    L.marker(latlng, { icon: customIcon })
+      .bindPopup(popupContent)
+      .addTo(viantrypMapInstance);
+  });
+
+  if (routeCoords.length > 1) {
+    L.polyline(routeCoords, {
+      color: 'var(--accent)',
+      weight: 3,
+      dashArray: '6, 8',
+      opacity: 0.85
+    }).addTo(viantrypMapInstance);
+  }
+
+  if (markerBounds.length > 0) {
+    viantrypMapInstance.fitBounds(markerBounds, {
+      padding: [50, 50],
+      maxZoom: 15
+    });
+  }
+}
+
+window.openInteractiveMapModal = function() {
+  try {
+    const m = document.getElementById('viantrypMapModal');
+    if (!m) {
+      alert('No se encontró el modal del mapa en el DOM.');
+      return;
+    }
+
+    m.style.display = 'flex';
+    setTimeout(() => {
+      m.style.opacity = '1';
+      const innerDiv = m.querySelector('div');
+      if (innerDiv) {
+        innerDiv.style.transform = 'translateY(0)';
+      }
+    }, 10);
+
+    const loader = document.getElementById('mapModalLoader');
+    const loaderText = document.getElementById('mapModalLoaderText');
+    const loaderProgress = document.getElementById('mapModalLoaderProgress');
+    
+    if (loader) loader.style.display = 'flex';
+    if (loaderText) loaderText.innerText = 'Cargando mapa...';
+    if (loaderProgress) loaderProgress.innerText = 'Cargando librerías...';
+
+    loadLeaflet(async () => {
+      try {
+        if (loaderText) loaderText.innerText = 'Procesando locaciones...';
+        const points = extractMapPoints(tripData);
+
+        if (points.length === 0) {
+          if (loader) loader.style.display = 'none';
+          alert('Este viaje no tiene direcciones registradas para mostrar en el mapa.');
+          closeInteractiveMapModal();
+          return;
+        }
+
+        if (loaderText) loaderText.innerText = 'Geolocalizando puntos del viaje...';
+        const geocodedPoints = [];
+        for (let i = 0; i < points.length; i++) {
+          const pt = points[i];
+          if (loaderProgress) {
+            loaderProgress.innerText = 'Localizando ' + (i + 1) + ' de ' + points.length + ': ' + pt.name;
+          }
+          const coords = await geocodeAddress(pt.address);
+          if (coords) {
+            geocodedPoints.push({
+              ...pt,
+              lat: coords.lat,
+              lon: coords.lon
+            });
+          }
+        }
+
+        if (geocodedPoints.length === 0) {
+          if (loader) loader.style.display = 'none';
+          alert('No se pudo localizar ninguna dirección en el mapa. Por favor verifica que las direcciones ingresadas existan.');
+          closeInteractiveMapModal();
+          return;
+        }
+
+        populateMapSidebar(geocodedPoints);
+
+        setTimeout(() => {
+          try {
+            renderLeafletMap(geocodedPoints);
+            if (loader) loader.style.display = 'none';
+          } catch (mapErr) {
+            console.error('Error al renderizar mapa Leaflet:', mapErr);
+            alert('Error al renderizar el mapa interactivo: ' + mapErr.message);
+          }
+        }, 300);
+
+      } catch (innerErr) {
+        console.error('Error in Leaflet initializer callback:', innerErr);
+        alert('Error al inicializar mapa: ' + innerErr.message);
+      }
+    });
+
+  } catch (err) {
+    console.error('Error in openInteractiveMapModal:', err);
+    alert('Error al abrir el mapa interactivo: ' + err.message);
+  }
+};
+
+window.closeInteractiveMapModal = function() {
+  try {
+    const m = document.getElementById('viantrypMapModal');
+    if (!m) return;
+    m.style.opacity = '0';
+    const innerDiv = m.querySelector('div');
+    if (innerDiv) {
+      innerDiv.style.transform = 'translateY(20px)';
+    }
+    setTimeout(() => { 
+      m.style.display = 'none'; 
+      if (viantrypMapInstance) {
+        viantrypMapInstance.remove();
+        viantrypMapInstance = null;
+      }
+    }, 250);
+  } catch (err) {
+    console.error('Error in closeInteractiveMapModal:', err);
   }
 };
 </script>
