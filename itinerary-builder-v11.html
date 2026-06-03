@@ -2998,6 +2998,27 @@
 
       const sidebarNav = numericTabs.map((tab, i) => `<a class="pvnav-link" href="#day-${tab.idx}"><span class="pvnav-num">Día ${i + 1}</span> ${tab.label}</a>`).join('');
 
+      const mobileCalendarNav = numericTabs.map((tab, i) => {
+        const dStr = dayDates && dayDates[tab.idx] ? dayDates[tab.idx] : '';
+        if (dStr) {
+          try {
+            const d = new Date(dStr + 'T00:00:00');
+            const weekday = d.toLocaleDateString('es', { weekday: 'short' }).replace('.', '').toUpperCase();
+            const dayNum = d.toLocaleDateString('es', { day: 'numeric' });
+            const month = d.toLocaleDateString('es', { month: 'short' }).replace('.', '').toUpperCase();
+            return `<a class="pvnav-link pv-mobile-cal-item" href="#day-${tab.idx}">
+              <span class="pv-mobile-cal-weekday">${weekday}</span>
+              <span class="pv-mobile-cal-daynum">${dayNum}</span>
+              <span class="pv-mobile-cal-month">${month}</span>
+            </a>`;
+          } catch (e) {}
+        }
+        return `<a class="pvnav-link pv-mobile-cal-item no-date" href="#day-${tab.idx}">
+          <span class="pv-mobile-cal-daylbl">Día</span>
+          <span class="pv-mobile-cal-daynum">${i + 1}</span>
+        </a>`;
+      }).join('');
+
       return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -3186,6 +3207,138 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .pv-day{animation:fadeUp .35s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .pv-day:nth-child(1){animation-delay:.04s}.pv-day:nth-child(2){animation-delay:.08s}.pv-day:nth-child(3){animation-delay:.12s}.pv-day:nth-child(4){animation-delay:.16s}.pv-day:nth-child(5){animation-delay:.2s}
+
+.pv-mobile-only-header {
+    display: none;
+}
+
+@media (max-width: 760px) {
+    .pv-mobile-only-header {
+        display: block;
+        max-width: 900px;
+        margin: 16px auto 0;
+        padding: 0 14px;
+    }
+    .pv-mobile-calendar-nav-wrap {
+        width: 100%;
+        overflow: hidden;
+    }
+    .pv-mobile-calendar-nav {
+        position: relative;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 4px 4px 12px;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+    }
+    .pv-mobile-calendar-nav::-webkit-scrollbar {
+        display: none;
+    }
+    .pv-mobile-calendar-nav {
+        scrollbar-width: none;
+    }
+    .pv-mobile-cal-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 8px 12px;
+        min-width: 60px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        flex-shrink: 0;
+    }
+    .pv-mobile-cal-item:active {
+        transform: scale(0.96);
+    }
+    .pv-mobile-cal-item.active {
+        background: var(--accent) !important;
+        border-color: var(--accent) !important;
+        box-shadow: 0 4px 12px rgba(124,111,239,.3);
+    }
+    .pv-mobile-cal-weekday {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+    .pv-mobile-cal-daynum {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--text);
+        line-height: 1.1;
+        margin: 2px 0;
+    }
+    .pv-mobile-cal-month {
+        font-size: 9px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--dim);
+    }
+    .pv-mobile-cal-daylbl {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+    .pv-mobile-cal-item.active .pv-mobile-cal-weekday,
+    .pv-mobile-cal-item.active .pv-mobile-cal-daynum,
+    .pv-mobile-cal-item.active .pv-mobile-cal-month,
+    .pv-mobile-cal-item.active .pv-mobile-cal-daylbl {
+        color: #fff !important;
+    }
+    .pv-mobile-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 12px;
+    }
+    .pv-cal-btn-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 10px 12px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.2s;
+        box-shadow: 0 4px 12px rgba(124,111,239,.3);
+    }
+    .pv-map-btn-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 10px 12px;
+        background: #0f172a;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.2s;
+        box-shadow: 0 4px 12px rgba(15,23,42,0.15);
+    }
+    .pv-cal-btn-mobile:active,
+    .pv-map-btn-mobile:active {
+        transform: translateY(1px);
+    }
+}
 </style>
 </head>
 <body>
@@ -3224,6 +3377,24 @@ ${hasPortada ? `
   ${portadaItems && portadaItems.length ? `<div class="pv-portada-extra-items">${renderPreviewItems(portadaItems)}</div>` : ''}
 </div>
 `: ''}
+
+<div class="pv-mobile-only-header">
+  <div class="pv-mobile-calendar-nav-wrap">
+    <div class="pv-mobile-calendar-nav">
+      ${mobileCalendarNav}
+    </div>
+  </div>
+  <div class="pv-mobile-actions">
+    <button class="pv-cal-btn-mobile" onclick="openGoogleCalendarModal()">
+      <i class="fa-solid fa-calendar-plus"></i>
+      Agregar a Google Calendar
+    </button>
+    <button class="pv-map-btn-mobile" onclick="openInteractiveMapModal()">
+      <i class="fa-solid fa-map-location-dot"></i>
+      Ver mapa del viaje
+    </button>
+  </div>
+</div>
 
 <div class="pv-layout">
   <aside class="pv-nav">
@@ -3270,7 +3441,10 @@ links.forEach(link=>{
   });
 });
 
-const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const id=e.target.id;links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+id)})}})},{threshold:.25,rootMargin:'-60px 0px -40% 0px'});
+window.openGoogleCalendarModal = function() { alert('Función de Google Calendar no implementada en este mockup.'); };
+window.openInteractiveMapModal = function() { alert('Función de Mapa Interactivo no implementada en este mockup.'); };
+
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const id=e.target.id;links.forEach(l=>{const isActive=l.getAttribute('href')==='#'+id;l.classList.toggle('active',isActive);if(isActive&&l.classList.contains('pv-mobile-cal-item')){const container=document.querySelector('.pv-mobile-calendar-nav');if(container){const containerWidth=container.clientWidth;const itemLeft=l.offsetLeft;const itemWidth=l.clientWidth;container.scrollTo({left:itemLeft-(containerWidth/2)+(itemWidth/2),behavior:'smooth'});}}})}})},{threshold:.25,rootMargin:'-60px 0px -40% 0px'});
 sections.forEach(s=>obs.observe(s));
 <\/script>
 </body>
