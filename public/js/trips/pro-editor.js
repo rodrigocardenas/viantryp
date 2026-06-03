@@ -711,7 +711,7 @@ function renderCanvas() {
 
   regularCanvas.style.display = 'block';
   if (typeof currentDay === 'number' && days[currentDay]) {
-    sortDayItemsChronologically(days[currentDay]);
+    sortDayItemsChronologically(days[currentDay], currentDay);
   }
   const items = days[currentDay] || [];
   canvasItems.innerHTML = '';
@@ -750,18 +750,63 @@ function getItemTimeStr(item) {
   return '';
 }
 
-function sortDayItemsChronologically(arr) {
+function updateDateTimePart(dtStr, newDate) {
+  if (!dtStr || !newDate) return dtStr;
+  let timePart = '00:00';
+  if (dtStr.includes('T')) {
+    timePart = dtStr.split('T')[1];
+    return newDate + 'T' + timePart;
+  } else if (dtStr.includes(' ')) {
+    timePart = dtStr.split(' ')[1];
+    return newDate + ' ' + timePart;
+  } else if (dtStr.includes(':')) {
+    return newDate + 'T' + dtStr;
+  }
+  return newDate + 'T' + dtStr;
+}
+
+function getItemTimeOnly(dt) {
+  if (!dt) return '99:99';
+  let timePart = '';
+  if (dt.includes('T')) {
+    timePart = dt.split('T')[1];
+  } else if (dt.includes(' ')) {
+    timePart = dt.split(' ')[1];
+  } else if (dt.includes(':')) {
+    timePart = dt;
+  }
+  if (timePart && timePart.includes(':')) {
+    return timePart.substring(0, 5); // "HH:MM"
+  }
+  return '99:99';
+}
+
+function sortDayItemsChronologically(arr, dayIdx) {
   if (!arr || arr.length <= 1) return;
+  const targetDate = (typeof dayIdx === 'number' && dayDates[dayIdx]) ? dayDates[dayIdx] : null;
   const itemsWithDates = [];
   const indices = [];
   arr.forEach((item, idx) => {
+    if (targetDate && item && item.data) {
+      const d = item.data;
+      if (item.type === 'flight' && d.salida) d.salida = updateDateTimePart(d.salida, targetDate);
+      if (item.type === 'alojamiento' && d.checkin) d.checkin = updateDateTimePart(d.checkin, targetDate);
+      if (item.type === 'transporte' && d.salida) d.salida = updateDateTimePart(d.salida, targetDate);
+      if (item.type === 'actividad' && d.fecha) d.fecha = updateDateTimePart(d.fecha, targetDate);
+      if (item.type === 'comida' && d.fecha) d.fecha = updateDateTimePart(d.fecha, targetDate);
+      if (item.type === 'tour' && d.fecha) d.fecha = updateDateTimePart(d.fecha, targetDate);
+    }
     const dt = getItemDateTime(item);
     if (dt) {
       itemsWithDates.push({ item, dt });
       indices.push(idx);
     }
   });
-  itemsWithDates.sort((a, b) => a.dt.localeCompare(b.dt));
+  itemsWithDates.sort((a, b) => {
+    const timeA = getItemTimeOnly(a.dt);
+    const timeB = getItemTimeOnly(b.dt);
+    return timeA.localeCompare(timeB);
+  });
   itemsWithDates.forEach((wrapped, idx) => {
     const originalIdx = indices[idx];
     arr[originalIdx] = wrapped.item;
@@ -2000,13 +2045,13 @@ function openPreview() {
 // Initial Load
 if (window.proState) {
   const s = window.proState;
+  if (s.dayDates) dayDates = s.dayDates;
   if (s.days) {
     days = s.days;
-    days.forEach(dayItems => {
-      if (dayItems) sortDayItemsChronologically(dayItems);
+    days.forEach((dayItems, idx) => {
+      if (dayItems) sortDayItemsChronologically(dayItems, idx);
     });
   }
-  if (s.dayDates) dayDates = s.dayDates;
   if (s.portadaItems) portadaItems = s.portadaItems;
   if (s.cierreItems) cierreItems = s.cierreItems;
   if (s.portadaAdultos !== undefined) portadaAdultos = s.portadaAdultos;
@@ -2049,6 +2094,9 @@ if (window.proState) {
           for (let i = 0; i < days.length; i++) {
             dayDates[i] = addDaysToDate(startDate, i);
           }
+          days.forEach((dayItems, idx) => {
+            if (dayItems) sortDayItemsChronologically(dayItems, idx);
+          });
           renderTabs();
           renderCanvas();
         }
@@ -2095,6 +2143,9 @@ if (window.proState) {
           for (let i = 0; i < days.length; i++) {
             dayDates[i] = addDaysToDate(startDate, i);
           }
+          days.forEach((dayItems, idx) => {
+            if (dayItems) sortDayItemsChronologically(dayItems, idx);
+          });
           renderTabs();
           renderCanvas();
         }
@@ -2183,6 +2234,12 @@ async function performProSave(isSilent = true) {
   const showDefaultCierre = closureCard && closureCard.style.display !== 'none';
   const totalItems = days.reduce((s, d) => s + (d ? d.length : 0), 0);
   const numericTabs = [...document.querySelectorAll('.day-tab:not(.portada-tab):not(.cierre-tab)')].map(t => ({ label: t.querySelector('.day-tab-label')?.textContent || t.textContent.trim(), idx: parseInt(t.dataset.day) }));
+
+  if (days && dayDates) {
+    days.forEach((dayItems, idx) => {
+      if (dayItems) sortDayItemsChronologically(dayItems, idx);
+    });
+  }
 
   const proStateObj = { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink: false, status: window.proStatus, origin: window.location.origin };
 
