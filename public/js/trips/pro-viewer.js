@@ -520,7 +520,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-back-btn:hover{border-color:#38bdf8;color:#38bdf8;background:rgba(255,255,255,0.1)}
 
 /* ─── PORTADA CARD (imagen referencia 1) ─── */
-.pv-portada-wrap{max-width:900px;margin:28px auto 0;padding:0 24px}
+.pv-portada-wrap{max-width:1100px;margin:28px auto 0;padding:0 24px}
 .pv-portada-card{background:var(--surface);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)}
 .pv-portada-img{width:100%;height:220px;object-fit:cover;display:block}
 .pv-portada-img-placeholder{width:100%;height:220px;background:linear-gradient(139deg, #0f172a, #0e4c6a);display:flex;align-items:center;justify-content:center;font-size:52px;color:rgba(255,255,255,0.25)}
@@ -649,7 +649,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pvcs-l{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
 
 /* PORTADA / CIERRE EXTRA ITEMS */
-.pv-portada-extra-items{max-width:900px;margin:12px auto 0;padding:0 24px;display:flex;flex-direction:column;gap:12px}
+.pv-portada-extra-items{max-width:1100px;margin:12px auto 0;padding:0 24px;display:flex;flex-direction:column;gap:12px}
 .pv-cierre-extra-items{display:flex;flex-direction:column;gap:12px;margin-top:16px}
 
 /* MOBILE */
