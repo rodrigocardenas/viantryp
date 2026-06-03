@@ -872,7 +872,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
             color: #445c7d;
             border: 1.5px solid var(--border);
             border-radius: 10px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             font-family: inherit;
@@ -886,6 +886,45 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
         .pv-cal-btn-mobile:active, .pv-map-btn-mobile:active {
             transform: translateY(1px);
         }
+    }
+
+    .viantryp-map-tab-bar {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 10px 24px;
+        border-bottom: 1px solid #f1f5f9;
+        background: #f8fafc;
+        flex-shrink: 0;
+    }
+    .viantryp-map-tab-bar::-webkit-scrollbar {
+        display: none;
+    }
+    .viantryp-map-tab-bar {
+        scrollbar-width: none;
+    }
+    .viantryp-map-tab {
+        padding: 6px 14px;
+        background: #ffffff;
+        border: 1.5px solid var(--border);
+        border-radius: 20px;
+        color: #445c7d;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+    .viantryp-map-tab:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+    .viantryp-map-tab.active {
+        background: var(--accent) !important;
+        border-color: var(--accent) !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px var(--accent-light);
     }
 </style>
 </head>
@@ -959,11 +998,11 @@ ${hasPortada ? `
   <div class="pv-mobile-actions">
     <button class="pv-cal-btn-mobile" onclick="openGoogleCalendarModal()">
       <i class="fa-solid fa-calendar-plus"></i>
-      Agregar a Google Calendar
+      <span style="text-align: center; line-height: 1.2;">Agregar a Google Calendar</span>
     </button>
     <button class="pv-map-btn-mobile" onclick="openInteractiveMapModal()">
       <i class="fa-solid fa-map-location-dot"></i>
-      Ver mapa del viaje
+      <span style="text-align: center; line-height: 1.2;">Ver mapa<br>del viaje</span>
     </button>
   </div>
 </div>
@@ -1069,16 +1108,16 @@ ${hasPortada ? `
     <!-- Modal Header -->
     <div style="padding:20px 24px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:12px;">
-        <div style="width:40px;height:40px;background:var(--accent-light);color:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">
-          <i class="fa-solid fa-map-location-dot"></i>
-        </div>
-        <div>
+      <div>
           <h3 style="margin:0;font-size:16px;font-weight:700;color:#0f172a;">Mapa del Viaje</h3>
           <p style="margin:2px 0 0;font-size:11px;color:#64748b;">Visualiza los puntos y el itinerario de tu viaje</p>
         </div>
       </div>
       <button onclick="closeInteractiveMapModal()" style="margin-left:auto;background:#f1f5f9;border:none;width:32px;height:32px;border-radius:50%;font-size:18px;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" onmouseover="this.style.background=\'#e2e8f0\';this.style.color=\'#0f172a\'" onmouseout="this.style.background=\'#f1f5f9\';this.style.color=\'#64748b\'">✕</button>
     </div>
+
+    <!-- Day Selector Tabs Bar -->
+    <div id="viantrypMapDaySelector" class="viantryp-map-tab-bar"></div>
 
     <!-- Modal Body (Split Layout) -->
     <div style="flex:1;display:flex;overflow:hidden;position:relative;" id="mapModalSplitBody">
@@ -1711,6 +1750,10 @@ window.syncWithGoogleCalendar = function() {
 
 // Map script logic
 let viantrypMapInstance = null;
+let viantrypMapMarkers = [];
+let viantrypMapPolyline = null;
+let mapGeocodedPoints = [];
+let activeMapDayIndex = -1;
 
 const mapMarkerTypes = {
   flight: { color: '#3b82f6', icon: 'fa-plane' },
@@ -1860,6 +1903,7 @@ function extractMapPoints(data) {
             address: d.origen,
             type: 'flight',
             dayLabel: dayLabel,
+            dayIndex: tabIdx,
             time: d.salida ? d.salida.split('T')[1] || d.salida : ''
           });
         }
@@ -1869,6 +1913,7 @@ function extractMapPoints(data) {
             address: d.destino,
             type: 'flight',
             dayLabel: dayLabel,
+            dayIndex: tabIdx,
             time: d.llegada ? d.llegada.split('T')[1] || d.llegada : ''
           });
         }
@@ -1889,6 +1934,7 @@ function extractMapPoints(data) {
             address: d.origen_address || d.origen,
             type: 'transporte',
             dayLabel: dayLabel,
+            dayIndex: tabIdx,
             time: d.salida || d.fecha || ''
           });
         }
@@ -1898,6 +1944,7 @@ function extractMapPoints(data) {
             address: d.destino_address || d.destino,
             type: 'transporte',
             dayLabel: dayLabel,
+            dayIndex: tabIdx,
             time: d.llegada || ''
           });
         }
@@ -1934,6 +1981,7 @@ function extractMapPoints(data) {
           address: address,
           type: type,
           dayLabel: dayLabel,
+          dayIndex: tabIdx,
           time: timeStr
         });
       }
@@ -1947,6 +1995,11 @@ function populateMapSidebar(points) {
   if (!sidebar) return;
   sidebar.innerHTML = '';
 
+  if (points.length === 0) {
+    sidebar.innerHTML = '<div style="font-size:12px; color:var(--muted); text-align:center; padding:20px;">Sin locaciones registradas en este día</div>';
+    return;
+  }
+
   let currentDay = '';
 
   points.forEach((pt) => {
@@ -1954,7 +2007,22 @@ function populateMapSidebar(points) {
       currentDay = pt.dayLabel;
       const title = document.createElement('div');
       title.className = 'map-sidebar-day-title';
-      title.innerText = currentDay;
+      
+      let dayTitle = currentDay;
+      const tab = tripData.numericTabs[pt.dayIndex];
+      const dStr = (tab && tripData.dayDates && tripData.dayDates[tab.idx]) ? tripData.dayDates[tab.idx] : '';
+      if (dStr) {
+        try {
+          const d = new Date(dStr + 'T00:00:00');
+          const weekday = d.toLocaleDateString('es', { weekday: 'long' }).toLowerCase();
+          const dayNum = d.toLocaleDateString('es', { day: 'numeric' });
+          const month = d.toLocaleDateString('es', { month: 'long' }).toLowerCase();
+          dayTitle = currentDay + ' - ' + weekday + ', ' + dayNum + ' de ' + month;
+        } catch (e) {
+          console.error('Error formatting date in sidebar header:', e);
+        }
+      }
+      title.innerText = dayTitle;
       sidebar.appendChild(title);
     }
 
@@ -1989,15 +2057,14 @@ function populateMapSidebar(points) {
   });
 }
 
-function renderLeafletMap(points) {
-  viantrypMapInstance = L.map('viantrypMapCanvas', {
-    zoomControl: true,
-    scrollWheelZoom: true
-  });
+function redrawMapPoints(points) {
+  viantrypMapMarkers.forEach(m => m.remove());
+  viantrypMapMarkers = [];
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap'
-  }).addTo(viantrypMapInstance);
+  if (viantrypMapPolyline) {
+    viantrypMapPolyline.remove();
+    viantrypMapPolyline = null;
+  }
 
   const markerBounds = [];
   const routeCoords = [];
@@ -2033,13 +2100,15 @@ function renderLeafletMap(points) {
       '</div>'
     ].join('');
 
-    L.marker(latlng, { icon: customIcon })
+    const marker = L.marker(latlng, { icon: customIcon })
       .bindPopup(popupContent)
       .addTo(viantrypMapInstance);
+      
+    viantrypMapMarkers.push(marker);
   });
 
   if (routeCoords.length > 1) {
-    L.polyline(routeCoords, {
+    viantrypMapPolyline = L.polyline(routeCoords, {
       color: 'var(--accent)',
       weight: 3,
       dashArray: '6, 8',
@@ -2052,6 +2121,33 @@ function renderLeafletMap(points) {
       padding: [50, 50],
       maxZoom: 15
     });
+  }
+}
+
+function renderLeafletMap(points) {
+  viantrypMapInstance = L.map('viantrypMapCanvas', {
+    zoomControl: true,
+    scrollWheelZoom: true
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(viantrypMapInstance);
+
+  redrawMapPoints(points);
+}
+
+function filterMapData(dayIdx) {
+  activeMapDayIndex = dayIdx;
+  
+  const filteredPoints = dayIdx === -1 
+    ? mapGeocodedPoints 
+    : mapGeocodedPoints.filter(pt => pt.dayIndex === dayIdx);
+    
+  populateMapSidebar(filteredPoints);
+  
+  if (viantrypMapInstance) {
+    redrawMapPoints(filteredPoints);
   }
 }
 
@@ -2116,6 +2212,51 @@ window.openInteractiveMapModal = function() {
           return;
         }
 
+        mapGeocodedPoints = geocodedPoints;
+        activeMapDayIndex = -1;
+
+        const tabSelector = document.getElementById('viantrypMapDaySelector');
+        if (tabSelector) {
+          tabSelector.innerHTML = '';
+          
+          const genTab = document.createElement('button');
+          genTab.className = 'viantryp-map-tab active';
+          genTab.innerText = 'Vista General';
+          genTab.onclick = () => {
+            document.querySelectorAll('.viantryp-map-tab').forEach(t => t.classList.remove('active'));
+            genTab.classList.add('active');
+            filterMapData(-1);
+          };
+          tabSelector.appendChild(genTab);
+          
+          tripData.numericTabs.forEach((tab, i) => {
+            const dayTab = document.createElement('button');
+            dayTab.className = 'viantryp-map-tab';
+            
+            let label = 'Día ' + (i + 1);
+            const dStr = tripData.dayDates && tripData.dayDates[tab.idx] ? tripData.dayDates[tab.idx] : '';
+            if (dStr) {
+              try {
+                const d = new Date(dStr + 'T00:00:00');
+                const dayNum = d.toLocaleDateString('es', { day: 'numeric' });
+                const month = d.toLocaleDateString('es', { month: 'short' }).replace('.', '');
+                const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+                label = dayNum + ' ' + cap(month);
+              } catch (e) {
+                console.error('Error formatting date in map tab:', e);
+              }
+            }
+            
+            dayTab.innerText = label;
+            dayTab.onclick = () => {
+              document.querySelectorAll('.viantryp-map-tab').forEach(t => t.classList.remove('active'));
+              dayTab.classList.add('active');
+              filterMapData(i);
+            };
+            tabSelector.appendChild(dayTab);
+          });
+        }
+
         populateMapSidebar(geocodedPoints);
 
         setTimeout(() => {
@@ -2155,6 +2296,9 @@ window.closeInteractiveMapModal = function() {
         viantrypMapInstance.remove();
         viantrypMapInstance = null;
       }
+      viantrypMapMarkers = [];
+      viantrypMapPolyline = null;
+      mapGeocodedPoints = [];
     }, 250);
   } catch (err) {
     console.error('Error in closeInteractiveMapModal:', err);
