@@ -20,7 +20,7 @@
     <script
       src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.places_api_key', env('GOOGLE_PLACES_API_KEY')) }}&libraries=places"></script>
   @endif
-  <link href="{{ asset('css/trips/pro-editor.css') }}" rel="stylesheet">
+  <link href="{{ asset('css/trips/pro-editor.css') }}?v={{ time() }}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
   <style>
     /* Driver.js Custom Styles (Consistent with Dashboard) */
