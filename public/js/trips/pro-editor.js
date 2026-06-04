@@ -1137,6 +1137,9 @@ function addPhotoFallback(container, type, showHelp = true, photoInp = null, app
 function openModal(type, editIdx = null) {
   if (typeof currentDay !== 'number' && currentDay !== 'portada' && currentDay !== 'cierre') return;
 
+  // Clean up any orphaned Google Places autocomplete containers from previous modal sessions
+  document.querySelectorAll('.pac-container').forEach(el => el.remove());
+
   const isPremium = typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan !== 'básico';
 
   // Phase 36: Direct Unsplash for new images
@@ -1286,7 +1289,8 @@ function openModal(type, editIdx = null) {
         const autocomplete = new window.google.maps.places.Autocomplete(nameInp, { types: ['establishment'] });
 
         // Fix z-index for pac-container
-        nameInp.addEventListener('input', () => {
+        nameInp.addEventListener('input', (e) => {
+          if (e && !e.isTrusted) return;
           setTimeout(() => {
             document.querySelectorAll('.pac-container').forEach(c => {
               c.style.zIndex = '1000000';
@@ -1360,7 +1364,8 @@ function openModal(type, editIdx = null) {
         if (inp) {
           const autocomplete = new window.google.maps.places.Autocomplete(inp, {});
           
-          inp.addEventListener('input', () => {
+          inp.addEventListener('input', (e) => {
+            if (e && !e.isTrusted) return;
             delete inp.dataset.address;
             setTimeout(() => {
               document.querySelectorAll('.pac-container').forEach(c => {
@@ -1490,7 +1495,8 @@ function openModal(type, editIdx = null) {
             if (isHotel && activeNameInp) {
               const autocompleteNombre = new window.google.maps.places.Autocomplete(activeNameInp, { types: ['establishment'] });
               
-              activeNameInp.addEventListener('input', () => {
+              activeNameInp.addEventListener('input', (e) => {
+                if (e && !e.isTrusted) return;
                 setTimeout(() => {
                   document.querySelectorAll('.pac-container').forEach(c => {
                     c.style.zIndex = '1000000';
@@ -1563,7 +1569,8 @@ function openModal(type, editIdx = null) {
             } else if (!isHotel && activeAddrInp) {
               const autocompleteDireccion = new window.google.maps.places.Autocomplete(activeAddrInp, { types: ['geocode'] });
               
-              activeAddrInp.addEventListener('input', () => {
+              activeAddrInp.addEventListener('input', (e) => {
+                if (e && !e.isTrusted) return;
                 setTimeout(() => {
                   document.querySelectorAll('.pac-container').forEach(c => {
                     c.style.zIndex = '1000000';
