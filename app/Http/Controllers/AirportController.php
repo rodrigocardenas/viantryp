@@ -40,7 +40,9 @@ class AirportController extends Controller
                 'id' => $displayText,
                 'text' => $displayText,
                 'city' => $airport->city,
-                'country' => $airport->country
+                'country' => $airport->country,
+                'latitude' => $airport->latitude,
+                'longitude' => $airport->longitude
             ];
         });
 

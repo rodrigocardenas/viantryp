@@ -1292,6 +1292,8 @@ function openModal(type, editIdx = null) {
         // Fix z-index for pac-container
         nameInp.addEventListener('input', (e) => {
           if (e && !e.isTrusted) return;
+          delete nameInp.dataset.lat;
+          delete nameInp.dataset.lng;
           if (pacContainer) {
             setTimeout(() => {
               pacContainer.style.zIndex = '1000000';
@@ -1310,6 +1312,11 @@ function openModal(type, editIdx = null) {
           if (!place || !place.place_id) return;
 
           if (place.name) nameInp.value = place.name;
+
+          if (place.geometry && place.geometry.location) {
+            nameInp.dataset.lat = place.geometry.location.lat();
+            nameInp.dataset.lng = place.geometry.location.lng();
+          }
 
           const setVal = (k, v) => { const el = modalBody.querySelector('input[data-key="' + k + '"]'); if (el) { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); } };
           if (place.formatted_address && type !== 'actividad') setVal('direccion', place.formatted_address);
@@ -1369,6 +1376,8 @@ function openModal(type, editIdx = null) {
           inp.addEventListener('input', (e) => {
             if (e && !e.isTrusted) return;
             delete inp.dataset.address;
+            delete inp.dataset.lat;
+            delete inp.dataset.lng;
             if (pacContainer) {
               setTimeout(() => {
                 pacContainer.style.zIndex = '1000000';
@@ -1397,6 +1406,11 @@ function openModal(type, editIdx = null) {
               inp.dataset.address = place.formatted_address;
             } else if (place.name) {
               inp.dataset.address = place.name;
+            }
+
+            if (place.geometry && place.geometry.location) {
+              inp.dataset.lat = place.geometry.location.lat();
+              inp.dataset.lng = place.geometry.location.lng();
             }
           });
         }
@@ -1501,6 +1515,8 @@ function openModal(type, editIdx = null) {
               
               activeNameInp.addEventListener('input', (e) => {
                 if (e && !e.isTrusted) return;
+                delete activeNameInp.dataset.lat;
+                delete activeNameInp.dataset.lng;
                 if (pacContainer) {
                   setTimeout(() => {
                     pacContainer.style.zIndex = '1000000';
@@ -1519,6 +1535,11 @@ function openModal(type, editIdx = null) {
                 if (!place || !place.place_id) return;
 
                 if (place.name) activeNameInp.value = place.name;
+
+                if (place.geometry && place.geometry.location) {
+                  activeNameInp.dataset.lat = place.geometry.location.lat();
+                  activeNameInp.dataset.lng = place.geometry.location.lng();
+                }
 
                 const setVal = (k, v) => {
                   const el = modalBody.querySelector('input[data-key="' + k + '"]');
@@ -2017,6 +2038,8 @@ function buildField(field, data) {
       inp.dataset.key = field.k;
       if (data && data[field.k + '_city']) inp.dataset.city = data[field.k + '_city'];
       if (data && data[field.k + '_address']) inp.dataset.address = data[field.k + '_address'];
+      if (data && data[field.k + '_lat']) inp.dataset.lat = data[field.k + '_lat'];
+      if (data && data[field.k + '_lng']) inp.dataset.lng = data[field.k + '_lng'];
       fg.appendChild(inp);
 
       // Block invalid keys and sanitize input interactively
@@ -2050,6 +2073,9 @@ function buildField(field, data) {
       fg.appendChild(drop);
       let timeout;
       inp.addEventListener('input', e => {
+        delete inp.dataset.city;
+        delete inp.dataset.lat;
+        delete inp.dataset.lng;
         clearTimeout(timeout);
         const q = e.target.value.trim();
         if (q.length < 3) { drop.style.display = 'none'; return; }
@@ -2069,6 +2095,8 @@ function buildField(field, data) {
                 item.onclick = () => {
                   inp.value = it.text;
                   if (it.city) inp.dataset.city = it.city;
+                  if (it.latitude) inp.dataset.lat = it.latitude;
+                  if (it.longitude) inp.dataset.lng = it.longitude;
                   drop.style.display = 'none';
                 };
                 drop.appendChild(item);
@@ -2132,6 +2160,8 @@ document.getElementById('modalSave').addEventListener('click', () => {
     else data[key] = el.value;
     if (el.dataset.city) data[key + '_city'] = el.dataset.city;
     if (el.dataset.address) data[key + '_address'] = el.dataset.address;
+    if (el.dataset.lat) data[key + '_lat'] = el.dataset.lat;
+    if (el.dataset.lng) data[key + '_lng'] = el.dataset.lng;
   });
 
   if (hasError) {

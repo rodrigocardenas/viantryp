@@ -34,6 +34,17 @@ function buildPreviewHTML(data) {
   };
   const currentTheme = themes[themeColor] || themes['default'];
   const isGradient = currentTheme.includes('gradient');
+  const solidThemeColors = {
+    'default': '#1a7f77',
+    'ocean': '#1a5f8f',
+    'gold': '#b08000',
+    'sunset': '#c0552a',
+    'blush': '#e07b9a',
+    'silver': '#6e7f80',
+    'mint': '#3db898',
+    'lavender': '#9b72cf'
+  };
+  const themeHex = solidThemeColors[themeColor] || solidThemeColors['default'];
 
   const cierreGradients = {
     'default': 'linear-gradient(185deg, #0f172a, #1a7f77, #10a6b1)',
@@ -1760,6 +1771,7 @@ let viantrypMapMarkers = [];
 let viantrypMapPolyline = null;
 let mapGeocodedPoints = [];
 let activeMapDayIndex = -1;
+let isMapModalOpen = false;
 
 const mapMarkerTypes = {
   flight: { color: '#3b82f6', icon: 'fa-plane' },
@@ -1796,19 +1808,21 @@ async function geocodeAddress(address) {
   const cached = localStorage.getItem(cacheKey);
   if (cached) {
     try {
-      return JSON.parse(cached);
+      const parsed = JSON.parse(cached);
+      if (parsed && parsed.failed) return null;
+      return parsed;
     } catch (e) {}
   }
   
   const queryList = [cleanAddr];
   
   // 1. Extraer IATA en paréntesis, ej. "Madrid Barajas (MAD)"
-  const parenMatch = cleanAddr.match(/\\(([^)]+)\\)/);
+  const parenMatch = cleanAddr.match(/\(([^)]+)\)/);
   if (parenMatch) {
     const code = parenMatch[1].trim();
     if (code.length === 3 && /^[A-Z]{3}$/i.test(code)) {
-      queryList.push('Aeropuerto ' + code.toUpperCase());
-      queryList.push(code.toUpperCase() + ' Airport');
+      queryList.unshift(code.toUpperCase() + ' Airport');
+      queryList.unshift('Aeropuerto ' + code.toUpperCase());
     }
   }
   
@@ -1818,8 +1832,8 @@ async function geocodeAddress(address) {
     const parts = cleanAddr.split(separators).map(p => p.trim());
     parts.forEach(part => {
       if (part.length === 3 && /^[A-Z]{3}$/i.test(part)) {
-        queryList.push('Aeropuerto ' + part.toUpperCase());
-        queryList.push(part.toUpperCase() + ' Airport');
+        queryList.unshift(part.toUpperCase() + ' Airport');
+        queryList.unshift('Aeropuerto ' + part.toUpperCase());
       } else if (part.length > 3) {
         queryList.push(part);
         // Si no dice aeropuerto ni estación, agregar versión con aeropuerto
@@ -1848,7 +1862,7 @@ async function geocodeAddress(address) {
   
   // 5. Limpieza general de paréntesis como fallback
   if (cleanAddr.includes('(')) {
-    const outside = cleanAddr.replace(/\\(.*?\\)/g, '').trim();
+    const outside = cleanAddr.replace(/\(.*?\)/g, '').trim();
     if (outside) queryList.push(outside);
   }
 
@@ -1901,6 +1915,8 @@ function extractMapPoints(data) {
       let address = '';
       let type = item.type;
       let timeStr = '';
+      let lat = null;
+      let lon = null;
 
       if (item.type === 'flight') {
         if (d.origen) {
@@ -1910,7 +1926,9 @@ function extractMapPoints(data) {
             type: 'flight',
             dayLabel: dayLabel,
             dayIndex: tabIdx,
-            time: d.salida ? d.salida.split('T')[1] || d.salida : ''
+            time: d.salida ? d.salida.split('T')[1] || d.salida : '',
+            lat: d.origen_lat ? parseFloat(d.origen_lat) : null,
+            lon: d.origen_lng ? parseFloat(d.origen_lng) : null
           });
         }
         if (d.destino) {
@@ -1920,7 +1938,9 @@ function extractMapPoints(data) {
             type: 'flight',
             dayLabel: dayLabel,
             dayIndex: tabIdx,
-            time: d.llegada ? d.llegada.split('T')[1] || d.llegada : ''
+            time: d.llegada ? d.llegada.split('T')[1] || d.llegada : '',
+            lat: d.destino_lat ? parseFloat(d.destino_lat) : null,
+            lon: d.destino_lng ? parseFloat(d.destino_lng) : null
           });
         }
         return;
@@ -1932,6 +1952,8 @@ function extractMapPoints(data) {
         if (d.ciudad) parts.push(d.ciudad);
         address = parts.length > 0 ? parts.join(', ') : '';
         timeStr = d.checkin ? 'Check-in: ' + d.checkin : '';
+        lat = d.nombre_lat || d.direccion_lat || null;
+        lon = d.nombre_lng || d.direccion_lng || null;
       }
       else if (item.type === 'transporte') {
         if (d.origen) {
@@ -1941,7 +1963,9 @@ function extractMapPoints(data) {
             type: 'transporte',
             dayLabel: dayLabel,
             dayIndex: tabIdx,
-            time: d.salida || d.fecha || ''
+            time: d.salida || d.fecha || '',
+            lat: d.origen_lat ? parseFloat(d.origen_lat) : null,
+            lon: d.origen_lng ? parseFloat(d.origen_lng) : null
           });
         }
         if (d.destino) {
@@ -1951,7 +1975,9 @@ function extractMapPoints(data) {
             type: 'transporte',
             dayLabel: dayLabel,
             dayIndex: tabIdx,
-            time: d.llegada || ''
+            time: d.llegada || '',
+            lat: d.destino_lat ? parseFloat(d.destino_lat) : null,
+            lon: d.destino_lng ? parseFloat(d.destino_lng) : null
           });
         }
         return;
@@ -1963,6 +1989,8 @@ function extractMapPoints(data) {
         if (d.lugar) parts.push(d.lugar);
         address = parts.length > 0 ? parts.join(', ') : '';
         timeStr = d.fecha || '';
+        lat = d.direccion_lat || d.nombre_lat || null;
+        lon = d.direccion_lng || d.nombre_lng || null;
       }
       else if (item.type === 'comida') {
         name = d.restaurante || 'Comida';
@@ -1971,6 +1999,8 @@ function extractMapPoints(data) {
         if (d.ciudad) parts.push(d.ciudad);
         address = parts.length > 0 ? parts.join(', ') : '';
         timeStr = d.fecha || '';
+        lat = d.restaurante_lat || d.direccion_lat || null;
+        lon = d.restaurante_lng || d.direccion_lng || null;
       }
       else if (item.type === 'tour') {
         name = d.nombre || 'Tour';
@@ -1979,6 +2009,8 @@ function extractMapPoints(data) {
         if (d.operador) parts.push(d.operador);
         address = parts.length > 0 ? parts.join(', ') : '';
         timeStr = d.fecha || '';
+        lat = d.nombre_lat || d.direccion_lat || null;
+        lon = d.nombre_lng || d.direccion_lng || null;
       }
 
       if (address && address.trim()) {
@@ -1988,7 +2020,9 @@ function extractMapPoints(data) {
           type: type,
           dayLabel: dayLabel,
           dayIndex: tabIdx,
-          time: timeStr
+          time: timeStr,
+          lat: lat ? parseFloat(lat) : null,
+          lon: lon ? parseFloat(lon) : null
         });
       }
     });
@@ -2115,7 +2149,7 @@ function redrawMapPoints(points) {
 
   if (activeMapDayIndex !== -1 && routeCoords.length > 1) {
     viantrypMapPolyline = L.polyline(routeCoords, {
-      color: 'var(--accent)',
+      color: '${themeHex}',
       weight: 3,
       dashArray: '6, 8',
       opacity: 0.85
@@ -2158,6 +2192,7 @@ function filterMapData(dayIdx) {
 }
 
 window.openInteractiveMapModal = function() {
+  isMapModalOpen = true;
   try {
     const m = document.getElementById('viantrypMapModal');
     if (!m) {
@@ -2201,7 +2236,12 @@ window.openInteractiveMapModal = function() {
           if (loaderProgress) {
             loaderProgress.innerText = 'Localizando ' + (i + 1) + ' de ' + points.length + ': ' + pt.name;
           }
-          const coords = await geocodeAddress(pt.address);
+          let coords = null;
+          if (pt.lat !== null && pt.lon !== null) {
+            coords = { lat: pt.lat, lon: pt.lon };
+          } else {
+            coords = await geocodeAddress(pt.address);
+          }
           if (coords) {
             geocodedPoints.push({
               ...pt,
@@ -2288,6 +2328,7 @@ window.openInteractiveMapModal = function() {
 };
 
 window.closeInteractiveMapModal = function() {
+  isMapModalOpen = false;
   try {
     const m = document.getElementById('viantrypMapModal');
     if (!m) return;
@@ -2318,7 +2359,9 @@ async function preGeocodeAllAddresses() {
     if (!points || points.length === 0) return;
     
     for (let i = 0; i < points.length; i++) {
+      if (isMapModalOpen) break;
       const pt = points[i];
+      if (pt.lat !== null && pt.lon !== null) continue;
       if (!pt.address || !pt.address.trim()) continue;
       
       const cleanAddr = pt.address.trim();
@@ -2330,6 +2373,7 @@ async function preGeocodeAllAddresses() {
       // Wait 1.2 seconds between geocoding requests to comply with Nominatim's strict rate limits
       await new Promise(r => setTimeout(r, 1200));
       
+      if (isMapModalOpen) break;
       // Perform the geocoding (which will automatically cache the result)
       await geocodeAddress(pt.address);
     }
