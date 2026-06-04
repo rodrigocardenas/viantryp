@@ -2310,6 +2310,40 @@ window.closeInteractiveMapModal = function() {
     console.error('Error in closeInteractiveMapModal:', err);
   }
 };
+
+// Pre-geocode addresses in the background to speed up map load time
+async function preGeocodeAllAddresses() {
+  try {
+    const points = extractMapPoints(tripData);
+    if (!points || points.length === 0) return;
+    
+    for (let i = 0; i < points.length; i++) {
+      const pt = points[i];
+      if (!pt.address || !pt.address.trim()) continue;
+      
+      const cleanAddr = pt.address.trim();
+      const cacheKey = 'vt_geo_' + btoa(unescape(encodeURIComponent(cleanAddr)));
+      
+      // If it's already geocoded and cached, skip
+      if (localStorage.getItem(cacheKey)) continue;
+      
+      // Wait 1.2 seconds between geocoding requests to comply with Nominatim's strict rate limits
+      await new Promise(r => setTimeout(r, 1200));
+      
+      // Perform the geocoding (which will automatically cache the result)
+      await geocodeAddress(pt.address);
+    }
+  } catch (e) {
+    console.error('Error pre-geocoding addresses in background:', e);
+  }
+}
+
+// Start pre-geocoding shortly after DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(preGeocodeAllAddresses, 2000));
+} else {
+  setTimeout(preGeocodeAllAddresses, 2000);
+}
 </script>
 ${!isPublicLink && tripId ? `
 <script>
