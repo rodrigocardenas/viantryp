@@ -1535,7 +1535,7 @@ function openModal(type, editIdx = null) {
                 fetch(`/api/places/details?place_id=${place.place_id}`)
                   .then(res => res.json())
                   .then(data => {
-                    if (data.success && data.photos && data.photos.length > 0) {
+                    if (data.photos && data.photos.length > 0) {
                       const urls = data.photos.slice(0, 1).map(p => p.url).join(',');
                       setVal('photo_url', urls);
                     } else {
