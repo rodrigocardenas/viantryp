@@ -1398,8 +1398,6 @@ function openModal(type, editIdx = null) {
             } else if (place.name) {
               inp.dataset.address = place.name;
             }
-            
-            inp.dispatchEvent(new Event('input', { bubbles: true }));
           });
         }
       });
@@ -1599,7 +1597,6 @@ function openModal(type, editIdx = null) {
                 } else if (place.name) {
                   activeAddrInp.value = place.name;
                 }
-                activeAddrInp.dispatchEvent(new Event('input', { bubbles: true }));
               });
             }
           }
@@ -2085,7 +2082,11 @@ function buildField(field, data) {
   }
   return fg;
 }
-function closeModal() { modalOverlay.classList.remove('open'); editingIndex = null }
+function closeModal() {
+  document.querySelectorAll('.pac-container').forEach(el => el.remove());
+  modalOverlay.classList.remove('open');
+  editingIndex = null;
+}
 document.getElementById('modalClose').addEventListener('click', closeModal);
 document.getElementById('modalCancel').addEventListener('click', closeModal);
 // modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal() });
