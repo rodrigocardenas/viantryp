@@ -2113,7 +2113,7 @@ function redrawMapPoints(points) {
     viantrypMapMarkers.push(marker);
   });
 
-  if (routeCoords.length > 1) {
+  if (activeMapDayIndex !== -1 && routeCoords.length > 1) {
     viantrypMapPolyline = L.polyline(routeCoords, {
       color: 'var(--accent)',
       weight: 3,
