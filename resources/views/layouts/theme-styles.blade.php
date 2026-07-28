@@ -36,6 +36,17 @@
     ];
 
     $userTheme = auth()->user()->theme_color ?? 'default';
+    $gradientStarts = [
+        'default' => '#1a7f77',
+        'ocean'   => '#1a5f8f',
+        'gold'    => '#b08000',
+        'sunset'  => '#c0552a',
+        'blush'   => '#e07b9a',
+        'silver'  => '#6e7f80',
+        'mint'    => '#3db898',
+        'lavender'=> '#9b72cf'
+    ];
+    $sidebarStartColor = $gradientStarts[$userTheme] ?? '#1a7f77';
     $currentTheme = $themeColors[$userTheme] ?? $themeColors['default'];
     $currentAccent = $themeAccents[$userTheme] ?? $themeAccents['default'];
     $isGradient = str_contains($currentTheme, 'gradient');
@@ -51,6 +62,8 @@
         --accent-border: {{ $currentAccent['border'] }};
         --avatar-gradient: {{ $avatarBg }};
         --cierre-bg: {{ $cierreBg }};
+        --sidebar-bg: linear-gradient(180deg, {{ $sidebarStartColor }} 0%, rgba(0, 0, 0, 0.95) 100%);
+        --sidebar-accent-color: {{ $sidebarStartColor }};
         @if(!$isGradient)
         --blue-700: {{ $currentTheme }};
         --teal: {{ $currentTheme }};
