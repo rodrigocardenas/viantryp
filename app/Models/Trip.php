@@ -1018,4 +1018,20 @@ class TripItem
         $html .= '</div>';
         return $html;
     }
+
+    /**
+     * Get the cover image URL, falling back to the pro_state's portadaPhotoUrl if empty.
+     */
+    public function getCoverImageUrlAttribute($value)
+    {
+        if (!empty($value)) {
+            return $value;
+        }
+
+        if (is_array($this->pro_state) && !empty($this->pro_state['portadaPhotoUrl'])) {
+            return $this->pro_state['portadaPhotoUrl'];
+        }
+
+        return null;
+    }
 }

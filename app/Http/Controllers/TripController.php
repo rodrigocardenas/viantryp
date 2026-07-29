@@ -553,6 +553,11 @@ class TripController extends Controller
             $tripData['end_date'] = $validated['pro_state']['fechaFin'];
         }
 
+        // Sync cover image from pro_state to trips table
+        if (isset($validated['pro_state']['portadaPhotoUrl'])) {
+            $tripData['cover_image_url'] = $validated['pro_state']['portadaPhotoUrl'];
+        }
+
         $trip->update($tripData);
 
         $shareUrl = $trip->getShareUrl();
