@@ -995,9 +995,9 @@
 
         #mainTable thead th.right,
         #mainTable tbody td.acts-cell {
-            width: 150px !important;
-            min-width: 150px !important;
-            max-width: 150px !important;
+            width: 210px !important;
+            min-width: 210px !important;
+            max-width: 210px !important;
             text-align: center !important;
         }
 
@@ -1014,9 +1014,9 @@
         }
 
         .abt {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
             border: 1.5px solid var(--bdr);
             background: transparent;
             display: flex;
@@ -1029,8 +1029,16 @@
         }
 
         .abt svg {
-            width: 13px;
-            height: 13px;
+            width: 16px;
+            height: 16px;
+        }
+
+        .abt i {
+            font-size: 15px;
+        }
+
+        .abt .btn-txt {
+            display: none !important;
         }
 
         .abt:hover {
@@ -1530,45 +1538,50 @@
                 align-items: center !important;
                 justify-content: space-between !important;
                 width: 100% !important;
-                gap: 8px !important;
+                gap: 6px !important;
                 flex-wrap: nowrap !important;
             }
 
             .acts .abt.view,
             .acts .abt.edit,
             .acts .abt.share {
-                flex: 1 1 0 !important;
-                width: auto !important;
-                min-width: 0 !important;
-                max-width: none !important;
+                flex: 0 0 80px !important;
+                width: 80px !important;
+                min-width: 80px !important;
+                max-width: 80px !important;
             }
 
             .acts .acts-menu-container {
-                flex: 1 1 0 !important;
-                width: auto !important;
-                min-width: 0 !important;
-                max-width: none !important;
+                flex: 0 0 40px !important;
+                width: 40px !important;
+                min-width: 40px !important;
+                max-width: 40px !important;
             }
 
             .acts .acts-menu-container .abt.more {
-                flex: 1 1 0 !important;
-                width: 100% !important;
-                min-width: 0 !important;
-                max-width: none !important;
+                flex: 0 0 40px !important;
+                width: 40px !important;
+                min-width: 40px !important;
+                max-width: 40px !important;
                 padding: 0 !important;
             }
 
             .acts .abt {
                 width: 100% !important;
-                height: 40px !important;
-                border-radius: 10px !important;
+                height: 34px !important;
+                border-radius: 8px !important;
+                font-size: 11px !important;
+                font-weight: 600 !important;
+                font-family: 'DM Sans', sans-serif !important;
                 display: inline-flex !important;
                 align-items: center !important;
                 justify-content: center !important;
+                gap: 4px !important;
                 color: var(--gray) !important;
                 border: 1.5px solid var(--bdr) !important;
                 background: white !important;
-                padding: 0 !important;
+                padding: 0 4px !important;
+                white-space: nowrap !important;
                 box-sizing: border-box !important;
             }
 
@@ -1576,22 +1589,25 @@
                 padding: 0 15px !important;
             }
 
-            .acts .abt .btn-txt {
-                display: none !important;
+            .abt .btn-txt {
+                display: inline-block !important;
+                font-size: 11px !important;
+                font-weight: 600 !important;
+                margin-left: 3px !important;
             }
 
             .abt.share-edit {
                 display: none !important;
             }
 
-            .acts .abt svg {
-                width: 18px !important;
-                height: 18px !important;
-                flex-shrink: 0;
+            .acts .acts-menu-container .abt.more {
+                width: 100% !important;
             }
 
-            .acts .abt i {
-                font-size: 16px !important;
+            .abt svg {
+                width: 13px;
+                height: 13px;
+                flex-shrink: 0;
             }
 
             .acts-menu-container {
@@ -3273,7 +3289,7 @@
                                                         </div>
                                                     </td>
                                                 @endif
-                                                <td class="acts-cell" style="width: 150px; min-width: 150px; max-width: 150px; text-align: center;" onclick="event.stopPropagation()">
+                                                <td class="acts-cell" style="width: 210px; min-width: 210px; max-width: 210px; text-align: center;" onclick="event.stopPropagation()">
                                                     <div class="acts">
                                                         @if($activeMainTab === 'shared' && isset($isPending) && $isPending)
                                                             <a href="{{ route('trips.accept-invite', ['token' => $myCollab->token]) }}"
