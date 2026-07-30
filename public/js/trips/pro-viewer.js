@@ -1,6 +1,65 @@
 function buildPreviewHTML(data) {
   const { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor, displayNameType, agencyLogo, agencyName, userFullName, googleClientId } = data;
 
+  function formatNumber(val) {
+    if (val === null || val === undefined || val === '') return '';
+    let str = val.toString().trim();
+    if (str === '') return '';
+
+    let integerPart = '';
+    let decimalPart = undefined;
+
+    if (str.includes(',')) {
+      const parts = str.split(',');
+      integerPart = parts[0].replace(/[^0-9]/g, '');
+      decimalPart = parts[1] ? parts[1].replace(/[^0-9]/g, '').substring(0, 2) : '';
+    } else if (str.includes('.')) {
+      const lastDot = str.lastIndexOf('.');
+      const afterDot = str.substring(lastDot + 1);
+      if (afterDot.length <= 2 && /^\d*$/.test(afterDot)) {
+        integerPart = str.substring(0, lastDot).replace(/[^0-9]/g, '');
+        decimalPart = afterDot.replace(/[^0-9]/g, '');
+      } else {
+        integerPart = str.replace(/[^0-9]/g, '');
+      }
+    } else {
+      integerPart = str.replace(/[^0-9]/g, '');
+    }
+
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+    if (decimalPart !== undefined && decimalPart !== '') {
+      return integerPart + ',' + decimalPart;
+    }
+    return integerPart;
+  }
+
+  function unformatNumber(val) {
+    if (val === null || val === undefined) return '';
+    const str = val.toString().trim();
+    if (!str) return '';
+
+    if (str.includes(',')) {
+      const parts = str.split(',');
+      const cleanInt = parts[0].replace(/[^0-9]/g, '');
+      const cleanDec = parts[1] ? parts[1].replace(/[^0-9]/g, '').substring(0, 2) : '';
+      return cleanDec ? `${cleanInt}.${cleanDec}` : cleanInt;
+    }
+
+    if (str.includes('.')) {
+      const lastDot = str.lastIndexOf('.');
+      const afterDot = str.substring(lastDot + 1);
+      if (afterDot.length <= 2 && /^\d*$/.test(afterDot)) {
+        const cleanInt = str.substring(0, lastDot).replace(/[^0-9]/g, '');
+        const cleanDec = afterDot.replace(/[^0-9]/g, '');
+        return cleanDec ? `${cleanInt}.${cleanDec}` : cleanInt;
+      }
+      return str.replace(/[^0-9]/g, '');
+    }
+
+    return str.replace(/[^0-9]/g, '');
+  }
+
   const statusMap = {
     'draft': { label: 'En Diseño', bg: '#e0f2fe', color: '#1d5fa8', bdr: '#bae6fd' },
     'sent': { label: 'Propuesta', bg: '#e8f8ff', color: '#0284c7', bdr: '#bae6fd' },
@@ -213,7 +272,7 @@ function buildPreviewHTML(data) {
           </div>
           <div class="pv-chips-row">
             ${d.clase ? `<span class="pv-chip"><i class="fa-solid fa-couch"></i> ${d.clase}</span>` : ''}
-            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} USD</span>` : ''}
+            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${formatNumber(d.precio)} USD</span>` : ''}
           </div>
           ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
           ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -263,7 +322,7 @@ function buildPreviewHTML(data) {
               <div class="pv-hotel-btns">
                 ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn" style="text-decoration:none"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
                 ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn" style="text-decoration:none"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
-                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${d.precio} USD</span>` : ''}
+                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${formatNumber(d.precio)} USD</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -308,7 +367,7 @@ function buildPreviewHTML(data) {
             </div>
           </div>
           <div class="pv-chips-row">
-            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} USD</span>` : ''}
+            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${formatNumber(d.precio)} USD</span>` : ''}
           </div>
           ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
           ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -347,7 +406,7 @@ function buildPreviewHTML(data) {
               <div class="pv-hotel-btns" style="margin-top:10px">
                 ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
                 ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
-                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${d.precio} USD</span>` : ''}
+                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${formatNumber(d.precio)} USD</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -383,7 +442,7 @@ function buildPreviewHTML(data) {
               <div class="pv-hotel-btns" style="margin-top:10px">
                 ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
                 ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
-                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${d.precio} USD</span>` : ''}
+                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${formatNumber(d.precio)} USD</span>` : ''}
                 ${d.estado_reserva && d.estado_reserva !== 'No aplica' ? `<span class="pv-action-btn"><i class="fa-solid fa-calendar-check"></i> ${d.estado_reserva}</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
@@ -423,7 +482,7 @@ function buildPreviewHTML(data) {
               ${d.descripcion ? `<div class="pv-media-desc">${d.descripcion}</div>` : ''}
               <div class="pv-chips-row" style="margin-top:8px">
                 ${d.personas ? `<span class="pv-chip"><i class="fa-solid fa-users"></i> ${d.personas} personas</span>` : ''}
-                ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${d.precio} USD</span>` : ''}
+                ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${formatNumber(d.precio)} USD</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -996,7 +1055,7 @@ ${hasPortada ? `
       </div>
       <div class="pv-portada-meta-cell">
         <div class="pv-pm-label">Total</div>
-        <div class="pv-pm-value highlight">${precio ? '$' + Number(precio).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD' : '—'}</div>
+        <div class="pv-pm-value highlight">${(precio !== null && precio !== '' && precio !== undefined) ? '$' + formatNumber(precio) + ' ' + (moneda || 'USD') : '—'}</div>
       </div>
     </div>
   </div>

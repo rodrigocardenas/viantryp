@@ -210,16 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Real-time price formatting
   const priceInput = document.getElementById('portadaPrecio');
   if (priceInput) {
+    priceInput.addEventListener('keypress', allowPriceKeys);
     priceInput.addEventListener('input', (e) => {
-      let val = e.target.value.replace(/[^0-9,]/g, ''); // Solo dígitos y una coma
-      const parts = val.split(',');
-      if (parts.length > 2) val = parts[0] + ',' + parts.slice(1).join('');
-
-      const cleanParts = val.split(',');
-      cleanParts[0] = cleanParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-      const finalVal = cleanParts.join(',');
-
-      e.target.value = finalVal;
+      formatPriceInput(e);
       unsavedChanges = true;
       autoSaveProTrip();
     });
@@ -815,15 +808,18 @@ function sortDayItemsChronologically(arr, dayIdx) {
 
 function calculateTripServicesTotal() {
   let total = 0;
+  function addPrice(p) {
+    if (!p) return;
+    const clean = unformatNumber(p);
+    const price = parseFloat(clean);
+    if (!isNaN(price)) total += price;
+  }
   if (typeof days !== 'undefined' && days) {
     days.forEach(dayItems => {
       if (dayItems) {
         dayItems.forEach(item => {
           if (item && item.data && item.data.precio) {
-            const price = parseFloat(item.data.precio);
-            if (!isNaN(price)) {
-              total += price;
-            }
+            addPrice(item.data.precio);
           }
         });
       }
@@ -832,16 +828,14 @@ function calculateTripServicesTotal() {
   if (typeof portadaItems !== 'undefined' && portadaItems) {
     portadaItems.forEach(item => {
       if (item && item.data && item.data.precio) {
-        const price = parseFloat(item.data.precio);
-        if (!isNaN(price)) total += price;
+        addPrice(item.data.precio);
       }
     });
   }
   if (typeof cierreItems !== 'undefined' && cierreItems) {
     cierreItems.forEach(item => {
       if (item && item.data && item.data.precio) {
-        const price = parseFloat(item.data.precio);
-        if (!isNaN(price)) total += price;
+        addPrice(item.data.precio);
       }
     });
   }
@@ -904,7 +898,7 @@ function buildItem(item, idx) {
       if (d.aerolinea) chips.push(d.aerolinea);
       if (d.vuelo) chips.push(d.vuelo);
       if (d.clase) chips.push(d.clase);
-      if (d.precio) chips.push('$' + d.precio + ' USD');
+      if (d.precio) chips.push('$' + formatNumber(d.precio) + ' USD');
       break;
     case 'alojamiento':
       title = d.nombre || 'Alojamiento';
@@ -912,7 +906,7 @@ function buildItem(item, idx) {
       if (d.checkout) sub.push('<i class="fa-solid fa-right-from-bracket"></i> ' + fmtDT(d.checkout.includes('T') ? d.checkout : d.checkout + 'T12:00:00'));
       if (d.alimentacion) chips.push('<i class="fa-solid fa-utensils"></i> ' + d.alimentacion);
       if (d.habitacion) chips.push('<i class="fa-solid fa-bed"></i> ' + d.habitacion);
-      if (d.precio) chips.push('$' + d.precio + ' USD');
+      if (d.precio) chips.push('$' + formatNumber(d.precio) + ' USD');
       break;
     case 'transporte':
       title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : (d.tipo || 'Transporte');
@@ -920,21 +914,21 @@ function buildItem(item, idx) {
       if (d.salida) sub.push('<i class="fa-solid fa-clock"></i> ' + fmtDT(d.salida));
       if (d.llegada) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.llegada));
       if (d.proveedor) chips.push(d.proveedor);
-      if (d.precio) chips.push('$' + d.precio + ' USD');
+      if (d.precio) chips.push('$' + formatNumber(d.precio) + ' USD');
       break;
     case 'actividad':
       title = d.nombre || 'Actividad';
       if (d.direccion) sub.push('<i class="fa-solid fa-location-dot"></i> ' + d.direccion);
       if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.fecha));
       if (d.duracion) chips.push('<i class="fa-solid fa-stopwatch"></i> ' + d.duracion);
-      if (d.precio) chips.push('$' + d.precio + ' USD');
+      if (d.precio) chips.push('$' + formatNumber(d.precio) + ' USD');
       break;
     case 'comida':
       title = d.restaurante || 'Comida';
       if (d.direccion) sub.push('<i class="fa-solid fa-location-dot"></i> ' + d.direccion);
       if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.fecha));
       if (d.tipo) chips.push('<i class="fa-solid fa-utensils"></i> ' + d.tipo);
-      if (d.precio) chips.push('$' + d.precio + ' USD');
+      if (d.precio) chips.push('$' + formatNumber(d.precio) + ' USD');
       break;
     case 'tour':
       title = d.nombre || 'Tour';
@@ -942,7 +936,7 @@ function buildItem(item, idx) {
       if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.fecha));
       if (d.duracion) chips.push('<i class="fa-solid fa-stopwatch"></i> ' + d.duracion);
       if (d.personas) chips.push('<i class="fa-solid fa-users"></i> ' + d.personas);
-      if (d.precio) chips.push('$' + d.precio + ' USD');
+      if (d.precio) chips.push('$' + formatNumber(d.precio) + ' USD');
       break;
     case 'documents':
       title = d.documents_title || 'Documentos';
@@ -1010,14 +1004,96 @@ function setupReorder(el, idx) {
 }
 function fmtDT(s) { if (!s) return ''; try { const d = new Date(s); return d.toLocaleDateString('es', { day: '2-digit', month: 'short' }) + ' ' + d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }) } catch { return s } }
 function formatNumber(val) {
-  if (!val && val !== 0) return '';
-  const parts = val.toString().split('.');
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  return parts.join(',');
+  if (val === null || val === undefined || val === '') return '';
+  let str = val.toString().trim();
+  if (str === '') return '';
+
+  let integerPart = '';
+  let decimalPart = undefined;
+
+  if (str.includes(',')) {
+    const parts = str.split(',');
+    integerPart = parts[0].replace(/[^0-9]/g, '');
+    decimalPart = parts[1] ? parts[1].replace(/[^0-9]/g, '').substring(0, 2) : '';
+  } else if (str.includes('.')) {
+    const lastDot = str.lastIndexOf('.');
+    const afterDot = str.substring(lastDot + 1);
+    if (afterDot.length <= 2 && /^\d*$/.test(afterDot)) {
+      integerPart = str.substring(0, lastDot).replace(/[^0-9]/g, '');
+      decimalPart = afterDot.replace(/[^0-9]/g, '');
+    } else {
+      integerPart = str.replace(/[^0-9]/g, '');
+    }
+  } else {
+    integerPart = str.replace(/[^0-9]/g, '');
+  }
+
+  integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  if (decimalPart !== undefined && decimalPart !== '') {
+    return integerPart + ',' + decimalPart;
+  }
+  return integerPart;
 }
+
 function unformatNumber(val) {
-  if (!val) return '';
-  return val.toString().replace(/\./g, '').replace(/,/g, '.');
+  if (val === null || val === undefined) return '';
+  const str = val.toString().trim();
+  if (!str) return '';
+
+  if (str.includes(',')) {
+    const parts = str.split(',');
+    const cleanInt = parts[0].replace(/[^0-9]/g, '');
+    const cleanDec = parts[1] ? parts[1].replace(/[^0-9]/g, '').substring(0, 2) : '';
+    return cleanDec ? `${cleanInt}.${cleanDec}` : cleanInt;
+  }
+
+  if (str.includes('.')) {
+    const lastDot = str.lastIndexOf('.');
+    const afterDot = str.substring(lastDot + 1);
+    if (afterDot.length <= 2 && /^\d*$/.test(afterDot)) {
+      const cleanInt = str.substring(0, lastDot).replace(/[^0-9]/g, '');
+      const cleanDec = afterDot.replace(/[^0-9]/g, '');
+      return cleanDec ? `${cleanInt}.${cleanDec}` : cleanInt;
+    }
+    return str.replace(/[^0-9]/g, '');
+  }
+
+  return str.replace(/[^0-9]/g, '');
+}
+
+function allowPriceKeys(e) {
+  const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight', 'Home', 'End'];
+  if (allowedKeys.includes(e.key)) return;
+  if (!/[0-9.,]/.test(e.key)) {
+    e.preventDefault();
+  }
+}
+
+function formatPriceInput(e) {
+  const inp = e.target || e;
+  let val = inp.value;
+  if (!val) return;
+
+  if (!val.includes(',') && val.includes('.')) {
+    const lastDot = val.lastIndexOf('.');
+    const afterDot = val.substring(lastDot + 1);
+    if (afterDot.length <= 2 && /^\d*$/.test(afterDot)) {
+      val = val.substring(0, lastDot) + ',' + afterDot;
+    }
+  }
+
+  if (val.includes(',')) {
+    const parts = val.split(',');
+    const intStr = parts[0].replace(/[^0-9]/g, '');
+    const decStr = parts.slice(1).join('').replace(/[^0-9]/g, '').substring(0, 2);
+    const formattedInt = intStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    inp.value = formattedInt + ',' + decStr;
+  } else {
+    const intStr = val.replace(/[^0-9]/g, '');
+    const formattedInt = intStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    inp.value = formattedInt;
+  }
 }
 function fmtDate(s) { if (!s) return ''; try { return new Date(s + 'T00:00:00').toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' }) } catch { return s } }
 function fmtDateTab(s) { if (!s) return ''; try { const d = new Date(s + 'T00:00:00'); return d.toLocaleDateString('es', { day: 'numeric', month: 'short' }) } catch { return s } }
@@ -2032,9 +2108,9 @@ function buildField(field, data) {
     else {
       inp = document.createElement('input');
       inp.className = 'form-input';
-      inp.type = field.t || 'text';
+      inp.type = (field.k === 'precio') ? 'text' : (field.t || 'text');
       inp.placeholder = field.ph || '';
-      inp.value = val;
+      inp.value = (field.k === 'precio') ? formatNumber(val) : val;
       inp.dataset.key = field.k;
       if (data && data[field.k + '_city']) inp.dataset.city = data[field.k + '_city'];
       if (data && data[field.k + '_address']) inp.dataset.address = data[field.k + '_address'];
@@ -2043,10 +2119,16 @@ function buildField(field, data) {
       fg.appendChild(inp);
 
       // Block invalid keys and sanitize input interactively
-      const isNumericField = field.t === 'number' || field.k === 'precio' || field.k === 'personas' || field.k === 'stars';
-      if (isNumericField) {
+      const isPriceField = field.k === 'precio';
+      const isIntegerField = field.k === 'personas' || field.k === 'stars' || (field.t === 'number' && !isPriceField);
+
+      if (isPriceField) {
+        inp.addEventListener('keypress', allowPriceKeys);
+        inp.addEventListener('input', formatPriceInput);
+      } else if (isIntegerField) {
         inp.addEventListener('keypress', e => {
-          if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab' && e.key !== 'Enter') {
+          const allowed = ['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight', 'Home', 'End'];
+          if (!/[0-9]/.test(e.key) && !allowed.includes(e.key)) {
             e.preventDefault();
           }
         });
@@ -2130,8 +2212,13 @@ document.getElementById('modalSave').addEventListener('click', () => {
     const value = (el.classList.contains('rte-editor') ? el.innerHTML : el.value || '').trim();
 
     // 1. Validate numbers/prices/stars
-    const isNumericField = key === 'precio' || key === 'personas' || key === 'stars' || el.type === 'number';
-    if (isNumericField && value !== '') {
+    if (key === 'precio' && value !== '') {
+      const cleanVal = unformatNumber(value);
+      if (!/^\d+(\.\d{1,2})?$/.test(cleanVal)) {
+        el.classList.add('field-error');
+        hasError = true;
+      }
+    } else if ((key === 'personas' || key === 'stars' || el.type === 'number') && value !== '') {
       if (!/^\d+$/.test(value)) {
         el.classList.add('field-error');
         hasError = true;
@@ -2309,15 +2396,8 @@ if (window.proState) {
     const pp = document.getElementById('portadaPrecio');
     if (pp) {
       if (s.precio) pp.value = formatNumber(s.precio);
-      pp.addEventListener('keypress', e => {
-        if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab' && e.key !== 'Enter') {
-          e.preventDefault();
-        }
-      });
-      pp.addEventListener('input', () => {
-        let val = pp.value.replace(/\D/g, '');
-        pp.value = formatNumber(val);
-      });
+      pp.addEventListener('keypress', allowPriceKeys);
+      pp.addEventListener('input', formatPriceInput);
     }
     const pm = document.getElementById('portadaMoneda');
     if (pm && s.moneda) pm.value = s.moneda;
@@ -2355,15 +2435,8 @@ if (window.proState) {
     }
     const pp = document.getElementById('portadaPrecio');
     if (pp) {
-      pp.addEventListener('keypress', e => {
-        if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab' && e.key !== 'Enter') {
-          e.preventDefault();
-        }
-      });
-      pp.addEventListener('input', () => {
-        let val = pp.value.replace(/\D/g, '');
-        pp.value = formatNumber(val);
-      });
+      pp.addEventListener('keypress', allowPriceKeys);
+      pp.addEventListener('input', formatPriceInput);
     }
     const pf = document.getElementById('portadaFechaFin');
     const pm = document.getElementById('portadaMoneda');
