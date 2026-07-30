@@ -1530,50 +1530,45 @@
                 align-items: center !important;
                 justify-content: space-between !important;
                 width: 100% !important;
-                gap: 6px !important;
+                gap: 8px !important;
                 flex-wrap: nowrap !important;
             }
 
             .acts .abt.view,
             .acts .abt.edit,
             .acts .abt.share {
-                flex: 0 0 80px !important;
-                width: 80px !important;
-                min-width: 80px !important;
-                max-width: 80px !important;
+                flex: 1 1 0 !important;
+                width: auto !important;
+                min-width: 0 !important;
+                max-width: none !important;
             }
 
             .acts .acts-menu-container {
-                flex: 0 0 40px !important;
-                width: 40px !important;
-                min-width: 40px !important;
-                max-width: 40px !important;
+                flex: 1 1 0 !important;
+                width: auto !important;
+                min-width: 0 !important;
+                max-width: none !important;
             }
 
             .acts .acts-menu-container .abt.more {
-                flex: 0 0 40px !important;
-                width: 40px !important;
-                min-width: 40px !important;
-                max-width: 40px !important;
+                flex: 1 1 0 !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: none !important;
                 padding: 0 !important;
             }
 
             .acts .abt {
                 width: 100% !important;
-                height: 34px !important;
-                border-radius: 8px !important;
-                font-size: 11px !important;
-                font-weight: 600 !important;
-                font-family: 'DM Sans', sans-serif !important;
+                height: 40px !important;
+                border-radius: 10px !important;
                 display: inline-flex !important;
                 align-items: center !important;
                 justify-content: center !important;
-                gap: 4px !important;
                 color: var(--gray) !important;
                 border: 1.5px solid var(--bdr) !important;
                 background: white !important;
-                padding: 0 4px !important;
-                white-space: nowrap !important;
+                padding: 0 !important;
                 box-sizing: border-box !important;
             }
 
@@ -1581,25 +1576,22 @@
                 padding: 0 15px !important;
             }
 
-            .abt .btn-txt {
-                display: inline-block !important;
-                font-size: 11px !important;
-                font-weight: 600 !important;
-                margin-left: 3px !important;
+            .acts .abt .btn-txt {
+                display: none !important;
             }
 
             .abt.share-edit {
                 display: none !important;
             }
 
-            .acts .acts-menu-container .abt.more {
-                width: 100% !important;
+            .acts .abt svg {
+                width: 18px !important;
+                height: 18px !important;
+                flex-shrink: 0;
             }
 
-            .abt svg {
-                width: 13px;
-                height: 13px;
-                flex-shrink: 0;
+            .acts .abt i {
+                font-size: 16px !important;
             }
 
             .acts-menu-container {
