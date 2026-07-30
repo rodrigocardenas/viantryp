@@ -50,6 +50,7 @@ class User extends Authenticatable
         'plan',
         'trial_ends_at',
         'initial_plan_chosen_at',
+        'custom_statuses',
     ];
 
     public const PLAN_BASICO = 'básico';
@@ -79,9 +80,55 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'tutorials_seen' => 'array',
+            'custom_statuses' => 'array',
             'trial_ends_at' => 'datetime',
             'initial_plan_chosen_at' => 'datetime',
         ];
+    }
+
+    public function getCustomStatuses(): array
+    {
+        $defaultColors = [
+            'draft' => 'cyan',
+            'sent' => 'blue',
+            'reserved' => 'purple',
+            'completed' => 'green',
+            'discarded' => 'pink',
+        ];
+
+        $defaultLabels = [
+            'draft' => 'Diseño',
+            'sent' => 'Planeado',
+            'reserved' => 'Reservado',
+            'completed' => 'Finalizado',
+            'discarded' => 'Descartado',
+        ];
+
+        $result = [];
+        foreach ($defaultLabels as $key => $label) {
+            $result[$key] = [
+                'label' => $label,
+                'color' => $defaultColors[$key] ?? 'blue'
+            ];
+        }
+
+        if (!empty($this->custom_statuses) && is_array($this->custom_statuses)) {
+            foreach ($this->custom_statuses as $key => $val) {
+                if (is_array($val)) {
+                    $result[$key] = [
+                        'label' => $val['label'] ?? ($defaultLabels[$key] ?? ucfirst($key)),
+                        'color' => $val['color'] ?? ($defaultColors[$key] ?? 'blue')
+                    ];
+                } elseif (is_string($val)) {
+                    $result[$key] = [
+                        'label' => $val,
+                        'color' => $defaultColors[$key] ?? 'blue'
+                    ];
+                }
+            }
+        }
+
+        return $result;
     }
 
     public function isTrialActive(): bool

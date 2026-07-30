@@ -71,6 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::get('api/unsplash/search', [TripController::class , 'searchUnsplash'])->name('api.unsplash.search');
 
     // Additional trip routes
+    Route::post('user/custom-statuses', [TripController::class , 'updateCustomStatuses'])->name('user.custom-statuses');
     Route::post('trips/{trip}/status', [TripController::class , 'updateStatus'])->name('trips.update-status');
     Route::post('trips/{trip}/code', [TripController::class , 'updateCode'])->name('trips.update-code');
     Route::post('trips/{trip}/inline-update', [TripController::class , 'inlineUpdate'])->name('trips.inline-update');

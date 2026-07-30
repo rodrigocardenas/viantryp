@@ -585,31 +585,34 @@
 
         table {
             width: 100% !important;
-            border-collapse: collapse;
-            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0;
+            table-layout: auto;
         }
 
         thead {
-            background: #f3f3f3;
+            background: #f8fafc;
         }
 
         thead tr {
-            border-bottom: 1px solid var(--bdr);
-            background: transparent;
+            border-bottom: 1px solid #e2e8ef;
+            background: #f8fafc;
         }
 
         thead th {
             position: relative;
-            padding: 13px 20px;
+            padding: 14px 16px;
             text-align: left;
-            font-size: 10.5px;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            color: #24292e;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.1px;
+            text-transform: none;
+            color: #475569;
             line-height: 1.4;
-            vertical-align: top;
-            background: transparent;
+            vertical-align: middle;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8ef;
+            border-right: 1px solid #f1f5f9;
         }
 
         thead th.sortable {
@@ -705,44 +708,10 @@
             padding-right: 22px;
         }
 
-        /* Column Resizer */
-        .resizer {
-            position: absolute;
-            top: 0;
-            right: -5px;
-            width: 10px;
-            cursor: col-resize;
-            user-select: none;
-            height: 100%;
-            z-index: 10;
-            display: flex;
-            justify-content: center;
-        }
-
-        .resizer::after {
-            content: "";
-            width: 1px;
-            height: 100%;
-            border-right: 1px dotted rgba(36, 41, 46, 0.3);
-            transition: border-color 0.2s, opacity 0.2s;
-        }
-
-        .resizer:hover::after,
-        .resizing .resizer::after {
-            border-right: 1px dotted var(--teal);
-            border-right-style: solid;
-            /* Make it solid on hover for better visibility */
-            opacity: 1;
-        }
-
-        .resizing {
-            cursor: col-resize !important;
-            user-select: none !important;
-        }
-
         tbody tr {
-            border-bottom: 1px solid var(--bdr);
-            transition: transform 0.22s, opacity 0.22s, background 0.14s;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.15s ease;
+            background: #ffffff;
         }
 
         tbody tr:last-child {
@@ -750,24 +719,20 @@
         }
 
         tbody tr:hover {
-            background: #f9f9f9;
+            background: #f8fafc;
         }
 
         tbody td {
             position: relative;
-            padding: 20px 20px;
+            padding: 14px 16px;
             vertical-align: middle;
-            font-size: 14px;
+            font-size: 13.5px;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        tbody td:not(:first-child):not(:last-child):not(.bar-cell)::after {
-            content: "";
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            border-right: 1px dotted rgba(36, 41, 46, 0.15);
-            pointer-events: none;
+        tbody tr:last-child td {
+            border-bottom: none;
         }
 
         tbody td:first-child {
@@ -878,99 +843,174 @@
             margin-top: 2px;
         }
 
-        .client-name {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--ink);
-        }
-
-        .client-email {
-            font-size: 11.5px;
-            color: var(--teal);
-            margin-top: 2px;
-            text-decoration: none;
-            transition: color 0.15s;
-            display: block;
-        }
-
-        .client-email:hover {
-            color: var(--teal2);
-            text-decoration: underline;
-        }
-
-        /* STATUS SELECTOR */
+        /* STATUS SELECTOR - ANCHO COMPACTO */
         .status-select {
-            padding: 6px 12px;
-            border: 1px solid var(--sand);
-            border-radius: 999px;
-            font-size: 10px;
-            font-weight: 500;
-            white-space: normal;
-            height: auto;
-            line-height: 1.2;
-            padding: 8px 28px 8px 12px;
+            display: block;
+            width: 115px !important;
+            max-width: 115px !important;
+            box-sizing: border-box !important;
+            padding: 5px 20px 5px 8px !important;
+            border: 1px solid #e2e8ef;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.3;
             cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 100px;
+            transition: all 0.15s ease;
             appearance: none;
-            background-color: white;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2338bdf8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 8px center;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: #ffffff;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 6px center;
             background-repeat: no-repeat;
             background-size: 12px;
-            padding-right: 28px;
-            color: #0e3242;
+            color: #334155;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+            margin: 0 auto;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
         .status-select:focus {
             outline: none;
-            border-color: var(--teal);
-            box-shadow: 0 0 0 2px rgba(26, 154, 138, 0.12);
+            border-color: #94a3b8;
+            box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.15);
         }
 
         .status-select:hover {
-            border-color: var(--teal);
+            border-color: #cbd5e1;
+            background-color: #f8fafc;
         }
 
-        .status-completed {
-            background-color: #eef2f6 !important;
-            color: #0f766e !important;
-            border-color: #cbd5e1 !important;
+        /* COLORES PASTEL SOBRIOS Y ELEGANTES PARA ESTADOS DE VIAJE */
+        .status-color-cyan {
+            background-color: #ecfeff !important;
+            color: #0891b2 !important;
+            border-color: #a5f3fc !important;
         }
 
-        .status-reserved {
-            background-color: #dcfce7 !important;
+        .status-color-blue {
+            background-color: #eff6ff !important;
+            color: #1d4ed8 !important;
+            border-color: #bfdbfe !important;
+        }
+
+        .status-color-purple {
+            background-color: #faf5ff !important;
+            color: #7e22ce !important;
+            border-color: #e9d5ff !important;
+        }
+
+        .status-color-green {
+            background-color: #f0fdf4 !important;
             color: #15803d !important;
             border-color: #bbf7d0 !important;
         }
 
-        .status-draft {
-            background-color: #e0f2fe !important;
-            color: #1d5fa8 !important;
-            border-color: #bae6fd !important;
+        .status-color-orange {
+            background-color: #fff7ed !important;
+            color: #c2410c !important;
+            border-color: #ffedd5 !important;
         }
 
-        .status-sent {
-            background-color: #fef9c3 !important;
-            color: #854d0e !important;
-            border-color: #fef08a !important;
+        .status-color-pink {
+            background-color: #fff1f2 !important;
+            color: #be123c !important;
+            border-color: #fecdd3 !important;
         }
 
-        .status-discarded {
-            background-color: #fee2e2 !important;
-            color: #b43030 !important;
-            border-color: #fecaca !important;
+        .status-color-slate {
+            background-color: #f8fafc !important;
+            color: #475569 !important;
+            border-color: #cbd5e1 !important;
+        }
+
+        /* EFECTO HOVER PARA EDITAR ID, NOMBRE Y CORREO DEL VIAJERO */
+        .id-container,
+        .client-name,
+        .client-email-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 7px;
+            margin: -3px -7px;
+            border-radius: 6px;
+            border: 1px dashed transparent;
+            transition: all 0.18s ease;
+            cursor: pointer;
+        }
+
+        .id-container:hover,
+        .client-name:hover,
+        .client-email-container:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .id-container::after,
+        .client-name::after,
+        .client-email-container::after {
+            content: "\f304";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            font-size: 10px;
+            color: #94a3b8;
+            opacity: 0;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            transform: scale(0.85);
+            margin-left: 2px;
+        }
+
+        .id-container:hover::after,
+        .client-name:hover::after,
+        .client-email-container:hover::after {
+            opacity: 1;
+            transform: scale(1);
+            color: var(--teal);
+        }
+
+        .name-display.traveler-name-clean {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #0f172a;
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            font-family: inherit;
+        }
+
+        .email-display.traveler-email-clean {
+            font-size: 12px;
+            font-weight: 400;
+            color: #64748b !important;
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            font-family: inherit;
+        }
+
+        #mainTable thead th.right,
+        #mainTable tbody td.acts-cell {
+            width: 150px !important;
+            min-width: 150px !important;
+            max-width: 150px !important;
+            text-align: center !important;
         }
 
         .acts-cell {
-            text-align: right;
+            text-align: center !important;
         }
 
         .acts {
             display: flex;
             align-items: center;
-            gap: 5px;
-            justify-content: flex-end;
+            gap: 8px;
+            justify-content: center;
+            width: 100%;
         }
 
         .abt {
@@ -1103,7 +1143,168 @@
             border-radius: 2px;
         }
 
+        .mobile-search-wrapper {
+            display: none;
+        }
+
+        .mobile-hamburger-btn {
+            display: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: var(--accent);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(15, 42, 58, 0.2);
+        }
+
+        .mobile-sidebar-close {
+            display: none;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 42, 58, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 2999;
+            transition: opacity 0.3s ease;
+        }
+
         @media (max-width: 768px) {
+            .mobile-hamburger-btn {
+                display: inline-flex !important;
+            }
+
+            .mobile-sidebar-close {
+                display: inline-flex !important;
+            }
+
+            .sidebar-backdrop.active {
+                display: block !important;
+            }
+
+            .dashboard-sidebar {
+                position: fixed !important;
+                top: 0 !important;
+                left: -280px !important;
+                width: 260px !important;
+                height: 100vh !important;
+                z-index: 3000 !important;
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                box-shadow: 4px 0 20px rgba(0,0,0,0.2) !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+
+            .dashboard-sidebar.mobile-open {
+                left: 0 !important;
+            }
+
+            /* VIAJES RECIENTES: Desplazamiento horizontal hacia la izquierda/derecha en móvil */
+            .quick-access-grid {
+                display: flex !important;
+                flex-direction: row !important;
+                overflow-x: auto !important;
+                scroll-snap-type: x mandatory !important;
+                gap: 12px !important;
+                padding-bottom: 12px !important;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .quick-access-grid::-webkit-scrollbar {
+                display: none;
+            }
+
+            .quick-access-card {
+                flex: 0 0 260px !important;
+                width: 260px !important;
+                min-width: 260px !important;
+                max-width: 260px !important;
+                scroll-snap-align: start !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* Mobile Search Bar below Recent Trips */
+            .topbar-search {
+                display: none !important;
+            }
+
+            .mobile-search-wrapper {
+                display: block !important;
+                margin: 6px 0 16px 0 !important;
+            }
+
+            /* Responsive Crear Viaje button with 13px font size */
+            .btn-topbar-create {
+                height: 36px !important;
+                padding: 0 14px !important;
+                font-size: 13px !important;
+                margin-right: 0 !important;
+                gap: 6px !important;
+            }
+
+            .btn-topbar-create i {
+                font-size: 12px !important;
+            }
+
+            .btn-topbar-create span {
+                font-size: 13px !important;
+            }
+
+            /* Hide Notification bell on mobile so Crear Viaje shifts to that spot */
+            .noti-wrapper {
+                display: none !important;
+            }
+
+            /* Profile Trigger on top right without profile name */
+            .profile-trigger .profile-name {
+                display: none !important;
+            }
+
+            .profile-trigger {
+                padding: 2px 4px !important;
+                gap: 4px !important;
+            }
+
+            /* Wider Trip Row Cards with Full Width */
+            .quick-access-section {
+                padding: 16px 12px 0 !important;
+            }
+
+            .trips-list-section {
+                padding: 16px 12px 0 !important;
+            }
+
+            .tbl-wrap {
+                width: 100% !important;
+                padding: 0 !important;
+            }
+
+            .trip-row {
+                width: 100% !important;
+                box-sizing: border-box !important;
+                padding: 18px 16px 14px 16px !important;
+                margin-bottom: 16px !important;
+            }
+
             .topbar {
                 padding: 0 10px;
             }
@@ -1313,78 +1514,86 @@
                 align-items: center;
             }
 
-            /* Action Buttons Block */
+            /* Action Buttons Block: Full Width 4 Buttons Grid */
             .acts-cell {
-                padding: 16px 0 0 0;
-                margin-top: 16px;
-                border-top: 1px solid #f0f2f5;
-                display: flex;
-                gap: 10px;
-                text-align: left;
+                padding: 12px 0 0 0 !important;
+                margin-top: 12px !important;
+                border-top: 1px solid #f0f2f5 !important;
+                display: flex !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
             }
 
             .acts {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 100%;
-                gap: 6px;
-                flex-wrap: wrap;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                width: 100% !important;
+                gap: 6px !important;
+                flex-wrap: nowrap !important;
             }
 
-            /* Specialized Mobile Buttons */
-            .abt {
-                width: auto;
-                flex: 1;
-                height: 36px;
-                border-radius: 8px;
-                font-size: 11.5px;
-                font-weight: 600;
-                font-family: 'DM Sans', sans-serif;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 4px;
-                color: var(--gray);
-                border-color: var(--bdr);
-                background: transparent;
-                padding: 0 4px;
+            .acts .abt.view,
+            .acts .abt.edit,
+            .acts .abt.share {
+                flex: 0 0 80px !important;
+                width: 80px !important;
+                min-width: 80px !important;
+                max-width: 80px !important;
             }
 
-            .abt::after {
-                display: none !important;
+            .acts .acts-menu-container {
+                flex: 0 0 40px !important;
+                width: 40px !important;
+                min-width: 40px !important;
+                max-width: 40px !important;
             }
 
-            /* Hide tooltips */
-
-            .abt.view::before {
-                content: 'Ver';
-            }
-
-            .abt.edit::before {
-                content: 'Editar';
-            }
-
-            .abt.share-edit::before {
-                content: 'Compartir';
-            }
-
-            .abt.share::before {
-                content: 'Enlace';
-            }
-
-            .abt.more::before {
-                display: none !important;
-            }
-
-            .abt.more {
-                flex: 0 0 36px !important;
-                width: 36px !important;
+            .acts .acts-menu-container .abt.more {
+                flex: 0 0 40px !important;
+                width: 40px !important;
+                min-width: 40px !important;
+                max-width: 40px !important;
                 padding: 0 !important;
             }
 
-            .abt.del {
-                flex: 0 0 36px;
+            .acts .abt {
+                width: 100% !important;
+                height: 34px !important;
+                border-radius: 8px !important;
+                font-size: 11px !important;
+                font-weight: 600 !important;
+                font-family: 'DM Sans', sans-serif !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 4px !important;
+                color: var(--gray) !important;
+                border: 1.5px solid var(--bdr) !important;
+                background: white !important;
+                padding: 0 4px !important;
+                white-space: nowrap !important;
+                box-sizing: border-box !important;
+            }
+
+            .dashboard-topbar {
+                padding: 0 15px !important;
+            }
+
+            .abt .btn-txt {
+                display: inline-block !important;
+                font-size: 11px !important;
+                font-weight: 600 !important;
+                margin-left: 3px !important;
+            }
+
+            .abt.share-edit {
+                display: none !important;
+            }
+
+            .acts .acts-menu-container .abt.more {
+                width: 100% !important;
             }
 
             .abt svg {
@@ -1404,7 +1613,21 @@
             }
 
             .trip-row.menu-open {
-                z-index: 1000 !important;
+                z-index: 100 !important;
+            }
+
+            /* Modal overlay z-index priority over rows */
+            .modal,
+            .modal-backdrop,
+            .modal-overlay,
+            .modal-container,
+            #manageStatusesModal,
+            #sharingModal,
+            #collaboratorsModal,
+            #transferModal,
+            #tripInfoModal,
+            #createTripModal {
+                z-index: 999999 !important;
             }
 
             /* Empty state adaptation */
@@ -1748,6 +1971,30 @@
             font-size: 18px;
             width: 20px;
             text-align: center;
+        }
+
+        .sidebar-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed !important;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .sidebar-link.disabled:hover {
+            background: transparent !important;
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .sidebar-badge-soon {
+            margin-left: auto;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.9);
         }
 
         /* PIE DE BARRA LATERAL (USO DEL PLAN) */
@@ -2156,7 +2403,7 @@
             border-radius: 20px;
             font-size: 11px;
             font-weight: 700;
-            border: 1px solid transparent;
+            border: 1.5px solid transparent;
             text-transform: uppercase;
             display: inline-flex;
             align-items: center;
@@ -2291,42 +2538,48 @@
             color: rgba(255, 255, 255, 0.75);
         }
 
-        /* MEJORAS DE LA TABLA (ESTILO DE LISTA DE ARCHIVOS) */
+        /* MEJORAS DE LA TABLA (ESTILO INSPIRADO EN REFERENCIA) */
         .tbl-wrap {
-            border-radius: 16px;
-            border: 1px solid #e2e8ef;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+            border-radius: 14px;
+            border: 1px solid #eaecf0;
+            box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05), 0 1px 2px rgba(16, 24, 40, 0.04);
             overflow: hidden;
             background: #ffffff;
         }
 
         #mainTable {
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
         }
 
         #mainTable thead th {
             background: #f8fafc;
             color: #475569;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            border-bottom: 1px solid #e2e8ef;
-            padding: 14px 16px;
+            font-size: 12.5px;
+            font-weight: 600;
+            letter-spacing: 0.1px;
+            text-transform: none;
+            border-bottom: 1px solid #eaecf0;
+            border-right: 1px solid #f1f5f9;
+            padding: 13px 16px;
             position: relative;
+        }
+
+        #mainTable thead th:last-child {
+            border-right: none;
         }
 
         #mainTable thead th.sortable {
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
         }
 
         #mainTable thead th.sortable:hover {
             background-color: #f1f5f9 !important;
-            color: var(--accent) !important;
+            color: #0f172a !important;
         }
 
-        /* Redesign chevron sort button to display inline next to column name */
         #mainTable thead th.sortable .col-menu-btn {
             display: inline-flex !important;
             position: static;
@@ -2353,13 +2606,14 @@
         }
 
         #mainTable tbody tr.trip-row:hover {
-            background: #f1f5f9 !important;
+            background: #f8fafc !important;
         }
 
         #mainTable tbody td {
             padding: 14px 16px;
             color: #334155;
-            font-size: 14px;
+            font-size: 13.5px;
+            border-bottom: 1px solid #f1f5f9;
         }
 
         .trip-name .title-display {
@@ -2375,7 +2629,7 @@
         }
 
         /* RESPONSIVIDAD PARA EL ESCRITORIO DEL DASHBOARD */
-        @media (max-width: 1024px) {
+        @media (max-width: 1024px) and (min-width: 769px) {
             .dashboard-wrapper {
                 padding: 0;
             }
@@ -2416,7 +2670,6 @@
 
             .sidebar-footer {
                 display: none;
-                /* Hide usage details on mobile sidebar */
             }
 
             .dashboard-main {
@@ -2442,6 +2695,14 @@
 @section('content')
 
     @php
+        $userCustomStatuses = Auth::check() ? Auth::user()->getCustomStatuses() : [
+            'draft' => ['label' => 'Diseño', 'color' => 'cyan'],
+            'sent' => ['label' => 'Planeado', 'color' => 'blue'],
+            'reserved' => ['label' => 'Reservado', 'color' => 'purple'],
+            'completed' => ['label' => 'Finalizado', 'color' => 'green'],
+            'discarded' => ['label' => 'Descartado', 'color' => 'pink'],
+        ];
+
         function getStatusBand($status)
         {
             $colors = [
@@ -2453,13 +2714,16 @@
             ];
             return $colors[$status] ?? 'linear-gradient(180deg,#a8b2bc,#cbd5e1)';
         }
-        function getStatusLabel($status)
+        function getStatusLabel($status, $customMap = [])
         {
+            if (!empty($customMap[$status])) {
+                return is_array($customMap[$status]) ? ($customMap[$status]['label'] ?? $status) : $customMap[$status];
+            }
             $labels = [
-                'draft' => 'En Diseño',
-                'sent' => 'Propuesta',
-                'reserved' => 'Pagado Parcialmente',
-                'completed' => 'Pago Completo',
+                'draft' => 'Diseño',
+                'sent' => 'Planeado',
+                'reserved' => 'Reservado',
+                'completed' => 'Finalizado',
                 'discarded' => 'Descartado',
             ];
             return $labels[$status] ?? ucfirst($status);
@@ -2467,16 +2731,20 @@
     @endphp
 
     <div class="dashboard-wrapper">
+        <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar()"></div>
         <div class="dashboard-container">
             <!-- Sidebar -->
             <aside class="dashboard-sidebar">
-                <!-- Sidebar Header / Logo (Now in white and inside sidebar) -->
+                <!-- Sidebar Header / Logo -->
                 <div class="sidebar-logo"
-                    style="margin-bottom: 30px; display: flex; align-items: center; padding-left: 8px;">
+                    style="margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; padding-left: 8px;">
                     <a href="{{ route('home') }}">
                         <img src="/images/logo-viantryp.png" alt="Viantryp"
                             style="height: 32px; width: auto; filter: brightness(0) invert(1);">
                     </a>
+                    <button type="button" class="mobile-sidebar-close" onclick="toggleMobileSidebar()" title="Cerrar menú">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
 
                 <!-- Sidebar Create Button (Moved to topbar) -->
@@ -2493,6 +2761,12 @@
                         <i class="fas fa-users"></i>
                         <span>Viajes Compartidos</span>
                     </a>
+
+                    <div class="sidebar-link disabled" title="Próximamente">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Plantillas</span>
+                        <span class="sidebar-badge-soon">Próximamente</span>
+                    </div>
 
                     <a href="{{ route('profile.index') }}" class="sidebar-link">
                         <i class="fas fa-cog"></i>
@@ -2553,6 +2827,9 @@
             <div class="dashboard-main">
                 <!-- Topbar (Search & User Dropdown) -->
                 <header class="dashboard-topbar">
+                    <button type="button" class="mobile-hamburger-btn" onclick="toggleMobileSidebar()" title="Abrir menú">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     <div class="topbar-search">
                         <div class="search-box-wrapper">
                             <span class="search-icon"><i class="fas fa-search"></i></span>
@@ -2604,8 +2881,7 @@
                             </div>
 
                             <div id="profileMenu" class="profile-menu" style="display: none;">
-                                <a href="{{ route('trips.index') }}"><i class="fas fa-suitcase-rolling"></i> Mis viajes</a>
-                                <a href="{{ route('profile.index') }}"><i class="fas fa-user-circle"></i> Mi perfil</a>
+                                <a href="{{ route('profile.index') }}"><i class="fas fa-user-circle"></i> Mi Cuenta</a>
                                 <form method="POST" action="{{ route('logout') }}" id="logout-form" style="margin:0;">
                                     @csrf
                                     <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Cerrar
@@ -2644,28 +2920,32 @@
                                 $recentTrips = $trips->take(3);
                             @endphp
                             @forelse($recentTrips as $idx => $rtrip)
-                                <div class="quick-access-card {{ $idx === 0 ? 'featured' : '' }}" @if($idx === 0)
+                                @php
+                                    $client = collect($rtrip->persons)->firstWhere('type', 'client') ?? collect($rtrip->persons)->first();
+                                    $travelerName = $client ? $client->name : ($rtrip->travelers ?: 'Sin viajero');
+                                @endphp
+                                <div class="quick-access-card featured"
                                     style="background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.7)), url('{{ $rtrip->cover_image_url ?: asset('images/default-cover.jpg') }}'); background-size: cover; background-position: center;"
-                                @endif onclick="window.location='{{ route('trips.edit', $rtrip->id) }}'">
+                                    onclick="window.location='{{ route('trips.edit', $rtrip->id) }}'">
                                     <div class="card-folder-body">
+                                        @php
+                                            $rtripColorInfo = $userCustomStatuses[$rtrip->status] ?? null;
+                                            $rtripColor = is_array($rtripColorInfo) ? ($rtripColorInfo['color'] ?? 'blue') : 'blue';
+                                        @endphp
                                         <div class="card-folder-header-row" style="margin-bottom: 12px;">
-                                            <span class="status-badge status-{{ $rtrip->status }}">
-                                                {{ getStatusLabel($rtrip->status) }}
+                                            <span class="status-badge status-color-{{ $rtripColor }} status-{{ $rtrip->status }}">
+                                                {{ getStatusLabel($rtrip->status, $userCustomStatuses) }}
                                             </span>
                                         </div>
                                         <div class="card-folder-info">
                                             <div class="card-folder-title" title="{{ $rtrip->title }}">{{ $rtrip->title }}</div>
                                             <div class="card-folder-subtitle">
-                                                @if($rtrip->destinations && count($rtrip->destinations) > 0)
-                                                    {{ $rtrip->destinations->first()->name }}
-                                                @else
-                                                    Sin destino
-                                                @endif
+                                                {{ $travelerName }}
                                             </div>
                                         </div>
                                         <div class="card-folder-meta">
                                             <div class="card-folder-date">
-                                                {{ $rtrip->start_date ? \Carbon\Carbon::parse($rtrip->start_date)->format('d/m/Y') : 'Sin fecha' }}
+                                                Inicio del viaje: {{ $rtrip->start_date ? \Carbon\Carbon::parse($rtrip->start_date)->format('d/m/Y') : 'Sin fecha' }}
                                             </div>
                                         </div>
                                     </div>
@@ -2681,6 +2961,16 @@
 
                     <!-- Main Trips List Section -->
                     <section class="trips-list-section">
+                        <!-- Mobile Search Bar (under Viajes Recientes) -->
+                        <div class="mobile-search-wrapper">
+                            <div class="search-box-wrapper" style="width: 100%; box-sizing: border-box;">
+                                <span class="search-icon"><i class="fas fa-search"></i></span>
+                                <input type="text" placeholder="Buscar por ID, nombre, viajero..."
+                                    oninput="searchTripsRows(this.value)"
+                                    style="width: 100%; height: 42px; padding: 0 14px 0 38px; border-radius: 10px; border: 1.5px solid var(--bdr); font-size: 13px; outline: none; background: white; box-sizing: border-box; box-shadow: 0 2px 6px rgba(0,0,0,0.03);" />
+                            </div>
+                        </div>
+
                         <div class="list-section-header">
                             <h2 class="section-title">
                                 @if($activeMainTab === 'shared')
@@ -2719,8 +3009,8 @@
                                     <tr>
                                         <th><input type="checkbox" id="checkAll" onchange="toggleSelectAll(this)" /></th>
                                         <th style="width:4px;padding:0"></th>
-                                        <th class="sortable" style="user-select: none; min-width: 90px;">
-                                            ID
+                                        <th class="sortable" style="user-select: none; width: 80px; min-width: 70px;">
+                                            <i class="fas fa-hashtag" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>ID
                                             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M6 9l6 6 6-6" />
@@ -2740,10 +3030,9 @@
                                                         <path d="M12 5v14M5 12l7 7 7-7" />
                                                     </svg> Ordenar Z - A</div>
                                             </div>
-                                            <div class="resizer"></div>
                                         </th>
-                                        <th class="sortable" style="user-select: none;">
-                                            Nombre del Viaje
+                                        <th class="sortable" style="user-select: none; max-width: 200px;">
+                                            <i class="fas fa-plane" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Nombre del Viaje
                                             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M6 9l6 6 6-6" />
@@ -2763,10 +3052,9 @@
                                                         <path d="M12 5v14M5 12l7 7 7-7" />
                                                     </svg> Ordenar Z - A</div>
                                             </div>
-                                            <div class="resizer"></div>
                                         </th>
                                         <th class="sortable" style="user-select: none;">
-                                            Inicio
+                                            <i class="fas fa-calendar-alt" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Inicio de viaje
                                             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M6 9l6 6 6-6" />
@@ -2786,10 +3074,9 @@
                                                         <path d="M12 5v14M5 12l7 7 7-7" />
                                                     </svg> Ordenar Z - A</div>
                                             </div>
-                                            <div class="resizer"></div>
                                         </th>
-                                        <th class="sortable" style="user-select: none;">
-                                            Viajero
+                                        <th class="sortable" style="user-select: none; min-width: 180px; width: 220px;">
+                                            <i class="fas fa-user" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Viajero principal
                                             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M6 9l6 6 6-6" />
@@ -2809,10 +3096,9 @@
                                                         <path d="M12 5v14M5 12l7 7 7-7" />
                                                     </svg> Ordenar Z - A</div>
                                             </div>
-                                            <div class="resizer"></div>
                                         </th>
-                                        <th class="sortable" style="user-select: none; min-width: 150px;">
-                                            Estado
+                                        <th class="sortable" style="user-select: none; width: 120px; min-width: 120px; text-align: center; padding: 13px 4px;">
+                                            <i class="fas fa-tag" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Estado
                                             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M6 9l6 6 6-6" />
@@ -2832,22 +3118,16 @@
                                                         <path d="M12 5v14M5 12l7 7 7-7" />
                                                     </svg> Ordenar Z - A</div>
                                             </div>
-                                            <div class="resizer"></div>
                                         </th>
-                                        <th class="sortable"
-                                            style="user-select: none; width: {{ $activeMainTab === 'shared' ? '190px' : '75px' }}; min-width: {{ $activeMainTab === 'shared' ? '190px' : '75px' }};">
-                                            @if($activeMainTab === 'shared')
-                                                Propietario
-                                            @else
-                                                Vistas
-                                            @endif
-                                            <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M6 9l6 6 6-6" />
-                                                </svg>
-                                            </div>
-                                            <div class="header-dropdown" onclick="event.stopPropagation()">
-                                                @if($activeMainTab === 'shared')
+                                        @if($activeMainTab === 'shared')
+                                            <th class="sortable" style="user-select: none; width: 150px !important; min-width: 150px !important; max-width: 150px !important;">
+                                                <i class="fas fa-user-shield" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Propietario
+                                                <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path d="M6 9l6 6 6-6" />
+                                                    </svg>
+                                                </div>
+                                                <div class="header-dropdown" onclick="event.stopPropagation()">
                                                     <div class="header-dropdown-item"
                                                         onclick="sortTableFromMenu(this, 'asc', 'string')"><svg
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -2860,26 +3140,12 @@
                                                             stroke-width="2">
                                                             <path d="M12 5v14M5 12l7 7 7-7" />
                                                         </svg> Ordenar Z - A</div>
-                                                @else
-                                                    <div class="header-dropdown-item"
-                                                        onclick="sortTableFromMenu(this, 'asc', 'number')"><svg
-                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-width="2">
-                                                            <path d="M12 19V5M5 12l7-7 7 7" />
-                                                        </svg> Ordenar Mayor a Menor</div>
-                                                    <div class="header-dropdown-item"
-                                                        onclick="sortTableFromMenu(this, 'desc', 'number')"><svg
-                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-width="2">
-                                                            <path d="M12 5v14M5 12l7 7 7-7" />
-                                                        </svg> Ordenar Menor a Mayor</div>
-                                                @endif
-                                            </div>
-                                            <div class="resizer"></div>
+                                                </div>
+                                            </th>
+                                        @endif
+                                        <th class="right" style="width: 150px; min-width: 150px; max-width: 150px; text-align: center;">
+                                            <i class="fas fa-bolt" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Acciones
                                         </th>
-                                        <th class="right"
-                                            style="min-width: {{ $activeMainTab === 'shared' ? '140px' : '225px' }};">
-                                            Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbody">
@@ -2893,14 +3159,15 @@
                                                         class="rchk trip-checkbox" data-trip-id="{{ $trip->id }}"
                                                         onchange="updateSelectAllState()" /></td>
                                                 <td class="bar-cell"></td>
-                                                <td>
-                                                    <span class="id-chip code-display"
-                                                        onclick="event.stopPropagation(); editTripCode({{ $trip->id }}, '{{ $trip->code }}')">{{ $trip->code ?? 'N/A' }}</span>
-                                                    <input type="text" class="code-input" id="code-input-{{ $trip->id }}"
-                                                        style="display: none;" onblur="saveTripCode({{ $trip->id }})"
-                                                        onkeypress="handleCodeKeyPress(event, {{ $trip->id }})" maxlength="20">
+                                                <td style="width: 80px;">
+                                                    <div class="id-container" onclick="event.stopPropagation(); editTripCode({{ $trip->id }}, '{{ $trip->code }}')" title="Haz clic para editar ID">
+                                                        <span class="id-chip code-display" id="code-display-{{ $trip->id }}">{{ $trip->code ?? 'N/A' }}</span>
+                                                        <input type="text" class="code-input" id="code-input-{{ $trip->id }}"
+                                                            style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 12px; text-transform: uppercase;" onblur="saveTripCode({{ $trip->id }})"
+                                                            onkeypress="handleCodeKeyPress(event, {{ $trip->id }})" maxlength="20">
+                                                    </div>
                                                 </td>
-                                                <td style="min-width: 150px;">
+                                                <td style="max-width: 200px;">
                                                     <div class="trip-name">
                                                         <span class="title-display" id="title-display-{{ $trip->id }}"
                                                             style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; line-height: 1.3;">{{ $trip->title }}</span>
@@ -2933,7 +3200,7 @@
                                                             @endif
                                                         @endif
                                                         <div class="mobile-trip-date">
-                                                            Inicio:
+                                                            Inicio del viaje:
                                                             {!! $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : '<span style="color:#d94040;font-weight:700"><i class="fas fa-exclamation-triangle"></i> ¡Fecha vacía!</span>' !!}
                                                         </div>
                                                     </div>
@@ -2946,11 +3213,11 @@
                                                 @php
                                                     $client = collect($trip->persons)->firstWhere('type', 'client') ?? collect($trip->persons)->first();
                                                 @endphp
-                                                <td>
+                                                <td style="min-width: 180px;">
                                                     <div class="client-name"
                                                         onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_name')"
                                                         title="Haz clic para editar">
-                                                        <span class="name-display"
+                                                        <span class="name-display traveler-name-clean"
                                                             id="name-display-{{ $trip->id }}">{{ $client ? $client->name : 'Sin viajero' }}</span>
                                                         <input type="text" class="field-input code-input"
                                                             id="name-input-{{ $trip->id }}"
@@ -2962,8 +3229,8 @@
 
                                                     <div class="client-email-container"
                                                         onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_email')"
-                                                        style="margin-top: 4px;" title="Haz clic para editar">
-                                                        <span class="email-display" id="email-display-{{ $trip->id }}"
+                                                        style="margin-top: 2px;" title="Haz clic para editar">
+                                                        <span class="email-display traveler-email-clean" id="email-display-{{ $trip->id }}"
                                                             style="display: inline-block;">{{ ($client && $client->email) ? $client->email : 'Añadir correo' }}</span>
                                                         <input type="email" class="field-input code-input"
                                                             id="email-input-{{ $trip->id }}"
@@ -2973,25 +3240,25 @@
                                                             onclick="event.stopPropagation()">
                                                     </div>
                                                 </td>
-                                                <td onclick="event.stopPropagation()">
-                                                    <select class="status-select status-{{ $trip->status }}"
+                                                <td onclick="event.stopPropagation()" style="width: 120px; min-width: 120px; padding: 12px 4px; text-align: center;">
+                                                    @php
+                                                        $currStatusInfo = $userCustomStatuses[$trip->status] ?? ['label' => ucfirst($trip->status), 'color' => 'blue'];
+                                                        $currColor = is_array($currStatusInfo) ? ($currStatusInfo['color'] ?? 'blue') : 'blue';
+                                                    @endphp
+                                                    <select class="status-select status-color-{{ $currColor }} status-{{ $trip->status }}"
                                                         data-status="{{ $trip->status }}"
-                                                        onchange="changeTripStatus({{ $trip->id }}, this.value)">
-                                                        <option value="draft" {{ $trip->status === 'draft' ? 'selected' : '' }}>En
-                                                            diseño</option>
-                                                        <option value="sent" {{ $trip->status === 'sent' ? 'selected' : '' }}>
-                                                            Propuesta</option>
-                                                        <option value="reserved" {{ $trip->status === 'reserved' ? 'selected' : '' }}>
-                                                            Pagado Parcialmente
-                                                        </option>
-                                                        <option value="completed" {{ $trip->status === 'completed' ? 'selected' : '' }}>Pago Completo
-                                                        </option>
-                                                        <option value="discarded" {{ $trip->status === 'discarded' ? 'selected' : '' }}>Descartado
-                                                        </option>
+                                                        onchange="if(this.value === '__manage__'){ openManageStatusesModal(); this.value = this.getAttribute('data-status'); return; } changeTripStatus({{ $trip->id }}, this.value)">
+                                                        @foreach($userCustomStatuses as $stKey => $stInfo)
+                                                            @if($stKey !== 'discarded')
+                                                                @php $stLabel = is_array($stInfo) ? ($stInfo['label'] ?? $stKey) : $stInfo; @endphp
+                                                                <option value="{{ $stKey }}" {{ $trip->status === $stKey ? 'selected' : '' }}>{{ $stLabel }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                        <option value="__manage__" style="font-weight: 400 !important; color: #64748b !important;">⚙ Editar estados...</option>
                                                     </select>
                                                 </td>
-                                                <td>
-                                                    @if($activeMainTab === 'shared')
+                                                @if($activeMainTab === 'shared')
+                                                    <td style="width: 150px !important; min-width: 150px !important; max-width: 150px !important;">
                                                         @php
                                                             $myCollab = $trip->collaborators->first();
                                                             $isPending = $myCollab && !$myCollab->accepted_at;
@@ -3012,20 +3279,9 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                                    @else
-                                                        <div
-                                                            style="display: flex; align-items: center; gap: 6px; color: var(--gray2); font-weight: 500; font-size: 12px;">
-                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                                stroke-linecap="round" stroke-linejoin="round"
-                                                                style="width: 14px; height: 14px; opacity: 0.7;">
-                                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                                                <circle cx="12" cy="12" r="3" />
-                                                            </svg>
-                                                            {{ $trip->views_count ?? 0 }}
-                                                        </div>
-                                                    @endif
-                                                </td>
-                                                <td class="acts-cell" onclick="event.stopPropagation()">
+                                                    </td>
+                                                @endif
+                                                <td class="acts-cell" style="width: 150px; min-width: 150px; max-width: 150px; text-align: center;" onclick="event.stopPropagation()">
                                                     <div class="acts">
                                                         @if($activeMainTab === 'shared' && isset($isPending) && $isPending)
                                                             <a href="{{ route('trips.accept-invite', ['token' => $myCollab->token]) }}"
@@ -3041,6 +3297,7 @@
                                                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                                                                 <circle cx="12" cy="12" r="3" />
                                                             </svg>
+                                                            <span class="btn-txt">Ver</span>
                                                         </button>
                                                         <button class="abt edit" data-tip="Editar propuesta"
                                                             onclick="editTrip({{ $trip->id }})">
@@ -3050,6 +3307,7 @@
                                                                     d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                                             </svg>
+                                                            <span class="btn-txt">Editar</span>
                                                         </button>
                                                         <button class="abt share" data-tip="Ver enlace del viaje"
                                                             onclick="shareTripIndex({{ $trip->id }}, '{{ $trip->share_token }}')">
@@ -3060,6 +3318,7 @@
                                                                 <path
                                                                     d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                                                             </svg>
+                                                            <span class="btn-txt">Enlace</span>
                                                         </button>
                                                         @if($trip->user_id == Auth::id())
                                                             <button class="abt share-edit" data-tip="Compartir para editar"
@@ -3081,6 +3340,12 @@
                                                                 <i class="fas fa-ellipsis-v"></i>
                                                             </button>
                                                             <div class="acts-menu" id="menu-{{ $trip->id }}">
+                                                                @if($trip->user_id == Auth::id())
+                                                                    <div class="acts-menu-item"
+                                                                        onclick="openSharingModal({{ $trip->id }}, 'editor')">
+                                                                        <i class="fas fa-user-plus"></i> Compartir
+                                                                    </div>
+                                                                @endif
                                                                 @if($activeMainTab === 'shared')
                                                                     <div class="acts-menu-item danger"
                                                                         onclick="confirmLeaveCollaboration({{ $trip->id }}, '{{ $trip->title }}')">
@@ -3101,6 +3366,23 @@
                                                                         <div class="acts-menu-item"
                                                                             onclick="duplicateTrip({{ $trip->id }})">
                                                                             <i class="fas fa-copy"></i> Duplicar viaje
+                                                                        </div>
+                                                                        <div class="acts-menu-item" onclick="openTripInfoModal({
+                                                                            id: {{ $trip->id }},
+                                                                            code: '{{ e($trip->code) }}',
+                                                                            title: '{{ e($trip->title) }}',
+                                                                            created_at: '{{ $trip->created_at ? \Carbon\Carbon::parse($trip->created_at)->format('d/m/Y H:i') : 'Sin fecha' }}',
+                                                                            updated_at: '{{ $trip->updated_at ? \Carbon\Carbon::parse($trip->updated_at)->format('d/m/Y H:i') : 'Sin fecha' }}',
+                                                                            updated_by: '{{ e($trip->user ? $trip->user->name : 'Sistema') }}',
+                                                                            views_count: {{ $trip->views_count ?? 0 }},
+                                                                            price: '{{ $trip->price ? ($trip->currency ?: '$') . ' ' . number_format($trip->price, 2) : 'Sin definir' }}',
+                                                                            start_date: '{{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->format('d/m/Y') : 'Sin fecha' }}',
+                                                                            end_date: '{{ $trip->end_date ? \Carbon\Carbon::parse($trip->end_date)->format('d/m/Y') : 'Sin fecha' }}',
+                                                                            status: '{{ e(getStatusLabel($trip->status)) }}',
+                                                                            traveler: '{{ e($client ? $client->name : ($trip->travelers ?: 'Sin viajero')) }}',
+                                                                            destination: '{{ e($trip->destinations && count($trip->destinations) > 0 ? $trip->destinations->pluck('name')->join(' · ') : 'Sin destino') }}'
+                                                                        })">
+                                                                            <i class="fas fa-info-circle"></i> Más información
                                                                         </div>
                                                                         <div class="acts-menu-item danger"
                                                                             onclick="delRow({{ $trip->id }})">
@@ -3428,6 +3710,15 @@
 
         // Status Logic
         function changeTripStatus(tripId, newStatus) {
+            const rawMap = @json($userCustomStatuses);
+            const statusInfo = rawMap ? rawMap[newStatus] : null;
+            const color = (statusInfo && typeof statusInfo === 'object' && statusInfo.color) ? statusInfo.color : 'blue';
+
+            const selectElement = document.querySelector(`select[onchange*="${tripId}"]`);
+            if (selectElement) {
+                selectElement.className = `status-select status-color-${color} status-${newStatus}`;
+            }
+
             fetch(`{{ url('trips') }}/${tripId}/status`, {
                 method: 'POST',
                 headers: {
@@ -3440,11 +3731,9 @@
                 .then(data => {
                     if (data.success) {
                         showNotification('Estado Actualizado', 'El estado del viaje ha sido actualizado.');
-                        // Update the select element's data-status attribute
-                        const selectElement = document.querySelector(`select[onchange*="${tripId}"]`);
                         if (selectElement) {
                             selectElement.setAttribute('data-status', newStatus);
-                            selectElement.className = `status-select status-${newStatus}`;
+                            selectElement.className = `status-select status-color-${color} status-${newStatus}`;
                         }
                         setTimeout(() => location.reload(), 800);
                     } else {
@@ -4004,6 +4293,12 @@
             }
 
             headers.forEach((th, index) => {
+                if (th.innerText && (th.innerText.includes('Propietario') || th.innerText.includes('Acciones'))) {
+                    th.style.width = '150px';
+                    th.style.minWidth = '150px';
+                    th.style.maxWidth = '150px';
+                    return;
+                }
                 if (savedWidths[index]) {
                     th.style.width = savedWidths[index];
                 }
@@ -4394,6 +4689,73 @@
             }
         }
 
+        function openTripInfoModal(info) {
+            const modalHtml = `
+                <div id="tripInfoModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
+                    <div style="background:white; width:90%; max-width:460px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.12); animation: slideUp 0.3s ease;">
+                        <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
+                            <h3 style="margin:0; font-size:18px; font-weight:700;">Información del viaje</h3>
+                            <p style="margin:4px 0 0; font-size:12px; opacity:0.9; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${info.title}</p>
+                        </div>
+                        <div style="padding:20px 24px; display:flex; flex-direction:column; gap:12px; max-height:70vh; overflow-y:auto;">
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                                <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef;">
+                                    <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;"><i class="fas fa-calendar-alt"></i> Inicio de viaje</span>
+                                    <strong style="font-size:13px; color:#0f172a;">${info.start_date}</strong>
+                                </div>
+                                <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef;">
+                                    <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;"><i class="fas fa-calendar-check"></i> Final del viaje</span>
+                                    <strong style="font-size:13px; color:#0f172a;">${info.end_date}</strong>
+                                </div>
+                            </div>
+
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                                <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef;">
+                                    <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;"><i class="fas fa-eye"></i> Vistas</span>
+                                    <strong style="font-size:13px; color:#0f172a;">${info.views_count} vistas</strong>
+                                </div>
+                                <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef;">
+                                    <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;"><i class="fas fa-dollar-sign"></i> Valor Total</span>
+                                    <strong style="font-size:13px; color:#0f172a;">${info.price}</strong>
+                                </div>
+                            </div>
+
+                            <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef; display:flex; flex-direction:column; gap:8px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #edf2f7; padding-bottom:6px;">
+                                    <span style="font-size:12px; color:#64748b;"><i class="fas fa-user"></i> Viajero:</span>
+                                    <strong style="font-size:12.5px; color:#0f172a;">${info.traveler}</strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #edf2f7; padding-bottom:6px;">
+                                    <span style="font-size:12px; color:#64748b;"><i class="fas fa-tag"></i> Estado:</span>
+                                    <strong style="font-size:12.5px; color:#0f172a;">${info.status}</strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #edf2f7; padding-bottom:6px;">
+                                    <span style="font-size:12px; color:#64748b;"><i class="fas fa-user-edit"></i> Última modificación por:</span>
+                                    <strong style="font-size:12.5px; color:#0f172a;">${info.updated_by}</strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #edf2f7; padding-bottom:6px;">
+                                    <span style="font-size:12px; color:#64748b;"><i class="fas fa-clock"></i> Última modificación:</span>
+                                    <strong style="font-size:12.5px; color:#0f172a;">${info.updated_at}</strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="font-size:12px; color:#64748b;"><i class="fas fa-calendar-plus"></i> Fecha de creación:</span>
+                                    <strong style="font-size:12.5px; color:#0f172a;">${info.created_at}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="padding:0 24px 20px;">
+                            <button type="button" onclick="document.getElementById('tripInfoModal').remove()" style="width:100%; height:42px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const old = document.getElementById('tripInfoModal');
+            if (old) old.remove();
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
         function openCollaboratorsModal(tripId) {
             // Create modal structure
             const modalHtml = `
@@ -4485,6 +4847,268 @@
                 console.error('Error:', error);
                 alert('Error al intentar eliminar al colaborador.');
             }
+        }
+
+        function openManageStatusesModal() {
+            const rawStatuses = @json($userCustomStatuses);
+
+            const colorOptions = [
+                { id: 'cyan', bg: '#ecfeff', border: '#a5f3fc', text: '#0891b2', name: 'Cian' },
+                { id: 'blue', bg: '#eff6ff', border: '#bfdbfe', text: '#1d4ed8', name: 'Azul' },
+                { id: 'purple', bg: '#faf5ff', border: '#e9d5ff', text: '#7e22ce', name: 'Morado' },
+                { id: 'green', bg: '#f0fdf4', border: '#bbf7d0', text: '#15803d', name: 'Verde' },
+                { id: 'orange', bg: '#fff7ed', border: '#ffedd5', text: '#c2410c', name: 'Naranja' },
+                { id: 'pink', bg: '#fff1f2', border: '#fecdd3', text: '#be123c', name: 'Rosa' },
+                { id: 'slate', bg: '#f8fafc', border: '#cbd5e1', text: '#475569', name: 'Gris' }
+            ];
+
+            let statusesList = [];
+            if (rawStatuses && typeof rawStatuses === 'object') {
+                Object.keys(rawStatuses).forEach(k => {
+                    if (k !== 'discarded') {
+                        const item = rawStatuses[k];
+                        const label = typeof item === 'object' ? item.label : item;
+                        const color = typeof item === 'object' ? (item.color || 'blue') : 'blue';
+                        statusesList.push({ key: k, label: label, color: color });
+                    }
+                });
+            }
+
+            if (statusesList.length === 0) {
+                statusesList = [
+                    { key: 'draft', label: 'Diseño', color: 'cyan' },
+                    { key: 'sent', label: 'Planeado', color: 'blue' },
+                    { key: 'reserved', label: 'Reservado', color: 'purple' },
+                    { key: 'completed', label: 'Finalizado', color: 'green' }
+                ];
+            }
+
+            function renderRows() {
+                const container = document.getElementById('statusesInputsContainer');
+                if (!container) return;
+                let html = '';
+                statusesList.forEach((item, index) => {
+                    const isDefault = ['draft', 'sent', 'reserved', 'completed'].includes(item.key);
+                    const selectedColorId = item.color || 'blue';
+                    const currColorObj = colorOptions.find(c => c.id === selectedColorId) || colorOptions[1];
+
+                    let colorDotsHtml = colorOptions.map(c => `
+                        <button type="button" onclick="selectRowColor('${item.key}', '${c.id}', event)"
+                            style="width:18px; height:18px; border-radius:50%; background:${c.bg}; border:1.5px solid ${selectedColorId === c.id ? c.text : c.border}; cursor:pointer; padding:0; display:inline-flex; align-items:center; justify-content:center; transition:transform 0.15s ease;"
+                            title="${c.name}">
+                            ${selectedColorId === c.id ? `<span style="width:4px; height:4px; border-radius:50%; background:${c.text};"></span>` : ''}
+                        </button>
+                    `).join('');
+
+                    html += `
+                        <div class="status-row-item" style="margin-bottom:14px; position:relative;" data-key="${item.key}">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                <label class="status-row-label" style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; margin:0;">Estado #${index + 1}</label>
+                                ${!isDefault ? `
+                                    <button type="button" class="btn-remove-status" onclick="removeStatusRow('${item.key}')" style="border:none; background:transparent; color:#ef4444; cursor:pointer; font-size:11.5px; padding:0;" title="Eliminar estado">
+                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                    </button>
+                                ` : ''}
+                            </div>
+
+                            <div style="display:flex; gap:8px; align-items:center; position:relative;">
+                                <!-- Bolita sutil de color (Trigger del selector de colores) -->
+                                <button type="button" onclick="toggleColorMenu('${item.key}', event)"
+                                    style="width:20px; height:20px; border-radius:50%; background:${currColorObj.bg}; border:1.5px solid ${currColorObj.text}; cursor:pointer; flex-shrink:0; padding:0; display:inline-flex; align-items:center; justify-content:center; transition:all 0.15s ease;"
+                                    title="Cambiar color (${currColorObj.name})">
+                                    <span style="width:5px; height:5px; border-radius:50%; background:${currColorObj.text}; opacity:0.9;"></span>
+                                </button>
+
+                                <!-- Campo de Texto para el Nombre del Estado -->
+                                <input type="text" class="status-input-val" data-key="${item.key}" value="${item.label}" required maxlength="30" style="flex:1; height:38px; padding:0 12px; border:1.5px solid var(--bdr); border-radius:8px; font-size:13px; outline:none; background:white; box-sizing:border-box;">
+
+                                <!-- Menu desplegable sutil de colores para este estado -->
+                                <div id="colorMenu-${item.key}" class="color-picker-dropdown"
+                                    style="display:none; position:absolute; top:40px; left:0; z-index:2200; background:white; border-radius:10px; padding:6px 8px; box-shadow:0 6px 18px rgba(0,0,0,0.12); border:1px solid #eaecf0; gap:5px; align-items:center;">
+                                    ${colorDotsHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+
+            window.toggleColorMenu = function(key, e) {
+                if (e) e.stopPropagation();
+                const menu = document.getElementById('colorMenu-' + key);
+                const isOpened = menu && menu.style.display === 'flex';
+                document.querySelectorAll('.color-picker-dropdown').forEach(m => m.style.display = 'none');
+                if (menu && !isOpened) {
+                    menu.style.display = 'flex';
+                }
+            };
+
+            window.selectRowColor = function(key, colorId, e) {
+                if (e) e.stopPropagation();
+                document.querySelectorAll('.status-input-val').forEach(input => {
+                    const k = input.getAttribute('data-key');
+                    const found = statusesList.find(s => s.key === k);
+                    if (found) found.label = input.value;
+                });
+
+                const target = statusesList.find(s => s.key === key);
+                if (target) target.color = colorId;
+                renderRows();
+            };
+
+            window.removeStatusRow = function(key) {
+                statusesList = statusesList.filter(s => s.key !== key);
+                renderRows();
+            };
+
+            window.addNewStatusRow = function() {
+                document.querySelectorAll('.status-input-val').forEach(input => {
+                    const k = input.getAttribute('data-key');
+                    const found = statusesList.find(s => s.key === k);
+                    if (found) found.label = input.value;
+                });
+
+                const newKey = 'custom_' + Date.now();
+                const newNum = statusesList.length + 1;
+                const defaultColors = ['cyan', 'blue', 'purple', 'green', 'orange', 'pink'];
+                const nextColor = defaultColors[statusesList.length % defaultColors.length];
+                statusesList.push({ key: newKey, label: `Estado #${newNum}`, color: nextColor });
+                renderRows();
+            };
+
+            const modalHtml = `
+                <div id="manageStatusesModal" onclick="document.querySelectorAll('.color-picker-dropdown').forEach(m => m.style.display = 'none')" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
+                    <div style="background:white; width:90%; max-width:440px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.12); animation: slideUp 0.3s ease;" onclick="event.stopPropagation()">
+                        <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
+                            <h3 style="margin:0; font-size:18px; font-weight:700;"><i class="fas fa-sliders-h" style="margin-right:6px;"></i> Gestionar Nombres y Colores de Estados</h3>
+                            <p style="margin:4px 0 0; font-size:12px; opacity:0.9;">Haz clic en la bolita de color para elegir su tono pastel</p>
+                        </div>
+                        <div style="padding:20px 24px; max-height:70vh; overflow-y:auto;" onclick="document.querySelectorAll('.color-picker-dropdown').forEach(m => m.style.display = 'none')">
+                            <form id="manageStatusesForm">
+                                <div id="statusesInputsContainer"></div>
+
+                                <button type="button" onclick="addNewStatusRow()" style="width:100%; height:38px; border:1.5px dashed #cbd5e1; background:#f8fafc; color:#475569; font-weight:600; border-radius:8px; cursor:pointer; font-size:12.5px; margin:8px 0 20px; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.15s ease;">
+                                    <i class="fas fa-plus" style="color:var(--accent);"></i> Agregar otro estado
+                                </button>
+
+                                <div style="display:flex; gap:10px;">
+                                    <button type="button" onclick="document.getElementById('manageStatusesModal').remove()" style="flex:1; height:42px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
+                                    <button type="submit" style="flex:1; height:42px; border:none; background:var(--accent); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px;"><i class="fas fa-save" style="margin-right:4px;"></i> Guardar Cambios</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const old = document.getElementById('manageStatusesModal');
+            if (old) old.remove();
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            renderRows();
+
+            const form = document.getElementById('manageStatusesForm');
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                const btn = form.querySelector('button[type="submit"]');
+                const originalContent = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+                const items = [];
+                document.querySelectorAll('.status-input-val').forEach(input => {
+                    const key = input.getAttribute('data-key');
+                    const label = input.value.trim();
+                    const found = statusesList.find(s => s.key === key);
+                    const color = found ? (found.color || 'blue') : 'blue';
+                    if (key && label) {
+                        items.push({ key, label, color });
+                    }
+                });
+
+                const payload = { statuses: items };
+
+                try {
+                    const response = await fetch("{{ route('user.custom-statuses') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const res = await response.json();
+                    if (res.success) {
+                        if (typeof showNotification === 'function') {
+                            showNotification('Estados Actualizados', res.message);
+                        } else {
+                            alert(res.message);
+                        }
+                        document.getElementById('manageStatusesModal').remove();
+                        setTimeout(() => location.reload(), 600);
+                    } else {
+                        alert('Error: ' + (res.message || 'No se pudieron guardar los estados'));
+                        btn.disabled = false;
+                        btn.innerHTML = originalContent;
+                    }
+                } catch (err) {
+                    console.error('Error al guardar estados:', err);
+                    alert('Ocurrió un error al guardar los estados.');
+                    btn.disabled = false;
+                    btn.innerHTML = originalContent;
+                }
+            };
+        }
+
+        function closeAllActsMenus() {
+            document.querySelectorAll('.trip-row').forEach(r => {
+                r.style.zIndex = '';
+                r.classList.remove('menu-open');
+            });
+            document.querySelectorAll('.acts-menu').forEach(m => {
+                m.classList.remove('show');
+                m.style.display = 'none';
+            });
+        }
+
+        function toggleActsMenu(event, tripId) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const menu = document.getElementById('menu-' + tripId);
+            if (!menu) return;
+            const isVisible = menu.classList.contains('show') || menu.style.display === 'block';
+
+            closeAllActsMenus();
+
+            if (!isVisible) {
+                const parentRow = menu.closest('.trip-row');
+                if (parentRow) {
+                    parentRow.style.zIndex = '100';
+                    parentRow.classList.add('menu-open');
+                }
+                menu.style.display = 'block';
+                menu.classList.add('show');
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.acts-menu-item')) {
+                closeAllActsMenus();
+            } else if (!e.target.closest('.acts-menu-container')) {
+                closeAllActsMenus();
+            }
+        });
+
+        function toggleMobileSidebar() {
+            const sidebar = document.querySelector('.dashboard-sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar) sidebar.classList.toggle('mobile-open');
+            if (backdrop) backdrop.classList.toggle('active');
         }
 
         document.addEventListener('DOMContentLoaded', () => {

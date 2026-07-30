@@ -247,8 +247,11 @@ class TripController extends Controller
             ], 403);
         }
 
+        $userStatuses = Auth::user()->getCustomStatuses();
+        $validKeys = implode(',', array_keys($userStatuses));
+
         $validated = $request->validate([
-            'status' => 'required|in:draft,sent,reserved,completed,discarded'
+            'status' => 'required|string|in:' . $validKeys
         ]);
 
         $trip->update(['status' => $validated['status']]);
@@ -257,6 +260,42 @@ class TripController extends Controller
             'success' => true,
             'message' => 'Estado del viaje actualizado exitosamente',
             'trip' => $trip
+        ]);
+    }
+
+    /**
+     * Update user's custom status labels and custom statuses list
+     */
+    public function updateCustomStatuses(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'statuses' => 'required|array',
+            'statuses.*.key' => 'required|string|max:50',
+            'statuses.*.label' => 'required|string|max:50',
+            'statuses.*.color' => 'nullable|string|max:20',
+        ]);
+
+        $statusesMap = [];
+        foreach ($validated['statuses'] as $item) {
+            $key = trim($item['key']);
+            $label = trim($item['label']);
+            $color = trim($item['color'] ?? 'blue');
+            if (!empty($key) && !empty($label)) {
+                $statusesMap[$key] = [
+                    'label' => $label,
+                    'color' => $color
+                ];
+            }
+        }
+
+        $user = Auth::user();
+        $user->custom_statuses = $statusesMap;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Nombres y colores de estados guardados correctamente.',
+            'custom_statuses' => $user->getCustomStatuses(),
         ]);
     }
 

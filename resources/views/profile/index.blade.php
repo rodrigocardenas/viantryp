@@ -811,6 +811,30 @@
       text-align: center;
     }
 
+    .dashboard-sidebar .sidebar-link.disabled {
+      opacity: 0.5;
+      cursor: not-allowed !important;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .dashboard-sidebar .sidebar-link.disabled:hover {
+      background: transparent !important;
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    .dashboard-sidebar .sidebar-badge-soon {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
     .dashboard-sidebar .divider {
       height: 1px;
       background: rgba(255, 255, 255, 0.1);
@@ -1485,6 +1509,11 @@
             <i class="fas fa-users"></i>
             <span>Viajes Compartidos</span>
           </a>
+          <div class="sidebar-link disabled" title="Próximamente">
+            <i class="fas fa-layer-group"></i>
+            <span>Plantillas</span>
+            <span class="sidebar-badge-soon">Próximamente</span>
+          </div>
           <a href="{{ route('profile.index') }}" class="sidebar-link active">
             <i class="fas fa-cog"></i>
             <span>Ajustes</span>

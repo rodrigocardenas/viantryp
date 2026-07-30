@@ -113,16 +113,10 @@
 
                 <div id="profileMenu" class="dropdown-menu-content"
                     style="display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 180px; overflow: hidden; z-index: 1000; border: 1px solid #e2e8ef;">
-                    <a href="{{ route('trips.index') }}" class="dropdown-item"
-                        style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--dark); text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
-                        <i class="fas fa-suitcase-rolling" style="color: #64748b; font-size: 15px;"></i>
-                        Mis viajes
-                    </a>
-                    <div style="height: 1px; background: #e2e8ef;"></div>
                     <a href="{{ route('profile.index') }}" class="dropdown-item"
                         style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--dark); text-decoration: none; font-size: 13px; font-weight: 500; transition: background 0.2s;">
                         <i class="fas fa-user-circle" style="color: #64748b; font-size: 15px;"></i>
-                        Mi perfil
+                        Mi Cuenta
                     </a>
                     <div style="height: 1px; background: #e2e8ef;"></div>
                     <form method="POST" action="{{ route('logout') }}" id="logout-form" style="margin: 0;">
