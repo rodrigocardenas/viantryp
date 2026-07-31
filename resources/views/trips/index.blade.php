@@ -813,6 +813,8 @@
             font-weight: 700;
             color: var(--ink);
             line-height: 1.3;
+            position: relative;
+            top: -0.5px;
         }
 
         .trip-dest {
@@ -972,7 +974,7 @@
         }
 
         .name-display.traveler-name-clean {
-            font-size: 13.5px;
+            font-size: 12.5px;
             font-weight: 600;
             color: #0f172a;
             background: transparent !important;
@@ -980,6 +982,8 @@
             padding: 0 !important;
             border-radius: 0 !important;
             font-family: inherit;
+            position: relative;
+            top: 1px;
         }
 
         .email-display.traveler-email-clean {
@@ -2177,7 +2181,7 @@
             padding: 12px 28px;
             border-radius: 50px;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -2551,7 +2555,7 @@
             border-radius: 14px;
             border: 1px solid #eaecf0;
             box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05), 0 1px 2px rgba(16, 24, 40, 0.04);
-            overflow: hidden;
+            overflow: visible;
             background: #ffffff;
         }
 
@@ -2559,6 +2563,22 @@
             border-collapse: separate;
             border-spacing: 0;
             width: 100%;
+        }
+
+        #mainTable thead tr:first-child th:first-child {
+            border-top-left-radius: 14px;
+        }
+
+        #mainTable thead tr:first-child th:last-child {
+            border-top-right-radius: 14px;
+        }
+
+        #mainTable tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 14px;
+        }
+
+        #mainTable tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 14px;
         }
 
         #mainTable thead th {
@@ -2627,7 +2647,7 @@
         .trip-name .title-display {
             font-weight: 600;
             color: #0f172a;
-            font-size: 14px;
+            font-size: 14.5px;
         }
 
         .trip-dest {
@@ -2807,7 +2827,7 @@
                     <div class="usage-item">
                         <div class="usage-label-row">
                             <span><i class="fas fa-route"></i> Itinerarios</span>
-                            <span>{{ $tripCount }} / {{ $maxTrips }}</span>
+                            <span>{{ $tripCount }} / {{ $maxTrips >= 1000000 ? '∞' : $maxTrips }}</span>
                         </div>
                         <div class="usage-progress-bar">
                             <div class="usage-progress-fill" style="width: {{ $tripPercent }}%"></div>
@@ -2816,7 +2836,7 @@
                     <div class="usage-item">
                         <div class="usage-label-row">
                             <span><i class="fas fa-users"></i> Colaboradores</span>
-                            <span>{{ $editorCount }} / {{ $maxEditors }}</span>
+                            <span>{{ $editorCount }} / {{ $maxEditors >= 1000000 ? '∞' : $maxEditors }}</span>
                         </div>
                         <div class="usage-progress-bar">
                             <div class="usage-progress-fill" style="width: {{ $editorPercent }}%"></div>

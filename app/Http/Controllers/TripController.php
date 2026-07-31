@@ -597,6 +597,14 @@ class TripController extends Controller
             $tripData['cover_image_url'] = $validated['pro_state']['portadaPhotoUrl'];
         }
 
+        // Sync price and currency from pro_state to trips table
+        if (isset($validated['pro_state']['precio'])) {
+            $tripData['price'] = $validated['pro_state']['precio'];
+        }
+        if (isset($validated['pro_state']['moneda'])) {
+            $tripData['currency'] = $validated['pro_state']['moneda'];
+        }
+
         $trip->update($tripData);
 
         $shareUrl = $trip->getShareUrl();

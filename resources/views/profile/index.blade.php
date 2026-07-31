@@ -1001,7 +1001,7 @@
       padding: 12px 28px;
       border-radius: 50px;
       font-weight: 700;
-      font-size: 15px;
+      font-size: 14px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1545,7 +1545,7 @@
           <div class="usage-item">
             <div class="usage-label-row">
               <span><i class="fas fa-route"></i> Itinerarios</span>
-              <span>{{ $tripCount }} / {{ $maxTrips }}</span>
+              <span>{{ $tripCount }} / {{ $maxTrips >= 1000000 ? '∞' : $maxTrips }}</span>
             </div>
             <div class="usage-progress-bar">
               <div class="usage-progress-fill" style="width: {{ $tripPercent }}%"></div>
@@ -1554,7 +1554,7 @@
           <div class="usage-item">
             <div class="usage-label-row">
               <span><i class="fas fa-users"></i> Colaboradores</span>
-              <span>{{ $editorCount }} / {{ $maxEditors }}</span>
+              <span>{{ $editorCount }} / {{ $maxEditors >= 1000000 ? '∞' : $maxEditors }}</span>
             </div>
             <div class="usage-progress-bar">
               <div class="usage-progress-fill" style="width: {{ $editorPercent }}%"></div>
