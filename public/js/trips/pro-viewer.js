@@ -210,8 +210,8 @@ function buildPreviewHTML(data) {
 
       // ── GIF ──
       if (item.type === 'gif') {
-        return `<div class="pv-imagen" style="box-shadow:none;border-radius:10px">
-          <img src="${d.url}" style="width:100%;border-radius:10px">
+        return `<div class="pv-imagen pv-gif-wrap" style="box-shadow:none;border-radius:10px;overflow:hidden;max-width:100%;">
+          <img src="${fixUrl(d.url)}" class="pv-gif-img" style="width:100%;max-width:100%;height:auto;display:block;border-radius:10px;object-fit:contain;">
           ${d.caption ? `<div class="pv-caption">${d.caption}</div>` : ''}
         </div>`;
       }
@@ -655,18 +655,22 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-titulo{padding:18px 20px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow)}
 .pvt-text{font-family:'Poppins',sans-serif;font-size:19px;font-weight:800;color:var(--text)}
 .pvt-sub{font-size:13px;color:var(--muted);margin-top:4px}
-.pv-texto{padding:14px 18px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);font-size:14px;color:var(--muted);line-height:1.7;box-shadow:var(--shadow)}
+.pv-texto{padding:14px 18px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);font-size:14px;color:var(--muted);line-height:1.7;box-shadow:var(--shadow);max-width:100%;overflow-wrap:break-word;word-break:break-word;box-sizing:border-box;}
 .pv-texto ul { padding-left: 20px; margin: 10px 0; }
 .pv-texto li { margin-bottom: 5px; }
 .pv-texto b, .pv-texto strong { font-weight: 700; color: var(--text); }
 .pv-texto i, .pv-texto em { font-style: italic; }
 .pv-texto a { color: #0ea5e9; text-decoration: underline; }
 .pv-texto p { margin-bottom: 8px; }
-.pv-imagen{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow)}
-.pv-imagen img{width:100%;max-height:400px;object-fit:cover;display:block}
+.pv-texto img, .pv-texto iframe, .pv-texto video, .pv-texto figure { max-width: 100% !important; height: auto !important; border-radius: 8px; display: block; margin: 8px auto; box-sizing: border-box; }
+.pv-imagen{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);max-width:100%;box-sizing:border-box;}
+.pv-imagen img{width:100%;max-width:100%;height:auto;max-height:400px;object-fit:cover;display:block;box-sizing:border-box;}
+.pv-gif-wrap{border-radius:10px;overflow:hidden;max-width:100%;box-sizing:border-box;}
+.pv-gif-img{width:100%!important;max-width:100%!important;height:auto!important;max-height:450px;object-fit:contain!important;display:block;margin:0 auto;box-sizing:border-box;}
 .pv-img-ph{height:150px;display:flex;align-items:center;justify-content:center;font-size:34px;background:var(--surface)}
 .pv-caption{padding:9px 14px;font-size:12px;color:var(--muted);text-align:center;border-top:1px solid var(--border);background:var(--surface)}
-.pv-caja{display:flex;gap:13px;align-items:flex-start;padding:15px 18px;border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow)}
+.pv-caja{display:flex;gap:13px;align-items:flex-start;padding:15px 18px;border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);max-width:100%;box-sizing:border-box;overflow:hidden;}
+.pv-caja img { max-width: 100% !important; height: auto !important; }
 .pvc-caja-icon{font-size:20px;flex-shrink:0;margin-top:1px}
 .pvc-caja-title{font-size:14px;font-weight:700;margin-bottom:3px;color:var(--text)}
 .pvc-caja-content{font-size:13px;color:var(--muted);line-height:1.55}
@@ -741,9 +745,12 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 
 /* MOBILE */
 @media(max-width:760px){
-  .pv-layout{grid-template-columns:1fr;padding:20px 16px 48px}
+  .pv-layout{grid-template-columns:1fr;padding:20px 14px 48px;overflow-x:hidden;max-width:100vw;}
   .pv-nav{display:none}
-  .pv-content{padding-left:0}
+  .pv-content{padding-left:0;width:100%;max-width:100%;min-width:0;overflow-x:hidden;}
+  .pv-day, .pvday-items{width:100%;max-width:100%;min-width:0;}
+  .pv-card, .pv-imagen, .pv-texto, .pv-caja, .pv-titulo{max-width:100%!important;box-sizing:border-box!important;overflow:hidden;}
+  .pv-imagen img, .pv-gif-img{max-height:350px!important;object-fit:contain!important;}
   .pv-topbar{padding:0 16px}
   .pvday-header{top:52px}
   .pv-portada-meta-row{grid-template-columns:repeat(3, 1fr)}
