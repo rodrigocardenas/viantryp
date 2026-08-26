@@ -29,6 +29,16 @@ class AppServiceProvider extends ServiceProvider
 
         User::observe(UserObserver::class);
 
+        // Register Paddle Subscription Event Listeners
+        \Illuminate\Support\Facades\Event::listen(
+            [
+                \Laravel\Paddle\Events\SubscriptionCreated::class,
+                \Laravel\Paddle\Events\SubscriptionUpdated::class,
+                \Laravel\Paddle\Events\SubscriptionCanceled::class,
+            ],
+            \App\Listeners\SyncPaddleSubscription::class
+        );
+
         // Configurar Carbon para usar español
         Carbon::setLocale('es');
         setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES', 'Spanish_Spain', 'Spanish');

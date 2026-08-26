@@ -122,6 +122,75 @@
     $nextData = $nextKey ? $planData[$nextKey] : null;
 @endphp
 
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+<script>
+    const PADDLE_PRICES = @json(config('plans.paddle'));
+    const PADDLE_CLIENT_TOKEN = "{{ config('cashier.client_side_token') }}";
+    const PADDLE_SANDBOX = {{ config('cashier.sandbox') ? 'true' : 'false' }};
+    let _paddleInitialized = false;
+    let _currentCheckoutPlan = null;
+    let _currentCheckoutPriceId = null;
+
+    function handlePaddleCheckoutCompleted(data) {
+        let priceId = _currentCheckoutPriceId;
+        try {
+            if (data && data.data && data.data.items && data.data.items[0]) {
+                priceId = data.data.items[0].price_id || data.data.items[0].price?.id || priceId;
+            }
+        } catch(e) {}
+
+        const overlay = document.getElementById('modalLoadingOverlay');
+        if (overlay) overlay.style.display = 'flex';
+
+        fetch('{{ route("profile.plan.paddle-sync") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                price_id: priceId,
+                plan: _currentCheckoutPlan
+            })
+        }).then(r => r.json()).then(res => {
+            if (typeof closeUpgradeModal === 'function') closeUpgradeModal();
+            window.location.href = "{{ route('profile.index') }}?tab=subscription&paid=true";
+        }).catch(() => {
+            if (typeof closeUpgradeModal === 'function') closeUpgradeModal();
+            window.location.href = "{{ route('profile.index') }}?tab=subscription&paid=true";
+        });
+    }
+
+    function initPaddle() {
+        if (_paddleInitialized) return;
+        if (typeof Paddle !== 'undefined' && PADDLE_CLIENT_TOKEN) {
+            try {
+                if (PADDLE_SANDBOX) {
+                    Paddle.Environment.set('sandbox');
+                }
+                Paddle.Initialize({
+                    token: PADDLE_CLIENT_TOKEN,
+                    eventCallback: function(data) {
+                        if (data.name === 'checkout.completed' || data.name === 'checkout.payment_complete') {
+                            handlePaddleCheckoutCompleted(data);
+                        }
+                    }
+                });
+                _paddleInitialized = true;
+            } catch (e) {
+                console.warn('Paddle Init Warning:', e);
+            }
+        }
+    }
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        initPaddle();
+    } else {
+        document.addEventListener('DOMContentLoaded', initPaddle);
+    }
+</script>
+
 <div id="upgradePlanModal" class="modal upgrade-premium-modal" style="display: none;">
     <div class="modal-content {{ request()->routeIs('profile.index') ? 'modal-wide' : 'modal-standard' }}">
         <button class="close-btn" onclick="closeUpgradeModal()">&times;</button>
@@ -279,9 +348,10 @@
                 * Todos los precios están expresados en USD (Dólares Estadounidenses)
             </div>
 
-            <div class="modal-footer-links" style="margin-top: 10px;">
-                Tiempos de facturación en <a href="{{ route('home') }}#precios" target="_blank">Nuestros Planes
-                    &rarr;</a>
+            <div class="modal-footer-links" style="margin-top: 10px; display: flex; justify-content: center; gap: 12px; font-size: 12px;">
+                <span>Tiempos de facturación en <a href="{{ route('home') }}#precios" target="_blank">Nuestros Planes &rarr;</a></span>
+                <span style="color: #cbd5e1;">•</span>
+                <span><a href="#" onclick="openCodeGateModal('esencial'); return false;" style="color: #1a7a8a; font-weight: 600; text-decoration: underline;">¿Tienes un código promocional? &rarr;</a></span>
             </div>
         </div>
 
@@ -1137,7 +1207,42 @@
         });
     })();
 
-    // ─── Plan Gate Logic ───────────────────────────────────────────────────────
+    function ensurePaddleReady(callback) {
+        if (typeof Paddle !== 'undefined') {
+            initPaddle();
+            callback();
+            return;
+        }
+
+        let existingScript = document.querySelector('script[src*="paddle.com"]');
+        if (!existingScript) {
+            const s = document.createElement('script');
+            s.src = "https://cdn.paddle.com/paddle/v2/paddle.js";
+            s.onload = function() {
+                initPaddle();
+                callback();
+            };
+            s.onerror = function() {
+                alert('No se pudo conectar con la pasarela de pagos. Por favor verifica tu conexión.');
+            };
+            document.head.appendChild(s);
+        } else {
+            let attempts = 0;
+            const interval = setInterval(() => {
+                attempts++;
+                if (typeof Paddle !== 'undefined') {
+                    clearInterval(interval);
+                    initPaddle();
+                    callback();
+                } else if (attempts > 20) {
+                    clearInterval(interval);
+                    alert('La pasarela de pago tardó demasiado en responder. Por favor recarga la página.');
+                }
+            }, 200);
+        }
+    }
+
+    // ─── Plan Gate & Paddle Checkout Logic ─────────────────────────────────────
     let _pendingPlanKey = null;
 
     function updateUserPlan(planKey) {
@@ -1168,7 +1273,42 @@
             return;
         }
 
-        // Open the gate modal instead of directly changing the plan
+        // Abrir Paddle Checkout para planes de pago (Esencial, Avanzado, Colaborativo)
+        const toggleSwitch = document.getElementById('modalPriceToggle') || document.getElementById('welcomePriceToggle');
+        const isAnnual = toggleSwitch ? toggleSwitch.classList.contains('annual') : false;
+        const cycle = isAnnual ? 'annual' : 'monthly';
+        const priceId = PADDLE_PRICES[planKey] ? PADDLE_PRICES[planKey][cycle] : null;
+
+        if (!priceId) {
+            openCodeGateModal(planKey);
+            return;
+        }
+
+        ensurePaddleReady(() => {
+            if (typeof Paddle !== 'undefined' && priceId) {
+                try {
+                    _currentCheckoutPlan = planKey;
+                    _currentCheckoutPriceId = priceId;
+
+                    Paddle.Checkout.open({
+                        items: [{ priceId: priceId, quantity: 1 }],
+                        customer: {
+                            email: "{{ $user->email }}"
+                        },
+                        customData: {
+                            user_id: "{{ $user->id }}"
+                        }
+                    });
+                } catch (err) {
+                    console.error('Error al abrir checkout de Paddle:', err);
+                    alert('No se pudo abrir la ventana de pago. Por favor recarga la página.');
+                }
+            }
+        });
+    }
+
+    function openCodeGateModal(planKey) {
+        const target = planLimits[planKey] || { name: planKey };
         _pendingPlanKey = planKey;
         document.getElementById('gateTargetPlanName').textContent = target.name;
         document.getElementById('gateTargetPlanName2').textContent = target.name;

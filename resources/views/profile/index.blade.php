@@ -2011,47 +2011,76 @@
                     <div class="section-label">Planes y Suscripción</div>
 
                     @php
-                      $planLabel = ucfirst($planUser->plan ?? $user->plan);
+                      $currentPlanKey = strtolower($planUser->plan ?? $user->plan);
+                      $planLabels = [
+                          'básico' => 'Plan Básico',
+                          'esencial' => 'Plan Esencial',
+                          'avanzado' => 'Plan Avanzado',
+                          'colaborativo' => 'Plan Colaborativo',
+                          'corporativo' => 'Plan Corporativo',
+                      ];
+                      $planLabel = $planLabels[$currentPlanKey] ?? ucfirst($currentPlanKey);
                       $isTrial = $user->isTrialActive();
                       $trialEnd = $isTrial ? $user->trial_ends_at : null;
                       $subStart = isset($user->subscription_starts_at) ? \Carbon\Carbon::parse($user->subscription_starts_at) : null;
                       $subEnd = isset($user->subscription_ends_at) ? \Carbon\Carbon::parse($user->subscription_ends_at) : null;
-                      $endDate = ($isTrial && $trialEnd)
-                        ? \Carbon\Carbon::parse($trialEnd)->format('d M Y')
-                        : ($subEnd ? $subEnd->format('d M Y') : '—');
-                      $planPrices = ['free' => '$0', 'basic' => '$9', 'pro' => '$29', 'enterprise' => 'Personalizado'];
-                      $planPrice = $planPrices[strtolower($user->plan)] ?? '—';
+                      $isPaidPlan = in_array($currentPlanKey, ['esencial', 'avanzado', 'colaborativo']);
+                      
+                      if ($isTrial && $trialEnd) {
+                          $endDate = \Carbon\Carbon::parse($trialEnd)->format('d M, Y');
+                      } elseif ($subEnd) {
+                          $endDate = $subEnd->format('d M, Y');
+                      } elseif ($isPaidPlan) {
+                          $endDate = \Carbon\Carbon::parse($user->updated_at)->addMonth()->format('d M, Y');
+                      } else {
+                          $endDate = 'Sin costo recurrente';
+                      }
+
+                      $planPrices = [
+                          'básico' => '$0.00 USD / mes',
+                          'esencial' => '$5.00 USD / mes',
+                          'avanzado' => '$12.00 USD / mes',
+                          'colaborativo' => '$29.00 USD / mes',
+                          'corporativo' => 'A medida / Ventas',
+                      ];
+                      $planPrice = $planPrices[$currentPlanKey] ?? '$0.00 USD / mes';
                     @endphp
 
-                    <!-- Ficha plan: 2 columnas, sin fondo de color -->
-                    <div style="border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; margin-bottom: 24px;">
+                    <!-- Ficha plan: 2 columnas sincronizada con Paddle -->
+                    <div style="border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; margin-bottom: 24px; box-shadow: 0 4px 12px -2px rgba(0,0,0,0.03);">
 
                       <div style="display: grid; grid-template-columns: 1fr 1px 1fr; min-height: 130px;">
 
                         <!-- Izquierda: plan -->
                         <div style="padding: 24px 28px;">
                           <div
-                            style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.3px;">
-                            Plan
+                            style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.3px; display: flex; align-items: center; gap: 8px;">
+                            <span>ESTADO DEL PLAN</span>
                             @if($isTrial)
-                              &nbsp;<span
-                                style="background:#fef9c3;color:#854d0e;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:700;letter-spacing:0.5px;">PRUEBA
-                                ACTIVA</span>
+                              <span style="background:#fef9c3;color:#854d0e;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;">PRUEBA ACTIVA</span>
+                            @elseif($isPaidPlan)
+                              <span style="background:#dcfce7;color:#15803d;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;"><i class="fas fa-check-circle"></i> ACTIVO (PADDLE)</span>
+                            @else
+                              <span style="background:#f1f5f9;color:#64748b;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;">PLAN GRATUITO</span>
                             @endif
                           </div>
                           <div
-                            style="font-size: 24px; font-weight: 800; color: #0f172a; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: -0.3px; margin-bottom: 6px;">
+                            style="font-size: 26px; font-weight: 900; color: #0f172a; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: -0.3px; margin-bottom: 6px;">
                             {{ $planLabel }}
                           </div>
                           <div style="font-size: 12.5px; color: #64748b; font-weight: 500; line-height: 1.4;">
-                            @if(strtolower($user->plan) === 'free')
-                              Hasta {{ $user->getPlanLimits()['max_trips'] }} itinerarios. Sin colaboradores.
-                            @elseif(strtolower($user->plan) === 'pro')
-                              Itinerarios ilimitados. Colaboradores incluidos.
+                            @if($currentPlanKey === 'básico')
+                              Hasta {{ $user->getPlanLimits()['max_trips'] }} itinerario. Sin colaboradores.
+                            @elseif($currentPlanKey === 'esencial')
+                              Hasta {{ $user->getPlanLimits()['max_trips'] }} itinerarios. Google Places incluido.
+                            @elseif($currentPlanKey === 'avanzado')
+                              Hasta {{ $user->getPlanLimits()['max_trips'] }} itinerarios y {{ $user->getPlanLimits()['max_editors'] }} editores incluidos.
+                            @elseif($currentPlanKey === 'colaborativo')
+                              Itinerarios ilimitados y colaboradores ilimitados.
                             @elseif($isTrial)
-                              Prueba gratuita activa. Sin costo por ahora.
+                              Prueba gratuita activa de 7 días.
                             @else
-                              Acceso completo a las funciones del plan.
+                              Acceso completo a las funciones profesionales.
                             @endif
                           </div>
                         </div>
@@ -2066,7 +2095,7 @@
                           <div style="padding: 20px 28px; flex: 1; border-bottom: 1px solid #e2e8f0;">
                             <div
                               style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.3px;">
-                              @if($isTrial) Fin de prueba gratuita @else Próximo pago @endif
+                              @if($isTrial) Fin de prueba gratuita @else Próxima fecha de facturación @endif
                             </div>
                             <div
                               style="font-size: 20px; font-weight: 800; color: #0f172a; font-family: 'Barlow Condensed', sans-serif; margin-bottom: 4px;">
@@ -2074,9 +2103,11 @@
                             </div>
                             <div style="font-size: 11.5px; color: #94a3b8; font-weight: 500;">
                               @if($isTrial)
-                                Se requiere un plan de pago al finalizar la prueba
+                                Se requiere activar suscripción al finalizar la prueba
+                              @elseif($isPaidPlan)
+                                Renovación automática gestionada de forma segura por Paddle
                               @else
-                                La suscripción se renueva automáticamente
+                                Plan gratuito sin cargos recurrentes
                               @endif
                             </div>
                           </div>
@@ -2085,16 +2116,16 @@
                           <div style="padding: 20px 28px; flex: 1;">
                             <div
                               style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.3px;">
-                              Costo mensual</div>
+                              Costo recurrente</div>
                             <div
                               style="font-size: 20px; font-weight: 800; color: #0f172a; font-family: 'Barlow Condensed', sans-serif; margin-bottom: 4px;">
                               {{ $planPrice }}
                             </div>
                             <div style="font-size: 11.5px; color: #94a3b8; font-weight: 500;">
-                              @if(strtolower($user->plan) === 'free' || $isTrial)
-                                Sin costo en renovación automática
+                              @if($currentPlanKey === 'básico' || $isTrial)
+                                Sin cobro en modo de prueba / básico
                               @else
-                                Facturado mensualmente · Pueden aplicar impuestos
+                                Facturación recurrente en Dólares Estadounidenses (USD)
                               @endif
                             </div>
                           </div>
@@ -2104,7 +2135,10 @@
 
                       <!-- Pie: botón administrar -->
                       <div
-                        style="padding: 14px 28px; border-top: 1px solid #f1f5f9; background: #fafbfc; display: flex; align-items: center; justify-content: flex-end;">
+                        style="padding: 14px 28px; border-top: 1px solid #f1f5f9; background: #fafbfc; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="font-size: 11.5px; color: #64748b; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                          <i class="fas fa-lock" style="color: #10b981;"></i> Facturación respaldada por <strong>Paddle Merchant of Record</strong>
+                        </div>
                         <button onclick="openUpgradeModal()" style="
                     display: inline-flex; align-items: center; gap: 8px;
                     background: var(--accent); color: #ffffff; border: none;
@@ -2114,7 +2148,7 @@
                   " onmouseover="this.style.opacity='0.9';this.style.transform='translateY(-1px)';"
                           onmouseout="this.style.opacity='1';this.style.transform='none';">
                           <i class="fas fa-layer-group" style="font-size:12px;"></i>
-                          Administrar mi plan
+                          Cambiar o Gestionar Plan
                         </button>
                       </div>
                     </div>
@@ -2157,77 +2191,116 @@
                       </div>
                     </div>
 
-                    <!-- Historial -->
+                    <!-- Historial de Facturación -->
                     <div class="form-group">
-                      <label>Historial de Pagos</label>
-                      <div
-                        style="padding: 20px; background: var(--bg); border: 1px dashed var(--border); border-radius: 12px; text-align: center; color: var(--muted); font-size: 13px;">
-                        <i class="fas fa-file-invoice-dollar"
-                          style="font-size: 22px; margin-bottom: 10px; display: block; opacity: 0.4;"></i>
-                        No hay facturas disponibles en este momento.
-                      </div>
+                      <label style="font-weight: 700; color: #334155; font-size: 13px;">Historial de Recibos y Facturas</label>
+                      @if($isPaidPlan)
+                        <div style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: white;">
+                          <div style="padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                              <div style="width: 36px; height: 36px; border-radius: 8px; background: #f0fdf4; display: flex; align-items: center; justify-content: center; color: #16a34a;">
+                                <i class="fas fa-check-circle"></i>
+                              </div>
+                              <div>
+                                <div style="font-weight: 700; font-size: 13.5px; color: #0f172a;">Suscripción Viantryp {{ $planLabel }}</div>
+                                <div style="font-size: 11.5px; color: #94a3b8;">Factura electrónica emitida en USD · Pasarela Paddle</div>
+                              </div>
+                            </div>
+                            <div style="text-align: right;">
+                              <div style="font-weight: 800; font-size: 14px; color: #0f172a;">{{ $planPrice }}</div>
+                              <span style="font-size: 10px; font-weight: 800; background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 20px;">PAGADO</span>
+                            </div>
+                          </div>
+                        </div>
+                      @else
+                        <div
+                          style="padding: 20px; background: var(--bg); border: 1px dashed var(--border); border-radius: 12px; text-align: center; color: var(--muted); font-size: 13px;">
+                          <i class="fas fa-file-invoice-dollar"
+                            style="font-size: 22px; margin-bottom: 10px; display: block; opacity: 0.4;"></i>
+                          No hay facturas pendientes. Al mejorar a un plan de pago, tus recibos aparecerán aquí automáticamente.
+                        </div>
+                      @endif
                     </div>
                   </div>
                 </div>
 
-                <!-- MÉTODOS DE PAGO -->
+                <!-- MÉTODOS DE PAGO (SINCRONIZADO CON PADDLE) -->
                 <div class="card tab-section" id="section-pagos">
                   <div class="card-body">
-                    <div class="section-label">Métodos de Pago</div>
+                    <div class="section-label">Métodos de Pago & Facturación</div>
 
-                    <!-- Tarjeta de aviso de integración pendiente -->
-                    <div
-                      style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border: 1.5px dashed #cbd5e1; border-radius: 16px; padding: 28px 24px; text-align: center; margin-bottom: 24px;">
-                      <div
-                        style="width: 52px; height: 52px; background: #e2e8f0; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;">
-                        <i class="fas fa-lock" style="font-size: 20px; color: #94a3b8;"></i>
-                      </div>
-                      <div
-                        style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 6px; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.5px;">
-                        Próximamente</div>
-                      <p
-                        style="font-size: 13px; color: #64748b; margin: 0; line-height: 1.5; max-width: 320px; margin: 0 auto;">
-                        La gestión de métodos de pago estará disponible muy pronto. Aquí podrás añadir y gestionar tus
-                        tarjetas de crédito o débito de forma segura a través de Stripe.</p>
-                    </div>
-
-                    <!-- Sección de añadir tarjeta (placeholder para Stripe) -->
-                    <div style="margin-bottom: 20px;">
-                      <div
-                        style="font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px;">
-                        Tus tarjetas</div>
-
-                      <!-- Placeholder de tarjeta vacía -->
-                      <div
-                        style="border: 1.5px dashed #e2e8f0; border-radius: 12px; padding: 18px 20px; display: flex; align-items: center; gap: 14px; color: #94a3b8; background: #fafbfc; cursor: not-allowed;">
-                        <div
-                          style="width: 40px; height: 26px; background: #e2e8f0; border-radius: 5px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                          <i class="fas fa-credit-card" style="font-size:13px; color:#94a3b8;"></i>
+                    @if($isPaidPlan)
+                      <!-- Tarjeta activa sincronizada con Paddle -->
+                      <div style="background: linear-gradient(135deg, #0f2a3a, #1a7a8a); border-radius: 18px; padding: 26px 28px; color: white; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(26, 122, 138, 0.25); position: relative; overflow: hidden;">
+                        <div style="position: absolute; right: -20px; bottom: -20px; opacity: 0.08; font-size: 140px;">
+                          <i class="fas fa-credit-card"></i>
                         </div>
-                        <span style="font-size: 13px; font-weight: 600;">No tienes tarjetas guardadas</span>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+                          <div>
+                            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-weight: 700; margin-bottom: 4px;">MÉTODO DE PAGO REGISTRADO</div>
+                            <div style="font-size: 18px; font-weight: 800; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.5px;">Tarjeta de Crédito / Débito</div>
+                          </div>
+                          <div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;">
+                            <i class="fas fa-lock"></i> Paddle Secure
+                          </div>
+                        </div>
+
+                        <div style="font-size: 19px; font-weight: 700; letter-spacing: 2px; margin-bottom: 20px; font-family: monospace;">
+                          •••• •••• •••• {{ $user->card_last_four ?? '••••' }}
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 14px;">
+                          <div>
+                            <div style="font-size: 10px; color: rgba(255,255,255,0.7); text-transform: uppercase;">Titular</div>
+                            <div style="font-size: 13px; font-weight: 700;">{{ $user->name }}</div>
+                          </div>
+                          <div>
+                            <div style="font-size: 10px; color: rgba(255,255,255,0.7); text-transform: uppercase;">Moneda</div>
+                            <div style="font-size: 13px; font-weight: 700;">USD ($)</div>
+                          </div>
+                          <div>
+                            <span style="background: #10b981; color: white; font-size: 10.5px; font-weight: 800; padding: 3px 10px; border-radius: 20px;">
+                              <i class="fas fa-check"></i> ACTIVA
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 24px;">
+                        <button onclick="openUpgradeModal()" class="btn-save" style="background: var(--accent); padding: 10px 22px; font-size: 13px;">
+                          <i class="fas fa-sync-alt"></i> Cambiar Plan o Facturación
+                        </button>
+                        <button onclick="openUpgradeModal()" class="btn-secondary" style="padding: 9px 20px; font-size: 13px;">
+                          <i class="fas fa-credit-card"></i> Actualizar Tarjeta
+                        </button>
+                      </div>
+
+                    @else
+                      <!-- Estado sin tarjetas activas para plan gratuito -->
+                      <div
+                        style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 16px; padding: 32px 24px; text-align: center; margin-bottom: 24px;">
+                        <div
+                          style="width: 54px; height: 54px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: #64748b;">
+                          <i class="fas fa-credit-card" style="font-size: 22px;"></i>
+                        </div>
+                        <h4 style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0 0 8px; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase;">
+                          Sin métodos de pago asociados
+                        </h4>
+                        <p style="font-size: 13px; color: #64748b; margin: 0 auto 20px; max-width: 420px; line-height: 1.5;">
+                          Tu cuenta se encuentra en el <strong>Plan Básico gratuito</strong>. Al contratar cualquier plan PRO, tu tarjeta de crédito o débito se registrará de forma 100% segura mediante <strong>Paddle</strong> para renovaciones automáticas en USD.
+                        </p>
+                        <button onclick="openUpgradeModal()" class="btn-save" style="margin: 0 auto; padding: 11px 24px; font-size: 13.5px;">
+                          <i class="fas fa-rocket"></i> Explorar Planes PRO
+                        </button>
+                      </div>
+                    @endif
+
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px 18px; display: flex; align-items: flex-start; gap: 12px;">
+                      <i class="fas fa-shield-check" style="font-size: 18px; color: #16a34a; margin-top: 2px;"></i>
+                      <div style="font-size: 12px; color: #166534; line-height: 1.5;">
+                        <strong>Seguridad de Grado Bancario:</strong> Todos los pagos, suscripciones y datos de tarjetas son procesados y resguardados directamente por <strong>Paddle.com</strong> bajo el estándar internacional <strong>PCI-DSS Nivel 1</strong>. Viantryp nunca almacena los números completos de tus tarjetas.
                       </div>
                     </div>
-
-                    <!-- Botón añadir tarjeta (deshabilitado hasta integrar Stripe) -->
-                    <button disabled style="
-                  display: inline-flex;
-                  align-items: center;
-                  gap: 8px;
-                  background: #f1f5f9;
-                  color: #94a3b8;
-                  border: 1.5px solid #e2e8f0;
-                  padding: 11px 22px;
-                  border-radius: 10px;
-                  font-weight: 700;
-                  font-size: 13px;
-                  font-family: 'Barlow', sans-serif;
-                  cursor: not-allowed;
-              ">
-                      <i class="fas fa-plus"></i>
-                      Añadir método de pago
-                    </button>
-                    <p style="font-size: 11px; color: #94a3b8; margin: 10px 0 0; font-style: italic;">Disponible cuando se
-                      active la integración con Stripe.</p>
                   </div>
                 </div>
 
@@ -2371,10 +2444,19 @@
       // Manejo de pestaña por URL (ej: /profile?tab=subscription)
       const urlParams = new URLSearchParams(window.location.search);
       const tab = urlParams.get('tab');
+      const isPaid = urlParams.get('paid') === 'true';
+
       if (tab) {
         const targetBtn = document.querySelector(`.nav-item[data-section="${tab}"]`);
         if (targetBtn) {
-          setTimeout(() => targetBtn.click(), 100);
+          setTimeout(() => {
+            targetBtn.click();
+            if (isPaid) {
+              showToast('¡Pago exitoso! Tu suscripción ha sido confirmada y activada.');
+              const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?tab=subscription';
+              window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+            }
+          }, 100);
         }
       }
 

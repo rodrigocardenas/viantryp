@@ -21,10 +21,25 @@ class ProfileController extends Controller
         
 
 
+        $subscription = null;
+        $transactions = collect([]);
+        try {
+            if (method_exists($user, 'subscriptions')) {
+                $subscription = $user->subscriptions()->orderByDesc('created_at')->first();
+            }
+            if (method_exists($user, 'transactions')) {
+                $transactions = $user->transactions()->orderByDesc('billed_at')->get();
+            }
+        } catch (\Throwable $e) {
+            \Log::info('Paddle subscription check in profile: ' . $e->getMessage());
+        }
+
         return view('profile.index', [
             'user' => $user,
             'tripCount' => $tripCount,
             'editorCount' => $editorCount,
+            'subscription' => $subscription,
+            'transactions' => $transactions,
         ]);
     }
 
@@ -231,6 +246,46 @@ class ProfileController extends Controller
             'message' => 'Plan actualizado a ' . ucfirst($newPlan),
             'plan' => $newPlan
         ]);
+    }
+
+    public function syncPaddlePlan(Request $request)
+    {
+        $user = auth()->user();
+        if (!$user) return response()->json(['success' => false], 401);
+
+        $priceId = $request->input('price_id');
+        $planKey = strtolower($request->input('plan', ''));
+
+        $paddlePrices = config('plans.paddle', []);
+        $matchedPlan = null;
+
+        if ($priceId) {
+            foreach ($paddlePrices as $key => $prices) {
+                if (($prices['monthly'] ?? '') === $priceId || ($prices['annual'] ?? '') === $priceId) {
+                    $matchedPlan = $key;
+                    break;
+                }
+            }
+        }
+
+        if (!$matchedPlan && in_array($planKey, ['esencial', 'avanzado', 'colaborativo'])) {
+            $matchedPlan = $planKey;
+        }
+
+        if ($matchedPlan) {
+            $user->update([
+                'plan' => $matchedPlan,
+                'trial_ends_at' => null
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => '¡Tu plan ha sido actualizado a ' . ucfirst($matchedPlan) . ' exitosamente!',
+                'plan' => $matchedPlan
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Plan no reconocido.'], 422);
     }
 
     public function verifyPlanCode(Request $request)
