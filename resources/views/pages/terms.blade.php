@@ -155,13 +155,10 @@
             <p class="section-text" style="margin-bottom:0;">El Servicio se provee "tal cual". No garantizamos disponibilidad ininterrumpida ni ausencia de errores. Viantryp no es responsable por la pérdida de datos derivada de un uso incorrecto, ni por decisiones de viaje tomadas con base en información que el usuario introduce en la plataforma. Nuestra responsabilidad total no superará el importe pagado en los últimos 12 meses.</p>
           </div>
 
-          <div 
-     i        d="cancelacion" style="margin-bottom:2.5rem;">
-
-                        <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-
-    b           ottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">8. Cancelación</h2
-  >           
-            <p class="section-text" style="margin-bottom:0;">Puedes cancelar tu suscripción en cualquier momento desde la configuración de tu cuenta. Los datos se conservan 30 días después de la cancelación y luego se eliminan de forma definitiva. El plan gratuito no caduca y puede mantenerse indefinidamente.</p>
+          <div id="cancelacion" style="margin-bottom:2.5rem;">
+            <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">8. Cancelación y Política de Reembolsos</h2>
+            <p class="section-text" style="margin-bottom:0.75rem;">Puedes cancelar tu suscripción en cualquier momento de forma inmediata desde la configuración de tu perfil en Viantryp. Al cancelar, conservarás el acceso a todas las funcionalidades del plan contratado hasta que finalice el período de facturación en curso (mensual o anual), momento en el cual tu cuenta pasará automáticamente al plan Básico sin cobros adicionales.</p>
+            <p class="section-text" style="margin-bottom:0;">Nuestros pagos y suscripciones son procesados de forma segura a través de <strong>Paddle.com</strong> (Merchant of Record). Ofrecemos una garantía de satisfacción: si experimentas problemas técnicos o solicitas la cancelación dentro de los primeros 14 días posteriores a tu primer cobro, puedes escribirnos a <a href="mailto:hola@viantryp.com" style="color:var(--teal);">hola@viantryp.com</a> para solicitar el reembolso completo de tu cargo conforme a las políticas estándar de Paddle.</p>
           </div>
 
           <div id="modificaciones" style="margin-bottom:2.5rem;">

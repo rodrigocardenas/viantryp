@@ -169,14 +169,19 @@
                 if (PADDLE_SANDBOX) {
                     Paddle.Environment.set('sandbox');
                 }
-                Paddle.Initialize({
+                const initOptions = {
                     token: PADDLE_CLIENT_TOKEN,
                     eventCallback: function(data) {
                         if (data.name === 'checkout.completed' || data.name === 'checkout.payment_complete') {
                             handlePaddleCheckoutCompleted(data);
                         }
                     }
-                });
+                };
+                @if(auth()->check() && auth()->user()->customer?->paddle_id)
+                initOptions.pwCustomer = { id: "{{ auth()->user()->customer->paddle_id }}" };
+                @endif
+
+                Paddle.Initialize(initOptions);
                 _paddleInitialized = true;
             } catch (e) {
                 console.warn('Paddle Init Warning:', e);
@@ -1293,6 +1298,9 @@
                     Paddle.Checkout.open({
                         items: [{ priceId: priceId, quantity: 1 }],
                         customer: {
+                            @if(auth()->check() && auth()->user()->customer?->paddle_id)
+                            id: "{{ auth()->user()->customer->paddle_id }}",
+                            @endif
                             email: "{{ $user->email }}"
                         },
                         customData: {

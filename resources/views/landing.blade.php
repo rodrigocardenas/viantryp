@@ -4026,6 +4026,7 @@
             <li>Banco de imágenes gratuito</li>
           </ul>
           <a href="{{ route('register') }}" class="plan-btn">Empezar gratis</a>
+          <div class="plan-trial-note" style="opacity:0; pointer-events:none; visibility:hidden;">Spacer</div>
         </div>
 
         <!-- Esencial -->
@@ -4049,6 +4050,7 @@
             <li>Enlace para compartir viaje</li>
           </ul>
           <a href="{{ route('plans.redirect') }}" class="plan-btn">Elegir Esencial</a>
+          <div class="plan-trial-note">7 días de prueba gratuita</div>
         </div>
 
         <!-- Avanzado -->
@@ -4073,7 +4075,7 @@
             <li>Personalización de marca</li>
           </ul>
           <a href="{{ route('plans.redirect') }}" class="plan-btn primary">Elegir Avanzado</a>
-          <div class="plan-trial-note">7 días de prueba gratuita</div>
+          <div class="plan-trial-note">14 días de prueba gratuita</div>
         </div>
 
         <!-- Colaborativo -->
@@ -4098,6 +4100,7 @@
             <li>Integraciones API básicas</li>
           </ul>
           <a href="{{ route('plans.redirect') }}" class="plan-btn">Elegir Colaborativo</a>
+          <div class="plan-trial-note">14 días de prueba gratuita</div>
         </div>
       </div>
 

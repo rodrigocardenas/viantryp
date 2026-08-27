@@ -41,9 +41,24 @@ Route::get('/', function () {
 
 // Public info pages
 Route::get('/contacto', fn() => view('pages.contact'))->name('contact');
+Route::get('/contact', fn() => redirect()->route('contact', [], 301));
 Route::post('/contacto', [\App\Http\Controllers\ContactController::class, 'submit'])->name('contact.submit');
+
 Route::get('/terminos-de-uso', fn() => view('pages.terms'))->name('terms');
+Route::get('/terms', fn() => redirect()->route('terms', [], 301));
+Route::get('/terms-of-service', fn() => redirect()->route('terms', [], 301));
+
 Route::get('/privacidad', fn() => view('pages.privacy'))->name('privacy');
+Route::get('/privacy', fn() => redirect()->route('privacy', [], 301));
+Route::get('/privacy-policy', fn() => redirect()->route('privacy', [], 301));
+
+Route::get('/reembolsos', fn() => redirect()->to('/terminos-de-uso#cancelacion', 301))->name('refunds');
+Route::get('/refunds', fn() => redirect()->to('/terminos-de-uso#cancelacion', 301));
+Route::get('/refund-policy', fn() => redirect()->to('/terminos-de-uso#cancelacion', 301));
+
+Route::get('/planes', fn() => redirect()->to('/#planes', 301))->name('pricing');
+Route::get('/pricing', fn() => redirect()->to('/#planes', 301));
+
 Route::get('/rgpd', fn() => view('pages.gdpr'))->name('gdpr');
 Route::get('/seguridad', fn() => view('pages.security'))->name('security');
 Route::get('/api/places/photo', [GooglePlacesController::class, 'getPlacePhoto'])->name('places.photo');
