@@ -1,5 +1,5 @@
 function buildPreviewHTML(data) {
-  const { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor, displayNameType, agencyLogo, agencyName, userFullName, googleClientId } = data;
+  const { title, destination, portadaSubtitle, hidePriceInPublic, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor, displayNameType, agencyLogo, agencyName, userFullName, googleClientId } = data;
 
   function formatNumber(val) {
     if (val === null || val === undefined || val === '') return '';
@@ -202,10 +202,10 @@ function buildPreviewHTML(data) {
         return `<div class="pv-imagen">${d.url ? `<img src="${fixUrl(d.url)}" alt="${d.caption || ''}">` : '<div class="pv-img-ph"><i class="fa-regular fa-image"></i></div>'}${d.caption ? `<div class="pv-caption">${d.caption}</div>` : ''}</div>`;
       }
 
-      // ── CAJA CON FONDO ──
+      // ── CAJA / TIP DESTACADO ──
       if (item.type === 'caja') {
-        const bg = d.color_fondo || '#7c6fef';
-        return `<div class="pv-caja" style="background:${bg}10;border-left:4px solid ${bg}"><div class="pvc-caja-icon">${d.icono || '💡'}</div><div><div class="pvc-caja-title">${d.titulo || ''}</div><div class="pvc-caja-content">${d.contenido || ''}</div></div></div>`;
+        const bg = d.color_fondo || '#f59e0b';
+        return `<div class="pv-caja" style="background:${bg}14;border-left:4px solid ${bg};border-radius:10px;padding:14px 18px;display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;"><div class="pvc-caja-icon" style="font-size:22px;line-height:1;margin-top:2px;flex-shrink:0;">${d.icono || '💡'}</div><div style="flex:1;"><div class="pvc-caja-title" style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:3px;">${d.titulo || ''}</div><div class="pvc-caja-content" style="font-size:13px;color:var(--muted);line-height:1.5;">${d.contenido || ''}</div></div></div>`;
       }
 
       // ── GIF ──
@@ -606,21 +606,24 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-back-btn{padding:6px 14px;border:1.5px solid rgba(255,255,255,0.2);border-radius:8px;font-size:12.5px;color:#fff;cursor:pointer;background:none;font-family:'Poppins',sans-serif;transition:all .14s;text-decoration:none;flex-shrink:0}
 .pv-back-btn:hover{border-color:#38bdf8;color:#38bdf8;background:rgba(255,255,255,0.1)}
 
-/* ─── PORTADA CARD (imagen referencia 1) ─── */
+/* ─── PORTADA CARD (Editorial Hero) ─── */
 .pv-portada-wrap{max-width:1100px;margin:28px auto 0;padding:0 24px}
-.pv-portada-card{background:var(--surface);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)}
-.pv-portada-img{width:100%;height:220px;object-fit:cover;display:block}
-.pv-portada-img-placeholder{width:100%;height:220px;background:linear-gradient(139deg, #0f172a, #0e4c6a);display:flex;align-items:center;justify-content:center;font-size:52px;color:rgba(255,255,255,0.25)}
-.pv-portada-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px 14px}
-.pv-portada-title{font-family:'Poppins',sans-serif;font-size:21px;font-weight:800;color:var(--text)}
-.pv-status-badge{display:inline-flex;align-items:center;gap:6px;background:#fefce8;border:1.5px solid #fde047;border-radius:30px;padding:5px 13px;font-size:11px;font-weight:700;color:#854d0e;letter-spacing:.3px;white-space:nowrap;flex-shrink:0}
-.pv-status-dot{width:7px;height:7px;border-radius:50%;background:#eab308}
-.pv-portada-meta-row{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border)}
-.pv-portada-meta-cell{padding:16px 22px;text-align:center;border-right:1px solid var(--border)}
+.pv-portada-card{background:#0f172a;border-radius:20px;overflow:hidden;box-shadow:0 20px 40px -15px rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1)}
+.pv-portada-hero{position:relative;min-height:300px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.pv-portada-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.pv-portada-img-placeholder{position:absolute;inset:0;width:100%;height:100%;background:linear-gradient(139deg, #0f172a, #1e293b);display:flex;align-items:center;justify-content:center;font-size:52px;color:rgba(255,255,255,0.25);z-index:1}
+.pv-portada-hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(15,23,42,0.2) 0%, rgba(15,23,42,0.55) 45%, rgba(15,23,42,0.95) 100%);z-index:2;pointer-events:none}
+.pv-portada-hero-content{position:relative;z-index:5;padding:24px 28px 20px;display:flex;flex-direction:column;gap:8px}
+.pv-portada-tag-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);border-radius:50px;padding:4px 12px;max-width:max-content;font-size:12px;font-weight:600;color:#fff}
+.pv-tag-sep{color:rgba(255,255,255,0.4);font-size:10px}
+.pv-portada-title{font-family:'Poppins',sans-serif;font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.3px;text-shadow:0 2px 8px rgba(0,0,0,0.4)}
+.pv-portada-sub{font-family:'Inter',sans-serif;font-size:13.5px;color:rgba(255,255,255,0.8);line-height:1.4;text-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.pv-portada-meta-row{display:grid;grid-template-columns:repeat(3,1fr);background:rgba(15,23,42,0.95);border-top:1px solid rgba(255,255,255,0.1)}
+.pv-portada-meta-cell{padding:16px 22px;text-align:center;border-right:1px solid rgba(255,255,255,0.1)}
 .pv-portada-meta-cell:last-child{border-right:none}
-.pv-pm-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
-.pv-pm-value{font-size:15px;font-weight:700;color:var(--text)}
-.pv-pm-value.highlight{color:#0f172a}
+.pv-pm-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:6px}
+.pv-pm-value{font-size:14.5px;font-weight:700;color:#fff}
+.pv-pm-value.highlight{color:var(--accent, #38bdf8)}
 
 /* LAYOUT */
 .pv-layout{display:grid;grid-template-columns:250px 1fr;max-width:1100px;margin:0 auto;padding:32px 24px 60px;align-items:start;gap:0}
@@ -1043,26 +1046,43 @@ ${isPublicLink ? `
 ${hasPortada ? `
 <div class="pv-portada-wrap">
   <div class="pv-portada-card">
-    ${portadaPhotoUrl
-        ? `<img class="pv-portada-img" src="${fixUrl(portadaPhotoUrl)}" alt="${title}">`
-        : `<div class="pv-portada-img-placeholder"><i class="fa-solid fa-earth-americas"></i></div>`
-      }
-    <div class="pv-portada-title-row">
-      <div class="pv-portada-title">${title}</div>
-      ${statusBadgeHTML}
+    <div class="pv-portada-hero">
+      ${portadaPhotoUrl
+          ? `<img class="pv-portada-img" src="${fixUrl(portadaPhotoUrl)}" alt="${title}">`
+          : `<div class="pv-portada-img-placeholder"><i class="fa-solid fa-earth-americas"></i></div>`
+        }
+      <div class="pv-portada-hero-overlay"></div>
+      <div class="pv-portada-hero-content">
+        ${destination ? `
+          <div class="pv-portada-tag-badge">
+            <i class="fa-solid fa-location-dot" style="color:var(--accent);"></i>
+            <span>${destination}</span>
+            ${fechaInicio && fechaFin ? `<span class="pv-tag-sep">•</span><span>${(() => {
+              const d1 = new Date(fechaInicio + 'T00:00:00');
+              const d2 = new Date(fechaFin + 'T00:00:00');
+              const days = Math.round((d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
+              return days > 0 ? days + ' días de aventura' : '';
+            })()}</span>` : ''}
+          </div>
+        ` : ''}
+        <div class="pv-portada-title-wrap">
+          <div class="pv-portada-title">${title}</div>
+        </div>
+        ${portadaSubtitle ? `<div class="pv-portada-sub">${portadaSubtitle}</div>` : ''}
+      </div>
     </div>
     <div class="pv-portada-meta-row">
       <div class="pv-portada-meta-cell">
-        <div class="pv-pm-label">Fechas</div>
-        <div class="pv-pm-value">${fechaInicio && fechaFin ? fmtDateShort(fechaInicio) + ' — ' + fmtDateShort(fechaFin) : (fechaInicio ? 'Desde ' + fmtDateShort(fechaInicio) : 'Por definir')}</div>
+        <div class="pv-pm-label"><i class="fa-regular fa-calendar-days"></i> Fechas</div>
+        <div class="pv-pm-value">${fechaInicio && fechaFin ? fmtDateShort(fechaInicio) + ' ➔ ' + fmtDateShort(fechaFin) : (fechaInicio ? 'Desde ' + fmtDateShort(fechaInicio) : 'Por definir')}</div>
       </div>
       <div class="pv-portada-meta-cell">
-        <div class="pv-pm-label">Viajeros</div>
+        <div class="pv-pm-label"><i class="fa-solid fa-users"></i> Viajeros</div>
         <div class="pv-pm-value">${totalViajeros > 0 ? totalViajeros + ' persona' + (totalViajeros !== 1 ? 's' : '') : '—'}</div>
       </div>
       <div class="pv-portada-meta-cell">
-        <div class="pv-pm-label">Total</div>
-        <div class="pv-pm-value highlight">${(precio !== null && precio !== '' && precio !== undefined) ? '$' + formatNumber(precio) + ' ' + (moneda || 'USD') : '—'}</div>
+        <div class="pv-pm-label"><i class="fa-solid fa-coins"></i> Total</div>
+        <div class="pv-pm-value highlight">${(!hidePriceInPublic && precio !== null && precio !== '' && precio !== undefined) ? '$' + formatNumber(precio) + ' ' + (moneda || 'USD') : (hidePriceInPublic ? '<span style="font-size:13px;color:var(--muted);font-weight:600">Consultar</span>' : '—')}</div>
       </div>
     </div>
   </div>

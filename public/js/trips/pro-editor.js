@@ -10,6 +10,9 @@ let pendingType = null, editingIndex = null, starRating = 0;
 let dragTabSourceIndex = null;
 let portadaAdultos = 2, portadaNinos = 0;
 let portadaPhotoUrl = '';
+let isPriceManual = false;
+let hidePriceInPublic = false;
+let portadaSubtitle = '';
 const GIPHY_API_KEY = 'ga2U6DfG1RcG9EESPkiPph7sMM0uhrdy';
 let selectedUnsplashUrl = null, unsplashTarget = 'portada';
 let selectedGiphyUrl = null, giphyTarget = 'canvas';
@@ -18,29 +21,235 @@ let unsavedChanges = false;
 let currentPhotoTargetInput = null;
 let lastAutoCalculatedSum = 0;
 
-// PORTADA
-function changePortadaCount(type, d) {
-  if (type === 'adultos') { portadaAdultos = Math.max(0, portadaAdultos + d); document.getElementById('portadaAdultos').textContent = portadaAdultos }
-  else { portadaNinos = Math.max(0, portadaNinos + d); document.getElementById('portadaNinos').textContent = portadaNinos }
-  document.getElementById('portadaTotal').textContent = portadaAdultos + portadaNinos;
+// --- HERO & EDITORIAL CONTROLS ---
+function togglePhotoMenu(e) {
+  e && e.stopPropagation();
+  const menu = document.getElementById('portadaPhotoMenu');
+  if (menu) menu.classList.toggle('open');
+}
+function closePhotoMenu() {
+  const menu = document.getElementById('portadaPhotoMenu');
+  if (menu) menu.classList.remove('open');
+}
+
+function autoResizeTextarea(el) {
+  if (!el) return;
+  el.style.height = 'auto';
+  el.style.height = Math.max(26, el.scrollHeight) + 'px';
+  portadaSubtitle = el.value;
+  unsavedChanges = true;
   autoSaveProTrip();
 }
+
+// --- FECHAS & POPOVER ---
+function toggleDatesPopover(e) {
+  e && e.stopPropagation();
+  closeTravelersPopover();
+  closePhotoMenu();
+  const pop = document.getElementById('popoverDates');
+  if (pop) pop.classList.toggle('open');
+}
+function closeDatesPopover() {
+  const pop = document.getElementById('popoverDates');
+  if (pop) pop.classList.remove('open');
+}
+
+function clearTripDates() {
+  const pi = document.getElementById('portadaFechaInicio');
+  const pf = document.getElementById('portadaFechaFin');
+  if (pi) pi.value = '';
+  if (pf) pf.value = '';
+  updatePortadaDatesUI();
+  closeDatesPopover();
+  unsavedChanges = true;
+  autoSaveProTrip();
+}
+
+function applyTripDates() {
+  const pi = document.getElementById('portadaFechaInicio');
+  const pf = document.getElementById('portadaFechaFin');
+  const startDate = pi ? pi.value : '';
+  if (startDate) {
+    for (let i = 0; i < days.length; i++) {
+      if (!dayDates[i]) {
+        dayDates[i] = addDaysToDate(startDate, i);
+      }
+    }
+    days.forEach((dayItems, idx) => {
+      if (dayItems) sortDayItemsChronologically(dayItems, idx);
+    });
+    renderTabs();
+    renderCanvas();
+  }
+  updatePortadaDatesUI();
+  closeDatesPopover();
+  unsavedChanges = true;
+  autoSaveProTrip();
+}
+
+function formatDateRange(startStr, endStr) {
+  if (!startStr && !endStr) return 'Sin fechas';
+  const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  
+  const parseDatePart = (str) => {
+    if (!str) return null;
+    const parts = str.split('-');
+    if (parts.length < 3) return null;
+    return { y: parts[0], m: parseInt(parts[1], 10) - 1, d: parseInt(parts[2], 10) };
+  };
+
+  const s = parseDatePart(startStr);
+  const e = parseDatePart(endStr);
+
+  if (s && e) {
+    if (s.y === e.y) {
+      if (s.m === e.m) {
+        return `${s.d} ➔ ${e.d} ${months[e.m]}`;
+      }
+      return `${s.d} ${months[s.m]} ➔ ${e.d} ${months[e.m]}`;
+    }
+    return `${s.d} ${months[s.m]} ${s.y} ➔ ${e.d} ${months[e.m]} ${e.y}`;
+  }
+  if (s) return `Desde ${s.d} ${months[s.m]}`;
+  if (e) return `Hasta ${e.d} ${months[e.m]}`;
+  return 'Sin fechas';
+}
+
+function calculateNights(startStr, endStr) {
+  if (!startStr || !endStr) return 'Sin programar';
+  const d1 = new Date(startStr + 'T00:00:00');
+  const d2 = new Date(endStr + 'T00:00:00');
+  const diffTime = d2 - d1;
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+  if (isNaN(diffDays) || diffDays < 0) return 'Sin programar';
+  if (diffDays === 0) return 'Mismo día (0 noches)';
+  if (diffDays === 1) return '1 noche';
+  return `${diffDays} noches`;
+}
+
+function calculateTripDurationTag(startStr, endStr) {
+  if (!startStr || !endStr) return 'Aventura por programar';
+  const d1 = new Date(startStr + 'T00:00:00');
+  const d2 = new Date(endStr + 'T00:00:00');
+  const diffTime = d2 - d1;
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  if (isNaN(diffDays) || diffDays <= 0) return 'Aventura por programar';
+  if (diffDays === 1) return '1 día de aventura';
+  return `${diffDays} días de aventura`;
+}
+
+function updatePortadaDatesUI() {
+  const pi = document.getElementById('portadaFechaInicio');
+  const pf = document.getElementById('portadaFechaFin');
+  const s = pi ? pi.value : '';
+  const e = pf ? pf.value : '';
+
+  const rangeEl = document.getElementById('displayDateRange');
+  const nightsEl = document.getElementById('displayNightsCount');
+  const durationBadge = document.getElementById('portadaDurationBadge');
+
+  if (rangeEl) rangeEl.textContent = formatDateRange(s, e);
+  if (nightsEl) nightsEl.textContent = calculateNights(s, e);
+  if (durationBadge) durationBadge.textContent = calculateTripDurationTag(s, e);
+}
+
+// --- VIAJEROS & POPOVER ---
+function toggleTravelersPopover(e) {
+  e && e.stopPropagation();
+  closeDatesPopover();
+  closePhotoMenu();
+  const pop = document.getElementById('popoverTravelers');
+  if (pop) pop.classList.toggle('open');
+}
+function closeTravelersPopover() {
+  const pop = document.getElementById('popoverTravelers');
+  if (pop) pop.classList.remove('open');
+}
+
+function updatePortadaTravelersUI() {
+  const total = portadaAdultos + portadaNinos;
+  const mainEl = document.getElementById('displayTravelersMain');
+  const subEl = document.getElementById('displayTravelersSub');
+  const totalEl = document.getElementById('portadaTotal');
+
+  if (mainEl) {
+    mainEl.textContent = `${portadaAdultos} ${portadaAdultos === 1 ? 'adulto' : 'adultos'}`;
+  }
+  if (subEl) {
+    subEl.textContent = `${portadaNinos} ${portadaNinos === 1 ? 'niño' : 'niños'} (${total} en total)`;
+  }
+  if (totalEl) totalEl.textContent = total;
+
+  updatePortadaPriceUI();
+}
+
+function changePortadaCount(type, d) {
+  if (type === 'adultos') {
+    portadaAdultos = Math.max(1, portadaAdultos + d);
+    const adEl = document.getElementById('portadaAdultos');
+    if (adEl) adEl.textContent = portadaAdultos;
+  } else {
+    portadaNinos = Math.max(0, portadaNinos + d);
+    const niEl = document.getElementById('portadaNinos');
+    if (niEl) niEl.textContent = portadaNinos;
+  }
+  updatePortadaTravelersUI();
+  unsavedChanges = true;
+  autoSaveProTrip();
+}
+
 function handlePortadaUpload(e) {
   const f = e.target.files[0];
   if (!f) return;
   if (f.size > 5 * 1024 * 1024) { showToast('⚠️', 'La imagen no puede superar 5MB'); return; }
-  const r = new FileReader(); r.onload = ev => { portadaPhotoUrl = ev.target.result; setPortadaPhoto(ev.target.result) }; r.readAsDataURL(f)
+  const r = new FileReader();
+  r.onload = ev => {
+    portadaPhotoUrl = ev.target.result;
+    setPortadaPhoto(ev.target.result);
+  };
+  r.readAsDataURL(f);
 }
+
 function setPortadaPhoto(url) {
   portadaPhotoUrl = url;
   const img = document.getElementById('portadaHeroImg');
-  img.src = url; img.classList.add('visible'); document.getElementById('portadaHero').classList.add('has-image');
+  if (img) {
+    img.src = url;
+    img.classList.add('visible');
+  }
+  const hero = document.getElementById('portadaHero');
+  if (hero) hero.classList.add('has-image');
+
+  const btnLabel = document.getElementById('portadaPhotoBtnLabel');
+  if (btnLabel) btnLabel.textContent = 'Cambiar foto';
+  const removeBtn = document.getElementById('photoMenuRemoveBtn');
+  if (removeBtn) removeBtn.style.display = 'flex';
+  const divider = document.getElementById('photoMenuDivider');
+  if (divider) divider.style.display = 'block';
+
+  unsavedChanges = true;
   autoSaveProTrip();
 }
+
 function clearPortadaPhoto(e) {
-  e && e.stopPropagation(); portadaPhotoUrl = '';
+  e && e.stopPropagation();
+  portadaPhotoUrl = '';
   const img = document.getElementById('portadaHeroImg');
-  img.src = ''; img.classList.remove('visible'); document.getElementById('portadaHero').classList.remove('has-image');
+  if (img) {
+    img.src = '';
+    img.classList.remove('visible');
+  }
+  const hero = document.getElementById('portadaHero');
+  if (hero) hero.classList.remove('has-image');
+
+  const btnLabel = document.getElementById('portadaPhotoBtnLabel');
+  if (btnLabel) btnLabel.textContent = 'Agregar foto';
+  const removeBtn = document.getElementById('photoMenuRemoveBtn');
+  if (removeBtn) removeBtn.style.display = 'none';
+  const divider = document.getElementById('photoMenuDivider');
+  if (divider) divider.style.display = 'none';
+
+  unsavedChanges = true;
   autoSaveProTrip();
 }
 
@@ -243,15 +452,78 @@ const C = {
   flight: { icon: '<i class="fa-solid fa-plane"></i>', label: 'Vuelo', color: '#0ea5e9', bg: '#e0f2fe', fields: [{ k: 'origen', l: 'Ciudad origen', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'destino', l: 'Ciudad destino', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'aerolinea', l: 'Aerolínea', t: 'text', ph: 'Air France', airlineApi: true }, { k: 'vuelo', l: 'No. de vuelo', t: 'text', ph: 'AF9474' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'clase', l: 'Clase', t: 'select', ph: 'Selecciona...', opts: ['Económica', 'Ejecutiva', 'Primera'] }, { k: 'precio', l: 'Precio', t: 'number', ph: '800' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'VLO-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
   alojamiento: { icon: '<i class="fa-solid fa-hotel"></i>', label: 'Alojamiento', color: '#f0567a', bg: '#fde8ee', fields: [{ k: 'tipo_alojamiento', l: 'Tipo de Alojamiento', t: 'select', opts: ['Hotel', 'Airbnb u otro'], fw: true }, { k: 'nombre', l: 'Nombre del hotel', t: 'text', ph: 'Hotel Luxe París', fw: true, hasInfo: true }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', group: 'google', fw: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'checkin', l: 'Check-in', t: 'datetime-local' }, { k: 'checkout', l: 'Check-out', t: 'datetime-local' }, { k: 'habitacion', l: 'Tipo habitación', t: 'select', ph: 'Selecciona...', opts: ['Sencilla', 'Doble', 'Triple', 'Suite', 'Alojamiento entero', 'Habitaciones mixtas'] }, { k: 'alimentacion', l: 'Alimentación', t: 'select', ph: 'Selecciona...', opts: ['Solo alojamiento', 'Desayuno incluido', 'Media pensión', 'Pensión completa', 'Todo incluido'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ALJ-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '150' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Desayuno incluido...' }] },
   transporte: { icon: '<i class="fa-solid fa-car"></i>', label: 'Transporte', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'tipo', l: 'Tipo', t: 'select', opts: ['Auto de alquiler', 'Taxi/Uber', 'Tren', 'Bus', 'Ferry', 'Moto'] }, { k: 'proveedor', l: 'Proveedor', t: 'text', ph: 'Hertz, Renfe...' }, { k: 'origen', l: 'Desde', t: 'text', ph: 'Aeropuerto CDG' }, { k: 'destino', l: 'Hasta', t: 'text', ph: 'Hotel Centro' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'precio', l: 'Precio', t: 'number', ph: '50' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TRL-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Confirmación...' }] },
-  actividad: { icon: '<i class="fa-solid fa-bullseye"></i>', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', fields: [{ k: 'nombre', l: 'Nombre actividad', t: 'text', ph: 'Cena con vista, Tour privado...', fw: true }, { k: 'direccion', l: 'Lugar (Google Maps)', t: 'text', ph: 'Torre Eiffel, Museo del Louvre...', fw: true, hasInfo: true }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'website', l: 'Link de la actividad', t: 'text', ph: 'https://...', fw: true }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '25' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
+  actividad: { icon: '<i class="fa-solid fa-compass"></i>', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', fields: [{ k: 'nombre', l: 'Nombre actividad', t: 'text', ph: 'Cena con vista, Tour privado...', fw: true }, { k: 'direccion', l: 'Lugar (Google Maps)', t: 'text', ph: 'Torre Eiffel, Museo del Louvre...', fw: true, hasInfo: true }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'website', l: 'Link de la actividad', t: 'text', ph: 'https://...', fw: true }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '25' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
   comida: { icon: '<i class="fa-solid fa-utensils"></i>', label: 'Comida', color: '#f96b3a', bg: '#ffe8e0', fields: [{ k: 'restaurante', l: 'Restaurante', t: 'text', ph: 'Le Jules Verne', fw: true, hasInfo: true }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', group: 'google', fw: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'tipo', l: 'Tipo', t: 'select', opts: ['Desayuno', 'Almuerzo', 'Cena', 'Brunch', 'Snack'] }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'RES-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '80' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Menú degustación...' }] },
   tour: { icon: '<i class="fa-solid fa-map-location-dot"></i>', label: 'Tour', color: '#8b5cf6', bg: '#f5f3ff', fields: [{ k: 'nombre', l: 'Nombre del tour', t: 'text', ph: 'Tour Versalles' }, { k: 'operador', l: 'Operador', t: 'text', ph: 'Get Your Guide' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['2h', '4h', 'Medio día', 'Día completo', '2 días', '3+ días'] }, { k: 'personas', l: 'No. personas', t: 'number', ph: '2' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TOU-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '120' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', fw: true }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Incluye entrada, guía...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
-  texto: { icon: '<i class="fa-solid fa-font"></i>', label: 'Caja de texto', color: '#64748b', bg: '#f1f5f9', fields: [{ k: 'contenido', l: 'Contenido', t: 'richtext', ph: 'Escribe aquí...' }, { k: 'alineacion', l: 'Alineación', t: 'select', opts: ['Izquierda', 'Centro', 'Derecha'] }] },
-  titulo: { icon: '✦', label: 'Título', color: '#1a1a2e', bg: '#f0f1f7', fields: [{ k: 'texto', l: 'Texto del título', t: 'text', ph: 'Día 1 — Llegada a París' }, { k: 'subtitulo', l: 'Subtítulo (opcional)', t: 'text', ph: 'Una ciudad de luz...' }] },
-  separador: { icon: '—', label: 'Separador', color: '#94a3b8', bg: '#f1f5f9', fields: [{ k: 'estilo', l: 'Estilo', t: 'select', opts: ['Línea simple', 'Línea con diamante', 'Punteado', 'Gradiente'] }, { k: 'etiqueta', l: 'Etiqueta (opcional)', t: 'text', ph: 'Mañana' }] },
-  imagen: { icon: '<i class="fa-regular fa-image"></i>', label: 'Imagen', color: 'var(--primary-blue)', bg: '#e0f2fe', fields: [{ k: 'url', l: 'URL de imagen', t: 'text', ph: 'https://...' }, { k: 'caption', l: 'Pie de foto', t: 'text', ph: 'Torre Eiffel al atardecer' }, { k: 'tamano', l: 'Tamaño', t: 'select', opts: ['Pequeño', 'Mediano', 'Grande', 'Completo'] }] },
-  gif: { icon: '<i class="fa-solid fa-bolt"></i>', label: 'GIF', color: '#ce3df3', bg: '#f9f0ff', fields: [{ k: 'url', l: 'URL del GIF', t: 'text', ph: 'https://...', fw: true }, { k: 'caption', l: 'Pie de GIF', t: 'text', ph: '¡Increíble!' }] },
-  caja: { icon: '<i class="fa-solid fa-palette"></i>', label: 'Caja con fondo', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'titulo', l: 'Título', t: 'text', ph: 'Tip importante' }, { k: 'contenido', l: 'Contenido', t: 'textarea', ph: 'Información relevante...' }, { k: 'color_fondo', l: 'Color de fondo', t: 'color-picker', opts: ['var(--primary-blue)', '#f0567a', '#22c87a', '#f59e0b', '#0ea5d8', '#f96b3a'] }] },
+  texto: { icon: '<i class="fa-solid fa-font"></i>', label: 'Texto', modalTitle: 'Texto', color: '#64748b', bg: '#f1f5f9', fields: [{ k: 'contenido', l: 'Contenido', t: 'richtext', ph: 'Escribe aquí...', fw: true }] },
+  titulo: { icon: '✦', label: 'Título', modalTitle: 'Título', color: '#1a1a2e', bg: '#f0f1f7', fields: [{ k: 'texto', l: 'Texto del título', t: 'text', ph: 'Ej: Día 1 — Llegada a París', fw: true }] },
+  separador: {
+    icon: '—',
+    label: 'Separador',
+    modalTitle: 'Separador',
+    color: '#94a3b8',
+    bg: '#f1f5f9',
+    fields: [
+      { k: 'quick_chips', l: 'Momentos del día', t: 'separator-chips', fw: true },
+      { k: 'etiqueta', l: 'O escribe una etiqueta personalizada (opcional)', t: 'text', ph: 'Ej: Almuerzo libre, Madrugada, Check-out...', fw: true }
+    ]
+  },
+  imagen: {
+    icon: '<i class="fa-regular fa-image"></i>',
+    label: 'Imagen',
+    modalTitle: 'Imagen',
+    color: 'var(--primary-blue)',
+    bg: '#e0f2fe',
+    fields: [
+      { k: 'url', l: 'Imagen', t: 'image-picker', fw: true },
+      { k: 'caption', l: 'Pie de foto (opcional)', t: 'text', ph: 'Ej: Atardecer en el mirador...', fw: true },
+      { k: 'tamano', l: 'Tamaño de visualización', t: 'select', opts: ['Mediano', 'Grande', 'Completo', 'Pequeño'], fw: true }
+    ]
+  },
+  gif: { icon: '<i class="fa-solid fa-bolt"></i>', label: 'GIF', color: '#ce3df3', bg: '#f9f0ff', fields: [{ k: 'url', l: 'URL del GIF', t: 'text', ph: 'https://...', fw: true }, { k: 'caption', l: 'Pie de GIF', t: 'text', ph: '¡Increíble!', fw: true }] },
+  caja: {
+    icon: '<i class="fa-solid fa-lightbulb"></i>',
+    label: 'Nota',
+    modalTitle: 'Nota',
+    color: '#f59e0b',
+    bg: '#fef3c7',
+    fields: [
+      {
+        k: 'icono',
+        l: 'Tipo de Nota',
+        t: 'icon-selector',
+        fw: true,
+        opts: [
+          { icon: '💡', label: 'Tip', color: '#f59e0b' },
+          { icon: '⚠️', label: 'Aviso importante', color: '#f43f5e' },
+          { icon: '🎟️', label: 'Reserva / Ticket', color: '#0ea5e9' },
+          { icon: '📌', label: 'Nota clave', color: '#8b5cf6' }
+        ]
+      },
+      {
+        k: 'titulo',
+        l: 'Título',
+        t: 'text',
+        fw: true,
+        ph: 'Ej: Llevar calzado cómodo o reservar con anticipación...'
+      },
+      {
+        k: 'contenido',
+        l: 'Detalles',
+        t: 'textarea',
+        fw: true,
+        rows: 3,
+        ph: 'Escribe recomendaciones, detalles de vestimenta o contexto de este día...'
+      },
+      {
+        k: 'color_fondo',
+        l: 'Color de Fondo',
+        t: 'color-picker',
+        fw: true,
+        opts: ['#f59e0b', '#f43f5e', '#0ea5e9', '#8b5cf6', '#10b981', '#64748b']
+      }
+    ]
+  },
   documents: { icon: '<i class="fa-solid fa-file-lines"></i>', label: 'Documentos', color: '#0ea5d8', bg: '#e0f7ff', fields: [{ k: 'documents_title', l: 'Título de la Sección', t: 'text', ph: 'Ej: Documentos de Viaje, Vouchers, etc.', fw: true }, { k: 'documents_description', l: 'Descripción o Instrucciones', t: 'textarea', ph: 'Ej: Aquí puedes descargar tus documentos importantes...', fw: true }, { k: 'documents', l: 'Documentos (Máx. 5 archivos, 5MB c/u)', t: 'multi-file-upload', fw: true }] }
 };
 
@@ -806,71 +1078,176 @@ function sortDayItemsChronologically(arr, dayIdx) {
   });
 }
 
-function calculateTripServicesTotal() {
+function calculateTripServicesSummary() {
   let total = 0;
+  let count = 0;
   function addPrice(p) {
     if (!p) return;
     const clean = unformatNumber(p);
     const price = parseFloat(clean);
-    if (!isNaN(price)) total += price;
+    if (!isNaN(price) && price > 0) {
+      total += price;
+      count++;
+    }
   }
   if (typeof days !== 'undefined' && days) {
     days.forEach(dayItems => {
       if (dayItems) {
         dayItems.forEach(item => {
-          if (item && item.data && item.data.precio) {
-            addPrice(item.data.precio);
-          }
+          if (item && item.data && item.data.precio) addPrice(item.data.precio);
         });
       }
     });
   }
   if (typeof portadaItems !== 'undefined' && portadaItems) {
     portadaItems.forEach(item => {
-      if (item && item.data && item.data.precio) {
-        addPrice(item.data.precio);
-      }
+      if (item && item.data && item.data.precio) addPrice(item.data.precio);
     });
   }
   if (typeof cierreItems !== 'undefined' && cierreItems) {
     cierreItems.forEach(item => {
-      if (item && item.data && item.data.precio) {
-        addPrice(item.data.precio);
-      }
+      if (item && item.data && item.data.precio) addPrice(item.data.precio);
     });
   }
-  return total;
+  return { sum: total, count };
+}
+
+function calculateTripServicesTotal() {
+  return calculateTripServicesSummary().sum;
 }
 
 function updatePortadaPriceFromServices() {
   const priceInput = document.getElementById('portadaPrecio');
   if (!priceInput) return;
+
+  const { sum, count } = calculateTripServicesSummary();
   
-  const currentSum = calculateTripServicesTotal();
-  const currentValNum = parseFloat(unformatNumber(priceInput.value)) || 0;
-  
-  if (currentValNum === 0 || currentValNum === lastAutoCalculatedSum) {
-    if (currentSum > 0) {
-      priceInput.value = formatNumber(currentSum);
-    } else if (currentSum === 0 && currentValNum === lastAutoCalculatedSum) {
+  if (!isPriceManual) {
+    if (sum > 0) {
+      priceInput.value = formatNumber(sum);
+    } else if (sum === 0) {
       priceInput.value = '';
     }
   }
-  lastAutoCalculatedSum = currentSum;
+  lastAutoCalculatedSum = sum;
+  updatePortadaPriceUI();
+}
+
+function updatePortadaPriceUI() {
+  const priceInput = document.getElementById('portadaPrecio');
+  if (!priceInput) return;
+
+  const { sum, count } = calculateTripServicesSummary();
+  const currentValNum = parseFloat(unformatNumber(priceInput.value)) || 0;
+
+  const perPersonEl = document.getElementById('pricePerPerson');
+  const manualNotice = document.getElementById('priceManualNotice');
+
+  if (isPriceManual) {
+    if (manualNotice) manualNotice.style.display = 'inline-flex';
+    if (perPersonEl) perPersonEl.style.display = 'none';
+  } else {
+    if (manualNotice) manualNotice.style.display = 'none';
+    if (perPersonEl) perPersonEl.style.display = 'inline-block';
+  }
+
+  // Costo estimado por persona
+  const totalTravelers = (portadaAdultos + portadaNinos) || 1;
+  const perPerson = currentValNum > 0 ? Math.round(currentValNum / totalTravelers) : 0;
+  if (perPersonEl) {
+    perPersonEl.textContent = perPerson > 0 ? `≈ $${formatNumber(perPerson)} / persona` : '≈ $0 / persona';
+  }
+}
+
+function handlePricePencilClick(e) {
+  e && e.stopPropagation();
+  const priceInput = document.getElementById('portadaPrecio');
+  if (priceInput) {
+    priceInput.focus();
+    priceInput.select();
+  }
+}
+
+function handlePriceFocus() {
+  // Mantener foco limpio
+}
+
+function handlePriceManualEdit() {
+  isPriceManual = true;
+  updatePortadaPriceUI();
+  unsavedChanges = true;
+  autoSaveProTrip();
+}
+
+function handleCurrencyChange() {
+  unsavedChanges = true;
+  autoSaveProTrip();
+}
+
+function restoreAutoCalculatedPrice() {
+  isPriceManual = false;
+  const { sum } = calculateTripServicesSummary();
+  const priceInput = document.getElementById('portadaPrecio');
+  if (priceInput) {
+    priceInput.value = sum > 0 ? formatNumber(sum) : '';
+  }
+  updatePortadaPriceUI();
+  showToast('⚡', 'Suma automática de servicios restaurada');
+  unsavedChanges = true;
+  autoSaveProTrip();
+}
+
+function togglePriceVisibility() {
+  hidePriceInPublic = !hidePriceInPublic;
+  updatePriceVisibilityUI();
+  showToast(hidePriceInPublic ? '👁️‍🗨️' : '👁️', hidePriceInPublic ? 'Precio oculto en vista compartida' : 'Precio visible en vista compartida');
+  unsavedChanges = true;
+  autoSaveProTrip();
+}
+
+function updatePriceVisibilityUI() {
+  const icon = document.getElementById('iconPriceVisibility');
+  const btn = document.getElementById('btnTogglePriceVisibility');
+  if (icon) {
+    icon.className = hidePriceInPublic ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+    icon.style.color = hidePriceInPublic ? '#f87171' : 'rgba(255,255,255,0.85)';
+  }
+  if (btn) {
+    btn.title = hidePriceInPublic ? 'Precio actualmente oculto para clientes (click para mostrar)' : 'Precio actualmente visible para clientes (click para ocultar)';
+  }
 }
 
 function buildItem(item, idx) {
   const cfg = C[item.type]; const el = document.createElement('div');
   el.className = `canvas-item tipo-${item.type}`; el.dataset.index = idx;
-  if (item.type === 'separador') { const lbl = item.data.etiqueta || ''; el.innerHTML = `<div class="item-inner"><div class="sep-line"></div>${lbl ? `<span class="sep-dot"></span><span style="font-size:11px;color:var(--text-dim);white-space:nowrap">${lbl}</span><span class="sep-dot"></span>` : '<span class="sep-dot"></span>'}<div class="sep-line"></div><div class="item-actions" style="margin-left:8px"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`; setupReorder(el, idx); return el }
-  if (item.type === 'titulo') { el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:3px;padding:18px 20px"><div class="titulo-text">${item.data.texto || 'Título'}</div>${item.data.subtitulo ? `<div style="font-size:13px;color:var(--text-muted)">${item.data.subtitulo}</div>` : ''}</div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
-  if (item.type === 'texto') { el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:5px;padding:14px 16px"><div class="texto-content" style="text-align:${(item.data.alineacion || 'Izquierda').toLowerCase()}">${item.data.contenido || 'Texto...'}</div></div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
+  if (item.type === 'separador') {
+    const lbl = item.data.etiqueta || '';
+    el.innerHTML = `<div class="item-inner">
+      <div class="sep-line"></div>
+      ${lbl ? `<span class="sep-dot"></span><span style="font-size:11.5px;font-weight:600;color:var(--text-muted);white-space:nowrap;padding:0 6px;">${lbl}</span><span class="sep-dot"></span>` : '<span class="sep-dot"></span>'}
+      <div class="sep-line"></div>
+      <div class="item-actions" style="margin-left:8px"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>
+    </div>`;
+    setupReorder(el, idx); return el;
+  }
+  if (item.type === 'titulo') { el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:3px;padding:18px 20px"><div class="titulo-text">${item.data.texto || 'Título'}</div></div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
+  if (item.type === 'texto') { el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:5px;padding:14px 16px"><div class="texto-content">${item.data.contenido || 'Texto...'}</div></div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
   if (item.type === 'imagen') { const hasImg = item.data.url && item.data.url.startsWith('http'); el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:9px;padding:11px"><div class="imagen-preview">${hasImg ? `<img src="${item.data.url}" alt="">` : '🖼️'}</div>${item.data.caption ? `<div style="font-size:12px;color:var(--text-muted);text-align:center">${item.data.caption}</div>` : ''}</div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
   if (item.type === 'caja') {
-    const bg = item.data.color_fondo || '#7c6fef';
-    el.style.background = bg + '12'; el.style.borderColor = bg + '40';
-    el.innerHTML = `<div class="item-inner" style="gap:11px"><div style="flex:1"><div class="item-title">${item.data.titulo || 'Caja con fondo'}</div><div class="texto-content" style="margin-top:3px">${item.data.contenido || ''}</div></div><div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
-    setupReorder(el, idx); return el
+    const bg = item.data.color_fondo || '#f59e0b';
+    const icon = item.data.icono || '💡';
+    el.style.background = bg.startsWith('#') && bg.length === 7 ? bg + '14' : bg;
+    el.style.borderLeft = `4px solid ${bg}`;
+    el.style.borderRadius = '10px';
+    el.innerHTML = `<div class="item-inner" style="gap:12px;align-items:flex-start;padding:12px 14px;">
+      <div style="font-size:22px;line-height:1;margin-top:2px;flex-shrink:0;">${icon}</div>
+      <div style="flex:1">
+        <div class="item-title" style="font-size:14px;font-weight:700;color:var(--text);">${item.data.titulo || 'Tip Destacado'}</div>
+        <div class="texto-content" style="margin-top:4px;font-size:13px;color:var(--text-muted);">${item.data.contenido || ''}</div>
+      </div>
+      <div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>
+    </div>`;
+    setupReorder(el, idx); return el;
   }
   if (item.type === 'gif') {
     const hasImg = item.data.url && item.data.url.startsWith('http');
@@ -1218,12 +1595,7 @@ function openModal(type, editIdx = null) {
 
   const isPremium = typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan !== 'básico';
 
-  // Phase 36: Direct Unsplash for new images
-  if (type === 'imagen' && editIdx === null) {
-    openUnsplash('canvas');
-    return;
-  }
-  // Phase 38: Direct Giphy for new GIFs
+  // Direct Giphy for new GIFs
   if (type === 'gif' && editIdx === null) {
     openGiphy('canvas');
     return;
@@ -1233,8 +1605,10 @@ function openModal(type, editIdx = null) {
   const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
   const cfg = C[type]; const existData = editIdx !== null ? arr[editIdx].data : {};
   document.getElementById('modalIcon').innerHTML = cfg.icon; document.getElementById('modalIcon').style.background = cfg.bg;
-  document.getElementById('modalTitle').textContent = (editIdx !== null ? 'Editar ' : 'Agregar ') + cfg.label;
-  document.getElementById('modalSubtitle').textContent = editIdx !== null ? 'Modifica los datos' : 'Completa los datos del elemento';
+  const modalName = cfg.modalTitle || cfg.label;
+  document.getElementById('modalTitle').textContent = (editIdx !== null ? 'Editar ' : 'Agregar ') + modalName;
+  const subEl = document.getElementById('modalSubtitle');
+  if (subEl) subEl.textContent = '';
   modalBody.innerHTML = '';
   const fields = cfg.fields;
   let currentGroup = null;
@@ -1271,7 +1645,7 @@ function openModal(type, editIdx = null) {
 
     const next = fields[i + 1];
     let fieldEl;
-    if (f.t === 'textarea' || f.t === 'color-picker' || f.t === 'richtext' || f.t === 'stars' || f.fw) {
+    if (f.t === 'textarea' || f.t === 'color-picker' || f.t === 'richtext' || f.t === 'stars' || f.t === 'separator-chips' || f.t === 'icon-selector' || f.t === 'image-picker' || f.fw) {
       if (type === 'tour' && f.k === 'photo_url') {
         fieldEl = buildField(f, existData);
         const label = fieldEl.querySelector('.form-label');
@@ -1298,7 +1672,7 @@ function openModal(type, editIdx = null) {
       }
 
       currentTarget.appendChild(fieldEl);
-    } else if (next && !next.fw && next.t !== 'textarea' && next.t !== 'color-picker' && next.t !== 'richtext' && next.t !== 'stars' && next.group === f.group) {
+    } else if (next && !next.fw && next.t !== 'textarea' && next.t !== 'color-picker' && next.t !== 'richtext' && next.t !== 'stars' && next.t !== 'separator-chips' && next.t !== 'icon-selector' && next.group === f.group) {
       const row = document.createElement('div');
       row.className = 'form-row';
 
@@ -1836,7 +2210,213 @@ function buildField(field, data) {
     }
     fg.appendChild(sr);
   }
-  else if (field.t === 'textarea') { const ta = document.createElement('textarea'); ta.className = 'form-textarea'; ta.placeholder = field.ph || ''; ta.value = val; ta.dataset.key = field.k; fg.appendChild(ta) }
+  else if (field.t === 'separator-chips') {
+    const wrap = document.createElement('div');
+    wrap.className = 'sep-chips-container';
+
+    const chips = [
+      { label: '🌅 Mañana', val: '🌅 Mañana' },
+      { label: '☀️ Tarde', val: '☀️ Tarde' },
+      { label: '🌙 Noche', val: '🌙 Noche' },
+      { label: '🚗 En ruta', val: '🚗 En ruta' },
+      { label: '➖ Solo línea', val: '' }
+    ];
+
+    chips.forEach(chip => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sep-chip-btn' + (data['etiqueta'] === chip.val || (chip.val === '' && !data['etiqueta']) ? ' active' : '');
+      btn.dataset.val = chip.val;
+      btn.textContent = chip.label;
+      btn.onclick = () => {
+        const inp = modalBody.querySelector('input[data-key="etiqueta"]');
+        if (inp) {
+          inp.value = chip.val;
+          inp.dispatchEvent(new Event('input', { bubbles: true }));
+          inp.focus();
+        }
+        wrap.querySelectorAll('.sep-chip-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      };
+      wrap.appendChild(btn);
+    });
+    fg.appendChild(wrap);
+  }
+  else if (field.t === 'icon-selector') {
+    const wrap = document.createElement('div');
+    wrap.className = 'icon-selector-grid';
+
+    const hiddenInp = document.createElement('input');
+    hiddenInp.type = 'hidden';
+    hiddenInp.dataset.key = field.k;
+    hiddenInp.value = val || (field.opts && field.opts[0] ? field.opts[0].icon : '💡');
+    fg.appendChild(hiddenInp);
+
+    (field.opts || []).forEach(opt => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'icon-chip-card' + (hiddenInp.value === opt.icon ? ' active' : '');
+      btn.innerHTML = `<span class="icc-emoji">${opt.icon}</span> <span class="icc-label">${opt.label}</span>`;
+      btn.onclick = () => {
+        hiddenInp.value = opt.icon;
+        wrap.querySelectorAll('.icon-chip-card').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Preseleccionar automáticamente el color sugerido si existe
+        if (opt.color) {
+          const colorRow = modalBody.querySelector('.color-row');
+          if (colorRow) {
+            const targetSwatch = colorRow.querySelector(`.color-swatch[data-color="${opt.color}"]`);
+            if (targetSwatch) {
+              colorRow.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+              targetSwatch.classList.add('selected');
+            }
+          }
+        }
+      };
+      wrap.appendChild(btn);
+    });
+    fg.appendChild(wrap);
+  }
+  else if (field.t === 'image-picker') {
+    const wrap = document.createElement('div');
+    wrap.className = 'img-picker-box';
+
+    const hiddenInp = document.createElement('input');
+    hiddenInp.type = 'hidden';
+    hiddenInp.dataset.key = field.k;
+    hiddenInp.value = val || '';
+    fg.appendChild(hiddenInp);
+
+    const fileInp = document.createElement('input');
+    fileInp.type = 'file';
+    fileInp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+    fileInp.style.display = 'none';
+    fg.appendChild(fileInp);
+
+    const previewWrap = document.createElement('div');
+    previewWrap.className = 'img-picker-preview-wrap';
+    previewWrap.style.display = val ? 'flex' : 'none';
+
+    const previewImg = document.createElement('img');
+    previewImg.className = 'img-picker-preview-img';
+    previewImg.src = val ? fixUrl(val) : '';
+    previewWrap.appendChild(previewImg);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'img-picker-remove-btn';
+    removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Quitar';
+    removeBtn.onclick = () => {
+      hiddenInp.value = '';
+      previewImg.src = '';
+      previewWrap.style.display = 'none';
+      emptyMsg.style.display = 'block';
+    };
+    previewWrap.appendChild(removeBtn);
+
+    const emptyMsg = document.createElement('div');
+    emptyMsg.style.cssText = 'font-size:12px;color:var(--text-muted);text-align:center;padding:10px 0;display:' + (val ? 'none' : 'block');
+    emptyMsg.innerHTML = '<i class="fa-regular fa-image" style="font-size:24px;color:var(--text-dim);margin-bottom:4px;display:block;"></i> Elige una foto de Unsplash o sube un archivo desde tu dispositivo';
+
+    const actionsRow = document.createElement('div');
+    actionsRow.className = 'img-picker-actions';
+
+    const unsplashBtn = document.createElement('button');
+    unsplashBtn.type = 'button';
+    unsplashBtn.className = 'img-picker-btn img-picker-unsplash';
+    unsplashBtn.innerHTML = '<i class="fa-brands fa-unsplash" style="font-size:16px;"></i> Buscar en Unsplash';
+    unsplashBtn.onclick = () => {
+      openUnsplash('item_photo', hiddenInp);
+    };
+
+    const uploadBtn = document.createElement('button');
+    uploadBtn.type = 'button';
+    uploadBtn.className = 'img-picker-btn img-picker-upload';
+    uploadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="font-size:15px;"></i> Cargar archivo';
+    uploadBtn.onclick = () => fileInp.click();
+
+    fileInp.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) {
+        showToast('⚠️', 'La imagen no puede superar 5 MB');
+        return;
+      }
+
+      // Local preview
+      const reader = new FileReader();
+      reader.onload = (re) => {
+        previewImg.src = re.target.result;
+        previewWrap.style.display = 'flex';
+        emptyMsg.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+
+      // Upload
+      const formData = new FormData();
+      formData.append('file', file);
+      const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+      uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo...';
+      uploadBtn.disabled = true;
+
+      fetch(`/trips/${window.tripId}/upload-attachment`, {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+        body: formData
+      })
+        .then(res => res.json())
+        .then(res => {
+          uploadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Cargar archivo';
+          uploadBtn.disabled = false;
+          if (res.success && res.url) {
+            hiddenInp.value = res.url;
+            previewImg.src = fixUrl(res.url);
+            previewWrap.style.display = 'flex';
+            emptyMsg.style.display = 'none';
+            showToast('✅', 'Imagen subida correctamente');
+          } else {
+            showToast('⚠️', res.message || 'Error al subir');
+          }
+        })
+        .catch(err => {
+          uploadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Cargar archivo';
+          uploadBtn.disabled = false;
+          console.error(err);
+          showToast('⚠️', 'Error de conexión');
+        });
+    };
+
+    // Listen to Unsplash selection updates
+    hiddenInp.addEventListener('input', () => {
+      if (hiddenInp.value) {
+        previewImg.src = fixUrl(hiddenInp.value);
+        previewWrap.style.display = 'flex';
+        emptyMsg.style.display = 'none';
+      }
+    });
+
+    actionsRow.appendChild(unsplashBtn);
+    actionsRow.appendChild(uploadBtn);
+
+    wrap.appendChild(emptyMsg);
+    wrap.appendChild(previewWrap);
+    wrap.appendChild(actionsRow);
+    fg.appendChild(wrap);
+  }
+  else if (field.t === 'textarea') {
+    const ta = document.createElement('textarea');
+    ta.className = 'form-textarea';
+    ta.placeholder = field.ph || '';
+    ta.value = val;
+    ta.dataset.key = field.k;
+    if (field.rows) {
+      ta.rows = field.rows;
+      ta.style.minHeight = '72px';
+    }
+    fg.appendChild(ta);
+  }
   else if (field.t === 'richtext') {
     const wrap = document.createElement('div'); wrap.className = 'rte-container';
     wrap.innerHTML = `
@@ -1847,12 +2427,12 @@ function buildField(field, data) {
         <button type="button" class="rte-btn" onclick="execRTE('createLink')" title="Enlace"><i class="fa-solid fa-link"></i></button>
         <button type="button" class="rte-btn" onclick="execRTE('unlink')" title="Quitar enlace"><i class="fa-solid fa-link-slash"></i></button>
       </div>
-      <div class="rte-editor" contenteditable="true" data-key="${field.k}">${val || ''}</div>
+      <div class="rte-editor" contenteditable="true" data-key="${field.k}" data-placeholder="${field.ph || ''}">${val || ''}</div>
     `;
     fg.appendChild(wrap);
   }
   else if (field.t === 'select') { const sel = document.createElement('select'); sel.className = 'form-select'; sel.dataset.key = field.k; if (field.ph) { const op = document.createElement('option'); op.value = ''; op.textContent = field.ph; op.selected = !val; sel.appendChild(op); } field.opts.forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt; if (opt === val) o.selected = true; sel.appendChild(o) }); fg.appendChild(sel) }
-  else if (field.t === 'color-picker') { const row = document.createElement('div'); row.className = 'color-row'; field.opts.forEach((color, ci) => { const sw = document.createElement('div'); sw.className = 'color-swatch' + (data[field.k] === color || (!data[field.k] && ci === 0) ? ' selected' : ''); sw.style.background = color; sw.dataset.color = color; sw.dataset.key = field.k; sw.addEventListener('click', () => { row.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected')); sw.classList.add('selected') }); row.appendChild(sw) }); fg.appendChild(row) }
+  else if (field.t === 'color-picker') { const row = document.createElement('div'); row.className = 'color-row'; const selectedColor = data[field.k] || (field.opts ? field.opts[0] : '#f59e0b'); field.opts.forEach((color, ci) => { const sw = document.createElement('div'); sw.className = 'color-swatch' + (selectedColor === color ? ' selected' : ''); sw.style.background = color; sw.dataset.color = color; sw.dataset.key = field.k; sw.addEventListener('click', () => { row.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected')); sw.classList.add('selected') }); row.appendChild(sw) }); fg.appendChild(row) }
   else if (field.t === 'file-upload') {
     const wrap = document.createElement('div');
     wrap.style = 'border:1.5px dashed var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;background:var(--surface)';
@@ -2291,11 +2871,13 @@ function showToast(icon, msg) {
 // VISTA PREVIA — genera HTML y lo abre en nueva pestaña
 // ============================================================
 function openPreview() {
-  const title = document.getElementById('portadaTitle').value || document.getElementById('itineraryNameInput').value || 'Mi Itinerario';
-  const fechaInicio = document.getElementById('portadaFechaInicio').value;
-  const fechaFin = document.getElementById('portadaFechaFin').value;
-  const precio = unformatNumber(document.getElementById('portadaPrecio').value);
-  const moneda = document.getElementById('portadaMoneda').value;
+  const title = document.getElementById('portadaTitle')?.value || document.getElementById('itineraryNameInput')?.value || 'Mi Itinerario';
+  const destination = document.getElementById('portadaDestino')?.value || '';
+  const portadaSubtitle = document.getElementById('portadaSubtitle')?.value || '';
+  const fechaInicio = document.getElementById('portadaFechaInicio')?.value || '';
+  const fechaFin = document.getElementById('portadaFechaFin')?.value || '';
+  const precio = unformatNumber(document.getElementById('portadaPrecio')?.value || '');
+  const moneda = document.getElementById('portadaMoneda')?.value || 'USD';
   const totalViajeros = portadaAdultos + portadaNinos;
   const hasPortada = !!document.querySelector('.day-tab.portada-tab');
   const hasCierre = !!document.querySelector('.day-tab.cierre-tab');
@@ -2309,7 +2891,7 @@ function openPreview() {
   // Build preview HTML
   const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
   const previewHTML = buildPreviewHTML({
-    title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems,
+    title, destination, portadaSubtitle, hidePriceInPublic, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems,
     isPublicLink: false,
     csrfToken: csrfToken,
     tripId: window.tripId || '',
@@ -2346,6 +2928,9 @@ if (window.proState) {
   if (s.portadaAdultos !== undefined) portadaAdultos = s.portadaAdultos;
   if (s.portadaNinos !== undefined) portadaNinos = s.portadaNinos;
   if (s.portadaPhotoUrl !== undefined) portadaPhotoUrl = s.portadaPhotoUrl;
+  if (s.isPriceManual !== undefined) isPriceManual = s.isPriceManual;
+  if (s.hidePriceInPublic !== undefined) hidePriceInPublic = s.hidePriceInPublic;
+  if (s.portadaSubtitle !== undefined) portadaSubtitle = s.portadaSubtitle;
 
   // Ensure days array has at least 1 day if empty, or match numeric tabs
   if (!days || days.length === 0) days = [[]];
@@ -2362,13 +2947,19 @@ if (window.proState) {
   // Set UI elements
   document.addEventListener('DOMContentLoaded', () => {
     if (portadaPhotoUrl) setPortadaPhoto(portadaPhotoUrl);
-    document.getElementById('portadaAdultos').textContent = portadaAdultos;
-    document.getElementById('portadaNinos').textContent = portadaNinos;
-    document.getElementById('portadaTotal').textContent = portadaAdultos + portadaNinos;
+    const adEl = document.getElementById('portadaAdultos');
+    const niEl = document.getElementById('portadaNinos');
+    if (adEl) adEl.textContent = portadaAdultos;
+    if (niEl) niEl.textContent = portadaNinos;
+    updatePortadaTravelersUI();
 
     const pi = document.getElementById('portadaFechaInicio');
     if (pi) {
-      if (s.fechaInicio) pi.value = s.fechaInicio;
+      if (s.fechaInicio) {
+        pi.value = s.fechaInicio;
+      } else if (window.tripStartDate && !pi.value) {
+        pi.value = window.tripStartDate;
+      }
       const startDate = pi.value;
       if (startDate) {
         for (let i = 0; i < days.length; i++) {
@@ -2389,24 +2980,60 @@ if (window.proState) {
           renderTabs();
           renderCanvas();
         }
+        updatePortadaDatesUI();
       });
     }
     const pf = document.getElementById('portadaFechaFin');
-    if (pf && s.fechaFin) pf.value = s.fechaFin;
+    if (pf) {
+      if (s.fechaFin) {
+        pf.value = s.fechaFin;
+      } else if (window.tripEndDate && !pf.value) {
+        pf.value = window.tripEndDate;
+      }
+      pf.addEventListener('change', () => updatePortadaDatesUI());
+    }
+    updatePortadaDatesUI();
+
     const pp = document.getElementById('portadaPrecio');
     if (pp) {
-      if (s.precio) pp.value = formatNumber(s.precio);
+      if (s.precio !== undefined && s.precio !== null && isPriceManual) {
+        pp.value = formatNumber(s.precio);
+      }
       pp.addEventListener('keypress', allowPriceKeys);
-      pp.addEventListener('input', formatPriceInput);
+      pp.addEventListener('input', (e) => {
+        formatPriceInput(e);
+        handlePriceManualEdit();
+      });
     }
     const pm = document.getElementById('portadaMoneda');
     if (pm && s.moneda) pm.value = s.moneda;
+    if (pm) pm.addEventListener('change', handleCurrencyChange);
 
     const titleInp = document.getElementById('portadaTitle');
     if (titleInp && s.title) titleInp.value = s.title;
 
+    const destInp = document.getElementById('portadaDestino');
+    if (destInp) {
+      if (s.destination) {
+        destInp.value = s.destination;
+      } else if (window.tripDestination && !destInp.value) {
+        destInp.value = window.tripDestination;
+      }
+      destInp.addEventListener('input', () => updatePortadaDatesUI());
+    }
+
+    const subInp = document.getElementById('portadaSubtitle');
+    if (subInp) {
+      if (s.portadaSubtitle) {
+        subInp.value = s.portadaSubtitle;
+        autoResizeTextarea(subInp);
+      }
+    }
+
+    updatePriceVisibilityUI();
+
     // Listeners para inputs de cabecera
-    const headerInputs = [pi, pf, pp, pm, titleInp];
+    const headerInputs = [pi, pf, titleInp, destInp];
     headerInputs.forEach(inp => {
       if (inp) inp.addEventListener('input', () => autoSaveProTrip());
     });
@@ -2414,11 +3041,23 @@ if (window.proState) {
     lastAutoCalculatedSum = calculateTripServicesTotal();
     renderTabs();
     renderCanvas();
+    updatePortadaPriceUI();
   });
 } else {
   document.addEventListener('DOMContentLoaded', () => {
     const pi = document.getElementById('portadaFechaInicio');
     if (pi) {
+      if (window.tripStartDate && !pi.value) {
+        pi.value = window.tripStartDate;
+      }
+      const startDate = pi.value;
+      if (startDate) {
+        for (let i = 0; i < days.length; i++) {
+          if (!dayDates[i]) {
+            dayDates[i] = addDaysToDate(startDate, i);
+          }
+        }
+      }
       pi.addEventListener('change', () => {
         const startDate = pi.value;
         if (startDate) {
@@ -2431,42 +3070,79 @@ if (window.proState) {
           renderTabs();
           renderCanvas();
         }
+        updatePortadaDatesUI();
       });
     }
+    const pf = document.getElementById('portadaFechaFin');
+    if (pf) {
+      if (window.tripEndDate && !pf.value) {
+        pf.value = window.tripEndDate;
+      }
+      pf.addEventListener('change', () => updatePortadaDatesUI());
+    }
+    updatePortadaDatesUI();
+    updatePortadaTravelersUI();
+
     const pp = document.getElementById('portadaPrecio');
     if (pp) {
       pp.addEventListener('keypress', allowPriceKeys);
-      pp.addEventListener('input', formatPriceInput);
+      pp.addEventListener('input', (e) => {
+        formatPriceInput(e);
+        handlePriceManualEdit();
+      });
     }
-    const pf = document.getElementById('portadaFechaFin');
     const pm = document.getElementById('portadaMoneda');
+    if (pm) pm.addEventListener('change', handleCurrencyChange);
+
     const titleInp = document.getElementById('portadaTitle');
+    const destInp = document.getElementById('portadaDestino');
+    if (destInp) {
+      if (window.tripDestination && !destInp.value) {
+        destInp.value = window.tripDestination;
+      }
+      destInp.addEventListener('input', () => updatePortadaDatesUI());
+    }
+
+    updatePriceVisibilityUI();
 
     // Listeners para inputs de cabecera
-    const headerInputs = [pi, pf, pp, pm, titleInp];
+    const headerInputs = [pi, pf, titleInp, destInp];
     headerInputs.forEach(inp => {
       if (inp) inp.addEventListener('input', () => autoSaveProTrip());
     });
 
     renderTabs();
     renderCanvas();
+    updatePortadaPriceUI();
   });
 }
 
-// Bind click handler for portada price refresh
-document.addEventListener('DOMContentLoaded', () => {
-  const refreshBtn = document.getElementById('portadaPriceRefresh');
-  if (refreshBtn) {
-    refreshBtn.addEventListener('click', () => {
-      const currentSum = calculateTripServicesTotal();
-      const priceInput = document.getElementById('portadaPrecio');
-      if (priceInput) {
-        priceInput.value = currentSum > 0 ? formatNumber(currentSum) : '';
-        lastAutoCalculatedSum = currentSum;
-        autoSaveProTrip();
-        showToast('🔄', 'Sumatoria de servicios restablecida');
-      }
-    });
+// Global click-outside detection for popovers & photo menu
+document.addEventListener('click', (e) => {
+  const popDates = document.getElementById('popoverDates');
+  const btnDates = document.getElementById('btnEditDates');
+  const valDates = document.getElementById('displayDateRange');
+  if (popDates && popDates.classList.contains('open')) {
+    if (!popDates.contains(e.target) && !btnDates?.contains(e.target) && !valDates?.contains(e.target)) {
+      closeDatesPopover();
+    }
+  }
+
+  const popTravelers = document.getElementById('popoverTravelers');
+  const btnTravelers = document.getElementById('btnEditTravelers');
+  const valTravelers = document.getElementById('displayTravelersMain');
+  if (popTravelers && popTravelers.classList.contains('open')) {
+    if (!popTravelers.contains(e.target) && !btnTravelers?.contains(e.target) && !valTravelers?.contains(e.target)) {
+      closeTravelersPopover();
+    }
+  }
+
+  const photoMenu = document.getElementById('portadaPhotoMenu');
+  const photoBtn = document.getElementById('portadaPhotoActionBtn');
+  if (photoMenu && photoMenu.classList.contains('open')) {
+    if (!photoMenu.contains(e.target) && !photoBtn?.contains(e.target)) {
+      closePhotoMenu();
+    }
   }
 });
 
@@ -2497,6 +3173,8 @@ async function manualSaveProTrip() {
 
 async function performProSave(isSilent = true) {
   const title = document.getElementById('portadaTitle') ? document.getElementById('portadaTitle').value : 'Sin título';
+  const destination = document.getElementById('portadaDestino') ? document.getElementById('portadaDestino').value.trim() : '';
+  const subtitle = document.getElementById('portadaSubtitle') ? document.getElementById('portadaSubtitle').value.trim() : '';
   const fechaInicio = document.getElementById('portadaFechaInicio') ? document.getElementById('portadaFechaInicio').value : null;
   const fechaFin = document.getElementById('portadaFechaFin') ? document.getElementById('portadaFechaFin').value : null;
   const precio = document.getElementById('portadaPrecio') ? unformatNumber(document.getElementById('portadaPrecio').value) : null;
@@ -2516,7 +3194,33 @@ async function performProSave(isSilent = true) {
     });
   }
 
-  const proStateObj = { title, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink: false, status: window.proStatus, origin: window.location.origin };
+  const proStateObj = {
+    title,
+    destination,
+    portadaSubtitle: subtitle,
+    fechaInicio,
+    fechaFin,
+    precio,
+    moneda,
+    isPriceManual,
+    hidePriceInPublic,
+    totalViajeros,
+    hasPortada,
+    hasCierre,
+    showDefaultCierre,
+    totalItems,
+    numericTabs,
+    days,
+    dayDates,
+    portadaAdultos,
+    portadaNinos,
+    portadaPhotoUrl,
+    portadaItems,
+    cierreItems,
+    isPublicLink: false,
+    status: window.proStatus,
+    origin: window.location.origin
+  };
 
   try {
     const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';

@@ -188,6 +188,9 @@
     window.tripId = {{ $trip->id ?? 'null' }};
     window.proStatus = "{{ $trip->status ?? 'draft' }}";
     window.proState = @json($trip->pro_state ?? null);
+    window.tripStartDate = @json($trip && $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->format('Y-m-d') : null);
+    window.tripEndDate = @json($trip && $trip->end_date ? \Carbon\Carbon::parse($trip->end_date)->format('Y-m-d') : null);
+    window.tripDestination = @json($trip->destination ?? '');
     window.viantrypGoogleClientId = "{{ config('services.google.client_id') }}";
   </script>
 </head>
@@ -324,6 +327,15 @@
                 <div class="el-sub">Hotel u hospedaje</div>
               </div>
             </div>
+            <div class="element-card type-actividad" draggable="true" data-type="actividad" data-label="Actividad">
+              <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                  class="fa-solid fa-ellipsis-vertical"></i></div>
+              <div class="el-icon"><i class="fa-solid fa-compass"></i></div>
+              <div class="el-info">
+                <div class="el-name">Actividad</div>
+                <div class="el-sub">Tours o experiencias</div>
+              </div>
+            </div>
             <div class="element-card type-transporte" draggable="true" data-type="transporte" data-label="Transporte">
               <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
                   class="fa-solid fa-ellipsis-vertical"></i></div>
@@ -333,15 +345,6 @@
                 <div class="el-sub">Bus, tren u otro</div>
               </div>
             </div>
-            <div class="element-card type-actividad" draggable="true" data-type="actividad" data-label="Actividad">
-              <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
-                  class="fa-solid fa-ellipsis-vertical"></i></div>
-              <div class="el-icon"><i class="fa-solid fa-bullseye"></i></div>
-              <div class="el-info">
-                <div class="el-name">Actividad</div>
-                <div class="el-sub">Tour o experiencia</div>
-              </div>
-            </div>
             <div class="element-card type-comida" draggable="true" data-type="comida" data-label="Comida">
               <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
                   class="fa-solid fa-ellipsis-vertical"></i></div>
@@ -349,15 +352,6 @@
               <div class="el-info">
                 <div class="el-name">Comida</div>
                 <div class="el-sub">Restaurante y más</div>
-              </div>
-            </div>
-            <div class="element-card type-tour" draggable="true" data-type="tour" data-label="Tour">
-              <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
-                  class="fa-solid fa-ellipsis-vertical"></i></div>
-              <div class="el-icon"><i class="fa-solid fa-map-location-dot"></i></div>
-              <div class="el-info">
-                <div class="el-name">Tour</div>
-                <div class="el-sub">Guías y grupos</div>
               </div>
             </div>
             <div class="element-card type-documentos" draggable="true" data-type="documents" data-label="Documentos">
@@ -374,15 +368,6 @@
         <div class="sidebar-section">
           <div class="section-label">Diseño</div>
           <div class="element-grid">
-            <div class="element-card type-texto" draggable="true" data-type="texto" data-label="Caja de texto">
-              <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
-                  class="fa-solid fa-ellipsis-vertical"></i></div>
-              <div class="el-icon" style="font-size:14px;font-family:'Poppins';">Aa</div>
-              <div class="el-info">
-                <div class="el-name">Texto</div>
-                <div class="el-sub">Caja de texto</div>
-              </div>
-            </div>
             <div class="element-card type-titulo" draggable="true" data-type="titulo" data-label="Título">
               <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
                   class="fa-solid fa-ellipsis-vertical"></i></div>
@@ -390,6 +375,15 @@
               <div class="el-info">
                 <div class="el-name">Título</div>
                 <div class="el-sub">Encabezado</div>
+              </div>
+            </div>
+            <div class="element-card type-texto" draggable="true" data-type="texto" data-label="Texto">
+              <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                  class="fa-solid fa-ellipsis-vertical"></i></div>
+              <div class="el-icon" style="font-size:14px;font-family:'Poppins';">Aa</div>
+              <div class="el-info">
+                <div class="el-name">Texto</div>
+                <div class="el-sub">Párrafo</div>
               </div>
             </div>
             <div class="element-card type-separador" draggable="true" data-type="separador" data-label="Separador">
@@ -400,16 +394,16 @@
                 — ✦ —</div>
               <div class="el-info">
                 <div class="el-name">Separador</div>
-                <div class="el-sub">División</div>
+                <div class="el-sub">Momento del día</div>
               </div>
             </div>
-            <div class="element-card type-caja" draggable="true" data-type="caja" data-label="Caja con fondo">
+            <div class="element-card type-caja" draggable="true" data-type="caja" data-label="Nota">
               <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
                   class="fa-solid fa-ellipsis-vertical"></i></div>
-              <div class="el-icon"><i class="fa-solid fa-palette"></i></div>
+              <div class="el-icon"><i class="fa-solid fa-lightbulb"></i></div>
               <div class="el-info">
-                <div class="el-name">Caja</div>
-                <div class="el-sub">Notas fondo</div>
+                <div class="el-name">Nota</div>
+                <div class="el-sub">Tip o recomendación</div>
               </div>
             </div>
           </div>
@@ -470,118 +464,203 @@
         <div class="canvas-inner" id="canvasInner">
           <div class="portada-canvas" id="portadaCanvas">
             <div class="portada-card">
-              <!-- Per-element clear buttons injected via CSS hover on each section -->
+              <!-- Zona Superior: Hero Inmersivo con Imagen y Textos Editoriales -->
               <div class="portada-hero" id="portadaHero">
                 <img id="portadaHeroImg" src="" alt="">
-                <div class="portada-hero-placeholder" id="portadaHeroPlaceholder">
-                  <div class="ph-main-icon" onclick="openUnsplash('portada')" style="cursor:pointer"
-                    title="Buscar en Unsplash"><i class="fa-solid fa-image"></i></div>
-                  <button class="ph-unsplash-btn" type="button" onclick="openUnsplash('portada')">
-                    <span class="ph-unsplash-text" style="pointer-events:none">Agregar foto desde Unsplash</span>
-                    <span class="ph-unsplash-sub" style="pointer-events:none">Miles de fotos profesionales sin costo ·
-                      sin atribución</span>
-                  </button>
-                  <div class="ph-separator"><span>o también puedes</span></div>
-                  <label class="ph-local-btn">
-                    <span class="ph-local-text">Sube tu propia imagen</span>
-                    <span class="ph-local-sub">JPG, PNG o WEBP · máx. 5 MB</span>
-                    <input type="file" accept="image/*" style="display:none" onchange="handlePortadaUpload(event)">
-                  </label>
-                </div>
-                <button class="portada-hero-btn has-photo-btn" id="portadaChangeBtn"><i class="fa-solid fa-rotate"></i>
-                  Cambiar foto · <span onclick="clearPortadaPhoto(event)" style="color:#f0567a"><i
-                      class="fa-solid fa-xmark"></i> Quitar</span></button>
-              </div>
-              <div class="portada-body">
-                <div style="display:flex;align-items:center;gap:8px;position:relative">
-                  <input class="portada-title-input" id="portadaTitle" placeholder="Nombre del viaje..."
-                    value="{{ $trip->title ?? '' }}" style="flex:1">
-                  <button class="pfield-clear" onclick="document.getElementById('portadaTitle').value=''"
-                    title="Borrar título">🗑</button>
-                </div>
-                <div class="portada-divider"></div>
-                <div class="portada-meta">
-                  <div class="portada-meta-item">
-                    <div class="portada-meta-label"
-                      style="display:flex;justify-content:space-between;align-items:center"><span><i
-                          class="fa-solid fa-calendar-day"></i> Fecha inicio</span> <button class="pfield-clear-sm"
-                        onclick="document.getElementById('portadaFechaInicio').value=''" title="Borrar">🗑</button>
-                    </div>
-                    <input type="date" class="portada-meta-input" id="portadaFechaInicio">
-                  </div>
-                  <div class="portada-meta-item">
-                    <div class="portada-meta-label"
-                      style="display:flex;justify-content:space-between;align-items:center"><span><i
-                          class="fa-solid fa-calendar-check"></i> Fecha fin</span> <button class="pfield-clear-sm"
-                        onclick="document.getElementById('portadaFechaFin').value=''" title="Borrar">🗑</button></div>
-                    <input type="date" class="portada-meta-input" id="portadaFechaFin">
-                  </div>
-                  <div class="portada-meta-item">
-                    <div class="portada-meta-label"
-                      style="display:flex;justify-content:space-between;align-items:center"><span><i
-                          class="fa-solid fa-user-group"></i> Viajeros</span> <button class="pfield-clear-sm"
-                        onclick="resetViajeros()" title="Reiniciar">🗑</button></div>
-                    <div class="portada-travelers-row">
-                      <div style="display:flex;flex-direction:column;gap:2px;align-items:center">
-                        <div class="mini-counter"><button class="mini-counter-btn"
-                            onclick="changePortadaCount('adultos',-1)">−</button>
-                          <div class="mini-counter-val" id="portadaAdultos">2</div><button class="mini-counter-btn"
-                            onclick="changePortadaCount('adultos',1)">+</button>
-                        </div>
-                        <div class="mini-counter-label" style="font-size:9px">Adultos</div>
-                      </div>
-                      <div style="font-size:14px;color:var(--text-dim);padding:0 2px">+</div>
-                      <div style="display:flex;flex-direction:column;gap:2px;align-items:center">
-                        <div class="mini-counter"><button class="mini-counter-btn"
-                            onclick="changePortadaCount('ninos',-1)">−</button>
-                          <div class="mini-counter-val" id="portadaNinos">0</div><button class="mini-counter-btn"
-                            onclick="changePortadaCount('ninos',1)">+</button>
-                        </div>
-                        <div class="mini-counter-label" style="font-size:9px">Niños</div>
-                      </div>
-                      <div style="font-size:14px;color:var(--text-dim);padding:0 2px">=</div>
-                      <div style="display:flex;flex-direction:column;gap:2px;align-items:center">
-                        <div
-                          style="min-width:40px;height:30px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent)"
-                          id="portadaTotal">2</div>
-                        <div class="mini-counter-label" style="font-size:9px">Total</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="portada-divider"></div>
-                <div class="portada-price-section" style="max-width:245px;margin:0 auto;text-align:center">
-                  <div class="portada-meta-label"
-                    style="display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:4px">
-                    <span><i class="fa-solid fa-money-bill-wave"></i> Valor total de tu viaje</span>
-                  </div>
-                  <div style="display:flex;gap:5px;align-items:center;">
-                    <button type="button" class="portada-price-refresh-btn" id="portadaPriceRefresh"
-                      title="Actualizar sumatoria de servicios">
-                      <i class="fa-solid fa-rotate"></i>
+                <div class="portada-hero-overlay"></div>
+
+                <!-- Botón flotante superior derecho de gestión de foto -->
+                <div class="portada-floating-actions">
+                  <div class="portada-photo-dropdown-wrap">
+                    <button type="button" class="portada-glass-btn" id="portadaPhotoActionBtn" onclick="togglePhotoMenu(event)">
+                      <i class="fa-solid fa-camera"></i> <span id="portadaPhotoBtnLabel">Agregar foto</span> <i class="fa-solid fa-chevron-down" style="font-size:10px;margin-left:2px"></i>
                     </button>
-                    <input type="text" class="portada-meta-input" id="portadaPrecio" placeholder="0"
-                      style="flex:1;min-width:0;text-align:center">
-                    <select class="portada-meta-input" id="portadaMoneda" style="width:82px;padding:7px 5px">
-                      <option value="USD">USD ($)</option>
-                      <option value="COP">COP ($)</option>
-                      <option value="MXN">MXN ($)</option>
-                      <option value="ARS">ARS ($)</option>
-                      <option value="CLP">CLP ($)</option>
-                      <option value="PEN">PEN (S/)</option>
-                      <option value="BRL">BRL (R$)</option>
-                      <option value="UYU">UYU ($U)</option>
-                      <option value="VES">VES (Bs.)</option>
-                      <option value="DOP">DOP (RD$)</option>
-                      <option value="GTQ">GTQ (Q)</option>
-                      <option value="CRC">CRC (₡)</option>
-                      <option value="EUR">EUR (€)</option>
+                    <div class="portada-photo-menu" id="portadaPhotoMenu">
+                      <button type="button" class="photo-menu-item" onclick="openUnsplash('portada'); closePhotoMenu();">
+                        <i class="fa-brands fa-unsplash"></i> Buscar en Unsplash
+                      </button>
+                      <label class="photo-menu-item" style="margin:0;cursor:pointer;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Subir archivo local
+                        <input type="file" accept="image/*" style="display:none" onchange="handlePortadaUpload(event); closePhotoMenu();">
+                      </label>
+                      <div class="photo-menu-divider" id="photoMenuDivider" style="display:none"></div>
+                      <button type="button" class="photo-menu-item text-danger" id="photoMenuRemoveBtn" onclick="clearPortadaPhoto(event); closePhotoMenu();" style="display:none">
+                        <i class="fa-solid fa-trash-can"></i> Quitar foto
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Contenido editorial superpuesto al pie del Hero -->
+                <div class="portada-hero-content">
+                  <!-- Tag superior: Destino y Duración -->
+                  <div class="portada-tag-badge">
+                    <i class="fa-solid fa-location-dot" style="color:var(--accent, #1ebdb1);font-size:12px"></i>
+                    <input class="portada-dest-input" id="portadaDestino" placeholder="Destino (ej. Capadocia, Turquía)"
+                      value="{{ $trip->destination ?? '' }}">
+                    <span class="portada-tag-separator">•</span>
+                    <span class="portada-duration-text" id="portadaDurationBadge">Aventura por programar</span>
+                  </div>
+
+                  <!-- Título Principal Editorial -->
+                  <div class="portada-title-wrap">
+                    <input class="portada-title-input" id="portadaTitle" placeholder="Añade un título memorable para tu viaje..."
+                      value="{{ $trip->title ?? '' }}">
+                  </div>
+
+                  <!-- Subtítulo / Descripción narrativa editable inline -->
+                  <div class="portada-subtitle-wrap">
+                    <textarea class="portada-subtitle-input" id="portadaSubtitle" placeholder="Escribe un subtítulo o una breve historia de este viaje..." rows="1" oninput="autoResizeTextarea(this)"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Barra Inferior de Metadatos (Footer Temático Integrado de 3 Columnas) -->
+              <div class="portada-footer-bar">
+                <!-- Columna 1: Fechas -->
+                <div class="portada-footer-col" id="colFechas">
+                  <div class="pcol-header">
+                    <span class="pcol-label"><i class="fa-regular fa-calendar-days"></i> FECHAS</span>
+                    <button type="button" class="pcol-edit-btn" id="btnEditDates" onclick="toggleDatesPopover(event)" title="Editar fechas">
+                      <i class="fa-solid fa-pencil"></i>
+                    </button>
+                  </div>
+                  <div class="pcol-main-val" id="displayDateRange" onclick="toggleDatesPopover(event)">
+                    Sin fechas
+                  </div>
+                  <div class="pcol-sub-val" id="displayNightsCount">
+                    Sin programar
+                  </div>
+
+                  <!-- Popover flotante de Fechas -->
+                  <div class="portada-popover" id="popoverDates">
+                    <div class="popover-arrow"></div>
+                    <div class="popover-header">
+                      <span>Configurar Fechas</span>
+                      <button type="button" class="popover-close" onclick="closeDatesPopover(event)">&times;</button>
+                    </div>
+                    <div class="popover-body">
+                      <div class="popover-form-group">
+                        <label class="popover-label">Fecha de salida</label>
+                        <input type="date" class="popover-input" id="portadaFechaInicio"
+                          value="{{ $trip && $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->format('Y-m-d') : '' }}">
+                      </div>
+                      <div class="popover-form-group">
+                        <label class="popover-label">Fecha de regreso</label>
+                        <input type="date" class="popover-input" id="portadaFechaFin"
+                          value="{{ $trip && $trip->end_date ? \Carbon\Carbon::parse($trip->end_date)->format('Y-m-d') : '' }}">
+                      </div>
+                      <div class="popover-actions">
+                        <button type="button" class="popover-btn-clear" onclick="clearTripDates()">Aún por definir</button>
+                        <button type="button" class="popover-btn-apply" onclick="applyTripDates()">Listo</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Columna 2: Viajeros -->
+                <div class="portada-footer-col" id="colViajeros">
+                  <div class="pcol-header">
+                    <span class="pcol-label"><i class="fa-solid fa-users"></i> VIAJEROS</span>
+                    <button type="button" class="pcol-edit-btn" id="btnEditTravelers" onclick="toggleTravelersPopover(event)" title="Editar viajeros">
+                      <i class="fa-solid fa-pencil"></i>
+                    </button>
+                  </div>
+                  <div class="pcol-main-val" id="displayTravelersMain" onclick="toggleTravelersPopover(event)">
+                    2 adultos
+                  </div>
+                  <div class="pcol-sub-val" id="displayTravelersSub">
+                    0 niños (2 en total)
+                  </div>
+
+                  <!-- Popover flotante de Viajeros -->
+                  <div class="portada-popover" id="popoverTravelers">
+                    <div class="popover-arrow"></div>
+                    <div class="popover-header">
+                      <span>Número de Viajeros</span>
+                      <button type="button" class="popover-close" onclick="closeTravelersPopover(event)">&times;</button>
+                    </div>
+                    <div class="popover-body">
+                      <div class="traveler-counter-row">
+                        <div class="tcounter-info">
+                          <span class="tcounter-title">Adultos</span>
+                          <span class="tcounter-desc">13 años o más</span>
+                        </div>
+                        <div class="tcounter-controls">
+                          <button type="button" class="tbtn" onclick="changePortadaCount('adultos', -1)">−</button>
+                          <span class="tval" id="portadaAdultos">2</span>
+                          <button type="button" class="tbtn" onclick="changePortadaCount('adultos', 1)">+</button>
+                        </div>
+                      </div>
+                      <div class="traveler-counter-row" style="margin-top:12px;">
+                        <div class="tcounter-info">
+                          <span class="tcounter-title">Niños</span>
+                          <span class="tcounter-desc">De 0 a 12 años</span>
+                        </div>
+                        <div class="tcounter-controls">
+                          <button type="button" class="tbtn" onclick="changePortadaCount('ninos', -1)">−</button>
+                          <span class="tval" id="portadaNinos">0</span>
+                          <button type="button" class="tbtn" onclick="changePortadaCount('ninos', 1)">+</button>
+                        </div>
+                      </div>
+                      <!-- Elemento de compatibilidad con código existente -->
+                      <span id="portadaTotal" style="display:none">2</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Columna 3: Valor Total & Presupuesto Inteligente -->
+                <div class="portada-footer-col" id="colPrecio">
+                  <div class="pcol-header">
+                    <span class="pcol-label"><i class="fa-solid fa-coins"></i> VALOR TOTAL</span>
+                    <button type="button" class="pcol-edit-btn" id="btnEditPrice" onclick="handlePricePencilClick(event)" title="Editar valor total">
+                      <i class="fa-solid fa-pencil"></i>
+                    </button>
+                    <div class="pcol-info-wrap">
+                      <button type="button" class="pcol-info-btn" aria-label="Información de cálculo">
+                        <i class="fa-solid fa-circle-info"></i>
+                      </button>
+                      <div class="pcol-info-tooltip">
+                        Suma calculada automáticamente según los servicios agregados. Puedes escribir un monto manual en cualquier momento.
+                      </div>
+                    </div>
+                    <button type="button" class="pcol-visibility-btn" id="btnTogglePriceVisibility" onclick="togglePriceVisibility()" title="Ocultar o mostrar precio en la vista pública">
+                      <i class="fa-solid fa-eye" id="iconPriceVisibility"></i>
+                    </button>
+                  </div>
+                  <div class="price-input-row">
+                    <span class="price-symbol">$</span>
+                    <input type="text" class="portada-price-input" id="portadaPrecio" placeholder="0">
+                    <select class="portada-currency-select" id="portadaMoneda">
+                      <option value="USD">USD</option>
+                      <option value="COP">COP</option>
+                      <option value="MXN">MXN</option>
+                      <option value="EUR">EUR</option>
+                      <option value="ARS">ARS</option>
+                      <option value="CLP">CLP</option>
+                      <option value="PEN">PEN</option>
+                      <option value="BRL">BRL</option>
+                      <option value="UYU">UYU</option>
+                      <option value="VES">VES</option>
+                      <option value="DOP">DOP</option>
+                      <option value="GTQ">GTQ</option>
+                      <option value="CRC">CRC</option>
                     </select>
                   </div>
-                  <div
-                    style="font-size: 8.5px; color: #64748b; margin-top: 8px; line-height: 1.35; text-align: center;">
-                    El valor se calcula sumando los precios de los servicios de tu itinerario. Puedes cambiarlo
-                    manualmente si lo deseas y, con el botón de refrescar, recuperar la suma automática.
+                  <div class="price-status-row">
+                    <!-- Estado Automático: Estimado por persona únicamente -->
+                    <span class="price-per-person" id="pricePerPerson">
+                      ≈ $0 / persona
+                    </span>
+
+                    <!-- Estado Manual (Sobrescrito): Aviso interactivo con botón de restaurar -->
+                    <div class="price-manual-notice" id="priceManualNotice" style="display:none">
+                      <span class="pmn-label"><i class="fa-solid fa-pencil" style="font-size:9.5px"></i> Monto manual</span>
+                      <span class="pmn-sep">•</span>
+                      <button type="button" class="price-restore-btn" id="portadaPriceRefresh" onclick="restoreAutoCalculatedPrice()" title="Restaurar suma automática de servicios">
+                        <i class="fa-solid fa-rotate-left"></i> Restaurar suma automática
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -679,7 +758,6 @@
         <div class="modal-icon" id="modalIcon">✈️</div>
         <div class="modal-title-wrap">
           <div class="modal-title" id="modalTitle">Agregar</div>
-          <div class="modal-subtitle" id="modalSubtitle">Completa los datos</div>
         </div>
         <button class="modal-close" id="modalClose">×</button>
       </div>

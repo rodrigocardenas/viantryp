@@ -975,7 +975,7 @@
 
         .name-display.traveler-name-clean {
             font-size: 12.5px;
-            font-weight: 600;
+            font-weight: 700;
             color: #0f172a;
             background: transparent !important;
             border: none !important;
@@ -984,10 +984,15 @@
             font-family: inherit;
             position: relative;
             top: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+            display: inline-block;
         }
 
         .email-display.traveler-email-clean {
-            font-size: 12px;
+            font-size: 11.5px;
             font-weight: 400;
             color: #64748b !important;
             background: transparent !important;
@@ -995,26 +1000,107 @@
             padding: 0 !important;
             border-radius: 0 !important;
             font-family: inherit;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            max-width: 200px !important;
+            display: inline-block !important;
         }
 
-        #mainTable thead th.right,
-        #mainTable tbody td.acts-cell {
-            width: 210px !important;
-            min-width: 210px !important;
-            max-width: 210px !important;
+        #mainTable thead th.right {
+            width: 160px !important;
             text-align: center !important;
+        }
+
+        #mainTable tbody td.acts-cell {
+            width: 160px !important;
+            text-align: right !important;
+            padding-right: 16px !important;
         }
 
         .acts-cell {
-            text-align: center !important;
+            text-align: right !important;
         }
 
         .acts {
             display: flex;
             align-items: center;
-            gap: 8px;
-            justify-content: center;
+            gap: 6px;
+            justify-content: flex-end;
             width: 100%;
+        }
+
+        .acts-menu-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .acts-menu {
+            position: absolute;
+            top: calc(100% + 4px);
+            right: 0;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.14), 0 2px 6px rgba(0, 0, 0, 0.04);
+            z-index: 1000;
+            min-width: 195px;
+            padding: 5px;
+            display: none;
+            text-align: left;
+        }
+
+        .acts-menu.show {
+            display: block;
+            animation: viantrypFadeIn 0.15s ease-out;
+        }
+
+        .acts-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .acts-menu-item:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .acts-menu-item i,
+        .acts-menu-item svg {
+            width: 14px;
+            height: 14px;
+            font-size: 13px;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+
+        .acts-menu-item.danger {
+            color: #e11d48;
+        }
+
+        .acts-menu-item.danger:hover {
+            background: #fff1f2;
+            color: #be123c;
+        }
+
+        .acts-menu-item.danger i,
+        .acts-menu-item.danger svg {
+            color: #e11d48;
+        }
+
+        .acts-menu-divider {
+            height: 1px;
+            background: #f1f5f9;
+            margin: 4px 6px;
         }
 
         .abt {
@@ -2563,6 +2649,7 @@
             border-collapse: separate;
             border-spacing: 0;
             width: 100%;
+            table-layout: fixed;
         }
 
         #mainTable thead tr:first-child th:first-child {
@@ -2592,6 +2679,7 @@
             border-right: 1px solid #f1f5f9;
             padding: 13px 16px;
             position: relative;
+            white-space: nowrap;
         }
 
         #mainTable thead th:last-child {
@@ -2945,12 +3033,17 @@
                         <h2 class="section-title">VIAJES RECIENTES</h2>
                         <div class="quick-access-grid">
                             @php
+                                $isAgency = (auth()->user()->account_type ?? 'personal') === 'agency';
                                 $recentTrips = $trips->take(3);
                             @endphp
                             @forelse($recentTrips as $idx => $rtrip)
                                 @php
-                                    $client = collect($rtrip->persons)->firstWhere('type', 'client') ?? collect($rtrip->persons)->first();
-                                    $travelerName = $client ? $client->name : ($rtrip->travelers ?: 'Sin viajero');
+                                    if ($isAgency) {
+                                        $client = collect($rtrip->persons)->firstWhere('type', 'client') ?? collect($rtrip->persons)->first();
+                                        $subTitleText = $client && !empty($client->name) ? $client->name : ($rtrip->travelers ?: 'Sin cliente');
+                                    } else {
+                                        $subTitleText = $rtrip->destination ?: ($rtrip->destinations && count($rtrip->destinations) > 0 ? rtrim($rtrip->destinations->pluck('name')->join(' · '), ' · ') : 'Sin destino');
+                                    }
                                 @endphp
                                 <div class="quick-access-card featured"
                                     style="background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.7)), url('{{ $rtrip->cover_image_url ?: asset('images/default-cover.jpg') }}'); background-size: cover; background-position: center;"
@@ -2968,7 +3061,7 @@
                                         <div class="card-folder-info">
                                             <div class="card-folder-title" title="{{ $rtrip->title }}">{{ $rtrip->title }}</div>
                                             <div class="card-folder-subtitle">
-                                                {{ $travelerName }}
+                                                {{ $subTitleText }}
                                             </div>
                                         </div>
                                         <div class="card-folder-meta">
@@ -3031,35 +3124,16 @@
                         </div>
 
                         <!-- Table -->
+                        @php
+                            $isAgency = (auth()->user()->account_type ?? 'personal') === 'agency';
+                        @endphp
                         <div class="tbl-wrap">
                             <table id="mainTable">
                                 <thead>
                                     <tr>
-                                        <th><input type="checkbox" id="checkAll" onchange="toggleSelectAll(this)" /></th>
-                                        <th style="width:4px;padding:0"></th>
-                                        <th class="sortable" style="user-select: none; width: 80px; min-width: 70px;">
-                                            <i class="fas fa-hashtag" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>ID
-                                            <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M6 9l6 6 6-6" />
-                                                </svg>
-                                            </div>
-                                            <div class="header-dropdown" onclick="event.stopPropagation()">
-                                                <div class="header-dropdown-item"
-                                                    onclick="sortTableFromMenu(this, 'asc', 'string')"><svg
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2">
-                                                        <path d="M12 19V5M5 12l7-7 7 7" />
-                                                    </svg> Ordenar A - Z</div>
-                                                <div class="header-dropdown-item"
-                                                    onclick="sortTableFromMenu(this, 'desc', 'string')"><svg
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2">
-                                                        <path d="M12 5v14M5 12l7 7 7-7" />
-                                                    </svg> Ordenar Z - A</div>
-                                            </div>
-                                        </th>
-                                        <th class="sortable" style="user-select: none; max-width: 200px;">
+                                        <th style="width: 48px; text-align: center;"><input type="checkbox" id="checkAll" onchange="toggleSelectAll(this)" /></th>
+                                        <th style="width: 4px; padding: 0;"></th>
+                                        <th class="sortable" style="user-select: none; width: 190px;">
                                             <i class="fas fa-plane" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Nombre del Viaje
                                             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -3081,8 +3155,8 @@
                                                     </svg> Ordenar Z - A</div>
                                             </div>
                                         </th>
-                                        <th class="sortable" style="user-select: none;">
-                                            <i class="fas fa-calendar-alt" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Inicio de viaje
+                                        <th class="sortable" style="user-select: none; width: 150px;">
+                                            <i class="fas fa-calendar-alt" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Fechas
                                             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M6 9l6 6 6-6" />
@@ -3103,29 +3177,54 @@
                                                     </svg> Ordenar Z - A</div>
                                             </div>
                                         </th>
-                                        <th class="sortable" style="user-select: none; min-width: 180px; width: 220px;">
-                                            <i class="fas fa-user" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Viajero principal
-                                            <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M6 9l6 6 6-6" />
-                                                </svg>
-                                            </div>
-                                            <div class="header-dropdown" onclick="event.stopPropagation()">
-                                                <div class="header-dropdown-item"
-                                                    onclick="sortTableFromMenu(this, 'asc', 'string')"><svg
+                                        @if($isAgency)
+                                            <th class="sortable" style="user-select: none; width: 150px;">
+                                                <i class="fas fa-user" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Cliente
+                                                <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path d="M6 9l6 6 6-6" />
+                                                    </svg>
+                                                </div>
+                                                <div class="header-dropdown" onclick="event.stopPropagation()">
+                                                    <div class="header-dropdown-item"
+                                                        onclick="sortTableFromMenu(this, 'asc', 'string')"><svg
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                         stroke-width="2">
                                                         <path d="M12 19V5M5 12l7-7 7 7" />
                                                     </svg> Ordenar A - Z</div>
-                                                <div class="header-dropdown-item"
-                                                    onclick="sortTableFromMenu(this, 'desc', 'string')"><svg
+                                                    <div class="header-dropdown-item"
+                                                        onclick="sortTableFromMenu(this, 'desc', 'string')"><svg
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                         stroke-width="2">
                                                         <path d="M12 5v14M5 12l7 7 7-7" />
                                                     </svg> Ordenar Z - A</div>
-                                            </div>
-                                        </th>
-                                        <th class="sortable" style="user-select: none; width: 120px; min-width: 120px; text-align: center; padding: 13px 4px;">
+                                                </div>
+                                            </th>
+                                        @else
+                                            <th class="sortable" style="user-select: none; width: 150px;">
+                                                <i class="fas fa-map-marker-alt" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Destino
+                                                <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path d="M6 9l6 6 6-6" />
+                                                    </svg>
+                                                </div>
+                                                <div class="header-dropdown" onclick="event.stopPropagation()">
+                                                    <div class="header-dropdown-item"
+                                                        onclick="sortTableFromMenu(this, 'asc', 'string')"><svg
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2">
+                                                        <path d="M12 19V5M5 12l7-7 7 7" />
+                                                    </svg> Ordenar A - Z</div>
+                                                    <div class="header-dropdown-item"
+                                                        onclick="sortTableFromMenu(this, 'desc', 'string')"><svg
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2">
+                                                        <path d="M12 5v14M5 12l7 7 7-7" />
+                                                    </svg> Ordenar Z - A</div>
+                                                </div>
+                                            </th>
+                                        @endif
+                                        <th class="sortable" style="user-select: none; width: 130px; text-align: center; padding: 13px 4px;">
                                             <i class="fas fa-tag" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Estado
                                             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -3148,7 +3247,7 @@
                                             </div>
                                         </th>
                                         @if($activeMainTab === 'shared')
-                                            <th class="sortable" style="user-select: none; width: 150px !important; min-width: 150px !important; max-width: 150px !important;">
+                                            <th class="sortable" style="user-select: none; width: 140px;">
                                                 <i class="fas fa-user-shield" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Propietario
                                                 <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -3171,7 +3270,7 @@
                                                 </div>
                                             </th>
                                         @endif
-                                        <th class="right" style="width: 150px; min-width: 150px; max-width: 150px; text-align: center;">
+                                        <th class="right" style="width: 160px; text-align: center;">
                                             <i class="fas fa-bolt" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Acciones
                                         </th>
                                     </tr>
@@ -3183,40 +3282,26 @@
                                                 data-is-pro="{{ $trip->is_pro ? '1' : '0' }}"
                                                 style="animation-delay: {{ $index * 0.04 }}s; animation: rowIn 0.28s ease both; cursor: pointer;"
                                                 onclick="if(window.innerWidth > 768) { window.location='{{ route('trips.edit', $trip->id) }}'; }">
-                                                <td onclick="event.stopPropagation()"><input type="checkbox"
+                                                <td onclick="event.stopPropagation()" style="width: 48px; text-align: center;"><input type="checkbox"
                                                         class="rchk trip-checkbox" data-trip-id="{{ $trip->id }}"
                                                         onchange="updateSelectAllState()" /></td>
                                                 <td class="bar-cell"></td>
-                                                <td style="width: 80px;">
-                                                    <div class="id-container" onclick="event.stopPropagation(); editTripCode({{ $trip->id }}, '{{ $trip->code }}')" title="Haz clic para editar ID">
-                                                        <span class="id-chip code-display" id="code-display-{{ $trip->id }}">{{ $trip->code ?? 'N/A' }}</span>
-                                                        <input type="text" class="code-input" id="code-input-{{ $trip->id }}"
-                                                            style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 12px; text-transform: uppercase;" onblur="saveTripCode({{ $trip->id }})"
-                                                            onkeypress="handleCodeKeyPress(event, {{ $trip->id }})" maxlength="20">
-                                                    </div>
-                                                </td>
-                                                <td style="max-width: 200px;">
+                                                <td style="width: 190px;">
                                                     <div class="trip-name">
                                                         <span class="title-display" id="title-display-{{ $trip->id }}"
-                                                            style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; line-height: 1.3;">{{ $trip->title }}</span>
+                                                            style="font-size: 14.5px; font-weight: 600; color: #0f172a; display: block; line-height: 1.35;"
+                                                            title="{{ $trip->title }}">{{ $trip->title }}</span>
                                                     </div>
-                                                    @if($trip->destinations && count($trip->destinations) > 0)
-                                                        <div class="trip-dest"><svg viewBox="0 0 24 24" fill="none"
-                                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                                stroke-linejoin="round">
-                                                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                                                <circle cx="12" cy="10" r="3"></circle>
-                                                            </svg> <span
-                                                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; display: inline-block; vertical-align: bottom;">{{ rtrim($trip->destinations->pluck('name')->join(' · '), ' · ') ?: 'Sin destino' }}</span>
-                                                        </div>
+                                                    @if($isAgency && $trip->destinations && count($trip->destinations) > 0)
+                                                        <div class="trip-dest"><span>{{ rtrim($trip->destinations->pluck('name')->join(' · '), ' · ') ?: 'Sin destino' }}</span></div>
                                                     @endif
 
                                                     {{-- Mobile only info chips --}}
                                                     <div class="mobile-info-row" style="display: none;">
                                                         @php
                                                             $clientMobile = collect($trip->persons)->firstWhere('type', 'client') ?? collect($trip->persons)->first();
-                                                          @endphp
-                                                        @if($clientMobile)
+                                                        @endphp
+                                                        @if($isAgency && $clientMobile)
                                                             <div class="mobile-client-name">
                                                                 {{ $clientMobile->name }}
                                                             </div>
@@ -3228,54 +3313,102 @@
                                                             @endif
                                                         @endif
                                                         <div class="mobile-trip-date">
-                                                            Inicio del viaje:
-                                                            {!! $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : '<span style="color:#d94040;font-weight:700"><i class="fas fa-exclamation-triangle"></i> ¡Fecha vacía!</span>' !!}
+                                                            Fechas:
+                                                            {!! $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : '<span style="color:#94a3b8;font-style:italic;">Por definir</span>' !!}
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td style="min-width: 120px;">
-                                                    <div class="trip-date">
-                                                        {!! $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->translatedFormat('j M Y') : '<span style="color:#d94040;font-weight:700;font-size:11px;text-transform:uppercase;background:#fee2e2;padding:2px 6px;border-radius:4px;"><i class="fas fa-exclamation-triangle"></i> Vacío</span>' !!}
-                                                    </div>
-                                                </td>
-                                                @php
-                                                    $client = collect($trip->persons)->firstWhere('type', 'client') ?? collect($trip->persons)->first();
-                                                @endphp
-                                                <td style="min-width: 180px;">
-                                                    <div class="client-name"
-                                                        onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_name')"
-                                                        title="Haz clic para editar">
-                                                        <span class="name-display traveler-name-clean"
-                                                            id="name-display-{{ $trip->id }}">{{ $client ? $client->name : 'Sin viajero' }}</span>
-                                                        <input type="text" class="field-input code-input"
-                                                            id="name-input-{{ $trip->id }}"
-                                                            style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 13px; text-transform: none;"
-                                                            onblur="saveTripField({{ $trip->id }}, 'client_name')"
-                                                            onkeypress="handleFieldKeyPress(event, {{ $trip->id }}, 'client_name')"
-                                                            onclick="event.stopPropagation()">
-                                                    </div>
 
-                                                    <div class="client-email-container"
-                                                        onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_email')"
-                                                        style="margin-top: 2px;" title="Haz clic para editar">
-                                                        <span class="email-display traveler-email-clean" id="email-display-{{ $trip->id }}"
-                                                            style="display: inline-block;">{{ ($client && $client->email) ? $client->email : 'Añadir correo' }}</span>
-                                                        <input type="email" class="field-input code-input"
-                                                            id="email-input-{{ $trip->id }}"
-                                                            style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 11.5px; text-transform: none;"
-                                                            onblur="saveTripField({{ $trip->id }}, 'client_email')"
-                                                            onkeypress="handleFieldKeyPress(event, {{ $trip->id }}, 'client_email')"
-                                                            onclick="event.stopPropagation()">
+                                                {{-- Columna Fechas --}}
+                                                @php
+                                                    $startDate = $trip->start_date ? \Carbon\Carbon::parse($trip->start_date) : null;
+                                                    $endDate = $trip->end_date ? \Carbon\Carbon::parse($trip->end_date) : null;
+                                                    
+                                                    $datesFormatted = null;
+                                                    if ($startDate && $endDate && $startDate->ne($endDate)) {
+                                                        if ($startDate->isSameMonth($endDate) && $startDate->isSameYear($endDate)) {
+                                                            $datesFormatted = $startDate->format('d') . ' - ' . $endDate->translatedFormat('d M, Y');
+                                                        } elseif ($startDate->isSameYear($endDate)) {
+                                                            $datesFormatted = $startDate->translatedFormat('d M') . ' - ' . $endDate->translatedFormat('d M, Y');
+                                                        } else {
+                                                            $datesFormatted = $startDate->translatedFormat('d M, Y') . ' - ' . $endDate->translatedFormat('d M, Y');
+                                                        }
+                                                    } elseif ($startDate) {
+                                                        $datesFormatted = $startDate->translatedFormat('d M, Y');
+                                                    }
+                                                @endphp
+                                                <td style="width: 150px; white-space: nowrap;">
+                                                    <div class="trip-date" style="font-size: 12.5px; color: #475569; font-weight: 500; white-space: nowrap;">
+                                                        @if($datesFormatted)
+                                                            <span>{{ $datesFormatted }}</span>
+                                                        @else
+                                                            <span style="color:#94a3b8; font-size:12px; font-style:italic;">Por definir</span>
+                                                        @endif
                                                     </div>
                                                 </td>
-                                                <td onclick="event.stopPropagation()" style="width: 120px; min-width: 120px; padding: 12px 4px; text-align: center;">
+
+                                                {{-- Columna Condicional: Cliente (AGENCY) o Destino (PERSONAL) --}}
+                                                @if($isAgency)
+                                                    @php
+                                                        $client = collect($trip->persons)->firstWhere('type', 'client') ?? collect($trip->persons)->first();
+                                                    @endphp
+                                                    <td style="width: 150px;">
+                                                        @if($client && (!empty($client->name) || !empty($client->email)))
+                                                            <div class="client-name"
+                                                                onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_name')"
+                                                                title="Haz clic para editar">
+                                                                <span class="name-display traveler-name-clean"
+                                                                    id="name-display-{{ $trip->id }}">{{ $client->name ?: 'Sin nombre' }}</span>
+                                                                <input type="text" class="field-input code-input"
+                                                                    id="name-input-{{ $trip->id }}"
+                                                                    style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 13px; text-transform: none;"
+                                                                    onblur="saveTripField({{ $trip->id }}, 'client_name')"
+                                                                    onkeypress="handleFieldKeyPress(event, {{ $trip->id }}, 'client_name')"
+                                                                    onclick="event.stopPropagation()">
+                                                            </div>
+
+                                                            @if($client->email)
+                                                                <div class="client-email-container"
+                                                                    onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_email')"
+                                                                    style="margin-top: 2px;" title="Haz clic para editar">
+                                                                    <span class="email-display traveler-email-clean" id="email-display-{{ $trip->id }}">{{ $client->email }}</span>
+                                                                    <input type="email" class="field-input code-input"
+                                                                        id="email-input-{{ $trip->id }}"
+                                                                        style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 11.5px; text-transform: none;"
+                                                                        onblur="saveTripField({{ $trip->id }}, 'client_email')"
+                                                                        onkeypress="handleFieldKeyPress(event, {{ $trip->id }}, 'client_email')"
+                                                                        onclick="event.stopPropagation()">
+                                                                </div>
+                                                            @endif
+                                                        @else
+                                                            <span style="color:#94a3b8; font-size:12px; font-style:italic;">Sin asignar</span>
+                                                        @endif
+                                                    </td>
+                                                @else
+                                                    @php
+                                                        $destinationText = $trip->destination ?: ($trip->destinations && count($trip->destinations) > 0 ? rtrim($trip->destinations->pluck('name')->join(' · '), ' · ') : null);
+                                                    @endphp
+                                                    <td style="width: 150px;">
+                                                        @if($destinationText)
+                                                            <div style="font-size: 13px; color: #334155; font-weight: 500;">
+                                                                <span>{{ $destinationText }}</span>
+                                                            </div>
+                                                        @else
+                                                            <span style="color: #94a3b8; font-size: 12px; font-style: italic;">Sin destino</span>
+                                                        @endif
+                                                    </td>
+                                                @endif
+
+                                                {{-- Columna Estado --}}
+                                                <td onclick="event.stopPropagation()" style="width: 130px; text-align: center; padding: 12px 4px;">
                                                     @php
                                                         $currStatusInfo = $userCustomStatuses[$trip->status] ?? ['label' => ucfirst($trip->status), 'color' => 'blue'];
                                                         $currColor = is_array($currStatusInfo) ? ($currStatusInfo['color'] ?? 'blue') : 'blue';
                                                     @endphp
                                                     <select class="status-select status-color-{{ $currColor }} status-{{ $trip->status }}"
                                                         data-status="{{ $trip->status }}"
-                                                        onchange="if(this.value === '__manage__'){ openManageStatusesModal(); this.value = this.getAttribute('data-status'); return; } changeTripStatus({{ $trip->id }}, this.value)">
+                                                        onchange="if(this.value === '__manage__'){ openManageStatusesModal(); this.value = this.getAttribute('data-status'); return; } changeTripStatus({{ $trip->id }}, this.value)"
+                                                        style="margin: 0 auto;">
                                                         @foreach($userCustomStatuses as $stKey => $stInfo)
                                                             @if($stKey !== 'discarded')
                                                                 @php $stLabel = is_array($stInfo) ? ($stInfo['label'] ?? $stKey) : $stInfo; @endphp
@@ -3285,8 +3418,10 @@
                                                         <option value="__manage__" style="font-weight: 400 !important; color: #64748b !important;">⚙ Editar estados...</option>
                                                     </select>
                                                 </td>
+
+                                                {{-- Columna Propietario (si aplica) --}}
                                                 @if($activeMainTab === 'shared')
-                                                    <td style="width: 150px !important; min-width: 150px !important; max-width: 150px !important;">
+                                                    <td style="width: 140px;">
                                                         @php
                                                             $myCollab = $trip->collaborators->first();
                                                             $isPending = $myCollab && !$myCollab->accepted_at;
@@ -3309,7 +3444,9 @@
                                                         </div>
                                                     </td>
                                                 @endif
-                                                <td class="acts-cell" style="width: 210px; min-width: 210px; max-width: 210px; text-align: center;" onclick="event.stopPropagation()">
+
+                                                {{-- Columna Acciones Optimizada (3 botones directos + menú 3 puntos) --}}
+                                                <td class="acts-cell" style="width: 160px; text-align: right; padding-right: 16px;" onclick="event.stopPropagation()">
                                                     <div class="acts">
                                                         @if($activeMainTab === 'shared' && isset($isPending) && $isPending)
                                                             <a href="{{ route('trips.accept-invite', ['token' => $myCollab->token]) }}"
@@ -3318,6 +3455,8 @@
                                                                 <i class="fas fa-check"></i> Aceptar
                                                             </a>
                                                         @endif
+
+                                                        <!-- 1. Ver/Visualizar -->
                                                         <button class="abt view" data-tip="Ver propuesta"
                                                             onclick="previewTrip({{ $trip->id }})">
                                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -3325,8 +3464,9 @@
                                                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                                                                 <circle cx="12" cy="12" r="3" />
                                                             </svg>
-                                                            <span class="btn-txt">Ver</span>
                                                         </button>
+
+                                                        <!-- 2. Editar -->
                                                         <button class="abt edit" data-tip="Editar propuesta"
                                                             onclick="editTrip({{ $trip->id }})">
                                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -3335,8 +3475,9 @@
                                                                     d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                                             </svg>
-                                                            <span class="btn-txt">Editar</span>
                                                         </button>
+
+                                                        <!-- 3. Ver enlace del viaje -->
                                                         <button class="abt share" data-tip="Ver enlace del viaje"
                                                             onclick="shareTripIndex({{ $trip->id }}, '{{ $trip->share_token }}')">
                                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -3346,21 +3487,9 @@
                                                                 <path
                                                                     d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                                                             </svg>
-                                                            <span class="btn-txt">Enlace</span>
                                                         </button>
-                                                        @if($trip->user_id == Auth::id())
-                                                            <button class="abt share-edit" data-tip="Compartir para editar"
-                                                                onclick="openSharingModal({{ $trip->id }}, 'editor')">
-                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                                                    <circle cx="8.5" cy="7" r="4" />
-                                                                    <line x1="20" y1="8" x2="20" y2="14" />
-                                                                    <line x1="23" y1="11" x2="17" y2="11" />
-                                                                </svg>
-                                                            </button>
-                                                        @endif
 
+                                                        <!-- 4. Menú Flotante de Tres Puntos -->
                                                         <div class="acts-menu-container">
                                                             <button class="abt more"
                                                                 onclick="toggleActsMenu(event, {{ $trip->id }})"
@@ -3369,52 +3498,76 @@
                                                             </button>
                                                             <div class="acts-menu" id="menu-{{ $trip->id }}">
                                                                 @if($trip->user_id == Auth::id())
+                                                                    <!-- Añadir colaboradores -->
                                                                     <div class="acts-menu-item"
                                                                         onclick="openSharingModal({{ $trip->id }}, 'editor')">
-                                                                        <i class="fas fa-user-plus"></i> Compartir
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                                                            <circle cx="9" cy="7" r="4"/>
+                                                                            <line x1="19" y1="8" x2="19" y2="14"/>
+                                                                            <line x1="22" y1="11" x2="16" y2="11"/>
+                                                                        </svg>
+                                                                        <span>Añadir colaboradores</span>
+                                                                    </div>
+
+                                                                    <!-- Ver colaboradores -->
+                                                                    <div class="acts-menu-item"
+                                                                        onclick="openCollaboratorsModal({{ $trip->id }})">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                                                            <circle cx="9" cy="7" r="4"/>
+                                                                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                                                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                                                        </svg>
+                                                                        <span>Ver colaboradores</span>
+                                                                    </div>
+
+                                                                    <!-- Duplicar viaje -->
+                                                                    <div class="acts-menu-item"
+                                                                        onclick="duplicateTrip({{ $trip->id }})">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                                                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                                                                        </svg>
+                                                                        <span>Duplicar viaje</span>
+                                                                    </div>
+
+                                                                    <!-- Cambiar propietario -->
+                                                                    <div class="acts-menu-item"
+                                                                        onclick="openTransferModal({{ $trip->id }})">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                            <path d="M16 3h5v5"/>
+                                                                            <path d="m21 3-7 7"/>
+                                                                            <path d="M8 21H3v-5"/>
+                                                                            <path d="m3 21 7-7"/>
+                                                                        </svg>
+                                                                        <span>Cambiar propietario</span>
                                                                     </div>
                                                                 @endif
+
+                                                                <div class="acts-menu-divider"></div>
+
+                                                                <!-- Eliminar -->
                                                                 @if($activeMainTab === 'shared')
                                                                     <div class="acts-menu-item danger"
                                                                         onclick="confirmLeaveCollaboration({{ $trip->id }}, '{{ $trip->title }}')">
-                                                                        <i class="fas fa-trash"></i> Eliminar
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                            <path d="M3 6h18"/>
+                                                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                                        </svg>
+                                                                        <span>Eliminar</span>
                                                                     </div>
                                                                 @else
                                                                     @if($trip->user_id == Auth::id())
-                                                                        <div class="acts-menu-item"
-                                                                            onclick="openCollaboratorsModal({{ $trip->id }})">
-                                                                            <i class="fas fa-users"></i> Ver colaboradores
-                                                                        </div>
-                                                                    @endif
-                                                                    @if($trip->user_id == Auth::id())
-                                                                        <div class="acts-menu-item"
-                                                                            onclick="openTransferModal({{ $trip->id }})">
-                                                                            <i class="fas fa-exchange-alt"></i> Cambiar propietario
-                                                                        </div>
-                                                                        <div class="acts-menu-item"
-                                                                            onclick="duplicateTrip({{ $trip->id }})">
-                                                                            <i class="fas fa-copy"></i> Duplicar viaje
-                                                                        </div>
-                                                                        <div class="acts-menu-item" onclick="openTripInfoModal({
-                                                                            id: {{ $trip->id }},
-                                                                            code: '{{ e($trip->code) }}',
-                                                                            title: '{{ e($trip->title) }}',
-                                                                            created_at: '{{ $trip->created_at ? \Carbon\Carbon::parse($trip->created_at)->format('d/m/Y H:i') : 'Sin fecha' }}',
-                                                                            updated_at: '{{ $trip->updated_at ? \Carbon\Carbon::parse($trip->updated_at)->format('d/m/Y H:i') : 'Sin fecha' }}',
-                                                                            updated_by: '{{ e($trip->user ? $trip->user->name : 'Sistema') }}',
-                                                                            views_count: {{ $trip->views_count ?? 0 }},
-                                                                            price: '{{ $trip->price ? ($trip->currency ?: '$') . ' ' . number_format($trip->price, 2) : 'Sin definir' }}',
-                                                                            start_date: '{{ $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->format('d/m/Y') : 'Sin fecha' }}',
-                                                                            end_date: '{{ $trip->end_date ? \Carbon\Carbon::parse($trip->end_date)->format('d/m/Y') : 'Sin fecha' }}',
-                                                                            status: '{{ e(getStatusLabel($trip->status)) }}',
-                                                                            traveler: '{{ e($client ? $client->name : ($trip->travelers ?: 'Sin viajero')) }}',
-                                                                            destination: '{{ e($trip->destinations && count($trip->destinations) > 0 ? $trip->destinations->pluck('name')->join(' · ') : 'Sin destino') }}'
-                                                                        })">
-                                                                            <i class="fas fa-info-circle"></i> Más información
-                                                                        </div>
                                                                         <div class="acts-menu-item danger"
                                                                             onclick="delRow({{ $trip->id }})">
-                                                                            <i class="fas fa-trash"></i> Eliminar
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                                <path d="M3 6h18"/>
+                                                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                                            </svg>
+                                                                            <span>Eliminar</span>
                                                                         </div>
                                                                     @endif
                                                                 @endif
@@ -3629,81 +3782,286 @@
                 openUpgradeModal();
                 return;
             @endif
-                    const themeColor = '{{ auth()->user()->theme_color ?? "default" }}';
-            const themes = {
-                'default': '#1c7182',
-                'ocean': '#1a5f8f',
-                'gold': '#b08000',
-                'sunset': '#c0552a',
-                'blush': 'linear-gradient(135deg,#e07b9a,#f4a5bd)',
-                'silver': 'linear-gradient(135deg,#6e7f80,#9aa8a9)',
-                'mint': 'linear-gradient(135deg,#3db898,#62d4b5)',
-                'lavender': 'linear-gradient(135deg,#9b72cf,#b39ddb)'
-            };
-            const currentTheme = themes[themeColor] || themes['default'];
 
-            const adjustColor = (hex, amt) => {
-                if (hex.includes('gradient')) return hex;
-                let col = hex.replace('#', '');
-                let r = parseInt(col.substring(0, 2), 16) + amt;
-                let g = parseInt(col.substring(2, 4), 16) + amt;
-                let b = parseInt(col.substring(4, 6), 16) + amt;
-                r = Math.max(0, Math.min(255, r)).toString(16).padStart(2, '0');
-                g = Math.max(0, Math.min(255, g)).toString(16).padStart(2, '0');
-                b = Math.max(0, Math.min(255, b)).toString(16).padStart(2, '0');
-                return '#' + r + g + b;
-            };
+            // Eliminar modal previo si existe
+            const existingModal = document.getElementById('createTripModal');
+            if (existingModal) existingModal.remove();
 
-            const modalHeaderBg = currentTheme.includes('gradient') ? currentTheme : `linear-gradient(135deg, ${adjustColor(currentTheme, -40)}, ${currentTheme})`;
+            const userAccountType = '{{ strtoupper(auth()->user()->account_type ?? "PERSONAL") }}';
+            const isAgency = userAccountType === 'AGENCY';
 
             const modalHtml = `
-                        <div id="createTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
-                            <div style="background:white; width:90%; max-width:450px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
-                                <div style="background:${modalHeaderBg}; padding:24px; color:white;">
-                                    <h3 style="margin:0; font-family:'Playfair Display', serif; font-size:24px;">+ Nuevo Viaje</h3>
-                                    <p style="margin:8px 0 0; font-size:13px; opacity:0.85;">Comienza a diseñar una experiencia inolvidable.</p>
-                                </div>
-                                <div style="padding:24px;">
-                                    <form id="createTripForm">
-                                        <div style="margin-bottom:16px;">
-                                            <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px; letter-spacing:0.5px;">Nombre del Viaje</label>
-                                            <input type="text" name="title" required placeholder="Ej: Luna de Miel en Bali" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none; transition:border-color 0.2s;">
-                                        </div>
-                                        <div style="margin-bottom:16px;">
-                                            <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px; letter-spacing:0.5px;">Nombre del Viajero</label>
-                                            <input type="text" name="client_name" placeholder="Ej: Juan Pérez" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none; transition:border-color 0.2s;">
-                                        </div>
-                                        <div style="margin-bottom:20px;">
-                                            <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px; letter-spacing:0.5px;">Correo del Viajero</label>
-                                            <input type="email" name="client_email" placeholder="ejemplo@correo.com" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none; transition:border-color 0.2s;">
-                                        </div>
-                                        <div style="display:flex; gap:12px;">
-                                            <button type="button" onclick="document.getElementById('createTripModal').remove()" style="flex:1; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
-                                            <button type="submit" class="btn-viantryp" style="flex:1; height:44px; border:none; background:var(--accent); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px; box-shadow:0 4px 12px rgba(26,106,120,0.3);">Diseñar Viaje</button>
-                                        </div>
-                                    </form>
-                                </div>
+                <div id="createTripModal" style="position:fixed; inset:0; z-index:2000; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(15, 23, 42, 0.6); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); animation: viantrypFadeIn 0.2s ease-out;">
+                    <div class="create-trip-card" style="background:#ffffff; width:100%; max-width:512px; border-radius:18px; box-shadow:0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.06); overflow:hidden; animation: viantrypSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
+                        
+                        <!-- Header -->
+                        <div style="padding:20px 24px 16px; border-bottom:1px solid #f1f5f9; display:flex; align-items:flex-start; justify-content:space-between; gap:16px;">
+                            <div>
+                                <h3 style="margin:0; font-size:18px; font-weight:700; color:#0f172a; font-family:'Barlow', sans-serif; letter-spacing:-0.2px;">Crear nuevo itinerario</h3>
+                                <p style="margin:2px 0 0; font-size:13px; color:#64748b; font-weight:400;">Comienza a diseñar una experiencia inolvidable.</p>
                             </div>
+                            <button type="button" id="closeCreateTripModalBtn" style="background:transparent; border:none; color:#94a3b8; cursor:pointer; padding:6px; border-radius:8px; display:flex; align-items:center; justify-content:center; transition:all 0.15s;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 6 6 18"/>
+                                    <path d="m6 6 12 12"/>
+                                </svg>
+                            </button>
                         </div>
-                        <style>
-                            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-                            @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-                            #createTripForm input:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(26,154,138,0.1); }
-                        </style>
-                    `;
+
+                        <!-- Formulario -->
+                        <form id="createTripForm">
+                            <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px; max-height:calc(85vh - 150px); overflow-y:auto;">
+                                
+                                <!-- Nombre del viaje -->
+                                <div>
+                                    <label style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">
+                                        <span>Nombre del viaje <span style="color:#e11d48;">*</span></span>
+                                    </label>
+                                    <input type="text" name="title" required placeholder="Luna de Miel en Bali" class="modal-saas-input" style="width:100%; height:42px; padding:0 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13.5px; color:#0f172a; outline:none; transition:all 0.2s; background:#ffffff;">
+                                </div>
+
+                                <!-- Destino principal -->
+                                <div>
+                                    <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">
+                                        Destino principal <span style="font-weight:400; color:#94a3b8; font-size:11.5px;">(Opcional)</span>
+                                    </label>
+                                    <div style="position:relative;">
+                                        <div style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94a3b8; display:flex; pointer-events:none;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
+                                                <circle cx="12" cy="10" r="3"/>
+                                            </svg>
+                                        </div>
+                                        <input type="text" name="destination" placeholder="Ej: Bali, Indonesia" class="modal-saas-input" style="width:100%; height:42px; padding:0 14px 0 38px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13.5px; color:#0f172a; outline:none; transition:all 0.2s; background:#ffffff;">
+                                    </div>
+                                </div>
+
+                                <!-- Fechas del viaje -->
+                                <div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                        <label style="font-size:12px; font-weight:600; color:#334155;">Fechas del viaje</label>
+                                    </div>
+                                    
+                                    <div id="datesGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                                        <div>
+                                            <span style="display:block; font-size:11px; color:#64748b; margin-bottom:4px; font-weight:500;">Salida</span>
+                                            <div style="position:relative;">
+                                                <input type="date" name="start_date" id="tripStartDate" class="modal-saas-input" style="width:100%; height:40px; padding:0 10px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13px; color:#0f172a; outline:none; transition:all 0.2s; background:#ffffff;">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span style="display:block; font-size:11px; color:#64748b; margin-bottom:4px; font-weight:500;">Regreso</span>
+                                            <div style="position:relative;">
+                                                <input type="date" name="end_date" id="tripEndDate" class="modal-saas-input" style="width:100%; height:40px; padding:0 10px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13px; color:#0f172a; outline:none; transition:all 0.2s; background:#ffffff;">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Checkbox fechas no definidas -->
+                                    <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
+                                        <input type="checkbox" id="noDatesCheckbox" style="width:16px; height:16px; accent-color:var(--teal, #1a9a8a); cursor:pointer; border-radius:4px;">
+                                        <label for="noDatesCheckbox" style="font-size:12.5px; color:#64748b; cursor:pointer; user-select:none; font-weight:500;">Aún no tengo fechas definidas</label>
+                                    </div>
+                                </div>
+
+                                ${isAgency ? `
+                                <!-- Sección Dinámica para Agencias -->
+                                <div style="border-top:1px dashed #e2e8f0; padding-top:14px; margin-top:2px;">
+                                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                                        <div style="display:flex; align-items:center; gap:8px;">
+                                            <div style="display:flex; align-items:center; justify-content:center; color:#0f172a;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                                    <circle cx="12" cy="7" r="4"/>
+                                                </svg>
+                                            </div>
+                                            <span style="font-size:12.5px; font-weight:600; color:#1e293b;">Asignar a un cliente</span>
+                                        </div>
+                                        <label style="position:relative; display:inline-block; width:38px; height:22px; cursor:pointer; margin:0;">
+                                            <input type="checkbox" id="assignClientToggle" checked style="opacity:0; width:0; height:0;">
+                                            <span class="agency-switch-slider" style="position:absolute; inset:0; border-radius:20px; transition:0.25s;"></span>
+                                        </label>
+                                    </div>
+
+                                    <div id="clientAssignmentBox" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:10px; transition:all 0.25s ease;">
+                                        <div>
+                                            <label style="display:block; font-size:11.5px; font-weight:600; color:#475569; margin-bottom:4px;">Nombre completo del cliente</label>
+                                            <div style="position:relative;">
+                                                <div style="position:absolute; left:11px; top:50%; transform:translateY(-50%); color:#94a3b8; display:flex; pointer-events:none;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                                        <circle cx="12" cy="7" r="4"/>
+                                                    </svg>
+                                                </div>
+                                                <input type="text" id="clientNameInput" name="client_name" placeholder="Ej: Juan Pérez" class="modal-saas-input" style="width:100%; height:38px; padding:0 12px 0 34px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:13px; color:#0f172a; outline:none; background:#ffffff;">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label style="display:block; font-size:11.5px; font-weight:600; color:#475569; margin-bottom:4px;">Correo electrónico del cliente</label>
+                                            <div style="position:relative;">
+                                                <div style="position:absolute; left:11px; top:50%; transform:translateY(-50%); color:#94a3b8; display:flex; pointer-events:none;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <rect width="20" height="16" x="2" y="4" rx="2"/>
+                                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                                                    </svg>
+                                                </div>
+                                                <input type="email" id="clientEmailInput" name="client_email" placeholder="cliente@ejemplo.com" class="modal-saas-input" style="width:100%; height:38px; padding:0 12px 0 34px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:13px; color:#0f172a; outline:none; background:#ffffff;">
+                                            </div>
+                                        </div>
+                                        <p style="margin:2px 0 0; font-size:11.5px; color:#64748b; line-height:1.4;">Podrás vincular este itinerario para compartirlo directamente con tu cliente.</p>
+                                    </div>
+                                </div>
+                                ` : ''}
+
+                            </div>
+
+                            <!-- Footer Actions -->
+                            <div style="padding:16px 24px; background:#f8fafc; border-top:1px solid #f1f5f9; display:flex; align-items:center; justify-content:flex-end; gap:10px;">
+                                <button type="button" id="cancelCreateTripBtn" style="height:42px; padding:0 18px; border:1.5px solid #e2e8f0; background:#ffffff; color:#475569; font-weight:600; border-radius:10px; cursor:pointer; font-size:13px; transition:all 0.15s;">
+                                    Cancelar
+                                </button>
+                                <button type="submit" id="submitCreateTripBtn" style="height:42px; padding:0 22px; border:none; background:var(--teal, #1a9a8a); color:#ffffff; font-weight:600; border-radius:10px; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(26,154,138,0.25); transition:all 0.2s;">
+                                    <span>Crear y Diseñar Viaje</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5 12h14"/>
+                                        <path d="m12 5 7 7-7 7"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <style>
+                    @keyframes viantrypFadeIn { from { opacity: 0; } to { opacity: 1; } }
+                    @keyframes viantrypSlideUp { from { transform: translateY(16px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+                    @keyframes viantrypSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                    .modal-saas-input:focus {
+                        border-color: var(--teal, #1a9a8a) !important;
+                        box-shadow: 0 0 0 3px rgba(26, 154, 138, 0.15) !important;
+                    }
+                    .modal-saas-input:disabled {
+                        background-color: #f1f5f9 !important;
+                        color: #94a3b8 !important;
+                        cursor: not-allowed !important;
+                        border-color: #e2e8f0 !important;
+                    }
+                    .agency-switch-slider {
+                        border: 1.5px solid transparent;
+                    }
+                    .agency-switch-slider:before {
+                        position: absolute;
+                        content: "";
+                        height: 14px;
+                        width: 14px;
+                        left: 2px;
+                        bottom: 2px;
+                        background-color: white;
+                        border-radius: 50%;
+                        transition: 0.2s;
+                        box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+                    }
+                    #assignClientToggle:checked + .agency-switch-slider {
+                        background-color: var(--teal, #1a9a8a);
+                        border-color: var(--teal, #1a9a8a);
+                    }
+                    #assignClientToggle:checked + .agency-switch-slider:before {
+                        background-color: #ffffff;
+                        transform: translateX(16px);
+                    }
+                    #assignClientToggle:not(:checked) + .agency-switch-slider {
+                        background-color: transparent !important;
+                        border-color: #cbd5e1 !important;
+                    }
+                    #assignClientToggle:not(:checked) + .agency-switch-slider:before {
+                        background-color: #94a3b8;
+                    }
+                </style>
+            `;
 
             document.body.insertAdjacentHTML('beforeend', modalHtml);
 
+            const modal = document.getElementById('createTripModal');
             const form = document.getElementById('createTripForm');
+            const closeBtn = document.getElementById('closeCreateTripModalBtn');
+            const cancelBtn = document.getElementById('cancelCreateTripBtn');
+            const noDatesCheckbox = document.getElementById('noDatesCheckbox');
+            const startDateInput = document.getElementById('tripStartDate');
+            const endDateInput = document.getElementById('tripEndDate');
+            const assignClientToggle = document.getElementById('assignClientToggle');
+            const clientAssignmentBox = document.getElementById('clientAssignmentBox');
+            const clientNameInput = document.getElementById('clientNameInput');
+            const clientEmailInput = document.getElementById('clientEmailInput');
+
+            // Cierre del modal
+            const closeModal = () => modal.remove();
+            if (closeBtn) closeBtn.onclick = closeModal;
+            if (cancelBtn) cancelBtn.onclick = closeModal;
+            modal.onclick = (e) => {
+                if (e.target === modal) closeModal();
+            };
+
+            const escListener = (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                    document.removeEventListener('keydown', escListener);
+                }
+            };
+            document.addEventListener('keydown', escListener);
+
+            // Manejo de fechas no definidas
+            if (noDatesCheckbox) {
+                noDatesCheckbox.onchange = () => {
+                    const disabled = noDatesCheckbox.checked;
+                    startDateInput.disabled = disabled;
+                    endDateInput.disabled = disabled;
+                    if (disabled) {
+                        startDateInput.value = '';
+                        endDateInput.value = '';
+                    }
+                };
+            }
+
+            // Manejo de asignación a cliente en modo Agencia
+            if (assignClientToggle && clientAssignmentBox) {
+                assignClientToggle.onchange = () => {
+                    if (assignClientToggle.checked) {
+                        clientAssignmentBox.style.display = 'flex';
+                        if (clientNameInput) clientNameInput.disabled = false;
+                        if (clientEmailInput) clientEmailInput.disabled = false;
+                    } else {
+                        clientAssignmentBox.style.display = 'none';
+                        if (clientNameInput) {
+                            clientNameInput.value = '';
+                            clientNameInput.disabled = true;
+                        }
+                        if (clientEmailInput) {
+                            clientEmailInput.value = '';
+                            clientEmailInput.disabled = true;
+                        }
+                    }
+                };
+            }
+
+            // Envío del formulario
             form.onsubmit = async (e) => {
                 e.preventDefault();
-                const btn = form.querySelector('button[type="submit"]');
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+                const submitBtn = document.getElementById('submitCreateTripBtn');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <svg style="animation: viantrypSpin 0.9s linear infinite;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                    </svg>
+                    <span>Creando...</span>
+                `;
 
                 const formData = new FormData(form);
                 const data = {};
-                formData.forEach((value, key) => data[key] = value);
+                formData.forEach((value, key) => {
+                    if (value && value.trim() !== '') {
+                        data[key] = value.trim();
+                    }
+                });
 
                 try {
                     const response = await fetch(`{{ route('trips.store-pro') }}`, {
@@ -3720,18 +4078,30 @@
                     if (result.success) {
                         window.location.href = result.redirect_url;
                     } else if (result.error_code === 'LIMIT_REACHED') {
-                        document.getElementById('createTripModal').remove();
+                        modal.remove();
                         openUpgradeModal();
                     } else {
                         alert('Error al crear el viaje: ' + (result.message || 'Error desconocido'));
-                        btn.disabled = false;
-                        btn.textContent = 'Diseñar Viaje';
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = `
+                            <span>Crear y Diseñar Viaje</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14"/>
+                                <path d="m12 5 7 7-7 7"/>
+                            </svg>
+                        `;
                     }
                 } catch (error) {
                     console.error('Error:', error);
                     alert('Ocurrió un error de red o del servidor.');
-                    btn.disabled = false;
-                    btn.textContent = 'Diseñar Viaje';
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `
+                        <span>Crear y Diseñar Viaje</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14"/>
+                            <path d="m12 5 7 7-7 7"/>
+                        </svg>
+                    `;
                 }
             };
         }
@@ -4310,94 +4680,10 @@
 
         // Column Resizer Logic
         function initTableResizer() {
-            const table = document.getElementById('mainTable');
-            if (!table) return;
-
-            const headers = table.querySelectorAll('th');
-            const savedWidths = JSON.parse(localStorage.getItem('tripsTableWidths') || '{}');
-
-            if (Object.keys(savedWidths).length > 0) {
-                table.style.tableLayout = 'fixed';
-            }
-
-            headers.forEach((th, index) => {
-                if (th.innerText && (th.innerText.includes('Propietario') || th.innerText.includes('Acciones'))) {
-                    th.style.width = '150px';
-                    th.style.minWidth = '150px';
-                    th.style.maxWidth = '150px';
-                    return;
-                }
-                if (savedWidths[index]) {
-                    th.style.width = savedWidths[index];
-                }
-
-                const resizer = th.querySelector('.resizer');
-                if (!resizer) return;
-
-                resizer.addEventListener('mousedown', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    const startWidth = th.offsetWidth;
-                    const downX = e.pageX;
-                    const baseMinW = parseInt(window.getComputedStyle(th).minWidth) || 80;
-
-                    // Find next visible header sibling
-                    let nextTh = th.nextElementSibling;
-                    while (nextTh && nextTh.style.display === 'none') {
-                        nextTh = nextTh.nextElementSibling;
-                    }
-
-                    let startWidthNext = nextTh ? nextTh.offsetWidth : 0;
-                    let minWNext = nextTh ? (parseInt(window.getComputedStyle(nextTh).minWidth) || 80) : 80;
-
-                    document.body.classList.add('resizing');
-
-                    const onMouseMove = (moveE) => {
-                        const diff = moveE.pageX - downX;
-                        const newWidth = startWidth + diff;
-
-                        if (nextTh) {
-                            const newWidthNext = startWidthNext - diff;
-                            if (newWidth >= baseMinW && newWidthNext >= minWNext) {
-                                th.style.width = newWidth + 'px';
-                                nextTh.style.width = newWidthNext + 'px';
-                                table.style.tableLayout = 'fixed';
-                            }
-                        } else {
-                            if (newWidth >= baseMinW) {
-                                th.style.width = newWidth + 'px';
-                                table.style.tableLayout = 'fixed';
-                            }
-                        }
-                    };
-
-                    const onMouseUp = () => {
-                        document.removeEventListener('mousemove', onMouseMove);
-                        document.removeEventListener('mouseup', onMouseUp);
-                        document.body.classList.remove('resizing');
-
-                        const widths = {};
-                        table.querySelectorAll('th').forEach((header, idx) => {
-                            if (header.style.width) {
-                                widths[idx] = header.style.width;
-                            }
-                        });
-                        localStorage.setItem('tripsTableWidths', JSON.stringify(widths));
-                    };
-
-                    document.addEventListener('mousemove', onMouseMove);
-                    document.addEventListener('mouseup', onMouseUp);
-                });
-
-                resizer.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                });
-            });
-
-            if (Object.keys(savedWidths).length > 0) {
-                table.style.tableLayout = 'fixed';
-            }
+            // Limpiar caché antiguo de anchos de columnas que corrompía los índices
+            try {
+                localStorage.removeItem('tripsTableWidths');
+            } catch(e) {}
         }
 
         function initTutorial(force = false) {

@@ -119,13 +119,16 @@ class TripController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'destination' => 'nullable|string|max:255',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
             'client_name' => 'nullable|string|max:255',
             'client_email' => 'nullable|email|max:255',
         ]);
 
         return DB::transaction(function () use ($validated) {
             $clientId = null;
-            if ($validated['client_name'] && $validated['client_email']) {
+            if (!empty($validated['client_name']) && !empty($validated['client_email'])) {
                 $client = Person::updateOrCreate(
                 ['email' => $validated['client_email']],
                 [
@@ -136,16 +139,44 @@ class TripController extends Controller
                 $clientId = $client->id;
             }
 
+            $startDate = !empty($validated['start_date']) ? $validated['start_date'] : null;
+            $endDate = !empty($validated['end_date']) ? $validated['end_date'] : $startDate;
+            $destination = !empty($validated['destination']) ? $validated['destination'] : null;
+
+            $initialProState = [
+                'title' => $validated['title'],
+                'destination' => $destination,
+                'fechaInicio' => $startDate,
+                'fechaFin' => $endDate,
+                'precio' => null,
+                'moneda' => 'USD',
+                'totalViajeros' => 2,
+                'hasPortada' => true,
+                'hasCierre' => true,
+                'showDefaultCierre' => true,
+                'totalItems' => 0,
+                'numericTabs' => [['label' => 'Día 1', 'idx' => 0]],
+                'days' => [[]],
+                'dayDates' => [$startDate ?? ''],
+                'portadaAdultos' => 2,
+                'portadaNinos' => 0,
+                'portadaPhotoUrl' => '',
+                'portadaItems' => [],
+                'cierreItems' => [],
+                'status' => 'draft'
+            ];
+
             $trip = Trip::create([
                 'user_id' => Auth::id(),
                 'title' => $validated['title'],
+                'destination' => $destination,
                 'is_pro' => true,
                 'status' => 'draft',
-                'start_date' => now(),
-                'end_date' => now(),
+                'start_date' => $startDate,
+                'end_date' => $endDate,
                 'travelers' => 1,
                 'currency' => 'USD',
-                'pro_state' => null
+                'pro_state' => $initialProState
             ]);
 
             $trip->generateCode();
@@ -579,9 +610,12 @@ class TripController extends Controller
             'pro_state' => $validated['pro_state']
         ];
 
-        // Sync title from pro_state to trips table if present
+        // Sync title and destination from pro_state to trips table if present
         if (isset($validated['pro_state']['title'])) {
             $tripData['title'] = $validated['pro_state']['title'];
+        }
+        if (isset($validated['pro_state']['destination'])) {
+            $tripData['destination'] = $validated['pro_state']['destination'];
         }
 
         // Sync dates from pro_state to trips table
