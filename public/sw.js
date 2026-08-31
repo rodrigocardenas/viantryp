@@ -1,4 +1,4 @@
-const CACHE_NAME = 'viantryp-v2';
+const CACHE_NAME = 'viantryp-v3';
 const STATIC_ASSETS = [
     '/',
     '/manifest.json',
