@@ -248,56 +248,65 @@
         }
     </script>
 
-    {{-- PWA: Registro del Service Worker --}}
+    {{-- PWA: JS mejorado para iOS y Android --}}
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(reg => console.log('[Viantryp PWA] Service Worker registrado:', reg.scope))
-                    .catch(err => console.warn('[Viantryp PWA] Error al registrar SW:', err));
-            });
-        }
+        const _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const _isAndroid = /Android/.test(navigator.userAgent);
+        const _isMobile = _isIOS || _isAndroid || window.innerWidth < 768;
+        const _isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
-        // Banner de instalacion PWA
-        let deferredPrompt;
+        let _deferredPrompt = null;
         const installBanner = document.getElementById('pwa-install-banner');
         const installBtn = document.getElementById('pwa-install-btn');
         const installDismiss = document.getElementById('pwa-install-dismiss');
 
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('[Viantryp PWA] SW registrado:', reg.scope))
+                    .catch(err => console.warn('[Viantryp PWA] SW error:', err));
+            });
+        }
+
+        // Capturar evento de instalacion Android/Chrome
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
-            deferredPrompt = e;
-            if (installBanner) {
+            _deferredPrompt = e;
+        });
+
+        // Mostrar banner en movil si no fue descartado recientemente y no esta instalada
+        window.addEventListener('load', () => {
+            if (!_isMobile || _isStandalone) return;
+            const dismissed = localStorage.getItem('pwa-install-dismissed');
+            const alreadyDismissed = dismissed && (Date.now() - parseInt(dismissed)) < 7 * 24 * 60 * 60 * 1000;
+            if (!alreadyDismissed && installBanner) {
                 installBanner.style.display = 'flex';
             }
         });
 
+        // Boton instalar
         if (installBtn) {
             installBtn.addEventListener('click', async () => {
-                if (!deferredPrompt) return;
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log('[Viantryp PWA] Resultado instalacion:', outcome);
-                deferredPrompt = null;
-                installBanner.style.display = 'none';
+                if (_isIOS) {
+                    // iOS: mostrar instrucciones (modal en landing o alert)
+                    alert('En iPhone: toca el botón Compartir (↑) en Safari → "Agregar a pantalla de inicio" → Agregar');
+                } else if (_deferredPrompt) {
+                    _deferredPrompt.prompt();
+                    const { outcome } = await _deferredPrompt.userChoice;
+                    console.log('[PWA] Resultado:', outcome);
+                    _deferredPrompt = null;
+                    if (installBanner) installBanner.style.display = 'none';
+                }
             });
         }
 
         if (installDismiss) {
             installDismiss.addEventListener('click', () => {
-                installBanner.style.display = 'none';
-                // No mostrar por 7 dias
+                if (installBanner) installBanner.style.display = 'none';
                 localStorage.setItem('pwa-install-dismissed', Date.now());
             });
         }
-
-        // No mostrar si ya fue descartado en los ultimos 7 dias
-        window.addEventListener('load', () => {
-            const dismissed = localStorage.getItem('pwa-install-dismissed');
-            if (dismissed && (Date.now() - parseInt(dismissed)) < 7 * 24 * 60 * 60 * 1000) {
-                if (installBanner) installBanner.style.display = 'none';
-            }
-        });
     </script>
 </body>
 </html>

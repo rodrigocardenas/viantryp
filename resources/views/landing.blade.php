@@ -6,6 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Viantryp | Home</title>
   <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+  {{-- PWA --}}
+  <link rel="manifest" href="{{ asset('manifest.json') }}">
+  <meta name="theme-color" content="#0d2b3e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Viantryp">
+  <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('icons/icon-192x192.png') }}">
   <link
     href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;600;700;800&display=swap"
     rel="stylesheet">
@@ -1919,6 +1927,31 @@
           </svg>
           Ver Demo
         </a>
+        {{-- Botón instalar app: solo visible en móvil --}}
+        <button id="landing-install-btn" onclick="triggerPwaInstall()" style="
+          display: none;
+          align-items: center;
+          gap: 10px;
+          background: linear-gradient(135deg, #0d2b3e 0%, #1a4a6e 100%);
+          color: white;
+          border: none;
+          padding: 14px 22px;
+          border-radius: 100px;
+          font-weight: 700;
+          font-size: 1rem;
+          cursor: pointer;
+          box-shadow: 0 4px 24px rgba(13,43,62,0.25);
+          font-family: 'Barlow', sans-serif;
+          transition: all 0.2s;
+          width: 100%;
+          justify-content: center;
+        ">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(255,255,255,0.15)" stroke="none"/>
+            <path d="M8 12l4 4 4-4M12 8v8"/>
+          </svg>
+          📲 Instalar App
+        </button>
       @endauth
     </div>
   </section>
@@ -4505,6 +4538,191 @@
           });
         });
       }
+    });
+  </script>
+
+  {{-- PWA: Modal instrucciones iOS --}}
+  <div id="ios-install-modal" style="
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99998;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+  ">
+    <div style="
+      background: white;
+      border-radius: 28px 28px 0 0;
+      padding: 2rem 1.5rem 2.5rem;
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      animation: slideUp 0.35s ease;
+    ">
+      <div style="width: 44px; height: 4px; background: #ddd; border-radius: 4px; margin: 0 auto 1.5rem;"></div>
+      <img src="{{ asset('icons/icon-96x96.png') }}" style="width: 72px; border-radius: 18px; margin-bottom: 1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.15);" alt="Viantryp">
+      <h3 style="font-family: 'Barlow', sans-serif; font-size: 1.2rem; font-weight: 800; color: #0d2b3e; margin-bottom: 0.5rem;">Instalar Viantryp</h3>
+      <p style="font-size: 0.9rem; color: #666; line-height: 1.5; margin-bottom: 1.75rem;">Sigue estos pasos para instalar la app en tu iPhone:</p>
+      <div style="text-align: left; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 1rem; background: #f7f9f7; padding: 0.9rem 1rem; border-radius: 12px;">
+          <div style="font-size: 1.5rem; flex-shrink: 0;">1️⃣</div>
+          <div>
+            <div style="font-weight: 700; font-size: 0.88rem; color: #0d2b3e;">Toca el botón Compartir</div>
+            <div style="font-size: 0.8rem; color: #888;">El ícono <strong>↑</strong> en la barra inferior de Safari</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem; background: #f7f9f7; padding: 0.9rem 1rem; border-radius: 12px;">
+          <div style="font-size: 1.5rem; flex-shrink: 0;">2️⃣</div>
+          <div>
+            <div style="font-weight: 700; font-size: 0.88rem; color: #0d2b3e;">Selecciona "Agregar a pantalla de inicio"</div>
+            <div style="font-size: 0.8rem; color: #888;">Desplázate hacia abajo en el menú compartir</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem; background: #f7f9f7; padding: 0.9rem 1rem; border-radius: 12px;">
+          <div style="font-size: 1.5rem; flex-shrink: 0;">3️⃣</div>
+          <div>
+            <div style="font-weight: 700; font-size: 0.88rem; color: #0d2b3e;">Toca "Agregar"</div>
+            <div style="font-size: 0.8rem; color: #888;">El ícono de Viantryp aparecerá en tu pantalla</div>
+          </div>
+        </div>
+      </div>
+      <button onclick="document.getElementById('ios-install-modal').style.display='none'" style="
+        width: 100%;
+        padding: 0.9rem;
+        background: #0d2b3e;
+        color: white;
+        border: none;
+        border-radius: 100px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        font-family: 'Barlow', sans-serif;
+      ">Entendido</button>
+    </div>
+  </div>
+
+  {{-- PWA: Banner flotante en landing (Android) --}}
+  <div id="landing-pwa-banner" style="
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+    background: linear-gradient(135deg, #0d2b3e 0%, #1a4a6e 100%);
+    color: white;
+    padding: 1rem 1.25rem;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.3);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-family: 'Barlow', sans-serif;
+  ">
+    <img src="{{ asset('icons/icon-72x72.png') }}" alt="Viantryp" style="width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;">
+    <div style="flex: 1; min-width: 0;">
+      <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.15rem;">Instalar Viantryp</div>
+      <div style="font-size: 0.8rem; opacity: 0.8;">Acceso rápido desde tu pantalla de inicio</div>
+    </div>
+    <div style="display: flex; gap: 0.5rem; flex-shrink: 0;">
+      <button id="landing-banner-dismiss" style="background: rgba(255,255,255,0.15); border: none; color: white; padding: 0.5rem 0.75rem; border-radius: 8px; font-size: 0.82rem; cursor: pointer; font-family: inherit;">No</button>
+      <button id="landing-banner-install" style="background: white; color: #0d2b3e; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: inherit;">Instalar</button>
+    </div>
+  </div>
+
+  <style>
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+  </style>
+
+  {{-- PWA JS --}}
+  <script>
+    // Detección de iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isAndroid = /Android/.test(navigator.userAgent);
+    const isMobile = isIOS || isAndroid || window.innerWidth < 768;
+    const isInStandaloneMode = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+    let deferredPwaPrompt = null;
+
+    // Registrar Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('[Viantryp PWA] SW registrado:', reg.scope))
+          .catch(err => console.warn('[Viantryp PWA] SW error:', err));
+      });
+    }
+
+    // Capturar el evento de instalación de Android/Chrome
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPwaPrompt = e;
+      // Mostrar el banner flotante si no fue descartado recientemente
+      const dismissed = localStorage.getItem('pwa-landing-dismissed');
+      const banner = document.getElementById('landing-pwa-banner');
+      if (banner && (!dismissed || (Date.now() - parseInt(dismissed)) > 7 * 24 * 60 * 60 * 1000)) {
+        banner.style.display = 'flex';
+      }
+    });
+
+    // Mostrar el botón de instalar en la landing solo en móvil y si no está ya instalada
+    window.addEventListener('load', () => {
+      const installBtn = document.getElementById('landing-install-btn');
+      if (installBtn && isMobile && !isInStandaloneMode) {
+        installBtn.style.display = 'flex';
+      }
+    });
+
+    // Función principal que se llama al tocar "Instalar App"
+    function triggerPwaInstall() {
+      if (isIOS) {
+        // En iOS mostramos el modal de instrucciones
+        const modal = document.getElementById('ios-install-modal');
+        if (modal) modal.style.display = 'flex';
+      } else if (deferredPwaPrompt) {
+        // En Android con Chrome mostramos el diálogo nativo
+        deferredPwaPrompt.prompt();
+        deferredPwaPrompt.userChoice.then(choice => {
+          console.log('[PWA] Resultado:', choice.outcome);
+          deferredPwaPrompt = null;
+          document.getElementById('landing-pwa-banner').style.display = 'none';
+        });
+      } else {
+        // Fallback: mostrar instrucciones genéricas
+        const modal = document.getElementById('ios-install-modal');
+        if (modal) modal.style.display = 'flex';
+      }
+    }
+
+    // Banner de Android: botones
+    const bannerInstall = document.getElementById('landing-banner-install');
+    const bannerDismiss = document.getElementById('landing-banner-dismiss');
+    if (bannerInstall) {
+      bannerInstall.addEventListener('click', () => {
+        if (deferredPwaPrompt) {
+          deferredPwaPrompt.prompt();
+          deferredPwaPrompt.userChoice.then(() => {
+            deferredPwaPrompt = null;
+            document.getElementById('landing-pwa-banner').style.display = 'none';
+          });
+        }
+      });
+    }
+    if (bannerDismiss) {
+      bannerDismiss.addEventListener('click', () => {
+        document.getElementById('landing-pwa-banner').style.display = 'none';
+        localStorage.setItem('pwa-landing-dismissed', Date.now());
+      });
+    }
+
+    // Cerrar modal iOS al tocar el fondo
+    document.getElementById('ios-install-modal').addEventListener('click', function(e) {
+      if (e.target === this) this.style.display = 'none';
     });
   </script>
 </body>
