@@ -134,7 +134,7 @@
        <      /h2>
 
 
-                       <p class="section-text" style="margin-bottom:0;">Los itinerarios, textos, imágenes y datos que creas en Viantryp son tuyos. Al subirlos, nos otorgas una licencia limitada y no exclusiva para almacenarlos y mostrarlos según tus configuraciones de privacidad. Puedes exportar o eliminar tu contenido en cualquier momento. El software, diseño y tecnología de Viantryp son propiedad de Viantryp Global SAS y están protegidos por la legislación aplicable.</p>
+                       <p class="section-text" style="margin-bottom:0;">Los itinerarios, textos, imágenes y datos que creas en Viantryp son tuyos. Al subirlos, nos otorgas una licencia limitada y no exclusiva para almacenarlos y mostrarlos según tus configuraciones de privacidad. Puedes exportar o eliminar tu contenido en cualquier momento. El software, diseño y tecnología de Viantryp son propiedad de VIANTRYP GLOBAL S.A.S y están protegidos por la legislación aplicable.</p>
           </div>
 
           <div 
