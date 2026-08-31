@@ -199,7 +199,7 @@
         <!-- Quick Links / Account Settings -->
         <div class="sheet-nav-group">
             <a href="{{ route('profile.index', ['section' => ($currentUser->account_type === 'agency' ? 'agencia' : 'info')]) }}" class="sheet-nav-item">
-                <div class="sheet-nav-icon" style="background: #e0f2fe; color: #0284c7;">
+                <div class="sheet-nav-icon">
                     <i class="{{ $currentUser->account_type === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
                 </div>
                 <div class="sheet-nav-text">
@@ -210,7 +210,7 @@
             </a>
 
             <a href="{{ route('profile.index', ['section' => 'tema']) }}" class="sheet-nav-item">
-                <div class="sheet-nav-icon" style="background: #fdf2f8; color: #db2777;">
+                <div class="sheet-nav-icon">
                     <i class="fas fa-palette"></i>
                 </div>
                 <div class="sheet-nav-text">
@@ -221,7 +221,7 @@
             </a>
 
             <a href="{{ route('profile.index', ['section' => 'subscription']) }}" class="sheet-nav-item">
-                <div class="sheet-nav-icon" style="background: #fef3c7; color: #d97706;">
+                <div class="sheet-nav-icon">
                     <i class="fas fa-credit-card"></i>
                 </div>
                 <div class="sheet-nav-text">
@@ -232,7 +232,7 @@
             </a>
 
             <a href="{{ route('profile.index', ['section' => 'seguridad']) }}" class="sheet-nav-item">
-                <div class="sheet-nav-icon" style="background: #f1f5f9; color: #475569;">
+                <div class="sheet-nav-icon">
                     <i class="fas fa-shield-alt"></i>
                 </div>
                 <div class="sheet-nav-text">
@@ -243,7 +243,7 @@
             </a>
 
             <a href="mailto:hola@viantryp.com" class="sheet-nav-item">
-                <div class="sheet-nav-icon" style="background: #f0fdf4; color: #16a34a;">
+                <div class="sheet-nav-icon">
                     <i class="fas fa-headset"></i>
                 </div>
                 <div class="sheet-nav-text">
@@ -872,14 +872,21 @@
 }
 
 .sheet-nav-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 24px;
+    height: 24px;
+    background: transparent !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
+    font-size: 18px;
+    color: #64748b !important;
     flex-shrink: 0;
+    transition: color 0.18s ease;
+}
+
+.sheet-nav-item:hover .sheet-nav-icon,
+.sheet-nav-item:active .sheet-nav-icon {
+    color: var(--accent, #1D63B8) !important;
 }
 
 .sheet-nav-text {
