@@ -158,6 +158,10 @@
 <body>
     @yield('content')
 
+    @auth
+        @include('components.mobile-bottom-nav')
+    @endauth
+
     {{-- PWA: Banner de instalacion --}}
     <div id="pwa-install-banner" style="
         display: none;
@@ -275,9 +279,10 @@
             _deferredPrompt = e;
         });
 
-        // Mostrar banner en movil si no fue descartado recientemente y no esta instalada
+        // Mostrar banner en movil si no fue descartado recientemente, no esta instalada y no esta en modo app
         window.addEventListener('load', () => {
-            if (!_isMobile || _isStandalone) return;
+            const isAppMode = _isStandalone || localStorage.getItem('viantryp_app_mode') === '1' || window.location.search.includes('app=1');
+            if (!_isMobile || isAppMode) return;
             const dismissed = localStorage.getItem('pwa-install-dismissed');
             const alreadyDismissed = dismissed && (Date.now() - parseInt(dismissed)) < 7 * 24 * 60 * 60 * 1000;
             if (!alreadyDismissed && installBanner) {

@@ -75,9 +75,9 @@
     }
 
     @if($isGradient)
-    .btn-primary, .btn-success, .btn-create, .topbar, .pvday-pill, .btn-viantryp, [data-theme] .theme-swatch.selected, .cierre-card, .portada-footer-bar, .pv-portada-meta-row {
+    .btn-primary, .btn-success, .btn-create, .topbar, .pvday-pill, .btn-viantryp, [data-theme] .theme-swatch.selected, .cierre-card, .portada-footer-bar, .pv-portada-meta-row, .fab-create-btn {
         background: {{ $currentTheme }} !important;
-        border-color: rgba(255,255,255,0.15) !important;
+        border-color: #ffffff !important;
     }
     .avatar, .avatar-big {
         background: var(--avatar-gradient) !important;
@@ -93,7 +93,7 @@
         opacity: 0.1 !important;
     }
     @else
-    .topbar, .pvday-pill, .topbar-bg-decorators::before, .btn-primary, .btn-viantryp, .portada-footer-bar, .pv-portada-meta-row {
+    .topbar, .pvday-pill, .topbar-bg-decorators::before, .btn-primary, .btn-viantryp, .portada-footer-bar, .pv-portada-meta-row, .fab-create-btn {
         background-color: {{ $currentTheme }} !important;
     }
     .btn-viantryp {

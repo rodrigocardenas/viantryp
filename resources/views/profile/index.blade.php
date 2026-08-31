@@ -1571,6 +1571,54 @@
 
       <!-- Main Content Area -->
       <div class="dashboard-main">
+        <!-- Topbar -->
+        <header class="dashboard-topbar">
+          <a href="{{ route('trips.index') }}" class="app-topbar-logo" title="Viantryp">
+            <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 28px; width: auto; filter: brightness(0) invert(1); object-fit: contain; display: block;">
+          </a>
+          <div class="topbar-actions">
+            <!-- Notifications -->
+            <div class="noti-wrapper">
+              <button id="notiTrigger" class="btn-topbar-icon" title="Notificaciones">
+                <i class="fas fa-bell"></i>
+                <span id="notiBadge" style="display: none;">0</span>
+              </button>
+              <div id="notiMenu" class="noti-dropdown" style="display: none;">
+                <div class="noti-dropdown-header">
+                  <span>Notificaciones</span>
+                  <button onclick="markNotificationsAsRead()">Marcar como leídas</button>
+                </div>
+                <div id="notiList">
+                  <div class="noti-loading">Cargando...</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile dropdown -->
+            <div class="profile-dropdown-wrapper">
+              <div class="profile-trigger" id="profileTrigger">
+                <div class="avatar" id="navAvatar">
+                  @if(auth()->user()->avatar)
+                    <img src="{{ str_starts_with(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" alt="">
+                  @else
+                    {{ collect(explode(' ', auth()->user()->name))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('') }}
+                  @endif
+                </div>
+                <span class="profile-name">{{ auth()->user()->name }}</span>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+
+              <div id="profileMenu" class="profile-menu" style="display: none;">
+                <a href="{{ route('profile.index') }}"><i class="fas fa-user-circle"></i> Mi Cuenta</a>
+                <form method="POST" action="{{ route('logout') }}" id="logout-form" style="margin:0;">
+                  @csrf
+                  <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </header>
+
         <!-- Dashboard Main Content Scroll Container -->
         <div class="dashboard-content-scroll">
           <div class="page-wrapper" style="max-width: 1200px; margin: 0 auto; padding: 40px;">
@@ -2441,22 +2489,30 @@
         });
       });
 
-      // Manejo de pestaña por URL (ej: /profile?tab=subscription)
+      // Manejo de pestaña por URL (ej: /profile?section=subscription o /profile?tab=subscription)
       const urlParams = new URLSearchParams(window.location.search);
-      const tab = urlParams.get('tab');
+      const targetSection = urlParams.get('section') || urlParams.get('tab') || window.location.hash.replace('#', '');
       const isPaid = urlParams.get('paid') === 'true';
 
-      if (tab) {
-        const targetBtn = document.querySelector(`.nav-item[data-section="${tab}"]`);
+      if (targetSection) {
+        const targetBtn = document.querySelector(`.nav-item[data-section="${targetSection}"]`);
         if (targetBtn) {
           setTimeout(() => {
             targetBtn.click();
             if (isPaid) {
               showToast('¡Pago exitoso! Tu suscripción ha sido confirmada y activada.');
-              const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?tab=subscription';
+              const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?section=subscription';
               window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
             }
-          }, 100);
+          }, 50);
+        } else {
+          // Fallback if data-section doesn't match directly
+          const sectionEl = document.getElementById('section-' + targetSection);
+          if (sectionEl) {
+            document.querySelectorAll('.tab-section').forEach(function (s) { s.classList.remove('active'); });
+            document.querySelectorAll('.nav-item').forEach(function (b) { b.classList.remove('active'); });
+            sectionEl.classList.add('active');
+          }
         }
       }
 
@@ -2599,6 +2655,12 @@
           const avatarBig = document.querySelector('.avatar-big');
           if (avatarBig) {
             avatarBig.style.background = color || '#1a7f77';
+          }
+
+          // Update mobile app FAB create button in real-time
+          const fabBtn = document.getElementById('fabCreateTripBtn');
+          if (fabBtn) {
+            fabBtn.style.background = color || '#1a7f77';
           }
         });
       });

@@ -2953,6 +2953,9 @@
                     <button type="button" class="mobile-hamburger-btn" onclick="toggleMobileSidebar()" title="Abrir menú">
                         <i class="fas fa-bars"></i>
                     </button>
+                    <a href="{{ route('trips.index') }}" class="app-topbar-logo" title="Viantryp">
+                        <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 28px; width: auto; filter: brightness(0) invert(1); object-fit: contain; display: block;">
+                    </a>
                     <div class="topbar-search">
                         <div class="search-box-wrapper">
                             <span class="search-icon"><i class="fas fa-search"></i></span>
@@ -5435,6 +5438,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             initTableResizer();
             initSegmentSlider();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('create') === '1' || urlParams.get('open_create') === '1') {
+                if (typeof showCreateTripModal === 'function') {
+                    setTimeout(showCreateTripModal, 200);
+                }
+            }
 
             // Pequeño delay para dejar que las animaciones de la tabla terminen
             setTimeout(initTutorial, 800);
