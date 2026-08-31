@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = 'viantryp-v1';
+const CACHE_NAME = 'viantryp-v2';
 const STATIC_ASSETS = [
     '/',
     '/manifest.json',
@@ -100,7 +100,7 @@ self.addEventListener('push', event => {
 // Notification click: open the app
 self.addEventListener('notificationclick', event => {
     event.notification.close();
-    const targetUrl = event.notification.data?.url || '/dashboard';
+    const targetUrl = event.notification.data?.url || '/trips';
     event.waitUntil(
         clients.matchAll({ type: 'window' }).then(clientList => {
             for (const client of clientList) {

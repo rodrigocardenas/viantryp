@@ -39,6 +39,9 @@ Route::get('/', function () {
     return view('landing');
 })->name('home');
 
+// Dashboard redirect to trips
+Route::get('/dashboard', fn() => redirect()->route('trips.index'))->name('dashboard');
+
 // Public info pages
 Route::get('/contacto', fn() => view('pages.contact'))->name('contact');
 Route::get('/contact', fn() => redirect()->route('contact', [], 301));

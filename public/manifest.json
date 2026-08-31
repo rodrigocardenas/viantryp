@@ -1,8 +1,8 @@
-﻿{
+{
     "name": "Viantryp",
     "short_name": "Viantryp",
     "description": "Tu plataforma inteligente para planificar y gestionar viajes",
-    "start_url": "/dashboard",
+    "start_url": "/trips",
     "scope": "/",
     "display": "standalone",
     "orientation": "portrait",
@@ -65,14 +65,14 @@
             "name": "Mis Viajes",
             "short_name": "Viajes",
             "description": "Ver todos mis viajes",
-            "url": "/dashboard",
+            "url": "/trips",
             "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
         },
         {
             "name": "Nuevo Viaje",
             "short_name": "Nuevo",
             "description": "Crear un nuevo viaje",
-            "url": "/trips/create",
+            "url": "/trips/create-pro",
             "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
         }
     ]
