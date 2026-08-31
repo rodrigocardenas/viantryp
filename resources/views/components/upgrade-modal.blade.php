@@ -177,9 +177,6 @@
                         }
                     }
                 };
-                @if(auth()->check() && auth()->user()->customer?->paddle_id)
-                initOptions.pwCustomer = { id: "{{ auth()->user()->customer->paddle_id }}" };
-                @endif
 
                 Paddle.Initialize(initOptions);
                 _paddleInitialized = true;
@@ -1298,9 +1295,6 @@
                     Paddle.Checkout.open({
                         items: [{ priceId: priceId, quantity: 1 }],
                         customer: {
-                            @if(auth()->check() && auth()->user()->customer?->paddle_id)
-                            id: "{{ auth()->user()->customer->paddle_id }}",
-                            @endif
                             email: "{{ $user->email }}"
                         },
                         customData: {
