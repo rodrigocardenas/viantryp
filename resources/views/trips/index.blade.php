@@ -1496,13 +1496,12 @@
                 box-shadow: 0 8px 16px rgba(10, 22, 40, 0.06);
             }
 
-            /* Hide checkbox and ID on mobile */
-            .trip-row>td:nth-child(1),
-            .trip-row>td:nth-child(3) {
-                display: none;
+            /* Hide checkbox on mobile */
+            .trip-row>td:nth-child(1) {
+                display: none !important;
             }
 
-            /* Status Band */
+            /* Status Band at the top of the card */
             .bar-cell {
                 position: absolute;
                 top: 0;
@@ -1520,96 +1519,104 @@
                 border-radius: 0;
             }
 
-            /* Header Line: Title + Status */
+            /* 1. Nombre del Viaje y Destino (td 3) */
+            .trip-row>td:nth-child(3) {
+                display: block !important;
+                width: 100% !important;
+                padding: 0 0 6px 0 !important;
+                border: none !important;
+            }
+
+            .trip-row .trip-name {
+                font-size: 16.5px !important;
+                line-height: 1.35 !important;
+                font-weight: 700 !important;
+                color: #0f172a !important;
+                display: block !important;
+                margin-bottom: 2px !important;
+            }
+
+            .trip-row .title-display {
+                font-size: 16.5px !important;
+                font-weight: 700 !important;
+                color: #0f172a !important;
+                line-height: 1.35 !important;
+                display: block !important;
+                white-space: normal !important;
+                word-break: break-word !important;
+            }
+
+            .trip-row .trip-dest {
+                font-size: 13px !important;
+                color: #64748b !important;
+                margin-top: 3px !important;
+                display: block !important;
+            }
+
+            /* 2. Fechas del Viaje (td 4) */
             .trip-row>td:nth-child(4) {
-                padding: 0 0 12px 0;
-                border: none;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .trip-name {
-                font-size: 18px;
-                line-height: 1.2;
-                display: flex;
-                align-items: flex-start;
-                justify-content: space-between;
-                gap: 12px;
-            }
-
-            /* Status Pill Re-styling for Card Header */
-            .trip-row>td:nth-child(7) {
-                position: relative;
-                top: 0;
-                right: 0;
-                padding: 4px 0 0 0;
-                border: none;
-                width: auto;
-                z-index: 10;
-                margin-top: -8px;
-            }
-
-            .status-select {
-                padding: 4px 26px 4px 10px;
-                font-size: 11.5px;
-                border-radius: 6px;
-                pointer-events: auto;
-                width: fit-content;
-            }
-
-            /* Destiny */
-            .trip-dest {
-                font-size: 13.5px;
-                margin-top: 0;
-            }
-
-            .trip-dest svg {
-                width: 13px;
-                height: 13px;
-            }
-
-            /* Info Text Layout */
-            .mobile-info-row {
                 display: flex !important;
-                flex-direction: column;
-                gap: 3px;
-                margin-top: 14px;
+                align-items: center !important;
+                width: 100% !important;
+                padding: 3px 0 6px 0 !important;
+                border: none !important;
             }
 
-            .mobile-client-name {
-                font-size: 14px;
-                font-weight: 600;
-                color: var(--ink);
+            .trip-row .trip-date {
+                font-size: 13px !important;
+                color: #475569 !important;
+                font-weight: 500 !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 6px !important;
             }
 
-            .mobile-client-email {
-                font-size: 13px;
-                color: var(--teal);
-                text-decoration: none;
-                display: inline-block;
+            /* 3. Cliente (Agency) o Destino (Personal) (td 5) */
+            .trip-row>td:nth-child(5) {
+                display: block !important;
+                width: 100% !important;
+                padding: 2px 0 6px 0 !important;
+                border: none !important;
             }
 
-            .mobile-trip-date {
-                font-size: 13px;
-                color: var(--gray);
-                font-weight: 500;
-                margin-top: 2px;
+            .trip-row .client-name {
+                font-size: 13.5px !important;
+                font-weight: 600 !important;
+                color: var(--ink) !important;
             }
 
-            /* Overwrite logic to hide old rows and use new mobile info row */
-            .trip-row>td:nth-child(5),
+            .trip-row .client-email-container {
+                font-size: 12.5px !important;
+                color: var(--teal) !important;
+            }
+
+            /* 4. Estado del Viaje (td 6) */
             .trip-row>td:nth-child(6) {
-                display: none;
+                display: block !important;
+                width: 100% !important;
+                padding: 4px 0 8px 0 !important;
+                border: none !important;
+                text-align: left !important;
             }
 
-            /* Owner/Views Block */
-            .trip-row>td:nth-child(8) {
-                padding: 8px 0 0 0;
-                margin-top: 8px;
-                border: none;
-                display: flex;
-                align-items: center;
+            .trip-row .status-select {
+                display: inline-block !important;
+                padding: 4px 26px 4px 10px !important;
+                font-size: 12px !important;
+                font-weight: 600 !important;
+                border-radius: 6px !important;
+                pointer-events: auto !important;
+                width: auto !important;
+                max-width: fit-content !important;
+                margin: 0 !important;
+            }
+
+            /* 5. Propietario / Colaboración si aplica */
+            .trip-row>td:nth-child(7):not(.acts-cell) {
+                display: block !important;
+                width: 100% !important;
+                padding: 4px 0 6px 0 !important;
+                border: none !important;
             }
 
             /* Action Buttons Block: Full Width 4 Buttons Grid */
