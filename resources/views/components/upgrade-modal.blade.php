@@ -1309,6 +1309,27 @@
         });
     }
 
+    function submitDirectPlanUpdate(planKey) {
+        const overlay = document.getElementById('modalLoadingOverlay');
+        if (overlay) overlay.style.display = 'flex';
+
+        fetch('{{ route("profile.plan.paddle-sync") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ plan: planKey })
+        }).then(r => r.json()).then(res => {
+            if (typeof closeUpgradeModal === 'function') closeUpgradeModal();
+            window.location.href = "{{ route('profile.index') }}?tab=subscription";
+        }).catch(() => {
+            if (typeof closeUpgradeModal === 'function') closeUpgradeModal();
+            window.location.href = "{{ route('profile.index') }}?tab=subscription";
+        });
+    }
+
     function openCodeGateModal(planKey) {
         const target = planLimits[planKey] || { name: planKey };
         _pendingPlanKey = planKey;

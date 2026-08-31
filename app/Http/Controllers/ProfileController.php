@@ -268,11 +268,39 @@ class ProfileController extends Controller
             }
         }
 
-        if (!$matchedPlan && in_array($planKey, ['esencial', 'avanzado', 'colaborativo'])) {
-            $matchedPlan = $planKey;
+        if (!$matchedPlan && in_array($planKey, ['básico', 'basico', 'esencial', 'avanzado', 'colaborativo'])) {
+            $matchedPlan = ($planKey === 'basico') ? 'básico' : $planKey;
         }
 
         if ($matchedPlan) {
+            // Si baja a Básico, intentar cancelar suscripciones activas en Paddle
+            if ($matchedPlan === 'básico') {
+                try {
+                    $apiKey = config('cashier.api_key');
+                    if ($apiKey) {
+                        $response = \Illuminate\Support\Facades\Http::withToken($apiKey)
+                            ->get('https://api.paddle.com/subscriptions', [
+                                'search' => $user->email,
+                                'status' => 'active,trialing'
+                            ]);
+
+                        if ($response->successful()) {
+                            $subs = $response->json('data') ?? [];
+                            foreach ($subs as $sub) {
+                                if (isset($sub['id'])) {
+                                    \Illuminate\Support\Facades\Http::withToken($apiKey)
+                                        ->post("https://api.paddle.com/subscriptions/{$sub['id']}/cancel", [
+                                            'effective_from' => 'immediately'
+                                        ]);
+                                }
+                            }
+                        }
+                    }
+                } catch (\Exception $e) {
+                    \Log::warning('Error canceling Paddle subscription on downgrade: ' . $e->getMessage());
+                }
+            }
+
             $user->update([
                 'plan' => $matchedPlan,
                 'trial_ends_at' => null
