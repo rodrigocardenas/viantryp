@@ -200,7 +200,7 @@
         <div class="sheet-nav-group">
             <a href="{{ route('profile.index', ['section' => ($currentUser->account_type === 'agency' ? 'agencia' : 'info')]) }}" class="sheet-nav-item">
                 <div class="sheet-nav-icon" style="background: #e0f2fe; color: #0284c7;">
-                    <i class="fas fa-user-cog"></i>
+                    <i class="{{ $currentUser->account_type === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
                 </div>
                 <div class="sheet-nav-text">
                     <span class="sheet-nav-title">Mi Cuenta y Ajustes</span>
@@ -227,6 +227,17 @@
                 <div class="sheet-nav-text">
                     <span class="sheet-nav-title">Planes y Suscripción</span>
                     <span class="sheet-nav-desc">Límites, planes activos y facturación</span>
+                </div>
+                <i class="fas fa-chevron-right sheet-chevron"></i>
+            </a>
+
+            <a href="{{ route('profile.index', ['section' => 'seguridad']) }}" class="sheet-nav-item">
+                <div class="sheet-nav-icon" style="background: #f1f5f9; color: #475569;">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="sheet-nav-text">
+                    <span class="sheet-nav-title">Seguridad de la Cuenta</span>
+                    <span class="sheet-nav-desc">Contraseña y acceso a tu sesión</span>
                 </div>
                 <i class="fas fa-chevron-right sheet-chevron"></i>
             </a>
