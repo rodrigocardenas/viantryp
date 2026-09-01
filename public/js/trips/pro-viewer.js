@@ -614,7 +614,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-portada-img-placeholder{position:absolute;inset:0;width:100%;height:100%;background:linear-gradient(139deg, #0f172a, #1e293b);display:flex;align-items:center;justify-content:center;font-size:52px;color:rgba(255,255,255,0.25);z-index:1}
 .pv-portada-hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(15,23,42,0.2) 0%, rgba(15,23,42,0.55) 45%, rgba(15,23,42,0.95) 100%);z-index:2;pointer-events:none}
 .pv-portada-hero-content{position:relative;z-index:5;padding:24px 28px 20px;display:flex;flex-direction:column;gap:8px}
-.pv-portada-tag-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);border-radius:50px;padding:4px 12px;max-width:max-content;font-size:12px;font-weight:600;color:#fff}
+.pv-portada-tag-badge{display:inline-flex;align-items:center;gap:8px;background:none;border:none;padding:0;max-width:max-content;font-size:12px;font-weight:600;color:#fff}
 .pv-tag-sep{color:rgba(255,255,255,0.4);font-size:10px}
 .pv-portada-title{font-family:'Poppins',sans-serif;font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.3px;text-shadow:0 2px 8px rgba(0,0,0,0.4)}
 .pv-portada-sub{font-family:'Inter',sans-serif;font-size:13.5px;color:rgba(255,255,255,0.8);line-height:1.4;text-shadow:0 1px 4px rgba(0,0,0,0.3)}
@@ -623,7 +623,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-portada-meta-cell:last-child{border-right:none}
 .pv-pm-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:6px}
 .pv-pm-value{font-size:14.5px;font-weight:700;color:#fff}
-.pv-pm-value.highlight{color:var(--accent, #38bdf8)}
+.pv-pm-value.highlight{color:#fff}
 
 /* LAYOUT */
 .pv-layout{display:grid;grid-template-columns:250px 1fr;max-width:1100px;margin:0 auto;padding:32px 24px 60px;align-items:start;gap:0}
@@ -1055,7 +1055,7 @@ ${hasPortada ? `
       <div class="pv-portada-hero-content">
         ${destination ? `
           <div class="pv-portada-tag-badge">
-            <i class="fa-solid fa-location-dot" style="color:var(--accent);"></i>
+            <i class="fa-solid fa-location-dot" style="color:#fff;"></i>
             <span>${destination}</span>
             ${fechaInicio && fechaFin ? `<span class="pv-tag-sep">•</span><span>${(() => {
               const d1 = new Date(fechaInicio + 'T00:00:00');
