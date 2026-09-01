@@ -429,6 +429,24 @@
                 <div class="el-sub">Buscar en Giphy</div>
               </div>
             </div>
+            <div class="element-card type-galeria" draggable="true" data-type="galeria" data-label="Galería">
+              <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                  class="fa-solid fa-ellipsis-vertical"></i></div>
+              <div class="el-icon" style="color:#0284c7;background:#e0f2fe"><i class="fa-solid fa-images"></i></div>
+              <div class="el-info">
+                <div class="el-name">Galería</div>
+                <div class="el-sub">Hasta 5 fotos</div>
+              </div>
+            </div>
+            <div class="element-card type-ubicacion" draggable="true" data-type="ubicacion" data-label="Ubicación">
+              <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                  class="fa-solid fa-ellipsis-vertical"></i></div>
+              <div class="el-icon" style="color:#0ea5e9;background:#e0f2fe"><i class="fa-solid fa-location-dot"></i></div>
+              <div class="el-info">
+                <div class="el-name">Ubicación</div>
+                <div class="el-sub">Google Maps o Punto</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -493,13 +511,11 @@
 
                 <!-- Contenido editorial superpuesto al pie del Hero -->
                 <div class="portada-hero-content">
-                  <!-- Tag superior: Destino y Duración -->
+                  <!-- Tag superior: Destino -->
                   <div class="portada-tag-badge">
                     <i class="fa-solid fa-location-dot" style="color:var(--accent, #1ebdb1);font-size:12px"></i>
                     <input class="portada-dest-input" id="portadaDestino" placeholder="Destino (ej. Capadocia, Turquía)"
                       value="{{ $trip->destination ?? '' }}">
-                    <span class="portada-tag-separator">•</span>
-                    <span class="portada-duration-text" id="portadaDurationBadge">Aventura por programar</span>
                   </div>
 
                   <!-- Título Principal Editorial -->

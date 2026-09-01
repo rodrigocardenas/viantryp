@@ -811,6 +811,76 @@
       text-align: center;
     }
 
+    .dashboard-sidebar .sidebar-link.parent-active {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+    }
+
+    .dashboard-sidebar .sidebar-item-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dashboard-sidebar .sidebar-submenu {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 6px 0 6px 12px;
+      margin: 4px 0 6px 14px;
+      border-left: 2px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .dashboard-sidebar .sidebar-item-group:not(.open) .sidebar-submenu {
+      display: none;
+    }
+
+    .dashboard-sidebar .sidebar-item-group.open .submenu-arrow {
+      transform: rotate(180deg);
+    }
+
+    .dashboard-sidebar .sidebar-sublink {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      font-family: 'Barlow', sans-serif;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .dashboard-sidebar .sidebar-sublink:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+      text-decoration: none;
+    }
+
+    .dashboard-sidebar .sidebar-sublink.active {
+      background: #ffffff !important;
+      color: var(--sidebar-accent-color) !important;
+      font-weight: 700 !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .dashboard-sidebar .sidebar-sublink.active i {
+      color: var(--sidebar-accent-color) !important;
+    }
+
+    .dashboard-sidebar .sidebar-sublink i {
+      font-size: 14px;
+      width: 16px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
     .dashboard-sidebar .sidebar-link.disabled {
       opacity: 0.5;
       cursor: not-allowed !important;
@@ -992,6 +1062,7 @@
       display: flex;
       align-items: center;
       gap: 16px;
+      margin-left: auto;
     }
 
     .btn-topbar-create {
@@ -1152,27 +1223,32 @@
       align-items: center;
       gap: 10px;
       cursor: pointer;
-      padding: 6px 12px;
-      border-radius: 20px;
-      transition: background 0.2s;
+      padding: 4px 16px 4px 4px;
+      border-radius: 50px;
+      border: 1px solid #e2e8ef;
+      background: #ffffff;
+      transition: all 0.2s ease;
     }
 
     .profile-trigger:hover {
-      background: #f8fafc;
+      border-color: var(--accent);
+      background: var(--accent-light);
     }
 
     .profile-trigger .avatar {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: var(--accent-light);
-      color: var(--accent);
+      background: var(--avatar-gradient);
+      color: #ffffff;
       font-weight: 700;
-      font-size: 13px;
+      font-size: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      border: none !important;
+      letter-spacing: 0.5px;
     }
 
     .profile-trigger .avatar img {
@@ -1184,14 +1260,14 @@
     .profile-trigger .profile-name {
       font-size: 14px;
       font-weight: 600;
-      color: #334155;
+      color: #0f172a;
       margin-top: 0;
       margin-bottom: 0;
       font-family: 'Barlow', sans-serif;
     }
 
     .profile-trigger i {
-      font-size: 11px;
+      font-size: 10px;
       color: #64748b;
     }
 
@@ -1256,8 +1332,80 @@
       padding: 40px;
     }
 
+    /* BOTÓN MENÚ MÓVIL Y BACKDROP */
+    .mobile-hamburger-btn {
+      display: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(15, 42, 58, 0.2);
+    }
+
+    .mobile-sidebar-close {
+      display: none;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 42, 58, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 2999;
+      transition: opacity 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-hamburger-btn {
+        display: inline-flex !important;
+      }
+
+      .mobile-sidebar-close {
+        display: inline-flex !important;
+      }
+
+      .sidebar-backdrop.active {
+        display: block !important;
+      }
+
+      .dashboard-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: -280px !important;
+        width: 260px !important;
+        height: 100vh !important;
+        z-index: 3000 !important;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.2) !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+
+      .dashboard-sidebar.mobile-open {
+        left: 0 !important;
+      }
+    }
+
     /* RESPONSIVIDAD PARA EL ESCRITORIO DEL DASHBOARD */
-    @media (max-width: 1024px) {
+    @media (max-width: 1024px) and (min-width: 769px) {
       .dashboard-wrapper {
         padding: 0;
       }
@@ -1319,17 +1467,8 @@
            ESTILOS DE CONFIGURACIÓN ESTILO FINPAY
            ========================================================================== */
     .settings-grid {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 30px;
-      align-items: start;
-    }
-
-    @media (max-width: 991px) {
-      .settings-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
+      display: block;
+      width: 100%;
     }
 
     .settings-sub-nav {
@@ -1488,18 +1627,22 @@
 
 @section('content')
   <div class="dashboard-wrapper">
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar()"></div>
     <div class="dashboard-container">
       <!-- Sidebar -->
       <aside class="dashboard-sidebar">
         <!-- Sidebar Header / Logo (Now in white and inside sidebar) -->
-        <div class="sidebar-logo" style="margin-bottom: 30px; display: flex; align-items: center; padding-left: 8px;">
+        <div class="sidebar-logo" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; padding-left: 8px;">
           <a href="{{ route('home') }}">
             <img src="/images/logo-viantryp.png" alt="Viantryp"
               style="height: 32px; width: auto; filter: brightness(0) invert(1);">
           </a>
+          <button type="button" class="mobile-sidebar-close" onclick="toggleMobileSidebar()" title="Cerrar menú">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
 
-        <!-- Sidebar Nav Links (Same as trips, Ajustes active) -->
+        <!-- Sidebar Nav Links -->
         <nav class="sidebar-nav">
           <a href="{{ route('trips.index') }}?filter=personal" class="sidebar-link">
             <i class="fas fa-suitcase-rolling"></i>
@@ -1514,14 +1657,36 @@
             <span>Plantillas</span>
             <span class="sidebar-badge-soon">Próximamente</span>
           </div>
-          <a href="{{ route('profile.index') }}" class="sidebar-link active">
-            <i class="fas fa-cog"></i>
-            <span>Ajustes</span>
-          </a>
-          <a href="mailto:hola@viantryp.com" class="sidebar-link">
-            <i class="fas fa-envelope"></i>
-            <span>Contáctanos</span>
-          </a>
+
+          <div class="sidebar-item-group open" id="sidebarProfileGroup">
+            <a href="javascript:void(0)" class="sidebar-link parent-active" id="sidebarProfileToggle">
+              <i class="fas fa-user-circle"></i>
+              <span>Perfil</span>
+              <i class="fas fa-chevron-down submenu-arrow" style="margin-left: auto; font-size: 11px; transition: transform 0.2s ease;"></i>
+            </a>
+            <div class="sidebar-submenu" id="sidebarProfileSubmenu">
+              <button type="button" class="sidebar-sublink nav-item active" data-section="{{ $user->account_type === 'agency' ? 'agencia' : 'info' }}">
+                <i class="{{ $user->account_type === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
+                <span>Mi Cuenta y Ajustes</span>
+              </button>
+              <button type="button" class="sidebar-sublink nav-item" data-section="tema">
+                <i class="fas fa-palette"></i>
+                <span>Personalización de Marca</span>
+              </button>
+              <button type="button" class="sidebar-sublink nav-item" data-section="subscription">
+                <i class="fas fa-credit-card"></i>
+                <span>Planes y Suscripción</span>
+              </button>
+              <button type="button" class="sidebar-sublink nav-item" data-section="seguridad">
+                <i class="fas fa-shield-alt"></i>
+                <span>Seguridad de la Cuenta</span>
+              </button>
+              <a href="mailto:hola@viantryp.com" class="sidebar-sublink">
+                <i class="fas fa-headset"></i>
+                <span>Soporte y Ayuda</span>
+              </a>
+            </div>
+          </div>
         </nav>
 
         <!-- Sidebar Footer / Plan Usage -->
@@ -1573,9 +1738,13 @@
       <div class="dashboard-main">
         <!-- Topbar -->
         <header class="dashboard-topbar">
+          <button type="button" class="mobile-hamburger-btn" onclick="toggleMobileSidebar()" title="Abrir menú">
+            <i class="fas fa-bars"></i>
+          </button>
           <a href="{{ route('trips.index') }}" class="app-topbar-logo" title="Viantryp">
             <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 28px; width: auto; filter: brightness(0) invert(1); object-fit: contain; display: block;">
           </a>
+
           <div class="topbar-actions">
             <!-- Notifications -->
             <div class="noti-wrapper">
@@ -1627,40 +1796,6 @@
               Ajustes de cuenta</h1>
 
             <div class="settings-grid">
-              <!-- Left Column: Settings sub-navigation card -->
-              <div class="settings-sub-sidebar">
-                <div class="settings-sub-nav">
-                  @if($user->account_type === 'personal')
-                    <button class="nav-item active" data-section="info">
-                      <i class="fas fa-user-circle"></i>
-                      <span>Información Personal</span>
-                    </button>
-                  @else
-                    <button class="nav-item active" data-section="agencia">
-                      <i class="fas fa-briefcase"></i>
-                      <span>Mi Agencia</span>
-                    </button>
-                  @endif
-                  <button class="nav-item" data-section="tema">
-                    <i class="fas fa-palette"></i>
-                    <span>Tema e Identidad</span>
-                  </button>
-                  <button class="nav-item" data-section="subscription">
-                    <i class="fas fa-credit-card"></i>
-                    <span>Planes y Suscripción</span>
-                  </button>
-                  <button class="nav-item" data-section="pagos">
-                    <i class="fas fa-wallet"></i>
-                    <span>Métodos de Pago</span>
-                  </button>
-                  <div class="divider" style="height: 1px; background: #e2e8f0; margin: 8px 0;"></div>
-                  <button class="nav-item" data-section="seguridad">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Seguridad</span>
-                  </button>
-                </div>
-              </div>
-
               <!-- Right Column: MAIN CONTENT -->
               <div class="main-content">
 
@@ -2478,14 +2613,44 @@
         initNotis();
       })();
 
+      // TOGGLE MOBILE SIDEBAR
+      window.toggleMobileSidebar = function() {
+        const sidebar = document.querySelector('.dashboard-sidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
+        if (sidebar) sidebar.classList.toggle('mobile-open');
+        if (backdrop) backdrop.classList.toggle('active');
+      };
+
+      // TOGGLE SUBMENU PERFIL
+      const profileToggle = document.getElementById('sidebarProfileToggle');
+      const profileGroup = document.getElementById('sidebarProfileGroup');
+      if (profileToggle && profileGroup) {
+        profileToggle.addEventListener('click', function(e) {
+          e.preventDefault();
+          profileGroup.classList.toggle('open');
+        });
+      }
+
       // NAV ITEMS — navegación entre secciones
-      document.querySelectorAll('.nav-item[data-section]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
+      document.querySelectorAll('.sidebar-sublink[data-section], .nav-item[data-section]').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
           var id = btn.getAttribute('data-section');
+          if (!id) return;
           document.querySelectorAll('.tab-section').forEach(function (s) { s.classList.remove('active'); });
-          document.querySelectorAll('.nav-item').forEach(function (b) { b.classList.remove('active'); });
-          document.getElementById('section-' + id).classList.add('active');
-          btn.classList.add('active');
+          document.querySelectorAll('.sidebar-sublink, .nav-item').forEach(function (b) { b.classList.remove('active'); });
+          
+          var targetSection = document.getElementById('section-' + id);
+          if (targetSection) {
+            targetSection.classList.add('active');
+          }
+          document.querySelectorAll(`[data-section="${id}"]`).forEach(function (b) { b.classList.add('active'); });
+
+          // Actualizar URL sin recargar
+          const newUrl = new URL(window.location);
+          newUrl.searchParams.set('section', id);
+          newUrl.searchParams.delete('tab');
+          window.history.pushState({}, '', newUrl);
         });
       });
 
@@ -2495,7 +2660,7 @@
       const isPaid = urlParams.get('paid') === 'true';
 
       if (targetSection) {
-        const targetBtn = document.querySelector(`.nav-item[data-section="${targetSection}"]`);
+        const targetBtn = document.querySelector(`[data-section="${targetSection}"]`);
         if (targetBtn) {
           setTimeout(() => {
             targetBtn.click();
@@ -2510,7 +2675,7 @@
           const sectionEl = document.getElementById('section-' + targetSection);
           if (sectionEl) {
             document.querySelectorAll('.tab-section').forEach(function (s) { s.classList.remove('active'); });
-            document.querySelectorAll('.nav-item').forEach(function (b) { b.classList.remove('active'); });
+            document.querySelectorAll('.sidebar-sublink, .nav-item').forEach(function (b) { b.classList.remove('active'); });
             sectionEl.classList.add('active');
           }
         }

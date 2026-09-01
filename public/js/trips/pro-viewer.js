@@ -121,13 +121,86 @@ function buildPreviewHTML(data) {
   const fmtDateDetail = s => { if (!s) return ''; try { return new Date(s + 'T00:00:00').toLocaleDateString('es', { day: '2-digit', month: '2-digit', year: '2-digit' }) } catch { return s } };
   const fmtDayMonth = s => { if (!s) return ''; try { const d = new Date(s + 'T00:00:00'); return d.toLocaleDateString('es', { day: 'numeric', month: 'long' }); } catch { return s } };
   const fmtDayMonthWeekday = s => { if (!s) return ''; try { const dateStr = s.includes('T') || s.includes(' ') ? s : s + 'T00:00:00'; const d = new Date(dateStr); return d.toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return s; } };
+  const parseVideoEmbed = url => {
+    if (!url || typeof url !== 'string') return { valid: false };
+    const u = url.trim();
+    
+    // YouTube Standard
+    let m = u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([^"&?\/\s]{11})/i);
+    if (m && m[1]) {
+      return {
+        valid: true,
+        platform: 'youtube',
+        format: 'horizontal',
+        aspect: '16/9',
+        embedUrl: `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0`
+      };
+    }
+
+    // YouTube Shorts
+    m = u.match(/youtube\.com\/shorts\/([^"&?\/\s]{11})/i);
+    if (m && m[1]) {
+      return {
+        valid: true,
+        platform: 'youtube-shorts',
+        format: 'vertical',
+        aspect: '9/16',
+        embedUrl: `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0`
+      };
+    }
+
+    // Vimeo
+    m = u.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)/i);
+    if (m && m[1]) {
+      return {
+        valid: true,
+        platform: 'vimeo',
+        format: 'horizontal',
+        aspect: '16/9',
+        embedUrl: `https://player.vimeo.com/video/${m[1]}?dnt=1`
+      };
+    }
+
+    // TikTok
+    m = u.match(/tiktok\.com\/(?:@[^\/]+\/video\/|v\/|embed\/v2\/)(\d+)/i);
+    if (m && m[1]) {
+      return {
+        valid: true,
+        platform: 'tiktok',
+        format: 'vertical',
+        aspect: '9/16',
+        embedUrl: `https://www.tiktok.com/embed/v2/${m[1]}`
+      };
+    }
+
+    // Instagram Reel / Post
+    m = u.match(/instagram\.com\/(?:reel|p)\/([a-zA-Z0-9_-]+)/i);
+    if (m && m[1]) {
+      return {
+        valid: true,
+        platform: 'instagram',
+        format: 'vertical',
+        aspect: '9/16',
+        embedUrl: `https://www.instagram.com/reel/${m[1]}/embed/`
+      };
+    }
+
+    // Direct Video (mp4/webm/mov/m4v)
+    if (/\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(u)) {
+      return {
+        valid: true,
+        platform: 'direct',
+        format: 'horizontal',
+        aspect: '16/9',
+        videoUrl: u
+      };
+    }
+
+    return { valid: false };
+  };
   const getVideoEmbedUrl = url => {
-    if (!url) return null;
-    let match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
-    if (match && match[1]) return `https://www.youtube.com/embed/${match[1]}`;
-    match = url.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/);
-    if (match && match[1]) return `https://player.vimeo.com/video/${match[1]}`;
-    return null;
+    const res = parseVideoEmbed(url);
+    return res.valid ? res.embedUrl : null;
   };
   const starsHTML = n => n ? Array.from({ length: 5 }, (_, i) => `<svg width="16" height="16" viewBox="0 0 24 24" fill="${i < n ? '#f59e0b' : '#d1d5db'}"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`).join('') : '';
   const fixUrl = u => {
@@ -149,9 +222,11 @@ function buildPreviewHTML(data) {
   const cCarousel = (photo_url, icon) => {
     if (!photo_url) return `<div class="pv-hotel-photo-ph">${icon}</div>`;
     let urls = photo_url.split(',').filter(u => u.trim());
-    urls = urls.slice(0, 3); // Limit to 3 photos for cost optimization
-    if (urls.length === 1) return `<img src="${fixUrl(urls[0])}" style="width:100%;height:100%;object-fit:cover" loading="lazy" />`;
-    const slides = urls.map((u, i) => `<div class="pv-carousel-slide" style="display:${i === 0 ? 'block' : 'none'};width:100%;height:100%;"><img src="${fixUrl(u)}" style="width:100%;height:100%;object-fit:cover" loading="lazy" /></div>`).join('');
+    urls = urls.slice(0, 3); // Limit to 3 photos
+    const urlsFixed = urls.map(u => fixUrl(u));
+    const urlsJson = JSON.stringify(urlsFixed).replace(/"/g, '&quot;');
+    if (urls.length === 1) return `<img src="${urlsFixed[0]}" style="width:100%;height:100%;object-fit:cover;cursor:zoom-in;" onclick="openGalleryLightbox(${urlsJson}, 0); event.stopPropagation();" loading="lazy" />`;
+    const slides = urls.map((u, i) => `<div class="pv-carousel-slide" style="display:${i === 0 ? 'block' : 'none'};width:100%;height:100%;cursor:zoom-in;" onclick="openGalleryLightbox(${urlsJson}, ${i}); event.stopPropagation();"><img src="${urlsFixed[i]}" style="width:100%;height:100%;object-fit:cover" loading="lazy" /></div>`).join('');
     const dots = urls.map((u, i) => `<span class="pv-carousel-dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${i === 0 ? '#fff' : 'rgba(255,255,255,0.5)'};margin:0 2px;cursor:pointer;" onclick="const p=this.closest('.pv-carousel');p.querySelectorAll('.pv-carousel-slide').forEach(s=>s.style.display='none');p.querySelectorAll('.pv-carousel-slide')[${i}].style.display='block';p.querySelectorAll('.pv-carousel-dot').forEach(d=>d.style.background='rgba(255,255,255,0.5)');this.style.background='#fff';event.preventDefault();"></span>`).join('');
     return `<div class="pv-carousel" style="position:relative;width:100%;height:100%;overflow:hidden;border-radius:inherit;z-index:1;">
           ${slides}
@@ -180,6 +255,23 @@ function buildPreviewHTML(data) {
     return icons[tipo] ? `<span style="font-size:${sz + 2}px">${icons[tipo]}</span>` : transportIconSVG.replace(/width="\d+" height="\d+"/, s);
   }
 
+  const optimizeImageUrl = (url, width = 1200) => {
+    if (!url || typeof url !== 'string') return url;
+    if (url.includes('images.unsplash.com')) {
+      try {
+        const u = new URL(url);
+        u.searchParams.set('w', width);
+        u.searchParams.set('auto', 'format');
+        u.searchParams.set('fit', 'crop');
+        u.searchParams.set('q', '80');
+        return u.toString();
+      } catch {
+        return url;
+      }
+    }
+    return fixUrl(url);
+  };
+
   function renderPreviewItems(items) {
     if (!items || !items.length) return '<div class="pv-empty">Sin elementos en este día</div>';
     return items.map(item => {
@@ -199,7 +291,26 @@ function buildPreviewHTML(data) {
 
       // ── IMAGEN ──
       if (item.type === 'imagen') {
-        return `<div class="pv-imagen">${d.url ? `<img src="${fixUrl(d.url)}" alt="${d.caption || ''}">` : '<div class="pv-img-ph"><i class="fa-regular fa-image"></i></div>'}${d.caption ? `<div class="pv-caption">${d.caption}</div>` : ''}</div>`;
+        const rawSz = (d.tamano || 'Mediano').toLowerCase();
+        let sz = 'mediano';
+        let targetW = 1000;
+        if (rawSz.startsWith('peque') || rawSz.startsWith('pequ')) { sz = 'pequeno'; targetW = 600; }
+        else if (rawSz.startsWith('gran')) { sz = 'grande'; targetW = 1400; }
+        else if (rawSz.startsWith('comp')) { sz = 'completo'; targetW = 1800; }
+
+        if (!d.url) {
+          return `<div class="pv-imagen pv-size-${sz}"><div class="pv-img-ph"><i class="fa-regular fa-image"></i></div></div>`;
+        }
+
+        const optimized = optimizeImageUrl(d.url, targetW);
+        const fixed = fixUrl(optimized);
+        const singleJson = JSON.stringify([fixed]).replace(/"/g, '&quot;');
+
+        return `<div class="pv-imagen pv-size-${sz} pv-smart-frame" style="position:relative;overflow:hidden;border-radius:12px;box-shadow:var(--shadow);background:#0f172a;box-sizing:border-box;cursor:zoom-in;" onclick="openGalleryLightbox(${singleJson}, 0); event.stopPropagation();">
+          <div class="pv-blur-backdrop" style="position:absolute;inset:-20px;background-image:url('${fixed}');background-size:cover;background-position:center;filter:blur(22px) brightness(0.6);opacity:0.85;transform:scale(1.2);pointer-events:none;"></div>
+          <img src="${fixed}" alt="" loading="lazy" decoding="async" class="pv-sharp-img" style="position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:1;">
+          <div class="pv-expand-hint" style="position:absolute;top:12px;right:12px;background:rgba(15,23,42,0.6);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;z-index:2;backdrop-filter:blur(4px);pointer-events:none;"><i class="fa-solid fa-expand"></i></div>
+        </div>`;
       }
 
       // ── CAJA / TIP DESTACADO ──
@@ -210,28 +321,98 @@ function buildPreviewHTML(data) {
 
       // ── GIF ──
       if (item.type === 'gif') {
-        return `<div class="pv-imagen pv-gif-wrap" style="box-shadow:none;border-radius:10px;overflow:hidden;max-width:100%;">
-          <img src="${fixUrl(d.url)}" class="pv-gif-img" style="width:100%;max-width:100%;height:auto;display:block;border-radius:10px;object-fit:contain;">
-          ${d.caption ? `<div class="pv-caption">${d.caption}</div>` : ''}
+        const rawSz = (d.tamano || 'Mediano').toLowerCase();
+        let sz = 'mediano';
+        if (rawSz.startsWith('peque') || rawSz.startsWith('pequ')) sz = 'pequeno';
+        else if (rawSz.startsWith('gran')) sz = 'grande';
+        else if (rawSz.startsWith('comp')) sz = 'completo';
+        return `<div class="pv-imagen pv-gif-wrap pv-size-${sz}" style="box-shadow:none;border-radius:10px;overflow:hidden;">
+          <img src="${fixUrl(d.url)}" class="pv-gif-img" style="display:block;border-radius:10px;object-fit:contain;">
         </div>`;
       }
 
-      // ── VIDEO ──
-      if (item.type === 'video') {
-        const embedUrl = getVideoEmbedUrl(d.url);
-        return `<div class="pv-card">
-          <div class="pvc-section-label" style="color:#ef4444"><i class="fa-solid fa-circle-play"></i> Video</div>
-          <div class="pvc-main-title" style="margin-bottom:12px">${d.titulo || 'Video'}</div>
-          ${embedUrl ? `
-            <div class="pv-video-container" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000;">
-              <iframe src="${embedUrl}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      // ── GALERÍA DE FOTOS ──
+      if (item.type === 'galeria') {
+        let photos = [];
+        try {
+          if (Array.isArray(d.photos)) photos = d.photos;
+          else if (typeof d.photos === 'string' && d.photos.startsWith('[')) photos = JSON.parse(d.photos);
+          else if (d.photos) photos = d.photos.split(',').map(s=>s.trim()).filter(Boolean);
+        } catch {
+          photos = d.photos ? d.photos.split(',').filter(Boolean) : [];
+        }
+        photos = photos.slice(0, 5);
+
+        const rawSz = (d.tamano || 'Mediano').toLowerCase();
+        let sz = 'mediano';
+        let targetW = 1000;
+        if (rawSz.startsWith('peque') || rawSz.startsWith('pequ')) { sz = 'pequeno'; targetW = 600; }
+        else if (rawSz.startsWith('gran')) { sz = 'grande'; targetW = 1400; }
+        else if (rawSz.startsWith('comp')) { sz = 'completo'; targetW = 1800; }
+
+        if (photos.length === 0) {
+          return '';
+        }
+        if (photos.length === 1) {
+          const u = fixUrl(optimizeImageUrl(photos[0], targetW));
+          const singleJson = JSON.stringify([u]).replace(/"/g, '&quot;');
+          return `<div class="pv-imagen pv-size-${sz} pv-smart-frame" style="position:relative;overflow:hidden;border-radius:12px;box-shadow:var(--shadow);background:#0f172a;box-sizing:border-box;cursor:zoom-in;" onclick="openGalleryLightbox(${singleJson}, 0); event.stopPropagation();">
+            <div class="pv-blur-backdrop" style="position:absolute;inset:-20px;background-image:url('${u}');background-size:cover;background-position:center;filter:blur(22px) brightness(0.6);opacity:0.85;transform:scale(1.2);pointer-events:none;"></div>
+            <img src="${u}" alt="" loading="lazy" decoding="async" class="pv-sharp-img" style="position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:1;">
+            <div class="pv-expand-hint" style="position:absolute;top:12px;right:12px;background:rgba(15,23,42,0.6);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;z-index:2;backdrop-filter:blur(4px);pointer-events:none;"><i class="fa-solid fa-expand"></i></div>
+          </div>`;
+        }
+
+        const photosFullList = photos.map(p => fixUrl(p));
+        const photosJson = JSON.stringify(photosFullList).replace(/"/g, '&quot;');
+
+        const slides = photos.map((rawU, i) => {
+          const u = fixUrl(optimizeImageUrl(rawU, targetW));
+          return `<div class="pv-carousel-slide" style="display:${i === 0 ? 'block' : 'none'};position:relative;width:100%;height:100%;overflow:hidden;background:#0f172a;cursor:zoom-in;" onclick="openGalleryLightbox(${photosJson}, ${i}); event.stopPropagation();">
+            <div class="pv-blur-backdrop" style="position:absolute;inset:-20px;background-image:url('${u}');background-size:cover;background-position:center;filter:blur(22px) brightness(0.6);opacity:0.85;transform:scale(1.2);pointer-events:none;"></div>
+            <img src="${u}" style="position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:1;" loading="lazy" decoding="async" />
+            <div class="pv-expand-hint" style="position:absolute;top:12px;right:12px;background:rgba(15,23,42,0.6);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;z-index:2;backdrop-filter:blur(4px);pointer-events:none;"><i class="fa-solid fa-expand"></i></div>
+          </div>`;
+        }).join('');
+
+        const dots = photos.map((u, i) => `<span class="pv-carousel-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${i === 0 ? '#fff' : 'rgba(255,255,255,0.45)'};margin:0 3px;cursor:pointer;transition:all 0.2s;" onclick="const p=this.closest('.pv-carousel');p.querySelectorAll('.pv-carousel-slide').forEach(s=>s.style.display='none');p.querySelectorAll('.pv-carousel-slide')[${i}].style.display='block';p.querySelectorAll('.pv-carousel-dot').forEach(d=>d.style.background='rgba(255,255,255,0.45)');this.style.background='#fff';event.preventDefault();"></span>`).join('');
+
+        return `<div class="pv-imagen pv-gallery-carousel pv-size-${sz} pv-smart-frame" style="position:relative;overflow:hidden;border-radius:12px;box-shadow:var(--shadow);box-sizing:border-box;">
+          <div class="pv-carousel" style="position:relative;width:100%;height:100%;overflow:hidden;border-radius:inherit;z-index:1;">
+            ${slides}
+            <div class="pv-carousel-nav" style="position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);display:flex;justify-content:space-between;padding:0 12px;z-index:3;pointer-events:none;">
+              <button type="button" style="background:rgba(15,23,42,0.65);color:white;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;pointer-events:auto;backdrop-filter:blur(4px);transition:background 0.2s;" onclick="const p=this.closest('.pv-carousel');const s=p.querySelectorAll('.pv-carousel-slide');const d=p.querySelectorAll('.pv-carousel-dot');let idx=[...s].findIndex(el=>el.style.display==='block');s[idx].style.display='none';d[idx].style.background='rgba(255,255,255,0.45)';idx=(idx-1+s.length)%s.length;s[idx].style.display='block';d[idx].style.background='#fff';event.preventDefault();"><i class="fa-solid fa-chevron-left"></i></button>
+              <button type="button" style="background:rgba(15,23,42,0.65);color:white;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;pointer-events:auto;backdrop-filter:blur(4px);transition:background 0.2s;" onclick="const p=this.closest('.pv-carousel');const s=p.querySelectorAll('.pv-carousel-slide');const d=p.querySelectorAll('.pv-carousel-dot');let idx=[...s].findIndex(el=>el.style.display==='block');s[idx].style.display='none';d[idx].style.background='rgba(255,255,255,0.45)';idx=(idx+1)%s.length;s[idx].style.display='block';d[idx].style.background='#fff';event.preventDefault();"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
-          ` : d.url ? `
-            <div style="margin-top:8px">
-              <a href="${d.url}" target="_blank" class="pv-action-btn" style="background:#ef4444"><i class="fa-solid fa-link"></i> Ver contenido externo</a>
+            <div class="pv-carousel-dots" style="position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;align-items:center;z-index:3;pointer-events:auto;">
+              ${dots}
             </div>
-          ` : ''}
-          ${d.descripcion ? `<div class="pv-media-desc" style="margin-top:10px">${d.descripcion}</div>` : ''}
+          </div>
+        </div>`;
+      }
+
+      // ── UBICACIÓN ──
+      if (item.type === 'ubicacion') {
+        const name = d.nombre || 'Ubicación';
+        const addr = d.direccion || '';
+        const note = d.nota || '';
+        const q = (addr && addr.trim()) ? addr.trim() : (name && name.trim() ? name.trim() : '');
+        const mapsUrl = d.maps_url || (q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` : 'https://maps.google.com');
+
+        return `<div class="pv-card pv-ubicacion-card" style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 20px;border:1px solid #e2e8f0;border-radius:14px;background:#f8fafc;box-shadow:var(--shadow);transition:all 0.2s;box-sizing:border-box;">
+          <div style="display:flex;align-items:center;gap:14px;min-width:0;flex:1;">
+            <div style="width:42px;height:42px;border-radius:50%;background:#e0f2fe;color:#0284c7;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
+              <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <div style="min-width:0;flex:1;">
+              <div style="font-weight:700;font-size:15px;color:#1e293b;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${name}</div>
+              ${addr ? `<div style="font-size:12.5px;color:#64748b;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${addr}</div>` : ''}
+              ${note ? `<div style="font-size:12px;color:#0284c7;margin-top:4px;font-style:italic;"><i class="fa-regular fa-comment-dots"></i> ${note}</div>` : ''}
+            </div>
+          </div>
+          <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#fff;border:1px solid #cbd5e1;border-radius:24px;color:#0f172a;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.18s;flex-shrink:0;" onmouseover="this.style.background='#0f172a';this.style.color='#fff';this.style.borderColor='#0f172a';" onmouseout="this.style.background='#fff';this.style.color='#0f172a';this.style.borderColor='#cbd5e1';">
+            Ver en Maps <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10.5px;"></i>
+          </a>
         </div>`;
       }
 
@@ -272,7 +453,7 @@ function buildPreviewHTML(data) {
           </div>
           <div class="pv-chips-row">
             ${d.clase ? `<span class="pv-chip"><i class="fa-solid fa-couch"></i> ${d.clase}</span>` : ''}
-            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${formatNumber(d.precio)} USD</span>` : ''}
+            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-coins"></i> $${formatNumber(d.precio)} USD</span>` : ''}
           </div>
           ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
           ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -294,6 +475,15 @@ function buildPreviewHTML(data) {
         const nights = d.checkin && d.checkout ? Math.round((new Date(d.checkout) - new Date(d.checkin)) / (1000 * 60 * 60 * 24)) : null;
         const cIn = d.checkin ? fmtDateTime(d.checkin.includes('T') || d.checkin.includes(' ') ? d.checkin : d.checkin + 'T15:00:00') : null;
         const cOut = d.checkout ? fmtDateTime(d.checkout.includes('T') || d.checkout.includes(' ') ? d.checkout : d.checkout + 'T12:00:00') : null;
+
+        const isAirbnb = d.tipo_alojamiento && (d.tipo_alojamiento.toLowerCase().includes('airbnb') || d.tipo_alojamiento.toLowerCase().includes('otro'));
+        let hotelMapsQuery = '';
+        if (isAirbnb) {
+          hotelMapsQuery = (d.direccion && d.direccion.trim()) ? d.direccion.trim() : (d.nombre || 'Alojamiento');
+        } else {
+          hotelMapsQuery = (d.nombre ? d.nombre : '') + (d.direccion ? (d.nombre ? ' ' : '') + d.direccion : '');
+        }
+
         return `<div class="pv-card">
           <div class="pvc-section-label" style="color:var(--accent)"><i class="fa-solid fa-hotel"></i> Alojamiento</div>
           <div class="pv-hotel-layout">
@@ -301,7 +491,7 @@ function buildPreviewHTML(data) {
             <div class="pv-hotel-info-col">
               <div class="pv-hotel-title-row">
                 <div class="pv-hotel-name">
-                  <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.nombre || 'Hotel') + ' ' + (d.direccion || ''))}" target="_blank" class="pv-map-link">
+                  <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hotelMapsQuery)}" target="_blank" class="pv-map-link">
                     ${d.nombre || 'Hotel'} <i class="fa-solid fa-up-right-from-square"></i>
                   </a>
                 </div>
@@ -322,7 +512,7 @@ function buildPreviewHTML(data) {
               <div class="pv-hotel-btns">
                 ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn" style="text-decoration:none"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
                 ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn" style="text-decoration:none"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
-                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${formatNumber(d.precio)} USD</span>` : ''}
+                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-coins"></i> $${formatNumber(d.precio)} USD</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -367,7 +557,7 @@ function buildPreviewHTML(data) {
             </div>
           </div>
           <div class="pv-chips-row">
-            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${formatNumber(d.precio)} USD</span>` : ''}
+            ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-coins"></i> $${formatNumber(d.precio)} USD</span>` : ''}
           </div>
           ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
           ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -406,7 +596,7 @@ function buildPreviewHTML(data) {
               <div class="pv-hotel-btns" style="margin-top:10px">
                 ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
                 ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
-                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${formatNumber(d.precio)} USD</span>` : ''}
+                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-coins"></i> $${formatNumber(d.precio)} USD</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -442,7 +632,7 @@ function buildPreviewHTML(data) {
               <div class="pv-hotel-btns" style="margin-top:10px">
                 ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
                 ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
-                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-tag"></i> $${formatNumber(d.precio)} USD</span>` : ''}
+                ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-coins"></i> $${formatNumber(d.precio)} USD</span>` : ''}
                 ${d.estado_reserva && d.estado_reserva !== 'No aplica' ? `<span class="pv-action-btn"><i class="fa-solid fa-calendar-check"></i> ${d.estado_reserva}</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
@@ -482,7 +672,7 @@ function buildPreviewHTML(data) {
               ${d.descripcion ? `<div class="pv-media-desc">${d.descripcion}</div>` : ''}
               <div class="pv-chips-row" style="margin-top:8px">
                 ${d.personas ? `<span class="pv-chip"><i class="fa-solid fa-users"></i> ${d.personas} personas</span>` : ''}
-                ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-tag"></i> $${formatNumber(d.precio)} USD</span>` : ''}
+                ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-coins"></i> $${formatNumber(d.precio)} USD</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -607,8 +797,8 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-back-btn:hover{border-color:#38bdf8;color:#38bdf8;background:rgba(255,255,255,0.1)}
 
 /* ─── PORTADA CARD (Editorial Hero) ─── */
-.pv-portada-wrap{max-width:1100px;margin:28px auto 0;padding:0 24px}
-.pv-portada-card{background:#0f172a;border-radius:20px;overflow:hidden;box-shadow:0 20px 40px -15px rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1)}
+.pv-portada-wrap{max-width:1280px;margin:28px auto 0;padding:0 24px;box-sizing:border-box}
+.pv-portada-card{background:#0f172a;border-radius:20px;overflow:hidden;box-shadow:0 20px 40px -15px rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);box-sizing:border-box}
 .pv-portada-hero{position:relative;min-height:300px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
 .pv-portada-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
 .pv-portada-img-placeholder{position:absolute;inset:0;width:100%;height:100%;background:linear-gradient(139deg, #0f172a, #1e293b);display:flex;align-items:center;justify-content:center;font-size:52px;color:rgba(255,255,255,0.25);z-index:1}
@@ -626,28 +816,30 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-pm-value.highlight{color:#fff}
 
 /* LAYOUT */
-.pv-layout{display:grid;grid-template-columns:250px 1fr;max-width:1100px;margin:0 auto;padding:32px 24px 60px;align-items:start;gap:0}
+.pv-layout{display:grid;grid-template-columns:repeat(12, minmax(0, 1fr));gap:32px;align-items:start;max-width:1280px;margin:0 auto;padding:32px 24px 64px;box-sizing:border-box}
 
 /* SIDEBAR NAV */
-.pv-nav{position:sticky;top:68px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.pv-nav{grid-column:span 3 / span 3;position:sticky;top:76px;align-self:start;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-top:0;box-sizing:border-box}
 .pv-nav-title{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);padding:14px 18px 11px;border-bottom:1px solid var(--border)}
 .pvnav-link{display:flex;align-items:baseline;gap:8px;padding:9px 18px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .14s;border-left:3px solid transparent}
 .pvnav-link:hover{background:#f8f9fb;color:var(--accent);border-left-color:var(--accent)}
 .pvnav-link.active{background:#f0faf9;color:var(--accent);border-left-color:var(--accent);font-weight:600}
 .pvnav-num{font-size:10px;font-weight:700;color:var(--dim);min-width:34px;letter-spacing:.4px}
 .pvnav-link.active .pvnav-num{color:var(--accent)}
+
 /* CONTENT */
-.pv-content{padding-left:26px;display:flex;flex-direction:column;gap:36px}
+.pv-content{grid-column:span 9 / span 9;display:flex;flex-direction:column;gap:32px;padding-left:0;margin-top:0;box-sizing:border-box}
 
 /* DAY SECTION */
-.pvday-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--border);position:sticky;top:62px;background:var(--bg);z-index:10;padding-top:8px}
-.pvday-pill{background:var(--accent-bg);color:#fff;font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;padding:4px 11px;border-radius:20px}
+.pv-day{margin-top:0;box-sizing:border-box}
+.pvday-header{display:flex;align-items:center;gap:12px;margin-top:0;margin-bottom:16px;padding:0 0 12px 0;border-bottom:2px solid var(--border);position:sticky;top:60px;background:var(--bg);z-index:10;box-sizing:border-box}
+.pvday-pill{background:var(--accent-bg);color:#fff;font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;padding:4px 11px;border-radius:20px;margin-left:0}
 .pvday-title{font-family:'Poppins',sans-serif;font-size:18px;font-weight:800;color:var(--text);flex:1}
 .pvday-count{font-size:11px;color:var(--dim);background:var(--border);border-radius:10px;padding:3px 10px}
-.pvday-items{display:flex;flex-direction:column;gap:12px}
+.pvday-items{display:flex;flex-direction:column;gap:12px;padding-left:0;margin-left:0}
 
 /* ─── BASE CARD ─── */
-.pv-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+.pv-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);box-sizing:border-box}
 .pvc-section-label{font-size:13px;font-weight:700;margin-bottom:14px}
 
 /* EMPTY / DESIGN ITEMS */
@@ -666,10 +858,32 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-texto a { color: #0ea5e9; text-decoration: underline; }
 .pv-texto p { margin-bottom: 8px; }
 .pv-texto img, .pv-texto iframe, .pv-texto video, .pv-texto figure { max-width: 100% !important; height: auto !important; border-radius: 8px; display: block; margin: 8px auto; box-sizing: border-box; }
-.pv-imagen{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);max-width:100%;box-sizing:border-box;}
-.pv-imagen img{width:100%;max-width:100%;height:auto;max-height:400px;object-fit:cover;display:block;box-sizing:border-box;}
+.pv-imagen{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);max-width:100%;box-sizing:border-box;transition:all .2s ease;}
+.pv-imagen img{width:100%;max-width:100%;height:auto;object-fit:cover;display:block;box-sizing:border-box;}
 .pv-gif-wrap{border-radius:10px;overflow:hidden;max-width:100%;box-sizing:border-box;}
-.pv-gif-img{width:100%!important;max-width:100%!important;height:auto!important;max-height:450px;object-fit:contain!important;display:block;margin:0 auto;box-sizing:border-box;}
+.pv-gif-img{width:100%!important;max-width:100%!important;height:auto!important;object-fit:contain!important;display:block;margin:0 auto;box-sizing:border-box;}
+
+/* Tamaños de visualización para Imagen y GIF */
+.pv-size-pequeno{max-width:380px;width:100%;margin-left:auto;margin-right:auto;}
+.pv-size-pequeno img{max-height:220px;object-fit:cover;}
+.pv-size-pequeno .pv-gif-img{max-height:220px;object-fit:contain;}
+
+.pv-smart-frame{position:relative;overflow:hidden;border-radius:14px;box-shadow:var(--shadow);background:#0b1120;}
+.pv-size-pequeno.pv-smart-frame, .pv-size-pequeno{max-width:380px;width:100%;margin:0 auto;height:240px;}
+.pv-size-pequeno img{height:100%;object-fit:contain;}
+.pv-size-pequeno .pv-gif-img{max-height:240px;object-fit:contain;}
+
+.pv-size-mediano.pv-smart-frame, .pv-size-mediano{max-width:100%;width:100%;height:380px;}
+.pv-size-mediano img{height:100%;object-fit:contain;}
+.pv-size-mediano .pv-gif-img{max-height:380px;object-fit:contain;}
+
+.pv-size-grande.pv-smart-frame, .pv-size-grande{max-width:100%;width:100%;height:520px;}
+.pv-size-grande img{height:100%;object-fit:contain;}
+.pv-size-grande .pv-gif-img{max-height:520px;object-fit:contain;}
+
+.pv-size-completo.pv-smart-frame, .pv-size-completo{max-width:100%;width:100%;height:580px;}
+.pv-size-completo img{height:100%;object-fit:contain;}
+.pv-size-completo .pv-gif-img{max-height:580px;object-fit:contain;}
 .pv-img-ph{height:150px;display:flex;align-items:center;justify-content:center;font-size:34px;background:var(--surface)}
 .pv-caption{padding:9px 14px;font-size:12px;color:var(--muted);text-align:center;border-top:1px solid var(--border);background:var(--surface)}
 .pv-caja{display:flex;gap:13px;align-items:flex-start;padding:15px 18px;border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);max-width:100%;box-sizing:border-box;overflow:hidden;}
@@ -743,7 +957,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pvcs-l{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
 
 /* PORTADA / CIERRE EXTRA ITEMS */
-.pv-portada-extra-items{max-width:1100px;margin:12px auto 0;padding:0 24px;display:flex;flex-direction:column;gap:12px}
+.pv-portada-extra-items{max-width:1280px;margin:12px auto 0;padding:0 24px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box}
 .pv-cierre-extra-items{display:flex;flex-direction:column;gap:12px;margin-top:16px}
 
 /* MOBILE */
@@ -1865,7 +2079,8 @@ const mapMarkerTypes = {
   transporte: { color: '#10b981', icon: 'fa-bus' },
   actividad: { color: '#8b5cf6', icon: 'fa-bullseye' },
   comida: { color: '#f97316', icon: 'fa-utensils' },
-  tour: { color: '#ef4444', icon: 'fa-route' }
+  tour: { color: '#ef4444', icon: 'fa-route' },
+  ubicacion: { color: '#0ea5e9', icon: 'fa-location-dot' }
 };
 
 function loadLeaflet(callback) {
@@ -2474,6 +2689,108 @@ if (document.readyState === 'loading') {
 } else {
   setTimeout(preGeocodeAllAddresses, 2000);
 }
+
+// FULLSCREEN LIGHTBOX
+window.openGalleryLightbox = function(photos, startIndex = 0) {
+  if (!photos || !photos.length) return;
+  if (typeof photos === 'string') {
+    try { photos = JSON.parse(photos); } catch (e) { photos = photos.split(',').filter(Boolean); }
+  }
+  let currentIdx = Math.max(0, Math.min(startIndex, photos.length - 1));
+
+  document.getElementById('pvLightboxOverlay')?.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'pvLightboxOverlay';
+  overlay.className = 'pv-lightbox-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(8,12,22,0.96);backdrop-filter:blur(14px);z-index:100000;display:flex;flex-direction:column;justify-content:space-between;opacity:0;transition:opacity 0.25s ease;user-select:none;';
+
+  const thumbsHtml = photos.length > 1 ? photos.map((u, i) => \`<img class="pv-lb-thumb \${i === currentIdx ? 'active' : ''}" data-index="\${i}" src="\${u}" style="width:54px;height:54px;object-fit:cover;border-radius:8px;cursor:pointer;opacity:\${i === currentIdx ? '1' : '0.4'};border:2.5px solid \${i === currentIdx ? '#38bdf8' : 'transparent'};transition:all 0.2s;flex-shrink:0;">\`).join('') : '';
+
+  overlay.innerHTML = \`
+    <div class="pv-lb-topbar" style="display:flex;justify-content:space-between;align-items:center;padding:18px 24px;z-index:10;">
+      <div class="pv-lb-counter" style="color:rgba(255,255,255,0.85);font-size:14px;font-weight:600;font-family:'Poppins',sans-serif;background:rgba(255,255,255,0.1);padding:4px 12px;border-radius:20px;">
+        <span id="pvLbCurrent">\${currentIdx + 1}</span> / <span>\${photos.length}</span>
+      </div>
+      <button type="button" id="pvLbClose" style="background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all 0.2s;" title="Cerrar (Esc)"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="pv-lb-main" style="position:relative;flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0 20px;">
+      <button type="button" id="pvLbPrev" style="position:absolute;left:24px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:50%;width:48px;height:48px;cursor:pointer;display:\${photos.length > 1 ? 'flex' : 'none'};align-items:center;justify-content:center;font-size:18px;backdrop-filter:blur(8px);transition:all 0.2s;z-index:10;" title="Anterior (←)"><i class="fa-solid fa-chevron-left"></i></button>
+      
+      <div id="pvLbImgWrap" style="position:relative;max-width:92vw;max-height:76vh;display:flex;align-items:center;justify-content:center;">
+        <img id="pvLbMainImg" src="\${photos[currentIdx]}" style="max-width:92vw;max-height:76vh;object-fit:contain;border-radius:12px;box-shadow:0 30px 70px rgba(0,0,0,0.7);transition:transform 0.2s ease, opacity 0.2s ease;">
+      </div>
+
+      <button type="button" id="pvLbNext" style="position:absolute;right:24px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:50%;width:48px;height:48px;cursor:pointer;display:\${photos.length > 1 ? 'flex' : 'none'};align-items:center;justify-content:center;font-size:18px;backdrop-filter:blur(8px);transition:all 0.2s;z-index:10;" title="Siguiente (→)"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+    <div class="pv-lb-bottom" style="display:flex;justify-content:center;align-items:center;padding:16px 24px;gap:10px;overflow-x:auto;z-index:10;">
+      \${thumbsHtml}
+    </div>
+  \`;
+
+  document.body.appendChild(overlay);
+  setTimeout(() => { overlay.style.opacity = '1'; }, 10);
+
+  const mainImg = overlay.querySelector('#pvLbMainImg');
+  const counterEl = overlay.querySelector('#pvLbCurrent');
+  const thumbs = overlay.querySelectorAll('.pv-lb-thumb');
+
+  const updateImage = (newIdx) => {
+    currentIdx = (newIdx + photos.length) % photos.length;
+    mainImg.style.opacity = '0';
+    mainImg.style.transform = 'scale(0.96)';
+    setTimeout(() => {
+      mainImg.src = photos[currentIdx];
+      mainImg.style.opacity = '1';
+      mainImg.style.transform = 'scale(1)';
+    }, 120);
+    if (counterEl) counterEl.textContent = currentIdx + 1;
+    thumbs.forEach((t, i) => {
+      t.style.opacity = i === currentIdx ? '1' : '0.4';
+      t.style.borderColor = i === currentIdx ? '#38bdf8' : 'transparent';
+    });
+  };
+
+  overlay.querySelector('#pvLbPrev')?.addEventListener('click', (e) => { e.stopPropagation(); updateImage(currentIdx - 1); });
+  overlay.querySelector('#pvLbNext')?.addEventListener('click', (e) => { e.stopPropagation(); updateImage(currentIdx + 1); });
+
+  thumbs.forEach(t => {
+    t.addEventListener('click', (e) => {
+      e.stopPropagation();
+      updateImage(parseInt(t.dataset.index, 10));
+    });
+  });
+
+  const closeLb = () => {
+    overlay.style.opacity = '0';
+    document.removeEventListener('keydown', handleKey);
+    setTimeout(() => overlay.remove(), 250);
+  };
+
+  overlay.querySelector('#pvLbClose')?.addEventListener('click', closeLb);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay || e.target.id === 'pvLbImgWrap' || e.target.classList.contains('pv-lb-main')) closeLb();
+  });
+
+  const handleKey = (e) => {
+    if (e.key === 'Escape') closeLb();
+    else if (e.key === 'ArrowLeft') updateImage(currentIdx - 1);
+    else if (e.key === 'ArrowRight') updateImage(currentIdx + 1);
+  };
+  document.addEventListener('keydown', handleKey);
+
+  // Swipe support on mobile
+  let touchStartX = 0;
+  let touchEndX = 0;
+  overlay.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+  overlay.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (touchEndX < touchStartX - 45) updateImage(currentIdx + 1);
+    if (touchEndX > touchStartX + 45) updateImage(currentIdx - 1);
+  }, { passive: true });
+};
 </script>
 ${!isPublicLink && tripId ? `
 <script>

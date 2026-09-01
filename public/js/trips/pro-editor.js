@@ -1,4 +1,92 @@
 // STATE
+function fixUrl(u) {
+  if (!u) return '';
+  if (typeof u !== 'string') return '';
+  if (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('data:') || u.startsWith('blob:')) return u;
+  if (u.startsWith('/')) return window.location.origin + u;
+  return window.location.origin + '/' + u;
+}
+window.fixUrl = fixUrl;
+
+function parseVideoEmbed(url) {
+  if (!url || typeof url !== 'string') return { valid: false };
+  const u = url.trim();
+  
+  // YouTube Standard
+  let m = u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([^"&?\/\s]{11})/i);
+  if (m && m[1]) {
+    return {
+      valid: true,
+      platform: 'youtube',
+      format: 'horizontal',
+      aspect: '16/9',
+      embedUrl: `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0`
+    };
+  }
+
+  // YouTube Shorts
+  m = u.match(/youtube\.com\/shorts\/([^"&?\/\s]{11})/i);
+  if (m && m[1]) {
+    return {
+      valid: true,
+      platform: 'youtube-shorts',
+      format: 'vertical',
+      aspect: '9/16',
+      embedUrl: `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0`
+    };
+  }
+
+  // Vimeo
+  m = u.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)/i);
+  if (m && m[1]) {
+    return {
+      valid: true,
+      platform: 'vimeo',
+      format: 'horizontal',
+      aspect: '16/9',
+      embedUrl: `https://player.vimeo.com/video/${m[1]}?dnt=1`
+    };
+  }
+
+  // TikTok
+  m = u.match(/tiktok\.com\/(?:@[^\/]+\/video\/|v\/|embed\/v2\/)(\d+)/i);
+  if (m && m[1]) {
+    return {
+      valid: true,
+      platform: 'tiktok',
+      format: 'vertical',
+      aspect: '9/16',
+      embedUrl: `https://www.tiktok.com/embed/v2/${m[1]}`
+    };
+  }
+
+  // Instagram Reel / Post
+  m = u.match(/instagram\.com\/(?:reel|p)\/([a-zA-Z0-9_-]+)/i);
+  if (m && m[1]) {
+    return {
+      valid: true,
+      platform: 'instagram',
+      format: 'vertical',
+      aspect: '9/16',
+      embedUrl: `https://www.instagram.com/reel/${m[1]}/embed/`
+    };
+  }
+
+  // Direct Video (mp4/webm/mov/m4v)
+  if (/\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(u)) {
+    return {
+      valid: true,
+      platform: 'direct',
+      format: 'horizontal',
+      aspect: '16/9',
+      videoUrl: u
+    };
+  }
+
+  return { valid: false };
+}
+window.parseVideoEmbed = parseVideoEmbed;
+
 let days = [[]];
 let dayDates = ['']; // per-day date strings (yyyy-mm-dd)
 let portadaItems = [];
@@ -309,9 +397,14 @@ function renderUnsplashGrid(imgs) {
       g.querySelectorAll('.unsplash-img').forEach(i => i.classList.remove('selected'));
       img.classList.add('selected');
       selectedUnsplashUrl = urlFull;
-      document.getElementById('unsplashSelectBtn').disabled = false
+      const btn = document.getElementById('unsplashSelectBtn');
+      if (btn) btn.disabled = false;
     });
-    g.appendChild(img)
+    img.addEventListener('dblclick', () => {
+      selectedUnsplashUrl = urlFull;
+      confirmUnsplash();
+    });
+    g.appendChild(img);
   });
 }
 function confirmUnsplash() {
@@ -319,21 +412,58 @@ function confirmUnsplash() {
     if (unsplashTarget === 'portada') {
       setPortadaPhoto(selectedUnsplashUrl);
       showToast('🌅', 'Foto aplicada');
-    } else if (unsplashTarget === 'canvas') {
-      const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
-      arr.push({ type: 'imagen', data: { url: selectedUnsplashUrl, caption: '', tamano: 'Mediano' } });
-      renderCanvas();
-      showToast('🖼️', 'Imagen agregada');
-      const inp = modalBody.querySelector('input[data-key="photo_url"]');
-      if (inp) {
-        inp.value = selectedUnsplashUrl;
-        inp.dispatchEvent(new Event('input', { bubbles: true }));
-        showToast('📸', 'Foto de tour aplicada');
+    } else if (unsplashTarget === 'gallery_photo' && currentPhotoTargetInput) {
+      let photos = [];
+      try {
+        if (Array.isArray(currentPhotoTargetInput.value)) photos = currentPhotoTargetInput.value;
+        else if (currentPhotoTargetInput.value && currentPhotoTargetInput.value.startsWith('[')) photos = JSON.parse(currentPhotoTargetInput.value);
+        else photos = currentPhotoTargetInput.value ? currentPhotoTargetInput.value.split(',').map(s => s.trim()).filter(Boolean) : [];
+      } catch {
+        photos = currentPhotoTargetInput.value ? currentPhotoTargetInput.value.split(',').map(s => s.trim()).filter(Boolean) : [];
       }
-    } else if (unsplashTarget === 'item_photo' && currentPhotoTargetInput) {
-      currentPhotoTargetInput.value = selectedUnsplashUrl;
-      currentPhotoTargetInput.dispatchEvent(new Event('input', { bubbles: true }));
-      showToast('📸', 'Foto aplicada');
+      if (photos.length < 5) {
+        photos.push(selectedUnsplashUrl);
+        currentPhotoTargetInput.value = JSON.stringify(photos);
+        currentPhotoTargetInput.dispatchEvent(new Event('input', { bubbles: true }));
+        currentPhotoTargetInput.dispatchEvent(new Event('change', { bubbles: true }));
+        showToast('📸', `Foto ${photos.length}/5 añadida`);
+      } else {
+        showToast('⚠️', 'Máximo 5 fotos alcanzado');
+      }
+    } else {
+      const targetInp = currentPhotoTargetInput || (modalBody ? (modalBody.querySelector('input[data-key="url"]') || modalBody.querySelector('input[data-key="photo_url"]')) : null);
+      if (targetInp) {
+        if (targetInp.dataset.key === 'photo_url') {
+          let urls = targetInp.value ? targetInp.value.split(',').map(s => s.trim()).filter(Boolean) : [];
+          if (urls.length < 3) {
+            urls.push(selectedUnsplashUrl);
+            targetInp.value = urls.join(',');
+            showToast('📸', `Foto añadida (${urls.length}/3)`);
+          } else {
+            showToast('⚠️', 'Máximo 3 fotos alcanzado. Elimina una para añadir otra.');
+          }
+        } else {
+          targetInp.value = selectedUnsplashUrl;
+          showToast('📸', 'Foto seleccionada');
+        }
+        targetInp.dispatchEvent(new Event('input', { bubbles: true }));
+        targetInp.dispatchEvent(new Event('change', { bubbles: true }));
+        const box = targetInp.closest('.img-picker-box') || (targetInp.parentElement && targetInp.parentElement.querySelector('.img-picker-box')) || (modalBody ? modalBody.querySelector('.img-picker-box') : null);
+        if (box) {
+          box.classList.add('has-preview');
+          const pImg = box.querySelector('.img-picker-preview-img');
+          const pWrap = box.querySelector('.img-picker-preview-wrap');
+          const aRow = box.querySelector('.img-picker-actions');
+          if (pImg) pImg.src = fixUrl(selectedUnsplashUrl);
+          if (pWrap) pWrap.style.display = 'flex';
+          if (aRow) aRow.style.display = 'none';
+        }
+      } else if (unsplashTarget === 'canvas') {
+        const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
+        arr.push({ type: 'imagen', data: { url: selectedUnsplashUrl, tamano: 'Mediano (100% x 380 px)' } });
+        renderCanvas();
+        showToast('🖼️', 'Imagen agregada');
+      }
     }
   }
   closeUnsplash();
@@ -341,8 +471,10 @@ function confirmUnsplash() {
 }
 
 // GIPHY
-function openGiphy(target = 'canvas') {
+let currentGiphyTargetInput = null;
+function openGiphy(target = 'item_gif', targetInput = null) {
   giphyTarget = target;
+  currentGiphyTargetInput = targetInput;
   selectedGiphyUrl = null;
   document.getElementById('giphySelectBtn').disabled = true;
   document.getElementById('giphyOverlay').classList.add('open');
@@ -356,7 +488,12 @@ function openGiphy(target = 'canvas') {
       if (json.data && json.data.length > 0) renderGiphyGrid(json.data);
     });
 }
-function closeGiphy() { document.getElementById('giphyOverlay').classList.remove('open'); selectedGiphyUrl = null }
+function closeGiphy() {
+  document.getElementById('giphyOverlay')?.classList.remove('open');
+  selectedGiphyUrl = null;
+  const btn = document.getElementById('giphySelectBtn');
+  if (btn) btn.disabled = true;
+}
 function searchGiphy() {
   const query = document.getElementById('giphySearch').value.trim();
   if (!query) { showToast('⚠️', 'Escribe algo para buscar'); return; }
@@ -385,16 +522,37 @@ function renderGiphyGrid(gifs) {
       g.querySelectorAll('.unsplash-img').forEach(i => i.classList.remove('selected'));
       img.classList.add('selected');
       selectedGiphyUrl = urlFull;
-      document.getElementById('giphySelectBtn').disabled = false;
+      const btn = document.getElementById('giphySelectBtn');
+      if (btn) btn.disabled = false;
+    };
+    img.ondblclick = () => {
+      selectedGiphyUrl = urlFull;
+      confirmGiphy();
     };
     g.appendChild(img);
   });
 }
 function confirmGiphy() {
   if (selectedGiphyUrl) {
-    if (giphyTarget === 'canvas') {
+    const targetInp = currentGiphyTargetInput || (modalBody ? modalBody.querySelector('input[data-key="url"]') : null);
+    if (targetInp && (giphyTarget === 'item_gif' || (modalOverlay && modalOverlay.classList.contains('open')))) {
+      targetInp.value = selectedGiphyUrl;
+      targetInp.dispatchEvent(new Event('input', { bubbles: true }));
+      targetInp.dispatchEvent(new Event('change', { bubbles: true }));
+      const box = targetInp.closest('.img-picker-box') || (targetInp.parentElement && targetInp.parentElement.querySelector('.img-picker-box')) || (modalBody ? modalBody.querySelector('.img-picker-box') : null);
+      if (box) {
+        box.classList.add('has-preview');
+        const pImg = box.querySelector('.img-picker-preview-img');
+        const pWrap = box.querySelector('.img-picker-preview-wrap');
+        const aRow = box.querySelector('.img-picker-actions');
+        if (pImg) pImg.src = fixUrl(selectedGiphyUrl);
+        if (pWrap) pWrap.style.display = 'flex';
+        if (aRow) aRow.style.display = 'none';
+      }
+      showToast('⚡', 'GIF seleccionado');
+    } else {
       const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
-      arr.push({ type: 'gif', data: { url: selectedGiphyUrl, caption: '' } });
+      arr.push({ type: 'gif', data: { url: selectedGiphyUrl, tamano: 'Mediano (100% x 380 px)' } });
       renderCanvas();
       showToast('<i class="fa-solid fa-bolt"></i>', 'GIF agregado');
     }
@@ -445,7 +603,6 @@ function showCierreCard() {
     showToast('✨', 'Diseño de cierre restaurado');
   }
 }
-document.getElementById('unsplashSearch').addEventListener('keydown', e => { if (e.key === 'Enter') searchUnsplash() });
 
 // CONFIGS
 const C = {
@@ -476,11 +633,44 @@ const C = {
     bg: '#e0f2fe',
     fields: [
       { k: 'url', l: 'Imagen', t: 'image-picker', fw: true },
-      { k: 'caption', l: 'Pie de foto (opcional)', t: 'text', ph: 'Ej: Atardecer en el mirador...', fw: true },
-      { k: 'tamano', l: 'Tamaño de visualización', t: 'select', opts: ['Mediano', 'Grande', 'Completo', 'Pequeño'], fw: true }
+      { k: 'tamano', l: 'Tamaño de visualización', t: 'select', opts: ['Pequeño (380 x 220 px)', 'Mediano (100% x 380 px)', 'Grande (100% x 520 px)', 'Completo (Ancho total)'], fw: true }
     ]
   },
-  gif: { icon: '<i class="fa-solid fa-bolt"></i>', label: 'GIF', color: '#ce3df3', bg: '#f9f0ff', fields: [{ k: 'url', l: 'URL del GIF', t: 'text', ph: 'https://...', fw: true }, { k: 'caption', l: 'Pie de GIF', t: 'text', ph: '¡Increíble!', fw: true }] },
+  gif: {
+    icon: '<i class="fa-solid fa-bolt"></i>',
+    label: 'GIF',
+    modalTitle: 'GIF',
+    color: '#ce3df3',
+    bg: '#f9f0ff',
+    fields: [
+      { k: 'url', l: 'GIF', t: 'gif-picker', fw: true },
+      { k: 'tamano', l: 'Tamaño de visualización', t: 'select', opts: ['Pequeño (380 x 220 px)', 'Mediano (100% x 380 px)', 'Grande (100% x 520 px)', 'Completo (Ancho total)'], fw: true }
+    ]
+  },
+  galeria: {
+    icon: '<i class="fa-solid fa-images"></i>',
+    label: 'Galería',
+    modalTitle: 'Galería de fotos',
+    color: '#0284c7',
+    bg: '#e0f2fe',
+    fields: [
+      { k: 'photos', l: 'Fotos (máximo 5)', t: 'gallery-picker', fw: true },
+      { k: 'tamano', l: 'Tamaño de visualización', t: 'select', opts: ['Pequeño (380 x 220 px)', 'Mediano (100% x 380 px)', 'Grande (100% x 520 px)', 'Completo (Ancho total)'], fw: true }
+    ]
+  },
+  ubicacion: {
+    icon: '<i class="fa-solid fa-location-dot"></i>',
+    label: 'Ubicación',
+    modalTitle: 'Agregar Ubicación',
+    color: '#0ea5e9',
+    bg: '#e0f2fe',
+    fields: [
+      { k: 'nombre', l: 'Lugar o atracción', t: 'text', ph: 'Buscar lugar, atracción o dirección...', fw: true },
+      { k: 'direccion', l: 'Dirección completa', t: 'text', ph: 'Dirección...', fw: true },
+      { k: 'nota', l: 'Nota o indicación de llegada (opcional)', t: 'text', ph: 'Ej: Entrada por la puerta sur...', fw: true },
+      { k: 'maps_url', l: 'Maps URL', t: 'text', ph: '', hidden: true }
+    ]
+  },
   caja: {
     icon: '<i class="fa-solid fa-lightbulb"></i>',
     label: 'Nota',
@@ -1232,7 +1422,14 @@ function buildItem(item, idx) {
   }
   if (item.type === 'titulo') { el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:3px;padding:18px 20px"><div class="titulo-text">${item.data.texto || 'Título'}</div></div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
   if (item.type === 'texto') { el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:5px;padding:14px 16px"><div class="texto-content">${item.data.contenido || 'Texto...'}</div></div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
-  if (item.type === 'imagen') { const hasImg = item.data.url && item.data.url.startsWith('http'); el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:9px;padding:11px"><div class="imagen-preview">${hasImg ? `<img src="${item.data.url}" alt="">` : '🖼️'}</div>${item.data.caption ? `<div style="font-size:12px;color:var(--text-muted);text-align:center">${item.data.caption}</div>` : ''}</div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
+  if (item.type === 'imagen') {
+    const hasImg = item.data.url && item.data.url.startsWith('http');
+    el.style.position = 'relative';
+    el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:9px;padding:11px"><div class="imagen-preview">${hasImg ? `<img src="${item.data.url}" alt="">` : '🖼️'}</div></div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`;
+    el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1');
+    el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0');
+    setupReorder(el, idx); return el;
+  }
   if (item.type === 'caja') {
     const bg = item.data.color_fondo || '#f59e0b';
     const icon = item.data.icono || '💡';
@@ -1254,12 +1451,73 @@ function buildItem(item, idx) {
     el.style.position = 'relative';
     el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:9px;padding:11px">
       <div class="imagen-preview">${hasImg ? `<img src="${item.data.url}" alt="">` : '<i class="fa-solid fa-bolt"></i>'}</div>
-      ${item.data.caption ? `<div style="font-size:12px;color:var(--text-muted);text-align:center">${item.data.caption}</div>` : ''}
     </div>
     <div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s">
-      <button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+      <button class="item-action-btn" onclick="editItem(${idx})" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
       <button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
-      <button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+      <button class="item-action-btn delete" onclick="deleteItem(${idx})" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+    </div>`;
+    el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1');
+    el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0');
+    setupReorder(el, idx); return el;
+  }
+  if (item.type === 'galeria') {
+    let photos = [];
+    try {
+      if (Array.isArray(item.data.photos)) photos = item.data.photos;
+      else if (typeof item.data.photos === 'string' && item.data.photos.startsWith('[')) photos = JSON.parse(item.data.photos);
+      else if (item.data.photos) photos = item.data.photos.split(',').map(s=>s.trim()).filter(Boolean);
+    } catch {
+      photos = item.data.photos ? item.data.photos.split(',').filter(Boolean) : [];
+    }
+    el.style.position = 'relative';
+    const count = photos.length;
+    const thumbsHtml = count > 0 
+      ? `<div style="display:grid;grid-template-columns:repeat(${Math.min(count, 5)}, 1fr);gap:6px;width:100%;height:100px;border-radius:8px;overflow:hidden;">
+          ${photos.slice(0, 5).map(u => `<img src="${fixUrl(u)}" style="width:100%;height:100%;object-fit:cover;">`).join('')}
+         </div>`
+      : `<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px;border:1.5px dashed var(--border);border-radius:10px;"><i class="fa-solid fa-images" style="font-size:24px;color:var(--text-dim);margin-bottom:4px;display:block;"></i> Galería de fotos vacía</div>`;
+    
+    el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:8px;padding:12px">
+      ${thumbsHtml}
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text-muted);">
+        <span><i class="fa-solid fa-images" style="color:var(--primary-blue)"></i> Galería (${count}/5 fotos)</span>
+        <span class="item-chip">${item.data.tamano || 'Mediano'}</span>
+      </div>
+    </div>
+    <div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s">
+      <button class="item-action-btn" onclick="editItem(${idx})" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+      <button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      <button class="item-action-btn delete" onclick="deleteItem(${idx})" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+    </div>`;
+    el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1');
+    el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0');
+    setupReorder(el, idx); return el;
+  }
+  if (item.type === 'ubicacion') {
+    const name = item.data.nombre || 'Ubicación';
+    const addr = item.data.direccion || '';
+    const note = item.data.nota || '';
+    const mapsUrl = item.data.maps_url || (name || addr ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((name ? name + ', ' : '') + addr)}` : 'https://maps.google.com');
+
+    el.style.position = 'relative';
+    el.innerHTML = `<div class="item-inner" style="padding:14px 16px;gap:12px;align-items:center;background:var(--surface);border-radius:12px;border:1px solid var(--border);">
+      <div style="width:40px;height:40px;border-radius:50%;background:#e0f2fe;color:#0284c7;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">
+        <i class="fa-solid fa-location-dot"></i>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${name}</div>
+        ${addr ? `<div style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;">${addr}</div>` : ''}
+        ${note ? `<div style="font-size:11.5px;color:#0284c7;margin-top:3px;font-style:italic;"><i class="fa-regular fa-comment-dots"></i> ${note}</div>` : ''}
+      </div>
+      <a href="${mapsUrl}" target="_blank" onclick="event.stopPropagation();" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;color:#0f172a;font-size:11.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:all 0.15s;" onmouseover="this.style.background='#0f172a';this.style.color='#fff';" onmouseout="this.style.background='#f8fafc';this.style.color='#0f172a';">
+        Ver en Maps <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px;"></i>
+      </a>
+    </div>
+    <div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s">
+      <button class="item-action-btn" onclick="editItem(${idx})" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+      <button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      <button class="item-action-btn delete" onclick="deleteItem(${idx})" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
     </div>`;
     el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1');
     el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0');
@@ -1566,16 +1824,16 @@ function addPhotoFallback(container, type, showHelp = true, photoInp = null, app
   uBtn.className = 'btn-secondary';
   uBtn.type = 'button';
   uBtn.style = 'flex:1; font-size:12px; height:34px; display:flex; align-items:center; justify-content:center; gap:8px;';
-  uBtn.innerHTML = '<i class="fa-brands fa-unsplash"></i> Unsplash';
+  uBtn.innerHTML = '<i class="fa-brands fa-unsplash"></i> Unsplash (máx. 3)';
   uBtn.onclick = () => openUnsplash('item_photo', photoInp);
 
   const upBtn = document.createElement('button');
   upBtn.className = 'btn-secondary';
   upBtn.type = 'button';
   upBtn.style = 'flex:1; font-size:12px; height:34px; display:flex; align-items:center; justify-content:center; gap:8px;';
-  upBtn.innerHTML = '<i class="fa-solid fa-upload"></i> Subir foto';
+  upBtn.innerHTML = '<i class="fa-solid fa-upload"></i> Subir foto (máx. 3)';
   const fileInp = document.createElement('input');
-  fileInp.type = 'file'; fileInp.accept = 'image/*'; fileInp.style.display = 'none';
+  fileInp.type = 'file'; fileInp.accept = 'image/*'; fileInp.multiple = true; fileInp.style.display = 'none';
   fileInp.onchange = (e) => handleItemPhotoUpload(e, photoInp);
   upBtn.onclick = () => fileInp.click();
 
@@ -1594,12 +1852,6 @@ function openModal(type, editIdx = null) {
   document.querySelectorAll('.pac-container').forEach(el => el.remove());
 
   const isPremium = typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan !== 'básico';
-
-  // Direct Giphy for new GIFs
-  if (type === 'gif' && editIdx === null) {
-    openGiphy('canvas');
-    return;
-  }
 
   pendingType = type; editingIndex = editIdx; starRating = 0;
   const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
@@ -1645,7 +1897,7 @@ function openModal(type, editIdx = null) {
 
     const next = fields[i + 1];
     let fieldEl;
-    if (f.t === 'textarea' || f.t === 'color-picker' || f.t === 'richtext' || f.t === 'stars' || f.t === 'separator-chips' || f.t === 'icon-selector' || f.t === 'image-picker' || f.fw) {
+    if (f.t === 'textarea' || f.t === 'color-picker' || f.t === 'richtext' || f.t === 'stars' || f.t === 'separator-chips' || f.t === 'icon-selector' || f.t === 'image-picker' || f.t === 'gif-picker' || f.t === 'gallery-picker' || f.fw) {
       if (type === 'tour' && f.k === 'photo_url') {
         fieldEl = buildField(f, existData);
         const label = fieldEl.querySelector('.form-label');
@@ -1730,6 +1982,96 @@ function openModal(type, editIdx = null) {
   setTimeout(() => {
     const f = modalBody.querySelector('input,textarea,select'); if (f) f.focus();
 
+    // Google Places Autocomplete for Ubicacion
+    if (type === 'ubicacion' && window.google && window.google.maps && window.google.maps.places) {
+      const nameInp = modalBody.querySelector('input[data-key="nombre"]');
+      const addrInp = modalBody.querySelector('input[data-key="direccion"]');
+      const mapsUrlInp = modalBody.querySelector('input[data-key="maps_url"]');
+
+      const updateFallbackMapsUrl = () => {
+        if (!mapsUrlInp) return;
+        const aVal = addrInp ? addrInp.value.trim() : '';
+        const nVal = nameInp ? nameInp.value.trim() : '';
+        const q = aVal || nVal;
+        if (q) {
+          mapsUrlInp.value = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+        }
+      };
+
+      if (nameInp) {
+        const autocomplete = new window.google.maps.places.Autocomplete(nameInp, {});
+        const pacContainer = document.querySelector('.pac-container:last-of-type');
+
+        nameInp.addEventListener('input', (e) => {
+          if (e && !e.isTrusted) return;
+          updateFallbackMapsUrl();
+          if (pacContainer) {
+            setTimeout(() => {
+              pacContainer.style.zIndex = '1000000';
+              pacContainer.style.position = 'fixed';
+              const rect = nameInp.getBoundingClientRect();
+              pacContainer.style.top = rect.bottom + 'px';
+              pacContainer.style.left = rect.left + 'px';
+              pacContainer.style.width = rect.width + 'px';
+              pacContainer.style.display = '';
+            }, 50);
+          }
+        });
+
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (!place) return;
+          if (place.name) nameInp.value = place.name;
+          if (addrInp && place.formatted_address) {
+            addrInp.value = place.formatted_address;
+            addrInp.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+          let mapsUrl = place.url || '';
+          if (!mapsUrl && place.formatted_address) {
+            mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.formatted_address)}`;
+          } else if (!mapsUrl && place.geometry && place.geometry.location) {
+            mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name || '')}&query_place_id=${place.place_id || ''}`;
+          }
+          if (mapsUrlInp) mapsUrlInp.value = mapsUrl;
+        });
+      }
+
+      if (addrInp) {
+        const autocompleteAddr = new window.google.maps.places.Autocomplete(addrInp, { types: ['geocode'] });
+        const pacContainer = document.querySelector('.pac-container:last-of-type');
+
+        addrInp.addEventListener('input', (e) => {
+          if (e && !e.isTrusted) return;
+          updateFallbackMapsUrl();
+          if (pacContainer) {
+            setTimeout(() => {
+              pacContainer.style.zIndex = '1000000';
+              pacContainer.style.position = 'fixed';
+              const rect = addrInp.getBoundingClientRect();
+              pacContainer.style.top = rect.bottom + 'px';
+              pacContainer.style.left = rect.left + 'px';
+              pacContainer.style.width = rect.width + 'px';
+              pacContainer.style.display = '';
+            }, 50);
+          }
+        });
+
+        autocompleteAddr.addListener('place_changed', () => {
+          const place = autocompleteAddr.getPlace();
+          if (!place) return;
+          if (place.formatted_address) {
+            addrInp.value = place.formatted_address;
+            addrInp.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+          let mapsUrl = place.url || '';
+          if (!mapsUrl && place.formatted_address) {
+            mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.formatted_address)}`;
+          }
+          if (mapsUrlInp) mapsUrlInp.value = mapsUrl;
+        });
+      }
+    }
+
     // Google Places Autocomplete API
     const googleTypes = ['actividad', 'comida'];
     if (googleTypes.includes(type) && window.google && window.google.maps && window.google.maps.places) {
@@ -1788,7 +2130,7 @@ function openModal(type, editIdx = null) {
             .then(res => res.json())
             .then(data => {
               if (data.photos && data.photos.length > 0) {
-                const urls = data.photos.slice(0, 1).map(p => p.url).join(',');
+                const urls = data.photos.slice(0, 3).map(p => p.url).join(',');
                 setVal('photo_url', urls);
               } else {
                 const inp = modalBody.querySelector('input[data-key="photo_url"]');
@@ -2017,7 +2359,7 @@ function openModal(type, editIdx = null) {
                   .then(res => res.json())
                   .then(data => {
                     if (data.photos && data.photos.length > 0) {
-                      const urls = data.photos.slice(0, 1).map(p => p.url).join(',');
+                      const urls = data.photos.slice(0, 3).map(p => p.url).join(',');
                       setVal('photo_url', urls);
                     } else {
                       const inp = modalBody.querySelector('input[data-key="photo_url"]');
@@ -2080,27 +2422,19 @@ function openModal(type, editIdx = null) {
   }, 220);
 }
 function handleItemPhotoUpload(e, targetInp) {
-  const f = e.target.files[0];
-  if (!f) return;
-  if (f.size > 5 * 1024 * 1024) { showToast('⚠️', 'La imagen no puede superar 5MB'); return; }
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
 
-  const originalContent = targetInp.value;
-
-  // If there was a previous uploaded file, delete it to free quota
-  const getDocIdFromUrl = (url) => {
-    if (!url) return null;
-    const match = url.match(/\/documents\/(\d+)\/download/);
-    return match ? match[1] : null;
-  };
-  const prevDocId = getDocIdFromUrl(originalContent);
-  const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-  if (prevDocId) {
-    fetch(`/documents/${prevDocId}`, {
-      method: 'DELETE',
-      headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
-    }).catch(e => console.error('Error deleting previous photo:', e));
+  let currentUrls = targetInp.value ? targetInp.value.split(',').map(s => s.trim()).filter(Boolean) : [];
+  const available = 3 - currentUrls.length;
+  if (available <= 0) {
+    showToast('⚠️', 'Máximo 3 fotos alcanzado. Elimina una para añadir otra.');
+    return;
   }
+
+  const toUpload = files.slice(0, available);
+  const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  const tripId = window.tripId;
 
   // Visual loading state
   const previewCont = targetInp.parentNode.querySelector('.photo-preview-container');
@@ -2108,54 +2442,41 @@ function handleItemPhotoUpload(e, targetInp) {
     previewCont.innerHTML = `
       <div class="photo-loading-spinner" style="border: 1.5px dashed var(--border); border-radius: 10px; padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: var(--surface2);">
         <div class="spinner" style="width: 24px; height: 24px; border: 3px solid rgba(20, 184, 166, 0.1); border-top-color: #14b8a6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <span>Subiendo foto...</span>
+        <span>Subiendo foto(s)...</span>
       </div>
     `;
   }
 
-  targetInp.value = '';
-  targetInp.disabled = true;
+  const uploadPromises = toUpload.map(f => {
+    if (f.size > 5 * 1024 * 1024) {
+      showToast('⚠️', `${f.name} supera los 5MB`);
+      return Promise.resolve(null);
+    }
+    const formData = new FormData();
+    formData.append('file', f);
+    return fetch(`/trips/${tripId}/upload-attachment`, {
+      method: 'POST',
+      headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+      body: formData
+    }).then(r => r.json()).catch(() => null);
+  });
 
-  const formData = new FormData();
-  formData.append('file', f);
-
-  const tripId = window.tripId;
-  fetch(`/trips/${tripId}/upload-attachment`, {
-    method: 'POST',
-    headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
-    body: formData
-  })
-    .then(res => res.json())
-    .then(res => {
-      targetInp.disabled = false;
-      if (res.success) {
-        targetInp.value = res.url;
-        targetInp.dispatchEvent(new Event('input', { bubbles: true }));
-        showToast('✅', 'Foto subida');
-      } else {
-        targetInp.value = originalContent;
-        targetInp.dispatchEvent(new Event('input', { bubbles: true }));
-        if (res.error_code === 'LIMIT_REACHED') {
-          if (typeof openUpgradeModal === 'function') {
-            openUpgradeModal();
-          } else {
-            showToast('⚠️', res.message || 'Límite alcanzado');
-          }
-        } else {
-          showToast('⚠️', res.message || 'Error al subir');
-        }
+  Promise.all(uploadPromises).then(results => {
+    results.forEach(res => {
+      if (res && res.success && res.url) {
+        currentUrls.push(res.url);
       }
-    })
-    .catch(err => {
-      targetInp.disabled = false;
-      targetInp.value = originalContent;
-      targetInp.dispatchEvent(new Event('input', { bubbles: true }));
-      console.error(err);
-      showToast('⚠️', 'Error de conexión');
     });
+    targetInp.value = currentUrls.slice(0, 3).join(',');
+    targetInp.dispatchEvent(new Event('input', { bubbles: true }));
+    showToast('✅', `Fotos actualizadas (${targetInp.value.split(',').filter(Boolean).length}/3)`);
+  });
 }
 function buildField(field, data) {
   const fg = document.createElement('div'); fg.className = 'form-group';
+  if (field.hidden) {
+    fg.style.display = 'none';
+  }
   const lbl = document.createElement('label'); lbl.className = 'form-label';
   lbl.textContent = field.l;
   fg.appendChild(lbl);
@@ -2218,7 +2539,6 @@ function buildField(field, data) {
       { label: '🌅 Mañana', val: '🌅 Mañana' },
       { label: '☀️ Tarde', val: '☀️ Tarde' },
       { label: '🌙 Noche', val: '🌙 Noche' },
-      { label: '🚗 En ruta', val: '🚗 En ruta' },
       { label: '➖ Solo línea', val: '' }
     ];
 
@@ -2280,19 +2600,19 @@ function buildField(field, data) {
   }
   else if (field.t === 'image-picker') {
     const wrap = document.createElement('div');
-    wrap.className = 'img-picker-box';
+    wrap.className = 'img-picker-box' + (val ? ' has-preview' : '');
 
     const hiddenInp = document.createElement('input');
     hiddenInp.type = 'hidden';
     hiddenInp.dataset.key = field.k;
     hiddenInp.value = val || '';
-    fg.appendChild(hiddenInp);
+    wrap.appendChild(hiddenInp);
 
     const fileInp = document.createElement('input');
     fileInp.type = 'file';
     fileInp.accept = 'image/jpeg,image/png,image/webp,image/gif';
     fileInp.style.display = 'none';
-    fg.appendChild(fileInp);
+    wrap.appendChild(fileInp);
 
     const previewWrap = document.createElement('div');
     previewWrap.className = 'img-picker-preview-wrap';
@@ -2306,21 +2626,25 @@ function buildField(field, data) {
     const removeBtn = document.createElement('button');
     removeBtn.type = 'button';
     removeBtn.className = 'img-picker-remove-btn';
-    removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Quitar';
+    removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Cambiar imagen';
     removeBtn.onclick = () => {
       hiddenInp.value = '';
       previewImg.src = '';
+      wrap.classList.remove('has-preview');
       previewWrap.style.display = 'none';
       emptyMsg.style.display = 'block';
+      actionsRow.style.display = 'grid';
     };
     previewWrap.appendChild(removeBtn);
 
     const emptyMsg = document.createElement('div');
+    emptyMsg.className = 'img-picker-empty-msg';
     emptyMsg.style.cssText = 'font-size:12px;color:var(--text-muted);text-align:center;padding:10px 0;display:' + (val ? 'none' : 'block');
     emptyMsg.innerHTML = '<i class="fa-regular fa-image" style="font-size:24px;color:var(--text-dim);margin-bottom:4px;display:block;"></i> Elige una foto de Unsplash o sube un archivo desde tu dispositivo';
 
     const actionsRow = document.createElement('div');
     actionsRow.className = 'img-picker-actions';
+    actionsRow.style.display = val ? 'none' : 'grid';
 
     const unsplashBtn = document.createElement('button');
     unsplashBtn.type = 'button';
@@ -2348,8 +2672,10 @@ function buildField(field, data) {
       const reader = new FileReader();
       reader.onload = (re) => {
         previewImg.src = re.target.result;
+        wrap.classList.add('has-preview');
         previewWrap.style.display = 'flex';
         emptyMsg.style.display = 'none';
+        actionsRow.style.display = 'none';
       };
       reader.readAsDataURL(file);
 
@@ -2373,8 +2699,10 @@ function buildField(field, data) {
           if (res.success && res.url) {
             hiddenInp.value = res.url;
             previewImg.src = fixUrl(res.url);
+            wrap.classList.add('has-preview');
             previewWrap.style.display = 'flex';
             emptyMsg.style.display = 'none';
+            actionsRow.style.display = 'none';
             showToast('✅', 'Imagen subida correctamente');
           } else {
             showToast('⚠️', res.message || 'Error al subir');
@@ -2392,8 +2720,10 @@ function buildField(field, data) {
     hiddenInp.addEventListener('input', () => {
       if (hiddenInp.value) {
         previewImg.src = fixUrl(hiddenInp.value);
+        wrap.classList.add('has-preview');
         previewWrap.style.display = 'flex';
         emptyMsg.style.display = 'none';
+        actionsRow.style.display = 'none';
       }
     });
 
@@ -2404,6 +2734,232 @@ function buildField(field, data) {
     wrap.appendChild(previewWrap);
     wrap.appendChild(actionsRow);
     fg.appendChild(wrap);
+  }
+  else if (field.t === 'gif-picker') {
+    const wrap = document.createElement('div');
+    wrap.className = 'img-picker-box' + (val ? ' has-preview' : '');
+
+    const hiddenInp = document.createElement('input');
+    hiddenInp.type = 'hidden';
+    hiddenInp.dataset.key = field.k;
+    hiddenInp.value = val || '';
+    wrap.appendChild(hiddenInp);
+
+    const previewWrap = document.createElement('div');
+    previewWrap.className = 'img-picker-preview-wrap';
+    previewWrap.style.display = val ? 'flex' : 'none';
+
+    const previewImg = document.createElement('img');
+    previewImg.className = 'img-picker-preview-img';
+    previewImg.style.objectFit = 'contain';
+    previewImg.src = val ? fixUrl(val) : '';
+    previewWrap.appendChild(previewImg);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'img-picker-remove-btn';
+    removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Cambiar GIF';
+    removeBtn.onclick = () => {
+      hiddenInp.value = '';
+      previewImg.src = '';
+      wrap.classList.remove('has-preview');
+      previewWrap.style.display = 'none';
+      actionsRow.style.display = 'flex';
+    };
+    previewWrap.appendChild(removeBtn);
+
+    const actionsRow = document.createElement('div');
+    actionsRow.className = 'img-picker-actions';
+    actionsRow.style.display = val ? 'none' : 'flex';
+    actionsRow.style.justifyContent = 'center';
+    actionsRow.style.alignItems = 'center';
+    actionsRow.style.padding = '12px 0';
+
+    const giphyBtn = document.createElement('button');
+    giphyBtn.type = 'button';
+    giphyBtn.className = 'img-picker-btn img-picker-unsplash';
+    giphyBtn.style.margin = '0 auto';
+    giphyBtn.innerHTML = '<i class="fa-solid fa-bolt" style="font-size:15px;color:#eab308;"></i> Buscar en Giphy';
+    giphyBtn.onclick = () => {
+      openGiphy('item_gif', hiddenInp);
+    };
+
+    hiddenInp.addEventListener('input', () => {
+      if (hiddenInp.value) {
+        previewImg.src = fixUrl(hiddenInp.value);
+        wrap.classList.add('has-preview');
+        previewWrap.style.display = 'flex';
+        actionsRow.style.display = 'none';
+      }
+    });
+
+    actionsRow.appendChild(giphyBtn);
+
+    wrap.appendChild(previewWrap);
+    wrap.appendChild(actionsRow);
+    fg.appendChild(wrap);
+  }
+  else if (field.t === 'gallery-picker') {
+    const wrap = document.createElement('div');
+    wrap.className = 'gallery-picker-box';
+
+    let photos = [];
+    try {
+      if (Array.isArray(val)) photos = val;
+      else if (val) photos = typeof val === 'string' && val.startsWith('[') ? JSON.parse(val) : val.split(',').map(s => s.trim()).filter(Boolean);
+    } catch {
+      photos = val ? val.split(',').map(s => s.trim()).filter(Boolean) : [];
+    }
+
+    const hiddenInp = document.createElement('input');
+    hiddenInp.type = 'hidden';
+    hiddenInp.dataset.key = field.k;
+    hiddenInp.value = JSON.stringify(photos);
+    wrap.appendChild(hiddenInp);
+
+    const fileInp = document.createElement('input');
+    fileInp.type = 'file';
+    fileInp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+    fileInp.multiple = true;
+    fileInp.style.display = 'none';
+    wrap.appendChild(fileInp);
+
+    const countLabel = document.createElement('div');
+    countLabel.style.cssText = 'font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;';
+
+    const grid = document.createElement('div');
+    grid.className = 'gallery-picker-grid';
+    grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill, minmax(85px, 1fr));gap:8px;margin-bottom:12px;';
+
+    const renderPhotos = () => {
+      grid.innerHTML = '';
+      photos.forEach((url, pIdx) => {
+        const item = document.createElement('div');
+        item.style.cssText = 'position:relative;width:100%;height:80px;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#000;';
+        item.innerHTML = `
+          <img src="${fixUrl(url)}" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <span style="position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,0.6);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;">${pIdx + 1}</span>
+          <button type="button" style="position:absolute;top:4px;right:4px;background:rgba(239,68,68,0.9);color:#fff;border:none;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;" title="Eliminar foto"><i class="fa-solid fa-trash"></i></button>
+        `;
+        item.querySelector('button').onclick = () => {
+          photos.splice(pIdx, 1);
+          hiddenInp.value = JSON.stringify(photos);
+          renderPhotos();
+          updateButtons();
+        };
+        grid.appendChild(item);
+      });
+      if (photos.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:18px 8px;color:var(--text-muted);font-size:12px;border:1.5px dashed var(--border);border-radius:10px;"><i class="fa-solid fa-images" style="font-size:24px;color:var(--text-dim);margin-bottom:6px;display:block;"></i> Añade hasta 5 fotos para crear tu carrusel</div>';
+      }
+    };
+
+    const actionsRow = document.createElement('div');
+    actionsRow.className = 'img-picker-actions';
+
+    const unsplashBtn = document.createElement('button');
+    unsplashBtn.type = 'button';
+    unsplashBtn.className = 'img-picker-btn img-picker-unsplash';
+    unsplashBtn.innerHTML = '<i class="fa-brands fa-unsplash" style="font-size:15px;"></i> Buscar en Unsplash';
+    unsplashBtn.onclick = () => {
+      if (photos.length >= 5) {
+        showToast('⚠️', 'Ya has añadido el máximo de 5 fotos');
+        return;
+      }
+      openUnsplash('gallery_photo', hiddenInp);
+    };
+
+    const uploadBtn = document.createElement('button');
+    uploadBtn.type = 'button';
+    uploadBtn.className = 'img-picker-btn img-picker-upload';
+    uploadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="font-size:15px;"></i> Cargar fotos';
+    uploadBtn.onclick = () => {
+      if (photos.length >= 5) {
+        showToast('⚠️', 'Ya has añadido el máximo de 5 fotos');
+        return;
+      }
+      fileInp.click();
+    };
+
+    const updateButtons = () => {
+      countLabel.innerHTML = `<span>Fotos del carrusel</span><span style="color:${photos.length >= 5 ? '#ef4444' : 'var(--primary-blue)'}">${photos.length} / 5</span>`;
+      if (photos.length >= 5) {
+        unsplashBtn.disabled = true;
+        uploadBtn.disabled = true;
+        unsplashBtn.style.opacity = '0.5';
+        uploadBtn.style.opacity = '0.5';
+      } else {
+        unsplashBtn.disabled = false;
+        uploadBtn.disabled = false;
+        unsplashBtn.style.opacity = '1';
+        uploadBtn.style.opacity = '1';
+      }
+    };
+
+    fileInp.onchange = async (e) => {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      const available = 5 - photos.length;
+      if (available <= 0) {
+        showToast('⚠️', 'Máximo 5 fotos alcanzado');
+        return;
+      }
+      const toUpload = files.slice(0, available);
+      const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+      uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo...';
+      uploadBtn.disabled = true;
+
+      for (const f of toUpload) {
+        if (f.size > 5 * 1024 * 1024) {
+          showToast('⚠️', `${f.name} supera los 5 MB`);
+          continue;
+        }
+        const formData = new FormData();
+        formData.append('file', f);
+        try {
+          const res = await fetch(`/trips/${window.tripId}/upload-attachment`, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+            body: formData
+          }).then(r => r.json());
+          if (res.success && res.url) {
+            photos.push(res.url);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      uploadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="font-size:15px;"></i> Cargar fotos';
+      uploadBtn.disabled = false;
+      fileInp.value = '';
+      hiddenInp.value = JSON.stringify(photos);
+      renderPhotos();
+      updateButtons();
+      showToast('✅', `Fotos actualizadas (${photos.length}/5)`);
+    };
+
+    hiddenInp.addEventListener('input', () => {
+      try {
+        if (Array.isArray(hiddenInp.value)) photos = hiddenInp.value;
+        else photos = JSON.parse(hiddenInp.value || '[]');
+      } catch {
+        photos = hiddenInp.value ? hiddenInp.value.split(',').filter(Boolean) : [];
+      }
+      renderPhotos();
+      updateButtons();
+    });
+
+    actionsRow.appendChild(unsplashBtn);
+    actionsRow.appendChild(uploadBtn);
+
+    wrap.appendChild(countLabel);
+    wrap.appendChild(grid);
+    wrap.appendChild(actionsRow);
+    fg.appendChild(wrap);
+    renderPhotos();
+    updateButtons();
   }
   else if (field.t === 'textarea') {
     const ta = document.createElement('textarea');
@@ -2431,7 +2987,7 @@ function buildField(field, data) {
     `;
     fg.appendChild(wrap);
   }
-  else if (field.t === 'select') { const sel = document.createElement('select'); sel.className = 'form-select'; sel.dataset.key = field.k; if (field.ph) { const op = document.createElement('option'); op.value = ''; op.textContent = field.ph; op.selected = !val; sel.appendChild(op); } field.opts.forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt; if (opt === val) o.selected = true; sel.appendChild(o) }); fg.appendChild(sel) }
+  else if (field.t === 'select') { const sel = document.createElement('select'); sel.className = 'form-select'; sel.dataset.key = field.k; if (field.ph) { const op = document.createElement('option'); op.value = ''; op.textContent = field.ph; op.selected = !val; sel.appendChild(op); } const currentVal = val || (field.k === 'tamano' ? 'Mediano' : (field.opts && field.opts[0] ? field.opts[0] : '')); field.opts.forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt; if (opt === currentVal) o.selected = true; sel.appendChild(o) }); fg.appendChild(sel) }
   else if (field.t === 'color-picker') { const row = document.createElement('div'); row.className = 'color-row'; const selectedColor = data[field.k] || (field.opts ? field.opts[0] : '#f59e0b'); field.opts.forEach((color, ci) => { const sw = document.createElement('div'); sw.className = 'color-swatch' + (selectedColor === color ? ' selected' : ''); sw.style.background = color; sw.dataset.color = color; sw.dataset.key = field.k; sw.addEventListener('click', () => { row.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected')); sw.classList.add('selected') }); row.appendChild(sw) }); fg.appendChild(row) }
   else if (field.t === 'file-upload') {
     const wrap = document.createElement('div');
@@ -2644,12 +3200,17 @@ function buildField(field, data) {
           previewCont.innerHTML = `
             <div class="photo-placeholder" style="border: 1.5px dashed var(--border); border-radius: 10px; padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: var(--surface2);">
               <i class="fa-regular fa-image" style="font-size: 24px; opacity: 0.6;"></i>
-              <span>Sin foto seleccionada</span>
+              <span>Sin fotos seleccionadas (máximo 3)</span>
             </div>
           `;
         } else {
           const list = document.createElement('div');
           list.style = 'display: flex; flex-wrap: wrap; gap: 10px;';
+
+          const countHeader = document.createElement('div');
+          countHeader.style = 'width: 100%; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center;';
+          countHeader.innerHTML = `<span>Fotos asignadas</span><span style="color:${urls.length >= 3 ? '#ef4444' : 'var(--primary-blue)'}">${urls.length} / 3</span>`;
+          previewCont.appendChild(countHeader);
 
           urls.forEach((url, index) => {
             const thumb = document.createElement('div');
@@ -3261,3 +3822,18 @@ function execRTE(cmd) {
   const editor = document.querySelector('.rte-editor');
   if (editor) editor.focus();
 }
+
+// Expose Pro Editor globals to window
+window.editItem = editItem;
+window.deleteItem = deleteItem;
+window.duplicateItem = duplicateItem;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.openUnsplash = openUnsplash;
+window.closeUnsplash = closeUnsplash;
+window.confirmUnsplash = confirmUnsplash;
+window.openGiphy = openGiphy;
+window.closeGiphy = closeGiphy;
+window.confirmGiphy = confirmGiphy;
+window.searchGiphy = searchGiphy;
+window.searchUnsplash = searchUnsplash;

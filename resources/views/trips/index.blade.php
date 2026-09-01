@@ -2078,6 +2078,76 @@
             text-align: center;
         }
 
+        .sidebar-link.parent-active {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+        }
+
+        .sidebar-item-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-sidebar .sidebar-submenu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 6px 0 6px 12px;
+            margin: 4px 0 6px 14px;
+            border-left: 2px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .sidebar-item-group:not(.open) .sidebar-submenu {
+            display: none;
+        }
+
+        .sidebar-item-group.open .submenu-arrow {
+            transform: rotate(180deg);
+        }
+
+        .sidebar-sublink {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 9px 14px;
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            font-family: 'Barlow', sans-serif;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .sidebar-sublink:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+        }
+
+        .sidebar-sublink.active {
+            background: #ffffff !important;
+            color: var(--sidebar-accent-color) !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .sidebar-sublink.active i {
+            color: var(--sidebar-accent-color) !important;
+        }
+
+        .sidebar-sublink i {
+            font-size: 14px;
+            width: 16px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
         .sidebar-link.disabled {
             opacity: 0.5;
             cursor: not-allowed !important;
@@ -2891,14 +2961,35 @@
                         <span class="sidebar-badge-soon">Próximamente</span>
                     </div>
 
-                    <a href="{{ route('profile.index') }}" class="sidebar-link">
-                        <i class="fas fa-cog"></i>
-                        <span>Ajustes</span>
-                    </a>
-                    <a href="mailto:hola@viantryp.com" class="sidebar-link">
-                        <i class="fas fa-envelope"></i>
-                        <span>Contáctanos</span>
-                    </a>
+                    <div class="sidebar-item-group" id="sidebarProfileGroup">
+                        <a href="javascript:void(0)" onclick="toggleProfileSubmenu(event)" class="sidebar-link" id="sidebarProfileToggle">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Perfil</span>
+                            <i class="fas fa-chevron-down submenu-arrow" style="margin-left: auto; font-size: 11px; transition: transform 0.2s ease;"></i>
+                        </a>
+                        <div class="sidebar-submenu" id="sidebarProfileSubmenu">
+                            <a href="{{ route('profile.index', ['section' => ((auth()->user()->account_type ?? 'personal') === 'agency' ? 'agencia' : 'info')]) }}" class="sidebar-sublink">
+                                <i class="{{ (auth()->user()->account_type ?? 'personal') === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
+                                <span>Mi Cuenta y Ajustes</span>
+                            </a>
+                            <a href="{{ route('profile.index', ['section' => 'tema']) }}" class="sidebar-sublink">
+                                <i class="fas fa-palette"></i>
+                                <span>Personalización de Marca</span>
+                            </a>
+                            <a href="{{ route('profile.index', ['section' => 'subscription']) }}" class="sidebar-sublink">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Planes y Suscripción</span>
+                            </a>
+                            <a href="{{ route('profile.index', ['section' => 'seguridad']) }}" class="sidebar-sublink">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Seguridad de la Cuenta</span>
+                            </a>
+                            <a href="mailto:hola@viantryp.com" class="sidebar-sublink">
+                                <i class="fas fa-headset"></i>
+                                <span>Soporte y Ayuda</span>
+                            </a>
+                        </div>
+                    </div>
                 </nav>
 
                 <!-- Sidebar Footer / Plan Usage -->
@@ -5433,6 +5524,12 @@
             const backdrop = document.getElementById('sidebarBackdrop');
             if (sidebar) sidebar.classList.toggle('mobile-open');
             if (backdrop) backdrop.classList.toggle('active');
+        }
+
+        function toggleProfileSubmenu(e) {
+            if (e) e.preventDefault();
+            const group = document.getElementById('sidebarProfileGroup');
+            if (group) group.classList.toggle('open');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
