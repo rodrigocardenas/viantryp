@@ -3837,3 +3837,196 @@ window.closeGiphy = closeGiphy;
 window.confirmGiphy = confirmGiphy;
 window.searchGiphy = searchGiphy;
 window.searchUnsplash = searchUnsplash;
+
+// ============================================================
+// VIANTRYP COPILOT AI INTEGRATION
+// ============================================================
+function normalizeCopilotAction(action) {
+  if (!action) return null;
+
+  const rawType = (action.type || '').toLowerCase().trim();
+  const rawData = action.data || {};
+  
+  // Map type synonyms to valid keys in config C
+  let type = 'actividad';
+  if (['hotel', 'alojamiento', 'lodging', 'hospedaje'].includes(rawType)) {
+    type = 'alojamiento';
+  } else if (['flight', 'vuelo', 'avion', 'plane'].includes(rawType)) {
+    type = 'flight';
+  } else if (['activity', 'actividad', 'tour', 'visita'].includes(rawType)) {
+    type = (rawType === 'tour') ? 'tour' : 'actividad';
+  } else if (['transport', 'transporte', 'transfer', 'traslado'].includes(rawType)) {
+    type = 'transporte';
+  } else if (['comida', 'restaurante', 'restaurant', 'cena', 'almuerzo', 'desayuno'].includes(rawType)) {
+    type = 'comida';
+  } else if (['note', 'nota', 'caja', 'tip'].includes(rawType)) {
+    type = 'caja';
+  } else if (['ubicacion', 'location', 'lugar', 'place'].includes(rawType)) {
+    type = 'ubicacion';
+  } else if (['texto', 'text', 'parrafo', 'paragraph'].includes(rawType)) {
+    type = 'texto';
+  } else if (['titulo', 'title'].includes(rawType)) {
+    type = 'titulo';
+  }
+
+  // Normalize data keys according to type
+  const d = { ...rawData };
+
+  if (type === 'alojamiento') {
+    d.nombre = d.nombre || d.hotel_name || d.title || action.title || 'Alojamiento';
+    d.direccion = d.direccion || d.address || d.location || '';
+    d.checkin = d.checkin || d.check_in || '';
+    d.checkout = d.checkout || d.check_out || '';
+    d.reserva = d.reserva || d.confirmation_code || d.codigo_reserva || '';
+    d.precio = d.precio || d.price || '';
+    d.tipo_alojamiento = d.tipo_alojamiento || 'Hotel';
+    d.habitacion = d.habitacion || d.room_type || '';
+    d.alimentacion = d.alimentacion || '';
+    d.notas = d.notas || d.notes || d.description || '';
+  } else if (type === 'flight') {
+    d.origen = d.origen || d.departure_airport || d.from || '';
+    d.destino = d.destino || d.arrival_airport || d.to || '';
+    d.aerolinea = d.aerolinea || d.airline || '';
+    d.vuelo = d.vuelo || d.flight_number || '';
+    d.salida = d.salida || d.departure_time || '';
+    d.llegada = d.llegada || d.arrival_time || '';
+    d.reserva = d.reserva || d.confirmation_code || d.codigo_reserva || '';
+    d.precio = d.precio || d.price || '';
+    d.clase = d.clase || 'Económica';
+    d.notas = d.notas || d.notes || '';
+  } else if (type === 'actividad') {
+    d.nombre = d.nombre || d.activity_title || d.title || action.title || 'Actividad';
+    d.direccion = d.direccion || d.location || d.address || '';
+    d.fecha = d.fecha || d.time || d.departure_time || '';
+    d.duracion = d.duracion || d.duration || '';
+    d.descripcion = d.descripcion || d.description || '';
+    d.reserva = d.reserva || d.confirmation_code || '';
+    d.precio = d.precio || d.price || '';
+  } else if (type === 'transporte') {
+    d.tipo = d.tipo || d.transport_type || 'Transporte';
+    d.proveedor = d.proveedor || d.company || '';
+    d.origen = d.origen || d.pickup_location || d.from || '';
+    d.destino = d.destino || d.destination || d.to || '';
+    d.salida = d.salida || d.departure_time || '';
+    d.llegada = d.llegada || d.arrival_time || '';
+    d.reserva = d.reserva || d.confirmation_code || '';
+    d.precio = d.precio || d.price || '';
+  } else if (type === 'comida') {
+    d.restaurante = d.restaurante || d.restaurant_name || d.name || d.title || action.title || 'Restaurante';
+    d.tipo = d.tipo || 'Cena';
+    d.direccion = d.direccion || d.address || d.location || '';
+    d.fecha = d.fecha || d.time || '';
+    d.reserva = d.reserva || d.confirmation_code || '';
+    d.precio = d.precio || d.price || '';
+  } else if (type === 'caja') {
+    d.titulo = d.titulo || d.note_title || d.title || action.title || 'Nota';
+    d.contenido = d.contenido || d.content || d.description || '';
+    d.icono = d.icono || '💡';
+    d.color_fondo = d.color_fondo || '#f59e0b';
+  }
+
+  // Preserve attachments if present
+  if (rawData.attachment_url) d.attachment_url = rawData.attachment_url;
+  if (rawData.attachment_name) d.attachment_name = rawData.attachment_name;
+  if (rawData.document_id) d.document_id = rawData.document_id;
+
+  return {
+    type,
+    day: action.day || 1,
+    data: d
+  };
+}
+
+window.ViantrypCopilot = window.ViantrypCopilot || {};
+
+window.ViantrypCopilot.onApplyAction = function(action) {
+  if (!action) return;
+
+  // Handle FOCUS_DAY redirection
+  const actionType = String(action.action || action.type || '').toUpperCase();
+  if (actionType === 'FOCUS_DAY') {
+    const dayNum = (typeof action.day_index === 'number') ? action.day_index : ((typeof action.day === 'number') ? action.day : 1);
+    const dayIndex = Math.max(0, dayNum - 1);
+
+    // Expand days if needed
+    let tabsNeedRender = false;
+    while (days.length <= dayIndex) {
+      days.push([]);
+      let nextDate = '';
+      if (days.length > 1) {
+        const prevDate = dayDates[days.length - 2];
+        if (prevDate) nextDate = addDaysToDate(prevDate, 1);
+      }
+      dayDates.push(nextDate);
+      tabsNeedRender = true;
+    }
+
+    currentDay = dayIndex;
+    if (tabsNeedRender) {
+      renderTabs();
+    } else {
+      document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+      const targetTab = document.querySelector(`.day-tab[data-day="${dayIndex}"]`);
+      if (targetTab) targetTab.classList.add('active');
+    }
+
+    renderCanvas();
+    showToast('<i class="fa-solid fa-pen-to-square"></i>', action.message || `Mostrando Día ${dayNum}`);
+    return;
+  }
+
+  const norm = normalizeCopilotAction(action);
+  if (!norm) return;
+
+  const dayNum = (typeof norm.day === 'number' && norm.day >= 1) ? norm.day : 1;
+  const dayIndex = dayNum - 1;
+
+  // Ensure days and dayDates array have enough days
+  let tabsNeedRender = false;
+  while (days.length <= dayIndex) {
+    days.push([]);
+    let nextDate = '';
+    if (days.length > 1) {
+      const prevDate = dayDates[days.length - 2];
+      if (prevDate) {
+        nextDate = addDaysToDate(prevDate, 1);
+      } else {
+        const pi = document.getElementById('portadaFechaInicio');
+        if (pi && pi.value) nextDate = addDaysToDate(pi.value, days.length - 1);
+      }
+    } else {
+      const pi = document.getElementById('portadaFechaInicio');
+      if (pi && pi.value) nextDate = pi.value;
+    }
+    dayDates.push(nextDate);
+    tabsNeedRender = true;
+  }
+
+  if (!days[dayIndex]) {
+    days[dayIndex] = [];
+  }
+
+  const item = {
+    type: norm.type,
+    data: norm.data
+  };
+
+  days[dayIndex].push(item);
+  unsavedChanges = true;
+
+  // Switch to target day and update UI
+  currentDay = dayIndex;
+
+  if (tabsNeedRender) {
+    renderTabs();
+  } else {
+    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+    const targetTab = document.querySelector(`.day-tab[data-day="${dayIndex}"]`);
+    if (targetTab) targetTab.classList.add('active');
+  }
+
+  renderCanvas();
+  autoSaveProTrip();
+  showToast('<i class="fa-solid fa-sparkles"></i>', `Elemento agregado al Día ${dayNum}`);
+};
+

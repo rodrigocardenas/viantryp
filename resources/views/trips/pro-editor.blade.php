@@ -960,6 +960,7 @@
     });
   </script>
   <x-upgrade-modal />
+  <x-copilot-widget :trip="$trip" />
   <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>
   <script src="{{ asset('js/trips/pro-editor.js') }}?v={{ time() }}"></script>
 </body>
