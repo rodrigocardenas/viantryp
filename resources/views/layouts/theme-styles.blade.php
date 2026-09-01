@@ -75,7 +75,7 @@
     }
 
     @if($isGradient)
-    .btn-primary, .btn-success, .btn-create, .topbar, .pvday-pill, .btn-viantryp, [data-theme] .theme-swatch.selected, .cierre-card, .portada-footer-bar, .pv-portada-meta-row, .fab-create-btn {
+    .btn-primary, .btn-success, .btn-create, .topbar, .pvday-pill, .btn-viantryp, [data-theme] .theme-swatch.selected, .cierre-card, .portada-footer-bar, .pv-portada-meta-row, .fab-create-btn, .copilot-trigger, .copilot-avatar {
         background: {{ $currentTheme }} !important;
         border-color: #ffffff !important;
     }
@@ -93,8 +93,11 @@
         opacity: 0.1 !important;
     }
     @else
-    .topbar, .pvday-pill, .topbar-bg-decorators::before, .btn-primary, .btn-viantryp, .portada-footer-bar, .pv-portada-meta-row, .fab-create-btn {
+    .topbar, .pvday-pill, .topbar-bg-decorators::before, .btn-primary, .btn-viantryp, .portada-footer-bar, .pv-portada-meta-row, .fab-create-btn, .copilot-trigger {
         background-color: {{ $currentTheme }} !important;
+    }
+    .copilot-avatar {
+        background: var(--avatar-gradient) !important;
     }
     .btn-viantryp {
         border: 1px solid rgb(156 26 26 / 10%) !important;

@@ -709,8 +709,8 @@
     }
 
     /* ==========================================================================
-           NUEVO DISEÑO DASHBOARD (Mismo estilo que Mis Viajes)
-           ========================================================================== */
+             NUEVO DISEÑO DASHBOARD (Mismo estilo que Mis Viajes)
+             ========================================================================== */
 
     /* Contenedor principal que envuelve todo el Dashboard (100% de la pantalla) */
     .dashboard-wrapper {
@@ -1394,7 +1394,7 @@
         height: 100vh !important;
         z-index: 3000 !important;
         transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        box-shadow: 4px 0 20px rgba(0,0,0,0.2) !important;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2) !important;
         display: flex !important;
         flex-direction: column !important;
       }
@@ -1464,8 +1464,8 @@
     }
 
     /* ==========================================================================
-           ESTILOS DE CONFIGURACIÓN ESTILO FINPAY
-           ========================================================================== */
+             ESTILOS DE CONFIGURACIÓN ESTILO FINPAY
+             ========================================================================== */
     .settings-grid {
       display: block;
       width: 100%;
@@ -1632,7 +1632,8 @@
       <!-- Sidebar -->
       <aside class="dashboard-sidebar">
         <!-- Sidebar Header / Logo (Now in white and inside sidebar) -->
-        <div class="sidebar-logo" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; padding-left: 8px;">
+        <div class="sidebar-logo"
+          style="margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; padding-left: 8px;">
           <a href="{{ route('home') }}">
             <img src="/images/logo-viantryp.png" alt="Viantryp"
               style="height: 32px; width: auto; filter: brightness(0) invert(1);">
@@ -1662,10 +1663,12 @@
             <a href="javascript:void(0)" class="sidebar-link parent-active" id="sidebarProfileToggle">
               <i class="fas fa-user-circle"></i>
               <span>Perfil</span>
-              <i class="fas fa-chevron-down submenu-arrow" style="margin-left: auto; font-size: 11px; transition: transform 0.2s ease;"></i>
+              <i class="fas fa-chevron-down submenu-arrow"
+                style="margin-left: auto; font-size: 11px; transition: transform 0.2s ease;"></i>
             </a>
             <div class="sidebar-submenu" id="sidebarProfileSubmenu">
-              <button type="button" class="sidebar-sublink nav-item active" data-section="{{ $user->account_type === 'agency' ? 'agencia' : 'info' }}">
+              <button type="button" class="sidebar-sublink nav-item active"
+                data-section="{{ $user->account_type === 'agency' ? 'agencia' : 'info' }}">
                 <i class="{{ $user->account_type === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
                 <span>Mi Cuenta y Ajustes</span>
               </button>
@@ -1742,7 +1745,8 @@
             <i class="fas fa-bars"></i>
           </button>
           <a href="{{ route('trips.index') }}" class="app-topbar-logo" title="Viantryp">
-            <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 28px; width: auto; filter: brightness(0) invert(1); object-fit: contain; display: block;">
+            <img src="/images/logo-viantryp.png" alt="Viantryp"
+              style="height: 28px; width: auto; filter: brightness(0) invert(1); object-fit: contain; display: block;">
           </a>
 
           <div class="topbar-actions">
@@ -1768,7 +1772,9 @@
               <div class="profile-trigger" id="profileTrigger">
                 <div class="avatar" id="navAvatar">
                   @if(auth()->user()->avatar)
-                    <img src="{{ str_starts_with(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" alt="">
+                    <img
+                      src="{{ str_starts_with(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}"
+                      alt="">
                   @else
                     {{ collect(explode(' ', auth()->user()->name))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('') }}
                   @endif
@@ -2063,7 +2069,7 @@
                         <div style="flex: 1; min-width: 200px;">
                           <h3
                             style="font-size: 13px; font-weight: 800; color: #0f172a; margin: 0 0 3px; font-family: 'DM Sans', sans-serif;">
-                            ¿Usas Viantryp solo para viajes personales?</h3>
+                            ¿Usas Viantryp para viajes personales?</h3>
                           <p style="font-size: 11px; color: #64748b; margin: 0; line-height: 1.4; font-weight: 500;">
                             Desactiva la vista de marca corporativa cuando quieras.</p>
                         </div>
@@ -2196,11 +2202,11 @@
                     @php
                       $currentPlanKey = strtolower($planUser->plan ?? $user->plan);
                       $planLabels = [
-                          'básico' => 'Plan Básico',
-                          'esencial' => 'Plan Esencial',
-                          'avanzado' => 'Plan Avanzado',
-                          'colaborativo' => 'Plan Colaborativo',
-                          'corporativo' => 'Plan Corporativo',
+                        'básico' => 'Plan Básico',
+                        'esencial' => 'Plan Esencial',
+                        'avanzado' => 'Plan Avanzado',
+                        'colaborativo' => 'Plan Colaborativo',
+                        'corporativo' => 'Plan Corporativo',
                       ];
                       $planLabel = $planLabels[$currentPlanKey] ?? ucfirst($currentPlanKey);
                       $isTrial = $user->isTrialActive();
@@ -2208,29 +2214,30 @@
                       $subStart = isset($user->subscription_starts_at) ? \Carbon\Carbon::parse($user->subscription_starts_at) : null;
                       $subEnd = isset($user->subscription_ends_at) ? \Carbon\Carbon::parse($user->subscription_ends_at) : null;
                       $isPaidPlan = in_array($currentPlanKey, ['esencial', 'avanzado', 'colaborativo']);
-                      
+
                       if ($isTrial && $trialEnd) {
-                          $endDate = \Carbon\Carbon::parse($trialEnd)->format('d M, Y');
+                        $endDate = \Carbon\Carbon::parse($trialEnd)->format('d M, Y');
                       } elseif ($subEnd) {
-                          $endDate = $subEnd->format('d M, Y');
+                        $endDate = $subEnd->format('d M, Y');
                       } elseif ($isPaidPlan) {
-                          $endDate = \Carbon\Carbon::parse($user->updated_at)->addMonth()->format('d M, Y');
+                        $endDate = \Carbon\Carbon::parse($user->updated_at)->addMonth()->format('d M, Y');
                       } else {
-                          $endDate = 'Sin costo recurrente';
+                        $endDate = 'Sin costo recurrente';
                       }
 
                       $planPrices = [
-                          'básico' => '$0.00 USD / mes',
-                          'esencial' => '$5.00 USD / mes',
-                          'avanzado' => '$12.00 USD / mes',
-                          'colaborativo' => '$29.00 USD / mes',
-                          'corporativo' => 'A medida / Ventas',
+                        'básico' => '$0.00 USD / mes',
+                        'esencial' => '$5.00 USD / mes',
+                        'avanzado' => '$12.00 USD / mes',
+                        'colaborativo' => '$29.00 USD / mes',
+                        'corporativo' => 'A medida / Ventas',
                       ];
                       $planPrice = $planPrices[$currentPlanKey] ?? '$0.00 USD / mes';
                     @endphp
 
                     <!-- Ficha plan: 2 columnas sincronizada con Paddle -->
-                    <div style="border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; margin-bottom: 24px; box-shadow: 0 4px 12px -2px rgba(0,0,0,0.03);">
+                    <div
+                      style="border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; margin-bottom: 24px; box-shadow: 0 4px 12px -2px rgba(0,0,0,0.03);">
 
                       <div style="display: grid; grid-template-columns: 1fr 1px 1fr; min-height: 130px;">
 
@@ -2240,11 +2247,17 @@
                             style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.3px; display: flex; align-items: center; gap: 8px;">
                             <span>ESTADO DEL PLAN</span>
                             @if($isTrial)
-                              <span style="background:#fef9c3;color:#854d0e;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;">PRUEBA ACTIVA</span>
+                              <span
+                                style="background:#fef9c3;color:#854d0e;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;">PRUEBA
+                                ACTIVA</span>
                             @elseif($isPaidPlan)
-                              <span style="background:#dcfce7;color:#15803d;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;"><i class="fas fa-check-circle"></i> ACTIVO (PADDLE)</span>
+                              <span
+                                style="background:#dcfce7;color:#15803d;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;"><i
+                                  class="fas fa-check-circle"></i> ACTIVO (PADDLE)</span>
                             @else
-                              <span style="background:#f1f5f9;color:#64748b;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;">PLAN GRATUITO</span>
+                              <span
+                                style="background:#f1f5f9;color:#64748b;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;">PLAN
+                                GRATUITO</span>
                             @endif
                           </div>
                           <div
@@ -2257,7 +2270,8 @@
                             @elseif($currentPlanKey === 'esencial')
                               Hasta {{ $user->getPlanLimits()['max_trips'] }} itinerarios. Google Places incluido.
                             @elseif($currentPlanKey === 'avanzado')
-                              Hasta {{ $user->getPlanLimits()['max_trips'] }} itinerarios y {{ $user->getPlanLimits()['max_editors'] }} editores incluidos.
+                              Hasta {{ $user->getPlanLimits()['max_trips'] }} itinerarios y
+                              {{ $user->getPlanLimits()['max_editors'] }} editores incluidos.
                             @elseif($currentPlanKey === 'colaborativo')
                               Itinerarios ilimitados y colaboradores ilimitados.
                             @elseif($isTrial)
@@ -2319,16 +2333,18 @@
                       <!-- Pie: botón administrar -->
                       <div
                         style="padding: 14px 28px; border-top: 1px solid #f1f5f9; background: #fafbfc; display: flex; align-items: center; justify-content: space-between;">
-                        <div style="font-size: 11.5px; color: #64748b; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                          <i class="fas fa-lock" style="color: #10b981;"></i> Facturación respaldada por <strong>Paddle Merchant of Record</strong>
+                        <div
+                          style="font-size: 11.5px; color: #64748b; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                          <i class="fas fa-lock" style="color: #10b981;"></i> Facturación respaldada por <strong>Paddle
+                            Merchant of Record</strong>
                         </div>
                         <button onclick="openUpgradeModal()" style="
-                    display: inline-flex; align-items: center; gap: 8px;
-                    background: var(--accent); color: #ffffff; border: none;
-                    padding: 9px 20px; border-radius: 8px;
-                    font-weight: 700; font-size: 13px; font-family: 'Barlow', sans-serif;
-                    cursor: pointer; transition: all 0.2s ease;
-                  " onmouseover="this.style.opacity='0.9';this.style.transform='translateY(-1px)';"
+                      display: inline-flex; align-items: center; gap: 8px;
+                      background: var(--accent); color: #ffffff; border: none;
+                      padding: 9px 20px; border-radius: 8px;
+                      font-weight: 700; font-size: 13px; font-family: 'Barlow', sans-serif;
+                      cursor: pointer; transition: all 0.2s ease;
+                    " onmouseover="this.style.opacity='0.9';this.style.transform='translateY(-1px)';"
                           onmouseout="this.style.opacity='1';this.style.transform='none';">
                           <i class="fas fa-layer-group" style="font-size:12px;"></i>
                           Cambiar o Gestionar Plan
@@ -2376,22 +2392,28 @@
 
                     <!-- Historial de Facturación -->
                     <div class="form-group">
-                      <label style="font-weight: 700; color: #334155; font-size: 13px;">Historial de Recibos y Facturas</label>
+                      <label style="font-weight: 700; color: #334155; font-size: 13px;">Historial de Recibos y
+                        Facturas</label>
                       @if($isPaidPlan)
                         <div style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: white;">
-                          <div style="padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9;">
+                          <div
+                            style="padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9;">
                             <div style="display: flex; align-items: center; gap: 12px;">
-                              <div style="width: 36px; height: 36px; border-radius: 8px; background: #f0fdf4; display: flex; align-items: center; justify-content: center; color: #16a34a;">
+                              <div
+                                style="width: 36px; height: 36px; border-radius: 8px; background: #f0fdf4; display: flex; align-items: center; justify-content: center; color: #16a34a;">
                                 <i class="fas fa-check-circle"></i>
                               </div>
                               <div>
-                                <div style="font-weight: 700; font-size: 13.5px; color: #0f172a;">Suscripción Viantryp {{ $planLabel }}</div>
-                                <div style="font-size: 11.5px; color: #94a3b8;">Factura electrónica emitida en USD · Pasarela Paddle</div>
+                                <div style="font-weight: 700; font-size: 13.5px; color: #0f172a;">Suscripción Viantryp
+                                  {{ $planLabel }}</div>
+                                <div style="font-size: 11.5px; color: #94a3b8;">Factura electrónica emitida en USD ·
+                                  Pasarela Paddle</div>
                               </div>
                             </div>
                             <div style="text-align: right;">
                               <div style="font-weight: 800; font-size: 14px; color: #0f172a;">{{ $planPrice }}</div>
-                              <span style="font-size: 10px; font-weight: 800; background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 20px;">PAGADO</span>
+                              <span
+                                style="font-size: 10px; font-weight: 800; background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 20px;">PAGADO</span>
                             </div>
                           </div>
                         </div>
@@ -2400,7 +2422,8 @@
                           style="padding: 20px; background: var(--bg); border: 1px dashed var(--border); border-radius: 12px; text-align: center; color: var(--muted); font-size: 13px;">
                           <i class="fas fa-file-invoice-dollar"
                             style="font-size: 22px; margin-bottom: 10px; display: block; opacity: 0.4;"></i>
-                          No hay facturas pendientes. Al mejorar a un plan de pago, tus recibos aparecerán aquí automáticamente.
+                          No hay facturas pendientes. Al mejorar a un plan de pago, tus recibos aparecerán aquí
+                          automáticamente.
                         </div>
                       @endif
                     </div>
@@ -2414,35 +2437,47 @@
 
                     @if($isPaidPlan)
                       <!-- Tarjeta activa sincronizada con Paddle -->
-                      <div style="background: linear-gradient(135deg, #0f2a3a, #1a7a8a); border-radius: 18px; padding: 26px 28px; color: white; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(26, 122, 138, 0.25); position: relative; overflow: hidden;">
+                      <div
+                        style="background: linear-gradient(135deg, #0f2a3a, #1a7a8a); border-radius: 18px; padding: 26px 28px; color: white; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(26, 122, 138, 0.25); position: relative; overflow: hidden;">
                         <div style="position: absolute; right: -20px; bottom: -20px; opacity: 0.08; font-size: 140px;">
                           <i class="fas fa-credit-card"></i>
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+                        <div
+                          style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
                           <div>
-                            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-weight: 700; margin-bottom: 4px;">MÉTODO DE PAGO REGISTRADO</div>
-                            <div style="font-size: 18px; font-weight: 800; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.5px;">Tarjeta de Crédito / Débito</div>
+                            <div
+                              style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-weight: 700; margin-bottom: 4px;">
+                              MÉTODO DE PAGO REGISTRADO</div>
+                            <div
+                              style="font-size: 18px; font-weight: 800; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.5px;">
+                              Tarjeta de Crédito / Débito</div>
                           </div>
-                          <div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;">
+                          <div
+                            style="background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;">
                             <i class="fas fa-lock"></i> Paddle Secure
                           </div>
                         </div>
 
-                        <div style="font-size: 19px; font-weight: 700; letter-spacing: 2px; margin-bottom: 20px; font-family: monospace;">
+                        <div
+                          style="font-size: 19px; font-weight: 700; letter-spacing: 2px; margin-bottom: 20px; font-family: monospace;">
                           •••• •••• •••• {{ $user->card_last_four ?? '••••' }}
                         </div>
 
-                        <div style="display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 14px;">
+                        <div
+                          style="display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 14px;">
                           <div>
-                            <div style="font-size: 10px; color: rgba(255,255,255,0.7); text-transform: uppercase;">Titular</div>
+                            <div style="font-size: 10px; color: rgba(255,255,255,0.7); text-transform: uppercase;">Titular
+                            </div>
                             <div style="font-size: 13px; font-weight: 700;">{{ $user->name }}</div>
                           </div>
                           <div>
-                            <div style="font-size: 10px; color: rgba(255,255,255,0.7); text-transform: uppercase;">Moneda</div>
+                            <div style="font-size: 10px; color: rgba(255,255,255,0.7); text-transform: uppercase;">Moneda
+                            </div>
                             <div style="font-size: 13px; font-weight: 700;">USD ($)</div>
                           </div>
                           <div>
-                            <span style="background: #10b981; color: white; font-size: 10.5px; font-weight: 800; padding: 3px 10px; border-radius: 20px;">
+                            <span
+                              style="background: #10b981; color: white; font-size: 10.5px; font-weight: 800; padding: 3px 10px; border-radius: 20px;">
                               <i class="fas fa-check"></i> ACTIVA
                             </span>
                           </div>
@@ -2450,10 +2485,12 @@
                       </div>
 
                       <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 24px;">
-                        <button onclick="openUpgradeModal()" class="btn-save" style="background: var(--accent); padding: 10px 22px; font-size: 13px;">
+                        <button onclick="openUpgradeModal()" class="btn-save"
+                          style="background: var(--accent); padding: 10px 22px; font-size: 13px;">
                           <i class="fas fa-sync-alt"></i> Cambiar Plan o Facturación
                         </button>
-                        <button onclick="openUpgradeModal()" class="btn-secondary" style="padding: 9px 20px; font-size: 13px;">
+                        <button onclick="openUpgradeModal()" class="btn-secondary"
+                          style="padding: 9px 20px; font-size: 13px;">
                           <i class="fas fa-credit-card"></i> Actualizar Tarjeta
                         </button>
                       </div>
@@ -2466,22 +2503,31 @@
                           style="width: 54px; height: 54px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: #64748b;">
                           <i class="fas fa-credit-card" style="font-size: 22px;"></i>
                         </div>
-                        <h4 style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0 0 8px; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase;">
+                        <h4
+                          style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0 0 8px; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase;">
                           Sin métodos de pago asociados
                         </h4>
-                        <p style="font-size: 13px; color: #64748b; margin: 0 auto 20px; max-width: 420px; line-height: 1.5;">
-                          Tu cuenta se encuentra en el <strong>Plan Básico gratuito</strong>. Al contratar cualquier plan PRO, tu tarjeta de crédito o débito se registrará de forma 100% segura mediante <strong>Paddle</strong> para renovaciones automáticas en USD.
+                        <p
+                          style="font-size: 13px; color: #64748b; margin: 0 auto 20px; max-width: 420px; line-height: 1.5;">
+                          Tu cuenta se encuentra en el <strong>Plan Básico gratuito</strong>. Al contratar cualquier plan
+                          PRO, tu tarjeta de crédito o débito se registrará de forma 100% segura mediante
+                          <strong>Paddle</strong> para renovaciones automáticas en USD.
                         </p>
-                        <button onclick="openUpgradeModal()" class="btn-save" style="margin: 0 auto; padding: 11px 24px; font-size: 13.5px;">
+                        <button onclick="openUpgradeModal()" class="btn-save"
+                          style="margin: 0 auto; padding: 11px 24px; font-size: 13.5px;">
                           <i class="fas fa-rocket"></i> Explorar Planes PRO
                         </button>
                       </div>
                     @endif
 
-                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px 18px; display: flex; align-items: flex-start; gap: 12px;">
+                    <div
+                      style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px 18px; display: flex; align-items: flex-start; gap: 12px;">
                       <i class="fas fa-shield-check" style="font-size: 18px; color: #16a34a; margin-top: 2px;"></i>
                       <div style="font-size: 12px; color: #166534; line-height: 1.5;">
-                        <strong>Seguridad de Grado Bancario:</strong> Todos los pagos, suscripciones y datos de tarjetas son procesados y resguardados directamente por <strong>Paddle.com</strong> bajo el estándar internacional <strong>PCI-DSS Nivel 1</strong>. Viantryp nunca almacena los números completos de tus tarjetas.
+                        <strong>Seguridad de Grado Bancario:</strong> Todos los pagos, suscripciones y datos de tarjetas
+                        son procesados y resguardados directamente por <strong>Paddle.com</strong> bajo el estándar
+                        internacional <strong>PCI-DSS Nivel 1</strong>. Viantryp nunca almacena los números completos de
+                        tus tarjetas.
                       </div>
                     </div>
                   </div>
@@ -2559,11 +2605,11 @@
                   list.innerHTML = '<div style="padding: 20px; text-align: center; color: #94a3b8; font-size: 12px;">No tienes notificaciones nuevas</div>';
                 } else {
                   list.innerHTML = d.notifications.map(n => `
-                                <div style="padding: 12px 16px; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: background 0.2s; ${n.read_at ? '' : 'background: var(--accent-light);'}" onclick="handleNotiClick('${n.id}', '${n.data.invite_url}')">
-                                    <div style="font-size: 13px; color: #1e293b; font-weight: ${n.read_at ? '400' : '600'}; margin-bottom: 2px;">${n.data.message}</div>
-                                    <div style="font-size: 11px; color: #94a3b8;">${new Date(n.created_at).toLocaleString()}</div>
-                                </div>
-                            `).join('');
+                                  <div style="padding: 12px 16px; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: background 0.2s; ${n.read_at ? '' : 'background: var(--accent-light);'}" onclick="handleNotiClick('${n.id}', '${n.data.invite_url}')">
+                                      <div style="font-size: 13px; color: #1e293b; font-weight: ${n.read_at ? '400' : '600'}; margin-bottom: 2px;">${n.data.message}</div>
+                                      <div style="font-size: 11px; color: #94a3b8;">${new Date(n.created_at).toLocaleString()}</div>
+                                  </div>
+                              `).join('');
                 }
               });
           };
@@ -2614,7 +2660,7 @@
       })();
 
       // TOGGLE MOBILE SIDEBAR
-      window.toggleMobileSidebar = function() {
+      window.toggleMobileSidebar = function () {
         const sidebar = document.querySelector('.dashboard-sidebar');
         const backdrop = document.getElementById('sidebarBackdrop');
         if (sidebar) sidebar.classList.toggle('mobile-open');
@@ -2625,7 +2671,7 @@
       const profileToggle = document.getElementById('sidebarProfileToggle');
       const profileGroup = document.getElementById('sidebarProfileGroup');
       if (profileToggle && profileGroup) {
-        profileToggle.addEventListener('click', function(e) {
+        profileToggle.addEventListener('click', function (e) {
           e.preventDefault();
           profileGroup.classList.toggle('open');
         });
@@ -2639,7 +2685,7 @@
           if (!id) return;
           document.querySelectorAll('.tab-section').forEach(function (s) { s.classList.remove('active'); });
           document.querySelectorAll('.sidebar-sublink, .nav-item').forEach(function (b) { b.classList.remove('active'); });
-          
+
           var targetSection = document.getElementById('section-' + id);
           if (targetSection) {
             targetSection.classList.add('active');
@@ -3095,7 +3141,7 @@
           }
         }, 1200);
       @endif
-      });
+        });
 
     function initProfileTutorial(force = false) {
       if (!window.driver) return;
@@ -3121,7 +3167,7 @@
             }
           },
           @if($user->account_type === 'personal')
-                    {
+                        {
               element: '#savePersonalInfo',
               popover: {
                 title: 'Información Personal',
