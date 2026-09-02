@@ -99,7 +99,7 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/{trip}/generate-share-token', [TripController::class , 'generateShareToken'])->name('trips.generate-share-token');
     Route::get('/trips/{trip}/get-pro-data', [TripController::class, 'getProData'])->name('trips.pro-data');
     Route::post('trips/{trip}/save-pro-state', [TripController::class , 'saveProState'])->name('trips.save-pro-state');
-    Route::post('trips/{trip}/ai/chat-agent', [TripAiController::class, 'handleChat'])->name('trips.ai.chat')->middleware('throttle:60,1');
+    // Route::post('trips/{trip}/ai/chat-agent', [TripAiController::class, 'handleChat'])->name('trips.ai.chat')->middleware('throttle:10,1');
     Route::post('trips/{trip}/upload-attachment', [TripController::class , 'uploadAttachment'])->name('trips.upload-attachment');
     Route::post('trips/{trip}/send-email', [TripController::class , 'sendEmail'])->name('trips.send-email');
     Route::post('trips/bulk-delete', [TripController::class , 'bulkDelete'])->name('trips.bulk-delete');

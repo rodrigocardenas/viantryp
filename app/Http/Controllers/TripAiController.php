@@ -32,9 +32,15 @@ class TripAiController extends Controller
         if (!$trip->canEdit(Auth::id())) {
             return response()->json([
                 'success' => false,
-                'message' => 'No tienes permiso para editar este itinerario.'
+                'message' => 'No tienes permiso para editar este itinerario.',
+                'response_text' => 'No tienes permiso para editar este itinerario.',
+                'suggested_actions' => []
             ], 403);
         }
+
+        // 1.1 Limpieza de Historial de chat previo para este viaje
+        session()->forget("trip_copilot_history_{$trip->id}");
+        \Illuminate\Support\Facades\Cache::forget("trip_copilot_history_{$trip->id}");
 
         $message = $request->input('message');
         $uploadedFilesInfo = [];
@@ -121,10 +127,15 @@ class TripAiController extends Controller
             }
         }
 
+        $respText = $aiResult['response_text'] ?? ($aiResult['message'] ?? 'He procesado tu información.');
+        $actions = $aiResult['actions'] ?? ($aiResult['suggested_actions'] ?? []);
+
         return response()->json([
             'success' => $aiResult['success'] ?? true,
-            'message' => $aiResult['message'] ?? 'He procesado tu información.',
-            'actions' => $aiResult['actions'] ?? [],
+            'message' => $respText,
+            'response_text' => $respText,
+            'actions' => $actions,
+            'suggested_actions' => $actions,
             'suggestions' => $aiResult['suggestions'] ?? [],
             'documents' => $createdDocuments
         ]);
