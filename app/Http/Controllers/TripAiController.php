@@ -125,6 +125,7 @@ class TripAiController extends Controller
             'success' => $aiResult['success'] ?? true,
             'message' => $aiResult['message'] ?? 'He procesado tu información.',
             'actions' => $aiResult['actions'] ?? [],
+            'suggestions' => $aiResult['suggestions'] ?? [],
             'documents' => $createdDocuments
         ]);
     }

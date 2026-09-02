@@ -98,19 +98,21 @@
                     </svg>
                 </div>
                 <div class="msg-bubble">
-                    <p>¡Hola! Soy tu asistente de viajes <strong>Viantryp Copilot</strong> ✈️🏨</p>
-                    <p>Puedes pedirme cambios en el itinerario o <strong>arrastrar tus reservas</strong> en PDF o imagen
-                        (vuelos, hoteles, actividades) para leer sus datos y colocarlos automáticamente en el lienzo.
-                    </p>
+                    <p>¡Hola! Soy tu asistente de creación de itinerario <strong>Tryp AI</strong> ✈️🏨</p>
+                    <p>Puedes pedirme agregar elementos a tu itinerario, arrastrar tus reservas en PDF o imagen, o pedirme recomendaciones sobre tu viaje.</p>
 
                     <div class="quick-prompts">
                         <button type="button" class="quick-prompt-btn"
-                            data-prompt="¿Qué vuelos tengo programados en este viaje?">
-                            ✈️ ¿Qué vuelos tengo?
+                            data-prompt="Quiero agregar elementos a mi itinerario">
+                            ➕ Quiero agregar elementos
                         </button>
                         <button type="button" class="quick-prompt-btn"
-                            data-prompt="Recomiéndame actividades para los días libres">
+                            data-prompt="Sugerir actividades para mi viaje">
                             💡 Sugerir actividades
+                        </button>
+                        <button type="button" class="quick-prompt-btn"
+                            data-prompt="¿Qué vuelos tengo programados en este viaje?">
+                            ✈️ Consultar vuelos
                         </button>
                     </div>
                 </div>
@@ -167,7 +169,7 @@
                 </div>
             </form>
             <div class="copilot-footer-note">
-                <span>Enter para enviar &bull; Shift + Enter para salto de línea</span>
+                Tryp AI analiza tus mensajes y documentos para actualizar tu itinerario.
             </div>
         </div>
     </div>
@@ -1235,7 +1237,7 @@
             scrollToBottom();
         }
 
-        function appendAiMessage(text, actions = []) {
+        function appendAiMessage(text, actions = [], suggestions = []) {
             const msgDiv = document.createElement('div');
             msgDiv.className = 'copilot-msg msg-ai';
 
@@ -1274,6 +1276,21 @@
                 });
             }
 
+            let suggestionsHtml = '';
+            if (suggestions && suggestions.length > 0) {
+                suggestionsHtml = '<div class="quick-prompts" style="margin-top:10px;">';
+                suggestions.forEach(sug => {
+                    const promptText = typeof sug === 'string' ? sug : (sug.prompt || sug.label);
+                    const labelText = typeof sug === 'string' ? sug : (sug.label || sug.prompt);
+                    suggestionsHtml += `
+                        <button type="button" class="quick-prompt-btn" data-prompt="${escapeHtml(promptText)}">
+                            ${escapeHtml(labelText)}
+                        </button>
+                    `;
+                });
+                suggestionsHtml += '</div>';
+            }
+
             msgDiv.innerHTML = `
             <div class="msg-avatar">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1282,6 +1299,7 @@
             </div>
             <div class="msg-bubble">
                 ${formattedText}
+                ${suggestionsHtml}
                 ${cardsHtml}
             </div>
         `;
@@ -1399,7 +1417,7 @@
                 }
 
                 if (response.ok && data.success) {
-                    appendAiMessage(data.message || 'He procesado tu solicitud.', data.actions || []);
+                    appendAiMessage(data.message || 'He procesado tu solicitud.', data.actions || [], data.suggestions || []);
                 } else {
                     appendAiMessage(data.message || data.error || 'Tuvimos un problema leyendo tu archivo en este momento. Por favor, intenta de nuevo o sube una imagen más clara.');
                 }
@@ -1419,7 +1437,23 @@
                     </svg>
                 </div>
                 <div class="msg-bubble">
-                    <p>¡Conversación reiniciada! ¿En qué te puedo ayudar hoy con tu itinerario?</p>
+                    <p>¡Hola! Soy tu asistente de creación de itinerario <strong>Tryp AI</strong> ✈️🏨</p>
+                    <p>Puedes pedirme agregar elementos a tu itinerario, arrastrar tus reservas en PDF o imagen, o pedirme recomendaciones sobre tu viaje.</p>
+
+                    <div class="quick-prompts">
+                        <button type="button" class="quick-prompt-btn"
+                            data-prompt="Quiero agregar elementos a mi itinerario">
+                            ➕ Quiero agregar elementos
+                        </button>
+                        <button type="button" class="quick-prompt-btn"
+                            data-prompt="Sugerir actividades para mi viaje">
+                            💡 Sugerir actividades
+                        </button>
+                        <button type="button" class="quick-prompt-btn"
+                            data-prompt="¿Qué vuelos tengo programados en este viaje?">
+                            ✈️ Consultar vuelos
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
