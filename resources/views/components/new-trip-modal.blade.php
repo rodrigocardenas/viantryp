@@ -253,7 +253,7 @@ function createTrip() {
     submitBtn.textContent = 'Creando...';
 
     // Enviar datos
-    fetch('{{ route("trips.store") }}', {
+    fetch('{{ route("trips.store-pro") }}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
