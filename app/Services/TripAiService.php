@@ -84,6 +84,11 @@ class TripAiService
                 Log::warning("Gemini model {$candidateModel} returned status {$response->status()}, trying next candidate...");
             }
 
+            $hasFiles = !empty($uploadedFiles);
+            $contingencyMsg = $hasFiles 
+                ? 'Tuvimos un problema leyendo tu archivo en este momento. Por favor, intenta de nuevo o sube una imagen más clara.'
+                : 'Disculpa, ocurrió una breve interrupción al procesar tu mensaje. Por favor intenta enviarlo de nuevo.';
+
             if (!$response || !$response->successful()) {
                 Log::error('Gemini API Error (all candidates failed)', [
                     'status' => $response ? $response->status() : 'no_response',
@@ -91,7 +96,7 @@ class TripAiService
                 ]);
                 return [
                     'success' => false,
-                    'message' => 'Tuvimos un problema leyendo tu archivo en este momento. Por favor, intenta de nuevo o sube una imagen más clara.',
+                    'message' => $contingencyMsg,
                     'actions' => []
                 ];
             }
@@ -119,9 +124,12 @@ class TripAiService
                 'trace' => $e->getTraceAsString()
             ]);
 
+            $hasFiles = !empty($uploadedFiles);
             return [
                 'success' => false,
-                'message' => 'Tuvimos un problema leyendo tu archivo en este momento. Por favor, intenta de nuevo o sube una imagen más clara.',
+                'message' => $hasFiles 
+                    ? 'Tuvimos un problema leyendo tu archivo en este momento. Por favor, intenta de nuevo o sube una imagen más clara.'
+                    : 'Disculpa, ocurrió una breve interrupción al procesar tu mensaje. Por favor intenta enviarlo de nuevo.',
                 'actions' => []
             ];
         }

@@ -1405,6 +1405,11 @@
 
                 setTyping(false);
 
+                if (response.status === 403) {
+                    appendAiMessage(data.message || 'No tienes permisos de edición en este viaje. Por favor inicia sesión nuevamente.');
+                    return;
+                }
+
                 if (response.status === 429) {
                     appendAiMessage('Has enviado varias solicitudes seguidas. Por favor espera un momento antes de enviar otra consulta.');
                     return;
@@ -1419,12 +1424,12 @@
                 if (response.ok && data.success) {
                     appendAiMessage(data.message || 'He procesado tu solicitud.', data.actions || [], data.suggestions || []);
                 } else {
-                    appendAiMessage(data.message || data.error || 'Tuvimos un problema leyendo tu archivo en este momento. Por favor, intenta de nuevo o sube una imagen más clara.');
+                    appendAiMessage(data.message || data.error || (filesToSend.length > 0 ? 'Tuvimos un problema leyendo tu archivo en este momento. Por favor, intenta de nuevo o sube una imagen más clara.' : 'No pudimos procesar tu solicitud en este momento. Por favor intenta de nuevo.'));
                 }
             } catch (error) {
                 console.error('Copilot API Error:', error);
                 setTyping(false);
-                appendAiMessage('Tuvimos un problema leyendo tu archivo en este momento. Por favor, intenta de nuevo o sube una imagen más clara.');
+                appendAiMessage(filesToSend.length > 0 ? 'Tuvimos un problema leyendo tu archivo en este momento. Por favor, intenta de nuevo o sube una imagen más clara.' : 'No pudimos procesar tu solicitud en este momento. Por favor intenta de nuevo.');
             }
         }
 
