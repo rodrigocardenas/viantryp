@@ -1800,6 +1800,9 @@
 
 <body>
 
+  {{-- Onboarding Carousel for Guest Users --}}
+  @include('components.onboarding-carousel')
+
   <!-- NAV -->
   <nav>
     <a href="#" class="nav-logo" style="display:flex; align-items:center;">
