@@ -1,10 +1,10 @@
-{{-- Onboarding Carousel Component (Brand Color #cbff0b Edition) --}}
+{{-- Onboarding Carousel Component (App-Only Edition) --}}
 @guest
 <!-- Swiper CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 <style>
-  /* Full Screen Overlay */
+  /* Full Screen Overlay - Hidden by default for standard web browsers */
   .onboarding-overlay {
     position: fixed;
     top: 0;
@@ -14,7 +14,7 @@
     height: 100dvh;
     background: #061521;
     z-index: 999999;
-    display: flex;
+    display: none; /* Default hidden: Only activated in APP mode */
     justify-content: center;
     align-items: center;
     overflow: hidden;
@@ -244,7 +244,7 @@
 <div id="onboarding-wrapper" class="onboarding-overlay">
   <div class="onboarding-viewport">
 
-    <!-- Swiper Carousel (3 Slides Only, Top Bar Removed) -->
+    <!-- Swiper Carousel (3 Slides Only) -->
     <div class="swiper onboarding-swiper">
       <div class="swiper-wrapper">
         <!-- Slide 1 -->
@@ -316,7 +316,21 @@
     const forceShow = urlParams.has('onboarding');
     const hasSeen = localStorage.getItem('has_seen_onboarding') === 'true';
 
-    if (!hasSeen || forceShow) {
+    // Strictly detect APP environments:
+    // 1. Installed PWA in standalone mode
+    // 2. iOS Safari standalone app mode
+    // 3. Native App / Capacitor / WebView container
+    // 4. Explicit URL parameters (?app=1, ?pwa=1, ?onboarding=1)
+    const isStandalonePWA = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+                            (window.navigator && window.navigator.standalone === true);
+    const isNativeApp = Boolean(window.isNativeApp || (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()));
+    const isAppParam = urlParams.has('app') || urlParams.has('pwa') || forceShow;
+
+    const isAppEnvironment = isStandalonePWA || isNativeApp || isAppParam;
+
+    // The Onboarding Carousel is ONLY displayed in APP mode!
+    // Standard mobile web browser visits will remain on the normal landing page.
+    if (isAppEnvironment && (!hasSeen || forceShow)) {
       const wrapper = document.getElementById('onboarding-wrapper');
       const ctas = document.getElementById('onboarding-ctas');
 
