@@ -437,86 +437,108 @@
       box-shadow: 0 12px 28px rgba(32, 200, 222, 0.45);
     }
 
-    /* ── FEATURE BANNER SECTION ── */
+    /* ── FINAL CTA BANNER SECTION (MATCHING USER IMAGE) ── */
     .feature-banner {
-      padding: 7rem 4rem;
+      padding: 5.5rem 2rem;
       position: relative;
-      overflow: visible;
-      background: linear-gradient(135deg, #ffffff 0%, #f4fbfb 50%, #f8fafc 100%);
-      border-top: 1px solid rgba(226, 232, 240, 0.7);
-    }
-
-    .feature-banner-dots {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 40%;
-      height: 100%;
-      background-image: radial-gradient(rgba(14, 165, 233, 0.16) 1.5px, transparent 1.5px);
-      background-size: 24px 24px;
-      pointer-events: none;
-      opacity: 0.8;
-      mask-image: radial-gradient(circle at 80% 20%, black 15%, transparent 80%);
-      -webkit-mask-image: radial-gradient(circle at 80% 20%, black 15%, transparent 80%);
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 30%, #e2f4f7 0%, #f4fafb 55%, #eaf5f8 100%);
+      border-top: 1px solid rgba(2, 181, 203, 0.12);
+      border-bottom: 1px solid rgba(2, 181, 203, 0.08);
     }
 
     .feature-banner-container {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       width: 100%;
-      max-width: 1280px;
+      max-width: 820px;
       margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: 4rem;
+      display: flex;
+      flex-direction: column;
       align-items: center;
+      text-align: center;
     }
 
     .feature-banner-text {
-      text-align: left;
+      text-align: center;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .feature-banner-overline {
-      font-family: 'Manrope', sans-serif;
-      font-size: 1.18rem;
-      font-weight: 600;
-      color: #02b5cb;
-      margin-bottom: 0.75rem;
-      letter-spacing: -0.01em;
+      align-items: center;
+      width: 100%;
     }
 
     .feature-banner-text h2 {
       font-family: 'Manrope', sans-serif;
-      font-size: clamp(2.4rem, 4vw, 54px);
+      font-size: clamp(2.4rem, 4.5vw, 54px);
       font-weight: 800;
-      line-height: 1.08;
-      letter-spacing: -0.092em;
-      color: #0f2a3a;
-      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      letter-spacing: -3px !important;
+      color: #0b2230;
+      margin-bottom: 1rem;
     }
 
     .feature-banner-text h2 span {
-      color: #02b5cb;
+      color: #2ed2ea;
       display: block;
+      letter-spacing: -3px !important;
     }
 
     .feature-banner-text p {
-      font-size: 1.1rem;
+      font-family: 'Manrope', sans-serif;
+      font-size: 1.05rem;
       font-weight: 400;
-      color: #475569;
-      line-height: 1.68;
-      max-width: 520px;
+      color: #52657a;
+      line-height: 1.55;
+      max-width: 680px;
+      margin: 0 auto 2.2rem;
     }
 
-    .feature-banner-visual {
-      position: relative;
-      width: 100%;
+    .feature-banner-actions {
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-cta-dark {
+      background: linear-gradient(135deg, #1b6072 0%, #3e9ab0 100%);
+      color: #ffffff !important;
+      padding: 0.95rem 2.8rem;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(27, 96, 114, 0.25);
+      transition: all 0.25s ease;
+    }
+
+    .btn-cta-dark:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(27, 96, 114, 0.35);
+    }
+
+    .btn-cta-cyan {
+      background: linear-gradient(135deg, #4ce0f5 0%, #36cbe4 100%);
+      color: #ffffff !important;
+      padding: 0.95rem 2.8rem;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(54, 203, 228, 0.35);
+      transition: all 0.25s ease;
+    }
+
+    .btn-cta-cyan:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(54, 203, 228, 0.45);
     }
 
 
@@ -3102,55 +3124,7 @@
     </div>
   </section>
 
-  <!-- FEATURE BANNER SECTION -->
-  <section class="feature-banner" id="banner-section">
-    <div class="feature-banner-dots"></div>
 
-    <div class="feature-banner-container">
-      <div class="feature-banner-visual">
-        <div class="mockups-container">
-          <!-- Laptop -->
-          <div class="laptop-wrap">
-            <div class="l-screen">
-              <div class="l-notch">
-                <div class="l-cam"></div>
-              </div>
-              <div class="l-display">
-                <div class="l-glare"></div>
-                <img src="{{ asset('images/mockup-trip-desktop.png') }}" alt="Itinerario Desktop">
-              </div>
-            </div>
-            <div class="l-base">
-              <div class="l-hinge"></div>
-              <div class="l-deck">
-                <div class="l-keyline"></div>
-                <div class="l-thumb-indent"></div>
-              </div>
-              <div class="l-shadow"></div>
-            </div>
-          </div>
-
-          <!-- Phone -->
-          <div class="phone-wrap">
-            <div class="p-frame">
-              <div class="p-island"></div>
-              <div class="p-screen">
-                <div class="p-glare"></div>
-                <img src="{{ asset('images/mockup-trip-mobile.png') }}" alt="Itinerario Mobile">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="feature-banner-text">
-        <div class="feature-banner-overline">Visualiza tu viaje de forma moderna</div>
-        <h2>Todo lo que necesitas,<br><span>en un solo lugar</span></h2>
-        <p>Una experiencia digital moderna y dinámica que transforma tus viajes en piezas únicas, accesibles desde
-          cualquier dispositivo.</p>
-      </div>
-    </div>
-  </section>
 
 
 
@@ -6180,6 +6154,26 @@
               Hablar con ventas <i class="fas fa-arrow-up-right-from-square" style="font-size: 12px; opacity: 0.7;"></i>
             </a>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA FEATURE BANNER SECTION (MATCHING USER IMAGE) -->
+  <section class="feature-banner" id="banner-section">
+    <div class="feature-banner-container reveal">
+      <div class="feature-banner-text">
+        <h2>Todo tu viaje,<br><span>en un solo lugar</span></h2>
+        <p>Una experiencia digital moderna y dinámica que transforma tus viajes en piezas únicas,<br>accesibles desde cualquier dispositivo.</p>
+        
+        <div class="feature-banner-actions">
+          @auth
+            <a href="{{ route('trips.index') }}" class="btn-cta-dark">Ir a mis viajes →</a>
+            <a href="{{ route('contact') }}" class="btn-cta-cyan">Contáctanos</a>
+          @else
+            <a href="{{ route('register') }}" class="btn-cta-dark">Regístrate Ahora</a>
+            <a href="{{ route('contact') }}" class="btn-cta-cyan">Contáctanos</a>
+          @endauth
         </div>
       </div>
     </div>
