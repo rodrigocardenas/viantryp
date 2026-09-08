@@ -2768,13 +2768,7 @@
       }
 
       .sol-btn {
-        width: 100% !important;
-        justify-content: center !important;
-        text-align: center !important;
-        margin-top: 1rem !important;
-        padding: 0.85rem 1.25rem !important;
-        font-size: 0.95rem !important;
-        border-radius: 100px !important;
+        display: none !important;
       }
 
       /* Pricing Section Mobile */
