@@ -102,13 +102,11 @@
     }
 
     .nav-logo-img.logo-cyan {
-      filter: brightness(0) saturate(100%) invert(56%) sepia(88%) saturate(1758%) hue-rotate(152deg) brightness(98%) contrast(98%);
       position: relative;
       opacity: 1;
     }
 
     .nav-logo-img.logo-black {
-      filter: brightness(0);
       position: absolute;
       top: 0;
       left: 0;
@@ -138,7 +136,7 @@
     .nav-links a {
       text-decoration: none;
       color: #1e293b;
-      font-size: 13px !important;
+      font-size: 14px !important;
       font-weight: 600;
       padding: 6px 14px;
       border-radius: 8px;
@@ -219,7 +217,7 @@
     .hero-hand-wrapper {
       position: relative;
       width: 100%;
-      max-width: 540px;
+      max-width: 640px;
       margin: 0 auto;
       display: flex;
       justify-content: center;
@@ -228,7 +226,7 @@
 
     .hero-hand-img {
       width: 100%;
-      max-width: 500px;
+      max-width: 640px;
       height: auto;
       object-fit: contain;
       filter: drop-shadow(0 20px 45px rgba(2, 43, 62, 0.22));
@@ -241,9 +239,12 @@
     }
 
     @keyframes heroHandFloat {
-      0%, 100% {
+
+      0%,
+      100% {
         transform: translateY(0px) rotate(0deg);
       }
+
       50% {
         transform: translateY(-12px) rotate(0.6deg);
       }
@@ -1082,37 +1083,48 @@
     .pricing {
       background-color: var(--white);
       background-image: radial-gradient(circle at 10% 20%, rgba(26, 122, 138, 0.03) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(138, 184, 32, 0.03) 0%, transparent 40%);
-      padding: 5rem 2rem;
+      padding: 3.5rem 2rem 4rem;
     }
 
     .pricing-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       grid-auto-rows: 1fr;
-      gap: 1.5rem;
-      max-width: 1240px;
+      gap: 1.75rem;
+      max-width: 1140px;
       width: 100%;
       align-items: stretch;
       padding-top: 1.5rem;
+      margin: 0 auto;
+    }
+
+    .pricing .section-label {
+      font-family: 'Manrope', sans-serif;
+      font-size: 1.18rem;
+      font-weight: 600;
+      color: #02b5cb;
+      margin-bottom: 0.5rem;
+      text-transform: none;
+      letter-spacing: normal;
     }
 
     .annual-discount-pill {
-      background: #ecfdf5;
-      color: #10b981;
-      font-size: 9px;
+      background: rgba(2, 181, 203, 0.1);
+      color: #02b5cb;
+      font-size: 11px;
       font-weight: 800;
-      padding: 2px 8px;
+      padding: 3px 10px;
       border-radius: 100px;
-      margin-left: 4px;
-      border: 1px solid #d1fae5;
+      margin-left: 6px;
+      border: 1px solid rgba(2, 181, 203, 0.25);
     }
 
     .plan {
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(226, 232, 226, 0.5);
+      border: 1px solid rgba(226, 232, 226, 0.6);
       border-radius: 24px;
-      padding: 3rem 2rem;
+      padding: 2.25rem 1.75rem;
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -1123,23 +1135,25 @@
     }
 
     .plan:hover {
-      transform: translateY(-12px);
+      transform: translateY(-8px);
       background: var(--white);
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
       border-color: rgba(11, 142, 163, 0.2);
     }
 
     .plan.featured {
-      background: #0f172a;
-      border-color: #1e293b;
+      background: #0A2540;
+      border-color: rgba(30, 170, 206, 0.3);
       position: relative;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 20px 50px rgba(10, 37, 64, 0.35);
+      color: #ffffff;
+      transform: translateY(14px);
     }
 
     .plan.featured:hover {
-      transform: translateY(-15px);
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
-      border-color: var(--teal);
+      transform: translateY(4px);
+      box-shadow: 0 40px 80px rgba(10, 37, 64, 0.45);
+      border-color: #1EAACE;
     }
 
     .plan-badge {
@@ -1212,8 +1226,8 @@
     .plan-savings {
       font-size: 0.78rem;
       font-weight: 700;
-      color: var(--lime);
-      background: var(--lime-bg);
+      color: #02b5cb !important;
+      background: #d8f8f6 !important;
       padding: 0.2rem 0.6rem;
       border-radius: 6px;
       display: inline-block;
@@ -1222,7 +1236,8 @@
     }
 
     .plan.featured .plan-savings {
-      background: rgba(138, 184, 32, 0.15);
+      color: #02b5cb !important;
+      background: #d8f8f6 !important;
     }
 
     .plan-sub {
@@ -1287,15 +1302,30 @@
       transform: scale(1.02);
     }
 
-    .plan-btn.primary {
-      background: linear-gradient(135deg, var(--teal), #0a7a8a);
-      color: var(--white);
+    .plan-btn.btn-pro {
+      background: #197388;
+      color: #ffffff;
       border: none;
+      box-shadow: 0 4px 15px rgba(30, 170, 206, 0.4);
     }
 
-    .plan-btn.primary:hover {
+    .plan-btn.btn-pro:hover {
+      background: #1997b8;
+      color: #ffffff;
       transform: scale(1.02);
-      box-shadow: 0 10px 25px rgba(11, 142, 163, 0.3);
+      box-shadow: 0 8px 22px rgba(30, 170, 206, 0.5);
+    }
+
+    .plan-btn.btn-outline {
+      background: transparent;
+      color: var(--navy);
+      border: 2px solid var(--navy);
+    }
+
+    .plan-btn.btn-outline:hover {
+      background: var(--navy);
+      color: #ffffff;
+      transform: scale(1.02);
     }
 
     @media (max-width: 1100px) {
@@ -1799,14 +1829,8 @@
     }
 
     .plan-features li::before {
-      content: '✓';
-      color: var(--teal);
-      font-weight: 900;
-      flex-shrink: 0;
-    }
-
-    .plan.featured .plan-features li::before {
-      color: var(--lime);
+      display: none !important;
+      content: none !important;
     }
 
     .plan-btn {
@@ -2480,12 +2504,11 @@
   <nav>
     <a href="#" class="nav-logo">
       <div class="nav-logo-wrap">
-        <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp" class="nav-logo-img logo-cyan">
-        <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp" class="nav-logo-img logo-black">
+        <img src="{{ asset('images/logo-viantryp-cyan.png') }}" alt="Viantryp" class="nav-logo-img logo-cyan">
+        <img src="{{ asset('images/logo-viantryp-black.png') }}" alt="Viantryp" class="nav-logo-img logo-black">
       </div>
     </a>
     <ul class="nav-links">
-      <li><a href="#demo">Ver Demo</a></li>
       <li><a href="#como-funciona">Cómo funciona</a></li>
       <li><a href="#precios">Precios</a></li>
       <li><a href="{{ route('contact') }}">Contacto</a></li>
@@ -2600,23 +2623,23 @@
             <a href="#demo" class="btn-pill-secondary">Ver Demo</a>
             {{-- Botón instalar app: solo visible en móvil --}}
             <button id="landing-install-btn" onclick="triggerPwaInstall()" style="
-                      display: none;
-                      align-items: center;
-                      gap: 10px;
-                      background: linear-gradient(135deg, #136075 0%, #177890 100%);
-                      color: white;
-                      border: none;
-                      padding: 14px 22px;
-                      border-radius: 100px;
-                      font-weight: 700;
-                      font-size: 1rem;
-                      cursor: pointer;
-                      box-shadow: 0 4px 24px rgba(13,43,62,0.25);
-                      font-family: 'Barlow', sans-serif;
-                      transition: all 0.2s;
-                      width: 100%;
-                      justify-content: center;
-                    ">
+                            display: none;
+                            align-items: center;
+                            gap: 10px;
+                            background: linear-gradient(135deg, #136075 0%, #177890 100%);
+                            color: white;
+                            border: none;
+                            padding: 14px 22px;
+                            border-radius: 100px;
+                            font-weight: 700;
+                            font-size: 1rem;
+                            cursor: pointer;
+                            box-shadow: 0 4px 24px rgba(13,43,62,0.25);
+                            font-family: 'Barlow', sans-serif;
+                            transition: all 0.2s;
+                            width: 100%;
+                            justify-content: center;
+                          ">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(255,255,255,0.15)"
@@ -2631,7 +2654,7 @@
 
       <div class="feature-banner-visual">
         <div class="hero-hand-wrapper">
-          <img src="{{ asset('images/hero-hand-mockup.png') }}" alt="Viantryp Mobile App" class="hero-hand-img">
+          <img src="{{ asset('images/hero-laptop-phone-mockup.png') }}" alt="Viantryp Dashboard & Mobile App" class="hero-hand-img">
         </div>
       </div>
     </div>
@@ -2960,6 +2983,56 @@
     </div>
   </section>
 
+  <!-- FEATURE BANNER SECTION -->
+  <section class="feature-banner" id="banner-section">
+    <div class="feature-banner-dots"></div>
+
+    <div class="feature-banner-container">
+      <div class="feature-banner-visual">
+        <div class="mockups-container">
+          <!-- Laptop -->
+          <div class="laptop-wrap">
+            <div class="l-screen">
+              <div class="l-notch">
+                <div class="l-cam"></div>
+              </div>
+              <div class="l-display">
+                <div class="l-glare"></div>
+                <img src="{{ asset('images/mockup-trip-desktop.png') }}" alt="Itinerario Desktop">
+              </div>
+            </div>
+            <div class="l-base">
+              <div class="l-hinge"></div>
+              <div class="l-deck">
+                <div class="l-keyline"></div>
+                <div class="l-thumb-indent"></div>
+              </div>
+              <div class="l-shadow"></div>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="phone-wrap">
+            <div class="p-frame">
+              <div class="p-island"></div>
+              <div class="p-screen">
+                <div class="p-glare"></div>
+                <img src="{{ asset('images/mockup-trip-mobile.png') }}" alt="Itinerario Mobile">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-banner-text">
+        <div class="feature-banner-overline">Visualiza tu viaje de forma moderna</div>
+        <h2>Todo lo que necesitas,<br><span>en un solo lugar</span></h2>
+        <p>Una experiencia digital moderna y dinámica que transforma tus viajes en piezas únicas, accesibles desde
+          cualquier dispositivo.</p>
+      </div>
+    </div>
+  </section>
+
 
 
   <!-- QUOTE -->
@@ -2995,8 +3068,7 @@
     <div class="container"
       style="max-width: 1180px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; justify-content: center;">
       <div class="solutions-header reveal">
-        <h2 class="solutions-title"><span>Viantryp:</span> El lienzo para tus viajes inolvidables</h2>
-        <p class="solutions-desc">Tu centro de control para itinerarios perfectos, atractivos y digitales.</p>
+        <h2 class="solutions-title"><span>Viantryp:</span> Adáptalo a todo tipo de viaje</h2>
       </div>
 
       <div class="solutions-tabs reveal">
@@ -3025,7 +3097,7 @@
 
         <div class="sol-features-right" id="sol-right">
           <div class="sol-feature-item">
-            <div class="sol-feature-icon" style="color: #0b8ea3;">
+            <div class="sol-feature-icon" style="color: #02b5cb;">
               <i class="fas fa-pencil-ruler"></i>
             </div>
             <div class="sol-feature-info">
@@ -3035,7 +3107,7 @@
             </div>
           </div>
           <div class="sol-feature-item">
-            <div class="sol-feature-icon" style="color: #22c55e;">
+            <div class="sol-feature-icon" style="color: #1EAACE;">
               <i class="fas fa-link"></i>
             </div>
             <div class="sol-feature-info">
@@ -3045,7 +3117,7 @@
             </div>
           </div>
           <div class="sol-feature-item">
-            <div class="sol-feature-icon" style="color: #0f172a;">
+            <div class="sol-feature-icon" style="color: #0A2540;">
               <i class="fas fa-file-invoice"></i>
             </div>
             <div class="sol-feature-info">
@@ -4798,110 +4870,81 @@
     <div class="container">
       <div class="reveal" style="text-align:center;">
         <div class="section-label">Precios</div>
-        <h2 class="section-title">Planes simples y transparentes</h2>
-        <p class="section-desc" style="margin:0 auto 3rem;">Sin sorpresas. Cancela cuando quieras.</p>
+        <h2 class="section-title" style="margin-bottom: 2.5rem;">Planes simples y transparentes</h2>
 
         <div class="pricing-toggle-wrap reveal">
-          <span class="toggle-label active" id="labelMonthly">Mensual</span>
+          <span class="toggle-label active" id="labelMonthly">Facturación Mensual</span>
           <div class="toggle-switch" id="priceToggle"></div>
-          <span class="toggle-label" id="labelAnnual">Anual <span class="annual-discount-pill">-25%</span></span>
+          <span class="toggle-label" id="labelAnnual">
+            Facturación Anual
+            <span class="annual-discount-pill">Ahorra un 20%</span>
+          </span>
         </div>
       </div>
       <div class="pricing-grid">
-        <!-- Básico -->
+        <!-- Explorador -->
         <div class="plan reveal d1">
-          <div class="plan-badge" style="opacity:0; pointer-events:none; visibility:hidden;">Badge Spacer</div>
-          <div class="plan-name">Básico</div>
-          <div class="plan-desc-special">Para explorar Viantryp</div>
+          <div class="plan-name">Explorador</div>
+          <div class="plan-desc-special">Para viajeros ocasionales</div>
           <div class="plan-price">
             <span class="currency">$</span>
-            <span class="price-val">0</span>
+            <span class="price-val" data-monthly="0" data-annual="0">0</span>
+            <span class="period">/mes</span>
           </div>
-          <div class="price-note">Sin tarjeta de crédito</div>
+          <div class="price-note" data-monthly="Sin tarjeta de crédito" data-annual="Plan gratuito">Sin tarjeta de
+            crédito</div>
           <div class="plan-savings" style="opacity:0; pointer-events:none; visibility:hidden;">Savings Spacer</div>
           <div class="plan-sub" style="opacity:0; pointer-events:none; visibility:hidden;">Sub Spacer</div>
           <ul class="plan-features">
-            <li>1 itinerario activo</li>
-
-            <li>Enlace para compartir viaje</li>
-            <li>Banco de imágenes gratuito</li>
+            <li><i class="fas fa-check"></i> 1 itinerario activo</li>
+            <li><i class="fas fa-check"></i> Enlace para compartir viaje</li>
+            <li><i class="fas fa-check"></i> Banco de imágenes gratuito</li>
           </ul>
           <a href="{{ route('register') }}" class="plan-btn">Empezar gratis</a>
-          <div class="plan-trial-note" style="opacity:0; pointer-events:none; visibility:hidden;">Spacer</div>
         </div>
 
-        <!-- Esencial -->
-        <div class="plan reveal d2">
-          <div class="plan-badge" style="opacity:0; pointer-events:none; visibility:hidden;">Badge Spacer</div>
-          <div class="plan-name">Esencial</div>
-          <div class="plan-desc-special">Viajeros frecuentes</div>
+        <!-- Viajero Pro (DESTACADA) -->
+        <div class="plan featured reveal d2">
+          <div class="plan-name">Viajero Pro</div>
+          <div class="plan-desc-special" style="color: rgba(255, 255, 255, 0.8);">Para viajeros frecuentes</div>
           <div class="plan-price">
             <span class="currency">$</span>
-            <span class="price-val" data-monthly="5.00" data-annual="4.00">5.00</span>
+            <span class="price-val" data-monthly="9.99" data-annual="7.99">9.99</span>
             <span class="period">/mes</span>
           </div>
-          <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente">Facturado
-            mensualmente</div>
-          <div class="plan-savings" style="opacity: 0;">Ahorras $12 al año</div>
-          <div class="plan-sub" style="opacity:0; pointer-events:none; visibility:hidden;">Sub Spacer</div>
+          <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente $95.88 USD">
+            Facturado mensualmente</div>
+          <div class="plan-savings" style="opacity: 0;">Ahorras 20% en plan anual</div>
+          <div class="plan-sub" style="color: rgba(255, 255, 255, 0.7);">Todo para tus viajes sin límites:</div>
           <ul class="plan-features">
-            <li>3 itinerarios activos</li>
-
-            <li>Google Places Incluido</li>
-            <li>Enlace para compartir viaje</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Itinerarios ilimitados</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Exportación a PDF y Web</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Google Places incluido</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> 7 días de prueba gratuita</li>
           </ul>
-          <a href="{{ route('plans.redirect') }}" class="plan-btn">Elegir Esencial</a>
-          <div class="plan-trial-note">7 días de prueba gratuita</div>
+          <a href="{{ route('plans.redirect') }}" class="plan-btn btn-pro">Probar 7 días gratis</a>
         </div>
 
-        <!-- Avanzado -->
-        <div class="plan featured reveal d3">
-          <div class="plan-badge">Más popular</div>
-          <div class="plan-name">Avanzado</div>
-          <div class="plan-desc-special">Profesionales y agencias</div>
+        <!-- Negocios -->
+        <div class="plan reveal d3">
+          <div class="plan-name">Negocios</div>
+          <div class="plan-desc-special">Para agencias, equipos y DMCs</div>
           <div class="plan-price">
             <span class="currency">$</span>
-            <span class="price-val" data-monthly="12.00" data-annual="9.00">12.00</span>
+            <span class="price-val" data-monthly="29.99" data-annual="23.99">29.99</span>
             <span class="period">/mes</span>
           </div>
-          <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente">Facturado
-            mensualmente</div>
-          <div class="plan-savings" style="opacity: 0;">Ahorras $36 al año</div>
-          <div class="plan-sub">Todo lo del plan Esencial, más:</div>
+          <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente $287.88 USD">
+            Facturado mensualmente</div>
+          <div class="plan-savings" style="opacity: 0;">Ahorras 20% en plan anual</div>
+          <div class="plan-sub">Todo lo de Viajero Pro, más:</div>
           <ul class="plan-features">
-            <li>10 itinerarios activos</li>
-
-            <li>2 colaboradores de edición</li>
-            <li>Plantillas avanzadas</li>
-            <li>Personalización de marca</li>
+            <li><i class="fas fa-check"></i> Marca blanca y logo propio</li>
+            <li><i class="fas fa-check"></i> Colaboradores y editores de equipo</li>
+            <li><i class="fas fa-check"></i> Plantillas corporativas avanzadas</li>
+            <li><i class="fas fa-check"></i> 14 días de prueba gratuita</li>
           </ul>
-          <a href="{{ route('plans.redirect') }}" class="plan-btn primary">Elegir Avanzado</a>
-          <div class="plan-trial-note">14 días de prueba gratuita</div>
-        </div>
-
-        <!-- Colaborativo -->
-        <div class="plan reveal d4">
-          <div class="plan-badge" style="opacity:0; pointer-events:none; visibility:hidden;">Badge Spacer</div>
-          <div class="plan-name">Colaborativo</div>
-          <div class="plan-desc-special">Equipos y DMCs</div>
-          <div class="plan-price">
-            <span class="currency">$</span>
-            <span class="price-val" data-monthly="29.00" data-annual="22.00">29.00</span>
-            <span class="period">/mes</span>
-          </div>
-          <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente">Facturado
-            mensualmente</div>
-          <div class="plan-savings" style="opacity: 0;">Ahorras $84 al año</div>
-          <div class="plan-sub">Todo lo del plan Avanzado, más:</div>
-          <ul class="plan-features">
-            <li>Itinerarios ilimitados</li>
-            <li>Plantillas ilimitadas</li>
-            <li>Colaboradores y editores ilimitados</li>
-            <li>Gestión de roles y permisos</li>
-            <li>Integraciones API básicas</li>
-          </ul>
-          <a href="{{ route('plans.redirect') }}" class="plan-btn">Elegir Colaborativo</a>
-          <div class="plan-trial-note">14 días de prueba gratuita</div>
+          <a href="{{ route('plans.redirect') }}" class="plan-btn btn-outline">Probar 14 días gratis</a>
         </div>
       </div>
 
@@ -4953,56 +4996,6 @@
             </a>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FEATURE BANNER SECTION -->
-  <section class="feature-banner" id="banner-section">
-    <div class="feature-banner-dots"></div>
-
-    <div class="feature-banner-container">
-      <div class="feature-banner-visual">
-        <div class="mockups-container">
-          <!-- Laptop -->
-          <div class="laptop-wrap">
-            <div class="l-screen">
-              <div class="l-notch">
-                <div class="l-cam"></div>
-              </div>
-              <div class="l-display">
-                <div class="l-glare"></div>
-                <img src="{{ asset('images/mockup-trip-desktop.png') }}" alt="Itinerario Desktop">
-              </div>
-            </div>
-            <div class="l-base">
-              <div class="l-hinge"></div>
-              <div class="l-deck">
-                <div class="l-keyline"></div>
-                <div class="l-thumb-indent"></div>
-              </div>
-              <div class="l-shadow"></div>
-            </div>
-          </div>
-
-          <!-- Phone -->
-          <div class="phone-wrap">
-            <div class="p-frame">
-              <div class="p-island"></div>
-              <div class="p-screen">
-                <div class="p-glare"></div>
-                <img src="{{ asset('images/mockup-trip-mobile.png') }}" alt="Itinerario Mobile">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="feature-banner-text">
-        <div class="feature-banner-overline">Visualiza tu viaje de forma moderna</div>
-        <h2>Todo lo que necesitas,<br><span>en un solo lugar</span></h2>
-        <p>Una experiencia digital moderna y dinámica que transforma tus viajes en piezas únicas, accesibles desde
-          cualquier dispositivo.</p>
       </div>
     </div>
   </section>
@@ -5166,38 +5159,44 @@
       const priceNotes = document.querySelectorAll('.price-note');
       const savingsLabels = document.querySelectorAll('.plan-savings');
 
+      const setAnnual = (isAnnual) => {
+        if (toggle) toggle.classList.toggle('annual', isAnnual);
+        if (labelAnnual) labelAnnual.classList.toggle('active', isAnnual);
+        if (labelMonthly) labelMonthly.classList.toggle('active', !isAnnual);
+
+        priceVals.forEach(v => {
+          const target = isAnnual ? v.dataset.annual : v.dataset.monthly;
+          if (target !== undefined) {
+            v.style.opacity = '0';
+            setTimeout(() => { v.textContent = target; v.style.opacity = '1'; }, 150);
+          }
+        });
+
+        priceNotes.forEach(n => {
+          const target = isAnnual ? n.dataset.annual : n.dataset.monthly;
+          if (target !== undefined) {
+            n.style.opacity = '0';
+            setTimeout(() => { n.textContent = target; n.style.opacity = '1'; }, 150);
+          }
+        });
+
+        savingsLabels.forEach(s => {
+          s.style.opacity = isAnnual ? '1' : '0';
+          s.style.transform = isAnnual ? 'translateY(0)' : 'translateY(5px)';
+          s.style.pointerEvents = isAnnual ? 'auto' : 'none';
+        });
+      };
+
       if (toggle) {
         toggle.addEventListener('click', () => {
-          const isAnnual = toggle.classList.toggle('annual');
-          labelAnnual.classList.toggle('active', isAnnual);
-          labelMonthly.classList.toggle('active', !isAnnual);
-
-          priceVals.forEach(v => {
-            const target = isAnnual ? v.dataset.annual : v.dataset.monthly;
-            if (target) {
-              v.style.opacity = '0';
-              setTimeout(() => { v.textContent = target; v.style.opacity = '1'; }, 150);
-            }
-          });
-
-          priceNotes.forEach(n => {
-            const target = isAnnual ? n.dataset.annual : n.dataset.monthly;
-            if (target) {
-              n.style.opacity = '0';
-              setTimeout(() => { n.textContent = target; n.style.opacity = '1'; }, 150);
-            }
-          });
-
-          savingsLabels.forEach(s => {
-            s.style.opacity = isAnnual ? '1' : '0';
-            s.style.transform = isAnnual ? 'translateY(0)' : 'translateY(5px)';
-            s.style.pointerEvents = isAnnual ? 'auto' : 'none';
-          });
+          setAnnual(!toggle.classList.contains('annual'));
         });
-        // Ensure smooth transition
-        priceVals.forEach(v => v.style.transition = 'opacity 0.2s');
-        priceNotes.forEach(n => n.style.transition = 'opacity 0.2s');
       }
+      if (labelMonthly) labelMonthly.addEventListener('click', () => setAnnual(false));
+      if (labelAnnual) labelAnnual.addEventListener('click', () => setAnnual(true));
+
+      priceVals.forEach(v => v.style.transition = 'opacity 0.2s');
+      priceNotes.forEach(n => n.style.transition = 'opacity 0.2s');
     })();
 
     // Solutions Tab Logic
@@ -5219,9 +5218,9 @@
             'Actualiza tu viaje sin rehacer documentos.'
           ],
           features: [
-            { title: 'Editor visual', span: 'Drag & Drop', desc: 'Arrastra destinos y fotos para diseñar tu ruta ideal en segundos. Es tan fácil como jugar, pero con resultados profesionales.', icon: 'fas fa-pencil-ruler', color: '#0b8ea3' },
-            { title: 'Enlace interactivo', span: 'personal', desc: 'Lleva todo tu plan en un solo link. Si cambias de opinión sobre un lugar, actualízalo y ten tu ruta siempre al día en tu móvil.', icon: 'fas fa-link', color: '#22c55e' },
-            { title: 'Toda tu documentación', span: 'a mano', desc: 'Guarda tus reservas y mapas directamente en el día que corresponden. Olvida buscar entre cientos de correos y capturas de pantalla.', icon: 'fas fa-file-invoice', color: '#0f172a' }
+            { title: 'Editor visual', span: 'Drag & Drop', desc: 'Arrastra destinos y fotos para diseñar tu ruta ideal en segundos. Es tan fácil como jugar, pero con resultados profesionales.', icon: 'fas fa-pencil-ruler', color: '#02b5cb' },
+            { title: 'Enlace interactivo', span: 'personal', desc: 'Lleva todo tu plan en un solo link. Si cambias de opinión sobre un lugar, actualízalo y ten tu ruta siempre al día en tu móvil.', icon: 'fas fa-link', color: '#1EAACE' },
+            { title: 'Toda tu documentación', span: 'a mano', desc: 'Guarda tus reservas y mapas directamente en el día que corresponden. Olvida buscar entre cientos de correos y capturas de pantalla.', icon: 'fas fa-file-invoice', color: '#0A2540' }
           ]
         },
         agencias: {
@@ -5233,9 +5232,9 @@
             'Fideliza a tus viajeros con una herramienta interactiva y fácil de usar.'
           ],
           features: [
-            { title: 'Marca Blanca', span: 'Total', desc: 'Elimina el logo de Viantryp y usa tu propia identidad. Presenta tus viajes bajo tu dominio y proyecta una imagen de gran operadora.', icon: 'fas fa-id-card', color: '#0b8ea3' },
-            { title: 'Propuestas interactivas', span: 'de lujo', desc: 'Envía enlaces elegantes que enamoran a tus clientes. Sustituye los PDFs pesados por una experiencia digital que cierra ventas.', icon: 'fas fa-desktop', color: '#22c55e' },
-            { title: 'Gestión operativa', span: '360°', desc: 'Vincula vouchers y seguros de viaje a cada servicio. Tu cliente tendrá todo el soporte organizado y accesible en un solo clic.', icon: 'fas fa-cog', color: '#0f172a' }
+            { title: 'Marca Blanca', span: 'Total', desc: 'Elimina el logo de Viantryp y usa tu propia identidad. Presenta tus viajes bajo tu dominio y proyecta una imagen de gran operadora.', icon: 'fas fa-id-card', color: '#02b5cb' },
+            { title: 'Propuestas interactivas', span: 'de lujo', desc: 'Envía enlaces elegantes que enamoran a tus clientes. Sustituye los PDFs pesados por una experiencia digital que cierra ventas.', icon: 'fas fa-desktop', color: '#1EAACE' },
+            { title: 'Gestión operativa', span: '360°', desc: 'Vincula vouchers y seguros de viaje a cada servicio. Tu cliente tendrá todo el soporte organizado y accesible en un solo clic.', icon: 'fas fa-cog', color: '#0A2540' }
           ]
         },
         grupos: {
@@ -5247,9 +5246,9 @@
             'Unifica la información del viaje del grupo en un solo lugar.'
           ],
           features: [
-            { title: 'Planificación', span: 'colaborativa', desc: 'Invita a tus amigos o familia a editar juntos. Decidan las paradas en tiempo real y eviten los grupos de WhatsApp infinitos.', icon: 'fas fa-users', color: '#0f172a' },
-            { title: 'Centro de control', span: 'grupal', desc: 'Un solo lugar para los tickets de todos. Adjunta los pases de abordar y reservas de grupo para que nadie se pierda nada.', icon: 'fas fa-th-large', color: '#22c55e' },
-            { title: 'Diseño visual', span: 'compartido', desc: 'Crea un itinerario que todos amen. Arrastra fotos de los destinos para que el grupo empiece a vivir el viaje antes de despegar.', icon: 'fas fa-image', color: '#6366f1' }
+            { title: 'Planificación', span: 'colaborativa', desc: 'Invita a tus amigos o familia a editar juntos. Decidan las paradas en tiempo real y eviten los grupos de WhatsApp infinitos.', icon: 'fas fa-users', color: '#0A2540' },
+            { title: 'Centro de control', span: 'grupal', desc: 'Un solo lugar para los tickets de todos. Adjunta los pases de abordar y reservas de grupo para que nadie se pierda nada.', icon: 'fas fa-th-large', color: '#1EAACE' },
+            { title: 'Diseño visual', span: 'compartido', desc: 'Crea un itinerario que todos amen. Arrastra fotos de los destinos para que el grupo empiece a vivir el viaje antes de despegar.', icon: 'fas fa-image', color: '#02b5cb' }
           ]
         },
         operadores: {
@@ -5261,9 +5260,9 @@
             'Presenta tus servicios con un impacto visual.'
           ],
           features: [
-            { title: 'Propuesta visual', span: 'de servicios', desc: 'Presenta cada servicio con identidad visual. Fotos de alta calidad y descripciones cautivadoras que venden por ti.', icon: 'fas fa-images', color: '#22c55e' },
-            { title: 'Logística de operación', span: 'en vivo', desc: 'Sincroniza el terreno al instante. Envía actualizaciones a guías y transportistas sobre el mismo itinerario, eliminando errores de comunicación.', icon: 'fas fa-map-marked-alt', color: '#0b8ea3' },
-            { title: 'Consolidador de servicios', span: '360°', desc: 'Agrupa servicios locales, traslados y experiencias en una sola ruta maestra profesional.', icon: 'fas fa-layer-group', color: '#0f172a' }
+            { title: 'Propuesta visual', span: 'de servicios', desc: 'Presenta cada servicio con identidad visual. Fotos de alta calidad y descripciones cautivadoras que venden por ti.', icon: 'fas fa-images', color: '#02b5cb' },
+            { title: 'Logística de operación', span: 'en vivo', desc: 'Sincroniza el terreno al instante. Envía actualizaciones a guías y transportistas sobre el mismo itinerario, eliminando errores de comunicación.', icon: 'fas fa-map-marked-alt', color: '#1EAACE' },
+            { title: 'Consolidador de servicios', span: '360°', desc: 'Agrupa servicios locales, traslados y experiencias en una sola ruta maestra profesional.', icon: 'fas fa-layer-group', color: '#0A2540' }
           ]
         },
         empresas: {
@@ -5275,9 +5274,9 @@
             'Refuerza el prestigio de tu marca corporativa en cada detalle del proyecto.'
           ],
           features: [
-            { title: 'Logística de eventos', span: 'en tiempo real', desc: 'Gestiona agendas complejas para grupos grandes y mantén actualizada la información al instante.', icon: 'fas fa-calendar-alt', color: '#0b8ea3' },
-            { title: 'Colaboración', span: 'multiequipo', desc: 'Asigna roles y permisos. Deja que tus coordinadores de campo y oficina trabajen sobre el mismo lienzo con total seguridad.', icon: 'fas fa-user-friends', color: '#0f172a' },
-            { title: 'Interfaz de marca', span: 'corporativa', desc: 'Profesionaliza la comunicación interna y externa de cada proyecto con los colores de la empresa o evento.', icon: 'fas fa-building', color: '#6366f1' }
+            { title: 'Logística de eventos', span: 'en tiempo real', desc: 'Gestiona agendas complejas para grupos grandes y mantén actualizada la información al instante.', icon: 'fas fa-calendar-alt', color: '#02b5cb' },
+            { title: 'Colaboración', span: 'multiequipo', desc: 'Asigna roles y permisos. Deja que tus coordinadores de campo y oficina trabajen sobre el mismo lienzo con total seguridad.', icon: 'fas fa-user-friends', color: '#0A2540' },
+            { title: 'Interfaz de marca', span: 'corporativa', desc: 'Profesionaliza la comunicación interna y externa de cada proyecto con los colores de la empresa o evento.', icon: 'fas fa-building', color: '#1EAACE' }
           ]
         }
       };
@@ -5342,7 +5341,6 @@
     <button class="mobile-menu-close" id="mobileMenuClose">&times;</button>
     <ul class="mobile-nav-links">
       <li><a href="#como-funciona">Cómo funciona</a></li>
-      <li><a href="#demo">Ver Demo</a></li>
       <li><a href="#precios">Precios</a></li>
       <li><a href="{{ route('contact') }}">Contacto</a></li>
     </ul>

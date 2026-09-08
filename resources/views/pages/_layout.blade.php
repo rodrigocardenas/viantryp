@@ -6,18 +6,17 @@
 <title>@yield('title') | Viantryp</title>
 <meta name="description" content="@yield('meta_description', 'Viantryp — La plataforma que transforma itinerarios de viaje en experiencias digitales.')">
 <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   :root {
-    --teal: #1a7a8a; --teal-dark: #0e5a6a; --teal-light: #e8f7f9;
-    --lime: #8ab820; --lime-bright: #9fd020; --lime-bg: #f2f8d8;
+    --teal: #02b5cb; --teal-dark: #136075; --teal-light: #e8f7f9;
     --navy: #0f2a3a; --white: #ffffff; --off-white: #f7f9f7;
     --text: #1e293b; --text-soft: #64748b; --text-muted: #94a3b8;
     --mid-gray: #e2e8f0;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--white); }
+  body { font-family: 'Manrope', 'Barlow', sans-serif; color: var(--text); background: var(--white); }
   a { text-decoration: none; }
 
   /* ── NAV ── */
@@ -61,10 +60,10 @@
   }
   .page-nav-links a {
     text-decoration: none;
-    font-family: 'Barlow', sans-serif;
-    color: #0d2b3e;
-    font-size: 15px;
-    font-weight: 500;
+    font-family: 'Manrope', sans-serif;
+    color: #1e293b;
+    font-size: 14px !important;
+    font-weight: 600;
     padding: 7px 14px;
     border-radius: 8px;
     transition: background 0.18s, color 0.18s;
@@ -297,11 +296,10 @@
 <!-- NAV -->
 <nav class="page-nav">
   <a href="{{ route('home') }}" class="page-nav-logo">
-    <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp" style="filter: invert(1) hue-rotate(180deg) contrast(1.5);">
+    <img src="{{ asset('images/logo-viantryp-cyan.png') }}" alt="Viantryp" style="height: 32px; width: auto;">
   </a>
   <div class="page-nav-links">
     <a href="{{ route('home') }}#como-funciona">Cómo funciona</a>
-    <a href="{{ route('home') }}#demo">Ver Demo</a>
     <a href="{{ route('home') }}#precios">Precios</a>
     <a href="{{ route('contact') }}">Contacto</a>
   </div>
@@ -460,7 +458,6 @@
   <button class="mobile-menu-close" id="mobileMenuCloseStatic">&times;</button>
   <ul class="mobile-nav-links">
     <li><a href="{{ route('home') }}#como-funciona">Cómo funciona</a></li>
-    <li><a href="{{ route('home') }}#demo">Ver Demo</a></li>
     <li><a href="{{ route('home') }}#precios">Precios</a></li>
     <li><a href="{{ route('contact') }}">Contacto</a></li>
   </ul>

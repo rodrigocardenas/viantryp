@@ -59,115 +59,70 @@
               ] as [$id, $label])
               <li><a href="#{{ $id }}" style="font-size:0.84rem; color:var(--text-soft); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='var(--teal)'" onmouseout="this.style.color='var(--text-soft)'">{{ $label }}</a></li>
             @endforeach
+          </ul>
 
-                      </ul>
-
-
-
-                     <div style="margin-top:2rem; padding:1rem 1.2rem; background:var(--teal-light); border-radius:12px; font-size:0.82rem; color:var(--teal);">
+          <div style="margin-top:2rem; padding:1rem 1.2rem; background:var(--teal-light); border-radius:12px; font-size:0.82rem; color:var(--teal);">
             <i class="fas fa-clock" style="margin-right:0.4rem;"></i><strong>Última actualización:</strong><br>Enero 2026
           </div>
         </div>
 
-
-
-
-
-
-                   <!-- BODY -->
+        <!-- BODY -->
         <div class="legal-content">
 
-          <div 
-     i        d="aceptacion" style="margin-bottom:2.5rem;">
-
-                        <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-
-    b         ottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">1. Aceptación de los tér
-  m           inos</h2>
-
-                       <p class="section-text" style="margin-bottom:0;">Al acceder o usar Viantryp, aceptas estos Términos. Viantryp es una plataforma de itinerarios digitales disponible para cualquier tipo de usuario: viajeros individuales, grupos, familias, profesionales del turismo y empresas. Si usas el Servicio en nombre de una organización, estas condiciones aplican también a ella. Si no estás de acuerdo, por favor no uses el Servicio.</p>
+          <div id="aceptacion" style="margin-bottom:2.5rem;">
+            <h2 style="font-family:'Manrope',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">1. Aceptación de los términos</h2>
+            <p class="section-text" style="margin-bottom:0;">Al acceder o usar Viantryp, aceptas estos Términos. Viantryp es una plataforma de itinerarios digitales disponible para cualquier tipo de usuario: viajeros individuales, grupos, familias, profesionales del turismo y empresas. Si usas el Servicio en nombre de una organización, estas condiciones aplican también a ella. Si no estás de acuerdo, por favor no uses el Servicio.</p>
           </div>
 
-          <div 
-  i           d="descripcion" style="margin-bottom:2.5rem;">
-
-                        <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-b
-             ottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">2. El servicio</h2>
+          <div id="descripcion" style="margin-bottom:2.5rem;">
+            <h2 style="font-family:'Manrope',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">2. El servicio</h2>
             <p class="section-text" style="margin-bottom:0;">Viantryp es una plataforma SaaS que permite crear, personalizar y compartir itinerarios de viaje digitales. Incluye un editor visual, sistema de colaboración por enlace, almacenamiento de documentos de viaje y herramientas de personalización. Nos reservamos el derecho de actualizar o modificar el Servicio en cualquier momento, con previo aviso cuando sea posible.</p>
           </div>
 
-
-
-                       <div id="cuenta" style="margin-bottom:2.5rem;">
-
-                         <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-botto
-  m             :0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">3. Tu cuenta</h2>
+          <div id="cuenta" style="margin-bottom:2.5rem;">
+            <h2 style="font-family:'Manrope',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">3. Tu cuenta</h2>
             <p class="section-text" style="margin-bottom:0;">Para acceder al Servicio necesitas crear una cuenta con información verídica. Eres responsable de mantener la seguridad de tus credenciales y de todo lo que ocurra desde tu sesión. Una cuenta es de uso personal; si gestionas un equipo, usa los planes con soporte de colaboradores. Notifícanos inmediatamente ante cualquier acceso no autorizado.</p>
           </div>
 
           <div id="uso-aceptable" style="margin-bottom:2.5rem;">
-            <h2
-              style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">
-              4. Uso aceptable</h2>
-            <p class="section-text">Viantryp puede usarse libremente para planificar viajes personales, colaborar c
-             on amigos o familia, y crear propuestas profesionales. Sin embargo, no está permitido:</p>
-
-
-
-                 <ul class="icon-list">
-              <li><i class="fas fa-times" style="color:#ef4444;"></i>Publicar contenido ilegal, ofensivo o que infrinja derechos de terceros.</li>
-              <li><i class="fas fa-times" style="color:#ef4444;"></i>Intentar acceder sin autorización a cuentas o sistemas de otros usuarios.</li>
-              <
-  l           i><i class="fas fa-times" style="color:#ef4444;"></i>Usar el Servicio para distribuir spam, malware o realizar ataques.</li>
-
-                          <li><i class="fas fa-times" style="color:#ef4444;"></i>Revender o sublicenciar el Servicio sin autorización
-              expresa de Viantryp.</li>
-
-
-                 </ul>
+            <h2 style="font-family:'Manrope',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">4. Uso aceptable</h2>
+            <p class="section-text" style="margin-bottom:1rem;">Viantryp puede usarse libremente para planificar viajes personales, colaborar con amigos o familia, y crear propuestas profesionales. Sin embargo, no está permitido:</p>
+            <ul class="icon-list">
+              <li><i class="fas fa-times" style="color:#ef4444;"></i><div>Publicar contenido ilegal, ofensivo o que infrinja derechos de terceros.</div></li>
+              <li><i class="fas fa-times" style="color:#ef4444;"></i><div>Intentar acceder sin autorización a cuentas o sistemas de otros usuarios.</div></li>
+              <li><i class="fas fa-times" style="color:#ef4444;"></i><div>Usar el Servicio para distribuir spam, malware o realizar ataques.</div></li>
+              <li><i class="fas fa-times" style="color:#ef4444;"></i><div>Revender o sublicenciar el Servicio sin autorización expresa de Viantryp.</div></li>
+            </ul>
           </div>
 
-          <div 
-       i      d="propiedad" style="margin-bottom:2.5rem;">
-
-                        <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); m
-      a       rgin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">5. Tu contenido
-       <      /h2>
-
-
-                       <p class="section-text" style="margin-bottom:0;">Los itinerarios, textos, imágenes y datos que creas en Viantryp son tuyos. Al subirlos, nos otorgas una licencia limitada y no exclusiva para almacenarlos y mostrarlos según tus configuraciones de privacidad. Puedes exportar o eliminar tu contenido en cualquier momento. El software, diseño y tecnología de Viantryp son propiedad de VIANTRYP GLOBAL S.A.S y están protegidos por la legislación aplicable.</p>
+          <div id="propiedad" style="margin-bottom:2.5rem;">
+            <h2 style="font-family:'Manrope',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">5. Tu contenido</h2>
+            <p class="section-text" style="margin-bottom:0;">Los itinerarios, textos, imágenes y datos que creas en Viantryp son tuyos. Al subirlos, nos otorgas una licencia limitada y no exclusiva para almacenarlos y mostrarlos según tus configuraciones de privacidad. Puedes exportar o eliminar tu contenido en cualquier momento. El software, diseño y tecnología de Viantryp son propiedad de VIANTRYP GLOBAL S.A.S y están protegidos por la legislación aplicable.</p>
           </div>
 
-          <div 
-       i      d="pagos" style="margin-bottom:2.5rem;">
-
-                        <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-botto
-      m       :0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">6. Pagos y planes</h2>
-
-                       <p class="section-text" style="margin-bottom:0;">Viantryp ofrece un plan gratuito permanente y planes de pago con funcionalidades avanzadas. Los planes de pago incluyen 7 días de prueba gratuita sin necesidad de tarjeta de crédito. Tras el período de prueba, el cobro es automático salvo cancelación previa. Los precios se expresan en USD. Nos reservamos el derecho de actualizar precios con 30 días de preaviso.</p>
+          <div id="pagos" style="margin-bottom:2.5rem;">
+            <h2 style="font-family:'Manrope',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">6. Pagos y planes</h2>
+            <p class="section-text" style="margin-bottom:0;">Viantryp ofrece un plan gratuito permanente y planes de pago con funcionalidades avanzadas. Los pagos son procesados de forma segura a través de nuestro Merchant of Record (Paddle.com). Los precios se expresan en USD. Nos reservamos el derecho de actualizar precios con 30 días de preaviso.</p>
           </div>
 
-          <div 
-      i       d="limitacion" style="margin-bottom:2.5rem;">
-
-                        <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bot
-     t        om:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">7. Limitación de re
-     s        ponsabilidad</h2>
+          <div id="limitacion" style="margin-bottom:2.5rem;">
+            <h2 style="font-family:'Manrope',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">7. Limitación de responsabilidad</h2>
             <p class="section-text" style="margin-bottom:0;">El Servicio se provee "tal cual". No garantizamos disponibilidad ininterrumpida ni ausencia de errores. Viantryp no es responsable por la pérdida de datos derivada de un uso incorrecto, ni por decisiones de viaje tomadas con base en información que el usuario introduce en la plataforma. Nuestra responsabilidad total no superará el importe pagado en los últimos 12 meses.</p>
           </div>
 
           <div id="cancelacion" style="margin-bottom:2.5rem;">
-            <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">8. Cancelación y Política de Reembolsos</h2>
+            <h2 style="font-family:'Manrope',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">8. Cancelación y Política de Reembolsos</h2>
             <p class="section-text" style="margin-bottom:0.75rem;">Puedes cancelar tu suscripción en cualquier momento de forma inmediata desde la configuración de tu perfil en Viantryp. Al cancelar, conservarás el acceso a todas las funcionalidades del plan contratado hasta que finalice el período de facturación en curso (mensual o anual), momento en el cual tu cuenta pasará automáticamente al plan Básico sin cobros adicionales.</p>
             <p class="section-text" style="margin-bottom:0;">Nuestros pagos y suscripciones son procesados de forma segura a través de <strong>Paddle.com</strong> (Merchant of Record). Ofrecemos una garantía de satisfacción: si experimentas problemas técnicos o solicitas la cancelación dentro de los primeros 14 días posteriores a tu primer cobro, puedes escribirnos a <a href="mailto:hola@viantryp.com" style="color:var(--teal);">hola@viantryp.com</a> para solicitar el reembolso completo de tu cargo conforme a las políticas estándar de Paddle.</p>
           </div>
 
           <div id="modificaciones" style="margin-bottom:2.5rem;">
-            <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">9. Cambios en los términos</h2>
+            <h2 style="font-family:'Manrope',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">9. Cambios en los términos</h2>
             <p class="section-text" style="margin-bottom:0;">Podemos actualizar estos Términos. Te avisaremos por email con al menos 15 días de antelación ante cambios relevantes. El uso continuado del Servicio tras esa notificación implica la aceptación de los nuevos términos.</p>
           </div>
 
           <div id="contacto-legal">
-            <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">10. Contacto</h2>
+            <h2 style="font-family:'Manrope',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">10. Contacto</h2>
             <p class="section-text" style="margin-bottom:0;">¿Tienes preguntas sobre estos Términos? Escríbenos a <a href="mailto:hola@viantryp.com" style="color:var(--teal);">hola@viantryp.com</a>. Respondemos en un plazo máximo de 48 horas hábiles.</p>
           </div>
 

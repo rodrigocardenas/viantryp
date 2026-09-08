@@ -6,22 +6,22 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Viantryp | Restablecer Contraseña</title>
   <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --dark:   #0d2b3e;
-      --teal:   #1a7a8a;
-      --teal2:  #0e5a6a;
-      --light:  #f5f7f9;
-      --gray:   #6b7a8d;
-      --border: #e2e8ef;
+      --dark:   #0f2a3a;
+      --teal:   #02b5cb;
+      --teal2:  #136075;
+      --light:  #f7f9f7;
+      --gray:   #64748b;
+      --border: #e2e8e0;
       --white:  #ffffff;
     }
 
     body {
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', 'Barlow', sans-serif;
       min-height: 100vh;
       background: var(--light);
       display: flex;
@@ -69,9 +69,10 @@
     }
     .nav-link {
       text-decoration: none;
-      color: var(--dark);
-      font-size: 15px;
-      font-weight: 500;
+      color: #1e293b;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px !important;
+      font-weight: 600;
       padding: 7px 14px;
       border-radius: 8px;
       transition: background 0.18s, color 0.18s;
@@ -257,13 +258,13 @@
 
   <nav>
     <a href="{{ route('home') }}" class="nav-logo">
-      <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 32px; width: auto; filter: invert(1) hue-rotate(180deg) contrast(1.5);">
+      <img src="{{ asset('images/logo-viantryp-cyan.png') }}" alt="Viantryp" style="height: 32px; width: auto;">
     </a>
 
     <div class="nav-links">
-      <a href="{{ route('home') }}#demo" class="nav-link">Cómo funciona</a>
+      <a href="{{ route('home') }}#como-funciona" class="nav-link">Cómo funciona</a>
       <a href="{{ route('home') }}#precios"       class="nav-link">Precios</a>
-      <a href="{{ route('home') }}#contacto"      class="nav-link">Contacto</a>
+      <a href="{{ route('contact') }}"           class="nav-link">Contacto</a>
     </div>
 
     <div class="nav-right">

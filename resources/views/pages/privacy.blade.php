@@ -64,7 +64,7 @@
             <li><i class="fas fa-user"></i><div><strong style="color:var(--navy);">Datos de cuenta:</strong> nombre, email y foto de perfil al registrarte. Sólo lo imprescindible para que funcione.</div></li>
             <li><i class="fas fa-file-alt"></i><div><strong style="color:var(--navy);">Contenido que creas:</strong> itinerarios, notas, imágenes y documentos de viaje que subes voluntariamente.</div></li>
             <li><i class="fas fa-chart-bar"></i><div><strong style="color:var(--navy);">Datos de uso anónimos:</strong> qué funcionalidades usas y cuánto tiempo, para mejorar la plataforma. Sin ids personales vinculados.</div></li>
-            <li><i class="fas fa-credit-card"></i><div><strong style="color:var(--navy);">Datos de pago:</strong> procesados de forma segura por Stripe. Viantryp nunca almacena números de tarjeta.</div></li>
+            <li><i class="fas fa-credit-card"></i><div><strong style="color:var(--navy);">Datos de pago:</strong> procesados de forma segura por nuestro Merchant of Record (Paddle.com). Viantryp nunca almacena números de tarjeta ni datos bancarios.</div></li>
           </ul>
         </div>
 
@@ -78,7 +78,7 @@
           <p class="section-text">Solo con proveedores esenciales para operar el Servicio, sujetos a contratos de procesamiento de datos conformes al RGPD:</p>
           <ul class="icon-list">
             <li><i class="fas fa-server"></i><div><strong style="color:var(--navy);">AWS (Irlanda):</strong> Infraestructura y almacenamiento.</div></li>
-            <li><i class="fas fa-credit-card"></i><div><strong style="color:var(--navy);">Stripe:</strong> Procesamiento seguro de pagos.</div></li>
+            <li><i class="fas fa-credit-card"></i><div><strong style="color:var(--navy);">Paddle.com (Reino Unido / UE):</strong> Procesamiento seguro de pagos, facturación e impuestos como Merchant of Record oficial.</div></li>
             <li><i class="fas fa-envelope"></i><div><strong style="color:var(--navy);">Hostinger Mail:</strong> Email transaccional (confirmaciones, notificaciones).</div></li>
           </ul>
           <p class="section-text" style="margin-top:1rem; margin-bottom:0;">No compartimos ningún dato personal identificable con otros terceros sin tu consentimiento explícito, salvo requerimiento legal.</p>
