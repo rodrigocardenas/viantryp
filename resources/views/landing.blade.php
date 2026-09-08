@@ -216,6 +216,39 @@
       align-items: center;
     }
 
+    .hero-hand-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-hand-img {
+      width: 100%;
+      max-width: 500px;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 20px 45px rgba(2, 43, 62, 0.22));
+      animation: heroHandFloat 5.5s ease-in-out infinite;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hero-hand-wrapper:hover .hero-hand-img {
+      transform: translateY(-8px) scale(1.02);
+    }
+
+    @keyframes heroHandFloat {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-12px) rotate(0.6deg);
+      }
+    }
+
     .hero-text-side {
       text-align: left;
       display: flex;
@@ -2563,7 +2596,7 @@
           @auth
             <a href="{{ route('trips.index') }}" class="btn-pill-primary">Ir a mis viajes →</a>
           @else
-            <a href="#cta" class="btn-pill-primary">Empezar Ahora</a>
+            <a href="{{ route('register') }}" class="btn-pill-primary">Empezar Ahora</a>
             <a href="#demo" class="btn-pill-secondary">Ver Demo</a>
             {{-- Botón instalar app: solo visible en móvil --}}
             <button id="landing-install-btn" onclick="triggerPwaInstall()" style="
@@ -2597,38 +2630,8 @@
       </div>
 
       <div class="feature-banner-visual">
-        <div class="mockups-container">
-          <!-- Laptop -->
-          <div class="laptop-wrap">
-            <div class="l-screen">
-              <div class="l-notch">
-                <div class="l-cam"></div>
-              </div>
-              <div class="l-display">
-                <div class="l-glare"></div>
-                <img src="{{ asset('images/mockup-trip-desktop.png') }}" alt="Itinerario Desktop">
-              </div>
-            </div>
-            <div class="l-base">
-              <div class="l-hinge"></div>
-              <div class="l-deck">
-                <div class="l-keyline"></div>
-                <div class="l-thumb-indent"></div>
-              </div>
-              <div class="l-shadow"></div>
-            </div>
-          </div>
-
-          <!-- Phone -->
-          <div class="phone-wrap">
-            <div class="p-frame">
-              <div class="p-island"></div>
-              <div class="p-screen">
-                <div class="p-glare"></div>
-                <img src="{{ asset('images/mockup-trip-mobile.png') }}" alt="Itinerario Mobile">
-              </div>
-            </div>
-          </div>
+        <div class="hero-hand-wrapper">
+          <img src="{{ asset('images/hero-hand-mockup.png') }}" alt="Viantryp Mobile App" class="hero-hand-img">
         </div>
       </div>
     </div>
@@ -2862,56 +2865,6 @@
     </div> <!-- .container -->
   </section>
 
-  <!-- FEATURE BANNER SECTION -->
-  <section class="feature-banner" id="banner-section">
-    <div class="feature-banner-dots"></div>
-
-    <div class="feature-banner-container">
-      <div class="feature-banner-visual">
-        <div class="mockups-container">
-          <!-- Laptop -->
-          <div class="laptop-wrap">
-            <div class="l-screen">
-              <div class="l-notch">
-                <div class="l-cam"></div>
-              </div>
-              <div class="l-display">
-                <div class="l-glare"></div>
-                <img src="{{ asset('images/mockup-trip-desktop.png') }}" alt="Itinerario Desktop">
-              </div>
-            </div>
-            <div class="l-base">
-              <div class="l-hinge"></div>
-              <div class="l-deck">
-                <div class="l-keyline"></div>
-                <div class="l-thumb-indent"></div>
-              </div>
-              <div class="l-shadow"></div>
-            </div>
-          </div>
-
-          <!-- Phone -->
-          <div class="phone-wrap">
-            <div class="p-frame">
-              <div class="p-island"></div>
-              <div class="p-screen">
-                <div class="p-glare"></div>
-                <img src="{{ asset('images/mockup-trip-mobile.png') }}" alt="Itinerario Mobile">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="feature-banner-text">
-        <div class="feature-banner-overline">Visualiza tu viaje de forma moderna</div>
-        <h2>Todo lo que necesitas,<br><span>en un solo lugar</span></h2>
-        <p>Una experiencia digital moderna y dinámica que transforma tus viajes en piezas únicas, accesibles desde
-          cualquier dispositivo.</p>
-      </div>
-    </div>
-  </section>
-
   <!-- HOW IT WORKS -->
   <section class="how" id="como-funciona">
     <div class="how-container">
@@ -3007,6 +2960,34 @@
     </div>
   </section>
 
+
+
+  <!-- QUOTE -->
+  <section class="quote-section">
+    <svg class="quote-pattern-left" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="100" r="90" stroke="white" stroke-width="1.2" stroke-dasharray="4 2" />
+      <circle cx="40" cy="100" r="130" stroke="white" stroke-width="1" />
+      <circle cx="40" cy="100" r="55" stroke="white" stroke-width="1.2" />
+      <circle cx="10" cy="80" r="4" fill="white" />
+      <circle cx="85" cy="135" r="5" fill="white" />
+      <line x1="10" y1="80" x2="85" y2="135" stroke="white" stroke-width="1" />
+    </svg>
+
+    <svg class="quote-pattern-right" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="150" r="45" stroke="white" stroke-width="1.5" />
+      <circle cx="150" cy="150" r="85" stroke="white" stroke-width="1.5" />
+      <circle cx="150" cy="150" r="125" stroke="white" stroke-width="1.5" />
+      <circle cx="150" cy="150" r="9" fill="white" />
+    </svg>
+
+    <div class="quote-container">
+      <div class="reveal">
+        <h2 class="big-quote">"Transformamos un proceso que normalmente toma horas en una tarea que se completa en
+          minutos."</h2>
+        <div class="quote-author">Equipo Viantryp</div>
+      </div>
+    </div>
+  </section>
 
 
   <!-- SOLUTIONS -->
@@ -4812,34 +4793,6 @@
 
 
 
-  <!-- QUOTE -->
-  <section class="quote-section">
-    <svg class="quote-pattern-left" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="40" cy="100" r="90" stroke="white" stroke-width="1.2" stroke-dasharray="4 2" />
-      <circle cx="40" cy="100" r="130" stroke="white" stroke-width="1" />
-      <circle cx="40" cy="100" r="55" stroke="white" stroke-width="1.2" />
-      <circle cx="10" cy="80" r="4" fill="white" />
-      <circle cx="85" cy="135" r="5" fill="white" />
-      <line x1="10" y1="80" x2="85" y2="135" stroke="white" stroke-width="1" />
-    </svg>
-
-    <svg class="quote-pattern-right" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="150" cy="150" r="45" stroke="white" stroke-width="1.5" />
-      <circle cx="150" cy="150" r="85" stroke="white" stroke-width="1.5" />
-      <circle cx="150" cy="150" r="125" stroke="white" stroke-width="1.5" />
-      <circle cx="150" cy="150" r="9" fill="white" />
-    </svg>
-
-    <div class="quote-container">
-      <div class="reveal">
-        <h2 class="big-quote">"Transformamos un proceso que normalmente toma horas en una tarea que se completa en
-          minutos."</h2>
-        <div class="quote-author">Equipo Viantryp</div>
-      </div>
-    </div>
-  </section>
-
-
   <!-- PRICING -->
   <section class="pricing" id="precios">
     <div class="container">
@@ -5004,20 +4957,55 @@
     </div>
   </section>
 
-  <!-- CTA FINAL -->
-  <section class="cta-final" id="cta">
-    <div class="container">
-      <div class="cta-box reveal">
-        <div class="section-label">¿Listo para empezar?</div>
-        <h2>Tu próxima aventura,<br>lista en minutos</h2>
-        <div class="cta-actions">
-          <a href="{{ route('register') }}" class="btn-primary">Crear cuenta gratis →</a>
-          <a href="{{ route('contact') }}" class="btn-secondary">Contáctanos</a>
+  <!-- FEATURE BANNER SECTION -->
+  <section class="feature-banner" id="banner-section">
+    <div class="feature-banner-dots"></div>
+
+    <div class="feature-banner-container">
+      <div class="feature-banner-visual">
+        <div class="mockups-container">
+          <!-- Laptop -->
+          <div class="laptop-wrap">
+            <div class="l-screen">
+              <div class="l-notch">
+                <div class="l-cam"></div>
+              </div>
+              <div class="l-display">
+                <div class="l-glare"></div>
+                <img src="{{ asset('images/mockup-trip-desktop.png') }}" alt="Itinerario Desktop">
+              </div>
+            </div>
+            <div class="l-base">
+              <div class="l-hinge"></div>
+              <div class="l-deck">
+                <div class="l-keyline"></div>
+                <div class="l-thumb-indent"></div>
+              </div>
+              <div class="l-shadow"></div>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="phone-wrap">
+            <div class="p-frame">
+              <div class="p-island"></div>
+              <div class="p-screen">
+                <div class="p-glare"></div>
+                <img src="{{ asset('images/mockup-trip-mobile.png') }}" alt="Itinerario Mobile">
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div class="feature-banner-text">
+        <div class="feature-banner-overline">Visualiza tu viaje de forma moderna</div>
+        <h2>Todo lo que necesitas,<br><span>en un solo lugar</span></h2>
+        <p>Una experiencia digital moderna y dinámica que transforma tus viajes en piezas únicas, accesibles desde
+          cualquier dispositivo.</p>
       </div>
     </div>
   </section>
-
 
   <!-- FOOTER -->
   <footer>
