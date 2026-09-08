@@ -6566,6 +6566,25 @@
     <div class="footer-inner">
       <div class="footer-top">
 
+        <!-- BRAND COL -->
+        <div class="footer-brand">
+          <div style="display:flex; align-items:center;">
+            <img src="/images/logo-viantryp.png" alt="Viantryp"
+              style="height: 30px; width: auto; filter: brightness(0) invert(1);">
+          </div>
+          <p class="footer-brand-desc">La plataforma que transforma itinerarios de viaje en experiencias digitales
+            modernas.</p>
+          <div class="footer-parte-de" style="margin-top: 2rem;">
+            <h4
+              style="font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 0.8rem;">
+              PARTE DE</h4>
+            <div>
+              <img src="{{ asset('images/startub.png') }}" alt="StartUB! Universitat de Barcelona"
+                style="height: 35px; filter: brightness(0) invert(1); opacity: 0.9;">
+            </div>
+          </div>
+        </div>
+
         <!-- PRODUCTO -->
         <div class="footer-col">
           <div class="footer-col-title">Producto</div>
@@ -6623,24 +6642,6 @@
         </div>
 
       </div><!-- /.footer-top -->
-
-      <!-- BRAND COL (DEBAJO DE FOOTER-TOP) -->
-      <div class="footer-brand" style="margin-top: 2.5rem; margin-bottom: 1.5rem; text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <div style="display:flex; align-items:center; justify-content:center;">
-          <img src="/images/logo-viantryp.png" alt="Viantryp"
-            style="height: 30px; width: auto; filter: brightness(0) invert(1);">
-        </div>
-        <p class="footer-brand-desc" style="margin-top: 0.8rem; margin-bottom: 1.2rem; max-width: 450px; text-align: center;">La plataforma que transforma itinerarios de viaje en experiencias digitales modernas.</p>
-        <div class="footer-parte-de" style="margin-top: 0.5rem;">
-          <h4
-            style="font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 0.8rem; text-align: center;">
-            PARTE DE</h4>
-          <div>
-            <img src="{{ asset('images/startub.png') }}" alt="StartUB! Universitat de Barcelona"
-              style="height: 35px; filter: brightness(0) invert(1); opacity: 0.9;">
-          </div>
-        </div>
-      </div>
 
       <div class="footer-bottom">
         <div class="footer-copy">© 2026 Viantryp. Todos los derechos reservados.</div>
