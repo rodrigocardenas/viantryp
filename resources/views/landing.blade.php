@@ -15,7 +15,7 @@
   <meta name="apple-mobile-web-app-title" content="Viantryp">
   <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('icons/icon-192x192.png') }}">
   <link
-    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;600;700;800&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -47,13 +47,13 @@
     }
 
     body {
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', 'Barlow', sans-serif;
       background: var(--white);
       color: var(--text);
       overflow-x: hidden;
     }
 
-    /* ── NAV ── */
+    /* ── NAV INITIAL & SCROLLED STATES ── */
     nav {
       position: fixed;
       top: 0;
@@ -64,22 +64,63 @@
       align-items: center;
       justify-content: space-between;
       padding: 1.1rem 4rem;
-      background: rgba(255, 255, 255, 0.92);
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border-bottom: 1px solid transparent;
+      box-shadow: none;
+      transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, padding 0.35s ease;
+    }
+
+    nav.scrolled {
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--mid-gray);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      padding: 0.85rem 4rem;
     }
 
     .nav-logo {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      color: var(--navy);
+      display: flex;
+      align-items: center;
       text-decoration: none;
     }
 
-    .nav-logo span {
-      color: var(--teal);
+    .nav-logo-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 32px;
+    }
+
+    .nav-logo-img {
+      height: 32px;
+      width: auto;
+      transition: opacity 0.35s ease;
+      display: block;
+    }
+
+    .nav-logo-img.logo-cyan {
+      filter: brightness(0) saturate(100%) invert(56%) sepia(88%) saturate(1758%) hue-rotate(152deg) brightness(98%) contrast(98%);
+      position: relative;
+      opacity: 1;
+    }
+
+    .nav-logo-img.logo-black {
+      filter: brightness(0);
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+    }
+
+    nav.scrolled .nav-logo-img.logo-cyan {
+      opacity: 0;
+    }
+
+    nav.scrolled .nav-logo-img.logo-black {
+      opacity: 1;
     }
 
     .nav-links {
@@ -88,7 +129,7 @@
       transform: translateX(-50%);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 12px;
       list-style: none;
       margin: 0;
       padding: 0;
@@ -96,17 +137,17 @@
 
     .nav-links a {
       text-decoration: none;
-      color: var(--navy);
-      font-size: 15px;
-      font-weight: 500;
-      padding: 7px 14px;
+      color: #1e293b;
+      font-size: 13px !important;
+      font-weight: 600;
+      padding: 6px 14px;
       border-radius: 8px;
-      transition: background 0.18s, color 0.18s;
+      transition: all 0.2s ease;
     }
 
     .nav-links a:hover {
-      background: var(--off-white);
-      color: var(--teal);
+      background: rgba(2, 181, 203, 0.08);
+      color: #02b5cb;
     }
 
     .nav-right {
@@ -116,234 +157,326 @@
     }
 
     .nav-login {
-      font-family: 'Barlow', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: var(--navy);
+      font-family: 'Manrope', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #0f2a3a;
       text-decoration: none;
       padding: 0.55rem 1.2rem;
       border-radius: 100px;
-      border: 1px solid var(--mid-gray);
-      transition: background 0.2s, border-color 0.2s;
+      border: 1px solid rgba(15, 42, 58, 0.15);
+      transition: all 0.2s;
     }
 
     .nav-login:hover {
-      background: var(--light-gray);
-      border-color: #ccc;
+      background: rgba(15, 42, 58, 0.05);
+      border-color: rgba(15, 42, 58, 0.3);
     }
 
     .nav-cta {
-      font-family: 'Barlow', sans-serif;
-      font-size: 0.88rem;
+      font-family: 'Manrope', sans-serif;
+      font-size: 0.9rem;
       font-weight: 700;
       color: var(--white);
       text-decoration: none;
       padding: 0.6rem 1.4rem;
       border-radius: 100px;
-      background: var(--teal);
-      transition: background 0.2s, transform 0.15s;
+      background: linear-gradient(135deg, #136075 0%, #2bb2c7 100%);
+      box-shadow: 0 4px 14px rgba(43, 178, 199, 0.25);
+      transition: all 0.2s;
     }
 
     .nav-cta:hover {
-      background: var(--teal-dark);
-      transform: scale(1.03);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(43, 178, 199, 0.35);
     }
 
     /* ── HERO ── */
     .hero {
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 9rem 2rem 6rem;
+      padding: 6.5rem 3.5rem 2.5rem;
       position: relative;
       overflow: hidden;
-      background: var(--white);
+      background: linear-gradient(135deg, #f4fbfb 0%, #f8fafc 40%, #edf7f9 70%, #f0f9ff 100%);
+      box-sizing: border-box;
     }
 
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      background: #fff;
-      overflow: hidden;
-    }
-
-    .hero-bg-video {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      min-width: 100%;
-      min-height: 100%;
-      width: auto;
-      height: auto;
-      transform: translate(-50%, -50%);
-      object-fit: cover;
-      opacity: 0.04;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .hero-blob {
-      position: absolute;
-      filter: blur(80px);
-      border-radius: 50%;
-      z-index: 0;
-      opacity: 0.15;
-      animation: blobFloat 20s infinite alternate;
-    }
-
-    .blob-1 {
-      width: 400px;
-      height: 400px;
-      background: var(--teal);
-      top: -100px;
-      left: -100px;
-      animation-duration: 25s;
-    }
-
-    .blob-2 {
-      width: 350px;
-      height: 350px;
-      background: var(--lime);
-      bottom: -100px;
-      right: -100px;
-      animation-duration: 18s;
-      animation-delay: -5s;
-    }
-
-    .blob-3 {
-      width: 300px;
-      height: 300px;
-      background: var(--teal);
-      top: 50%;
-      left: 60%;
-      animation-duration: 22s;
-      animation-delay: -10s;
-    }
-
-    @keyframes blobFloat {
-      0% {
-        transform: translate(0, 0) scale(1);
-      }
-
-      33% {
-        transform: translate(30px, -50px) scale(1.1);
-      }
-
-      66% {
-        transform: translate(-20px, 20px) scale(0.9);
-      }
-
-      100% {
-        transform: translate(0, 0) scale(1);
-      }
-    }
-
-    .hero-badge {
+    .hero-container {
       position: relative;
-      z-index: 1;
-      display: inline-flex;
+      z-index: 2;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 3.5rem;
       align-items: center;
-      gap: 0.5rem;
-      background: var(--lime-bg);
-      border: 1px solid rgba(138, 184, 32, 0.3);
-      color: var(--lime);
-      padding: 0.4rem 1rem;
-      border-radius: 100px;
-      font-size: 0.77rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 2rem;
-      animation: fadeDown 0.7s ease both;
     }
 
-    .hero-badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      background: var(--lime);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
+    .hero-text-side {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
     .hero h1 {
       position: relative;
       z-index: 1;
-      font-family: inter, sans-serif;
-      font-size: clamp(2.5rem, 8vw, 70px);
-      font-weight: 800;
-      line-height: 1.0;
-      letter-spacing: -0.04em;
-      color: var(--navy);
-      max-width: 1060px;
-      margin-bottom: 1.5rem;
-      animation: fadeDown 0.7s 0.12s ease both;
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(3.2rem, 5.6vw, 76px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -4px;
+      color: #0b2230;
+      max-width: 650px;
+      margin-bottom: 1.6rem;
     }
 
-    .hero h1 em {
-      font-style: normal;
-      color: var(--teal);
+    .hero h1,
+    .section-title,
+    .how-left-content h2,
+    .solutions-title,
+    .feature-banner-text h2,
+    .cta-title,
+    .pricing-header h2 {
+      font-weight: 700 !important;
+      letter-spacing: -4px !important;
     }
 
-    .hero>p {
+    /* ── HERO FLOATING BADGES (WOW EFFECT) ── */
+    .hero-float-badge {
+      position: absolute;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(2, 181, 203, 0.35);
+      padding: 0.6rem 1.1rem;
+      border-radius: 100px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #0c2332;
+      box-shadow: 0 14px 35px rgba(2, 181, 203, 0.2), 0 4px 12px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .badge-top-right {
+      top: 2%;
+      right: -3%;
+      animation: floatBadge1 5.5s ease-in-out infinite;
+    }
+
+    .badge-bottom-left {
+      bottom: 6%;
+      left: -5%;
+      animation: floatBadge2 6s ease-in-out infinite 0.8s;
+    }
+
+    @keyframes floatBadge1 {
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(1.5deg);
+      }
+
+      50% {
+        transform: translateY(-10px) rotate(-1deg);
+      }
+    }
+
+    @keyframes floatBadge2 {
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(-1.5deg);
+      }
+
+      50% {
+        transform: translateY(-12px) rotate(1deg);
+      }
+    }
+
+    .hero h1 .cyan-highlight {
+      color: #02b5cb;
+      display: inline-block;
+    }
+
+    .hero-text-side p {
       position: relative;
       z-index: 1;
-      font-size: 1.1rem;
-      font-weight: 300;
-      color: var(--text-soft);
-      max-width: 800px;
-      line-height: 1.75;
-      margin-bottom: 2.8rem;
-      animation: fadeDown 0.7s 0.24s ease both;
+      font-size: 1.12rem;
+      font-weight: 400;
+      color: #475569;
+      max-width: 520px;
+      line-height: 1.68;
+      margin-bottom: 2.5rem;
     }
 
     .hero-actions {
       position: relative;
       z-index: 1;
       display: flex;
-      gap: 1rem;
+      gap: 1.2rem;
+      align-items: center;
       flex-wrap: wrap;
-      justify-content: center;
-      animation: fadeDown 0.7s 0.36s ease both;
     }
 
-    .btn-primary {
-      background: var(--teal);
-      color: var(--white);
-      padding: 14px 18px;
-      border-radius: 100px;
+    .btn-pill-primary {
+      font-family: 'Manrope', sans-serif;
+      background: linear-gradient(135deg, #136075 0%, #177890 100%);
+      color: #ffffff !important;
+      padding: 0.85rem 2.4rem;
+      border-radius: 9999px;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 1.05rem;
       text-decoration: none;
-      transition: all 0.2s;
-      box-shadow: 0 4px 24px rgba(26, 122, 138, 0.2);
+      box-shadow: 0 8px 22px rgba(19, 96, 117, 0.28);
+      transition: all 0.22s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .btn-primary:hover {
-      background: var(--teal-dark);
+    .btn-pill-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(26, 122, 138, 0.28);
+      box-shadow: 0 12px 28px rgba(19, 96, 117, 0.38);
     }
 
-    .btn-secondary {
-      background: transparent;
-      border: 1px solid var(--mid-gray);
-      color: var(--navy);
-      padding: 14px 21px;
-      border-radius: 100px;
-      font-weight: 500;
-      font-size: 1rem;
+    .btn-pill-secondary {
+      font-family: 'Manrope', sans-serif;
+      background: linear-gradient(135deg, #3adbdf 0%, #20c8de 100%);
+      color: #ffffff !important;
+      padding: 0.85rem 2.4rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 1.05rem;
       text-decoration: none;
-      transition: all 0.2s;
+      box-shadow: 0 8px 22px rgba(32, 200, 222, 0.32);
+      transition: all 0.22s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .btn-secondary:hover {
-      background: var(--light-gray);
-      border-color: #bbb;
+    .btn-pill-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(32, 200, 222, 0.45);
+    }
+
+    /* ── FEATURE BANNER SECTION ── */
+    .feature-banner {
+      padding: 7rem 4rem;
+      position: relative;
+      overflow: visible;
+      background: linear-gradient(135deg, #ffffff 0%, #f4fbfb 50%, #f8fafc 100%);
+      border-top: 1px solid rgba(226, 232, 240, 0.7);
+    }
+
+    .feature-banner-dots {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40%;
+      height: 100%;
+      background-image: radial-gradient(rgba(14, 165, 233, 0.16) 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      opacity: 0.8;
+      mask-image: radial-gradient(circle at 80% 20%, black 15%, transparent 80%);
+      -webkit-mask-image: radial-gradient(circle at 80% 20%, black 15%, transparent 80%);
+    }
+
+    .feature-banner-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .feature-banner-text {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .feature-banner-overline {
+      font-family: 'Manrope', sans-serif;
+      font-size: 1.18rem;
+      font-weight: 600;
+      color: #02b5cb;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-banner-text h2 {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(2.4rem, 4vw, 54px);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.092em;
+      color: #0f2a3a;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-banner-text h2 span {
+      color: #02b5cb;
+      display: block;
+    }
+
+    .feature-banner-text p {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: #475569;
+      line-height: 1.68;
+      max-width: 520px;
+    }
+
+    .feature-banner-visual {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+
+
+    @media (max-width: 992px) {
+      .hero-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero-text-side {
+        text-align: center;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .hero-actions {
+        justify-content: center;
+      }
+
+      .hero-devices-wrapper {
+        transform: none;
+        max-width: 100%;
+      }
     }
 
     .hero-stats {
@@ -421,11 +554,11 @@
     }
 
     .section-title {
-      font-family: inter, sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-size: clamp(2rem, 4vw, 3rem);
       font-weight: 800;
       line-height: 1.1;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.092em;
       margin-bottom: 1.2rem;
       color: var(--navy);
     }
@@ -439,69 +572,406 @@
 
     /* ── HOW ── */
     .how {
-      background: var(--off-white);
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      margin-top: 4rem;
-    }
-
-    /* ── CREATIVE STEPS ── */
-    .creative-steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 3rem;
-      margin-top: 3rem;
-    }
-
-    .creative-step {
+      padding: 7rem 4rem;
       position: relative;
-      padding-top: 2rem;
+      overflow: hidden;
+      background: linear-gradient(135deg, #f4fbfb 0%, #f8fafc 40%, #edf7f9 70%, #f0f9ff 100%);
     }
 
-    .step-giant-num {
-      position: absolute;
-      top: -20px;
-      left: -10px;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 8rem;
-      font-weight: 900;
-      color: var(--teal);
-      opacity: 0.18;
-      line-height: 1;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    .step-card {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: 24px;
-      padding: 2.5rem;
+    .how-container {
       position: relative;
       z-index: 1;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.03);
-      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .how-left-content {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .how-overline {
+      font-family: 'Manrope', sans-serif;
+      font-size: 1.18rem;
+      font-weight: 600;
+      color: #02b5cb;
+      margin-bottom: 0.5rem;
+    }
+
+    .how-left-content h2 {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(2.4rem, 4vw, 54px);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.092em;
+      color: #0f2a3a;
+      margin-bottom: 2rem;
+    }
+
+    .cyan-highlight-big {
+      color: #02b5cb;
+      font-size: clamp(2.8rem, 4.8vw, 64px);
+      display: inline-block;
+    }
+
+    /* Dual Phones Graphic - Realistic Static Mockups */
+    .how-phones-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      height: 380px;
+      margin-top: 1rem;
+    }
+
+    .how-phone-device {
+      position: absolute;
+      width: 188px;
+      filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.28));
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .how-phone-device.phone-left {
+      top: 28px;
+      left: 0;
+      z-index: 2;
+      transform: rotate(-9deg);
+      animation: none !important;
+    }
+
+    .how-phone-device.phone-right {
+      top: 17px;
+      left: 176px;
+      z-index: 1;
+      transform: rotate(10deg);
+      animation: none !important;
+    }
+
+    .p-screen-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+      border-radius: 30px;
+    }
+
+    .p-screen-content {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 6px 10px 10px;
+      background: #f8fafc;
+      font-family: 'Barlow', sans-serif;
+    }
+
+    .p-status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8px;
+      font-weight: 700;
+      color: #1e293b;
+      padding: 2px 4px 6px;
+    }
+
+    .p-status-icons {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 7px;
+    }
+
+    .p-app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .p-app-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #0f2a3a;
+    }
+
+    .p-app-logo span {
+      color: #02b5cb;
+    }
+
+    .p-back-btn {
+      font-size: 7px;
+      font-weight: 600;
+      color: #475569;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 100px;
+      padding: 2px 7px;
+      cursor: pointer;
+    }
+
+    .p-menu-btn {
+      font-size: 10px;
+      color: #0f2a3a;
+    }
+
+    .p-welcome-body {
+      display: flex;
+      flex-direction: column;
       text-align: left;
     }
 
-    .creative-step:hover .step-card {
-      transform: translateY(12px);
-      background: white;
-      box-shadow: 0 30px 60px rgba(26, 122, 138, 0.12);
-      border-color: var(--teal);
+    .p-welcome-title {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: #0f2a3a;
+      text-align: center;
+      line-height: 1.15;
+      margin-bottom: 2px;
     }
 
-    .step-card h3 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.4rem;
+    .p-welcome-sub {
+      font-size: 0.58rem;
+      color: #64748b;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .p-field-group {
+      margin-bottom: 5px;
+    }
+
+    .p-field-group label {
+      font-size: 0.54rem;
+      font-weight: 600;
+      color: #475569;
+      display: block;
+      margin-bottom: 1px;
+    }
+
+    .p-input-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 4px 7px;
+      font-size: 0.58rem;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .p-remember-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.48rem;
+      color: #64748b;
+      margin: 3px 0 6px;
+    }
+
+    .p-remember-row a {
+      color: #02b5cb;
+      text-decoration: none;
+    }
+
+    .p-btn-teal {
+      background: linear-gradient(135deg, #10596b 0%, #156677 100%);
+      color: #ffffff;
+      border-radius: 100px;
+      padding: 5px;
+      font-size: 0.62rem;
       font-weight: 700;
-      margin-bottom: 1rem;
-      color: var(--navy);
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(16, 89, 107, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .p-divider-line {
+      font-size: 0.46rem;
+      color: #94a3b8;
+      text-align: center;
+      margin: 5px 0;
+      position: relative;
+    }
+
+    .p-btn-google {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: #1e293b;
+      border-radius: 100px;
+      padding: 4px;
+      font-size: 0.58rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .p-steps-body {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .p-steps-tag {
+      font-size: 0.52rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #02b5cb;
+      margin-bottom: 1px;
+    }
+
+    .p-steps-heading {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #0f2a3a;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    .p-step-card-box {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 6px 8px;
+      margin-bottom: 5px;
+      border: 1px solid #f1f5f9;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .p-step-badge {
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: #cbd5e1;
+      line-height: 1;
+    }
+
+    .p-step-text h4 {
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: #0f2a3a;
+      margin-bottom: 1px;
+    }
+
+    .p-step-text p {
+      font-size: 0.52rem;
+      color: #64748b;
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    /* Step Cards Right Column */
+    .how-step-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1.35rem;
+    }
+
+    .how-card {
+      background: rgba(214, 235, 242, 0.65);
+      border: 1px solid rgba(2, 181, 203, 0.15);
+      border-radius: 24px;
+      padding: 1.8rem 2.2rem;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.8rem;
+      align-items: center;
+      transition: all 0.28s ease;
+    }
+
+    .how-card:hover {
+      background: rgba(214, 235, 242, 0.9);
+      transform: translateX(6px);
+      box-shadow: 0 12px 30px rgba(15, 42, 58, 0.06);
+    }
+
+    .how-card-num-side {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .how-card-arrow {
+      color: #0f2a3a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.75;
+    }
+
+    .how-card-num {
+      font-family: 'Manrope', sans-serif;
+      font-size: 7.5rem;
+      font-weight: 800;
+      color: #02b5cb;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .how-card-text-side {
+      text-align: left;
+    }
+
+    .how-card-text-side h3 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: #0f2a3a;
+      letter-spacing: -0.092em;
+      margin-bottom: 0.5rem;
+    }
+
+    .how-card-text-side p {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #475569;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 992px) {
+      .how {
+        padding: 4rem 2rem;
+      }
+
+      .how-container {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      .how-left-content {
+        text-align: center;
+        align-items: center;
+      }
+
+      .how-phones-wrapper {
+        margin: 0 auto;
+      }
+    }
+
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--navy);
     }
 
     .step-card p {
@@ -513,30 +983,66 @@
     /* ── UNIQUE TRIPS DELETED ── */
 
 
-    /* ── QUOTE ── */
+    /* ── QUOTE SECTION ── */
     .quote-section {
-      background: var(--navy);
+      position: relative;
+      background: linear-gradient(135deg, #2ea1b5 0%, #1e8396 100%);
+      padding: 6.5rem 2rem;
       text-align: center;
+      overflow: hidden;
+      color: #ffffff;
+    }
+
+    .quote-pattern-left {
+      position: absolute;
+      top: 50%;
+      left: -80px;
+      transform: translateY(-50%);
+      width: 420px;
+      height: 420px;
+      opacity: 0.38;
+      pointer-events: none;
+    }
+
+    .quote-pattern-right {
+      position: absolute;
+      bottom: -80px;
+      right: -80px;
+      width: 400px;
+      height: 400px;
+      opacity: 0.38;
+      pointer-events: none;
+    }
+
+    .quote-container {
+      position: relative;
+      z-index: 2;
+      max-width: 1060px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .big-quote {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(2.1rem, 3.8vw, 48px);
+      font-weight: 800;
+      line-height: 1.22;
+      letter-spacing: -0.092em;
+      color: #ffffff;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .quote-author {
+      font-family: 'Manrope', sans-serif;
+      font-size: 1.3rem;
       font-weight: 700;
-      line-height: 1.35;
-      max-width: 720px;
-      margin: 0 auto 1.5rem;
-      color: var(--white);
-    }
-
-    .big-quote em {
-      color: #5dcfe0;
-      font-style: normal;
-    }
-
-    .quote-sub {
-      font-size: 0.88rem;
-      color: rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+      margin-top: 2rem;
+      opacity: 0.95;
     }
 
     /* ── PRICING SECTION ── */
@@ -797,83 +1303,91 @@
 
     /* ── SOLUTIONS SECTION ── */
     .solutions {
-      padding: 5rem 0;
-      background: var(--white);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+      background: linear-gradient(180deg, #ffffff 0%, #f4fbfb 100%);
       overflow: hidden;
+      box-sizing: border-box;
+      position: relative;
     }
 
     .solutions-header {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 1.5rem;
     }
 
     .solutions-title {
-      font-family: 'Inter', sans-serif;
-      font-size: 2.8rem;
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(2.2rem, 3.8vw, 42px);
       font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 1rem;
-      letter-spacing: -0.02em;
+      color: #0c2332;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.04em;
     }
 
     .solutions-title span {
-      color: var(--teal);
+      color: #02b5cb;
     }
 
     .solutions-desc {
-      font-size: 1.15rem;
-      color: var(--text-soft);
-      max-width: 700px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 1.1rem;
+      color: #475569;
+      max-width: 680px;
       margin: 0 auto;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
     .solutions-tabs {
       display: flex;
       justify-content: center;
-      gap: 0.8rem;
-      margin-bottom: 2rem;
+      gap: 0.7rem;
+      margin-bottom: 1.5rem;
       flex-wrap: wrap;
       padding: 0 1rem;
     }
 
     .sol-tab {
-      padding: 0.6rem 1.4rem;
+      font-family: 'Manrope', sans-serif;
+      padding: 0.55rem 1.3rem;
       border-radius: 100px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-soft);
-      background: transparent;
-      border: 1px solid var(--mid-gray);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #64748b;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       white-space: nowrap;
     }
 
     .sol-tab:hover {
-      border-color: var(--teal);
-      color: var(--teal);
+      border-color: #02b5cb;
+      color: #02b5cb;
     }
 
     .sol-tab.active {
-      background: var(--teal);
-      border-color: var(--teal);
-      color: var(--white);
-      box-shadow: 0 10px 20px rgba(11, 142, 163, 0.2);
+      background: linear-gradient(135deg, #136075 0%, #177890 100%);
+      border-color: #136075;
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(19, 96, 117, 0.25);
     }
 
     .solutions-card {
-      background: #f0f7f9;
-      border: 1px solid rgba(11, 142, 163, 0.1);
-      border-radius: 40px;
-      padding: 4rem;
+      background: #ffffff;
+      border: 1.5px solid rgba(2, 181, 203, 0.18);
+      border-radius: 28px;
+      padding: 2.5rem 3rem;
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 3rem;
-      max-width: 1200px;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 2.2rem;
+      max-width: 1140px;
       margin: 0 auto;
       position: relative;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 20px 50px rgba(11, 142, 163, 0.07);
     }
 
     .sol-content-left {
@@ -882,65 +1396,67 @@
     }
 
     .sol-tagline {
-      font-size: 2.2rem;
+      font-family: 'Manrope', sans-serif;
+      font-size: 1.85rem;
       font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 1.2rem;
+      color: #0c2332;
+      margin-bottom: 0.6rem;
     }
 
     .sol-tagline span {
-      color: var(--text-muted);
-      font-weight: 400;
+      color: #02b5cb;
+      font-weight: 700;
     }
 
     .sol-text {
-      font-size: 1.1rem;
-      color: var(--text-soft);
-      margin-bottom: 3rem;
-      line-height: 1.6;
+      font-family: 'Barlow', sans-serif;
+      font-size: 1.02rem;
+      color: #475569;
+      margin-bottom: 1.4rem;
+      line-height: 1.55;
     }
 
     .sol-benefits {
       list-style: none;
-      margin-bottom: 3rem;
+      margin-bottom: 1.6rem;
     }
 
     .sol-benefits li {
+      font-family: 'Barlow', sans-serif;
       display: flex;
       align-items: flex-start;
-      gap: 0.8rem;
-      font-size: 1rem;
-      color: var(--navy);
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      color: #1e293b;
       font-weight: 500;
-      margin-bottom: 1rem;
+      margin-bottom: 0.65rem;
     }
 
     .sol-benefits li i {
-      color: var(--teal);
-      font-size: 1.2rem;
-      margin-top: 0.1rem;
+      color: #02b5cb;
+      font-size: 1.1rem;
+      margin-top: 0.12rem;
     }
 
-
     .sol-btn {
+      font-family: 'Manrope', sans-serif;
       align-self: flex-start;
-      padding: 1rem 2rem;
-      background: var(--navy);
-      color: var(--white);
-      border-radius: 12px;
+      padding: 0.8rem 1.7rem;
+      background: linear-gradient(135deg, #136075 0%, #177890 100%);
+      color: #ffffff !important;
+      border-radius: 100px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       display: inline-flex;
       align-items: center;
       gap: 0.8rem;
       transition: all 0.3s;
-      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1);
+      box-shadow: 0 8px 20px rgba(19, 96, 117, 0.25);
     }
 
     .sol-btn:hover {
-      background: #1e293b;
-      transform: translateY(-3px);
-      box-shadow: 0 15px 30px rgba(15, 23, 42, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(19, 96, 117, 0.35);
     }
 
     .sol-features-right {
@@ -950,20 +1466,21 @@
     }
 
     .sol-feature-item {
-      background: var(--white);
+      background: #ecf7f8;
       padding: 1.2rem 1.5rem;
       border-radius: 20px;
       display: flex;
       align-items: center;
       gap: 1.2rem;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02);
+      box-shadow: 0 10px 25px rgba(2, 181, 203, 0.05);
       transition: all 0.3s;
-      border: 1px solid rgba(11, 142, 163, 0.05);
+      border: 1px solid rgba(2, 181, 203, 0.15);
     }
 
     .sol-feature-item:hover {
-      transform: scale(1.02);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 15px 35px rgba(2, 181, 203, 0.12);
+      border-color: rgba(2, 181, 203, 0.3);
     }
 
     .sol-feature-icon {
@@ -1540,11 +2057,11 @@
       }
     }
 
-    /* ── REVEAL ── */
+    /* ── REVEAL & STAGGER PHYSICS (SLOWER, ULTRA-SMOOTH) ── */
     .reveal {
       opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
+      transform: translateY(42px);
+      transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .reveal.visible {
@@ -1552,16 +2069,138 @@
       transform: translateY(0);
     }
 
+    /* ── REVEAL LEFT (HERO SLIDE IN FROM LEFT - SLOWER) ── */
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-56px);
+      transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ── REVEAL RIGHT (HOW SECTION PAN FROM RIGHT - SLOWER) ── */
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(60px);
+      transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
     .d1 {
-      transition-delay: 0.12s;
+      transition-delay: 0.2s;
     }
 
     .d2 {
-      transition-delay: 0.26s;
+      transition-delay: 0.45s;
     }
 
     .d3 {
-      transition-delay: 0.4s;
+      transition-delay: 0.7s;
+    }
+
+    .d4 {
+      transition-delay: 0.95s;
+    }
+
+    /* ── PINTEREST-INSPIRED FLOATING & SHINE MICRO-INTERACTIONS ── */
+    @keyframes floatSoft {
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-9px) rotate(0.4deg);
+      }
+    }
+
+    @keyframes floatPhoneSoft {
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(-1.5deg);
+      }
+
+      50% {
+        transform: translateY(-12px) rotate(-0.5deg);
+      }
+    }
+
+    @keyframes tabSlideInSlow {
+      from {
+        opacity: 0;
+        transform: translateX(25px) translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+      }
+    }
+
+    /* Titilar / Pulse hint on inactive solution tabs */
+    @keyframes tabPulseNotice {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(2, 181, 203, 0.35);
+        transform: translateY(0);
+      }
+
+      50% {
+        box-shadow: 0 0 0 8px rgba(2, 181, 203, 0);
+        transform: translateY(-2px);
+      }
+    }
+
+    .sol-tab:not(.active) {
+      animation: tabPulseNotice 3.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    .hero .laptop-wrap {
+      animation: floatSoft 6.5s ease-in-out infinite;
+    }
+
+    .hero .phone-wrap {
+      animation: floatPhoneSoft 5.8s ease-in-out infinite 0.6s;
+    }
+
+    .btn-pill-primary {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-pill-primary::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -70%;
+      width: 50%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transform: rotate(25deg);
+      transition: all 0.65s ease;
+    }
+
+    .btn-pill-primary:hover::after {
+      left: 130%;
+    }
+
+    .how-card {
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+
+    .how-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 35px rgba(2, 181, 203, 0.12);
     }
 
     @media (max-width: 1100px) {
@@ -1581,6 +2220,7 @@
         display: none;
       }
 
+      .nav-logo-wrap,
       .nav-logo img {
         height: 26px !important;
       }
@@ -1805,13 +2445,15 @@
 
   <!-- NAV -->
   <nav>
-    <a href="#" class="nav-logo" style="display:flex; align-items:center;">
-      <img src="/images/logo-viantryp.png" alt="Viantryp"
-        style="height: 32px; width: auto; filter: invert(1) hue-rotate(180deg) contrast(1.5);">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-wrap">
+        <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp" class="nav-logo-img logo-cyan">
+        <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp" class="nav-logo-img logo-black">
+      </div>
     </a>
     <ul class="nav-links">
-      <li><a href="#como-funciona">Cómo funciona</a></li>
       <li><a href="#demo">Ver Demo</a></li>
+      <li><a href="#como-funciona">Cómo funciona</a></li>
       <li><a href="#precios">Precios</a></li>
       <li><a href="{{ route('contact') }}">Contacto</a></li>
     </ul>
@@ -1904,83 +2546,122 @@
   </nav>
 
   <!-- HERO -->
-  <section class="hero">
+  <section class="hero" id="hero-section">
     <div class="hero-bg">
-      <video class="hero-bg-video" autoplay muted loop playsinline>
-        <source src="{{ asset('videos/hero-bg.mp4') }}" type="video/mp4">
-      </video>
-      <div class="hero-blob blob-1"></div>
-      <div class="hero-blob blob-2"></div>
-      <div class="hero-blob blob-3"></div>
+      <div class="hero-bg-glow-left"></div>
+      <div class="hero-bg-glow-right"></div>
+      <div class="hero-bg-dots"></div>
     </div>
-    <h1>Diseña tus viajes<br><em>en cuestión</em> de minutos</h1>
-    <p>Organiza rutas, vuelos y estancias en una plataforma simple e intuitiva. Ya sea para tu próximo gran viaje
-      personal o para escalar tu negocio, Viantryp es el lienzo donde tus itinerarios cobran vida.</p>
-    <div class="hero-actions">
-      @auth
-        <a href="{{ route('trips.index') }}" class="btn-primary">Ir a mis viajes →</a>
-      @else
-        <a href="#cta" class="btn-primary">Empezar ahora →</a>
-        <a href="#demo" class="btn-secondary">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round"
-            style="margin-right: 8px; display: inline-block; vertical-align: middle; margin-top: -2px;">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polygon points="10 8 16 12 10 16 10 8"></polygon>
-          </svg>
-          Ver Demo
-        </a>
-        {{-- Botón instalar app: solo visible en móvil --}}
-        <button id="landing-install-btn" onclick="triggerPwaInstall()" style="
-          display: none;
-          align-items: center;
-          gap: 10px;
-          background: linear-gradient(135deg, #0d2b3e 0%, #1a4a6e 100%);
-          color: white;
-          border: none;
-          padding: 14px 22px;
-          border-radius: 100px;
-          font-weight: 700;
-          font-size: 1rem;
-          cursor: pointer;
-          box-shadow: 0 4px 24px rgba(13,43,62,0.25);
-          font-family: 'Barlow', sans-serif;
-          transition: all 0.2s;
-          width: 100%;
-          justify-content: center;
-        ">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(255,255,255,0.15)" stroke="none"/>
-            <path d="M8 12l4 4 4-4M12 8v8"/>
-          </svg>
-          📲 Instalar App
-        </button>
-      @endauth
+
+    <div class="hero-container">
+      <div class="hero-text-side">
+        <h1 class="reveal-left d1">Diseña tus viajes<br>en cuestión<br>de <span class="cyan-highlight">minutos</span>
+        </h1>
+        <p class="reveal-left d2">Organiza rutas, vuelos y estancias en una plataforma simple e intuitiva. Ya sea para
+          tu próximo viaje o para escalar tu negocio, Viantryp es donde tus itinerarios cobran vida.</p>
+        <div class="hero-actions reveal-left d3">
+          @auth
+            <a href="{{ route('trips.index') }}" class="btn-pill-primary">Ir a mis viajes →</a>
+          @else
+            <a href="#cta" class="btn-pill-primary">Empezar Ahora</a>
+            <a href="#demo" class="btn-pill-secondary">Ver Demo</a>
+            {{-- Botón instalar app: solo visible en móvil --}}
+            <button id="landing-install-btn" onclick="triggerPwaInstall()" style="
+                      display: none;
+                      align-items: center;
+                      gap: 10px;
+                      background: linear-gradient(135deg, #136075 0%, #177890 100%);
+                      color: white;
+                      border: none;
+                      padding: 14px 22px;
+                      border-radius: 100px;
+                      font-weight: 700;
+                      font-size: 1rem;
+                      cursor: pointer;
+                      box-shadow: 0 4px 24px rgba(13,43,62,0.25);
+                      font-family: 'Barlow', sans-serif;
+                      transition: all 0.2s;
+                      width: 100%;
+                      justify-content: center;
+                    ">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(255,255,255,0.15)"
+                  stroke="none" />
+                <path d="M8 12l4 4 4-4M12 8v8" />
+              </svg>
+              📲 Instalar App
+            </button>
+          @endauth
+        </div>
+      </div>
+
+      <div class="feature-banner-visual">
+        <div class="mockups-container">
+          <!-- Laptop -->
+          <div class="laptop-wrap">
+            <div class="l-screen">
+              <div class="l-notch">
+                <div class="l-cam"></div>
+              </div>
+              <div class="l-display">
+                <div class="l-glare"></div>
+                <img src="{{ asset('images/mockup-trip-desktop.png') }}" alt="Itinerario Desktop">
+              </div>
+            </div>
+            <div class="l-base">
+              <div class="l-hinge"></div>
+              <div class="l-deck">
+                <div class="l-keyline"></div>
+                <div class="l-thumb-indent"></div>
+              </div>
+              <div class="l-shadow"></div>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="phone-wrap">
+            <div class="p-frame">
+              <div class="p-island"></div>
+              <div class="p-screen">
+                <div class="p-glare"></div>
+                <img src="{{ asset('images/mockup-trip-mobile.png') }}" alt="Itinerario Mobile">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- DEMO SECTION -->
+  <!-- DEMO SECTION WITH STANDALONE MOCKUP -->
   <section class="demo-section" id="demo"
-    style="background: #0f2a3a; background-image: radial-gradient(circle at 50% 0%, rgba(26, 122, 138, 0.15) 0%, transparent 70%);">
-    <div class="container" style="max-width: 1000px;">
-      <div class="reveal" style="text-align: center; margin-bottom: 1.0rem;">
-        <div class="section-label" style="color: #5dcfe0;">Demo Interactiva</div>
-        <p style="color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.5;">Prueba nuestra interfaz: arrastra
-          servicios, organizalos y descubre la facilidad de crear itinerarios en segundos.</p>
+    style="background: linear-gradient(135deg, #10596b 0%, #156677 50%, #0d4a57 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem; overflow: hidden; position: relative;">
+    <div class="container"
+      style="max-width: 1040px; width: 100%; position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center;">
+      <!-- Title & Text Outside Mockup -->
+      <div class="reveal" style="text-align: center; margin-bottom: 1.2rem;">
+        <div class="section-label"
+          style="color: #4de2f4; font-size: 0.85rem; letter-spacing: 0.15em; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;">
+          Demo Interactiva</div>
+        <p
+          style="color: rgba(255, 255, 255, 0.92); font-size: 13px; line-height: 1.5; max-width: 680px; margin: 0 auto; font-weight: 500;">
+          Prueba nuestra interfaz: arrastra servicios, organizalos y descubre la facilidad de crear itinerarios en
+          segundos.
+        </p>
       </div>
 
-      <!-- PREMIUM HERO MOCKUP -->
-      <div class="hero-mockup reveal d2"
-        style="max-width: 1040px; margin: 0 auto; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.4);">
-        <div class="mockup-frame" style="border: none;">
-          <div class="mockup-bar">
-            <div class="mockup-dot"></div>
-            <div class="mockup-dot"></div>
-            <div class="mockup-dot"></div>
+      <!-- LAPTOP MOCKUP STANDALONE WITH SCROLL EXPAND -->
+      <div class="laptop-wrap reveal d2 demo-laptop-expandable"
+        style="transform: none; max-width: 940px; width: 100%; margin: 0 auto; filter: drop-shadow(0 25px 50px rgba(0,0,0,0.45)); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;">
+        <div class="l-screen" style="padding: 4px 4px 0 4px;">
+          <div class="l-notch">
+            <div class="l-cam"></div>
           </div>
-          <div class="mockup-inner">
+          <div class="l-display" style="aspect-ratio: auto; height: 470px;">
+            <div class="l-glare"></div>
 
-            <div class="vt-root">
+            <div class="vt-root" style="height: 100%; border-radius: 0;">
               <div class="vt-topbar">
                 <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp"
                   style="height: 24px; width: auto; display: block;">
@@ -2111,7 +2792,8 @@
                     <div class="vt-preview-hero-inner">
                       <div class="vt-preview-hero-title">Viaje a Dubai 🛫 <span class="vt-badge"><i
                             class="fas fa-circle"
-                            style="font-size: 6px; vertical-align: middle; margin-right: 4px;"></i> PAGADO PARCIALMENTE</span>
+                            style="font-size: 6px; vertical-align: middle; margin-right: 4px;"></i> PAGADO
+                          PARCIALMENTE</span>
                       </div>
                       <div class="vt-preview-hero-stats">
                         <div class="stat"><span>FECHAS</span><strong>14 may — 21 may</strong></div>
@@ -2166,40 +2848,156 @@
                 </div>
               </div> <!-- .vt-body -->
             </div> <!-- .vt-root -->
-          </div> <!-- .mockup-inner -->
-        </div> <!-- .mockup-frame -->
-      </div> <!-- .hero-mockup -->
+          </div> <!-- .l-display -->
+        </div> <!-- .l-screen -->
+        <div class="l-base">
+          <div class="l-hinge"></div>
+          <div class="l-deck">
+            <div class="l-keyline"></div>
+            <div class="l-thumb-indent"></div>
+          </div>
+        </div> <!-- .l-base -->
+        <div class="l-shadow"></div>
+      </div> <!-- .laptop-wrap -->
     </div> <!-- .container -->
   </section>
 
-  <!-- HOW IT WORKS -->
-  <section class="how" id="como-funciona" style="background: #f8fafc; padding: 6rem 2.5rem; position: relative;">
-    <div class="container">
-      <div class="reveal" style="text-align: left; margin-bottom: 5rem;">
-        <div class="section-label">Proceso</div>
-        <h2 class="section-title">Plasma tu gran viaje<br>en solo 3 pasos</h2>
+  <!-- FEATURE BANNER SECTION -->
+  <section class="feature-banner" id="banner-section">
+    <div class="feature-banner-dots"></div>
+
+    <div class="feature-banner-container">
+      <div class="feature-banner-visual">
+        <div class="mockups-container">
+          <!-- Laptop -->
+          <div class="laptop-wrap">
+            <div class="l-screen">
+              <div class="l-notch">
+                <div class="l-cam"></div>
+              </div>
+              <div class="l-display">
+                <div class="l-glare"></div>
+                <img src="{{ asset('images/mockup-trip-desktop.png') }}" alt="Itinerario Desktop">
+              </div>
+            </div>
+            <div class="l-base">
+              <div class="l-hinge"></div>
+              <div class="l-deck">
+                <div class="l-keyline"></div>
+                <div class="l-thumb-indent"></div>
+              </div>
+              <div class="l-shadow"></div>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="phone-wrap">
+            <div class="p-frame">
+              <div class="p-island"></div>
+              <div class="p-screen">
+                <div class="p-glare"></div>
+                <img src="{{ asset('images/mockup-trip-mobile.png') }}" alt="Itinerario Mobile">
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="creative-steps">
-        <div class="creative-step reveal d1">
-          <div class="step-giant-num">01</div>
-          <div class="step-card">
+      <div class="feature-banner-text">
+        <div class="feature-banner-overline">Visualiza tu viaje de forma moderna</div>
+        <h2>Todo lo que necesitas,<br><span>en un solo lugar</span></h2>
+        <p>Una experiencia digital moderna y dinámica que transforma tus viajes en piezas únicas, accesibles desde
+          cualquier dispositivo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="como-funciona">
+    <div class="how-container">
+      <div class="how-left-content reveal-right">
+        <div class="how-overline">Proceso</div>
+        <h2>Plasma tu gran viaje<br>en solo <span class="cyan-highlight-big">3 pasos</span></h2>
+
+        <div class="how-phones-wrapper">
+          <!-- Phone 1 (Left Screen - Image 1) -->
+          <div class="how-phone-device phone-left">
+            <div class="p-frame">
+              <div class="p-island"></div>
+              <div class="p-screen">
+                <div class="p-glare"></div>
+                <img src="{{ asset('images/how-phone-left.jpg') }}" alt="Viantryp Mobile Preview 1"
+                  class="p-screen-img">
+              </div>
+            </div>
+          </div>
+
+          <!-- Phone 2 (Right Screen - Image 2) -->
+          <div class="how-phone-device phone-right">
+            <div class="p-frame">
+              <div class="p-island"></div>
+              <div class="p-screen">
+                <div class="p-glare"></div>
+                <img src="{{ asset('images/how-phone-right.jpg') }}" alt="Viantryp Mobile Preview 2"
+                  class="p-screen-img" style="width: 110%; max-width: 110%;">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="how-step-cards">
+        <!-- Step 1 -->
+        <div class="how-card reveal-right d1">
+          <div class="how-card-num-side">
+            <div class="how-card-arrow">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </div>
+            <div class="how-card-num">1</div>
+          </div>
+          <div class="how-card-text-side">
             <h3>Construye el itinerario</h3>
             <p>Usa nuestro editor visual para estructurar tu viaje día a día. Arrastra destinos, rutas y fotos con total
               libertad</p>
           </div>
         </div>
-        <div class="creative-step reveal d2">
-          <div class="step-giant-num">02</div>
-          <div class="step-card">
+
+        <!-- Step 2 -->
+        <div class="how-card reveal-right d2">
+          <div class="how-card-num-side">
+            <div class="how-card-arrow">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </div>
+            <div class="how-card-num">2</div>
+          </div>
+          <div class="how-card-text-side">
             <h3>Dale tu toque</h3>
             <p>Personaliza colores, añade documentos importantes o tu marca personal. Haz que cada itinerario cuente una
               historia única.</p>
           </div>
         </div>
-        <div class="creative-step reveal d3">
-          <div class="step-giant-num">03</div>
-          <div class="step-card">
+
+        <!-- Step 3 -->
+        <div class="how-card reveal-right d3">
+          <div class="how-card-num-side">
+            <div class="how-card-arrow">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </div>
+            <div class="how-card-num">3</div>
+          </div>
+          <div class="how-card-text-side">
             <h3>Llévalo contigo</h3>
             <p>Comparte un solo enlace inteligente. Sin archivos pesados ni apps extra; toda la información accesible
               desde cualquier lugar.</p>
@@ -2209,52 +3007,13 @@
     </div>
   </section>
 
-  <!-- TRAVELER EXPERIENCE -->
-  <section class="travel-exp">
-    <div class="container">
-      <div class="travel-grid">
-        <div class="travel-text reveal">
-          <div class="section-label">Visualiza tu viaje de forma moderna</div>
-          <h2 class="section-title">Todo lo que necesitas, en un solo lugar</h2>
-          <p class="section-desc">Una experiencia digital moderna y dinámica que transforma tus viajes en piezas únicas,
-            accesibles desde cualquier dispositivo.</p>
-        </div>
 
-        <div class="reveal d2">
-          <div class="mockups-container">
-            <!-- Laptop -->
-            <div class="laptop-wrap">
-              <div class="l-screen">
-                <div class="l-bar">
-                  <div class="l-dot"></div>
-                  <div class="l-dot"></div>
-                  <div class="l-dot"></div>
-                </div>
-                <img src="{{ asset('images/mockup-trip-desktop.png') }}" alt="Itinerario Desktop"
-                  style="width: 100%; height: 100%; object-fit: cover;">
-              </div>
-            </div>
-
-            <!-- Phone -->
-            <div class="phone-wrap">
-              <div class="p-frame">
-                <div class="p-screen">
-                  <img src="{{ asset('images/mockup-trip-mobile.png') }}" alt="Itinerario Mobile"
-                    style="width: 100%; height: 95%; object-fit: cover;">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- SOLUTIONS -->
   <section class="solutions" id="soluciones">
-    <div class="container">
+    <div class="container"
+      style="max-width: 1180px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; justify-content: center;">
       <div class="solutions-header reveal">
-        <div class="section-label">Soluciones</div>
         <h2 class="solutions-title"><span>Viantryp:</span> El lienzo para tus viajes inolvidables</h2>
         <p class="solutions-desc">Tu centro de control para itinerarios perfectos, atractivos y digitales.</p>
       </div>
@@ -2321,6 +3080,45 @@
 
 
   <style>
+    /* ── HAND HOLDING LAPTOP DEMO STAGE ── */
+    .hand-laptop-stage {
+      position: relative;
+      width: 100%;
+      max-width: 1040px;
+      margin: 0 auto;
+      border-radius: 12px;
+    }
+
+    .hand-laptop-bg {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.45));
+    }
+
+    .hand-laptop-screen {
+      position: absolute;
+      top: 10.3%;
+      left: 31.0%;
+      width: 40.8%;
+      height: 47.8%;
+      border-radius: 4px 4px 0 0;
+      overflow: hidden;
+      background: #f5f7fa;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+    }
+
+    .hand-laptop-screen .mockup-inner {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .hand-laptop-screen .vt-root {
+      height: 100%;
+      border-radius: 0;
+    }
+
     /* ── DUBAI DEMO STYLES ── */
     .vt-root {
       font-family: 'Barlow', sans-serif;
@@ -3472,226 +4270,214 @@
       }
     }
 
-    /* ── TRAVELER EXPERIENCE SECTION ── */
-    .travel-exp {
-      background: #0a1921;
-      padding: 6rem 2.5rem;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .travel-exp .section-label {
-      color: #5dcfe0;
-    }
-
-    .travel-exp .section-title {
-      color: #fff;
-    }
-
-    .travel-exp .section-desc {
-      color: rgba(255, 255, 255, 0.6);
-    }
-
-    .travel-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.1fr;
-      gap: 4rem;
-      align-items: center;
-    }
-
+    /* ── MOCKUPS CONTAINER & HIGH-END DEVICES ── */
     .mockups-container {
       position: relative;
       height: 420px;
       width: 100%;
+      max-width: 620px;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin: 0 auto;
     }
 
     /* Laptop Mockup */
     .laptop-wrap {
       position: relative;
-      width: 90%;
-      max-width: 580px;
+      width: 88%;
+      max-width: 540px;
       z-index: 1;
-      transform: translateX(-40px);
+      transform: translateX(-30px);
+      filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.3));
     }
 
     .l-screen {
-      background: #02070e;
-      border-radius: 12px;
-      padding: 4px;
-      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      aspect-ratio: 16/10;
+      background: #11131a;
+      border-radius: 18px 18px 4px 4px;
+      padding: 4px 2px 3px 3px;
+      border: 1.5px solid #2e313d;
+      border-bottom: none;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 25px 60px rgba(0, 0, 0, 0.35);
       overflow: hidden;
     }
 
-    .l-bar {
-      height: 18px;
-      display: flex;
-      gap: 4px;
-      padding: 0 4px 6px;
-    }
-
-    .l-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .l-content {
-      background: white;
-      height: 100%;
-      border-radius: 4px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .l-header {
-      height: 28px;
-      background: #f1f5f9;
-      border-radius: 4px;
+    .l-notch {
+      position: absolute;
+      top: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 54px;
+      height: 10px;
+      background: #06070a;
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+      z-index: 15;
       display: flex;
       align-items: center;
-      padding: 0 8px;
+      justify-content: center;
     }
 
-    .l-hero {
-      height: 80px;
-      background: linear-gradient(135deg, #1a7a8a, #8ab820);
-      border-radius: 6px;
+    .l-cam {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #1e2638;
+      box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.5);
     }
 
-    .l-rows {
-      display: flex;
-      gap: 8px;
-      flex: 1;
+    .l-display {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border-radius: 10px 10px 3px 3px;
+      overflow: hidden;
+      position: relative;
+      background: #0a0b0e;
     }
 
-    .l-col {
-      flex: 1;
-      background: #f8fafc;
-      border-radius: 4px;
+    .l-display img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top left;
+      display: block;
     }
 
-    /* Mobile Mockup Overlay */
+    .l-glare {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 60%);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .l-base {
+      position: relative;
+      width: calc(100% + 36px);
+      margin-left: -18px;
+      z-index: 2;
+    }
+
+    .l-hinge {
+      width: 74%;
+      height: 4px;
+      background: #07080b;
+      margin: 0 auto;
+      border-radius: 2px 2px 0 0;
+    }
+
+    .l-deck {
+      height: 18px;
+      background: linear-gradient(180deg, #30333f 0%, #1e2028 40%, #101116 100%);
+      border-radius: 2px 2px 14px 14px;
+      position: relative;
+      box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.25), inset 0 -1.5px 3px rgba(0, 0, 0, 0.9), 0 8px 20px rgba(0, 0, 0, 0.4);
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .l-keyline {
+      position: absolute;
+      top: 2px;
+      left: 12%;
+      right: 12%;
+      height: 2px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 1px;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.8), 0 0.5px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .l-thumb-indent {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 54px;
+      height: 4px;
+      background: #07080b;
+      border-radius: 0 0 4px 4px;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.95);
+    }
+
+    .l-shadow {
+      position: absolute;
+      bottom: -16px;
+      left: 2%;
+      right: 2%;
+      height: 22px;
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 75%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Mobile Phone Overlay */
     .phone-wrap {
       position: absolute;
-      right: 20px;
-      bottom: -20px;
-      width: 220px;
-      z-index: 10;
-      animation: floatPhone 4s ease-in-out infinite;
+      right: 12px;
+      bottom: -12px;
+      width: 195px;
+      z-index: 50 !important;
+      filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.45));
+    }
+
+    .hero-mockups-interactive .phone-wrap {
+      z-index: 50 !important;
+      transform: translateZ(100px);
     }
 
     .p-frame {
-      background: #111;
-      border-radius: 36px;
+      background: #14151c;
+      border-radius: 38px;
       padding: 3px;
-      border: 3px solid #333;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-      aspect-ratio: 9/18.5;
-      overflow: hidden;
+      border: 2px solid #2e313e;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15), 0 30px 60px rgba(0, 0, 0, 0.55);
       position: relative;
+      overflow: hidden;
+    }
+
+    .p-island {
+      position: absolute;
+      top: 7px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 44px;
+      height: 11px;
+      background: #000;
+      border-radius: 8px;
+      z-index: 20;
     }
 
     .p-screen {
-      background: #f5f7fa;
+      background: #000;
+      width: 100%;
       height: 100%;
-      border-radius: 28px;
+      border-radius: 30px;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      position: relative;
+      aspect-ratio: 9 / 19.5;
     }
 
-    .p-header {
-      background: #1a7a8a;
-      height: 110px;
-      padding: 25px 15px 10px;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
+    .p-screen img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+      border-radius: 30px;
     }
 
-    .p-pill {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 4px 10px;
-      border-radius: 100px;
-      font-size: 8px;
-      align-self: flex-end;
-    }
-
-    .p-title {
-      font-size: 13px;
-      font-weight: 700;
-      margin-top: 8px;
-    }
-
-    .p-sub {
-      font-size: 9px;
-      opacity: 0.8;
-    }
-
-    .p-body {
-      padding: 12px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .p-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 6px;
-    }
-
-    .p-card {
-      background: #1a2e2c;
-      border-radius: 10px;
-      height: 65px;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 8px;
-      gap: 2px;
-    }
-
-    .p-dot-full {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #e8f5f1;
-      border: 2px solid #3db898;
-      margin-bottom: 4px;
-    }
-
-    .p-activity {
-      background: #1a2e2c;
-      border-radius: 10px;
-      padding: 12px;
-      color: white;
-      flex: 1;
-    }
-
-    .p-line {
-      height: 3px;
-      background: #3db898;
-      width: 60%;
-      border-radius: 2px;
-      margin: 8px 0;
-    }
-
-    .p-txt {
-      font-size: 10px;
-      font-weight: 600;
+    .p-glare {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 60%);
+      pointer-events: none;
+      z-index: 10;
     }
 
     @keyframes floatPhone {
@@ -3732,6 +4518,16 @@
         width: 100%;
         transform: none;
         margin: 0 auto;
+      }
+
+      .hero-mockups-3d {
+        transform: rotateY(-10deg) rotateX(10deg) scale(0.9);
+        margin: 0 auto;
+      }
+
+      .phone-3d {
+        width: 125px;
+        right: 0px;
       }
     }
 
@@ -4018,11 +4814,27 @@
 
   <!-- QUOTE -->
   <section class="quote-section">
-    <div class="container">
+    <svg class="quote-pattern-left" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="100" r="90" stroke="white" stroke-width="1.2" stroke-dasharray="4 2" />
+      <circle cx="40" cy="100" r="130" stroke="white" stroke-width="1" />
+      <circle cx="40" cy="100" r="55" stroke="white" stroke-width="1.2" />
+      <circle cx="10" cy="80" r="4" fill="white" />
+      <circle cx="85" cy="135" r="5" fill="white" />
+      <line x1="10" y1="80" x2="85" y2="135" stroke="white" stroke-width="1" />
+    </svg>
+
+    <svg class="quote-pattern-right" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="150" r="45" stroke="white" stroke-width="1.5" />
+      <circle cx="150" cy="150" r="85" stroke="white" stroke-width="1.5" />
+      <circle cx="150" cy="150" r="125" stroke="white" stroke-width="1.5" />
+      <circle cx="150" cy="150" r="9" fill="white" />
+    </svg>
+
+    <div class="quote-container">
       <div class="reveal">
-        <p class="big-quote">"Transformamos un proceso que <em>normalmente toma horas</em> en una tarea que se completa
-          en <em>minutos</em>."</p>
-        <p class="quote-sub">— Equipo Viantryp</p>
+        <h2 class="big-quote">"Transformamos un proceso que normalmente toma horas en una tarea que se completa en
+          minutos."</h2>
+        <div class="quote-author">Equipo Viantryp</div>
       </div>
     </div>
   </section>
@@ -4140,7 +4952,8 @@
         </div>
       </div>
 
-      <div class="pricing-disclaimer reveal" style="text-align: center; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 13px; color: #64748b; font-weight: 500;">
+      <div class="pricing-disclaimer reveal"
+        style="text-align: center; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 13px; color: #64748b; font-weight: 500;">
         * Todos los precios están expresados en USD (Dólares Estadounidenses)
       </div>
 
@@ -4295,10 +5108,55 @@
   </footer>
 
   <script>
+    // NAV SCROLL STATE HANDLER (TRANSPARENT -> WHITE & LOGO COLOR TOGGLE)
+    (function () {
+      const nav = document.querySelector('nav');
+      if (nav) {
+        const handleNavScroll = () => {
+          if (window.scrollY > 25) {
+            nav.classList.add('scrolled');
+          } else {
+            nav.classList.remove('scrolled');
+          }
+        };
+        window.addEventListener('scroll', handleNavScroll, { passive: true });
+        handleNavScroll();
+      }
+    })();
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+    // LAPTOP SCROLL-EXPANSION ANIMATION (HERO -> DEMO)
+    (function () {
+      const demoSection = document.getElementById('demo');
+      const demoLaptop = document.querySelector('.demo-laptop-expandable');
+      const heroVisual = document.querySelector('.hero .feature-banner-visual');
+
+      if (demoSection && demoLaptop) {
+        window.addEventListener('scroll', () => {
+          const rect = demoSection.getBoundingClientRect();
+          const winHeight = window.innerHeight;
+
+          if (rect.top <= winHeight && rect.bottom >= 0) {
+            const progress = Math.min(1, Math.max(0, (winHeight - rect.top) / (winHeight * 0.85)));
+
+            // Noticeable Scale / Zoom expansion (0.80 -> 1.02)
+            const scaleVal = 0.80 + (0.22 * progress);
+            const translateY = (1 - progress) * 55;
+            demoLaptop.style.transform = `scale(${scaleVal}) translateY(${translateY}px)`;
+            demoLaptop.style.boxShadow = `0 ${20 + progress * 20}px ${40 + progress * 30}px rgba(0, 0, 0, 0.5), 0 0 ${progress * 45}px rgba(77, 226, 244, ${progress * 0.35})`;
+
+            if (heroVisual) {
+              heroVisual.style.transform = `scale(${1 + progress * 0.08}) translateY(${progress * 25}px)`;
+              heroVisual.style.opacity = `${Math.max(0.15, 1 - progress * 0.75)}`;
+            }
+          }
+        }, { passive: true });
+      }
+    })();
 
     document.querySelectorAll('.footer-col-title').forEach(title => {
       title.addEventListener('click', () => {
@@ -4445,9 +5303,9 @@
           tabs.forEach(t => t.classList.remove('active'));
           tab.classList.add('active');
 
-          // Transition content
-          contentBox.style.opacity = '0.7';
-          contentBox.style.transform = 'translateY(10px)';
+          // Transition content with smooth morphing
+          contentBox.style.opacity = '0.25';
+          contentBox.style.transform = 'translateY(12px) scale(0.985)';
 
           setTimeout(() => {
             const item = data[target];
@@ -4459,8 +5317,8 @@
             ).join('');
 
             if (featuresRight && item.features) {
-              featuresRight.innerHTML = item.features.map(f => `
-              <div class="sol-feature-item">
+              featuresRight.innerHTML = item.features.map((f, idx) => `
+              <div class="sol-feature-item" style="animation: tabSlideInSlow 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${idx * 0.14}s forwards;">
                 <div class="sol-feature-icon" style="color: ${f.color};">
                   <i class="${f.icon}"></i>
                 </div>
@@ -4473,13 +5331,13 @@
             }
 
             contentBox.style.opacity = '1';
-            contentBox.style.transform = 'translateY(0)';
-          }, 150);
+            contentBox.style.transform = 'translateY(0) scale(1)';
+          }, 220);
         });
       });
 
       if (contentBox) {
-        contentBox.style.transition = 'all 0.3s ease';
+        contentBox.style.transition = 'opacity 0.45s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
       }
     })();
 
@@ -4566,25 +5424,35 @@
       animation: slideUp 0.35s ease;
     ">
       <div style="width: 44px; height: 4px; background: #ddd; border-radius: 4px; margin: 0 auto 1.5rem;"></div>
-      <img src="{{ asset('icons/icon-96x96.png') }}" style="width: 72px; border-radius: 18px; margin-bottom: 1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.15);" alt="Viantryp">
-      <h3 style="font-family: 'Barlow', sans-serif; font-size: 1.2rem; font-weight: 800; color: #0d2b3e; margin-bottom: 0.5rem;">Instalar Viantryp</h3>
-      <p style="font-size: 0.9rem; color: #666; line-height: 1.5; margin-bottom: 1.75rem;">Sigue estos pasos para instalar la app en tu iPhone:</p>
+      <img src="{{ asset('icons/icon-96x96.png') }}"
+        style="width: 72px; border-radius: 18px; margin-bottom: 1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.15);"
+        alt="Viantryp">
+      <h3
+        style="font-family: 'Barlow', sans-serif; font-size: 1.2rem; font-weight: 800; color: #0d2b3e; margin-bottom: 0.5rem;">
+        Instalar Viantryp</h3>
+      <p style="font-size: 0.9rem; color: #666; line-height: 1.5; margin-bottom: 1.75rem;">Sigue estos pasos para
+        instalar la app en tu iPhone:</p>
       <div style="text-align: left; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
-        <div style="display: flex; align-items: center; gap: 1rem; background: #f7f9f7; padding: 0.9rem 1rem; border-radius: 12px;">
+        <div
+          style="display: flex; align-items: center; gap: 1rem; background: #f7f9f7; padding: 0.9rem 1rem; border-radius: 12px;">
           <div style="font-size: 1.5rem; flex-shrink: 0;">1️⃣</div>
           <div>
             <div style="font-weight: 700; font-size: 0.88rem; color: #0d2b3e;">Toca el botón Compartir</div>
-            <div style="font-size: 0.8rem; color: #888;">El ícono <strong>↑</strong> en la barra inferior de Safari</div>
+            <div style="font-size: 0.8rem; color: #888;">El ícono <strong>↑</strong> en la barra inferior de Safari
+            </div>
           </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 1rem; background: #f7f9f7; padding: 0.9rem 1rem; border-radius: 12px;">
+        <div
+          style="display: flex; align-items: center; gap: 1rem; background: #f7f9f7; padding: 0.9rem 1rem; border-radius: 12px;">
           <div style="font-size: 1.5rem; flex-shrink: 0;">2️⃣</div>
           <div>
-            <div style="font-weight: 700; font-size: 0.88rem; color: #0d2b3e;">Selecciona "Agregar a pantalla de inicio"</div>
+            <div style="font-weight: 700; font-size: 0.88rem; color: #0d2b3e;">Selecciona "Agregar a pantalla de inicio"
+            </div>
             <div style="font-size: 0.8rem; color: #888;">Desplázate hacia abajo en el menú compartir</div>
           </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 1rem; background: #f7f9f7; padding: 0.9rem 1rem; border-radius: 12px;">
+        <div
+          style="display: flex; align-items: center; gap: 1rem; background: #f7f9f7; padding: 0.9rem 1rem; border-radius: 12px;">
           <div style="font-size: 1.5rem; flex-shrink: 0;">3️⃣</div>
           <div>
             <div style="font-weight: 700; font-size: 0.88rem; color: #0d2b3e;">Toca "Agregar"</div>
@@ -4624,21 +5492,29 @@
     border-top: 1px solid rgba(255,255,255,0.1);
     font-family: 'Barlow', sans-serif;
   ">
-    <img src="{{ asset('icons/icon-72x72.png') }}" alt="Viantryp" style="width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;">
+    <img src="{{ asset('icons/icon-72x72.png') }}" alt="Viantryp"
+      style="width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;">
     <div style="flex: 1; min-width: 0;">
       <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.15rem;">Instalar Viantryp</div>
       <div style="font-size: 0.8rem; opacity: 0.8;">Acceso rápido desde tu pantalla de inicio</div>
     </div>
     <div style="display: flex; gap: 0.5rem; flex-shrink: 0;">
-      <button id="landing-banner-dismiss" style="background: rgba(255,255,255,0.15); border: none; color: white; padding: 0.5rem 0.75rem; border-radius: 8px; font-size: 0.82rem; cursor: pointer; font-family: inherit;">No</button>
-      <button id="landing-banner-install" style="background: white; color: #0d2b3e; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: inherit;">Instalar</button>
+      <button id="landing-banner-dismiss"
+        style="background: rgba(255,255,255,0.15); border: none; color: white; padding: 0.5rem 0.75rem; border-radius: 8px; font-size: 0.82rem; cursor: pointer; font-family: inherit;">No</button>
+      <button id="landing-banner-install"
+        style="background: white; color: #0d2b3e; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: inherit;">Instalar</button>
     </div>
   </div>
 
   <style>
     @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
+      from {
+        transform: translateY(100%);
+      }
+
+      to {
+        transform: translateY(0);
+      }
     }
   </style>
 
@@ -4723,8 +5599,10 @@
       });
     }
 
+
+
     // Cerrar modal iOS al tocar el fondo
-    document.getElementById('ios-install-modal').addEventListener('click', function(e) {
+    document.getElementById('ios-install-modal').addEventListener('click', function (e) {
       if (e.target === this) this.style.display = 'none';
     });
   </script>
