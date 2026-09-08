@@ -2664,16 +2664,16 @@
 
   <!-- DEMO SECTION WITH STANDALONE MOCKUP -->
   <section class="demo-section" id="demo"
-    style="background: linear-gradient(135deg, #10596b 0%, #156677 50%, #0d4a57 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem; overflow: hidden; position: relative;">
+    style="background: linear-gradient(135deg, #10596b 0%, #156677 50%, #0d4a57 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem 1.5rem 1.5rem; overflow: hidden; position: relative;">
     <div class="container"
-      style="max-width: 1040px; width: 100%; position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center;">
+      style="max-width: 1080px; width: 100%; position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center;">
       <!-- Title & Text Outside Mockup -->
-      <div class="reveal" style="text-align: center; margin-bottom: 1.2rem;">
+      <div class="reveal" style="text-align: center; margin-top: 0; margin-bottom: 1.8rem;">
         <div class="section-label"
-          style="color: #4de2f4; font-size: 0.85rem; letter-spacing: 0.15em; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;">
+          style="color: #4de2f4; font-size: 0.85rem; letter-spacing: 0.15em; font-weight: 800; margin-bottom: 0.2rem; text-transform: uppercase;">
           Demo Interactiva</div>
         <p
-          style="color: rgba(255, 255, 255, 0.92); font-size: 13px; line-height: 1.5; max-width: 680px; margin: 0 auto; font-weight: 500;">
+          style="color: rgba(255, 255, 255, 0.92); font-size: 13px; line-height: 1.4; max-width: 680px; margin: 0 auto; font-weight: 500;">
           Prueba nuestra interfaz: arrastra servicios, organizalos y descubre la facilidad de crear itinerarios en
           segundos.
         </p>
@@ -2681,128 +2681,146 @@
 
       <!-- LAPTOP MOCKUP STANDALONE WITH SCROLL EXPAND -->
       <div class="laptop-wrap reveal d2 demo-laptop-expandable"
-        style="transform: none; max-width: 940px; width: 100%; margin: 0 auto; filter: drop-shadow(0 25px 50px rgba(0,0,0,0.45)); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;">
+        style="transform: none; max-width: 1020px; width: 100%; margin: 0 auto; filter: drop-shadow(0 25px 50px rgba(0,0,0,0.45)); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;">
         <div class="l-screen" style="padding: 4px 4px 0 4px;">
           <div class="l-notch">
             <div class="l-cam"></div>
           </div>
-          <div class="l-display" style="aspect-ratio: auto; height: 470px;">
+          <div class="l-display" style="aspect-ratio: auto; height: clamp(520px, 68vh, 620px);">
             <div class="l-glare"></div>
 
             <div class="vt-root" style="height: 100%; border-radius: 0;">
               <div class="vt-topbar">
-                <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp"
-                  style="height: 24px; width: auto; display: block;">
-                <div class="vt-topbar-actions">
+                <div class="vt-topbar-bg-decorators"></div>
+                <div class="vt-topbar-left" style="display: flex; align-items: center; gap: 10px; z-index: 1;">
+                  <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp" style="height: 18px; width: auto; filter: brightness(0) invert(1);">
+                </div>
+                <div class="vt-topbar-center" style="position: absolute; left: 50%; transform: translateX(-50%); z-index: 1;">
+                  <span class="vt-demo-badge" style="background: transparent; color: #ffffff; border: none; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; display: inline-flex; align-items: center; gap: 5px;">
+                    <i class="fa-solid fa-flask" style="font-size:10px;"></i> Versión Demo
+                  </span>
+                </div>
+                <div class="vt-topbar-actions" style="margin-left: auto; z-index: 1;">
                   <button class="vt-preview-btn" id="vtPreviewBtn">
-                    <i class="fas fa-eye"></i> <span>Vista previa</span>
+                    <i class="fa-solid fa-eye"></i> <span>Vista previa</span>
                   </button>
                 </div>
               </div>
 
               <div class="vt-body">
-                <!-- SIDEBAR -->
+                <!-- SIDEBAR (EDITOR MODE) -->
                 <div class="vt-sidebar">
-                  <div class="vt-section-label">Servicios</div>
-                  <div class="vt-grid">
-                    <div class="vt-card" draggable="true" data-type="Vuelo">
-                      <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                  <div class="vt-sidebar-scroll">
+                    <div class="vt-sidebar-section">
+                      <div class="vt-section-label">Servicios</div>
+                      <div class="vt-element-grid">
+                        <div class="vt-element-card type-flight" draggable="true" data-type="Vuelo">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon"><i class="fa-solid fa-plane"></i></div>
+                          <div class="vt-el-info">
+                            <div class="vt-el-name">Vuelo</div>
+                            <div class="vt-el-sub">Agregar vuelo</div>
+                          </div>
+                        </div>
+                        <div class="vt-element-card type-alojamiento" draggable="true" data-type="Alojamiento">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon"><i class="fa-solid fa-hotel"></i></div>
+                          <div class="vt-el-info">
+                            <div class="vt-el-name">Alojamiento</div>
+                            <div class="vt-el-sub">Hotel u hospedaje</div>
+                          </div>
+                        </div>
+                        <div class="vt-element-card type-actividad" draggable="true" data-type="Actividad">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon"><i class="fa-solid fa-compass"></i></div>
+                          <div class="vt-el-info">
+                            <div class="vt-el-name">Actividad</div>
+                            <div class="vt-el-sub">Tours o experiencias</div>
+                          </div>
+                        </div>
+                        <div class="vt-element-card type-transporte" draggable="true" data-type="Traslado">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon"><i class="fa-solid fa-car"></i></div>
+                          <div class="vt-el-info">
+                            <div class="vt-el-name">Traslado</div>
+                            <div class="vt-el-sub">Bus, tren u otro</div>
+                          </div>
+                        </div>
+                        <div class="vt-element-card type-comida" draggable="true" data-type="Comida">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon"><i class="fa-solid fa-utensils"></i></div>
+                          <div class="vt-el-info">
+                            <div class="vt-el-name">Comida</div>
+                            <div class="vt-el-sub">Restaurante y más</div>
+                          </div>
+                        </div>
+                        <div class="vt-element-card type-documentos" draggable="true" data-type="Documentos">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon"><i class="fa-solid fa-file-lines"></i></div>
+                          <div class="vt-el-info">
+                            <div class="vt-el-name">Documentos</div>
+                            <div class="vt-el-sub">Pasaportes, PDF y más</div>
+                          </div>
+                        </div>
                       </div>
-                      <div class="vt-card-icon icon-flight">✈️</div>
-                      <div class="vt-card-name">Vuelo</div>
-                      <div class="vt-card-sub">Agregar vuelo</div>
                     </div>
-                    <div class="vt-card" draggable="true" data-type="Alojamiento">
-                      <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                    <div class="vt-sidebar-section">
+                      <div class="vt-section-label">Diseño</div>
+                      <div class="vt-element-grid">
+                        <div class="vt-element-card type-titulo" draggable="true" data-type="Título">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon" style="font-size:15px;font-family:'Poppins';font-weight:800">T</div>
+                          <div class="vt-el-info">
+                            <div class="vt-el-name">Título</div>
+                            <div class="vt-el-sub">Encabezado</div>
+                          </div>
+                        </div>
+                        <div class="vt-element-card type-texto" draggable="true" data-type="Texto">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon" style="font-size:12px;font-family:'Poppins';">Aa</div>
+                          <div class="vt-el-info">
+                            <div class="vt-el-name">Texto</div>
+                            <div class="vt-el-sub">Párrafo</div>
+                          </div>
+                        </div>
+                        <div class="vt-element-card type-separador" draggable="true" data-type="Separador">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon" style="font-size:9px;">— ✦ —</div>
+                          <div class="vt-el-info">
+                            <div class="vt-el-name">Separador</div>
+                            <div class="vt-el-sub">Momento del día</div>
+                          </div>
+                        </div>
+                        <div class="vt-element-card type-caja" draggable="true" data-type="Caja">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                          <div class="vt-el-info">
+                            <div class="vt-el-name">Nota</div>
+                            <div class="vt-el-sub">Tip o recomendación</div>
+                          </div>
+                        </div>
                       </div>
-                      <div class="vt-card-icon icon-hotel">🏨</div>
-                      <div class="vt-card-name">Alojamiento</div>
-                      <div class="vt-card-sub">Hotel u hospedaje</div>
                     </div>
-                    <div class="vt-card" draggable="true" data-type="Traslado">
-                      <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
+                    <div class="vt-sidebar-section">
+                      <div class="vt-section-label">Detalles</div>
+                      <div class="vt-element-grid">
+                        <div class="vt-element-card type-imagen" draggable="true" data-type="Imagen">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon"><i class="fa-regular fa-image"></i></div>
+                          <div class="vt-el-info">
+                            <div class="vt-el-name">Imagen</div>
+                            <div class="vt-el-sub">Foto o Unsplash</div>
+                          </div>
+                        </div>
+                        <div class="vt-element-card type-gif" draggable="true" data-type="Gif">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon" style="color:#ce3df3;background:#f9f0ff"><i class="fa-solid fa-bolt"></i></div>
+                          <div class="vt-el-info">
+                            <div class="vt-el-name">GIF</div>
+                            <div class="vt-el-sub">Buscar en Giphy</div>
+                          </div>
+                        </div>
                       </div>
-                      <div class="vt-card-icon icon-car">🚗</div>
-                      <div class="vt-card-name">Traslado</div>
-                      <div class="vt-card-sub">Bus, tren u otro</div>
-                    </div>
-                    <div class="vt-card" draggable="true" data-type="Actividad">
-                      <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
-                      </div>
-                      <div class="vt-card-icon icon-act">🎯</div>
-                      <div class="vt-card-name">Actividad</div>
-                      <div class="vt-card-sub">Tour o experiencia</div>
-                    </div>
-                    <div class="vt-card" draggable="true" data-type="Comida">
-                      <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
-                      </div>
-                      <div class="vt-card-icon icon-food">🍽️</div>
-                      <div class="vt-card-name">Comida</div>
-                      <div class="vt-card-sub">Restaurante y más</div>
-                    </div>
-                    <div class="vt-card" draggable="true" data-type="Tour">
-                      <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
-                      </div>
-                      <div class="vt-card-icon icon-tour">🗺️</div>
-                      <div class="vt-card-name">Tour</div>
-                      <div class="vt-card-sub">Guías y grupos</div>
-                    </div>
-                  </div>
-                  <div class="vt-section-label">Diseño</div>
-                  <div class="vt-grid">
-                    <div class="vt-card" draggable="true" data-type="Texto">
-                      <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
-                      </div>
-                      <div class="vt-card-icon icon-txt">Aa</div>
-                      <div class="vt-card-name">Texto</div>
-                      <div class="vt-card-sub">Caja de texto</div>
-                    </div>
-                    <div class="vt-card" draggable="true" data-type="Título">
-                      <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
-                      </div>
-                      <div class="vt-card-icon icon-title">T</div>
-                      <div class="vt-card-name">Título</div>
-                      <div class="vt-card-sub">Encabezado</div>
-                    </div>
-                    <div class="vt-card" draggable="true" data-type="Separador">
-                      <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
-                      </div>
-                      <div class="vt-card-icon icon-sep" style="font-size:7px">—✦—</div>
-                      <div class="vt-card-name">Separador</div>
-                      <div class="vt-card-sub">División</div>
-                    </div>
-                    <div class="vt-card" draggable="true" data-type="Caja">
-                      <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
-                      </div>
-                      <div class="vt-card-icon icon-box">🎨</div>
-                      <div class="vt-card-name">Caja</div>
-                      <div class="vt-card-sub">Notas fondo</div>
-                    </div>
-                    <div class="vt-card" draggable="true" data-type="Imagen">
-                      <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
-                      </div>
-                      <div class="vt-card-icon icon-img">🖼️</div>
-                      <div class="vt-card-name">Imagen</div>
-                      <div class="vt-card-sub">Subir foto</div>
-                    </div>
-                    <div class="vt-card" draggable="true" data-type="Gif">
-                      <div class="vt-card-drag">
-                        <span><i></i><i></i><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span>
-                      </div>
-                      <div class="vt-card-icon icon-gif">🎬</div>
-                      <div class="vt-card-name">Gif</div>
-                      <div class="vt-card-sub">Animación</div>
                     </div>
                   </div>
                 </div>
@@ -2815,18 +2833,26 @@
 
                 <!-- MAIN CANVAS AREA -->
                 <div class="vt-main-wrap">
-                  <!-- PREVIEW HERO -->
+                  <!-- PREVIEW HERO (PUBLIC LINK VIEW) -->
                   <div class="vt-preview-hero">
                     <div class="vt-preview-hero-inner">
-                      <div class="vt-preview-hero-title">Viaje a Dubai 🛫 <span class="vt-badge"><i
-                            class="fas fa-circle"
-                            style="font-size: 6px; vertical-align: middle; margin-right: 4px;"></i> PAGADO
-                          PARCIALMENTE</span>
+                      <div class="vt-preview-hero-location" style="font-size: 11px; font-weight: 600; color: rgba(255, 255, 255, 0.9); margin-bottom: 4px; display: flex; align-items: center; gap: 5px;">
+                        <i class="fa-solid fa-location-dot" style="font-size: 10px; color: #4de2f4;"></i> Emiratos Árabes Unidos | Dubai · 7 días de aventura
                       </div>
-                      <div class="vt-preview-hero-stats">
-                        <div class="stat"><span>FECHAS</span><strong>14 may — 21 may</strong></div>
-                        <div class="stat"><span>VIAJEROS</span><strong>2 personas</strong></div>
-                        <div class="stat"><span>TOTAL</span><strong>USD $2,450.00</strong></div>
+                      <div class="vt-preview-hero-title" style="font-family: 'Manrope', 'Barlow', sans-serif; font-size: 22px; font-weight: 800; color: #ffffff; margin-bottom: 14px; text-shadow: 0 2px 6px rgba(0,0,0,0.4);">Viaje a Dubai</div>
+                      <div class="vt-preview-hero-stats" style="display: grid; grid-template-columns: 1fr 1fr 1fr; background: rgba(10, 24, 38, 0.82); backdrop-filter: blur(12px); border-top: 1px solid rgba(255, 255, 255, 0.12); padding: 10px 0; border-radius: 0 0 12px 12px; margin: 0 -14px 0 -14px;">
+                        <div class="stat" style="text-align: center; border-right: 1px solid rgba(255, 255, 255, 0.1);">
+                          <div style="font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.65); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px;"><i class="fa-regular fa-calendar-days" style="margin-right: 3px;"></i> FECHAS</div>
+                          <strong style="font-size: 11px; font-weight: 700; color: #ffffff;">11 may → 17 may</strong>
+                        </div>
+                        <div class="stat" style="text-align: center; border-right: 1px solid rgba(255, 255, 255, 0.1);">
+                          <div style="font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.65); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px;"><i class="fa-solid fa-user-group" style="margin-right: 3px;"></i> VIAJEROS</div>
+                          <strong style="font-size: 11px; font-weight: 700; color: #ffffff;">2 personas</strong>
+                        </div>
+                        <div class="stat" style="text-align: center;">
+                          <div style="font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.65); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px;"><i class="fa-solid fa-wallet" style="margin-right: 3px;"></i> TOTAL</div>
+                          <strong style="font-size: 11px; font-weight: 700; color: #ffffff;">$7.581 USD</strong>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2834,38 +2860,20 @@
                   <div class="vt-main">
                     <div class="vt-toolbar">
                       <div class="vt-tabs-row" id="vtTabsContainer">
-                        <button class="vt-tab active" id="vtTab0" onclick="vtSwitch(0)">Día 1 <span
-                            class="vt-tab-x">✕</span></button>
-                        <button class="vt-tab" id="vtTab1" onclick="vtSwitch(1)">Día 2 <span
-                            class="vt-tab-x">✕</span></button>
-                        <button class="vt-tab" id="vtTab2" onclick="vtSwitch(2)">Día 3 <span
-                            class="vt-tab-x">✕</span></button>
+                        <button class="vt-tab active" id="vtTab0" onclick="vtSwitch(0)">Día 1 <span class="vt-tab-x">✕</span></button>
+                        <button class="vt-tab" id="vtTab1" onclick="vtSwitch(1)">Día 2 <span class="vt-tab-x">✕</span></button>
+                        <button class="vt-tab" id="vtTab2" onclick="vtSwitch(2)">Día 3 <span class="vt-tab-x">✕</span></button>
+                        <button class="vt-tab-add" onclick="vtAddDay()">+ Día</button>
                       </div>
                       <div class="vt-toolbar-spacer"></div>
                       <span class="vt-item-count" id="vtCount">0 elementos</span>
                     </div>
-                    <div class="vt-canvas" id="vtCanvas" ondragover="vtHandleDragOver(event)"
-                      ondragleave="vtHandleDragLeave(event)" ondrop="vtDrop(event)">
+                    <div class="vt-canvas" id="vtCanvas" ondragover="vtHandleDragOver(event)" ondragleave="vtHandleDragLeave(event)" ondrop="vtDrop(event)">
                       <div class="vt-canvas-inner">
-                        <h3 class="vt-preview-day-heading" id="vtPreviewDayHeader">Día 1: Llegada y Bienvenida</h3>
                         <div class="vt-empty" id="vtEmpty" style="display:none">
-                          <div class="vt-empty-icon">🗺️</div>
+                          <div class="vt-empty-icon"><i class="fa-solid fa-map-location-dot"></i></div>
                           <div class="vt-empty-title">Tu itinerario está vacío</div>
-                          <div class="vt-empty-sub">Arrastra elementos desde el panel<br>izquierdo para comenzar</div>
-                        </div>
-                        <div class="vt-preview-header" id="vtPreviewHeader">
-                          <div class="vt-preview-header-item">
-                            <span class="vt-preview-header-label">FECHAS</span>
-                            <span class="vt-preview-header-value">14 may — 21 may</span>
-                          </div>
-                          <div class="vt-preview-header-item">
-                            <span class="vt-preview-header-label">VIAJEROS</span>
-                            <span class="vt-preview-header-value">2 personas</span>
-                          </div>
-                          <div class="vt-preview-header-item">
-                            <span class="vt-preview-header-label">TOTAL</span>
-                            <span class="vt-preview-header-value">USD $5,478.00</span>
-                          </div>
+                          <div class="vt-empty-sub">Arrastra elementos desde el panel izquierdo para comenzar</div>
                         </div>
                         <div class="vt-items" id="vtItems"></div>
                         <div class="vt-drop-hint" id="vtDropHint">+ Arrastra más elementos aquí</div>
@@ -3174,109 +3182,159 @@
       border-radius: 0;
     }
 
-    /* ── DUBAI DEMO STYLES ── */
+    /* ── PRO EDITOR & PUBLIC LINK DEMO STYLES ── */
     .vt-root {
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Inter', 'Barlow', sans-serif;
       font-size: 13px;
       color: #1a2e2c;
-      background: #f5f7fa;
+      background: #f4f5f9;
       border-radius: 0;
       overflow: hidden;
       border: none;
       display: flex;
       flex-direction: column;
-      height: 460px;
+      height: 100%;
       text-align: left;
+      position: relative;
     }
 
     .vt-topbar {
       background: #0f2a3a;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      height: 48px;
-      padding: 0 18px;
+      padding: 0 14px;
+      gap: 10px;
+      height: 44px;
       flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .vt-topbar-bg-decorators {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .vt-topbar-bg-decorators::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 90px;
+      width: 120px;
+      height: 300%;
+      background: #1a9a8a;
+      transform: skewX(-16deg);
+      opacity: 0.08;
+    }
+
+    .vt-sidebar-toggle {
+      color: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 6px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 11px;
+      z-index: 1;
+      transition: all 0.2s;
+    }
+
+    .vt-sidebar-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .vt-logo-wrap {
+      display: flex;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .vt-topbar-logo-img {
+      height: 20px;
+      width: auto;
+      filter: brightness(0) invert(1);
+    }
+
+    .vt-topbar-div {
+      width: 1px;
+      height: 18px;
+      background: rgba(255, 255, 255, 0.15);
+      z-index: 1;
     }
 
     .vt-topbar-actions {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      margin-left: auto;
+      z-index: 1;
+    }
+
+    .vt-btn-save {
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+      font-family: 'Barlow', sans-serif;
+    }
+
+    .vt-btn-save:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: white;
     }
 
     .vt-preview-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       color: white;
-      padding: 5px 12px;
-      border-radius: 6px;
+      padding: 4px 14px;
+      border-radius: 50px;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
       transition: all 0.2s;
+      font-family: 'Barlow', sans-serif;
     }
 
     .vt-preview-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.4);
-    }
-
-    .vt-preview-btn i {
-      font-size: 13px;
-    }
-
-    /* PREVIEW MODE STATES */
-    .vt-root.is-preview .vt-sidebar {
-      width: 0;
-      opacity: 0;
-      padding: 0;
-      border: none;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .vt-root.is-preview .vt-toolbar,
-    .vt-root.is-preview .vt-drop-hint,
-    .vt-root.is-preview .vt-card-drag,
-    .vt-root.is-preview .vt-item-delete {
-      display: none !important;
-    }
-
-    .vt-root.is-preview .vt-main-wrap {
-      padding: 0;
-      max-width: 800px;
-      margin: 0 auto;
-      background: transparent;
-    }
-
-    .vt-root.is-preview .vt-canvas {
-      background: transparent;
-      box-shadow: none;
-      border: none;
-      padding: 20px 10px;
-    }
-
-    .vt-root.is-preview .vt-item {
-      cursor: default;
-      transform: none !important;
-    }
-
-    .vt-root.is-preview .vt-items {
-      padding-bottom: 100px;
+      background: #02b5cb !important;
+      border-color: #02b5cb !important;
+      box-shadow: 0 4px 12px rgba(2, 181, 203, 0.35);
+      color: #ffffff !important;
     }
 
     .vt-body {
       display: flex;
       flex: 1;
       overflow: hidden;
+      position: relative;
     }
 
+    /* SIDEBAR EDITOR MODE */
     .vt-sidebar {
-      width: 184px;
+      width: 300px;
       background: white;
       border-right: 1px solid #e2e8ef;
       overflow-y: auto;
@@ -3284,31 +3342,160 @@
       padding-bottom: 12px;
     }
 
-    .vt-root.is-preview .vt-preview-sidebar {
-      display: flex;
-      flex-direction: column;
-      width: 180px;
-      background: #fff;
-      border-right: 1px solid #eef2f6;
-      flex-shrink: 0;
-      padding: 20px 0;
+    .vt-sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .vt-sidebar::-webkit-scrollbar-thumb {
+      background: #e2e8ef;
+      border-radius: 4px;
     }
 
+    .vt-sidebar-section {
+      padding: 0 4px;
+    }
+
+    .vt-section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #94a3b8;
+      padding: 10px 10px 4px;
+    }
+
+    .vt-element-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 0 6px;
+    }
+
+    .vt-element-card {
+      background: #ffffff;
+      border: 1px solid #e2e8ef;
+      border-radius: 8px;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: grab;
+      position: relative;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .vt-element-card:hover {
+      border-color: #02b5cb;
+      background: #f0faf9;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(2, 181, 203, 0.12);
+    }
+
+    .vt-element-card:active {
+      cursor: grabbing;
+      transform: scale(0.97);
+    }
+
+    .vt-el-drag-handle {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      display: flex;
+      gap: 1px;
+      color: #cbd5e1;
+      font-size: 7px;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .vt-element-card:hover .vt-el-drag-handle {
+      opacity: 1;
+    }
+
+    .vt-el-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      background: #f1f5f9;
+      color: #475569;
+      flex-shrink: 0;
+    }
+
+    /* SERVICE COLOR HARMONY */
+    .type-vuelo .vt-el-icon, .type-flight .vt-el-icon, .vt-item-icon.type-vuelo, .vt-item-icon.type-flight { background: #e0f2fe; color: #0284c7; }
+    .type-alojamiento .vt-el-icon, .vt-item-icon.type-alojamiento { background: #fef3c7; color: #d97706; }
+    .type-actividad .vt-el-icon, .vt-item-icon.type-actividad { background: #dcfce7; color: #16a34a; }
+    .type-traslado .vt-el-icon, .type-transporte .vt-el-icon, .vt-item-icon.type-traslado, .vt-item-icon.type-transporte { background: #f3e8ff; color: #9333ea; }
+    .type-comida .vt-el-icon, .vt-item-icon.type-comida { background: #ffe4e6; color: #e11d48; }
+    .type-documentos .vt-el-icon, .vt-item-icon.type-documentos { background: #e2e8f0; color: #475569; }
+    .type-tour .vt-el-icon, .vt-item-icon.type-tour { background: #e0f2fe; color: #0284c7; }
+    .type-titulo .vt-el-icon, .vt-item-icon.type-titulo, .vt-item-icon.type-título { background: #f1f5f9; color: #1e293b; }
+    .type-texto .vt-el-icon, .vt-item-icon.type-texto { background: #f1f5f9; color: #475569; }
+    .type-separador .vt-el-icon, .vt-item-icon.type-separador { background: #f8fafc; color: #64748b; }
+    .type-caja .vt-el-icon, .vt-item-icon.type-caja { background: #fef9c3; color: #ca8a04; }
+    .type-imagen .vt-el-icon, .vt-item-icon.type-imagen { background: #fef3c7; color: #d97706; }
+    .type-gif .vt-el-icon, .vt-item-icon.type-gif { background: #f3e8ff; color: #ce3df3; }
+
+    .vt-el-info {
+      min-width: 0;
+      text-align: left;
+    }
+
+    .vt-el-name {
+      font-size: 10px;
+      font-weight: 700;
+      color: #1a2e2c;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+
+    .vt-el-sub {
+      font-size: 8px;
+      color: #94a3b8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+      margin-top: 1px;
+    }
+
+    /* PREVIEW SIDEBAR */
     .vt-preview-sidebar {
       display: none;
     }
 
+    .vt-root.is-preview .vt-sidebar {
+      display: none !important;
+    }
+
+    .vt-root.is-preview .vt-preview-sidebar {
+      display: flex;
+      flex-direction: column;
+      width: 170px;
+      background: #ffffff;
+      border-right: 1px solid #eef2f6;
+      flex-shrink: 0;
+      padding: 12px 0;
+    }
+
     .vt-preview-sidebar-label {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
       color: #94a3b8;
       letter-spacing: 1px;
-      padding: 10px 20px 15px;
+      padding: 6px 16px 10px;
     }
 
     .vt-preview-day-item {
-      padding: 12px 20px;
-      font-size: 13px;
+      padding: 8px 16px;
+      font-size: 12px;
       color: #64748b;
       cursor: pointer;
       transition: all 0.2s;
@@ -3317,24 +3504,298 @@
 
     .vt-preview-day-item:hover {
       background: #f8fafc;
-      color: var(--navy);
+      color: #0f2a3a;
     }
 
     .vt-preview-day-item.active {
-      background: #f0f9ff;
-      color: #0284c7;
-      border-left-color: #0284c7;
+      background: #e6f8fa;
+      color: #02b5cb;
+      border-left-color: #02b5cb;
       font-weight: 700;
     }
 
-    .vt-preview-day-item span {
-      font-size: 11px;
-      display: block;
-      opacity: 0.7;
-      margin-top: 2px;
+    /* CANVAS WORKSPACE */
+    .vt-main-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #f4f5f9;
+      position: relative;
     }
 
-    /* HERO AREA FOR PREVIEW */
+    .vt-toolbar {
+      background: white;
+      border-bottom: 1px solid #e2e8ef;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 10px;
+      height: 38px;
+      flex-shrink: 0;
+    }
+
+    .vt-tabs-row {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .vt-tab {
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #64748b;
+      background: #f1f5f9;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+      white-space: nowrap;
+      font-family: 'Barlow', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .vt-tab:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+
+    .vt-tab.active {
+      background: #02b5cb !important;
+      color: #ffffff !important;
+      font-weight: 700;
+      border-color: #02b5cb !important;
+    }
+
+    .vt-tab-x {
+      font-size: 10px;
+      margin-left: 4px;
+      padding: 1px 4px;
+      border-radius: 50%;
+      opacity: 0.7;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .vt-tab-x:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+
+    .vt-tab:not(.active) .vt-tab-x:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+
+    .vt-tab-add {
+      background: transparent;
+      border: 1px dashed #cbd5e1;
+      color: #64748b;
+      padding: 3px 8px;
+      border-radius: 50px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .vt-tab-add:hover {
+      background: #f1f5f9;
+      border-color: #02b5cb;
+      color: #02b5cb;
+    }
+
+    .vt-toolbar-spacer { flex: 1; }
+
+    .vt-item-count {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .vt-canvas {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background 0.2s;
+    }
+
+    .vt-canvas.vt-over {
+      background: #e6f4f1;
+    }
+
+    .vt-canvas::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .vt-canvas::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .vt-canvas-inner {
+      width: 100%;
+      max-width: 580px;
+    }
+
+    .vt-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .vt-item {
+      background: white;
+      border: 1px solid #e2e8ef;
+      border-radius: 10px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      transition: all 0.15s;
+      animation: vtSlide 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .vt-item:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .vt-item-drag {
+      color: #cbd5e1;
+      font-size: 10px;
+      cursor: grab;
+    }
+
+    .vt-item-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .vt-item-body {
+      flex: 1;
+      min-width: 0;
+      text-align: left;
+    }
+
+    .vt-item-type {
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #94a3b8;
+    }
+
+    .vt-item-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1a2e2c;
+    }
+
+    .vt-item-detail {
+      font-size: 10px;
+      color: #64748b;
+      margin-top: 1px;
+    }
+
+    .vt-item-actions {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 4px;
+      opacity: 0.3;
+      transition: opacity 0.15s;
+    }
+
+    .vt-item:hover .vt-item-actions {
+      opacity: 1;
+    }
+
+    .vt-item-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      background: #f1f5f9;
+      border: none;
+      cursor: pointer;
+      font-size: 10px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .vt-item-btn.del:hover {
+      background: #fee2e2;
+      color: #ef4444;
+    }
+
+    /* PREVIEW MODE STATES (PUBLIC LINK VIEW) */
+    .vt-root.is-preview .vt-toolbar,
+    .vt-root.is-preview .vt-drop-hint,
+    .vt-root.is-preview .vt-item-drag,
+    .vt-root.is-preview .vt-item-actions {
+      display: none !important;
+    }
+
+    .vt-root.is-preview .vt-main-wrap {
+      background: #f8fafc;
+      overflow-y: auto;
+    }
+
+    /* CLEARLY VISIBLE SCROLLBAR IN PREVIEW MODE */
+    .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar,
+    .vt-root.is-preview .vt-canvas::-webkit-scrollbar {
+      width: 6px;
+      display: block !important;
+    }
+
+    .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar-track,
+    .vt-root.is-preview .vt-canvas::-webkit-scrollbar-track {
+      background: #eef2f6;
+      border-radius: 4px;
+    }
+
+    .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar-thumb,
+    .vt-root.is-preview .vt-canvas::-webkit-scrollbar-thumb {
+      background: #02b5cb;
+      border-radius: 4px;
+    }
+
+    .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar-thumb:hover,
+    .vt-root.is-preview .vt-canvas::-webkit-scrollbar-thumb:hover {
+      background: #028e9f;
+    }
+
+    .vt-root.is-preview .vt-canvas {
+      padding: 10px 0 30px;
+    }
+
+    .vt-root.is-preview .vt-canvas-inner {
+      max-width: 620px;
+    }
+
     .vt-preview-hero {
       display: none;
     }
@@ -3342,45 +3803,54 @@
     .vt-root.is-preview .vt-preview-hero {
       display: block;
       width: 100%;
-      padding: 20px;
+      padding: 12px 14px 4px;
       box-sizing: border-box;
     }
 
     .vt-preview-hero-inner {
-      background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2070&auto=format&fit=crop');
+      background: linear-gradient(180deg, rgba(10, 24, 38, 0.15) 0%, rgba(10, 24, 38, 0.88) 100%), url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1200&auto=format&fit=crop');
       background-size: cover;
       background-position: center;
-      border-radius: 16px;
-      padding: 15px;
+      border-radius: 12px;
+      padding: 55px 14px 0 14px;
+      min-height: 165px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
       color: white;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .vt-preview-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      background: #dcfce7;
+      color: #15803d;
+      font-size: 8px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 50px;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
     }
 
     .vt-preview-hero-title {
-      font-size: 24px;
+      font-family: 'Syne', sans-serif;
+      font-size: 19px;
       font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 30px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    .vt-badge {
-      background: #dcfce7;
-      color: #166534;
-      font-size: 9px;
-      padding: 4px 12px;
-      border-radius: 100px;
-      font-weight: 700;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .vt-preview-hero-stats {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       background: rgba(255, 255, 255, 0.95);
-      border-radius: 12px;
-      padding: 15px 0;
+      backdrop-filter: blur(8px);
+      border-radius: 8px;
+      padding: 8px 0;
       color: #1e293b;
     }
 
@@ -3394,16 +3864,17 @@
     }
 
     .vt-preview-hero-stats .stat span {
-      font-size: 8px;
-      font-weight: 700;
+      font-size: 7px;
+      font-weight: 800;
       color: #94a3b8;
       display: block;
-      margin-bottom: 4px;
+      letter-spacing: 0.5px;
     }
 
     .vt-preview-hero-stats .stat strong {
-      font-size: 12px;
-      color: var(--navy);
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f2a3a;
     }
 
     .vt-preview-day-heading {
@@ -3413,62 +3884,23 @@
     .vt-root.is-preview .vt-preview-day-heading {
       display: block;
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 10px;
-      padding-bottom: 10px;
-      border-bottom: 1.5px solid #edf2f7;
+      color: #0f2a3a;
+      margin: 10px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1.5px solid #e2e8ef;
     }
 
-    .vt-root.is-preview .vt-topbar {
-      height: 54px;
-    }
-
-    .vt-root.is-preview .vt-main-wrap {
-      background: #f8fafc;
-      overflow-y: auto;
-      flex: 1;
-    }
-
-    .vt-root.is-preview .vt-main {
-      background: transparent;
-      overflow-y: visible;
-      flex: initial;
-    }
-
-    .vt-root.is-preview .vt-canvas {
-      padding: 10px 0;
-    }
-
-    .vt-root.is-preview .vt-canvas-inner {
-      max-width: 720px;
-      margin: 0 auto;
-    }
-
-    .vt-items {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .vt-root.is-preview .vt-items {
-      gap: 8px;
-      padding-bottom: 80px;
-    }
-
-    /* RICH PREVIEW CARDS - MOCKUP STYLE */
     .vt-root.is-preview .vt-item {
       background: white;
-      border: none;
-      border-radius: 12px;
+      border: 1px solid #e2e8ef;
+      border-radius: 10px;
       padding: 0;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-      display: flex;
-      flex-direction: column;
-      border-bottom: 2px solid #eef2f6;
-      transition: transform 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      cursor: default;
+      transform: none !important;
     }
 
     .vt-root.is-preview .vt-item:hover {
@@ -4592,38 +5024,293 @@
         display: block;
       }
     }
+
+    /* ── MOBILE DEMO EXPERIENCES (MOBILE PRO EDITOR & PREVIEW) ── */
+    @media (max-width: 768px) {
+      .demo-section {
+        padding: 0.8rem 0.5rem 1rem !important;
+      }
+
+      .demo-section .container {
+        padding: 0 !important;
+      }
+
+      .demo-section .reveal {
+        margin-top: 0 !important;
+        margin-bottom: 1.4rem !important;
+      }
+
+      /* Transform desktop mockup into clean mobile device frame on phone screens */
+      .laptop-wrap.demo-laptop-expandable .l-base {
+        display: none !important;
+      }
+
+      .laptop-wrap.demo-laptop-expandable .l-screen {
+        border-radius: 24px !important;
+        border: 3px solid #1e293b !important;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45) !important;
+        padding: 0 !important;
+        background: #0f2a3a !important;
+        overflow: hidden !important;
+      }
+
+      .laptop-wrap.demo-laptop-expandable .l-display {
+        height: clamp(500px, 72vh, 600px) !important;
+        border-radius: 20px !important;
+        overflow: hidden !important;
+      }
+
+      .vt-root {
+        height: 100% !important;
+        border-radius: 20px !important;
+        overflow: hidden !important;
+      }
+
+      /* Mobile Phone App Topbar Styling */
+      .vt-topbar {
+        height: 44px !important;
+        padding: 0 12px !important;
+        background: #0f2a3a !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 20px 20px 0 0 !important;
+      }
+
+      .vt-topbar-left img {
+        height: 16px !important;
+      }
+
+      .vt-demo-badge {
+        font-size: 9px !important;
+        color: rgba(255, 255, 255, 0.9) !important;
+      }
+
+      .vt-preview-btn {
+        padding: 4px 10px !important;
+        font-size: 10px !important;
+        border-radius: 50px !important;
+      }
+
+      /* Editor mode on mobile: Narrow vertical icon sidebar on left, canvas on right */
+      .vt-body {
+        flex-direction: row !important;
+        flex: 1 !important;
+        min-height: 0 !important;
+      }
+
+      .vt-sidebar {
+        width: 52px !important;
+        height: 100% !important;
+        max-height: none !important;
+        border-right: 1px solid #e2e8ef !important;
+        border-bottom: none !important;
+        padding: 6px 3px !important;
+        overflow-y: auto !important;
+        flex-shrink: 0 !important;
+        background: #ffffff !important;
+        scrollbar-width: none;
+      }
+
+      .vt-sidebar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .vt-sidebar-scroll {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+      }
+
+      .vt-sidebar-section {
+        padding: 0 !important;
+      }
+
+      .vt-section-label {
+        display: none !important;
+      }
+
+      .vt-element-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 0 !important;
+        gap: 6px !important;
+        align-items: center !important;
+      }
+
+      .vt-element-card {
+        flex-shrink: 0 !important;
+        width: 42px !important;
+        height: 42px !important;
+        padding: 0 !important;
+        border-radius: 12px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: 1px solid #e2e8ef !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03) !important;
+      }
+
+      .vt-el-icon {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 11px !important;
+        font-size: 15px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      .vt-el-info,
+      .vt-el-drag-handle {
+        display: none !important;
+      }
+
+      .vt-main-wrap {
+        flex: 1 !important;
+        min-width: 0 !important;
+        height: 100% !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Preview mode on mobile: Smooth vertical scrolling & horizontal days navbar */
+      .vt-root.is-preview .vt-body {
+        flex-direction: column !important;
+        flex: 1 !important;
+        min-height: 0 !important;
+      }
+
+      .vt-root.is-preview .vt-main-wrap {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        height: 100% !important;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .vt-root.is-preview .vt-canvas {
+        overflow-y: visible !important;
+        height: auto !important;
+        min-height: min-content !important;
+        padding-bottom: 40px !important;
+      }
+
+      .vt-root.is-preview .vt-preview-sidebar {
+        width: 100% !important;
+        height: auto !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        border-right: none !important;
+        border-bottom: 1px solid #e2e8ef !important;
+        padding: 6px 10px !important;
+        overflow-x: auto !important;
+        gap: 6px !important;
+        scrollbar-width: none;
+        flex-shrink: 0 !important;
+      }
+
+      .vt-root.is-preview .vt-preview-sidebar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .vt-preview-sidebar-label {
+        display: none !important;
+      }
+
+      .vt-preview-days-list {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 6px !important;
+        width: 100% !important;
+      }
+
+      .vt-preview-day-item {
+        white-space: nowrap !important;
+        padding: 4px 10px !important;
+        font-size: 11px !important;
+        border-radius: 50px !important;
+        border-left: none !important;
+      }
+
+      .vt-preview-day-item.active {
+        background: #02b5cb !important;
+        color: #ffffff !important;
+      }
+
+      .vt-preview-hero {
+        padding: 8px 8px 4px !important;
+      }
+
+      .vt-preview-hero-inner {
+        padding: 30px 10px 0 10px !important;
+        min-height: 140px !important;
+        border-radius: 10px !important;
+      }
+
+      .vt-preview-hero-title {
+        font-size: 18px !important;
+        margin-bottom: 10px !important;
+      }
+
+      .vt-preview-hero-stats {
+        padding: 6px 0 !important;
+      }
+
+      .vt-preview-hero-stats .stat div {
+        font-size: 8px !important;
+      }
+
+      .vt-preview-hero-stats .stat strong {
+        font-size: 10px !important;
+      }
+    }
   </style>
 
   <script>
     (function () {
       const VT_DEFAULTS = [
         [
-          { type: 'Vuelo', icon: '✈️', bg: '#e8f0fe', name: 'Vuelo BCN → DXB', detail: 'Emirates EK-0383 · 14:30h', airline: 'Emirates Airlines', flight: 'EK 0383', times: '14:30 - 21:55' },
-          { type: 'Alojamiento', icon: '🏨', bg: '#fff3e0', name: 'Atlantis The Palm', detail: 'Check-in 15:00 · Suite Lujo', stars: 5, location: 'Palm Jumeirah' },
+          { type: 'Vuelo', icon: '✈️', bg: '#e0f2fe', name: 'Vuelo BCN → DXB', detail: 'Emirates EK-0383 · 14:30h', airline: 'Emirates Airlines', flight: 'EK 0383', times: '14:30 - 21:55' },
+          { type: 'Alojamiento', icon: '🏨', bg: '#fef3c7', name: 'Atlantis The Palm', detail: 'Check-in 15:00 · Suite Lujo', stars: 5, location: 'Palm Jumeirah' },
         ],
         [
-          { type: 'Actividad', icon: '🎯', bg: '#e8f5e9', name: 'Safari en el Desierto', detail: 'Dune bashing + Cena · 16:00h', duration: '6 horas' },
-          { type: 'Comida', icon: '🍽️', bg: '#fce4ec', name: 'Almuerzo Dubai Mall', detail: 'Reserva confirmada · 13:30h' },
+          { type: 'Actividad', icon: '🎯', bg: '#dcfce7', name: 'Safari en el Desierto', detail: 'Dune bashing + Cena · 16:00h', duration: '6 horas' },
+          { type: 'Comida', icon: '🍽️', bg: '#ffe4e6', name: 'Almuerzo Dubai Mall', detail: 'Reserva confirmada · 13:30h' },
         ],
         [
-          { type: 'Tour', icon: '🗺️', bg: '#e3f2fd', name: 'Burj Khalifa Top', detail: 'Piso 148 · Entrada 10:00h', ticket: 'BK-99231' },
-          { type: 'Traslado', icon: '🚗', bg: '#f3e5f5', name: 'Traslado Hotel → DXB', detail: 'Privado · Salida 07:00h' },
+          { type: 'Tour', icon: '🗺️', bg: '#e0f2fe', name: 'Burj Khalifa Top', detail: 'Piso 148 · Entrada 10:00h', ticket: 'BK-99231' },
+          { type: 'Traslado', icon: '🚗', bg: '#f3e8ff', name: 'Traslado Hotel → DXB', detail: 'Privado · Salida 07:00h' },
         ],
       ];
 
       const VT_EXTRA = {
-        Vuelo: [{ type: 'Vuelo', icon: '✈️', bg: '#e8f0fe', name: 'Vuelo BCN → DXB', detail: 'Emirates EK-0383', airline: 'Emirates', flight: 'EK 0383', times: '14:30 - 21:55' }],
-        Alojamiento: [{ type: 'Alojamiento', icon: '🏨', bg: '#fff3e0', name: 'Atlantis The Palm', detail: 'Palm Jumeirah', location: 'Dubai' }],
-        Traslado: [{ type: 'Traslado', icon: '🚗', bg: '#f3e5f5', name: 'Traslado privado', detail: 'Limousine · 30 min' }],
-        Actividad: [{ type: 'Actividad', icon: '🎯', bg: '#e8f5e9', name: 'Safari Desierto', detail: 'Dune bashing', duration: '6h' }],
-        Comida: [{ type: 'Comida', icon: '🍽️', bg: '#fce4ec', name: 'Cena Romántica', detail: 'Burj Al Arab · 20:00' }],
-        Tour: [{ type: 'Tour', icon: '🗺️', bg: '#e3f2fd', name: 'Tour Ciudad', detail: 'Guía privado · 4h' }],
-        Texto: [{ type: 'Texto', icon: 'Aa', bg: '#f5f5f5', name: 'Nota importante', detail: 'Llevar pasaporte original' }],
-        Título: [{ type: 'Título', icon: 'T', bg: '#f5f5f5', name: 'Día de llegada', detail: 'Bienvenidos a los Emiratos' }],
-        Separador: [{ type: 'Separador', icon: '—✦—', bg: '#f5f5f5', name: '— ✦ —', detail: '' }],
-        Caja: [{ type: 'Caja', icon: '🎨', bg: '#fce4ec', name: 'Info Clima', detail: '32°C - Soleado' }],
-        Imagen: [{ type: 'Imagen', icon: '🖼️', bg: '#fff8e1', name: 'Dubai', detail: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1000&auto=format&fit=crop' }],
-        Gif: [{ type: 'Gif', icon: '🎬', bg: '#f3e5f5', name: 'Viaje', detail: 'https://media.giphy.com/media/M9O2r21j1p2fMNDS5S/giphy.gif' }],
+        Vuelo: [{ type: 'Vuelo', icon: '✈️', bg: '#e0f2fe', name: 'Vuelo BCN → DXB', detail: 'Emirates EK-0383', airline: 'Emirates', flight: 'EK 0383', times: '14:30 - 21:55' }],
+        Alojamiento: [{ type: 'Alojamiento', icon: '🏨', bg: '#fef3c7', name: 'Atlantis The Palm', detail: 'Palm Jumeirah', location: 'Dubái' }],
+        Traslado: [{ type: 'Traslado', icon: '🚗', bg: '#f3e8ff', name: 'Traslado privado', detail: 'Limousine · 30 min' }],
+        Actividad: [{ type: 'Actividad', icon: '🎯', bg: '#dcfce7', name: 'Safari Desierto', detail: 'Dune bashing', duration: '6h' }],
+        Comida: [{ type: 'Comida', icon: '🍽️', bg: '#ffe4e6', name: 'Cena Romántica', detail: 'Burj Al Arab · 20:00' }],
+        Tour: [{ type: 'Tour', icon: '🗺️', bg: '#e0f2fe', name: 'Tour Ciudad', detail: 'Guía privado · 4h' }],
+        Documentos: [{ type: 'Documentos', icon: '📄', bg: '#e2e8f0', name: 'Vouchers & Boletos', detail: 'Documentación confirmada' }],
+        Texto: [{ type: 'Texto', icon: 'Aa', bg: '#f1f5f9', name: 'Nota importante', detail: 'Llevar pasaporte original' }],
+        Título: [{ type: 'Título', icon: 'T', bg: '#f1f5f9', name: 'Día de llegada', detail: 'Bienvenidos a los Emiratos' }],
+        Separador: [{ type: 'Separador', icon: '—✦—', bg: '#f8fafc', name: '— ✦ —', detail: '' }],
+        Caja: [{ type: 'Caja', icon: '💡', bg: '#fef9c3', name: 'Info Clima', detail: '32°C - Soleado' }],
+        Imagen: [{ type: 'Imagen', icon: '🖼️', bg: '#fef3c7', name: 'Dubái Skyline', detail: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1000&auto=format&fit=crop' }],
+        Gif: [{ type: 'Gif', icon: '⚡', bg: '#f3e8ff', name: 'Viaje Animación', detail: 'https://media.giphy.com/media/M9O2r21j1p2fMNDS5S/giphy.gif' }],
+      };
+
+      const serviceColorMap = {
+        'Vuelo': { bg: '#e0f2fe', color: '#0284c7', icon: '<i class="fa-solid fa-plane"></i>' },
+        'Alojamiento': { bg: '#fef3c7', color: '#d97706', icon: '<i class="fa-solid fa-hotel"></i>' },
+        'Actividad': { bg: '#dcfce7', color: '#16a34a', icon: '<i class="fa-solid fa-compass"></i>' },
+        'Traslado': { bg: '#f3e8ff', color: '#9333ea', icon: '<i class="fa-solid fa-car"></i>' },
+        'Comida': { bg: '#ffe4e6', color: '#e11d48', icon: '<i class="fa-solid fa-utensils"></i>' },
+        'Documentos': { bg: '#e2e8f0', color: '#475569', icon: '<i class="fa-solid fa-file-lines"></i>' },
+        'Tour': { bg: '#e0f2fe', color: '#0284c7', icon: '<i class="fa-solid fa-map-location-dot"></i>' },
+        'Título': { bg: '#f1f5f9', color: '#1e293b', icon: '<span style="font-family:Poppins;font-weight:800;font-size:14px">T</span>' },
+        'Texto': { bg: '#f1f5f9', color: '#475569', icon: '<span style="font-family:Poppins;font-weight:600;font-size:12px">Aa</span>' },
+        'Separador': { bg: '#f8fafc', color: '#64748b', icon: '<span style="font-size:9px">— ✦ —</span>' },
+        'Caja': { bg: '#fef9c3', color: '#ca8a04', icon: '<i class="fa-solid fa-lightbulb"></i>' },
+        'Imagen': { bg: '#fef3c7', color: '#d97706', icon: '<i class="fa-regular fa-image"></i>' },
+        'Gif': { bg: '#f3e8ff', color: '#ce3df3', icon: '<i class="fa-solid fa-bolt"></i>' }
       };
 
       let currentDay = 0;
@@ -4636,15 +5323,61 @@
 
       const days = [
         { id: 0, title: 'Día 1: Llegada y Bienvenida', items: VT_DEFAULTS[0].map(x => ({ ...x, id: uid++ })) },
-        { id: 1, title: 'Día 2: Explorando Dubai', items: VT_DEFAULTS[1].map(x => ({ ...x, id: uid++ })) },
+        { id: 1, title: 'Día 2: Explorando Dubái', items: VT_DEFAULTS[1].map(x => ({ ...x, id: uid++ })) },
         { id: 2, title: 'Día 3: El Desierto', items: VT_DEFAULTS[2].map(x => ({ ...x, id: uid++ })) }
       ];
 
+      window.vtRenderTabs = function() {
+        const container = document.getElementById('vtTabsContainer');
+        if (!container) return;
+
+        let html = days.map((day, idx) => `
+          <button class="vt-tab ${idx === currentDay ? 'active' : ''}" id="vtTab${idx}" onclick="vtSwitch(${idx})">
+            Día ${idx + 1}
+            <span class="vt-tab-x" onclick="vtDeleteDay(event, ${idx})" title="Eliminar día">✕</span>
+          </button>
+        `).join('');
+
+        html += `<button class="vt-tab-add" onclick="vtAddDay()">+ Día</button>`;
+        container.innerHTML = html;
+      };
+
       window.vtSwitch = (n) => {
+        if (n < 0 || n >= days.length) return;
         currentDay = n;
-        document.querySelectorAll('.vt-tab').forEach((t, idx) => t.classList.toggle('active', idx === n));
+        vtRenderTabs();
         vtUpdatePreviewSidebar();
         vtRender();
+      };
+
+      window.vtAddDay = () => {
+        const newDayNum = days.length + 1;
+        days.push({
+          id: days.length,
+          title: `Día ${newDayNum}: Nueva Actividad`,
+          items: []
+        });
+        currentDay = days.length - 1;
+        vtRenderTabs();
+        vtUpdatePreviewSidebar();
+        vtRender();
+        vtToast(`✓ Día ${newDayNum} añadido`);
+      };
+
+      window.vtDeleteDay = (e, idx) => {
+        if (e) e.stopPropagation();
+        if (days.length <= 1) {
+          vtToast('Debes mantener al menos 1 día');
+          return;
+        }
+        days.splice(idx, 1);
+        if (currentDay >= days.length) {
+          currentDay = days.length - 1;
+        }
+        vtRenderTabs();
+        vtUpdatePreviewSidebar();
+        vtRender();
+        vtToast('✓ Día eliminado');
       };
 
       function vtUpdatePreviewSidebar() {
@@ -4653,7 +5386,7 @@
         if (list) {
           list.innerHTML = days.map((day, idx) => `
           <div class="vt-preview-day-item ${idx === currentDay ? 'active' : ''}" onclick="vtSwitch(${idx})">
-            Día ${idx + 1} </span>
+            Día ${idx + 1}
           </div>
         `).join('');
         }
@@ -4743,8 +5476,8 @@
             if (isPreview) {
               if (item.id === items[0].id) {
                 const dayLabel = document.createElement('div');
-                dayLabel.innerHTML = `<span class="vt-day-badge">DÍA ${currentDay + 1}</span> <span class="vt-day-title">${days[currentDay].title.split(': ')[1] || days[currentDay].title}</span>`;
-                dayLabel.style.margin = '20px 0 15px 15px';
+                dayLabel.innerHTML = `<span class="vt-day-badge">DÍA ${currentDay + 1}</span>`;
+                dayLabel.style.margin = '10px 0 12px 4px';
                 dayLabel.style.textAlign = 'left';
                 list.appendChild(dayLabel);
               }
@@ -4760,83 +5493,97 @@
 
       function renderEditorCard(el, item) {
         const isVisual = item.type === 'Imagen' || item.type === 'Gif';
+        const sInfo = serviceColorMap[item.type] || { bg: '#f1f5f9', color: '#02b5cb', icon: '<i class="fa-solid fa-circle-info"></i>' };
+
         el.innerHTML = `
-        <div class="vt-item-drag"><span><i></i><i></i></span></div>
-        <div class="vt-item-icon" style="background:${item.bg}">${item.icon}</div>
+        <div class="vt-item-drag"><i class="fa-solid fa-grip-vertical"></i></div>
+        <div class="vt-item-icon" style="background:${sInfo.bg}; color:${sInfo.color}">${sInfo.icon}</div>
         <div class="vt-item-body">
           <div class="vt-item-type">${item.type}</div>
           <div class="vt-item-name">${item.name}</div>
-          ${isVisual ? `<img src="${item.detail}" style="width:100%; border-radius:6px; margin-top:5px; height:auto; max-height:120px; object-fit:cover;">` : `<div class="vt-item-detail">${item.detail}</div>`}
+          ${isVisual ? `<img src="${item.detail}" style="width:100%; border-radius:6px; margin-top:5px; height:auto; max-height:100px; object-fit:cover;">` : `<div class="vt-item-detail">${item.detail}</div>`}
         </div>
         <div class="vt-item-actions">
-          <button class="vt-item-btn del" onclick="vtRemove(${item.id})">✕</button>
+          <button class="vt-item-btn del" onclick="vtRemove(${item.id})" title="Eliminar">✕</button>
         </div>`;
       }
 
       function renderRichCard(el, item) {
+        const sInfo = serviceColorMap[item.type] || { bg: '#f1f5f9', color: '#02b5cb', icon: '<i class="fa-solid fa-circle-info"></i>' };
+
         if (item.type === 'Vuelo') {
           el.innerHTML = `
-          <div class="vt-item-flight-rich" style="padding: 15px; background: white; border-radius: 12px; border: 1px solid #eef2f6; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
-            <div style="display: flex; align-items: center; gap: 8px; color: #1a7a8a; font-weight: 700; font-size: 13px; margin-bottom: 15px;">
-              <i class="fas fa-plane"></i> Vuelo ${item.name}
+          <div class="vt-item-flight-rich" style="padding: 14px; background: white; border-radius: 12px; border: 1px solid #eef2f6; width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+            <div style="display: flex; align-items: center; justify-content: space-between; color: ${sInfo.color}; font-weight: 700; font-size: 12px; margin-bottom: 12px;">
+              <span style="display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-plane"></i> Vuelo ${item.name}</span>
+              <span style="background: #0f2a3a; color: white; font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 4px;">EK 0383</span>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
               <div style="text-align: left;">
-                <div style="font-size: 20px; font-weight: 800; color: #0d1f2d;">14:30</div>
-                <div style="font-size: 13px; font-weight: 800; color: #0d1f2d; margin: 2px 0;">Barcelona-El Prat (BCN)</div>
-                <div style="font-size: 11px; color: #9aabb8;">jueves, 14 de mayo</div>
+                <div style="font-size: 18px; font-weight: 800; color: #0f2a3a;">14:30</div>
+                <div style="font-size: 11px; font-weight: 700; color: #334155;">BCN (Barcelona)</div>
+                <div style="font-size: 9px; color: #94a3b8;">14 de mayo</div>
               </div>
-              <div style="text-align: center; color: #b0bcc8; padding-top: 10px;">
-                <i class="fas fa-plane" style="font-size: 18px; opacity: 0.5;"></i>
+              <div style="text-align: center; color: #cbd5e1; padding: 0 10px;">
+                <i class="fa-solid fa-plane-departure" style="font-size: 16px; color: ${sInfo.color};"></i>
+                <div style="font-size: 8px; color: #94a3b8; margin-top:2px;">6h 25m</div>
               </div>
               <div style="text-align: right;">
-                <div style="font-size: 20px; font-weight: 800; color: #0d1f2d;">21:55</div>
-                <div style="font-size: 13px; font-weight: 700; color: #0d1f2d; margin: 2px 0;">Dubái (DXB)</div>
-                <div style="font-size: 11px; color: #9aabb8; text-align: right;">jueves, 14 de mayo</div>
+                <div style="font-size: 18px; font-weight: 800; color: #0f2a3a;">21:55</div>
+                <div style="font-size: 11px; font-weight: 700; color: #334155;">DXB (Dubái)</div>
+                <div style="font-size: 9px; color: #94a3b8;">14 de mayo</div>
               </div>
             </div>
-            <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f0f2f5; padding-top: 12px; margin-top: 12px;">
-              <div style="font-size: 11px; color: #9aabb8;">Emirates Airlines</div>
-              <div style="background: #1a7a8a; color: white; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 4px;">EX 0383</div>
+            <div style="border-top: 1px solid #f1f5f9; padding-top: 8px; margin-top: 8px; font-size: 10px; color: #64748b; display:flex; justify-content:space-between;">
+              <span>Emirates Airlines</span>
+              <span style="color:#16a34a; font-weight:600;"><i class="fa-solid fa-circle-check"></i> Confirmado</span>
             </div>
           </div>`;
         } else if (item.type === 'Alojamiento') {
+          const hotelPhotos = item.photos || [
+            'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80',
+            'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80',
+            'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80'
+          ];
           el.innerHTML = `
-          <div style="padding: 15px; background: white; border-radius: 12px; border: 1px solid #eef2f6; width: 100%; display: flex; gap: 15px; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
-             <div style="width: 60px; height: 60px; border-radius: 10px; background: #fff3e0; display: flex; align-items: center; justify-content: center; font-size: 24px;">🏨</div>
-             <div style="flex: 1;">
-               <div style="font-size: 10px; font-weight: 800; color: #f57c00; text-transform: uppercase; letter-spacing: 0.5px;">Alojamiento</div>
-               <div style="font-size: 15px; font-weight: 800; color: #0d1f2d;">${item.name}</div>
-               <div style="font-size: 12px; color: #9aabb8; margin-top: 2px;">${item.location || 'Dubai'} · ★★★★★</div>
+          <div style="padding: 14px; background: white; border-radius: 12px; border: 1px solid #eef2f6; width: 100%; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+             <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
+               <div style="width: 42px; height: 42px; border-radius: 10px; background: ${sInfo.bg}; color:${sInfo.color}; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink:0;">${sInfo.icon}</div>
+               <div style="flex: 1; text-align:left;">
+                 <div style="font-size: 9px; font-weight: 800; color: ${sInfo.color}; text-transform: uppercase; letter-spacing: 0.6px;">Alojamiento</div>
+                 <div style="font-size: 14px; font-weight: 800; color: #0f2a3a;">${item.name}</div>
+                 <div style="font-size: 10px; color: #64748b; margin-top: 2px;">${item.location || 'Palm Jumeirah'} · <span style="color:#f59e0b;">★★★★★</span></div>
+               </div>
+               <span style="background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 50px;">Confirmado</span>
+             </div>
+             <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 6px; border-radius: 10px; overflow: hidden; height: 110px; margin-top: 10px;">
+                <img src="${hotelPhotos[0]}" style="width:100%; height:100%; object-fit:cover; display:block;">
+                <img src="${hotelPhotos[1]}" style="width:100%; height:100%; object-fit:cover; display:block;">
+                <img src="${hotelPhotos[2]}" style="width:100%; height:100%; object-fit:cover; display:block;">
              </div>
           </div>`;
         } else {
           const isVisual = item.type === 'Imagen' || item.type === 'Gif';
           el.innerHTML = `
-          <div style="padding: 15px; background: white; border-radius: 12px; border: 1px solid #eef2f6; width: 100%; display: flex; gap: 15px; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
-             <div style="width: 44px; height: 44px; border-radius: 10px; background: ${item.bg}30; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #1a9a8a;">${item.icon}</div>
-             <div style="flex: 1;">
-               <div style="font-size: 9px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">${item.type}</div>
-               <div style="font-size: 14px; font-weight: 700; color: #0d1f2d;">${item.name}</div>
-               ${isVisual ? '' : `<div style="font-size: 12px; color: #7a8898; margin-top: 2px;">${item.detail}</div>`}
-               ${isVisual ? `<img src="${item.detail}" style="width:100%; height:auto; border-radius:8px; margin-top:10px; border: 1px solid #f0f2f5;">` : ''}
+          <div style="padding: 12px; background: white; border-radius: 10px; border: 1px solid #eef2f6; width: 100%; display: flex; gap: 12px; align-items: center;">
+             <div style="width: 38px; height: 38px; border-radius: 8px; background: ${sInfo.bg}; color:${sInfo.color}; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink:0;">${sInfo.icon}</div>
+             <div style="flex: 1; text-align:left;">
+               <div style="font-size: 8px; font-weight: 800; color: ${sInfo.color}; text-transform: uppercase; letter-spacing: 0.5px;">${item.type}</div>
+               <div style="font-size: 13px; font-weight: 700; color: #0f2a3a;">${item.name}</div>
+               ${isVisual ? '' : `<div style="font-size: 10px; color: #64748b; margin-top: 1px;">${item.detail}</div>`}
+               ${isVisual ? `<img src="${item.detail}" style="width:100%; max-height:140px; object-fit:cover; border-radius:6px; margin-top:6px; border: 1px solid #f1f5f9;">` : ''}
              </div>
           </div>`;
         }
       }
 
-      function getIcon(type) {
-        const map = { Actividad: 'fas fa-star', Comida: 'fas fa-utensils', Tour: 'fas fa-map-signs', Traslado: 'fas fa-car', Texto: 'fas fa-align-left' };
-        return map[type] || 'fas fa-info-circle';
-      }
-
-      function vtToast(msg) {
+      window.vtToast = (msg) => {
         const el = document.getElementById('vtToastEl');
         if (!el) return;
         el.textContent = msg; el.classList.add('show');
         clearTimeout(vtTimer);
         vtTimer = setTimeout(() => el.classList.remove('show'), 2000);
-      }
+      };
 
       // PREVIEW TOGGLE
       const vtPreviewBtn = document.getElementById('vtPreviewBtn');
@@ -4846,18 +5593,19 @@
           root.classList.toggle('is-preview');
           const isPreview = root.classList.contains('is-preview');
           vtPreviewBtn.innerHTML = isPreview
-            ? '<i class="fas fa-edit"></i> <span>Volver al editor</span>'
-            : '<i class="fas fa-eye"></i> <span>Vista previa</span>';
+            ? '<i class="fa-solid fa-pen-to-square"></i> <span>Volver al editor</span>'
+            : '<i class="fa-solid fa-eye"></i> <span>Vista previa</span>';
           vtUpdatePreviewSidebar();
           vtRender();
         });
       }
 
       window.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.vt-card').forEach(c => {
+        document.querySelectorAll('.vt-element-card, .vt-card').forEach(c => {
           c.addEventListener('dragstart', () => { vtDragType = c.dataset.type; c.style.opacity = '0.5'; });
           c.addEventListener('dragend', () => c.style.opacity = '1');
         });
+        vtRenderTabs();
         vtUpdatePreviewSidebar();
         vtRender();
       });
