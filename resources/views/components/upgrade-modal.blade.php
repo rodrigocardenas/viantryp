@@ -65,7 +65,7 @@
         ]
     ];
 
-    foreach($planData as $key => &$data) {
+    foreach ($planData as $key => &$data) {
         if (!$data['is_custom'] && $data['price_monthly'] > 0) {
             $data['savings'] = round(($data['price_monthly'] - $data['price_annual']) * 12, 2);
         }
@@ -117,7 +117,7 @@
             if (data && data.data && data.data.items && data.data.items[0]) {
                 priceId = data.data.items[0].price_id || data.data.items[0].price?.id || priceId;
             }
-        } catch(e) {}
+        } catch (e) { }
 
         const overlay = document.getElementById('modalLoadingOverlay');
         if (overlay) overlay.style.display = 'flex';
@@ -151,7 +151,7 @@
                 }
                 const initOptions = {
                     token: PADDLE_CLIENT_TOKEN,
-                    eventCallback: function(data) {
+                    eventCallback: function (data) {
                         if (data.name === 'checkout.completed' || data.name === 'checkout.payment_complete') {
                             handlePaddleCheckoutCompleted(data);
                         }
@@ -183,7 +183,8 @@
                 <div class="user-info">
                     <div class="avatar user-avatar">
                         @if($user->avatar)
-                            <img src="{{ str_starts_with($user->avatar, 'http') ? $user->avatar : asset('storage/' . $user->avatar) }}" alt="">
+                            <img src="{{ str_starts_with($user->avatar, 'http') ? $user->avatar : asset('storage/' . $user->avatar) }}"
+                                alt="">
                         @else
                             {{ $user->display_initials }}
                         @endif
@@ -192,13 +193,6 @@
                         <div class="user-name">{{ $user->display_name }}</div>
                         <div class="user-email">{{ $user->email }}</div>
                     </div>
-                </div>
-                <div class="plan-badge-pill" style="{{ $user->isTrialActive() ? 'background:#1a9a8a; color:white; border-color:#0c4a5b;' : '' }}">
-                    @if($user->isTrialActive())
-                        Prueba Avanzado ({{ $user->getTrialDaysRemaining() }}d)
-                    @else
-                        Plan {{ ucfirst($currentPlan) }}
-                    @endif
                 </div>
             </div>
 
@@ -217,23 +211,24 @@
                     <div class="usage-card">
                         <div class="usage-label">Itinerarios</div>
                         <div class="usage-stats">
-                            <span class="current" id="modal-trip-count">{{ $tripCount }}</span><span
-                                class="limit" id="modal-trip-limit">/{{ $limits['max_trips'] >= 1000000 ? '∞' : $limits['max_trips'] }}</span>
+                            <span class="current" id="modal-trip-count">{{ $tripCount }}</span><span class="limit"
+                                id="modal-trip-limit">/{{ $limits['max_trips'] >= 1000000 ? '∞' : $limits['max_trips'] }}</span>
                         </div>
                         <div class="progress-container">
-                            <div class="progress-bar {{ $tripProgress >= 100 ? 'limit-reached' : '' }}" id="modal-trip-bar"
-                                style="width: {{ $tripProgress }}%"></div>
+                            <div class="progress-bar {{ $tripProgress >= 100 ? 'limit-reached' : '' }}"
+                                id="modal-trip-bar" style="width: {{ $tripProgress }}%"></div>
                         </div>
                     </div>
 
                     <div class="usage-card">
                         <div class="usage-label">Editores</div>
                         <div class="usage-stats">
-                            <span class="current" id="modal-editor-count">{{ $editorCount }}</span><span
-                                class="limit" id="modal-editor-limit">/{{ ($limits['max_editors'] ?? 0) >= 1000000 ? '∞' : ($limits['max_editors'] ?? 0) }}</span>
+                            <span class="current" id="modal-editor-count">{{ $editorCount }}</span><span class="limit"
+                                id="modal-editor-limit">/{{ ($limits['max_editors'] ?? 0) >= 1000000 ? '∞' : ($limits['max_editors'] ?? 0) }}</span>
                         </div>
                         <div class="progress-container">
-                            <div class="progress-bar {{ $editorProgress >= 100 ? 'limit-reached' : '' }}" id="modal-editor-bar" style="width: {{ $editorProgress }}%; background: #6366f1;"></div>
+                            <div class="progress-bar {{ $editorProgress >= 100 ? 'limit-reached' : '' }}"
+                                id="modal-editor-bar" style="width: {{ $editorProgress }}%; background: #6366f1;"></div>
                         </div>
                     </div>
 
@@ -244,7 +239,8 @@
             <div class="pricing-toggle-wrap">
                 <span class="toggle-label active" id="modalLabelMonthly">Mensual</span>
                 <div class="toggle-switch" id="modalPriceToggle"></div>
-                <span class="toggle-label" id="modalLabelAnnual">Anual <span class="annual-discount-pill">-25%</span></span>
+                <span class="toggle-label" id="modalLabelAnnual">Anual <span
+                        class="annual-discount-pill">-20%</span></span>
             </div>
 
             <!-- PLANS GRID (Management) -->
@@ -253,25 +249,33 @@
                 <div class="p-grid-container">
                     @foreach($planData as $key => $data)
                         @php 
-                            $isBlocked = ($tripCount > $data['limit_trips']) || 
-                                         ($editorCount > $data['limit_editors']); 
+                                                                    $isBlocked = ($tripCount > $data['limit_trips']) ||
+                            ($editorCount > $data['limit_editors']); 
                         @endphp
                         <div class="p-card {{ $currentPlan === $key ? 'active' : '' }} {{ $isBlocked ? 'blocked' : '' }}">
                             @if(isset($data['popular']))
-                            <div class="p-popular">MÁS POPULAR</div> @endif
-                            @if($isBlocked)
-                            <div class="p-blocked-badge">LÍMITE EXCEDIDO</div> @endif
-                            <div class="p-name">{{ $data['name'] }}</div>
-                            <div class="p-price" style="{{ !is_numeric($data['price_monthly']) ? 'font-size: 16px;' : '' }}">
-                                @if(is_numeric($data['price_monthly']))<span class="currency">$</span>@endif<span class="p-price-val" data-monthly="{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}" data-annual="{{ is_numeric($data['price_annual']) ? number_format($data['price_annual'], 2, '.', '') : $data['price_annual'] }}">{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}</span>@if(!$data['is_custom'])<small>/mes</small>@endif
-                            </div>
-                            @if(isset($data['savings']) && $data['savings'] > 0)
-                                <div class="plan-savings-hint">Ahorras ${{ $data['savings'] }} al año</div>
+                                <div class="p-popular">MÁS POPULAR</div>
                             @endif
-                            <div class="p-benefits">
-                                @foreach($data['benefits'] as $b)
-                                    <div class="p-benefit"><i class="fas fa-check"></i> {{ $b }}</div>
-                                @endforeach
+                            @if($isBlocked && $currentPlan !== $key)
+                                <div class="p-blocked-badge">LÍMITE EXCEDIDO</div>
+                            @endif
+                            <div>
+                                <div class="p-name">{{ $data['name'] }}</div>
+                                <div class="p-price"
+                                    style="{{ !is_numeric($data['price_monthly']) ? 'font-size: 18px;' : '' }}">
+                                    @if(is_numeric($data['price_monthly']))<span class="currency">$</span>@endif<span
+                                        class="p-price-val"
+                                        data-monthly="{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}"
+                                        data-annual="{{ is_numeric($data['price_annual']) ? number_format($data['price_annual'], 2, '.', '') : $data['price_annual'] }}">{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}</span>@if(!$data['is_custom'])<small>/mes</small>@endif
+                                </div>
+                                @if(isset($data['savings']) && $data['savings'] > 0)
+                                    <div class="plan-savings-hint">Ahorras ${{ $data['savings'] }} al año</div>
+                                @endif
+                                <div class="p-benefits">
+                                    @foreach($data['benefits'] as $b)
+                                        <div class="p-benefit"><i class="fas fa-check"></i> {{ $b }}</div>
+                                    @endforeach
+                                </div>
                             </div>
                             <button
                                 onclick="{{ $data['name'] === 'Corp.' ? 'window.location.href=\'' . route('contact') . '\'' : 'updateUserPlan(\'' . $key . '\')' }}"
@@ -296,10 +300,13 @@
                         <div class="popular-badge">MÁS POPULAR</div> @endif
                     </div>
                     <div class="ns-price" style="{{ !is_numeric($nextData['price_monthly']) ? 'font-size: 18px;' : '' }}">
-                        @if(is_numeric($nextData['price_monthly']))<span class="currency">$</span>@endif<span class="amount" data-monthly="{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}" data-annual="{{ is_numeric($nextData['price_annual']) ? number_format($nextData['price_annual'], 2, '.', '') : $nextData['price_annual'] }}">{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}</span>
+                        @if(is_numeric($nextData['price_monthly']))<span class="currency">$</span>@endif<span class="amount"
+                            data-monthly="{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}"
+                            data-annual="{{ is_numeric($nextData['price_annual']) ? number_format($nextData['price_annual'], 2, '.', '') : $nextData['price_annual'] }}">{{ is_numeric($nextData['price_monthly']) ? number_format($nextData['price_monthly'], 2, '.', '') : $nextData['price_monthly'] }}</span>
                         @if(!$nextData['is_custom']) <span class="period">/mes</span> @endif
                         @if(isset($nextData['savings']) && $nextData['savings'] > 0)
-                            <div class="plan-savings-hint" style="color: white; opacity: 0.9;">Ahorras ${{ $nextData['savings'] }} al año</div>
+                            <div class="plan-savings-hint" style="color: white; opacity: 0.9;">Ahorras
+                                ${{ $nextData['savings'] }} al año</div>
                         @endif
                     </div>
                     <div class="benefits-list">
@@ -326,14 +333,19 @@
                 </div>
             @endif
 
-            <div class="pricing-disclaimer" style="text-align: center; margin-top: 15px; margin-bottom: 5px; font-size: 11px; color: #94a3b8; font-weight: 500;">
+            <div class="pricing-disclaimer"
+                style="text-align: center; margin-top: 15px; margin-bottom: 5px; font-size: 11px; color: #94a3b8; font-weight: 500;">
                 * Todos los precios están expresados en USD (Dólares Estadounidenses)
             </div>
 
-            <div class="modal-footer-links" style="margin-top: 10px; display: flex; justify-content: center; gap: 12px; font-size: 12px;">
-                <span>Tiempos de facturación en <a href="{{ route('home') }}#precios" target="_blank">Nuestros Planes &rarr;</a></span>
+            <div class="modal-footer-links"
+                style="margin-top: 10px; display: flex; justify-content: center; gap: 12px; font-size: 12px;">
+                <span>Tiempos de facturación en <a href="{{ route('home') }}#precios" target="_blank">Nuestros Planes
+                        &rarr;</a></span>
                 <span style="color: #cbd5e1;">•</span>
-                <span><a href="#" onclick="openCodeGateModal('esencial'); return false;" style="color: #1a7a8a; font-weight: 600; text-decoration: underline;">¿Tienes un código promocional? &rarr;</a></span>
+                <span><a href="#" onclick="openCodeGateModal('esencial'); return false;"
+                        style="color: #1a7a8a; font-weight: 600; text-decoration: underline;">¿Tienes un código
+                        promocional? &rarr;</a></span>
             </div>
         </div>
 
@@ -352,85 +364,113 @@
 <!-- ============================================================ -->
 <!-- PLAN GATE MODAL -->
 <!-- ============================================================ -->
-<div id="planGateModal" style="display:none; position:fixed; inset:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:10001; align-items:center; justify-content:center; font-family:'Barlow',sans-serif;">
-    <div style="background:#fff; border-radius:24px; width:100%; max-width:460px; margin:auto; box-shadow:0 40px 100px -20px rgba(0,0,0,0.4); animation:modalPop 0.35s cubic-bezier(0.175,0.885,0.32,1.1); position:relative; overflow:hidden;">
+<div id="planGateModal"
+    style="display:none; position:fixed; inset:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:10001; align-items:center; justify-content:center; font-family:'Manrope',sans-serif;">
+    <div
+        style="background:#fff; border-radius:24px; width:100%; max-width:460px; margin:auto; box-shadow:0 40px 100px -20px rgba(0,0,0,0.4); animation:modalPop 0.35s cubic-bezier(0.175,0.885,0.32,1.1); position:relative; overflow:hidden;">
 
         <!-- Close btn -->
-        <button onclick="closePlanGateModal()" style="position:absolute;top:12px;right:12px;background:#f1f5f9;border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#64748b;cursor:pointer;z-index:10;">×</button>
+        <button onclick="closePlanGateModal()"
+            style="position:absolute;top:12px;right:12px;background:#f1f5f9;border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#64748b;cursor:pointer;z-index:10;">×</button>
 
         <!-- STEP 1: Code Entry -->
         <div id="planGateStep1" style="padding:32px;">
-            <div style="width:52px;height:52px;background:#f0f9f8;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+            <div
+                style="width:52px;height:52px;background:#f0f9f8;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
                 <i class="fas fa-key" style="font-size:22px;color:#1a7a8a;"></i>
             </div>
-            <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Cambio de Plan</div>
+            <div
+                style="font-size:11px;font-weight:800;letter-spacing:2px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">
+                Cambio de Plan</div>
             <h2 style="margin:0 0 8px;font-size:22px;font-weight:900;color:#0f172a;">Ingresa tu código de acceso</h2>
-            <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.6;">Para cambiar al plan <strong id="gateTargetPlanName" style="color:#1a7a8a;"></strong>, ingresa el código que te proporcionó nuestro equipo.</p>
+            <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.6;">Para cambiar al plan <strong
+                    id="gateTargetPlanName" style="color:#1a7a8a;"></strong>, ingresa el código que te proporcionó
+                nuestro equipo.</p>
 
             <div style="margin-bottom:12px;">
-                <input
-                    type="text"
-                    id="planAccessCodeInput"
-                    placeholder="Ej: VIA-2024-XYZ"
-                    autocomplete="off"
-                    style="width:100%;box-sizing:border-box;background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:14px 16px;font-size:16px;font-weight:700;letter-spacing:3px;text-transform:uppercase;font-family:'Barlow',sans-serif;color:#0f172a;outline:none;transition:border-color 0.2s;"
-                    oninput="this.value=this.value.toUpperCase()"
-                />
-                <div id="planCodeError" style="display:none;margin-top:8px;font-size:13px;color:#ef4444;font-weight:600;"></div>
+                <input type="text" id="planAccessCodeInput" placeholder="Ej: VIA-2024-XYZ" autocomplete="off"
+                    style="width:100%;box-sizing:border-box;background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:14px 16px;font-size:16px;font-weight:700;letter-spacing:3px;text-transform:uppercase;font-family:'Manrope',sans-serif;color:#0f172a;outline:none;transition:border-color 0.2s;"
+                    oninput="this.value=this.value.toUpperCase()" />
+                <div id="planCodeError"
+                    style="display:none;margin-top:8px;font-size:13px;color:#ef4444;font-weight:600;"></div>
             </div>
 
-            <button onclick="submitPlanCode()" id="planCodeSubmitBtn" style="width:100%;background:#1a7a8a;color:white;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;transition:0.2s;margin-bottom:16px;">
+            <button onclick="submitPlanCode()" id="planCodeSubmitBtn"
+                style="width:100%;background:#1a7a8a;color:white;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;transition:0.2s;margin-bottom:16px;">
                 <span id="planCodeSubmitLabel">Verificar código →</span>
             </button>
 
             <div style="text-align:center;">
-                <button onclick="switchToPlanRequest()" style="background:none;border:none;color:#1a7a8a;font-size:13px;font-weight:700;cursor:pointer;text-decoration:underline;font-family:'Barlow',sans-serif;">¿No tienes código? Solicitar acceso →</button>
+                <button onclick="switchToPlanRequest()"
+                    style="background:none;border:none;color:#1a7a8a;font-size:13px;font-weight:700;cursor:pointer;text-decoration:underline;font-family:'Manrope',sans-serif;">¿No
+                    tienes código? Solicitar acceso →</button>
             </div>
         </div>
 
         <!-- STEP 2: Request Form -->
         <div id="planGateStep2" style="display:none;padding:32px;">
-            <div style="width:52px;height:52px;background:#fffbeb;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+            <div
+                style="width:52px;height:52px;background:#fffbeb;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
                 <i class="fas fa-envelope" style="font-size:22px;color:#f59e0b;"></i>
             </div>
-            <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Solicitud de Plan</div>
-            <h2 style="margin:0 0 8px;font-size:22px;font-weight:900;color:#0f172a;">Solicitar plan <span id="gateTargetPlanName2" style="color:#1a7a8a;"></span></h2>
-            <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.6;">Déjanos tus datos y nuestro equipo se pondrá en contacto contigo para activar tu plan.</p>
+            <div
+                style="font-size:11px;font-weight:800;letter-spacing:2px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">
+                Solicitud de Plan</div>
+            <h2 style="margin:0 0 8px;font-size:22px;font-weight:900;color:#0f172a;">Solicitar plan <span
+                    id="gateTargetPlanName2" style="color:#1a7a8a;"></span></h2>
+            <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.6;">Déjanos tus datos y nuestro equipo
+                se pondrá en contacto contigo para activar tu plan.</p>
 
             <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
                 <div>
-                    <label style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Nombre completo *</label>
-                    <input type="text" id="reqName" placeholder="Tu nombre" style="width:100%;box-sizing:border-box;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Barlow',sans-serif;color:#0f172a;outline:none;transition:border-color 0.2s;">
+                    <label
+                        style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Nombre
+                        completo *</label>
+                    <input type="text" id="reqName" placeholder="Tu nombre"
+                        style="width:100%;box-sizing:border-box;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Manrope',sans-serif;color:#0f172a;outline:none;transition:border-color 0.2s;">
                 </div>
                 <div>
-                    <label style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Teléfono / WhatsApp</label>
-                    <input type="tel" id="reqPhone" placeholder="+57 300 000 0000" style="width:100%;box-sizing:border-box;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Barlow',sans-serif;color:#0f172a;outline:none;transition:border-color 0.2s;">
+                    <label
+                        style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Teléfono
+                        / WhatsApp</label>
+                    <input type="tel" id="reqPhone" placeholder="+57 300 000 0000"
+                        style="width:100%;box-sizing:border-box;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Manrope',sans-serif;color:#0f172a;outline:none;transition:border-color 0.2s;">
                 </div>
                 <div>
-                    <label style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Correo de contacto *</label>
-                    <input type="email" id="reqEmail" placeholder="tu@correo.com" style="width:100%;box-sizing:border-box;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Barlow',sans-serif;color:#0f172a;outline:none;transition:border-color 0.2s;">
+                    <label
+                        style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;">Correo
+                        de contacto *</label>
+                    <input type="email" id="reqEmail" placeholder="tu@correo.com"
+                        style="width:100%;box-sizing:border-box;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Manrope',sans-serif;color:#0f172a;outline:none;transition:border-color 0.2s;">
                 </div>
             </div>
 
-            <div id="planReqError" style="display:none;margin-bottom:12px;font-size:13px;color:#ef4444;font-weight:600;"></div>
+            <div id="planReqError"
+                style="display:none;margin-bottom:12px;font-size:13px;color:#ef4444;font-weight:600;"></div>
 
-            <button onclick="submitPlanRequest()" id="planReqSubmitBtn" style="width:100%;background:#f59e0b;color:white;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;transition:0.2s;margin-bottom:16px;">
+            <button onclick="submitPlanRequest()" id="planReqSubmitBtn"
+                style="width:100%;background:#f59e0b;color:white;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;transition:0.2s;margin-bottom:16px;">
                 <span id="planReqSubmitLabel">Enviar solicitud →</span>
             </button>
 
             <div style="text-align:center;">
-                <button onclick="switchToCodeStep()" style="background:none;border:none;color:#64748b;font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;">← Tengo un código</button>
+                <button onclick="switchToCodeStep()"
+                    style="background:none;border:none;color:#64748b;font-size:13px;font-weight:600;cursor:pointer;font-family:'Manrope',sans-serif;">←
+                    Tengo un código</button>
             </div>
         </div>
 
         <!-- STEP 3: Success -->
         <div id="planGateStep3" style="display:none;padding:40px 32px;text-align:center;">
-            <div style="width:64px;height:64px;background:#ecfdf5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
-                <i class="fas fa-check" style="font-size:26px;color:#10b981;"></i>
+            <div
+                style="width:64px;height:64px;background:#ecfdf5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+                <i class="fas fa-check" style="font-size:26px;color:#1eaace;"></i>
             </div>
             <h2 style="margin:0 0 10px;font-size:22px;font-weight:900;color:#0f172a;">¡Solicitud enviada!</h2>
-            <p style="margin:0 0 28px;font-size:14px;color:#64748b;line-height:1.6;">Nuestro equipo ha recibido tu solicitud y se pondrá en contacto contigo a la brevedad para activar tu plan.</p>
-            <button onclick="closePlanGateModal()" style="background:#1a7a8a;color:white;border:none;border-radius:12px;padding:14px 32px;font-size:14px;font-weight:700;cursor:pointer;">Entendido</button>
+            <p style="margin:0 0 28px;font-size:14px;color:#64748b;line-height:1.6;">Nuestro equipo ha recibido tu
+                solicitud y se pondrá en contacto contigo a la brevedad para activar tu plan.</p>
+            <button onclick="closePlanGateModal()"
+                style="background:#1a7a8a;color:white;border:none;border-radius:12px;padding:14px 32px;font-size:14px;font-weight:700;cursor:pointer;">Entendido</button>
         </div>
 
     </div>
@@ -449,7 +489,7 @@
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         z-index: 10000;
-        font-family: 'Barlow', sans-serif;
+        font-family: 'Manrope', sans-serif;
         border: none;
         outline: none;
     }
@@ -466,12 +506,12 @@
 
     .modal-standard {
         width: 100%;
-        max-width: 520px;
+        max-width: 500px;
     }
 
     .modal-wide {
         width: 100%;
-        max-width: 920px;
+        max-width: 820px;
     }
 
     @keyframes modalPop {
@@ -488,12 +528,12 @@
 
     .upgrade-premium-modal .close-btn {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 14px;
+        right: 14px;
         background: #f1f5f9;
         border: none;
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -526,7 +566,7 @@
     .user-avatar {
         width: 44px;
         height: 44px;
-        background: #1a9a8a;
+        background: #1EAACE;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -611,9 +651,11 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
     }
+
     .usage-grid-compact .usage-card {
         padding: 12px;
     }
+
     .usage-grid-compact .usage-stats .current {
         font-size: 16px;
     }
@@ -653,7 +695,7 @@
 
     .progress-bar {
         height: 100%;
-        background: #1a9a8a;
+        background: #1EAACE;
     }
 
     .progress-bar.limit-reached {
@@ -708,7 +750,7 @@
 
     .ns-price {
         margin-bottom: 16px;
-        font-family: 'Barlow', sans-serif;
+        font-family: 'Manrope', sans-serif;
     }
 
     .ns-price .amount {
@@ -786,7 +828,7 @@
     }
 
     .toggle-label.active {
-        color: #1a7a8a;
+        color: #1EAACE;
     }
 
     .toggle-switch {
@@ -813,7 +855,7 @@
     }
 
     .toggle-switch.annual {
-        background: #1a7a8a;
+        background: #1EAACE;
     }
 
     .toggle-switch.annual::after {
@@ -822,7 +864,7 @@
 
     .annual-discount-pill {
         background: #ecfdf5;
-        color: #10b981;
+        color: #1eaace;
         font-size: 9px;
         font-weight: 800;
         padding: 2px 8px;
@@ -833,7 +875,7 @@
 
     .plan-savings-hint {
         font-size: 10px;
-        color: #10b981;
+        color: #1eaace;
         font-weight: 700;
         margin-top: 4px;
         opacity: 0;
@@ -843,7 +885,7 @@
         overflow: hidden;
     }
 
-    .toggle-switch.annual ~ .plan-savings-hint,
+    .toggle-switch.annual~.plan-savings-hint,
     #upgradePlanModal.annual-view .plan-savings-hint {
         opacity: 1;
         transform: translateY(0);
@@ -854,142 +896,168 @@
     /* GRID STYLES */
     .p-grid-container {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 12px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        align-items: stretch;
     }
 
     .p-card {
         background: #ffffff;
-        border: 1px solid #eef2f6;
+        border: 1.5px solid #e2e8f0;
         border-radius: 20px;
-        padding: 20px 16px;
+        padding: 22px 18px;
         display: flex;
         flex-direction: column;
-        transition: 0.3s ease;
+        justify-content: space-between;
+        transition: all 0.25s ease;
         position: relative;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
     }
 
     .p-card.active {
-        border: 2px solid #1a7a8a;
-        background: #f0f9f8;
+        border: 2.5px solid #1EAACE;
+        background: #f0fdff;
+        box-shadow: 0 10px 30px -5px rgba(30, 170, 206, 0.2);
     }
 
     .p-card.blocked {
-        opacity: 0.7;
-        background: #f1f5f9;
+        opacity: 0.75;
+        background: #f8fafc;
         border-style: dashed;
     }
 
     .p-blocked-badge {
         position: absolute;
         top: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #ef4444;
-        color: white;
-        font-size: 7px;
-        font-weight: 900;
-        padding: 3px 8px;
+        right: 12px;
+        background: #fef2f2;
+        color: #ef4444;
+        border: 1px solid #fecaca;
+        font-size: 8px;
+        font-weight: 800;
+        padding: 2px 8px;
         border-radius: 100px;
         z-index: 2;
     }
 
     .p-popular {
         position: absolute;
-        top: -10px;
+        top: -12px;
         left: 50%;
         transform: translateX(-50%);
-        background: #0f2a3a;
+        background: #1EAACE;
         color: white;
-        font-size: 8px;
+        font-size: 10px;
         font-weight: 800;
-        padding: 4px 10px;
+        padding: 3px 14px;
         border-radius: 100px;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 10px rgba(30, 170, 206, 0.3);
+        z-index: 2;
+        white-space: nowrap;
     }
 
     .p-name {
-        font-size: 13px;
-        font-weight: 800;
-        color: #64748b;
-        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 900;
+        color: #0f172a;
+        margin-bottom: 6px;
         text-transform: uppercase;
+        letter-spacing: 0.3px;
     }
 
     .p-price {
-        font-size: 20px;
+        font-size: 26px;
         font-weight: 900;
         color: #0f172a;
-        margin-bottom: 12px;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: baseline;
+        gap: 2px;
     }
 
     .p-price small {
-        font-size: 10px;
-        color: #94a3b8;
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 600;
     }
 
     .p-benefits {
         flex-grow: 1;
-        margin-bottom: 15px;
+        margin-bottom: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
 
     .p-benefit {
-        font-size: 10px;
+        font-size: 11.5px;
         color: #475569;
         font-weight: 600;
-        margin-bottom: 4px;
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 7px;
+        line-height: 1.3;
+    }
+
+    .p-benefit i {
+        color: #1eaace;
+        font-size: 11px;
+        flex-shrink: 0;
     }
 
     .p-btn {
         width: 100%;
-        padding: 8px;
-        border-radius: 10px;
+        padding: 10px 14px;
+        border-radius: 12px;
         border: 1.5px solid #e2e8f0;
-        background: white;
+        background: #ffffff;
         color: #0f172a;
-        font-size: 11px;
+        font-size: 12.5px;
         font-weight: 700;
         cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: 'Manrope', sans-serif;
+    }
+
+    .p-btn:hover {
+        border-color: #cbd5e1;
+        transform: translateY(-1px);
     }
 
     .p-btn.current {
-        background: #1a7a8a;
+        background: #1EAACE;
         color: white;
-        border-color: #1a7a8a;
+        border-color: #1EAACE;
+        box-shadow: 0 4px 12px rgba(30, 170, 206, 0.25);
     }
 
     .p-btn.blocked {
         color: #94a3b8;
         background: #f1f5f9;
+        cursor: not-allowed;
     }
 
     .modal-footer-links {
         text-align: center;
-        margin-top: 28px;
-        font-size: 13px;
+        margin-top: 24px;
+        font-size: 12.5px;
         color: #94a3b8;
         font-weight: 600;
     }
 
     .modal-footer-links a {
-        color: #1a7f77;
+        color: #1EAACE;
         text-decoration: none;
-    }
-
-    @media (max-width: 880px) {
-        .p-grid-container {
-            grid-template-columns: repeat(3, 1fr);
-        }
     }
 
     @media (max-width: 768px) {
         .upgrade-premium-modal .modal-content {
             width: 95%;
-            margin: 10px auto;
-            max-height: 95vh;
+            margin: 15px auto;
+            max-height: 90vh;
             overflow-y: auto;
+            border-radius: 20px;
         }
 
         .modal-wide {
@@ -998,35 +1066,26 @@
 
         .p-grid-container {
             display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
+            flex-direction: column;
             gap: 16px;
-            padding: 10px 10px 30px;
-            margin: 0 -5px;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
-        }
-
-        .p-grid-container::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
+            padding: 0;
         }
 
         .p-card {
-            flex-shrink: 0;
-            width: 270px;
-            scroll-snap-align: center;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .usage-grid {
             grid-template-columns: 1fr;
         }
-        
+
         .modal-user-header {
             flex-direction: column;
             align-items: flex-start;
             gap: 12px;
         }
-        
+
         .benefits-list {
             grid-template-columns: 1fr;
         }
@@ -1036,45 +1095,54 @@
         .p-card {
             width: 82%;
         }
-        
+
         .modal-body {
             padding: 20px 15px;
         }
     }
+
     /* Dynamic toggle logic for all plans vs next step */
     .upgrade-premium-modal:not(.show-all-plans) .plans-management-grid {
         display: none !important;
     }
+
     .upgrade-premium-modal:not(.show-all-plans) .next-step-card,
     .upgrade-premium-modal:not(.show-all-plans) .next-step-card-max {
         display: block !important;
     }
+
     .upgrade-premium-modal:not(.show-all-plans) .usage-grid {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 10px !important;
     }
+
     .upgrade-premium-modal:not(.show-all-plans) .usage-card {
         padding: 12px !important;
     }
+
     .upgrade-premium-modal:not(.show-all-plans) .usage-stats .current {
         font-size: 16px !important;
     }
-    
+
     .upgrade-premium-modal.show-all-plans .plans-management-grid {
         display: block !important;
     }
+
     .upgrade-premium-modal.show-all-plans .next-step-card,
     .upgrade-premium-modal.show-all-plans .next-step-card-max,
     .upgrade-premium-modal.show-all-plans .upgrade-alert {
         display: none !important;
     }
+
     .upgrade-premium-modal.show-all-plans .usage-grid {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 16px !important;
     }
+
     .upgrade-premium-modal.show-all-plans .usage-card {
         padding: 16px !important;
     }
+
     .upgrade-premium-modal.show-all-plans .usage-stats .current {
         font-size: 20px !important;
     }
@@ -1082,8 +1150,8 @@
 
 <script>
     const planLimits = @json($jsPlanLimits);
-    const currentUsage = { 
-        trips: {{ $tripCount }}, 
+    const currentUsage = {
+        trips: {{ $tripCount }},
 
         editors: {{ $editorCount }}
     };
@@ -1091,7 +1159,7 @@
     async function openUpgradeModal(showAll = null) {
         const modal = document.getElementById('upgradePlanModal');
         if (!modal) return;
-        
+
         const shouldShowAll = showAll !== null ? showAll : {{ request()->routeIs('profile.index') ? 'true' : 'false' }};
         const modalContent = modal.querySelector('.modal-content');
         if (shouldShowAll) {
@@ -1107,7 +1175,7 @@
                 modalContent.classList.add('modal-standard');
             }
         }
-        
+
         // Show modal immediately
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -1116,16 +1184,16 @@
             // Fetch fresh usage data
             const response = await fetch('{{ route("subscription.usage") }}');
             const data = await response.json();
-            
+
             if (data.success) {
                 // Update elements if they exist
-                const updateEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-                const updateBar = (id, perc, reached) => { 
-                    const el = document.getElementById(id); 
-                    if(el) { 
-                        el.style.width = perc + '%'; 
-                        if(reached) el.classList.add('limit-reached'); else el.classList.remove('limit-reached');
-                    } 
+                const updateEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+                const updateBar = (id, perc, reached) => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.style.width = perc + '%';
+                        if (reached) el.classList.add('limit-reached'); else el.classList.remove('limit-reached');
+                    }
                 };
 
                 const usage = data.usage;
@@ -1140,7 +1208,7 @@
                 updateEl('modal-editor-count', usage.editors);
                 updateEl('modal-editor-limit', '/' + (limits.max_editors >= 1000000 ? '∞' : limits.max_editors));
                 updateBar('modal-editor-bar', Math.min(100, (usage.editors / Math.max(1, limits.max_editors)) * 100), usage.editors >= limits.max_editors);
-                
+
                 // Update sync object for validation
                 currentUsage.trips = usage.trips;
 
@@ -1156,33 +1224,33 @@
     }
 
     // Pricing Toggle Logic for Modal
-    (function() {
+    (function () {
         document.addEventListener('DOMContentLoaded', () => {
             const toggle = document.getElementById('modalPriceToggle');
             const modal = document.getElementById('upgradePlanModal');
             const labelMonthly = document.getElementById('modalLabelMonthly');
             const labelAnnual = document.getElementById('modalLabelAnnual');
             const priceVals = document.querySelectorAll('.p-price-val, .ns-price .amount');
-            
+
             if (toggle) {
                 toggle.addEventListener('click', () => {
                     const isAnnual = toggle.classList.toggle('annual');
                     modal.classList.toggle('annual-view', isAnnual);
                     labelAnnual.classList.toggle('active', isAnnual);
                     labelMonthly.classList.toggle('active', !isAnnual);
-                    
+
                     priceVals.forEach(v => {
                         const target = isAnnual ? v.dataset.annual : v.dataset.monthly;
                         if (target && target !== 'Ventas') {
                             v.style.opacity = '0';
                             setTimeout(() => {
-                                v.textContent = target; 
+                                v.textContent = target;
                                 v.style.opacity = '1';
                             }, 150);
                         }
                     });
                 });
-                
+
                 // Transition support
                 priceVals.forEach(v => v.style.transition = 'opacity 0.2s');
             }
@@ -1200,11 +1268,11 @@
         if (!existingScript) {
             const s = document.createElement('script');
             s.src = "https://cdn.paddle.com/paddle/v2/paddle.js";
-            s.onload = function() {
+            s.onload = function () {
                 initPaddle();
                 callback();
             };
-            s.onerror = function() {
+            s.onerror = function () {
                 alert('No se pudo conectar con la pasarela de pagos. Por favor verifica tu conexión.');
             };
             document.head.appendChild(s);
@@ -1338,15 +1406,15 @@
     }
 
     function showPlanGateStep(n) {
-        [1,2,3].forEach(i => {
+        [1, 2, 3].forEach(i => {
             const el = document.getElementById('planGateStep' + i);
             if (el) el.style.display = i === n ? 'block' : 'none';
         });
     }
 
     function switchToPlanRequest() { showPlanGateStep(2); }
-    function switchToCodeStep()    { showPlanGateStep(1); }
-    
+    function switchToCodeStep() { showPlanGateStep(1); }
+
     async function submitDirectPlanUpdate(planKey) {
         try {
             const res = await fetch('{{ route("profile.update.plan") }}', {
@@ -1360,7 +1428,7 @@
             } else {
                 alert(data.message || 'Error al actualizar el plan.');
             }
-        } catch(e) {
+        } catch (e) {
             alert('Error de conexión.');
         }
     }
@@ -1392,7 +1460,7 @@
             } else {
                 showGateCodeError(data.message || 'Código inválido.');
             }
-        } catch(e) {
+        } catch (e) {
             showGateCodeError('Error de conexión. Intenta nuevamente.');
         } finally {
             btn.disabled = false;
@@ -1407,7 +1475,7 @@
     }
 
     async function submitPlanRequest() {
-        const name  = document.getElementById('reqName').value.trim();
+        const name = document.getElementById('reqName').value.trim();
         const email = document.getElementById('reqEmail').value.trim();
         const phone = document.getElementById('reqPhone').value.trim();
 
@@ -1438,7 +1506,7 @@
                 errEl.textContent = data.message || 'Error al enviar. Intenta de nuevo.';
                 errEl.style.display = 'block';
             }
-        } catch(e) {
+        } catch (e) {
             const errEl = document.getElementById('planReqError');
             errEl.textContent = 'Error de conexión. Intenta nuevamente.';
             errEl.style.display = 'block';
@@ -1449,17 +1517,17 @@
     }
 
     // Close gate modal on backdrop click
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const gateModal = document.getElementById('planGateModal');
         if (gateModal) {
-            gateModal.addEventListener('click', function(e) {
+            gateModal.addEventListener('click', function (e) {
                 if (e.target === gateModal) closePlanGateModal();
             });
         }
         // Enter key in code input
         const codeInput = document.getElementById('planAccessCodeInput');
         if (codeInput) {
-            codeInput.addEventListener('keydown', function(e) {
+            codeInput.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter') submitPlanCode();
             });
         }

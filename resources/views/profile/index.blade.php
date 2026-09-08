@@ -71,7 +71,7 @@
       max-width: 1060px;
       margin: 0 auto;
       padding: 40px 24px 80px;
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', sans-serif;
     }
 
     .page-title {
@@ -214,7 +214,7 @@
     }
 
     .profile-name {
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-size: 20px;
       font-weight: 700;
       color: var(--text);
@@ -709,8 +709,8 @@
     }
 
     /* ==========================================================================
-             NUEVO DISEÑO DASHBOARD (Mismo estilo que Mis Viajes)
-             ========================================================================== */
+               NUEVO DISEÑO DASHBOARD (Mismo estilo que Mis Viajes)
+               ========================================================================== */
 
     /* Contenedor principal que envuelve todo el Dashboard (100% de la pantalla) */
     .dashboard-wrapper {
@@ -785,7 +785,7 @@
       font-weight: 600;
       font-size: 14px;
       transition: all 0.2s ease;
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', sans-serif;
     }
 
     .dashboard-sidebar .sidebar-link:hover {
@@ -849,7 +849,7 @@
       font-weight: 500;
       font-size: 13px;
       transition: all 0.2s ease;
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', sans-serif;
       cursor: pointer;
       background: transparent;
       border: none;
@@ -1464,8 +1464,8 @@
     }
 
     /* ==========================================================================
-             ESTILOS DE CONFIGURACIÓN ESTILO FINPAY
-             ========================================================================== */
+               ESTILOS DE CONFIGURACIÓN ESTILO FINPAY
+               ========================================================================== */
     .settings-grid {
       display: block;
       width: 100%;
@@ -1497,7 +1497,7 @@
       text-align: left;
       cursor: pointer;
       transition: all 0.2s ease;
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', sans-serif;
     }
 
     .settings-sub-nav .nav-item:hover {
@@ -1542,7 +1542,7 @@
       letter-spacing: 0px !important;
       border-bottom: 1px solid #f1f5f9 !important;
       padding-bottom: 12px !important;
-      font-family: 'Barlow', sans-serif !important;
+      font-family: 'Manrope', sans-serif !important;
     }
 
     /* Inputs y controles de formulario más amigables y redondeados */
@@ -1558,7 +1558,7 @@
       padding: 11px 14px !important;
       font-size: 14px !important;
       color: #1e293b !important;
-      font-family: 'Barlow', sans-serif !important;
+      font-family: 'Manrope', sans-serif !important;
       font-weight: 500 !important;
       transition: all 0.2s ease !important;
     }
@@ -1588,7 +1588,7 @@
       border-radius: 8px !important;
       font-weight: 700 !important;
       font-size: 14px !important;
-      font-family: 'Barlow', sans-serif !important;
+      font-family: 'Manrope', sans-serif !important;
       cursor: pointer !important;
       display: inline-flex !important;
       align-items: center !important;
@@ -1611,7 +1611,7 @@
       border-radius: 8px !important;
       font-weight: 700 !important;
       font-size: 14px !important;
-      font-family: 'Barlow', sans-serif !important;
+      font-family: 'Manrope', sans-serif !important;
       cursor: pointer !important;
       display: inline-flex !important;
       align-items: center !important;
@@ -1908,7 +1908,7 @@
                       <!-- OPCIONES DE PRESENTACIÓN (al tope) -->
                       <div style="margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid #f1f5f9;">
                         <label
-                          style="font-size: 13px; font-weight: 700; color: var(--text); text-transform: none; margin-bottom: 3px; display: block; letter-spacing: normal; font-family: 'Barlow', sans-serif;">¿Cómo
+                          style="font-size: 13px; font-weight: 700; color: var(--text); text-transform: none; margin-bottom: 3px; display: block; letter-spacing: normal; font-family: 'Manrope', sans-serif;">¿Cómo
                           quieres presentarte?</label>
                         <p
                           style="font-size: 12px; color: var(--muted); margin: 0 0 12px; line-height: 1.4; font-weight: 500;">
@@ -2270,7 +2270,8 @@
                             @elseif($currentPlanKey === 'esencial')
                               Hasta {{ $user->getPlanLimits()['max_trips'] }} itinerarios. Google Places incluido.
                             @elseif($currentPlanKey === 'avanzado')
-                              Itinerarios activos ilimitados y hasta {{ $user->getPlanLimits()['max_editors'] }} editores incluidos.
+                              Itinerarios activos ilimitados y hasta {{ $user->getPlanLimits()['max_editors'] }} editores
+                              incluidos.
                             @elseif($currentPlanKey === 'colaborativo')
                               Itinerarios ilimitados, colaboradores ilimitados y Marca Blanca con logo propio.
                             @elseif($isTrial)
@@ -2334,16 +2335,16 @@
                         style="padding: 14px 28px; border-top: 1px solid #f1f5f9; background: #fafbfc; display: flex; align-items: center; justify-content: space-between;">
                         <div
                           style="font-size: 11.5px; color: #64748b; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                          <i class="fas fa-lock" style="color: #10b981;"></i> Facturación respaldada por <strong>Paddle
+                          <i class="fas fa-lock" style="color: #1eaace;"></i> Facturación respaldada por <strong>Paddle
                             Merchant of Record</strong>
                         </div>
                         <button onclick="openUpgradeModal()" style="
-                      display: inline-flex; align-items: center; gap: 8px;
-                      background: var(--accent); color: #ffffff; border: none;
-                      padding: 9px 20px; border-radius: 8px;
-                      font-weight: 700; font-size: 13px; font-family: 'Barlow', sans-serif;
-                      cursor: pointer; transition: all 0.2s ease;
-                    " onmouseover="this.style.opacity='0.9';this.style.transform='translateY(-1px)';"
+                        display: inline-flex; align-items: center; gap: 8px;
+                        background: var(--accent); color: #ffffff; border: none;
+                        padding: 9px 20px; border-radius: 8px;
+                        font-weight: 700; font-size: 13px; font-family: 'Manrope', sans-serif;
+                        cursor: pointer; transition: all 0.2s ease;
+                      " onmouseover="this.style.opacity='0.9';this.style.transform='translateY(-1px)';"
                           onmouseout="this.style.opacity='1';this.style.transform='none';">
                           <i class="fas fa-layer-group" style="font-size:12px;"></i>
                           Cambiar o Gestionar Plan
@@ -2404,7 +2405,8 @@
                               </div>
                               <div>
                                 <div style="font-weight: 700; font-size: 13.5px; color: #0f172a;">Suscripción Viantryp
-                                  {{ $planLabel }}</div>
+                                  {{ $planLabel }}
+                                </div>
                                 <div style="font-size: 11.5px; color: #94a3b8;">Factura electrónica emitida en USD ·
                                   Pasarela Paddle</div>
                               </div>
@@ -2476,7 +2478,7 @@
                           </div>
                           <div>
                             <span
-                              style="background: #10b981; color: white; font-size: 10.5px; font-weight: 800; padding: 3px 10px; border-radius: 20px;">
+                              style="background: #1eaace; color: white; font-size: 10.5px; font-weight: 800; padding: 3px 10px; border-radius: 20px;">
                               <i class="fas fa-check"></i> ACTIVA
                             </span>
                           </div>
@@ -2604,11 +2606,11 @@
                   list.innerHTML = '<div style="padding: 20px; text-align: center; color: #94a3b8; font-size: 12px;">No tienes notificaciones nuevas</div>';
                 } else {
                   list.innerHTML = d.notifications.map(n => `
-                                  <div style="padding: 12px 16px; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: background 0.2s; ${n.read_at ? '' : 'background: var(--accent-light);'}" onclick="handleNotiClick('${n.id}', '${n.data.invite_url}')">
-                                      <div style="font-size: 13px; color: #1e293b; font-weight: ${n.read_at ? '400' : '600'}; margin-bottom: 2px;">${n.data.message}</div>
-                                      <div style="font-size: 11px; color: #94a3b8;">${new Date(n.created_at).toLocaleString()}</div>
-                                  </div>
-                              `).join('');
+                                    <div style="padding: 12px 16px; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: background 0.2s; ${n.read_at ? '' : 'background: var(--accent-light);'}" onclick="handleNotiClick('${n.id}', '${n.data.invite_url}')">
+                                        <div style="font-size: 13px; color: #1e293b; font-weight: ${n.read_at ? '400' : '600'}; margin-bottom: 2px;">${n.data.message}</div>
+                                        <div style="font-size: 11px; color: #94a3b8;">${new Date(n.created_at).toLocaleString()}</div>
+                                    </div>
+                                `).join('');
                 }
               });
           };
@@ -3140,7 +3142,7 @@
           }
         }, 1200);
       @endif
-        });
+          });
 
     function initProfileTutorial(force = false) {
       if (!window.driver) return;
@@ -3166,7 +3168,7 @@
             }
           },
           @if($user->account_type === 'personal')
-                        {
+                            {
               element: '#savePersonalInfo',
               popover: {
                 title: 'Información Personal',

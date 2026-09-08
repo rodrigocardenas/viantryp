@@ -13,7 +13,7 @@
     href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet">
   <link
-    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   @if(auth()->user()->plan !== \App\Models\User::PLAN_BASICO)
@@ -30,7 +30,7 @@
       padding: 20px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       border: 1px solid #e2e8ef;
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', sans-serif;
     }
 
     .driver-popover-title {
@@ -118,7 +118,7 @@
       align-items: center;
       text-decoration: none;
       transition: all 0.15s;
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', sans-serif;
       height: 32px;
       z-index: 1;
     }

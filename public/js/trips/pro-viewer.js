@@ -124,7 +124,7 @@ function buildPreviewHTML(data) {
   const parseVideoEmbed = url => {
     if (!url || typeof url !== 'string') return { valid: false };
     const u = url.trim();
-    
+
     // YouTube Standard
     let m = u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([^"&?\/\s]{11})/i);
     if (m && m[1]) {
@@ -337,7 +337,7 @@ function buildPreviewHTML(data) {
         try {
           if (Array.isArray(d.photos)) photos = d.photos;
           else if (typeof d.photos === 'string' && d.photos.startsWith('[')) photos = JSON.parse(d.photos);
-          else if (d.photos) photos = d.photos.split(',').map(s=>s.trim()).filter(Boolean);
+          else if (d.photos) photos = d.photos.split(',').map(s => s.trim()).filter(Boolean);
         } catch {
           photos = d.photos ? d.photos.split(',').filter(Boolean) : [];
         }
@@ -1262,9 +1262,9 @@ ${hasPortada ? `
   <div class="pv-portada-card">
     <div class="pv-portada-hero">
       ${portadaPhotoUrl
-          ? `<img class="pv-portada-img" src="${fixUrl(portadaPhotoUrl)}" alt="${title}">`
-          : `<div class="pv-portada-img-placeholder"><i class="fa-solid fa-earth-americas"></i></div>`
-        }
+        ? `<img class="pv-portada-img" src="${fixUrl(portadaPhotoUrl)}" alt="${title}">`
+        : `<div class="pv-portada-img-placeholder"><i class="fa-solid fa-earth-americas"></i></div>`
+      }
       <div class="pv-portada-hero-overlay"></div>
       <div class="pv-portada-hero-content">
         ${destination ? `
@@ -1272,11 +1272,11 @@ ${hasPortada ? `
             <i class="fa-solid fa-location-dot" style="color:#fff;"></i>
             <span>${destination}</span>
             ${fechaInicio && fechaFin ? `<span class="pv-tag-sep">•</span><span>${(() => {
-              const d1 = new Date(fechaInicio + 'T00:00:00');
-              const d2 = new Date(fechaFin + 'T00:00:00');
-              const days = Math.round((d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
-              return days > 0 ? days + ' días de aventura' : '';
-            })()}</span>` : ''}
+          const d1 = new Date(fechaInicio + 'T00:00:00');
+          const d2 = new Date(fechaFin + 'T00:00:00');
+          const days = Math.round((d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
+          return days > 0 ? days + ' días de aventura' : '';
+        })()}</span>` : ''}
           </div>
         ` : ''}
         <div class="pv-portada-title-wrap">
@@ -2076,7 +2076,7 @@ let isMapModalOpen = false;
 const mapMarkerTypes = {
   flight: { color: '#3b82f6', icon: 'fa-plane' },
   alojamiento: { color: '#0d9488', icon: 'fa-hotel' },
-  transporte: { color: '#10b981', icon: 'fa-bus' },
+  transporte: { color: '#1eaace', icon: 'fa-bus' },
   actividad: { color: '#8b5cf6', icon: 'fa-bullseye' },
   comida: { color: '#f97316', icon: 'fa-utensils' },
   tour: { color: '#ef4444', icon: 'fa-route' },
@@ -2859,7 +2859,7 @@ ${!isPublicLink && tripId ? `
             const b = this;
             const o = b.innerHTML;
             b.innerHTML = '<i class="fa-solid fa-check"></i>';
-            b.style.background = '#10b981';
+            b.style.background = '#1eaace';
             b.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
             setTimeout(() => { 
                 b.innerHTML = o; 

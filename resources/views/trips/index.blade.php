@@ -4,7 +4,7 @@
 
 @push('styles')
     <link
-        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
     <style>
@@ -36,7 +36,7 @@
             padding: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             border: 1px solid var(--bdr);
-            font-family: 'Barlow', sans-serif;
+            font-family: 'Manrope', sans-serif;
         }
 
         .driver-popover-title {
@@ -109,7 +109,7 @@
         html,
         body {
             height: 100%;
-            font-family: 'Barlow', sans-serif;
+            font-family: 'Manrope', sans-serif;
             color: var(--dark);
             background: var(--light);
         }
@@ -432,7 +432,7 @@
             border: none;
             font-size: 14px;
             font-weight: 700;
-            font-family: 'Barlow', sans-serif;
+            font-family: 'Manrope', sans-serif;
             cursor: pointer;
             text-decoration: none;
             box-shadow: 0 4px 16px rgba(26, 158, 143, 0.3);
@@ -2023,7 +2023,7 @@
             border-radius: 50px;
             font-weight: 700;
             font-size: 15px;
-            font-family: 'Barlow', sans-serif;
+            font-family: 'Manrope', sans-serif;
             width: 100%;
             cursor: pointer;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
@@ -2116,7 +2116,7 @@
             font-weight: 500;
             font-size: 13px;
             transition: all 0.2s ease;
-            font-family: 'Barlow', sans-serif;
+            font-family: 'Manrope', sans-serif;
             cursor: pointer;
             background: transparent;
             border: none;
@@ -2298,7 +2298,7 @@
             border-radius: 50px;
             padding: 0 20px 0 46px;
             font-size: 14px;
-            font-family: 'Barlow', sans-serif;
+            font-family: 'Manrope', sans-serif;
             color: #0f172a;
             transition: all 0.2s ease;
         }
@@ -2492,7 +2492,7 @@
             border: none;
             background: transparent;
             text-align: left;
-            font-family: 'Barlow', sans-serif;
+            font-family: 'Manrope', sans-serif;
             cursor: pointer;
         }
 
@@ -3898,7 +3898,7 @@
                         <!-- Header -->
                         <div style="padding:20px 24px 16px; border-bottom:1px solid #f1f5f9; display:flex; align-items:flex-start; justify-content:space-between; gap:16px;">
                             <div>
-                                <h3 style="margin:0; font-size:18px; font-weight:700; color:#0f172a; font-family:'Barlow', sans-serif; letter-spacing:-0.2px;">Crear nuevo itinerario</h3>
+                                <h3 style="margin:0; font-size:18px; font-weight:700; color:#0f172a; font-family:'Manrope', sans-serif; letter-spacing:-0.2px;">Crear nuevo itinerario</h3>
                                 <p style="margin:2px 0 0; font-size:13px; color:#64748b; font-weight:400;">Comienza a diseñar una experiencia inolvidable.</p>
                             </div>
                             <button type="button" id="closeCreateTripModalBtn" style="background:transparent; border:none; color:#94a3b8; cursor:pointer; padding:6px; border-radius:8px; display:flex; align-items:center; justify-content:center; transition:all 0.15s;">

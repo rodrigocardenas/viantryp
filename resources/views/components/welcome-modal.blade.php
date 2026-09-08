@@ -48,7 +48,7 @@
 <div id="welcomePlanModal" class="modal upgrade-premium-modal" style="display: flex; z-index: 10002;">
     <div class="modal-content modal-wide" style="transition: max-width 0.3s ease;">
         <div class="modal-body">
-            
+
             <!-- STEP 1: PLANS SELECTION -->
             <div id="welcomeStepPlans">
                 <!-- HEADER: USER INFO -->
@@ -75,7 +75,8 @@
                         style="font-family: 'Barlow Condensed', sans-serif; font-size: 30px; font-weight: 900; text-transform: uppercase; margin: 0 0 5px; color: #0f172a; letter-spacing: -0.5px;">
                         Elige tu plan de inicio</h2>
                     <p style="font-size: 14px; color: #64748b; max-width: 800px; margin: 0 auto; line-height: 1.5;">
-                        Selecciona el plan que mejor se adapte a tus necesidades. El plan Avanzado incluye 7 días de prueba
+                        Selecciona el plan que mejor se adapte a tus necesidades. El plan Avanzado incluye 7 días de
+                        prueba
                         gratuita
                     </p>
                 </div>
@@ -97,7 +98,8 @@
                             @endif
 
                             <div class="p-name">{{ $data['name'] }}</div>
-                            <div class="p-price" style="{{ !is_numeric($data['price_monthly']) ? 'font-size: 16px;' : '' }}">
+                            <div class="p-price"
+                                style="{{ !is_numeric($data['price_monthly']) ? 'font-size: 16px;' : '' }}">
                                 @if(is_numeric($data['price_monthly']))<span class="currency">$</span>@endif<span
                                     class="p-price-val"
                                     data-monthly="{{ is_numeric($data['price_monthly']) ? $data['price_monthly'] : $data['price_monthly'] }}"
@@ -137,14 +139,16 @@
                     @endforeach
                 </div>
 
-                <div class="pricing-disclaimer" style="text-align: center; margin-top: 20px; margin-bottom: 10px; font-size: 11px; color: #94a3b8; font-weight: 500;">
+                <div class="pricing-disclaimer"
+                    style="text-align: center; margin-top: 20px; margin-bottom: 10px; font-size: 11px; color: #94a3b8; font-weight: 500;">
                     * Todos los precios están expresados en USD (Dólares Estadounidenses)
                 </div>
 
                 <div style="text-align: center;">
                     <p style="font-size: 11px; color: #94a3b8; font-weight: 500;">
                         ¿Tienes dudas? <a href="{{ route('contact') }}" target="_blank"
-                            style="color: var(--accent); font-weight: 700;">Contáctanos</a> para ayudarte con tu elección.
+                            style="color: var(--accent); font-weight: 700;">Contáctanos</a> para ayudarte con tu
+                        elección.
                     </p>
                 </div>
             </div>
@@ -153,45 +157,62 @@
             <div id="welcomeStepUseType" style="display: none; padding: 10px 20px 20px;">
                 <!-- HEADER -->
                 <div style="text-align: center; margin-bottom: 30px;">
-                    <h2 style="font-family: 'Barlow Condensed', sans-serif; font-size: 32px; font-weight: 900; text-transform: uppercase; margin: 0 0 10px; color: #0f172a; letter-spacing: -0.5px;">
+                    <h2
+                        style="font-family: 'Barlow Condensed', sans-serif; font-size: 32px; font-weight: 900; text-transform: uppercase; margin: 0 0 10px; color: #0f172a; letter-spacing: -0.5px;">
                         ¿Cómo vas a usar Viantryp?
                     </h2>
-                    <p style="font-size: 14.5px; color: #64748b; max-width: 500px; margin: 0 auto; line-height: 1.5; font-weight: 500;">
-                        Personalizaremos tu perfil y tus herramientas según tu respuesta. Podrás cambiar esto en cualquier momento desde tu panel.
+                    <p
+                        style="font-size: 14.5px; color: #64748b; max-width: 500px; margin: 0 auto; line-height: 1.5; font-weight: 500;">
+                        Personalizaremos tu perfil y tus herramientas según tu respuesta. Podrás cambiar esto en
+                        cualquier momento desde tu panel.
                     </p>
                 </div>
 
                 <!-- USE CASE GRID -->
-                <div class="use-case-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 680px; margin: 0 auto 35px;">
+                <div class="use-case-grid"
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 680px; margin: 0 auto 35px;">
                     <!-- Option 1: Personal -->
-                    <div class="use-case-card" onclick="selectUseCase('personal')" id="card-use-personal" style="background: white; border: 2px solid #e2e8f0; border-radius: 20px; padding: 32px 24px; cursor: pointer; transition: all 0.25s ease; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
-                        <div class="use-case-icon-wrapper" style="width: 40px; height: 40px; border-radius: 50%; background: #f0fdfa; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; transition: all 0.25s ease;">
+                    <div class="use-case-card" onclick="selectUseCase('personal')" id="card-use-personal"
+                        style="background: white; border: 2px solid #e2e8f0; border-radius: 20px; padding: 32px 24px; cursor: pointer; transition: all 0.25s ease; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+                        <div class="use-case-icon-wrapper"
+                            style="width: 40px; height: 40px; border-radius: 50%; background: #f0fdfa; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; transition: all 0.25s ease;">
                             <i class="fas fa-plane-departure" style="font-size: 20px; color: var(--accent);"></i>
                         </div>
-                        <h3 style="font-size: 18px; font-weight: 900; color: #0f172a; margin: 0 0 10px; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.5px;">Viajes Personales</h3>
+                        <h3
+                            style="font-size: 18px; font-weight: 900; color: #0f172a; margin: 0 0 10px; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Viajes Personales</h3>
                         <p style="font-size: 12.5px; color: #64748b; margin: 0; line-height: 1.5; font-weight: 500;">
-                            Para planificar mis propias vacaciones, escapadas de fin de semana y aventuras con amigos o familia de forma visual e inteligente.
+                            Para planificar mis propias vacaciones, escapadas de fin de semana y aventuras con amigos o
+                            familia de forma visual e inteligente.
                         </p>
                     </div>
 
                     <!-- Option 2: Agency -->
-                    <div class="use-case-card" onclick="selectUseCase('agency')" id="card-use-agency" style="background: white; border: 2px solid #e2e8f0; border-radius: 20px; padding: 32px 24px; cursor: pointer; transition: all 0.25s ease; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
-                        <div class="use-case-icon-wrapper" style="width: 40px; height: 40px; border-radius: 50%; background: #f0fdfa; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; transition: all 0.25s ease;">
+                    <div class="use-case-card" onclick="selectUseCase('agency')" id="card-use-agency"
+                        style="background: white; border: 2px solid #e2e8f0; border-radius: 20px; padding: 32px 24px; cursor: pointer; transition: all 0.25s ease; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+                        <div class="use-case-icon-wrapper"
+                            style="width: 40px; height: 40px; border-radius: 50%; background: #f0fdfa; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; transition: all 0.25s ease;">
                             <i class="fas fa-briefcase" style="font-size: 20px; color: var(--accent);"></i>
                         </div>
-                        <h3 style="font-size: 18px; font-weight: 900; color: #0f172a; margin: 0 0 10px; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.5px;">Negocio o Agencia</h3>
+                        <h3
+                            style="font-size: 18px; font-weight: 900; color: #0f172a; margin: 0 0 10px; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Negocio o Agencia</h3>
                         <p style="font-size: 12.5px; color: #64748b; margin: 0; line-height: 1.5; font-weight: 500;">
-                            Para crear propuestas de viaje de alta conversión, diseñar itinerarios de marca y colaborar profesionalmente con mis viajeros o agentes.
+                            Para crear propuestas de viaje de alta conversión, diseñar itinerarios de marca y colaborar
+                            profesionalmente con mis viajeros o agentes.
                         </p>
                     </div>
                 </div>
 
                 <!-- ACTION BUTTONS -->
                 <div style="display: flex; gap: 12px; justify-content: center; max-width: 420px; margin: 0 auto;">
-                    <button onclick="goBackToPlans()" class="p-btn" style="flex: 1; border-color: #cbd5e1; color: #475569; margin: 0;">
+                    <button onclick="goBackToPlans()" class="p-btn"
+                        style="flex: 1; border-color: #cbd5e1; color: #475569; margin: 0;">
                         Atrás
                     </button>
-                    <button onclick="submitInitialConfig()" id="btnSubmitConfig" class="p-btn current" style="flex: 2; background: var(--accent); color: white; border-color: var(--accent); opacity: 0.65; cursor: not-allowed; margin: 0;" disabled>
+                    <button onclick="submitInitialConfig()" id="btnSubmitConfig" class="p-btn current"
+                        style="flex: 2; background: var(--accent); color: white; border-color: var(--accent); opacity: 0.65; cursor: not-allowed; margin: 0;"
+                        disabled>
                         Comenzar ahora
                     </button>
                 </div>
@@ -307,7 +328,7 @@
 
     .plan-savings-hint {
         font-size: 10px;
-        color: #10b981;
+        color: #1eaace;
         font-weight: 700;
         margin-top: 4px;
         opacity: 0;
@@ -321,13 +342,16 @@
         border-color: var(--accent) !important;
         box-shadow: 0 12px 24px rgba(26, 122, 138, 0.08);
     }
+
     .use-case-card.active {
         border-color: var(--accent) !important;
         background: #f0f9f8 !important;
     }
+
     .use-case-card.active .use-case-icon-wrapper {
         background: var(--accent) !important;
     }
+
     .use-case-card.active .use-case-icon-wrapper i {
         color: white !important;
     }
@@ -428,7 +452,7 @@
     function showStep2() {
         document.getElementById('welcomeStepPlans').style.display = 'none';
         document.getElementById('welcomeStepUseType').style.display = 'block';
-        
+
         const modalContent = document.querySelector('.modal-content');
         if (modalContent) {
             modalContent.style.maxWidth = '750px';
@@ -438,7 +462,7 @@
     function goBackToPlans() {
         document.getElementById('welcomeStepUseType').style.display = 'none';
         document.getElementById('welcomeStepPlans').style.display = 'block';
-        
+
         const modalContent = document.querySelector('.modal-content');
         if (modalContent) {
             modalContent.style.maxWidth = '1100px';
@@ -447,10 +471,10 @@
 
     function selectUseCase(type) {
         window.selectedUseCase = type;
-        
+
         document.getElementById('card-use-personal').classList.toggle('active', type === 'personal');
         document.getElementById('card-use-agency').classList.toggle('active', type === 'agency');
-        
+
         const btn = document.getElementById('btnSubmitConfig');
         btn.disabled = false;
         btn.style.opacity = '1';
@@ -459,7 +483,7 @@
 
     async function submitInitialConfig() {
         if (!window.selectedPlan || !window.selectedUseCase) return;
-        
+
         const overlay = document.getElementById('welcomeLoadingOverlay');
         overlay.style.display = 'flex';
 
@@ -471,7 +495,7 @@
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     plan: window.selectedPlan,
                     account_type: window.selectedUseCase
                 })

@@ -46,6 +46,12 @@
       scroll-behavior: smooth;
     }
 
+    @media (min-width: 992px) {
+      html {
+        zoom: 0.9;
+      }
+    }
+
     body {
       font-family: 'Manrope', 'Barlow', sans-serif;
       background: var(--white);
@@ -280,7 +286,7 @@
     .cta-title,
     .pricing-header h2 {
       font-weight: 700 !important;
-      letter-spacing: -4px !important;
+      letter-spacing: -5px !important;
     }
 
     /* ── HERO FLOATING BADGES (WOW EFFECT) ── */
@@ -707,7 +713,7 @@
       flex-direction: column;
       padding: 6px 10px 10px;
       background: #f8fafc;
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', sans-serif;
     }
 
     .p-status-bar {
@@ -1257,13 +1263,13 @@
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.9rem;
+      gap: 11px;
       margin-bottom: 2.5rem;
       flex: 1;
     }
 
     .plan-features li {
-      font-size: 0.9rem;
+      font-size: 12.5px;
       color: var(--text-soft);
       display: flex;
       gap: 0.75rem;
@@ -1398,7 +1404,7 @@
     }
 
     .solutions-desc {
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-size: 1.1rem;
       color: #475569;
       max-width: 680px;
@@ -1474,7 +1480,7 @@
     }
 
     .sol-text {
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-size: 1.02rem;
       color: #475569;
       margin-bottom: 1.4rem;
@@ -1813,13 +1819,13 @@
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.9rem;
+      gap: 11px;
       margin-bottom: 2.5rem;
       flex: 1;
     }
 
     .plan-features li {
-      font-size: 0.9rem;
+      font-size: 12.5px;
       color: var(--text-soft);
       display: flex;
       gap: 0.75rem;
@@ -2625,23 +2631,23 @@
             <a href="#demo" class="btn-pill-secondary">Ver Demo</a>
             {{-- Botón instalar app: solo visible en móvil --}}
             <button id="landing-install-btn" onclick="triggerPwaInstall()" style="
-                            display: none;
-                            align-items: center;
-                            gap: 10px;
-                            background: linear-gradient(135deg, #136075 0%, #177890 100%);
-                            color: white;
-                            border: none;
-                            padding: 14px 22px;
-                            border-radius: 100px;
-                            font-weight: 700;
-                            font-size: 1rem;
-                            cursor: pointer;
-                            box-shadow: 0 4px 24px rgba(13,43,62,0.25);
-                            font-family: 'Barlow', sans-serif;
-                            transition: all 0.2s;
-                            width: 100%;
-                            justify-content: center;
-                          ">
+                                display: none;
+                                align-items: center;
+                                gap: 10px;
+                                background: linear-gradient(135deg, #136075 0%, #177890 100%);
+                                color: white;
+                                border: none;
+                                padding: 14px 22px;
+                                border-radius: 100px;
+                                font-weight: 700;
+                                font-size: 1rem;
+                                cursor: pointer;
+                                box-shadow: 0 4px 24px rgba(13,43,62,0.25);
+                                font-family: 'Barlow', sans-serif;
+                                transition: all 0.2s;
+                                width: 100%;
+                                justify-content: center;
+                              ">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(255,255,255,0.15)"
@@ -2693,10 +2699,13 @@
               <div class="vt-topbar">
                 <div class="vt-topbar-bg-decorators"></div>
                 <div class="vt-topbar-left" style="display: flex; align-items: center; gap: 10px; z-index: 1;">
-                  <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp" style="height: 18px; width: auto; filter: brightness(0) invert(1);">
+                  <img src="{{ asset('images/logo-viantryp.png') }}" alt="Viantryp"
+                    style="height: 18px; width: auto; filter: brightness(0) invert(1);">
                 </div>
-                <div class="vt-topbar-center" style="position: absolute; left: 50%; transform: translateX(-50%); z-index: 1;">
-                  <span class="vt-demo-badge" style="background: transparent; color: #ffffff; border: none; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; display: inline-flex; align-items: center; gap: 5px;">
+                <div class="vt-topbar-center"
+                  style="position: absolute; left: 50%; transform: translateX(-50%); z-index: 1;">
+                  <span class="vt-demo-badge"
+                    style="background: transparent; color: #ffffff; border: none; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; display: inline-flex; align-items: center; gap: 5px;">
                     Versión Demo
                   </span>
                 </div>
@@ -2714,48 +2723,60 @@
                     <div class="vt-sidebar-section">
                       <div class="vt-section-label">Servicios</div>
                       <div class="vt-element-grid">
-                        <div class="vt-element-card type-flight" draggable="true" data-type="Vuelo" onclick="vtAddElement(this.dataset.type)">
-                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                        <div class="vt-element-card type-flight" draggable="true" data-type="Vuelo"
+                          onclick="vtAddElement(this.dataset.type)">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                              class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-plane"></i></div>
                           <div class="vt-el-info">
                             <div class="vt-el-name">Vuelo</div>
                             <div class="vt-el-sub">Agregar vuelo</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-alojamiento" draggable="true" data-type="Alojamiento" onclick="vtAddElement(this.dataset.type)">
-                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                        <div class="vt-element-card type-alojamiento" draggable="true" data-type="Alojamiento"
+                          onclick="vtAddElement(this.dataset.type)">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                              class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-hotel"></i></div>
                           <div class="vt-el-info">
                             <div class="vt-el-name">Alojamiento</div>
                             <div class="vt-el-sub">Hotel u hospedaje</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-actividad" draggable="true" data-type="Actividad" onclick="vtAddElement(this.dataset.type)">
-                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                        <div class="vt-element-card type-actividad" draggable="true" data-type="Actividad"
+                          onclick="vtAddElement(this.dataset.type)">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                              class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-compass"></i></div>
                           <div class="vt-el-info">
                             <div class="vt-el-name">Actividad</div>
                             <div class="vt-el-sub">Tours o experiencias</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-transporte" draggable="true" data-type="Traslado" onclick="vtAddElement(this.dataset.type)">
-                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                        <div class="vt-element-card type-transporte" draggable="true" data-type="Traslado"
+                          onclick="vtAddElement(this.dataset.type)">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                              class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-car"></i></div>
                           <div class="vt-el-info">
                             <div class="vt-el-name">Traslado</div>
                             <div class="vt-el-sub">Bus, tren u otro</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-comida" draggable="true" data-type="Comida" onclick="vtAddElement(this.dataset.type)">
-                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                        <div class="vt-element-card type-comida" draggable="true" data-type="Comida"
+                          onclick="vtAddElement(this.dataset.type)">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                              class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-utensils"></i></div>
                           <div class="vt-el-info">
                             <div class="vt-el-name">Comida</div>
                             <div class="vt-el-sub">Restaurante y más</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-documentos" draggable="true" data-type="Documentos" onclick="vtAddElement(this.dataset.type)">
-                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                        <div class="vt-element-card type-documentos" draggable="true" data-type="Documentos"
+                          onclick="vtAddElement(this.dataset.type)">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                              class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-file-lines"></i></div>
                           <div class="vt-el-info">
                             <div class="vt-el-name">Documentos</div>
@@ -2767,32 +2788,40 @@
                     <div class="vt-sidebar-section">
                       <div class="vt-section-label">Diseño</div>
                       <div class="vt-element-grid">
-                        <div class="vt-element-card type-titulo" draggable="true" data-type="Título" onclick="vtAddElement(this.dataset.type)">
-                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                        <div class="vt-element-card type-titulo" draggable="true" data-type="Título"
+                          onclick="vtAddElement(this.dataset.type)">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                              class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon" style="font-size:15px;font-family:'Poppins';font-weight:800">T</div>
                           <div class="vt-el-info">
                             <div class="vt-el-name">Título</div>
                             <div class="vt-el-sub">Encabezado</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-texto" draggable="true" data-type="Texto" onclick="vtAddElement(this.dataset.type)">
-                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                        <div class="vt-element-card type-texto" draggable="true" data-type="Texto"
+                          onclick="vtAddElement(this.dataset.type)">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                              class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon" style="font-size:12px;font-family:'Poppins';">Aa</div>
                           <div class="vt-el-info">
                             <div class="vt-el-name">Texto</div>
                             <div class="vt-el-sub">Párrafo</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-separador" draggable="true" data-type="Separador" onclick="vtAddElement(this.dataset.type)">
-                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                        <div class="vt-element-card type-separador" draggable="true" data-type="Separador"
+                          onclick="vtAddElement(this.dataset.type)">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                              class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon" style="font-size:9px;">— ✦ —</div>
                           <div class="vt-el-info">
                             <div class="vt-el-name">Separador</div>
                             <div class="vt-el-sub">Momento del día</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-caja" draggable="true" data-type="Caja" onclick="vtAddElement(this.dataset.type)">
-                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                        <div class="vt-element-card type-caja" draggable="true" data-type="Caja"
+                          onclick="vtAddElement(this.dataset.type)">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                              class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-lightbulb"></i></div>
                           <div class="vt-el-info">
                             <div class="vt-el-name">Nota</div>
@@ -2804,17 +2833,22 @@
                     <div class="vt-sidebar-section">
                       <div class="vt-section-label">Detalles</div>
                       <div class="vt-element-grid">
-                        <div class="vt-element-card type-imagen" draggable="true" data-type="Imagen" onclick="vtAddElement(this.dataset.type)">
-                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                        <div class="vt-element-card type-imagen" draggable="true" data-type="Imagen"
+                          onclick="vtAddElement(this.dataset.type)">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                              class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-regular fa-image"></i></div>
                           <div class="vt-el-info">
                             <div class="vt-el-name">Imagen</div>
                             <div class="vt-el-sub">Foto o Unsplash</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-gif" draggable="true" data-type="Gif" onclick="vtAddElement(this.dataset.type)">
-                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
-                          <div class="vt-el-icon" style="color:#ce3df3;background:#f9f0ff"><i class="fa-solid fa-bolt"></i></div>
+                        <div class="vt-element-card type-gif" draggable="true" data-type="Gif"
+                          onclick="vtAddElement(this.dataset.type)">
+                          <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
+                              class="fa-solid fa-ellipsis-vertical"></i></div>
+                          <div class="vt-el-icon" style="color:#ce3df3;background:#f9f0ff"><i
+                              class="fa-solid fa-bolt"></i></div>
                           <div class="vt-el-info">
                             <div class="vt-el-name">GIF</div>
                             <div class="vt-el-sub">Buscar en Giphy</div>
@@ -2836,21 +2870,35 @@
                   <!-- PREVIEW HERO (PUBLIC LINK VIEW) -->
                   <div class="vt-preview-hero">
                     <div class="vt-preview-hero-inner">
-                      <div class="vt-preview-hero-location" style="font-size: 11px; font-weight: 600; color: rgba(255, 255, 255, 0.9); margin-bottom: 4px; display: flex; align-items: center; gap: 5px;">
-                        <i class="fa-solid fa-location-dot" style="font-size: 10px; color: #4de2f4;"></i> Emiratos Árabes Unidos | Dubai · 7 días de aventura
+                      <div class="vt-preview-hero-location"
+                        style="font-size: 11px; font-weight: 600; color: rgba(255, 255, 255, 0.9); margin-bottom: 4px; display: flex; align-items: center; gap: 5px;">
+                        <i class="fa-solid fa-location-dot" style="font-size: 10px; color: #4de2f4;"></i> Emiratos
+                        Árabes Unidos | Dubai · 7 días de aventura
                       </div>
-                      <div class="vt-preview-hero-title" style="font-family: 'Manrope', 'Barlow', sans-serif; font-size: 22px; font-weight: 800; color: #ffffff; margin-bottom: 14px; text-shadow: 0 2px 6px rgba(0,0,0,0.4);">Viaje a Dubai</div>
-                      <div class="vt-preview-hero-stats" style="display: grid; grid-template-columns: 1fr 1fr 1fr; background: rgba(10, 24, 38, 0.82); backdrop-filter: blur(12px); border-top: 1px solid rgba(255, 255, 255, 0.12); padding: 10px 0; border-radius: 0 0 12px 12px; margin: 0 -14px 0 -14px;">
+                      <div class="vt-preview-hero-title"
+                        style="font-family: 'Manrope', 'Barlow', sans-serif; font-size: 22px; font-weight: 800; color: #ffffff; margin-bottom: 14px; text-shadow: 0 2px 6px rgba(0,0,0,0.4);">
+                        Viaje a Dubai</div>
+                      <div class="vt-preview-hero-stats"
+                        style="display: grid; grid-template-columns: 1fr 1fr 1fr; background: rgba(10, 24, 38, 0.82); backdrop-filter: blur(12px); border-top: 1px solid rgba(255, 255, 255, 0.12); padding: 10px 0; border-radius: 0 0 12px 12px; margin: 0 -14px 0 -14px;">
                         <div class="stat" style="text-align: center; border-right: 1px solid rgba(255, 255, 255, 0.1);">
-                          <div style="font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.65); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px;"><i class="fa-regular fa-calendar-days" style="margin-right: 3px;"></i> FECHAS</div>
+                          <div
+                            style="font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.65); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px;">
+                            <i class="fa-regular fa-calendar-days" style="margin-right: 3px;"></i> FECHAS
+                          </div>
                           <strong style="font-size: 11px; font-weight: 700; color: #ffffff;">11 may → 17 may</strong>
                         </div>
                         <div class="stat" style="text-align: center; border-right: 1px solid rgba(255, 255, 255, 0.1);">
-                          <div style="font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.65); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px;"><i class="fa-solid fa-user-group" style="margin-right: 3px;"></i> VIAJEROS</div>
+                          <div
+                            style="font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.65); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px;">
+                            <i class="fa-solid fa-user-group" style="margin-right: 3px;"></i> VIAJEROS
+                          </div>
                           <strong style="font-size: 11px; font-weight: 700; color: #ffffff;">2 personas</strong>
                         </div>
                         <div class="stat" style="text-align: center;">
-                          <div style="font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.65); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px;"><i class="fa-solid fa-wallet" style="margin-right: 3px;"></i> TOTAL</div>
+                          <div
+                            style="font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.65); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px;">
+                            <i class="fa-solid fa-wallet" style="margin-right: 3px;"></i> TOTAL
+                          </div>
                           <strong style="font-size: 11px; font-weight: 700; color: #ffffff;">$7.581 USD</strong>
                         </div>
                       </div>
@@ -2860,15 +2908,19 @@
                   <div class="vt-main">
                     <div class="vt-toolbar">
                       <div class="vt-tabs-row" id="vtTabsContainer">
-                        <button class="vt-tab active" id="vtTab0" onclick="vtSwitch(0)">Día 1 <span class="vt-tab-x">✕</span></button>
-                        <button class="vt-tab" id="vtTab1" onclick="vtSwitch(1)">Día 2 <span class="vt-tab-x">✕</span></button>
-                        <button class="vt-tab" id="vtTab2" onclick="vtSwitch(2)">Día 3 <span class="vt-tab-x">✕</span></button>
+                        <button class="vt-tab active" id="vtTab0" onclick="vtSwitch(0)">Día 1 <span
+                            class="vt-tab-x">✕</span></button>
+                        <button class="vt-tab" id="vtTab1" onclick="vtSwitch(1)">Día 2 <span
+                            class="vt-tab-x">✕</span></button>
+                        <button class="vt-tab" id="vtTab2" onclick="vtSwitch(2)">Día 3 <span
+                            class="vt-tab-x">✕</span></button>
                         <button class="vt-tab-add" onclick="vtAddDay()">+ Día</button>
                       </div>
                       <div class="vt-toolbar-spacer"></div>
                       <span class="vt-item-count" id="vtCount">0 elementos</span>
                     </div>
-                    <div class="vt-canvas" id="vtCanvas" ondragover="vtHandleDragOver(event)" ondragleave="vtHandleDragLeave(event)" ondrop="vtDrop(event)">
+                    <div class="vt-canvas" id="vtCanvas" ondragover="vtHandleDragOver(event)"
+                      ondragleave="vtHandleDragLeave(event)" ondrop="vtDrop(event)">
                       <div class="vt-canvas-inner">
                         <div class="vt-empty" id="vtEmpty" style="display:none">
                           <div class="vt-empty-icon"><i class="fa-solid fa-map-location-dot"></i></div>
@@ -3345,6 +3397,7 @@
     .vt-sidebar::-webkit-scrollbar {
       width: 4px;
     }
+
     .vt-sidebar::-webkit-scrollbar-thumb {
       background: #e2e8ef;
       border-radius: 4px;
@@ -3427,19 +3480,88 @@
     }
 
     /* SERVICE COLOR HARMONY */
-    .type-vuelo .vt-el-icon, .type-flight .vt-el-icon, .vt-item-icon.type-vuelo, .vt-item-icon.type-flight { background: #e0f2fe; color: #0284c7; }
-    .type-alojamiento .vt-el-icon, .vt-item-icon.type-alojamiento { background: #fef3c7; color: #d97706; }
-    .type-actividad .vt-el-icon, .vt-item-icon.type-actividad { background: #dcfce7; color: #16a34a; }
-    .type-traslado .vt-el-icon, .type-transporte .vt-el-icon, .vt-item-icon.type-traslado, .vt-item-icon.type-transporte { background: #f3e8ff; color: #9333ea; }
-    .type-comida .vt-el-icon, .vt-item-icon.type-comida { background: #ffe4e6; color: #e11d48; }
-    .type-documentos .vt-el-icon, .vt-item-icon.type-documentos { background: #e2e8f0; color: #475569; }
-    .type-tour .vt-el-icon, .vt-item-icon.type-tour { background: #e0f2fe; color: #0284c7; }
-    .type-titulo .vt-el-icon, .vt-item-icon.type-titulo, .vt-item-icon.type-título { background: #f1f5f9; color: #1e293b; }
-    .type-texto .vt-el-icon, .vt-item-icon.type-texto { background: #f1f5f9; color: #475569; }
-    .type-separador .vt-el-icon, .vt-item-icon.type-separador { background: #f8fafc; color: #64748b; }
-    .type-caja .vt-el-icon, .vt-item-icon.type-caja { background: #fef9c3; color: #ca8a04; }
-    .type-imagen .vt-el-icon, .vt-item-icon.type-imagen { background: #fef3c7; color: #d97706; }
-    .type-gif .vt-el-icon, .vt-item-icon.type-gif { background: #f3e8ff; color: #ce3df3; }
+    .type-vuelo .vt-el-icon,
+    .type-flight .vt-el-icon,
+    .vt-item-icon.type-vuelo,
+    .vt-item-icon.type-flight {
+      background: #e0f2fe;
+      color: #0284c7;
+    }
+
+    .type-alojamiento .vt-el-icon,
+    .vt-item-icon.type-alojamiento {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .type-actividad .vt-el-icon,
+    .vt-item-icon.type-actividad {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .type-traslado .vt-el-icon,
+    .type-transporte .vt-el-icon,
+    .vt-item-icon.type-traslado,
+    .vt-item-icon.type-transporte {
+      background: #f3e8ff;
+      color: #9333ea;
+    }
+
+    .type-comida .vt-el-icon,
+    .vt-item-icon.type-comida {
+      background: #ffe4e6;
+      color: #e11d48;
+    }
+
+    .type-documentos .vt-el-icon,
+    .vt-item-icon.type-documentos {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .type-tour .vt-el-icon,
+    .vt-item-icon.type-tour {
+      background: #e0f2fe;
+      color: #0284c7;
+    }
+
+    .type-titulo .vt-el-icon,
+    .vt-item-icon.type-titulo,
+    .vt-item-icon.type-título {
+      background: #f1f5f9;
+      color: #1e293b;
+    }
+
+    .type-texto .vt-el-icon,
+    .vt-item-icon.type-texto {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .type-separador .vt-el-icon,
+    .vt-item-icon.type-separador {
+      background: #f8fafc;
+      color: #64748b;
+    }
+
+    .type-caja .vt-el-icon,
+    .vt-item-icon.type-caja {
+      background: #fef9c3;
+      color: #ca8a04;
+    }
+
+    .type-imagen .vt-el-icon,
+    .vt-item-icon.type-imagen {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .type-gif .vt-el-icon,
+    .vt-item-icon.type-gif {
+      background: #f3e8ff;
+      color: #ce3df3;
+    }
 
     .vt-el-info {
       min-width: 0;
@@ -3612,7 +3734,9 @@
       color: #02b5cb;
     }
 
-    .vt-toolbar-spacer { flex: 1; }
+    .vt-toolbar-spacer {
+      flex: 1;
+    }
 
     .vt-item-count {
       font-size: 11px;
@@ -3665,12 +3789,12 @@
       position: relative;
       transition: all 0.15s;
       animation: vtSlide 0.2s ease;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
     }
 
     .vt-item:hover {
       border-color: #cbd5e1;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
 
     .vt-item-drag {
@@ -3786,13 +3910,16 @@
     .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar {
       width: 6px;
     }
+
     .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar-track {
       background: transparent;
     }
+
     .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar-thumb {
       background: rgba(15, 42, 58, 0.2);
       border-radius: 10px;
     }
+
     .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar-thumb:hover {
       background: rgba(2, 181, 203, 0.6);
     }
@@ -3865,7 +3992,7 @@
       font-size: 19px;
       font-weight: 800;
       margin-bottom: 10px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .vt-preview-hero-stats {
@@ -3922,7 +4049,7 @@
       border-radius: 10px;
       padding: 0;
       overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
       cursor: default;
       transform: none !important;
     }
@@ -5134,7 +5261,7 @@
         align-items: center !important;
         justify-content: center !important;
         border: 1px solid #e2e8ef !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.03) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
         cursor: pointer !important;
         touch-action: manipulation !important;
         -webkit-tap-highlight-color: transparent !important;
@@ -5460,7 +5587,7 @@
         { id: 2, title: 'Día 3: El Desierto', items: VT_DEFAULTS[2].map(x => ({ ...x, id: uid++ })) }
       ];
 
-      window.vtRenderTabs = function() {
+      window.vtRenderTabs = function () {
         const container = document.getElementById('vtTabsContainer');
         if (!container) return;
 
@@ -5709,7 +5836,7 @@
       }
 
       let vtAddLock = false;
-      window.vtAddElement = function(type) {
+      window.vtAddElement = function (type) {
         if (!type || vtAddLock) return;
         vtAddLock = true;
         setTimeout(() => { vtAddLock = false; }, 250);
@@ -5878,7 +6005,8 @@
             <span class="price-val" data-monthly="0" data-annual="0">0</span>
             <span class="period">/mes</span>
           </div>
-          <div class="price-note" data-monthly="Sin tarjeta de crédito" data-annual="Plan gratuito">Sin tarjeta de crédito</div>
+          <div class="price-note" data-monthly="Sin tarjeta de crédito" data-annual="Plan gratuito">Sin tarjeta de
+            crédito</div>
           <div class="plan-savings" style="opacity:0; pointer-events:none; visibility:hidden;">Savings Spacer</div>
           <div class="plan-sub" style="opacity:0; pointer-events:none; visibility:hidden;">Sub Spacer</div>
           <ul class="plan-features">
@@ -5894,27 +6022,34 @@
 
         <!-- Viajero Pro (DESTACADA) -->
         <div class="plan featured reveal d2" style="position: relative;">
-          <div class="popular-badge" style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: #1EAACE; color: white; padding: 4px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(30,170,206,0.3);">Más Popular</div>
+          <div class="popular-badge"
+            style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: #1EAACE; color: white; padding: 4px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(30,170,206,0.3);">
+            Más Popular</div>
           <div class="plan-name" style="margin-top: 6px;">Viajero Pro</div>
-          <div class="plan-desc-special" style="color: rgba(255, 255, 255, 0.85);">Para parejas, amigos y viajeros frecuentes</div>
+          <div class="plan-desc-special" style="color: rgba(255, 255, 255, 0.85);">Para parejas, amigos y viajeros
+            frecuentes</div>
           <div class="plan-price">
             <span class="currency">$</span>
             <span class="price-val" data-monthly="9.99" data-annual="7.99">9.99</span>
             <span class="period">/mes</span>
           </div>
-          <div class="price-note" data-monthly="Facturado mensualmente · 7 días de prueba gratis" data-annual="Facturado anualmente $95.88 USD · 7 días prueba gratis">Facturado mensualmente</div>
+          <div class="price-note" data-monthly="Facturado mensualmente · 7 días de prueba gratis"
+            data-annual="Facturado anualmente $95.88 USD · 7 días prueba gratis">Facturado mensualmente</div>
           <div class="plan-savings" style="opacity: 0;">Ahorras 20% en plan anual</div>
           <div class="plan-sub" style="color: rgba(255, 255, 255, 0.7);">Todo para tus viajes sin límites:</div>
           <ul class="plan-features">
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Itinerarios activos ilimitados</strong></li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Hasta 2 colaboradores para editar en pareja o grupo</strong></li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Itinerarios activos ilimitados</strong>
+            </li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Hasta 2 colaboradores para editar en pareja
+                o grupo</strong></li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> Copilot IA Ilimitado</li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> Exportación descargable en PDF</li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> Google Places Ilimitado con Galería HD</li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> Guardar y reutilizar tus propias plantillas</li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> Sincronización directa con Google Calendar</li>
           </ul>
-          <a href="{{ route('plans.redirect') }}" class="plan-btn btn-pro" style="background: #1EAACE; border-color: #1EAACE; color: white;">Probar 7 días gratis</a>
+          <a href="{{ route('plans.redirect') }}" class="plan-btn btn-pro"
+            style="background: #1EAACE; border-color: #1EAACE; color: white;">Probar 7 días gratis</a>
         </div>
 
         <!-- Negocios -->
@@ -5926,7 +6061,8 @@
             <span class="price-val" data-monthly="29.99" data-annual="23.99">29.99</span>
             <span class="period">/mes</span>
           </div>
-          <div class="price-note" data-monthly="Facturado mensualmente · 14 días de prueba gratis" data-annual="Facturado anualmente $287.88 USD · 14 días prueba gratis">Facturado mensualmente</div>
+          <div class="price-note" data-monthly="Facturado mensualmente · 14 días de prueba gratis"
+            data-annual="Facturado anualmente $287.88 USD · 14 días prueba gratis">Facturado mensualmente</div>
           <div class="plan-savings" style="opacity: 0;">Ahorras 20% en plan anual</div>
           <div class="plan-sub">Todo lo del plan Viajero Pro, más:</div>
           <ul class="plan-features">

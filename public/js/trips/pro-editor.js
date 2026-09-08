@@ -11,7 +11,7 @@ window.fixUrl = fixUrl;
 function parseVideoEmbed(url) {
   if (!url || typeof url !== 'string') return { valid: false };
   const u = url.trim();
-  
+
   // YouTube Standard
   let m = u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([^"&?\/\s]{11})/i);
   if (m && m[1]) {
@@ -178,7 +178,7 @@ function applyTripDates() {
 function formatDateRange(startStr, endStr) {
   if (!startStr && !endStr) return 'Sin fechas';
   const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-  
+
   const parseDatePart = (str) => {
     if (!str) return null;
     const parts = str.split('-');
@@ -710,7 +710,7 @@ const C = {
         l: 'Color de Fondo',
         t: 'color-picker',
         fw: true,
-        opts: ['#f59e0b', '#f43f5e', '#0ea5e9', '#8b5cf6', '#10b981', '#64748b']
+        opts: ['#f59e0b', '#f43f5e', '#0ea5e9', '#8b5cf6', '#1eaace', '#64748b']
       }
     ]
   },
@@ -1311,7 +1311,7 @@ function updatePortadaPriceFromServices() {
   if (!priceInput) return;
 
   const { sum, count } = calculateTripServicesSummary();
-  
+
   if (!isPriceManual) {
     if (sum > 0) {
       priceInput.value = formatNumber(sum);
@@ -1466,18 +1466,18 @@ function buildItem(item, idx) {
     try {
       if (Array.isArray(item.data.photos)) photos = item.data.photos;
       else if (typeof item.data.photos === 'string' && item.data.photos.startsWith('[')) photos = JSON.parse(item.data.photos);
-      else if (item.data.photos) photos = item.data.photos.split(',').map(s=>s.trim()).filter(Boolean);
+      else if (item.data.photos) photos = item.data.photos.split(',').map(s => s.trim()).filter(Boolean);
     } catch {
       photos = item.data.photos ? item.data.photos.split(',').filter(Boolean) : [];
     }
     el.style.position = 'relative';
     const count = photos.length;
-    const thumbsHtml = count > 0 
+    const thumbsHtml = count > 0
       ? `<div style="display:grid;grid-template-columns:repeat(${Math.min(count, 5)}, 1fr);gap:6px;width:100%;height:100px;border-radius:8px;overflow:hidden;">
           ${photos.slice(0, 5).map(u => `<img src="${fixUrl(u)}" style="width:100%;height:100%;object-fit:cover;">`).join('')}
          </div>`
       : `<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px;border:1.5px dashed var(--border);border-radius:10px;"><i class="fa-solid fa-images" style="font-size:24px;color:var(--text-dim);margin-bottom:4px;display:block;"></i> Galería de fotos vacía</div>`;
-    
+
     el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:8px;padding:12px">
       ${thumbsHtml}
       <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text-muted);">
@@ -2164,7 +2164,7 @@ function openModal(type, editIdx = null) {
         if (inp) {
           const autocomplete = new window.google.maps.places.Autocomplete(inp, {});
           const pacContainer = document.querySelector('.pac-container:last-of-type');
-          
+
           inp.addEventListener('input', (e) => {
             if (e && !e.isTrusted) return;
             delete inp.dataset.address;
@@ -2186,14 +2186,14 @@ function openModal(type, editIdx = null) {
           autocomplete.addListener('place_changed', () => {
             const place = autocomplete.getPlace();
             if (!place) return;
-            
+
             // Show friendly name in the input box, save full geocodable address in dataset
             if (place.name) {
               inp.value = place.name;
             } else if (place.formatted_address) {
               inp.value = place.formatted_address;
             }
-            
+
             if (place.formatted_address) {
               inp.dataset.address = place.formatted_address;
             } else if (place.name) {
@@ -2216,10 +2216,10 @@ function openModal(type, editIdx = null) {
         const handleTipoChange = () => {
           const val = selectTipo.value || 'Hotel';
           const isHotel = val === 'Hotel';
-          
+
           // Clean up any existing Google autocomplete containers before recreating inputs
           document.querySelectorAll('.pac-container').forEach(el => el.remove());
-          
+
           // Update Nombre label
           const nameInp = modalBody.querySelector('input[data-key="nombre"]');
           if (nameInp) {
@@ -2288,7 +2288,7 @@ function openModal(type, editIdx = null) {
           // Setup Google Autocomplete dynamically
           if (window.google && window.google.maps && window.google.maps.places) {
             const addrInp = modalBody.querySelector('input[data-key="direccion"]');
-            
+
             // Helper to clone input to strip old autocomplete event listeners
             const cleanInput = (inp) => {
               if (!inp) return null;
@@ -2304,7 +2304,7 @@ function openModal(type, editIdx = null) {
             if (isHotel && activeNameInp) {
               const autocompleteNombre = new window.google.maps.places.Autocomplete(activeNameInp, { types: ['establishment'] });
               const pacContainer = document.querySelector('.pac-container:last-of-type');
-              
+
               activeNameInp.addEventListener('input', (e) => {
                 if (e && !e.isTrusted) return;
                 delete activeNameInp.dataset.lat;
@@ -2386,7 +2386,7 @@ function openModal(type, editIdx = null) {
             } else if (!isHotel && activeAddrInp) {
               const autocompleteDireccion = new window.google.maps.places.Autocomplete(activeAddrInp, { types: ['geocode'] });
               const pacContainer = document.querySelector('.pac-container:last-of-type');
-              
+
               activeAddrInp.addEventListener('input', (e) => {
                 if (e && !e.isTrusted) return;
                 if (pacContainer) {
@@ -3846,7 +3846,7 @@ function normalizeCopilotAction(action) {
 
   const rawType = (action.type || '').toLowerCase().trim();
   const rawData = action.data || {};
-  
+
   // Map type synonyms to valid keys in config C
   let type = 'actividad';
   if (['hotel', 'alojamiento', 'lodging', 'hospedaje'].includes(rawType)) {
@@ -3939,7 +3939,7 @@ function normalizeCopilotAction(action) {
 
 window.ViantrypCopilot = window.ViantrypCopilot || {};
 
-window.ViantrypCopilot.onApplyAction = function(action) {
+window.ViantrypCopilot.onApplyAction = function (action) {
   if (!action) return;
 
   // Handle FOCUS_DAY redirection

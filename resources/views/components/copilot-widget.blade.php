@@ -7,7 +7,8 @@
 <!-- Viantryp Copilot Trigger Button (Standby Mode) -->
 <div id="viantryp-copilot-container" data-trip-id="{{ $tripId }}">
     <button type="button" id="copilot-trigger-btn" class="copilot-trigger" aria-label="Abrir Viantryp Copilot"
-        title="Viantryp Copilot - Próximamente" onclick="alert('Tryp AI está en mantenimiento y volverá a estar disponible muy pronto.');">
+        title="Viantryp Copilot - Próximamente"
+        onclick="alert('Tryp AI está en mantenimiento y volverá a estar disponible muy pronto.');">
         <div class="copilot-trigger-glow"></div>
         <div class="copilot-trigger-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sparkles-icon">
@@ -95,10 +96,13 @@
     }
 
     @keyframes copilot-sparkle-pulse {
-        0%, 100% {
+
+        0%,
+        100% {
             transform: rotate(0deg) scale(1);
             filter: drop-shadow(0 0 2px rgba(129, 140, 248, 0.4));
         }
+
         50% {
             transform: rotate(8deg) scale(1.1);
             filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.8));
@@ -133,7 +137,7 @@
         width: 5px;
         height: 5px;
         border-radius: 50%;
-        background-color: #10b981;
-        box-shadow: 0 0 6px #10b981;
+        background-color: #1eaace;
+        box-shadow: 0 0 6px #1eaace;
     }
 </style>

@@ -30,7 +30,7 @@
   .page-nav-logo img { height: 28px; width: auto; }
   .nav-right { display: flex; align-items: center; gap: 0.75rem; margin-left: auto; }
   .nav-login {
-    font-family: 'Barlow', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-size: 0.88rem; font-weight: 500;
     color: var(--navy); text-decoration: none;
     padding: 0.55rem 1.2rem; border-radius: 100px;
@@ -39,7 +39,7 @@
   }
   .nav-login:hover { background: var(--off-white); border-color: #ccc; }
   .nav-cta {
-    font-family: 'Barlow', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-size: 0.88rem; font-weight: 700;
     color: var(--white); text-decoration: none;
     padding: 0.6rem 1.4rem; border-radius: 100px;
@@ -84,7 +84,7 @@
   .mobile-menu.active { right: 0; }
   .mobile-menu-close { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; color: var(--navy); cursor: pointer; }
   .mobile-nav-links { list-style: none; display: flex; flex-direction: column; gap: 15px; flex-grow: 1; margin-top: 10px; }
-  .mobile-nav-links a { text-decoration: none; font-size: 14px; font-weight: 600; color: #0d2b3e; font-family: 'Barlow', sans-serif; }
+  .mobile-nav-links a { text-decoration: none; font-size: 14px; font-weight: 600; color: #0d2b3e; font-family: 'Manrope', sans-serif; }
 
   @media (max-width: 850px) {
     .page-nav-links { display: none !important; }

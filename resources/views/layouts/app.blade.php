@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('icons/icon-152x152.png') }}">
     <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('icons/icon-192x192.png') }}">
     <link rel="apple-touch-icon" sizes="512x512" href="{{ asset('icons/icon-512x512.png') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -53,7 +53,7 @@
         }
 
         body {
-            font-family: 'Barlow', sans-serif;
+            font-family: 'Manrope', sans-serif;
             background: var(--light);
             color: var(--dark);
         }
@@ -178,7 +178,7 @@
         box-shadow: 0 -4px 24px rgba(0,0,0,0.3);
         border-top: 1px solid rgba(255,255,255,0.1);
         backdrop-filter: blur(10px);
-        font-family: 'Barlow', sans-serif;
+        font-family: 'Manrope', sans-serif;
     ">
         <img src="{{ asset('icons/icon-72x72.png') }}" alt="Viantryp" style="width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;">
         <div style="flex: 1; min-width: 0;">
