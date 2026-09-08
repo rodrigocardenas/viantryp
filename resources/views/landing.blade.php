@@ -5235,6 +5235,32 @@
         padding: 8px 10px !important;
         gap: 8px !important;
         border-radius: 8px !important;
+        touch-action: pan-y !important;
+      }
+
+      .vt-item-drag {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 20px !important;
+        height: 20px !important;
+        color: #94a3b8 !important;
+        font-size: 13px !important;
+        cursor: grab !important;
+        touch-action: none !important;
+        flex-shrink: 0 !important;
+        opacity: 0.6 !important;
+      }
+
+      .vt-item.vt-dragging {
+        opacity: 0.65 !important;
+        background: #e0f2fe !important;
+        border: 1.5px dashed #02b5cb !important;
+        transform: scale(0.98) !important;
+      }
+
+      .vt-item.vt-drag-over {
+        border-top: 2.5px solid #02b5cb !important;
       }
 
       .vt-item-name {
@@ -5540,6 +5566,70 @@
         vtRender();
       };
 
+      function bindTouchReorder(el, item) {
+        let touchStartY = 0;
+        let isTouchDragging = false;
+        let dragTargetId = null;
+
+        const handleTouchStart = (e) => {
+          if (e.touches.length !== 1) return;
+          if (e.target.closest('.vt-item-btn')) return;
+          touchStartY = e.touches[0].clientY;
+          vtReorderId = item.id;
+          isTouchDragging = false;
+          dragTargetId = null;
+        };
+
+        const handleTouchMove = (e) => {
+          if (vtReorderId !== item.id) return;
+          const currentY = e.touches[0].clientY;
+          const diffY = Math.abs(currentY - touchStartY);
+
+          if (diffY > 6) {
+            isTouchDragging = true;
+            if (e.cancelable) e.preventDefault();
+            el.classList.add('vt-dragging');
+
+            const elemBelow = document.elementFromPoint(e.touches[0].clientX, currentY);
+            if (elemBelow) {
+              const targetItem = elemBelow.closest('.vt-item');
+              document.querySelectorAll('.vt-item').forEach(i => i.classList.remove('vt-drag-over'));
+              if (targetItem && targetItem !== el) {
+                targetItem.classList.add('vt-drag-over');
+                const tId = parseInt(targetItem.dataset.id, 10);
+                if (!isNaN(tId)) dragTargetId = tId;
+              }
+            }
+          }
+        };
+
+        const handleTouchEnd = () => {
+          if (vtReorderId === item.id) {
+            el.classList.remove('vt-dragging');
+            document.querySelectorAll('.vt-item').forEach(i => i.classList.remove('vt-drag-over'));
+
+            if (isTouchDragging && dragTargetId !== null && dragTargetId !== vtReorderId) {
+              const fromIdx = days[currentDay].items.findIndex(x => x.id === vtReorderId);
+              const toIdx = days[currentDay].items.findIndex(x => x.id === dragTargetId);
+              if (fromIdx !== -1 && toIdx !== -1 && fromIdx !== toIdx) {
+                const moved = days[currentDay].items.splice(fromIdx, 1)[0];
+                days[currentDay].items.splice(toIdx, 0, moved);
+                vtRender();
+                vtToast('✓ Orden actualizado');
+              }
+            }
+            vtReorderId = null;
+            dragTargetId = null;
+            isTouchDragging = false;
+          }
+        };
+
+        el.addEventListener('touchstart', handleTouchStart, { passive: true });
+        el.addEventListener('touchmove', handleTouchMove, { passive: false });
+        el.addEventListener('touchend', handleTouchEnd);
+        el.addEventListener('touchcancel', handleTouchEnd);
+      }
+
       function vtRender() {
         const list = document.getElementById('vtItems');
         const empty = document.getElementById('vtEmpty');
@@ -5562,6 +5652,7 @@
             el.dataset.type = item.type;
 
             if (!isPreview) {
+              el.dataset.id = item.id;
               el.draggable = true;
               el.addEventListener('dragstart', (e) => {
                 vtReorderId = item.id;
@@ -5578,6 +5669,8 @@
                 document.querySelectorAll('.vt-item').forEach(i => i.classList.remove('vt-drag-over'));
                 vtReorderId = null;
               });
+
+              bindTouchReorder(el, item);
             }
 
             if (isPreview) {
