@@ -189,13 +189,17 @@
       box-shadow: 0 6px 20px rgba(43, 178, 199, 0.35);
     }
 
+    h1 {
+      font-family: 'Manrope', sans-serif !important;
+    }
+
     /* ── HERO ── */
     .hero {
       min-height: 100vh;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
-      padding: 6.5rem 3.5rem 2.5rem;
+      padding: 6.5rem 3.5rem 0;
       position: relative;
       overflow: hidden;
       background: linear-gradient(135deg, #f4fbfb 0%, #f8fafc 40%, #edf7f9 70%, #f0f9ff 100%);
@@ -211,43 +215,39 @@
       display: grid;
       grid-template-columns: 1.05fr 1fr;
       gap: 3.5rem;
-      align-items: center;
+      align-items: flex-end;
     }
 
     .hero-hand-wrapper {
       position: relative;
       width: 100%;
-      max-width: 640px;
+      max-width: 480px;
       margin: 0 auto;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-end;
+      align-self: flex-end;
+      background: transparent !important;
+      box-shadow: none !important;
     }
 
     .hero-hand-img {
       width: 100%;
-      max-width: 640px;
+      max-width: 480px;
       height: auto;
+      display: block;
       object-fit: contain;
-      filter: drop-shadow(0 20px 45px rgba(2, 43, 62, 0.22));
-      animation: heroHandFloat 5.5s ease-in-out infinite;
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      vertical-align: bottom;
+      margin-bottom: 0 !important;
+      filter: none !important;
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+      box-shadow: none !important;
     }
 
     .hero-hand-wrapper:hover .hero-hand-img {
-      transform: translateY(-8px) scale(1.02);
-    }
-
-    @keyframes heroHandFloat {
-
-      0%,
-      100% {
-        transform: translateY(0px) rotate(0deg);
-      }
-
-      50% {
-        transform: translateY(-12px) rotate(0.6deg);
-      }
+      transform: none !important;
     }
 
     .hero-text-side {
@@ -255,6 +255,8 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      align-self: center;
+      padding-bottom: 4rem;
     }
 
     .hero h1 {
@@ -2654,7 +2656,7 @@
 
       <div class="feature-banner-visual">
         <div class="hero-hand-wrapper">
-          <img src="{{ asset('images/hero-laptop-phone-mockup.png') }}" alt="Viantryp Dashboard & Mobile App" class="hero-hand-img">
+          <img src="{{ asset('images/hero-hand-mockup.png') }}" alt="Viantryp Mobile App" class="hero-hand-img">
         </div>
       </div>
     </div>
@@ -5130,10 +5132,6 @@
             demoLaptop.style.transform = `scale(${scaleVal}) translateY(${translateY}px)`;
             demoLaptop.style.boxShadow = `0 ${20 + progress * 20}px ${40 + progress * 30}px rgba(0, 0, 0, 0.5), 0 0 ${progress * 45}px rgba(77, 226, 244, ${progress * 0.35})`;
 
-            if (heroVisual) {
-              heroVisual.style.transform = `scale(${1 + progress * 0.08}) translateY(${progress * 25}px)`;
-              heroVisual.style.opacity = `${Math.max(0.15, 1 - progress * 0.75)}`;
-            }
           }
         }, { passive: true });
       }

@@ -159,8 +159,8 @@
       margin-bottom: 28px;
     }
 
-    .left-headline {
-      font-family: 'Inter', sans-serif;
+    h1, .left-headline {
+      font-family: 'Manrope', sans-serif !important;
       font-weight: 800;
       font-size: 42px;
       line-height: 0.95;

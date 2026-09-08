@@ -113,8 +113,8 @@
     font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
     color: #5dcfe0; margin-bottom: 1rem; display: block;
   }
-  .page-hero-title {
-    font-family: 'Inter', sans-serif;
+  h1, .page-hero-title {
+    font-family: 'Manrope', sans-serif !important;
     font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800;
     color: white; margin-bottom: 1rem; letter-spacing: -0.03em; line-height: 1.1;
   }

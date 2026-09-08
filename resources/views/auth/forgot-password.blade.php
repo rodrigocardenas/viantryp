@@ -143,10 +143,10 @@
       text-align: center;
       margin-bottom: 32px;
     }
-    .login-header h1 {
-      font-family: 'inter', sans-serif;
+    h1, .login-header h1 {
+      font-family: 'Manrope', sans-serif !important;
       font-weight: 900;
-      font-size: 32px;
+      font-size: 39px;
       color: var(--dark);
       line-height: 1.1;
       letter-spacing: -0.5px;
