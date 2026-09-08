@@ -5,55 +5,35 @@
 
     $planData = [
         'básico' => [
-            'name' => 'Básico',
+            'name' => 'Explorador',
             'price_monthly' => 0,
             'price_annual' => 0,
             'is_custom' => false,
             'limit_trips' => 1,
             'limit_editors' => 0,
-            'benefits' => ['1 itinerario', 'Link público', 'Banco de Imágenes gratuito'],
+            'benefits' => ['1 itinerario activo', 'Unsplash & GIFs', 'Visualizador Web'],
             'accent' => '#64748b'
         ],
-        'esencial' => [
-            'name' => 'Esencial',
-            'price_monthly' => 5,
-            'price_annual' => 4,
-            'is_custom' => false,
-            'limit_trips' => 3,
-            'limit_editors' => 0,
-            'benefits' => ['3 itinerarios', 'Google Places Incluido', 'Sin anuncios'],
-            'accent' => '#1a7a8a'
-        ],
         'avanzado' => [
-            'name' => 'Avanzado',
-            'price_monthly' => 12,
-            'price_annual' => 9,
+            'name' => 'Viajero Pro',
+            'price_monthly' => 9.99,
+            'price_annual' => 7.99,
             'is_custom' => false,
-            'limit_trips' => 10,
+            'limit_trips' => 1000000,
             'limit_editors' => 2,
-            'benefits' => ['10 itinerarios', '2 colaboradores de edición', 'Branding PRO'],
-            'accent' => '#1c7182',
+            'benefits' => ['Itinerarios ilimitados', 'Hasta 2 colaboradores', '7 días prueba gratis'],
+            'accent' => '#1EAACE',
             'popular' => true
         ],
         'colaborativo' => [
-            'name' => 'Colaborativo',
-            'price_monthly' => 29,
-            'price_annual' => 22,
+            'name' => 'Negocios',
+            'price_monthly' => 29.99,
+            'price_annual' => 23.99,
             'is_custom' => false,
             'limit_trips' => 1000000,
             'limit_editors' => 1000000,
-            'benefits' => ['Itinerarios ilimitados', 'Colaboradores ilimitados', 'Roles/API'],
+            'benefits' => ['Editores ilimitados', 'Marca Blanca con Logo', '14 días prueba gratis'],
             'accent' => '#0e5a6a'
-        ],
-        'corporativo' => [
-            'name' => 'Corporativo',
-            'price_monthly' => 'Ventas',
-            'price_annual' => 'Ventas',
-            'is_custom' => true,
-            'limit_trips' => 1000000,
-            'limit_editors' => 1000000,
-            'benefits' => ['Dominio Propio', 'SLA / Soporte', 'API Avanzada'],
-            'accent' => '#0f2a3a'
         ]
     ];
 

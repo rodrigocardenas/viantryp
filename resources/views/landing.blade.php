@@ -5872,64 +5872,69 @@
         <!-- Explorador -->
         <div class="plan reveal d1">
           <div class="plan-name">Explorador</div>
-          <div class="plan-desc-special">Para viajeros ocasionales</div>
+          <div class="plan-desc-special">Para probar y crear tu primer viaje</div>
           <div class="plan-price">
             <span class="currency">$</span>
             <span class="price-val" data-monthly="0" data-annual="0">0</span>
             <span class="period">/mes</span>
           </div>
-          <div class="price-note" data-monthly="Sin tarjeta de crédito" data-annual="Plan gratuito">Sin tarjeta de
-            crédito</div>
+          <div class="price-note" data-monthly="Sin tarjeta de crédito" data-annual="Plan gratuito">Sin tarjeta de crédito</div>
           <div class="plan-savings" style="opacity:0; pointer-events:none; visibility:hidden;">Savings Spacer</div>
           <div class="plan-sub" style="opacity:0; pointer-events:none; visibility:hidden;">Sub Spacer</div>
           <ul class="plan-features">
-            <li><i class="fas fa-check"></i> 1 itinerario activo</li>
-            <li><i class="fas fa-check"></i> Enlace para compartir viaje</li>
-            <li><i class="fas fa-check"></i> Banco de imágenes gratuito</li>
+            <li><i class="fas fa-check"></i> 1 itinerario activo a la vez</li>
+            <li><i class="fas fa-check"></i> Fotos de Unsplash & GIFs ilimitados</li>
+            <li><i class="fas fa-check"></i> Personalización de colores y temas</li>
+            <li><i class="fas fa-check"></i> Visualizador web interactivo</li>
+            <li><i class="fas fa-check"></i> Búsqueda básica en Google Places</li>
+            <li><i class="fas fa-check"></i> Copilot IA (3 consultas por viaje)</li>
           </ul>
           <a href="{{ route('register') }}" class="plan-btn">Empezar gratis</a>
         </div>
 
         <!-- Viajero Pro (DESTACADA) -->
-        <div class="plan featured reveal d2">
-          <div class="plan-name">Viajero Pro</div>
-          <div class="plan-desc-special" style="color: rgba(255, 255, 255, 0.8);">Para viajeros frecuentes</div>
+        <div class="plan featured reveal d2" style="position: relative;">
+          <div class="popular-badge" style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: #1EAACE; color: white; padding: 4px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(30,170,206,0.3);">Más Popular</div>
+          <div class="plan-name" style="margin-top: 6px;">Viajero Pro</div>
+          <div class="plan-desc-special" style="color: rgba(255, 255, 255, 0.85);">Para parejas, amigos y viajeros frecuentes</div>
           <div class="plan-price">
             <span class="currency">$</span>
             <span class="price-val" data-monthly="9.99" data-annual="7.99">9.99</span>
             <span class="period">/mes</span>
           </div>
-          <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente $95.88 USD">
-            Facturado mensualmente</div>
+          <div class="price-note" data-monthly="Facturado mensualmente · 7 días de prueba gratis" data-annual="Facturado anualmente $95.88 USD · 7 días prueba gratis">Facturado mensualmente</div>
           <div class="plan-savings" style="opacity: 0;">Ahorras 20% en plan anual</div>
           <div class="plan-sub" style="color: rgba(255, 255, 255, 0.7);">Todo para tus viajes sin límites:</div>
           <ul class="plan-features">
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Itinerarios ilimitados</li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Exportación a PDF y Web</li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Google Places incluido</li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> 7 días de prueba gratuita</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Itinerarios activos ilimitados</strong></li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Hasta 2 colaboradores para editar en pareja o grupo</strong></li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Copilot IA Ilimitado</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Exportación descargable en PDF</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Google Places Ilimitado con Galería HD</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Guardar y reutilizar tus propias plantillas</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Sincronización directa con Google Calendar</li>
           </ul>
-          <a href="{{ route('plans.redirect') }}" class="plan-btn btn-pro">Probar 7 días gratis</a>
+          <a href="{{ route('plans.redirect') }}" class="plan-btn btn-pro" style="background: #1EAACE; border-color: #1EAACE; color: white;">Probar 7 días gratis</a>
         </div>
 
         <!-- Negocios -->
         <div class="plan reveal d3">
           <div class="plan-name">Negocios</div>
-          <div class="plan-desc-special">Para agencias, equipos y DMCs</div>
+          <div class="plan-desc-special">Para agencias de viajes, DMCs y asesores</div>
           <div class="plan-price">
             <span class="currency">$</span>
             <span class="price-val" data-monthly="29.99" data-annual="23.99">29.99</span>
             <span class="period">/mes</span>
           </div>
-          <div class="price-note" data-monthly="Facturado mensualmente" data-annual="Facturado anualmente $287.88 USD">
-            Facturado mensualmente</div>
+          <div class="price-note" data-monthly="Facturado mensualmente · 14 días de prueba gratis" data-annual="Facturado anualmente $287.88 USD · 14 días prueba gratis">Facturado mensualmente</div>
           <div class="plan-savings" style="opacity: 0;">Ahorras 20% en plan anual</div>
-          <div class="plan-sub">Todo lo de Viajero Pro, más:</div>
+          <div class="plan-sub">Todo lo del plan Viajero Pro, más:</div>
           <ul class="plan-features">
-            <li><i class="fas fa-check"></i> Marca blanca y logo propio</li>
-            <li><i class="fas fa-check"></i> Colaboradores y editores de equipo</li>
-            <li><i class="fas fa-check"></i> Plantillas corporativas avanzadas</li>
-            <li><i class="fas fa-check"></i> 14 días de prueba gratuita</li>
+            <li><i class="fas fa-check"></i> <strong>Colaboradores y editores ilimitados</strong></li>
+            <li><i class="fas fa-check"></i> <strong>Marca Blanca: Logo propio de tu agencia en web y PDF</strong></li>
+            <li><i class="fas fa-check"></i> Biblioteca de plantillas privadas para tus clientes</li>
+            <li><i class="fas fa-check"></i> Ficha de contacto directo (WhatsApp, Email y Redes)</li>
+            <li><i class="fas fa-check"></i> Soporte prioritario dedicado</li>
           </ul>
           <a href="{{ route('plans.redirect') }}" class="plan-btn btn-outline">Probar 14 días gratis</a>
         </div>

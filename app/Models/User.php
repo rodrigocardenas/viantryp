@@ -169,7 +169,7 @@ class User extends Authenticatable
                 'max_editors' => 0,
             ],
             self::PLAN_AVANZADO => [
-                'max_trips' => 10,
+                'max_trips' => 1000000, // Unlimited
                 'max_attachments' => 1000000, // Unlimited
                 'max_editors' => 2,
             ],

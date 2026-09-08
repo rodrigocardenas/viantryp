@@ -2202,10 +2202,10 @@
                     @php
                       $currentPlanKey = strtolower($planUser->plan ?? $user->plan);
                       $planLabels = [
-                        'básico' => 'Plan Básico',
+                        'básico' => 'Plan Explorador',
                         'esencial' => 'Plan Esencial',
-                        'avanzado' => 'Plan Avanzado',
-                        'colaborativo' => 'Plan Colaborativo',
+                        'avanzado' => 'Plan Viajero Pro',
+                        'colaborativo' => 'Plan Negocios',
                         'corporativo' => 'Plan Corporativo',
                       ];
                       $planLabel = $planLabels[$currentPlanKey] ?? ucfirst($currentPlanKey);
@@ -2228,8 +2228,8 @@
                       $planPrices = [
                         'básico' => '$0.00 USD / mes',
                         'esencial' => '$5.00 USD / mes',
-                        'avanzado' => '$12.00 USD / mes',
-                        'colaborativo' => '$29.00 USD / mes',
+                        'avanzado' => '$9.99 USD / mes',
+                        'colaborativo' => '$29.99 USD / mes',
                         'corporativo' => 'A medida / Ventas',
                       ];
                       $planPrice = $planPrices[$currentPlanKey] ?? '$0.00 USD / mes';
@@ -2266,16 +2266,15 @@
                           </div>
                           <div style="font-size: 12.5px; color: #64748b; font-weight: 500; line-height: 1.4;">
                             @if($currentPlanKey === 'básico')
-                              Hasta {{ $user->getPlanLimits()['max_trips'] }} itinerario. Sin colaboradores.
+                              1 itinerario activo a la vez. Sin colaboradores de edición.
                             @elseif($currentPlanKey === 'esencial')
                               Hasta {{ $user->getPlanLimits()['max_trips'] }} itinerarios. Google Places incluido.
                             @elseif($currentPlanKey === 'avanzado')
-                              Hasta {{ $user->getPlanLimits()['max_trips'] }} itinerarios y
-                              {{ $user->getPlanLimits()['max_editors'] }} editores incluidos.
+                              Itinerarios activos ilimitados y hasta {{ $user->getPlanLimits()['max_editors'] }} editores incluidos.
                             @elseif($currentPlanKey === 'colaborativo')
-                              Itinerarios ilimitados y colaboradores ilimitados.
+                              Itinerarios ilimitados, colaboradores ilimitados y Marca Blanca con logo propio.
                             @elseif($isTrial)
-                              Prueba gratuita activa de 7 días.
+                              Prueba gratuita activa.
                             @else
                               Acceso completo a las funciones profesionales.
                             @endif

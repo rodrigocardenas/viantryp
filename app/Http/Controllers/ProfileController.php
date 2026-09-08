@@ -413,9 +413,11 @@ class ProfileController extends Controller
             'initial_plan_chosen_at' => now(),
         ];
 
-        // Only Advanced plan gets the 7-day trial
+        // Advanced gets 7-day trial, Colaborativo gets 14-day trial
         if ($plan === User::PLAN_AVANZADO) {
             $updateData['trial_ends_at'] = now()->addDays(7);
+        } elseif ($plan === User::PLAN_COLABORATIVO) {
+            $updateData['trial_ends_at'] = now()->addDays(14);
         }
 
         $user->update($updateData);
