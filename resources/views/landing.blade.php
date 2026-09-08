@@ -201,7 +201,10 @@
 
     /* ── HERO ── */
     .hero {
+      height: 100vh;
+      height: 100dvh;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: flex-end;
       justify-content: center;
@@ -2459,6 +2462,8 @@
       /* Hero Mobile Polish */
       .hero {
         padding: 5.5rem 0 0 0 !important;
+        height: 100vh !important;
+        height: 100dvh !important;
         min-height: 100vh !important;
         min-height: 100dvh !important;
         display: flex !important;
