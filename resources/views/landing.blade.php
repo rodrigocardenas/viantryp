@@ -205,7 +205,7 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      padding: 6.5rem 0 0 3.5rem;
+      padding: 8.5rem 0 0 3.5rem;
       position: relative;
       overflow: hidden;
       background: linear-gradient(135deg, #f4fbfb 0%, #f8fafc 40%, #edf7f9 70%, #f0f9ff 100%);
@@ -539,6 +539,36 @@
     .btn-cta-cyan:hover {
       transform: translateY(-2px);
       box-shadow: 0 12px 30px rgba(54, 203, 228, 0.45);
+    }
+
+    /* ── DEMO SECTION TEXTURE & BACKGROUND PATTERN ── */
+    .demo-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 1.5rem 1.5rem;
+      overflow: hidden;
+      position: relative;
+      background-color: #10596b;
+      background-image:
+        radial-gradient(circle at 15% 15%, rgba(77, 226, 244, 0.2) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(2, 181, 203, 0.16) 0%, transparent 45%),
+        radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px),
+        linear-gradient(135deg, #10596b 0%, #156677 50%, #0d4a57 100%) !important;
+      background-size: 100% 100%, 100% 100%, 28px 28px, 100% 100% !important;
+    }
+
+    .demo-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(77, 226, 244, 0.12) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 1;
     }
 
 
@@ -2710,23 +2740,23 @@
             <a href="#demo" class="btn-pill-secondary">Ver Demo</a>
             {{-- Botón instalar app: solo visible en móvil --}}
             <button id="landing-install-btn" onclick="triggerPwaInstall()" style="
-                                    display: none;
-                                    align-items: center;
-                                    gap: 10px;
-                                    background: linear-gradient(135deg, #136075 0%, #177890 100%);
-                                    color: white;
-                                    border: none;
-                                    padding: 14px 22px;
-                                    border-radius: 100px;
-                                    font-weight: 700;
-                                    font-size: 1rem;
-                                    cursor: pointer;
-                                    box-shadow: 0 4px 24px rgba(13,43,62,0.25);
-                                    font-family: 'Barlow', sans-serif;
-                                    transition: all 0.2s;
-                                    width: 100%;
-                                    justify-content: center;
-                                  ">
+                                      display: none;
+                                      align-items: center;
+                                      gap: 10px;
+                                      background: linear-gradient(135deg, #136075 0%, #177890 100%);
+                                      color: white;
+                                      border: none;
+                                      padding: 14px 22px;
+                                      border-radius: 100px;
+                                      font-weight: 700;
+                                      font-size: 1rem;
+                                      cursor: pointer;
+                                      box-shadow: 0 4px 24px rgba(13,43,62,0.25);
+                                      font-family: 'Barlow', sans-serif;
+                                      transition: all 0.2s;
+                                      width: 100%;
+                                      justify-content: center;
+                                    ">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(255,255,255,0.15)"
@@ -2748,8 +2778,7 @@
   </section>
 
   <!-- DEMO SECTION WITH STANDALONE MOCKUP -->
-  <section class="demo-section" id="demo"
-    style="background: linear-gradient(135deg, #10596b 0%, #156677 50%, #0d4a57 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem 1.5rem 1.5rem; overflow: hidden; position: relative;">
+  <section class="demo-section" id="demo">
     <div class="container"
       style="max-width: 1080px; width: 100%; position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center;">
       <!-- Title & Text Outside Mockup -->
@@ -6164,8 +6193,9 @@
     <div class="feature-banner-container reveal">
       <div class="feature-banner-text">
         <h2>Todo tu viaje,<br><span>en un solo lugar</span></h2>
-        <p>Una experiencia digital moderna y dinámica que transforma tus viajes en piezas únicas,<br>accesibles desde cualquier dispositivo.</p>
-        
+        <p>Una experiencia digital moderna y dinámica que transforma tus viajes en piezas únicas,<br>accesibles desde
+          cualquier dispositivo.</p>
+
         <div class="feature-banner-actions">
           @auth
             <a href="{{ route('trips.index') }}" class="btn-cta-dark">Ir a mis viajes →</a>
