@@ -2697,7 +2697,7 @@
                 </div>
                 <div class="vt-topbar-center" style="position: absolute; left: 50%; transform: translateX(-50%); z-index: 1;">
                   <span class="vt-demo-badge" style="background: transparent; color: #ffffff; border: none; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; display: inline-flex; align-items: center; gap: 5px;">
-                    <i class="fa-solid fa-flask" style="font-size:10px;"></i> Versión Demo
+                    Versión Demo
                   </span>
                 </div>
                 <div class="vt-topbar-actions" style="margin-left: auto; z-index: 1;">
@@ -2714,7 +2714,7 @@
                     <div class="vt-sidebar-section">
                       <div class="vt-section-label">Servicios</div>
                       <div class="vt-element-grid">
-                        <div class="vt-element-card type-flight" draggable="true" data-type="Vuelo">
+                        <div class="vt-element-card type-flight" draggable="true" data-type="Vuelo" onclick="vtAddElement(this.dataset.type)">
                           <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-plane"></i></div>
                           <div class="vt-el-info">
@@ -2722,7 +2722,7 @@
                             <div class="vt-el-sub">Agregar vuelo</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-alojamiento" draggable="true" data-type="Alojamiento">
+                        <div class="vt-element-card type-alojamiento" draggable="true" data-type="Alojamiento" onclick="vtAddElement(this.dataset.type)">
                           <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-hotel"></i></div>
                           <div class="vt-el-info">
@@ -2730,7 +2730,7 @@
                             <div class="vt-el-sub">Hotel u hospedaje</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-actividad" draggable="true" data-type="Actividad">
+                        <div class="vt-element-card type-actividad" draggable="true" data-type="Actividad" onclick="vtAddElement(this.dataset.type)">
                           <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-compass"></i></div>
                           <div class="vt-el-info">
@@ -2738,7 +2738,7 @@
                             <div class="vt-el-sub">Tours o experiencias</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-transporte" draggable="true" data-type="Traslado">
+                        <div class="vt-element-card type-transporte" draggable="true" data-type="Traslado" onclick="vtAddElement(this.dataset.type)">
                           <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-car"></i></div>
                           <div class="vt-el-info">
@@ -2746,7 +2746,7 @@
                             <div class="vt-el-sub">Bus, tren u otro</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-comida" draggable="true" data-type="Comida">
+                        <div class="vt-element-card type-comida" draggable="true" data-type="Comida" onclick="vtAddElement(this.dataset.type)">
                           <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-utensils"></i></div>
                           <div class="vt-el-info">
@@ -2754,7 +2754,7 @@
                             <div class="vt-el-sub">Restaurante y más</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-documentos" draggable="true" data-type="Documentos">
+                        <div class="vt-element-card type-documentos" draggable="true" data-type="Documentos" onclick="vtAddElement(this.dataset.type)">
                           <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-file-lines"></i></div>
                           <div class="vt-el-info">
@@ -2767,7 +2767,7 @@
                     <div class="vt-sidebar-section">
                       <div class="vt-section-label">Diseño</div>
                       <div class="vt-element-grid">
-                        <div class="vt-element-card type-titulo" draggable="true" data-type="Título">
+                        <div class="vt-element-card type-titulo" draggable="true" data-type="Título" onclick="vtAddElement(this.dataset.type)">
                           <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon" style="font-size:15px;font-family:'Poppins';font-weight:800">T</div>
                           <div class="vt-el-info">
@@ -2775,7 +2775,7 @@
                             <div class="vt-el-sub">Encabezado</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-texto" draggable="true" data-type="Texto">
+                        <div class="vt-element-card type-texto" draggable="true" data-type="Texto" onclick="vtAddElement(this.dataset.type)">
                           <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon" style="font-size:12px;font-family:'Poppins';">Aa</div>
                           <div class="vt-el-info">
@@ -2783,7 +2783,7 @@
                             <div class="vt-el-sub">Párrafo</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-separador" draggable="true" data-type="Separador">
+                        <div class="vt-element-card type-separador" draggable="true" data-type="Separador" onclick="vtAddElement(this.dataset.type)">
                           <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon" style="font-size:9px;">— ✦ —</div>
                           <div class="vt-el-info">
@@ -2791,7 +2791,7 @@
                             <div class="vt-el-sub">Momento del día</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-caja" draggable="true" data-type="Caja">
+                        <div class="vt-element-card type-caja" draggable="true" data-type="Caja" onclick="vtAddElement(this.dataset.type)">
                           <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-solid fa-lightbulb"></i></div>
                           <div class="vt-el-info">
@@ -2804,7 +2804,7 @@
                     <div class="vt-sidebar-section">
                       <div class="vt-section-label">Detalles</div>
                       <div class="vt-element-grid">
-                        <div class="vt-element-card type-imagen" draggable="true" data-type="Imagen">
+                        <div class="vt-element-card type-imagen" draggable="true" data-type="Imagen" onclick="vtAddElement(this.dataset.type)">
                           <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon"><i class="fa-regular fa-image"></i></div>
                           <div class="vt-el-info">
@@ -2812,7 +2812,7 @@
                             <div class="vt-el-sub">Foto o Unsplash</div>
                           </div>
                         </div>
-                        <div class="vt-element-card type-gif" draggable="true" data-type="Gif">
+                        <div class="vt-element-card type-gif" draggable="true" data-type="Gif" onclick="vtAddElement(this.dataset.type)">
                           <div class="vt-el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></div>
                           <div class="vt-el-icon" style="color:#ce3df3;background:#f9f0ff"><i class="fa-solid fa-bolt"></i></div>
                           <div class="vt-el-info">
@@ -3759,41 +3759,65 @@
       display: none !important;
     }
 
+    .vt-root.is-preview .vt-body {
+      flex: 1 1 0% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .vt-root.is-preview .vt-preview-sidebar {
+      height: 100% !important;
+      overflow-y: auto !important;
+      scrollbar-width: thin;
+    }
+
     .vt-root.is-preview .vt-main-wrap {
       background: #f8fafc;
-      overflow-y: auto;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      -webkit-overflow-scrolling: touch !important;
+      overscroll-behavior: contain !important;
+      touch-action: pan-y !important;
+      flex: 1 1 0% !important;
+      min-height: 0 !important;
+      height: 100% !important;
     }
 
-    /* CLEARLY VISIBLE SCROLLBAR IN PREVIEW MODE */
-    .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar,
-    .vt-root.is-preview .vt-canvas::-webkit-scrollbar {
+    .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar {
       width: 6px;
+    }
+    .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar-thumb {
+      background: rgba(15, 42, 58, 0.2);
+      border-radius: 10px;
+    }
+    .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar-thumb:hover {
+      background: rgba(2, 181, 203, 0.6);
+    }
+
+    .vt-root.is-preview .vt-main {
+      height: auto !important;
+      min-height: 0 !important;
+      flex: none !important;
       display: block !important;
-    }
-
-    .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar-track,
-    .vt-root.is-preview .vt-canvas::-webkit-scrollbar-track {
-      background: #eef2f6;
-      border-radius: 4px;
-    }
-
-    .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar-thumb,
-    .vt-root.is-preview .vt-canvas::-webkit-scrollbar-thumb {
-      background: #02b5cb;
-      border-radius: 4px;
-    }
-
-    .vt-root.is-preview .vt-main-wrap::-webkit-scrollbar-thumb:hover,
-    .vt-root.is-preview .vt-canvas::-webkit-scrollbar-thumb:hover {
-      background: #028e9f;
+      overflow: visible !important;
+      background: transparent !important;
     }
 
     .vt-root.is-preview .vt-canvas {
-      padding: 10px 0 30px;
+      height: auto !important;
+      min-height: min-content !important;
+      flex: none !important;
+      overflow: visible !important;
+      padding: 10px 14px 60px !important;
+      display: block !important;
     }
 
     .vt-root.is-preview .vt-canvas-inner {
       max-width: 620px;
+      margin: 0 auto;
     }
 
     .vt-preview-hero {
@@ -4563,104 +4587,7 @@
       background: #f5f7fa;
     }
 
-    @media (max-width: 992px) {
-      .vt-editor-sidebar {
-        display: none !important;
-      }
 
-      .vt-body {
-        flex-direction: column;
-        overflow: visible;
-        gap: 0;
-      }
-
-      .vt-sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #e2e8ef;
-        height: auto;
-        padding: 0;
-      }
-
-      .vt-root {
-        height: auto;
-        min-height: 500px;
-      }
-
-      .vt-main-wrap {
-        height: auto;
-        min-height: 600px;
-      }
-
-      .vt-preview-mode .vt-preview-header {
-        display: grid;
-      }
-
-      .vt-preview-header-item:not(:last-child) {
-        border-right: 1px solid #f0f2f5;
-      }
-
-      /* Mobile font refinements as requested */
-      .vt-root.is-preview .vt-preview-hero {
-        padding: 10px 15px !important;
-      }
-
-      .vt-root.is-preview .vt-preview-hero-title {
-        font-size: 22px !important;
-        margin-bottom: 15px !important;
-      }
-
-      .vt-root.is-preview .vt-preview-hero-stats .stat strong {
-        font-size: 7px !important;
-      }
-
-      .vt-root.is-preview .vt-preview-hero-stats .stat span {
-        font-size: 6px !important;
-      }
-
-      .vt-root.is-preview .vt-preview-hero-stats {
-        padding: 8px 0 !important;
-      }
-
-      .vt-canvas {
-        padding: 5px 0 !important;
-      }
-
-      .vt-preview-header {
-        margin: 10px 15px !important;
-        padding: 12px 15px !important;
-      }
-
-      .vt-root.is-preview .vt-preview-sidebar {
-        padding-top: 0 !important;
-      }
-
-      .vt-root.is-preview .vt-preview-day-heading {
-        padding: 10px !important;
-      }
-
-      /* Ensure editor sidebar is hidden in preview mode on mobile */
-      .vt-root.is-preview .vt-sidebar {
-        display: none !important;
-      }
-
-      /* Improved mobile responsiveness for images and gifs in demo */
-      .vt-item img {
-        width: 100% !important;
-        height: auto !important;
-        max-height: 250px;
-        object-fit: cover;
-        border-radius: 8px;
-      }
-
-      .vt-item[data-type="Imagen"] img {
-        width: ;
-      }
-
-      .vt-item[data-type="Gif"] img {
-        width: 95% !important;
-      }
-    }
 
     /* ── PREVIEW MOCKUP HEADER (MOBILE) ── */
     .vt-preview-header {
@@ -5028,73 +4955,127 @@
     /* ── MOBILE DEMO EXPERIENCES (MOBILE PRO EDITOR & PREVIEW) ── */
     @media (max-width: 768px) {
       .demo-section {
-        padding: 0.8rem 0.5rem 1rem !important;
+        padding: 0.8rem 0.5rem 1.5rem !important;
       }
 
       .demo-section .container {
-        padding: 0 !important;
+        padding: 0 6px !important;
       }
 
       .demo-section .reveal {
         margin-top: 0 !important;
-        margin-bottom: 1.4rem !important;
+        margin-bottom: 1.2rem !important;
       }
 
-      /* Transform desktop mockup into clean mobile device frame on phone screens */
-      .laptop-wrap.demo-laptop-expandable .l-base {
+      /* Transform desktop mockup into clean mobile smartphone frame on phone screens */
+      .laptop-wrap.demo-laptop-expandable {
+        max-width: 385px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        border-radius: 36px !important;
+        overflow: hidden !important;
+        filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.4)) !important;
+      }
+
+      .laptop-wrap.demo-laptop-expandable .l-base,
+      .laptop-wrap.demo-laptop-expandable .l-shadow,
+      .laptop-wrap.demo-laptop-expandable .l-notch {
         display: none !important;
       }
 
       .laptop-wrap.demo-laptop-expandable .l-screen {
-        border-radius: 24px !important;
-        border: 3px solid #1e293b !important;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45) !important;
+        border-radius: 36px !important;
+        border: 7px solid #0d1e2b !important;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
         padding: 0 !important;
         background: #0f2a3a !important;
         overflow: hidden !important;
       }
 
       .laptop-wrap.demo-laptop-expandable .l-display {
-        height: clamp(500px, 72vh, 600px) !important;
-        border-radius: 20px !important;
+        height: clamp(520px, 75vh, 640px) !important;
+        border-radius: 28px !important;
         overflow: hidden !important;
+        width: 100% !important;
       }
 
       .vt-root {
         height: 100% !important;
-        border-radius: 20px !important;
+        border-radius: 28px !important;
         overflow: hidden !important;
+        overscroll-behavior: contain !important;
       }
 
       /* Mobile Phone App Topbar Styling */
       .vt-topbar {
-        height: 44px !important;
+        height: 48px !important;
         padding: 0 12px !important;
         background: #0f2a3a !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 20px 20px 0 0 !important;
+        border-radius: 28px 28px 0 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 6px !important;
+        position: relative !important;
+      }
+
+      .vt-topbar-left {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
       }
 
       .vt-topbar-left img {
-        height: 16px !important;
+        height: 15px !important;
+      }
+
+      .vt-topbar-center {
+        position: static !important;
+        transform: none !important;
+        display: flex !important;
+        align-items: center !important;
+      }
+
+      .vt-topbar-center::before {
+        content: '|' !important;
+        color: rgba(255, 255, 255, 0.35) !important;
+        margin: 0 4px 0 2px !important;
+        font-size: 11px !important;
+        font-weight: 400 !important;
       }
 
       .vt-demo-badge {
         font-size: 9px !important;
         color: rgba(255, 255, 255, 0.9) !important;
+        letter-spacing: 0.5px !important;
+        white-space: nowrap !important;
+      }
+
+      .vt-topbar-actions {
+        margin-left: auto !important;
       }
 
       .vt-preview-btn {
         padding: 4px 10px !important;
-        font-size: 10px !important;
+        font-size: 10.5px !important;
         border-radius: 50px !important;
+        background: rgba(2, 181, 203, 0.22) !important;
+        border: 1px solid #02b5cb !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
       }
 
       /* Editor mode on mobile: Narrow vertical icon sidebar on left, canvas on right */
       .vt-body {
         flex-direction: row !important;
-        flex: 1 !important;
+        flex: 1 1 0% !important;
+        height: calc(100% - 48px) !important;
         min-height: 0 !important;
+        overflow: hidden !important;
       }
 
       .vt-sidebar {
@@ -5103,25 +5084,31 @@
         max-height: none !important;
         border-right: 1px solid #e2e8ef !important;
         border-bottom: none !important;
-        padding: 6px 3px !important;
+        padding: 6px 3px 24px !important;
         overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior: contain !important;
+        touch-action: pan-y !important;
         flex-shrink: 0 !important;
         background: #ffffff !important;
-        scrollbar-width: none;
+        scrollbar-width: none !important;
       }
 
       .vt-sidebar::-webkit-scrollbar {
-        display: none;
+        display: none !important;
       }
 
       .vt-sidebar-scroll {
         display: flex !important;
         flex-direction: column !important;
         gap: 6px !important;
+        align-items: center !important;
+        width: 100% !important;
       }
 
       .vt-sidebar-section {
         padding: 0 !important;
+        width: 100% !important;
       }
 
       .vt-section-label {
@@ -5134,6 +5121,7 @@
         padding: 0 !important;
         gap: 6px !important;
         align-items: center !important;
+        width: 100% !important;
       }
 
       .vt-element-card {
@@ -5147,6 +5135,16 @@
         justify-content: center !important;
         border: 1px solid #e2e8ef !important;
         box-shadow: 0 1px 3px rgba(0,0,0,0.03) !important;
+        cursor: pointer !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+        transition: transform 0.15s, border-color 0.15s !important;
+      }
+
+      .vt-element-card:active {
+        transform: scale(0.88) !important;
+        border-color: #02b5cb !important;
+        background: #e0f2fe !important;
       }
 
       .vt-el-icon {
@@ -5165,53 +5163,125 @@
       }
 
       .vt-main-wrap {
-        flex: 1 !important;
+        flex: 1 1 0% !important;
         min-width: 0 !important;
         height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+      }
+
+      .vt-main {
+        flex: 1 1 0% !important;
+        min-height: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+      }
+
+      .vt-toolbar {
+        height: 38px !important;
+        padding: 0 8px !important;
+        gap: 4px !important;
+        flex-shrink: 0 !important;
+      }
+
+      .vt-tabs-row {
+        overflow-x: auto !important;
+        scrollbar-width: none !important;
+        max-width: 100% !important;
+        gap: 4px !important;
+      }
+
+      .vt-tabs-row::-webkit-scrollbar {
+        display: none !important;
+      }
+
+      .vt-tab {
+        padding: 3px 8px !important;
+        font-size: 10px !important;
+        white-space: nowrap !important;
+      }
+
+      .vt-tab-add {
+        padding: 3px 6px !important;
+        font-size: 9.5px !important;
+      }
+
+      .vt-item-count {
+        display: none !important;
+      }
+
+      .vt-canvas {
+        flex: 1 1 0% !important;
+        min-height: 0 !important;
         overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior: contain !important;
+        touch-action: pan-y !important;
+        padding: 8px !important;
+      }
+
+      .vt-canvas::-webkit-scrollbar {
+        width: 4px !important;
+      }
+
+      .vt-canvas-inner {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      .vt-item {
+        padding: 8px 10px !important;
+        gap: 8px !important;
+        border-radius: 8px !important;
+      }
+
+      .vt-item-name {
+        font-size: 11px !important;
+      }
+
+      .vt-item-detail {
+        font-size: 9.5px !important;
+      }
+
+      .vt-item-icon {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 13px !important;
+        border-radius: 6px !important;
       }
 
       /* Preview mode on mobile: Smooth vertical scrolling & horizontal days navbar */
       .vt-root.is-preview .vt-body {
         flex-direction: column !important;
-        flex: 1 !important;
+        flex: 1 1 0% !important;
+        height: calc(100% - 48px) !important;
         min-height: 0 !important;
-      }
-
-      .vt-root.is-preview .vt-main-wrap {
-        flex: 1 !important;
-        overflow-y: auto !important;
-        height: 100% !important;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .vt-root.is-preview .vt-canvas {
-        overflow-y: visible !important;
-        height: auto !important;
-        min-height: min-content !important;
-        padding-bottom: 40px !important;
+        overflow: hidden !important;
       }
 
       .vt-root.is-preview .vt-preview-sidebar {
         width: 100% !important;
-        height: auto !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        flex-shrink: 0 !important;
         flex-direction: row !important;
         align-items: center !important;
         border-right: none !important;
         border-bottom: 1px solid #e2e8ef !important;
-        padding: 6px 10px !important;
+        padding: 4px 8px !important;
         overflow-x: auto !important;
         gap: 6px !important;
-        scrollbar-width: none;
-        flex-shrink: 0 !important;
+        scrollbar-width: none !important;
+        background: #ffffff !important;
       }
 
       .vt-root.is-preview .vt-preview-sidebar::-webkit-scrollbar {
-        display: none;
+        display: none !important;
       }
 
-      .vt-preview-sidebar-label {
+      .vt-root.is-preview .vt-preview-sidebar-label {
         display: none !important;
       }
 
@@ -5235,23 +5305,60 @@
         color: #ffffff !important;
       }
 
+      .vt-root.is-preview .vt-main-wrap {
+        flex: 1 1 0% !important;
+        min-height: 0 !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior: contain !important;
+        touch-action: pan-y !important;
+        background: #f8fafc !important;
+      }
+
+      .vt-root.is-preview .vt-main {
+        height: auto !important;
+        min-height: 0 !important;
+        flex: none !important;
+        display: block !important;
+        overflow: visible !important;
+        background: transparent !important;
+      }
+
+      .vt-root.is-preview .vt-canvas {
+        overflow: visible !important;
+        height: auto !important;
+        min-height: min-content !important;
+        display: block !important;
+        padding: 6px 8px 60px !important;
+      }
+
+      .vt-root.is-preview .vt-canvas-inner {
+        max-width: 100% !important;
+        margin: 0 auto !important;
+      }
+
       .vt-preview-hero {
         padding: 8px 8px 4px !important;
+        box-sizing: border-box !important;
       }
 
       .vt-preview-hero-inner {
         padding: 30px 10px 0 10px !important;
-        min-height: 140px !important;
+        min-height: 130px !important;
         border-radius: 10px !important;
       }
 
       .vt-preview-hero-title {
-        font-size: 18px !important;
-        margin-bottom: 10px !important;
+        font-size: 17px !important;
+        margin-bottom: 8px !important;
       }
 
       .vt-preview-hero-stats {
         padding: 6px 0 !important;
+        margin: 0 -10px !important;
       }
 
       .vt-preview-hero-stats .stat div {
@@ -5508,14 +5615,51 @@
         </div>`;
       }
 
+      let vtAddLock = false;
+      window.vtAddElement = function(type) {
+        if (!type || vtAddLock) return;
+        vtAddLock = true;
+        setTimeout(() => { vtAddLock = false; }, 250);
+
+        // If currently in preview mode, switch back to editor mode
+        const root = document.querySelector('.vt-root');
+        if (root && root.classList.contains('is-preview')) {
+          root.classList.remove('is-preview');
+          const previewBtn = document.getElementById('vtPreviewBtn');
+          if (previewBtn) {
+            previewBtn.innerHTML = '<i class="fa-solid fa-eye"></i> <span>Vista previa</span>';
+          }
+          vtUpdatePreviewSidebar();
+        }
+
+        const pool = VT_EXTRA[type] || [];
+        const idx = vtExtraIdx[type] || 0;
+        const tpl = pool[idx % pool.length] || { type: type, icon: '📌', bg: '#f5f5f5', name: type, detail: '' };
+        vtExtraIdx[type] = idx + 1;
+
+        if (!days[currentDay]) currentDay = 0;
+        days[currentDay].items.push({ ...tpl, id: uid++ });
+        vtRender();
+        vtToast('✓ ' + tpl.name + ' añadido');
+
+        // Smooth scroll canvas down to newly added element
+        setTimeout(() => {
+          const canvas = document.getElementById('vtCanvas');
+          if (canvas) {
+            canvas.scrollTo({ top: canvas.scrollHeight, behavior: 'smooth' });
+          }
+        }, 50);
+      };
+
       function renderRichCard(el, item) {
         const sInfo = serviceColorMap[item.type] || { bg: '#f1f5f9', color: '#02b5cb', icon: '<i class="fa-solid fa-circle-info"></i>' };
 
         if (item.type === 'Vuelo') {
+          const flightTitle = item.name.startsWith('Vuelo') ? item.name : 'Vuelo ' + item.name;
           el.innerHTML = `
           <div class="vt-item-flight-rich" style="padding: 14px; background: white; border-radius: 12px; border: 1px solid #eef2f6; width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
             <div style="display: flex; align-items: center; justify-content: space-between; color: ${sInfo.color}; font-weight: 700; font-size: 12px; margin-bottom: 12px;">
-              <span style="display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-plane"></i> Vuelo ${item.name}</span>
+              <span style="display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-plane"></i> ${flightTitle}</span>
               <span style="background: #0f2a3a; color: white; font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 4px;">EK 0383</span>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
