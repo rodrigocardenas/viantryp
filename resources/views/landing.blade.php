@@ -205,7 +205,7 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      padding: 6.5rem 3.5rem 0;
+      padding: 6.5rem 0 0 3.5rem;
       position: relative;
       overflow: hidden;
       background: linear-gradient(135deg, #f4fbfb 0%, #f8fafc 40%, #edf7f9 70%, #f0f9ff 100%);
@@ -216,35 +216,49 @@
       position: relative;
       z-index: 2;
       width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
+      max-width: 100%;
+      margin: 0 0 0 auto;
       display: grid;
-      grid-template-columns: 1.05fr 1fr;
-      gap: 3.5rem;
+      grid-template-columns: 1fr 1.55fr;
+      gap: 0;
       align-items: flex-end;
+      padding-right: 0;
+    }
+
+    .hero .feature-banner-visual {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      align-self: flex-end;
+      width: 100%;
+      margin-right: 0;
+      padding-right: 0;
     }
 
     .hero-hand-wrapper {
       position: relative;
       width: 100%;
-      max-width: 480px;
-      margin: 0 auto;
+      max-width: 960px;
+      margin: 0 0 0 auto;
       display: flex;
-      justify-content: center;
+      justify-content: flex-end;
       align-items: flex-end;
       align-self: flex-end;
+      margin-bottom: 0 !important;
+      padding-right: 0 !important;
       background: transparent !important;
       box-shadow: none !important;
     }
 
     .hero-hand-img {
       width: 100%;
-      max-width: 480px;
+      max-width: 960px;
       height: auto;
       display: block;
       object-fit: contain;
       vertical-align: bottom;
       margin-bottom: 0 !important;
+      margin-right: 0 !important;
       filter: none !important;
       animation: none !important;
       transition: none !important;
@@ -262,7 +276,12 @@
       flex-direction: column;
       align-items: flex-start;
       align-self: center;
-      padding-bottom: 4rem;
+      justify-self: flex-end;
+      margin-left: auto;
+      padding-top: 2rem;
+      padding-bottom: 5rem;
+      padding-left: 3.5rem;
+      max-width: 680px;
     }
 
     .hero h1 {
@@ -281,12 +300,16 @@
     .hero h1,
     .section-title,
     .how-left-content h2,
-    .solutions-title,
     .feature-banner-text h2,
     .cta-title,
     .pricing-header h2 {
       font-weight: 700 !important;
       letter-spacing: -5px !important;
+    }
+
+    .solutions-title {
+      font-weight: 700 !important;
+      letter-spacing: -3px !important;
     }
 
     /* ── HERO FLOATING BADGES (WOW EFFECT) ── */
@@ -499,9 +522,27 @@
 
 
     @media (max-width: 992px) {
+      .hero {
+        padding: 5.5rem 1.5rem 0 !important;
+      }
+
       .hero-container {
         grid-template-columns: 1fr;
         text-align: center;
+        padding-right: 0 !important;
+      }
+
+      .hero .feature-banner-visual,
+      .hero-hand-wrapper {
+        justify-content: center !important;
+        margin: 0 auto !important;
+        align-self: center !important;
+        max-width: 100% !important;
+      }
+
+      .hero-hand-img {
+        max-width: 520px !important;
+        margin: 0 auto !important;
       }
 
       .hero-text-side {
@@ -509,6 +550,8 @@
         align-items: center;
         display: flex;
         flex-direction: column;
+        padding-left: 0 !important;
+        padding-bottom: 2rem !important;
       }
 
       .hero-actions {
@@ -2158,6 +2201,20 @@
       transform: translateX(0);
     }
 
+    /* ── REVEAL HERO HAND ENTRANCE ── */
+    .reveal-hand-entrance {
+      opacity: 0;
+      transform: translate3d(50px, 30px, 0) scale(0.96);
+      transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+      transition-delay: 0.25s;
+      will-change: opacity, transform;
+    }
+
+    .reveal-hand-entrance.visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+
     .d1 {
       transition-delay: 0.2s;
     }
@@ -2631,23 +2688,23 @@
             <a href="#demo" class="btn-pill-secondary">Ver Demo</a>
             {{-- Botón instalar app: solo visible en móvil --}}
             <button id="landing-install-btn" onclick="triggerPwaInstall()" style="
-                                display: none;
-                                align-items: center;
-                                gap: 10px;
-                                background: linear-gradient(135deg, #136075 0%, #177890 100%);
-                                color: white;
-                                border: none;
-                                padding: 14px 22px;
-                                border-radius: 100px;
-                                font-weight: 700;
-                                font-size: 1rem;
-                                cursor: pointer;
-                                box-shadow: 0 4px 24px rgba(13,43,62,0.25);
-                                font-family: 'Barlow', sans-serif;
-                                transition: all 0.2s;
-                                width: 100%;
-                                justify-content: center;
-                              ">
+                                    display: none;
+                                    align-items: center;
+                                    gap: 10px;
+                                    background: linear-gradient(135deg, #136075 0%, #177890 100%);
+                                    color: white;
+                                    border: none;
+                                    padding: 14px 22px;
+                                    border-radius: 100px;
+                                    font-weight: 700;
+                                    font-size: 1rem;
+                                    cursor: pointer;
+                                    box-shadow: 0 4px 24px rgba(13,43,62,0.25);
+                                    font-family: 'Barlow', sans-serif;
+                                    transition: all 0.2s;
+                                    width: 100%;
+                                    justify-content: center;
+                                  ">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(255,255,255,0.15)"
@@ -2661,7 +2718,7 @@
       </div>
 
       <div class="feature-banner-visual">
-        <div class="hero-hand-wrapper">
+        <div class="hero-hand-wrapper reveal-hand-entrance">
           <img src="{{ asset('images/hero-hand-mockup.png') }}" alt="Viantryp Mobile App" class="hero-hand-img">
         </div>
       </div>
@@ -6236,7 +6293,7 @@
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-hand-entrance').forEach(el => observer.observe(el));
 
     // LAPTOP SCROLL-EXPANSION ANIMATION (HERO -> DEMO)
     (function () {
