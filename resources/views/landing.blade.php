@@ -1606,8 +1606,10 @@
 
     .sol-btn {
       font-family: 'Manrope', sans-serif;
-      align-self: flex-start;
-      padding: 0.8rem 1.7rem;
+      grid-column: 1 / -1;
+      justify-self: center;
+      margin-top: 0.5rem;
+      padding: 0.85rem 2rem;
       background: linear-gradient(135deg, #136075 0%, #177890 100%);
       color: #ffffff !important;
       border-radius: 100px;
@@ -2384,24 +2386,35 @@
       }
     }
 
+    /* ── ENHANCED RESPONSIVE MOBILE STYLES (EXCLUDING DEMO SECTION) ── */
     @media (max-width: 768px) {
+
+      html,
+      body {
+        overflow-x: hidden;
+      }
+
       nav {
-        padding: 1rem;
-        justify-content: space-between;
+        padding: 0.85rem 1.25rem !important;
+        justify-content: space-between !important;
+      }
+
+      nav.scrolled {
+        padding: 0.75rem 1.25rem !important;
       }
 
       .nav-links {
-        display: none;
+        display: none !important;
       }
 
       .nav-logo-wrap,
-      .nav-logo img {
-        height: 26px !important;
+      .nav-logo-img {
+        height: 28px !important;
       }
 
       .nav-right {
-        gap: 0.1rem;
-        margin-right: 0.5rem;
+        gap: 0.5rem !important;
+        margin-right: 0 !important;
       }
 
       .nav-right .nav-login,
@@ -2410,7 +2423,7 @@
       }
 
       #profileTrigger span {
-        display: none;
+        display: none !important;
       }
 
       .nav-auth-container {
@@ -2419,75 +2432,366 @@
 
       .mobile-menu-toggle {
         display: flex !important;
-        margin-left: auto;
-      }
-
-      .hero-stats {
-        gap: 1.8rem;
-        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
+        gap: 5px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+        z-index: 1001;
       }
 
+      .mobile-menu-toggle:active {
+        opacity: 0.7;
+      }
+
+      .mobile-menu-toggle span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: var(--navy);
+        border-radius: 2px;
+        transition: 0.3s ease;
+      }
+
+      /* Hero Mobile Polish */
       .hero {
-        padding-top: 6rem;
-        padding-bottom: 3rem;
+        padding: 5.5rem 0 0 0 !important;
+        min-height: 100vh !important;
+        min-height: 100dvh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
       }
 
-      .section-title {
-        font-size: 1.8rem !important;
+      .hero-container {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        flex: 1 !important;
+        grid-template-columns: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        gap: 1.25rem !important;
+        align-items: center !important;
       }
 
-      .cta-note {
-        font-size: 0.87rem !important;
-      }
-
-      .section-desc {
-        font-size: 0.8rem !important;
-      }
-
-      .pricing-grid {
-        grid-template-columns: 1fr;
+      .hero-text-side {
+        padding: 0 1.25rem !important;
+        max-width: 100% !important;
+        text-align: center !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 auto !important;
       }
 
       .hero h1 {
-        font-size: 2.5rem !important;
-        line-height: 1.2 !important;
+        font-size: 53px !important;
+        line-height: 1.05 !important;
+        letter-spacing: -3.5px !important;
+        margin-bottom: 1rem !important;
+        text-align: center !important;
+        max-width: 100% !important;
       }
 
       .hero p {
-        font-size: 1.2rem !important;
-        margin: 1.5rem 0 !important;
+        font-size: 1.05rem !important;
+        line-height: 1.5 !important;
+        text-align: center !important;
+        margin: 0 0 1.5rem 0 !important;
+        color: var(--text-soft) !important;
+        max-width: 100% !important;
+      }
+
+      .hero-subtext-desktop {
+        display: none !important;
       }
 
       .hero-actions {
-        flex-direction: column;
-        width: 100%;
-        gap: 1rem;
-      }
-
-      .hero-actions .btn-primary,
-      .hero-actions .btn-secondary {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .how {
-        padding: 4rem 1.5rem !important;
-      }
-
-      .creative-steps {
-        gap: 2.5rem !important;
-      }
-
-      .creative-step {
+        display: flex !important;
         flex-direction: column !important;
-        gap: 1rem !important;
+        width: 100% !important;
+        max-width: 320px !important;
+        gap: 0.75rem !important;
+        margin: 0 auto !important;
       }
 
-      .step-giant-num {
-        font-size: 3rem !important;
-        opacity: 0.2 !important;
-        margin-bottom: -1.5rem !important;
+      .hero-actions .btn-pill-primary,
+      .hero-actions .btn-pill-secondary {
+        width: 100% !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 0.9rem 1.5rem !important;
+        font-size: 1rem !important;
+      }
+
+      .hero-stats {
+        gap: 1.5rem !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        margin-top: 1.5rem !important;
+      }
+
+      .feature-banner-visual {
+        width: 100% !important;
+        padding: 0 !important;
+        margin: auto 0 0 0 !important;
+      }
+
+      .hero-hand-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        justify-content: center !important;
+        align-items: flex-end !important;
+      }
+
+      .hero-hand-img {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        border-radius: 0 !important;
+        object-fit: cover !important;
+      }
+
+      /* General Mobile Section Polish */
+      .section-title {
+        font-size: 1.9rem !important;
+        line-height: 1.25 !important;
+        letter-spacing: -0.5px !important;
+      }
+
+      .section-desc {
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+      }
+
+      /* How Section Mobile Polish */
+      .how {
+        padding: 3.5rem 1.25rem !important;
+      }
+
+      .how-container {
+        grid-template-columns: 1fr !important;
+        gap: 2.25rem !important;
+        width: 100% !important;
+      }
+
+      .how-left-content {
+        text-align: center !important;
+        align-items: center !important;
+      }
+
+      .how-left-content h2 {
+        font-size: 32px !important;
+        line-height: 1.15 !important;
+        letter-spacing: -2px !important;
+        margin-bottom: 1.5rem !important;
+      }
+
+      .cyan-highlight-big {
+        font-size: 36px !important;
+      }
+
+      .how-phones-wrapper {
+        width: 100% !important;
+        max-width: 290px !important;
+        height: 290px !important;
+        margin: 0.5rem auto 0 auto !important;
+        position: relative !important;
+      }
+
+      .how-phone-device {
+        width: 150px !important;
+      }
+
+      .how-phone-device.phone-left {
+        top: 20px !important;
+        left: 0px !important;
+      }
+
+      .how-phone-device.phone-right {
+        top: 10px !important;
+        left: 135px !important;
+      }
+
+      .how-step-cards {
+        gap: 1rem !important;
+        width: 100% !important;
+      }
+
+      .how-card {
+        padding: 1.25rem 1.25rem !important;
+        border-radius: 20px !important;
+        gap: 1.25rem !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        border: 1px solid rgba(2, 181, 203, 0.2) !important;
+        box-shadow: 0 8px 20px rgba(15, 42, 58, 0.05) !important;
+      }
+
+      .how-card-num {
+        font-size: 3.6rem !important;
+        line-height: 1 !important;
+      }
+
+      .how-card-arrow svg {
+        width: 18px !important;
+        height: 18px !important;
+      }
+
+      .how-card-text-side h3 {
+        font-size: 1.25rem !important;
+        line-height: 1.25 !important;
+        letter-spacing: -0.5px !important;
+        margin-bottom: 0.35rem !important;
+      }
+
+      .how-card-text-side p {
+        font-size: 0.9rem !important;
+        line-height: 1.5 !important;
+        color: #475569 !important;
+      }
+
+      /* Solutions Section Mobile Polish */
+      .solutions {
+        padding: 3.5rem 1rem !important;
+      }
+
+      .solutions-title {
+        font-size: 28px !important;
+        line-height: 1.2 !important;
+        letter-spacing: -1.5px !important;
+        text-align: center !important;
+        margin-bottom: 1.25rem !important;
+      }
+
+      .solutions-tabs {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+        padding: 0.25rem 0.5rem 1rem !important;
+        margin-bottom: 1.25rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        text-align: center !important;
+      }
+
+      .sol-tab {
+        flex-shrink: 0 !important;
+        font-size: 0.85rem !important;
+        padding: 0.6rem 1.15rem !important;
+        border-radius: 100px !important;
+      }
+
+      .solutions-card {
+        grid-template-columns: 1fr !important;
+        padding: 1.5rem 1.25rem !important;
+        border-radius: 22px !important;
+        gap: 1.25rem !important;
+        width: 100% !important;
+        box-shadow: 0 12px 30px rgba(11, 142, 163, 0.08) !important;
+      }
+
+      .sol-tagline {
+        font-size: 1.55rem !important;
+        line-height: 1.2 !important;
+        letter-spacing: -1px !important;
+        margin-bottom: 0.4rem !important;
+        text-align: left !important;
+      }
+
+      .sol-text {
+        font-size: 0.92rem !important;
+        line-height: 1.5 !important;
+        color: #475569 !important;
+        margin-bottom: 1rem !important;
+        text-align: left !important;
+      }
+
+      .sol-benefits {
+        display: none !important;
+      }
+
+      .sol-features-right {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.85rem !important;
+        width: 100% !important;
+      }
+
+      .sol-feature-item {
+        display: flex !important;
+        align-items: flex-start !important;
+        gap: 0.85rem !important;
+        padding: 0.9rem !important;
+        background: rgba(248, 250, 252, 0.85) !important;
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
+        border-radius: 16px !important;
+      }
+
+      .sol-feature-icon {
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        border-radius: 10px !important;
+        background: rgba(2, 181, 203, 0.1) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1rem !important;
+      }
+
+      .sol-feature-name {
+        font-size: 0.95rem !important;
+        font-weight: 700 !important;
+        color: #0f2a3a !important;
+        margin-bottom: 0.2rem !important;
+      }
+
+      .sol-feature-desc {
+        font-size: 0.85rem !important;
+        color: #64748b !important;
+        line-height: 1.45 !important;
+      }
+
+      .sol-btn {
+        width: 100% !important;
+        justify-content: center !important;
+        text-align: center !important;
+        margin-top: 1rem !important;
+        padding: 0.85rem 1.25rem !important;
+        font-size: 0.95rem !important;
+        border-radius: 100px !important;
+      }
+
+      /* Pricing Section Mobile */
+      .pricing {
+        padding: 3.5rem 1.25rem !important;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+        max-width: 420px !important;
+        margin: 0 auto !important;
+      }
+
+      .plan {
+        padding: 2rem 1.5rem !important;
+        border-radius: 24px !important;
       }
 
       .plan-savings-spacer {
@@ -2499,109 +2803,200 @@
         flex: none !important;
       }
 
-      .plan {
-        padding: 2rem 1.5rem !important;
-      }
-
       .plan-trial-note {
         margin-top: 0.5rem !important;
       }
 
-      .cta-box {
-        padding: 2.5rem 1.5rem !important;
+      /* CTA Banner Mobile Polish */
+      .feature-banner {
+        padding: 3.5rem 1.25rem !important;
       }
 
-      .cta-box h2 {
-        font-size: 1.8rem !important;
-        line-height: 1.2 !important;
+      .feature-banner-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
       }
 
-      .cta-box p {
-        font-size: 0.9rem !important;
+      .feature-banner-text {
+        text-align: center !important;
+        align-items: center !important;
+        padding: 0 !important;
       }
 
-      .cta-actions {
-        flex-direction: column;
-        width: 100%;
-        gap: 1rem;
+      .feature-banner-text h2 {
+        font-size: 34px !important;
+        line-height: 1.15 !important;
+        letter-spacing: -2px !important;
+        margin-bottom: 0.85rem !important;
       }
 
-      .cta-actions .btn-primary,
-      .cta-actions .btn-secondary {
-        width: 100%;
-        justify-content: center;
+      .feature-banner-text h2 span {
+        letter-spacing: -2px !important;
+      }
+
+      .feature-banner-text p {
+        font-size: 0.95rem !important;
+        line-height: 1.55 !important;
+        margin-bottom: 1.75rem !important;
+        padding: 0 0.5rem !important;
+      }
+
+      .feature-banner-text p br {
+        display: none !important;
+      }
+
+      .feature-banner-actions {
+        flex-direction: column !important;
+        width: 100% !important;
+        max-width: 320px !important;
+        gap: 0.75rem !important;
+        margin: 0 auto !important;
+      }
+
+      .btn-cta-dark,
+      .btn-cta-cyan {
+        width: 100% !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 0.9rem 1.5rem !important;
+        font-size: 0.98rem !important;
+        border-radius: 100px !important;
+        display: flex !important;
+        align-items: center !important;
       }
 
       footer {
-        padding: 3rem 1.5rem 2rem !important;
+        padding: 3rem 1.25rem 2rem !important;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+        text-align: center !important;
+      }
+
+      .footer-brand,
+      .footer-links-col {
+        align-items: center !important;
+        text-align: center !important;
       }
     }
 
-    /* MOBILE MENU STYLES */
-    .mobile-menu-toggle {
-      display: none;
-      background: none;
-      border: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      padding: 5px;
-      z-index: 1001;
+    /* ── MODERN BACKDROP OVERLAY & SLIDING DRAWER MENU ── */
+    .mobile-menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 34, 48, 0.45);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+      z-index: 1999;
     }
 
-    .mobile-menu-toggle span {
-      width: 22px;
-      height: 2px;
-      background: var(--navy);
-      border-radius: 2px;
-      transition: 0.3s;
+    .mobile-menu-overlay.active {
+      opacity: 1;
+      visibility: visible;
     }
 
     .mobile-menu {
       position: fixed;
       top: 0;
       right: -100%;
-      width: 80%;
-      max-width: 200px;
+      width: 85vw;
+      max-width: 320px;
       height: 100vh;
-      background: white;
+      height: 100dvh;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       z-index: 2000;
-      padding: 60px 20px 30px;
-      transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem 1.5rem 2rem;
+      transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), right 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.15);
       display: flex;
       flex-direction: column;
+      border-left: 1px solid rgba(226, 232, 240, 0.8);
+      overflow-y: auto;
     }
 
     .mobile-menu.active {
       right: 0;
     }
 
+    .mobile-menu-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      margin-bottom: 1.5rem;
+    }
+
+    .mobile-menu-header img {
+      height: 26px;
+      width: auto;
+    }
+
     .mobile-menu-close {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(15, 42, 58, 0.06);
       border: none;
-      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
       color: var(--navy);
       cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-menu-close:hover,
+    .mobile-menu-close:active {
+      background: rgba(15, 42, 58, 0.12);
+      transform: scale(1.05);
     }
 
     .mobile-nav-links {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      margin-top: 10px;
+      gap: 0.5rem;
+      margin: 0;
+      padding: 0;
     }
 
     .mobile-nav-links a {
       text-decoration: none;
-      font-size: 14px;
+      font-size: 1rem;
       font-weight: 600;
       color: var(--navy);
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', sans-serif;
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-nav-links a:hover,
+    .mobile-nav-links a:active {
+      background: rgba(2, 181, 203, 0.08);
+      color: #02b5cb;
+      transform: translateX(4px);
+    }
+
+    .mobile-auth {
+      margin-top: auto !important;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
 
     .plan-savings-spacer {
@@ -2730,41 +3125,15 @@
       <div class="hero-text-side">
         <h1 class="reveal-left d1">Diseña tus viajes<br>en cuestión<br>de <span class="cyan-highlight">minutos</span>
         </h1>
-        <p class="reveal-left d2">Organiza rutas, vuelos y estancias en una plataforma simple e intuitiva. Ya sea para
-          tu próximo viaje o para escalar tu negocio, Viantryp es donde tus itinerarios cobran vida.</p>
+        <p class="reveal-left d2">Organiza rutas, vuelos y estancias en una plataforma simple e intuitiva.<span
+            class="hero-subtext-desktop"> Ya sea para tu próximo viaje o para escalar tu negocio, Viantryp es donde tus
+            itinerarios cobran vida.</span></p>
         <div class="hero-actions reveal-left d3">
           @auth
             <a href="{{ route('trips.index') }}" class="btn-pill-primary">Ir a mis viajes →</a>
           @else
             <a href="{{ route('register') }}" class="btn-pill-primary">Empezar Ahora</a>
             <a href="#demo" class="btn-pill-secondary">Ver Demo</a>
-            {{-- Botón instalar app: solo visible en móvil --}}
-            <button id="landing-install-btn" onclick="triggerPwaInstall()" style="
-                                      display: none;
-                                      align-items: center;
-                                      gap: 10px;
-                                      background: linear-gradient(135deg, #136075 0%, #177890 100%);
-                                      color: white;
-                                      border: none;
-                                      padding: 14px 22px;
-                                      border-radius: 100px;
-                                      font-weight: 700;
-                                      font-size: 1rem;
-                                      cursor: pointer;
-                                      box-shadow: 0 4px 24px rgba(13,43,62,0.25);
-                                      font-family: 'Barlow', sans-serif;
-                                      transition: all 0.2s;
-                                      width: 100%;
-                                      justify-content: center;
-                                    ">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(255,255,255,0.15)"
-                  stroke="none" />
-                <path d="M8 12l4 4 4-4M12 8v8" />
-              </svg>
-              📲 Instalar App
-            </button>
           @endauth
         </div>
       </div>
@@ -3212,9 +3581,6 @@
             <li><i class="fas fa-check"></i> Disfruta de un diseño que evoluciona junto a tus ideas.</li>
             <li><i class="fas fa-check"></i> Actualiza tu viaje sin rehacer documentos.</li>
           </ul>
-
-
-          <a href="#precios" class="sol-btn">Explorar soluciones →</a>
         </div>
 
         <div class="sol-features-right" id="sol-right">
@@ -3249,6 +3615,8 @@
             </div>
           </div>
         </div>
+
+        <a href="#precios" class="sol-btn">Explorar soluciones →</a>
       </div>
     </div>
   </section>
@@ -6542,33 +6910,45 @@
       });
     });
   </script>
+  <!-- MOBILE MENU BACKDROP & DRAWER -->
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
   <div class="mobile-menu" id="mobileMenu">
-    <button class="mobile-menu-close" id="mobileMenuClose">&times;</button>
+    <div class="mobile-menu-header">
+      <img src="{{ asset('images/logo-viantryp-black.png') }}" alt="Viantryp">
+      <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Cerrar menú">&times;</button>
+    </div>
+
     <ul class="mobile-nav-links">
-      <li><a href="#como-funciona">Cómo funciona</a></li>
-      <li><a href="#precios">Precios</a></li>
-      <li><a href="{{ route('contact') }}">Contacto</a></li>
+      <li><a href="#como-funciona"><i class="fas fa-layer-group" style="width: 22px; color: var(--teal);"></i> Cómo
+          funciona</a></li>
+      <li><a href="#precios"><i class="fas fa-tags" style="width: 22px; color: var(--teal);"></i> Precios y Planes</a>
+      </li>
+      <li><a href="{{ route('contact') }}"><i class="fas fa-envelope" style="width: 22px; color: var(--teal);"></i>
+          Contacto</a></li>
     </ul>
 
-    <div class="mobile-auth"
-      style="margin-top: 300px; padding-top: 20px; border-top: 1px solid var(--mid-gray); display: flex; flex-direction: column; gap: 10px;">
+    <div class="mobile-auth">
       @auth
-        <div style="font-size:12px; font-weight:600; color:var(--text-soft); text-align:center;">Hola,
-          {{ auth()->user()->name }}
+        <div style="font-size: 13px; font-weight: 600; color: var(--text-soft); text-align: center; margin-bottom: 4px;">
+          Hola, {{ auth()->user()->name }}
         </div>
         <a href="{{ route('trips.index') }}" class="nav-cta"
-          style="width: 100%; justify-content: center; text-align: center; padding: 10px;">Mis viajes</a>
+          style="width: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 12px; border-radius: 100px;">
+          <i class="fas fa-suitcase-rolling" style="margin-right: 8px;"></i> Mis viajes
+        </a>
         <form method="POST" action="{{ route('logout') }}" style="margin: 0; width: 100%;">
           @csrf
           <button type="submit"
-            style="width: 100%; border: 1px solid var(--mid-gray); border-radius: 100px; background: transparent; padding: 10px; color: #c0392b; cursor: pointer; text-align: center; font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif;">
-            Cerrar sesión
+            style="width: 100%; border: 1px solid rgba(192, 57, 43, 0.3); border-radius: 100px; background: rgba(192, 57, 43, 0.04); padding: 10px; color: #c0392b; cursor: pointer; text-align: center; font-size: 13px; font-weight: 600; font-family: 'Manrope', sans-serif;">
+            <i class="fas fa-sign-out-alt" style="margin-right: 6px;"></i> Cerrar sesión
           </button>
         </form>
       @else
         <a href="{{ route('register') }}" class="nav-cta"
-          style="width: 100%; display: block; text-align: center; padding: 10px; margin-bottom: 5px;">Comenzar gratis</a>
-        <a href="{{ route('login') }}" class="nav-login" style="width: 100%; text-align: center; padding: 10px;">Iniciar
+          style="width: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 12px; border-radius: 100px; font-weight: 700;">Comenzar
+          gratis</a>
+        <a href="{{ route('login') }}" class="nav-login"
+          style="width: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 11px; border-radius: 100px; font-weight: 600;">Iniciar
           sesión</a>
       @endauth
     </div>
@@ -6579,15 +6959,27 @@
       const btn = document.getElementById('mobileMenuBtn');
       const close = document.getElementById('mobileMenuClose');
       const menu = document.getElementById('mobileMenu');
+      const overlay = document.getElementById('mobileMenuOverlay');
 
-      if (btn && close && menu) {
-        btn.addEventListener('click', () => menu.classList.add('active'));
-        close.addEventListener('click', () => menu.classList.remove('active'));
+      const openMenu = () => {
+        if (menu) menu.classList.add('active');
+        if (overlay) overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
 
+      const closeMenu = () => {
+        if (menu) menu.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      };
+
+      if (btn) btn.addEventListener('click', openMenu);
+      if (close) close.addEventListener('click', closeMenu);
+      if (overlay) overlay.addEventListener('click', closeMenu);
+
+      if (menu) {
         menu.querySelectorAll('a').forEach(link => {
-          link.addEventListener('click', () => {
-            menu.classList.remove('active');
-          });
+          link.addEventListener('click', closeMenu);
         });
       }
     });
