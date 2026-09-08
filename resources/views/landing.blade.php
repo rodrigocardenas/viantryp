@@ -6427,7 +6427,7 @@
             <li><i class="fas fa-check"></i> Personalización de colores y temas</li>
             <li><i class="fas fa-check"></i> Visualizador web interactivo</li>
             <li><i class="fas fa-check"></i> Búsqueda básica en Google Places</li>
-            <li><i class="fas fa-check"></i> Copilot IA (3 consultas por viaje)</li>
+            <li><i class="fas fa-check"></i> Tryp IA (3 consultas por viaje)</li>
           </ul>
           <a href="{{ route('register') }}" class="plan-btn">Empezar gratis</a>
         </div>
@@ -6454,7 +6454,7 @@
             </li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Hasta 2 colaboradores para editar en pareja
                 o grupo</strong></li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Copilot IA Ilimitado</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Tryp IA (Asistente de Viantryp) Ilimitado</li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> Exportación descargable en PDF</li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> Google Places Ilimitado con Galería HD</li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> Guardar y reutilizar tus propias plantillas</li>
