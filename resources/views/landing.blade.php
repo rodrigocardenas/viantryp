@@ -695,7 +695,7 @@
       font-size: clamp(2rem, 4vw, 3rem);
       font-weight: 800;
       line-height: 1.1;
-      letter-spacing: -0.092em;
+      letter-spacing: -3px;
       margin-bottom: 1.2rem;
       color: var(--navy);
     }
@@ -1167,7 +1167,7 @@
       font-size: clamp(2.1rem, 3.8vw, 48px);
       font-weight: 800;
       line-height: 1.22;
-      letter-spacing: -0.092em;
+      letter-spacing: -0.02rem;
       color: #ffffff;
       max-width: 980px;
       margin: 0 auto;
@@ -1606,9 +1606,8 @@
 
     .sol-btn {
       font-family: 'Manrope', sans-serif;
-      grid-column: 1 / -1;
-      justify-self: center;
-      margin-top: 0.5rem;
+      align-self: flex-start;
+      margin-top: 1.2rem;
       padding: 0.85rem 2rem;
       background: linear-gradient(135deg, #136075 0%, #177890 100%);
       color: #ffffff !important;
@@ -1620,6 +1619,7 @@
       gap: 0.8rem;
       transition: all 0.3s;
       box-shadow: 0 8px 20px rgba(19, 96, 117, 0.25);
+      text-decoration: none !important;
     }
 
     .sol-btn:hover {
@@ -3565,6 +3565,8 @@
             <li><i class="fas fa-check"></i> Disfruta de un diseño que evoluciona junto a tus ideas.</li>
             <li><i class="fas fa-check"></i> Actualiza tu viaje sin rehacer documentos.</li>
           </ul>
+
+          <a href="#precios" class="sol-btn">Explorar soluciones →</a>
         </div>
 
         <div class="sol-features-right" id="sol-right">
@@ -3599,8 +3601,6 @@
             </div>
           </div>
         </div>
-
-        <a href="#precios" class="sol-btn">Explorar soluciones →</a>
       </div>
     </div>
   </section>
@@ -6440,7 +6440,7 @@
         <div class="plan featured reveal d2" style="position: relative;">
           <div class="popular-badge"
             style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: #1EAACE; color: white; padding: 4px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(30,170,206,0.3);">
-            Más Popular</div>
+            Recomendado</div>
           <div class="plan-name" style="margin-top: 6px;">Viajero Pro</div>
           <div class="plan-desc-special" style="color: rgba(255, 255, 255, 0.85);">Para parejas, amigos y viajeros
             frecuentes</div>
@@ -6555,10 +6555,8 @@
         <div class="feature-banner-actions">
           @auth
             <a href="{{ route('trips.index') }}" class="btn-cta-dark">Ir a mis viajes →</a>
-            <a href="{{ route('contact') }}" class="btn-cta-cyan">Contáctanos</a>
           @else
             <a href="{{ route('register') }}" class="btn-cta-dark">Regístrate Ahora</a>
-            <a href="{{ route('contact') }}" class="btn-cta-cyan">Contáctanos</a>
           @endauth
         </div>
       </div>
