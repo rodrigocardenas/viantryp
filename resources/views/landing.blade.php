@@ -5068,6 +5068,7 @@
       opacity: 0.4;
       background: #f0f9f6;
       border: 1px dashed #3db898;
+      pointer-events: none !important;
     }
 
     .vt-item.vt-drag-over {
@@ -5796,6 +5797,7 @@
         background: #e0f2fe !important;
         border: 1.5px dashed #02b5cb !important;
         transform: scale(0.98) !important;
+        pointer-events: none !important;
       }
 
       .vt-item.vt-drag-over {
@@ -6124,10 +6126,11 @@
           const currentY = e.touches[0].clientY;
           const diffY = Math.abs(currentY - touchStartY);
 
-          if (diffY > 6) {
+          if (diffY > 4) {
             isTouchDragging = true;
             if (e.cancelable) e.preventDefault();
             el.classList.add('vt-dragging');
+            el.style.pointerEvents = 'none';
 
             const elemBelow = document.elementFromPoint(e.touches[0].clientX, currentY);
             if (elemBelow) {
@@ -6144,6 +6147,7 @@
 
         const handleTouchEnd = () => {
           if (vtReorderId === item.id) {
+            el.style.pointerEvents = '';
             el.classList.remove('vt-dragging');
             document.querySelectorAll('.vt-item').forEach(i => i.classList.remove('vt-drag-over'));
 
@@ -6427,7 +6431,7 @@
             <li><i class="fas fa-check"></i> Personalización de colores y temas</li>
             <li><i class="fas fa-check"></i> Visualizador web interactivo</li>
             <li><i class="fas fa-check"></i> Búsqueda básica en Google Places</li>
-            <li><i class="fas fa-check"></i> Tryp IA (3 consultas por viaje)</li>
+            <li><i class="fas fa-check"></i> Tryp IA (Asistente de Viantryp) - 5 consultas por viaje</li>
           </ul>
           <a href="{{ route('register') }}" class="plan-btn">Empezar gratis</a>
         </div>
