@@ -1347,6 +1347,9 @@
                         },
                         customData: {
                             user_id: "{{ $user->id }}"
+                        },
+                        settings: {
+                            locale: 'es'
                         }
                     });
                 } catch (err) {
