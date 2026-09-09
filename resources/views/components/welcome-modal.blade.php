@@ -16,8 +16,8 @@
         ],
         'avanzado' => [
             'name' => 'Viajero Pro',
-            'price_monthly' => 9.99,
-            'price_annual' => 7.99,
+            'price_monthly' => 6.99,
+            'price_annual' => 5.59,
             'is_custom' => false,
             'limit_trips' => 1000000,
             'limit_editors' => 2,
@@ -27,12 +27,12 @@
         ],
         'colaborativo' => [
             'name' => 'Negocios',
-            'price_monthly' => 29.99,
-            'price_annual' => 23.99,
+            'price_monthly' => 24.99,
+            'price_annual' => 19.99,
             'is_custom' => false,
             'limit_trips' => 1000000,
             'limit_editors' => 1000000,
-            'benefits' => ['Editores ilimitados', 'Marca Blanca con Logo', '14 días prueba gratis'],
+            'benefits' => ['Editores ilimitados', 'Marca Blanca con Logo', '7 días prueba gratis'],
             'accent' => '#0e5a6a'
         ]
     ];

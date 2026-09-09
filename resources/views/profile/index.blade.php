@@ -2228,8 +2228,8 @@
                       $planPrices = [
                         'básico' => '$0.00 USD / mes',
                         'esencial' => '$5.00 USD / mes',
-                        'avanzado' => '$9.99 USD / mes',
-                        'colaborativo' => '$29.99 USD / mes',
+                        'avanzado' => '$6.99 USD / mes',
+                        'colaborativo' => '$24.99 USD / mes',
                         'corporativo' => 'A medida / Ventas',
                       ];
                       $planPrice = $planPrices[$currentPlanKey] ?? '$0.00 USD / mes';

@@ -6440,11 +6440,11 @@
             frecuentes</div>
           <div class="plan-price">
             <span class="currency">$</span>
-            <span class="price-val" data-monthly="9.99" data-annual="7.99">9.99</span>
+            <span class="price-val" data-monthly="6.99" data-annual="5.59">6.99</span>
             <span class="period">/mes</span>
           </div>
           <div class="price-note" data-monthly="Facturado mensualmente · 7 días de prueba gratis"
-            data-annual="Facturado anualmente $95.88 USD · 7 días prueba gratis">Facturado mensualmente</div>
+            data-annual="Facturado anualmente $67.08 USD · 7 días prueba gratis">Facturado mensualmente</div>
           <div class="plan-savings" style="opacity: 0;">Ahorras 20% en plan anual</div>
           <div class="plan-sub" style="color: rgba(255, 255, 255, 0.7);">Todo para tus viajes sin límites:</div>
           <ul class="plan-features">
@@ -6468,11 +6468,11 @@
           <div class="plan-desc-special">Para agencias de viajes, DMCs y asesores</div>
           <div class="plan-price">
             <span class="currency">$</span>
-            <span class="price-val" data-monthly="29.99" data-annual="23.99">29.99</span>
+            <span class="price-val" data-monthly="24.99" data-annual="19.99">24.99</span>
             <span class="period">/mes</span>
           </div>
-          <div class="price-note" data-monthly="Facturado mensualmente · 14 días de prueba gratis"
-            data-annual="Facturado anualmente $287.88 USD · 14 días prueba gratis">Facturado mensualmente</div>
+          <div class="price-note" data-monthly="Facturado mensualmente · 7 días de prueba gratis"
+            data-annual="Facturado anualmente $239.88 USD · 7 días prueba gratis">Facturado mensualmente</div>
           <div class="plan-savings" style="opacity: 0;">Ahorras 20% en plan anual</div>
           <div class="plan-sub">Todo lo del plan Viajero Pro, más:</div>
           <ul class="plan-features">
@@ -6482,7 +6482,7 @@
             <li><i class="fas fa-check"></i> Ficha de contacto directo (WhatsApp, Email y Redes)</li>
             <li><i class="fas fa-check"></i> Soporte prioritario dedicado</li>
           </ul>
-          <a href="{{ route('plans.redirect') }}" class="plan-btn btn-outline">Probar 14 días gratis</a>
+          <a href="{{ route('plans.redirect') }}" class="plan-btn btn-outline">Probar 7 días gratis</a>
         </div>
       </div>
 
