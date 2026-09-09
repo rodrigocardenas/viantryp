@@ -152,6 +152,20 @@ class ProfileController extends Controller
     public function uploadLogo(Request $request)
     {
         $user = auth()->user();
+
+        $effectivePlan = strtolower($user->plan ?? 'básico');
+        if ($user->isTrialActive() && $effectivePlan === \App\Models\User::PLAN_BASICO) {
+            $effectivePlan = \App\Models\User::PLAN_AVANZADO;
+        }
+
+        if (!in_array($effectivePlan, [\App\Models\User::PLAN_COLABORATIVO, \App\Models\User::PLAN_CORPORATIVO])) {
+            return response()->json([
+                'success' => false,
+                'error_code' => 'LIMIT_REACHED',
+                'message' => 'La carga del Logo de Agencia y Marca Blanca es una función exclusiva del Plan Negocios.'
+            ], 403);
+        }
+
         $request->validate([
             'logo' => 'required|image|max:2048'
         ]);

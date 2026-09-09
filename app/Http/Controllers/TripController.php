@@ -239,7 +239,9 @@ class TripController extends Controller
             'theme_color' => $trip->user->theme_color ?? '#2b2d42',
             'display_name_type' => $trip->user->display_name_type ?? 'personal',
             'agency_logo' => $trip->user->agency_logo ? asset('storage/' . $trip->user->agency_logo) : null,
-            'agency_name' => $trip->user->agency_name ?? ''
+            'agency_name' => $trip->user->agency_name ?? '',
+            'user_plan' => $trip->user->plan ?? 'básico',
+            'is_trial_active' => $trip->user->isTrialActive()
         ]);
     }
 
@@ -469,6 +471,14 @@ class TripController extends Controller
             ], 403);
         }
 
+        if (Auth::user()->hasReachedTripLimit()) {
+            return response()->json([
+                'success' => false,
+                'error_code' => 'LIMIT_REACHED',
+                'message' => 'Has alcanzado el límite de itinerarios de tu plan. Por favor, sube de nivel para duplicar viajes.'
+            ], 403);
+        }
+
         $newTrip = $trip->replicate();
         $newTrip->title = $trip->title . ' (Copia)';
         $newTrip->status = Trip::STATUS_DRAFT;
@@ -538,6 +548,26 @@ class TripController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'No tienes permiso para duplicar algunos de los viajes seleccionados.'
+            ], 403);
+        }
+
+        $user = Auth::user();
+        if ($user->hasReachedTripLimit()) {
+            return response()->json([
+                'success' => false,
+                'error_code' => 'LIMIT_REACHED',
+                'message' => 'Has alcanzado el límite de itinerarios de tu plan. Por favor, sube de nivel para duplicar viajes.'
+            ], 403);
+        }
+
+        $limits = $user->getPlanLimits();
+        $currentCount = Trip::where('user_id', $user->id)->count();
+
+        if ($limits['max_trips'] < 1000000 && ($currentCount + $trips->count()) > $limits['max_trips']) {
+            return response()->json([
+                'success' => false,
+                'error_code' => 'LIMIT_REACHED',
+                'message' => "No puedes duplicar {$trips->count()} viaje(s) porque superaría el límite de {$limits['max_trips']} itinerarios de tu plan."
             ], 403);
         }
 

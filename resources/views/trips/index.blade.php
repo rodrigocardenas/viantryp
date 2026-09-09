@@ -3860,6 +3860,8 @@
                     proState.agencyLogo = data.agency_logo || '';
                     proState.agencyName = data.agency_name || '';
                     proState.userFullName = data.user_full_name || '';
+                    proState.userPlan = data.user_plan || 'básico';
+                    proState.isTrialActive = !!data.is_trial_active;
                     proState.googleClientId = "{{ config('services.google.client_id') }}";
 
                     const previewHTML = buildPreviewHTML(proState);
@@ -4338,11 +4340,16 @@
                 .then(async r => {
                     if (!r.ok) {
                         const err = await r.json();
+                        if (err.error_code === 'LIMIT_REACHED' && typeof openUpgradeModal === 'function') {
+                            openUpgradeModal();
+                            return { handled: true };
+                        }
                         throw new Error(err.message || 'Error del servidor');
                     }
                     return r.json();
                 })
                 .then(d => {
+                    if (d && d.handled) return;
                     if (d.success) {
                         showNotification('Viajes Duplicados', 'Los viajes seleccionados han sido duplicados.');
                         setTimeout(() => location.reload(), 1000);
@@ -4889,11 +4896,16 @@
                 .then(async r => {
                     if (!r.ok) {
                         const err = await r.json();
+                        if (err.error_code === 'LIMIT_REACHED' && typeof openUpgradeModal === 'function') {
+                            openUpgradeModal();
+                            return { handled: true };
+                        }
                         throw new Error(err.message || 'Error del servidor');
                     }
                     return r.json();
                 })
                 .then(d => {
+                    if (d && d.handled) return;
                     if (d.success) {
                         showNotification('Viaje Duplicado', 'El viaje ha sido duplicado exitosamente.');
                         setTimeout(() => location.reload(), 800);

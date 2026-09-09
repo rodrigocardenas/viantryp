@@ -2030,7 +2030,14 @@
                         </div>
                       </div>
                       <div class="form-group">
-                        <label>Logo de la Agencia</label>
+                        <label style="display:flex; align-items:center; justify-content:space-between;">
+                          <span>Logo de la Agencia</span>
+                          @if(!in_array(strtolower($user->plan ?? 'básico'), ['colaborativo', 'corporativo']))
+                            <span style="font-size:11px; font-weight:700; color:#0e5a6a; background:#e0f2fe; padding:2px 8px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;">
+                              <i class="fa-solid fa-lock" style="font-size:10px;"></i> Exclusivo Plan Negocios
+                            </span>
+                          @endif
+                        </label>
                         <div class="logo-upload-area" id="logoDropArea">
                           <input type="file" accept="image/*">
                           <div id="logoPlaceholder">
@@ -3026,11 +3033,26 @@
 
           fetch('{{ route('profile.upload.logo') }}', {
             method: 'POST',
-            headers: { 'X-CSRF-TOKEN': csrfToken },
+            headers: { 
+              'X-CSRF-TOKEN': csrfToken,
+              'Accept': 'application/json'
+            },
             body: formData
           })
-            .then(res => res.json())
+            .then(async res => {
+              if (!res.ok) {
+                const err = await res.json();
+                if (err.error_code === 'LIMIT_REACHED' && typeof openUpgradeModal === 'function') {
+                  openUpgradeModal(true);
+                  return { handled: true };
+                }
+                alert(err.message || 'Error al subir el logo');
+                return { handled: true };
+              }
+              return res.json();
+            })
             .then(res => {
+              if (res && res.handled) return;
               if (res.success) {
                 var preview = document.getElementById('logoPreview');
                 preview.src = res.url;

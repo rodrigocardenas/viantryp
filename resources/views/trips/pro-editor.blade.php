@@ -178,6 +178,7 @@
   <script>
     window.viantrypUserName = "{{ auth()->user()->display_name ?? 'Invitado' }}";
     window.viantrypUserPlan = "{{ auth()->user()->plan }}";
+    window.viantrypIsTrialActive = {{ auth()->user()->isTrialActive() ? 'true' : 'false' }};
     window.viantrypThemeColor = "{{ auth()->user()->theme_color ?? 'default' }}";
     window.viantrypDisplayNameType = "{{ auth()->user()->display_name_type ?? 'personal' }}";
     window.viantrypAgencyLogo = "{{ auth()->user()->agency_logo ? asset('storage/' . auth()->user()->agency_logo) : '' }}";

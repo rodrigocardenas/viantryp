@@ -1,5 +1,5 @@
 function buildPreviewHTML(data) {
-  const { title, destination, portadaSubtitle, hidePriceInPublic, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor, displayNameType, agencyLogo, agencyName, userFullName, googleClientId } = data;
+  const { title, destination, portadaSubtitle, hidePriceInPublic, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor, displayNameType, agencyLogo, agencyName, userFullName, googleClientId, userPlan, isTrialActive } = data;
 
   function formatNumber(val) {
     if (val === null || val === undefined || val === '') return '';
@@ -1039,7 +1039,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
         display: none;
     }
 
-    .pv-cal-btn, .pv-map-btn {
+    .pv-cal-btn, .pv-map-btn, .pv-pdf-btn {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1056,12 +1056,22 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
         font-family: inherit;
         transition: all 0.2s ease;
     }
+    .pv-pdf-btn {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: #fecaca;
+    }
     .pv-cal-btn:hover, .pv-map-btn:hover {
         background: #f8fafc;
         border-color: #cbd5e1;
         color: #2b3e57;
     }
-    .pv-cal-btn:active, .pv-map-btn:active {
+    .pv-pdf-btn:hover {
+        background: #fee2e2;
+        border-color: #fca5a5;
+        color: #b91c1c;
+    }
+    .pv-cal-btn:active, .pv-map-btn:active, .pv-pdf-btn:active {
         transform: translateY(1px);
     }
 
@@ -1159,7 +1169,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
             gap: 8px;
             margin-top: 12px;
         }
-        .pv-cal-btn-mobile, .pv-map-btn-mobile {
+        .pv-cal-btn-mobile, .pv-map-btn-mobile, .pv-pdf-btn-mobile {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1176,13 +1186,53 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
             font-family: inherit;
             transition: all 0.2s ease;
         }
+        .pv-pdf-btn-mobile {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
         .pv-cal-btn-mobile:hover, .pv-map-btn-mobile:hover {
             background: #f8fafc;
             border-color: #cbd5e1;
             color: #2b3e57;
         }
-        .pv-cal-btn-mobile:active, .pv-map-btn-mobile:active {
+        .pv-pdf-btn-mobile:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #b91c1c;
+        }
+        .pv-cal-btn-mobile:active, .pv-map-btn-mobile:active, .pv-pdf-btn-mobile:active {
             transform: translateY(1px);
+        }
+    }
+
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 12mm 15mm;
+        }
+        body {
+            background: #ffffff !important;
+            color: #0f172a !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .topbar, .pv-nav, .pv-mobile-only-header, .pv-mobile-actions, #viantryp-copilot-container, .copilot-trigger, .modal-backdrop, .custom-modal, .pv-nav-pdf-section, .pv-nav-calendar-section, .pv-nav-map-section, button, .topbar-bg-decorators {
+            display: none !important;
+        }
+        .pv-layout {
+            display: block !important;
+        }
+        .pv-content {
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .pv-day-card, .portada-card, .cierre-card, .pv-item-card {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            box-shadow: none !important;
+            border: 1px solid #e2e8f0 !important;
         }
     }
 
@@ -1227,35 +1277,41 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </style>
 </head>
 <body>
-${isPublicLink ? `
-<div class="public-preview-header">
-    ${(displayNameType === 'agency' && (agencyLogo || agencyName))
+${(function() {
+  const currentPlan = (userPlan || '').toString().toLowerCase();
+  const isMarcaBlancaPlan = (currentPlan === 'colaborativo' || currentPlan === 'corporativo');
+  const validLogo = isMarcaBlancaPlan ? agencyLogo : null;
+
+  if (isPublicLink) {
+    return `<div class="public-preview-header">
+      ${(displayNameType === 'agency' && (validLogo || agencyName))
         ? `<div style="display:flex;align-items:center;gap:12px;">
-           ${agencyLogo ? `<img src="${agencyLogo}" alt="${agencyName}" class="gps-logo-img">` : ''}
-           ${agencyName ? `<span class="gps-logo-text" style="font-size:13px;">${agencyName}</span>` : ''}
-         </div>`
+             ${validLogo ? `<img src="${validLogo}" alt="${agencyName}" class="gps-logo-img">` : ''}
+             ${agencyName ? `<span class="gps-logo-text" style="font-size:13px;">${agencyName}</span>` : ''}
+           </div>`
         : `<span class="gps-logo-text">${userFullName || userName}</span>`
       }
-    <img src="${origin || ''}/images/logo-viantryp.png" alt="Viantryp Logo" class="viantryp-logo" style="width:80px;height:auto;filter:brightness(0) invert(1);object-fit:contain;">
-</div>
-` : `
-<div class="pv-topbar">
-  <div class="pv-logo" style="display:flex;align-items:center;">
-    ${(displayNameType === 'agency' && (agencyLogo || agencyName))
-      ? `<div style="display:flex;align-items:center;gap:12px;">
-           ${agencyLogo ? `<img src="${agencyLogo}" alt="${agencyName}" class="gps-logo-img" style="max-height:30px;">` : ''}
-           ${agencyName ? `<span class="gps-logo-text" style="font-size:13px;">${agencyName}</span>` : ''}
-         </div>`
-      : `<span class="gps-logo-text">${userFullName || userName}</span>`
-    }
-  </div>
-  <div style="flex:1"></div>
-  <div class="pv-topbar-actions" style="display:flex;gap:12px;">
-      <button class="pv-share-btn" onclick="shareProTrip()" style="background:#fff;color:#0f172a;border:none;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-share-nodes"></i> <span class="pv-back-text">Compartir</span></button>
-      <button class="pv-back-btn" onclick="window.close()" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;"><i class="fa-solid fa-times" style="font-size:16px"></i> <span class="pv-back-text">Cerrar</span></button>
-  </div>
-</div>
-`}
+      <img src="${origin || ''}/images/logo-viantryp.png" alt="Viantryp Logo" class="viantryp-logo" style="width:80px;height:auto;filter:brightness(0) invert(1);object-fit:contain;">
+    </div>`;
+  } else {
+    return `<div class="pv-topbar">
+      <div class="pv-logo" style="display:flex;align-items:center;">
+        ${(displayNameType === 'agency' && (validLogo || agencyName))
+          ? `<div style="display:flex;align-items:center;gap:12px;">
+               ${validLogo ? `<img src="${validLogo}" alt="${agencyName}" class="gps-logo-img" style="max-height:30px;">` : ''}
+               ${agencyName ? `<span class="gps-logo-text" style="font-size:13px;">${agencyName}</span>` : ''}
+             </div>`
+          : `<span class="gps-logo-text">${userFullName || userName}</span>`
+        }
+      </div>
+      <div style="flex:1"></div>
+      <div class="pv-topbar-actions" style="display:flex;gap:12px;">
+          <button class="pv-share-btn" onclick="shareProTrip()" style="background:#fff;color:#0f172a;border:none;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-share-nodes"></i> <span class="pv-back-text">Compartir</span></button>
+          <button class="pv-back-btn" onclick="window.close()" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;"><i class="fa-solid fa-times" style="font-size:16px"></i> <span class="pv-back-text">Cerrar</span></button>
+      </div>
+    </div>`;
+  }
+})()}
 
 ${hasPortada ? `
 <div class="pv-portada-wrap">
@@ -1312,6 +1368,10 @@ ${hasPortada ? `
     </div>
   </div>
   <div class="pv-mobile-actions">
+    <button class="pv-pdf-btn-mobile" onclick="downloadTripPdf()">
+      <i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i>
+      <span style="text-align: center; line-height: 1.2;">Descargar<br>PDF</span>
+    </button>
     <button class="pv-cal-btn-mobile" onclick="openGoogleCalendarModal()">
       <i class="fa-solid fa-calendar-plus"></i>
       <span style="text-align: center; line-height: 1.2;">Agregar a Google Calendar</span>
@@ -1327,7 +1387,13 @@ ${hasPortada ? `
   <aside class="pv-nav">
     <div class="pv-nav-title">Itinerario</div>
     ${sidebarNav}
-    <div class="pv-nav-calendar-section" style="padding: 14px 18px 0; border-top: 1px solid var(--border);">
+    <div class="pv-nav-pdf-section" style="padding: 14px 18px 0; border-top: 1px solid var(--border);">
+      <button class="pv-pdf-btn" onclick="downloadTripPdf()">
+        <i class="fa-solid fa-file-pdf" style="font-size:14px; color:#ef4444;"></i>
+        Descargar PDF
+      </button>
+    </div>
+    <div class="pv-nav-calendar-section" style="padding: 10px 18px 0;">
       <button class="pv-cal-btn" onclick="openGoogleCalendarModal()">
         <i class="fa-solid fa-calendar-plus" style="font-size:14px;"></i>
         Agregar a Google Calendar
@@ -1912,6 +1978,88 @@ function downloadICSFile(tripTitle, events) {
     alert('Error al descargar el archivo ICS: ' + err.message);
   }
 }
+
+window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
+  try {
+    let modal = document.getElementById('viantrypInlineUpgradeModal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'viantrypInlineUpgradeModal';
+      modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.75); backdrop-filter:blur(6px); z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;';
+      
+      const appUrl = (typeof origin !== 'undefined' && origin) ? origin : window.location.origin;
+      modal.innerHTML = `
+        <div style="background:#ffffff; border-radius:24px; max-width:480px; width:100%; padding:32px 28px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); text-align:center; position:relative; font-family:'Syne', 'Inter', system-ui, sans-serif; box-sizing:border-box;">
+          <button onclick="document.getElementById('viantrypInlineUpgradeModal').style.display='none'" style="position:absolute; top:18px; right:18px; background:none; border:none; font-size:24px; color:#64748b; cursor:pointer; line-height:1;">&times;</button>
+          <div style="width:56px; height:56px; background:#eff6ff; border-radius:18px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:16px; color:#1eaace; font-size:24px;">
+            <i class="fa-solid fa-crown"></i>
+          </div>
+          <h3 style="font-size:22px; font-weight:800; color:#0f172a; margin:0 0 8px 0; letter-spacing:-0.02em;">Función Exclusiva Viajero Pro</h3>
+          <p id="viantrypInlineModalDesc" style="font-size:14px; color:#64748b; margin:0 0 20px 0; line-height:1.5;">La descarga de itinerarios en PDF está disponible a partir del plan Viajero Pro. Actualiza tu plan para desbloquear todas las ventajas.</p>
+          
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:16px; margin-bottom:24px; text-align:left;">
+            <div style="font-weight:700; font-size:12px; color:#1e293b; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">Beneficios del Plan Viajero Pro:</div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px;">
+              <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Itinerarios activos ilimitados</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px;">
+              <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Exportación descargable en PDF</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155;">
+              <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Hasta 2 colaboradores para editar en grupo</span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <a href="${appUrl}/planes-redirect" target="_blank" style="display:block; width:100%; padding:14px; background:#1eaace; color:#ffffff; font-weight:700; font-size:14px; border-radius:14px; text-decoration:none; box-sizing:border-box; transition:all 0.2s;">
+              Mejorar Mi Plan Ahora →
+            </a>
+            <button onclick="document.getElementById('viantrypInlineUpgradeModal').style.display='none'" style="background:none; border:none; color:#64748b; font-size:13px; font-weight:600; cursor:pointer; padding:8px;">
+              Quizás más tarde
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    if (featureDesc) {
+      const descEl = document.getElementById('viantrypInlineModalDesc');
+      if (descEl) descEl.textContent = featureDesc;
+    }
+    modal.style.display = 'flex';
+  } catch (e) {
+    console.error('Error in openProUpgradeInlineModal:', e);
+  }
+};
+
+window.downloadTripPdf = function() {
+  try {
+    const plan = "${(userPlan || '').replace(/"/g, '')}".toLowerCase();
+    const isTrial = ${isTrialActive ? 'true' : 'false'};
+    const globalPlan = (typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan) ? window.viantrypUserPlan.toLowerCase() : '';
+    const globalTrial = (typeof window.viantrypIsTrialActive !== 'undefined') ? window.viantrypIsTrialActive : false;
+    
+    const isNonBasicPlan = function(p) { return p && p !== 'básico' && p !== 'basico'; };
+    const isAllowed = isNonBasicPlan(plan) || isNonBasicPlan(globalPlan) || isTrial || globalTrial;
+
+    if (!isAllowed) {
+      if (typeof openUpgradeModal === 'function') {
+        openUpgradeModal();
+      } else if (typeof window.opener !== 'undefined' && window.opener && typeof window.opener.openUpgradeModal === 'function') {
+        window.opener.openUpgradeModal();
+      } else {
+        openProUpgradeInlineModal('Descargar PDF', 'La descarga de itinerarios en PDF está disponible a partir del plan Viajero Pro. Actualiza tu plan para exportar tus viajes en PDF.');
+      }
+      return;
+    }
+
+    window.print();
+  } catch (err) {
+    console.error('Error in downloadTripPdf:', err);
+    alert('Error al generar el PDF del viaje: ' + err.message);
+  }
+};
 
 window.openGoogleCalendarModal = function() {
   try {

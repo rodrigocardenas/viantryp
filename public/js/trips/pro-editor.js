@@ -3464,6 +3464,8 @@ function openPreview() {
     agencyLogo: window.viantrypAgencyLogo || '',
     agencyName: window.viantrypAgencyName || '',
     userFullName: window.viantrypUserFullName || '',
+    userPlan: window.viantrypUserPlan || 'básico',
+    isTrialActive: !!window.viantrypIsTrialActive,
     googleClientId: window.viantrypGoogleClientId || ''
   });
   const blob = new Blob([previewHTML], { type: 'text/html' });
