@@ -232,4 +232,21 @@ class User extends Authenticatable
             ->take(2)
             ->join('');
     }
+
+    public function getPlanDisplayNameAttribute(): string
+    {
+        $effectivePlan = $this->plan ?? self::PLAN_BASICO;
+        if ($this->isTrialActive() && $effectivePlan === self::PLAN_BASICO) {
+            $effectivePlan = self::PLAN_AVANZADO;
+        }
+
+        return match (mb_strtolower($effectivePlan)) {
+            self::PLAN_BASICO => 'Explorador',
+            self::PLAN_ESENCIAL => 'Esencial',
+            self::PLAN_AVANZADO => 'Viajero Pro',
+            self::PLAN_COLABORATIVO => 'Negocios',
+            self::PLAN_CORPORATIVO => 'Corporativo',
+            default => ucfirst($effectivePlan),
+        };
+    }
 }

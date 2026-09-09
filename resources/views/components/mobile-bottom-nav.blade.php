@@ -145,7 +145,7 @@
             <div class="sheet-user-meta">
                 <div class="sheet-name-row">
                     <h3 id="profileSheetTitle" class="sheet-user-name">{{ $currentUser->name }}</h3>
-                    <span class="sheet-plan-badge">{{ ucfirst($currentUser->plan ?? 'Básico') }}</span>
+                    <span class="sheet-plan-badge">{{ $currentUser->plan_display_name ?? 'Explorador' }}</span>
                 </div>
                 <p class="sheet-user-email">{{ $currentUser->email }}</p>
             </div>

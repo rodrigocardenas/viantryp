@@ -3029,7 +3029,7 @@
                         </div>
                     </div>
                     <div class="usage-upgrade-row">
-                        <span class="plan-badge">{{ ucfirst($user->plan) }}</span>
+                        <span class="plan-badge">{{ $user->plan_display_name }}</span>
                         <a href="javascript:void(0)" onclick="openUpgradeModal(true)" class="btn-upgrade-link">
                             Mejorar plan <i class="fas fa-arrow-up-right-from-square"></i>
                         </a>
