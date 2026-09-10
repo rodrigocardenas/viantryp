@@ -1,5 +1,6 @@
 function buildPreviewHTML(data) {
   const { title, destination, portadaSubtitle, hidePriceInPublic, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor, displayNameType, agencyLogo, agencyName, userFullName, googleClientId, userPlan, isTrialActive } = data;
+  const activeNumericTabs = (numericTabs && Array.isArray(numericTabs) && numericTabs.length > 0) ? numericTabs : (days ? (Array.isArray(days) ? days.map((_, idx) => ({ idx, label: 'Día ' + (idx + 1) })) : Object.keys(days).map(idx => ({ idx: parseInt(idx), label: 'Día ' + (parseInt(idx) + 1) }))) : []);
 
   function formatNumber(val) {
     if (val === null || val === undefined || val === '') return '';
@@ -735,7 +736,7 @@ function buildPreviewHTML(data) {
     }).join('');
   }
 
-  const daysHTML = numericTabs.map((tab, i) => {
+  const daysHTML = activeNumericTabs.map((tab, i) => {
     const items = days[tab.idx] || [];
     const dateStr = dayDates && dayDates[tab.idx] ? dayDates[tab.idx] : '';
     const dayTitle = dateStr
@@ -750,13 +751,13 @@ function buildPreviewHTML(data) {
     </section>`;
   }).join('');
 
-  const sidebarNav = numericTabs.map((tab, i) => {
+  const sidebarNav = activeNumericTabs.map((tab, i) => {
     const dStr = dayDates && dayDates[tab.idx] ? dayDates[tab.idx] : '';
     const dateLabel = dStr ? fmtDayMonth(dStr) : tab.label;
     return `<a class="pvnav-link" href="#day-${tab.idx}"><span class="pvnav-num">Día ${i + 1}</span> ${dateLabel}</a>`;
   }).join('');
 
-  const mobileCalendarNav = numericTabs.map((tab, i) => {
+  const mobileCalendarNav = activeNumericTabs.map((tab, i) => {
     const dStr = dayDates && dayDates[tab.idx] ? dayDates[tab.idx] : '';
     if (dStr) {
       try {
@@ -1988,7 +1989,7 @@ window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
       modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.75); backdrop-filter:blur(6px); z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;';
       
       const appUrl = (typeof origin !== 'undefined' && origin) ? origin : window.location.origin;
-      modal.innerHTML = `
+      modal.innerHTML = \`
         <div style="background:#ffffff; border-radius:24px; max-width:480px; width:100%; padding:32px 28px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); text-align:center; position:relative; font-family:'Syne', 'Inter', system-ui, sans-serif; box-sizing:border-box;">
           <button onclick="document.getElementById('viantrypInlineUpgradeModal').style.display='none'" style="position:absolute; top:18px; right:18px; background:none; border:none; font-size:24px; color:#64748b; cursor:pointer; line-height:1;">&times;</button>
           <div style="width:56px; height:56px; background:#eff6ff; border-radius:18px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:16px; color:#1eaace; font-size:24px;">
@@ -2011,7 +2012,7 @@ window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
           </div>
 
           <div style="display:flex; flex-direction:column; gap:10px;">
-            <a href="${appUrl}/planes-redirect" target="_blank" style="display:block; width:100%; padding:14px; background:#1eaace; color:#ffffff; font-weight:700; font-size:14px; border-radius:14px; text-decoration:none; box-sizing:border-box; transition:all 0.2s;">
+            <a href="\${appUrl}/planes-redirect" target="_blank" style="display:block; width:100%; padding:14px; background:#1eaace; color:#ffffff; font-weight:700; font-size:14px; border-radius:14px; text-decoration:none; box-sizing:border-box; transition:all 0.2s;">
               Mejorar Mi Plan Ahora →
             </a>
             <button onclick="document.getElementById('viantrypInlineUpgradeModal').style.display='none'" style="background:none; border:none; color:#64748b; font-size:13px; font-weight:600; cursor:pointer; padding:8px;">
@@ -2019,7 +2020,7 @@ window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
             </button>
           </div>
         </div>
-      `;
+      \`;
       document.body.appendChild(modal);
     }
 
