@@ -3943,92 +3943,137 @@ window.ViantrypCopilot = window.ViantrypCopilot || {};
 
 window.ViantrypCopilot.onApplyAction = function (action) {
   if (!action) return;
+  window.ViantrypCopilot.onApplyBatchActions([action]);
+};
 
-  // Handle FOCUS_DAY redirection
-  const actionType = String(action.action || action.type || '').toUpperCase();
-  if (actionType === 'FOCUS_DAY') {
-    const dayNum = (typeof action.day_index === 'number') ? action.day_index : ((typeof action.day === 'number') ? action.day : 1);
-    const dayIndex = Math.max(0, dayNum - 1);
+window.ViantrypCopilot.onApplyBatchActions = function (items) {
+  if (!Array.isArray(items) || items.length === 0) return;
 
-    // Expand days if needed
-    let tabsNeedRender = false;
-    while (days.length <= dayIndex) {
-      days.push([]);
-      let nextDate = '';
-      if (days.length > 1) {
-        const prevDate = dayDates[days.length - 2];
-        if (prevDate) nextDate = addDaysToDate(prevDate, 1);
-      }
-      dayDates.push(nextDate);
-      tabsNeedRender = true;
-    }
+  // Sort items chronologically by start_date and start_time
+  const sortedItems = [...items].sort((a, b) => {
+    const dA = a.start_date || (a.data && a.data.start_date) || '9999-99-99';
+    const dB = b.start_date || (b.data && b.data.start_date) || '9999-99-99';
+    if (dA !== dB) return dA.localeCompare(dB);
+    const tA = a.start_time || '99:99';
+    const tB = b.start_time || '99:99';
+    return tA.localeCompare(tB);
+  });
 
-    currentDay = dayIndex;
-    if (tabsNeedRender) {
-      renderTabs();
-    } else {
-      document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-      const targetTab = document.querySelector(`.day-tab[data-day="${dayIndex}"]`);
-      if (targetTab) targetTab.classList.add('active');
-    }
+  let firstTargetDayIndex = null;
+  let addedCount = 0;
 
-    renderCanvas();
-    showToast('<i class="fa-solid fa-pen-to-square"></i>', action.message || `Mostrando Día ${dayNum}`);
-    return;
-  }
+  sortedItems.forEach(action => {
+    const norm = normalizeCopilotAction(action);
+    if (!norm) return;
 
-  const norm = normalizeCopilotAction(action);
-  if (!norm) return;
+    let targetDayIndex = null;
+    const targetDate = action.start_date || (action.data && action.data.start_date);
 
-  const dayNum = (typeof norm.day === 'number' && norm.day >= 1) ? norm.day : 1;
-  const dayIndex = dayNum - 1;
+    if (targetDate && typeof targetDate === 'string' && targetDate.length >= 10) {
+      const cleanDate = targetDate.substring(0, 10);
+      if (!Array.isArray(dayDates)) window.dayDates = [];
 
-  // Ensure days and dayDates array have enough days
-  let tabsNeedRender = false;
-  while (days.length <= dayIndex) {
-    days.push([]);
-    let nextDate = '';
-    if (days.length > 1) {
-      const prevDate = dayDates[days.length - 2];
-      if (prevDate) {
-        nextDate = addDaysToDate(prevDate, 1);
+      const foundIdx = dayDates.indexOf(cleanDate);
+      if (foundIdx !== -1) {
+        targetDayIndex = foundIdx;
       } else {
-        const pi = document.getElementById('portadaFechaInicio');
-        if (pi && pi.value) nextDate = addDaysToDate(pi.value, days.length - 1);
+        // Insert cleanDate into dayDates at its proper chronological position without adding filler days
+        let insertIdx = dayDates.findIndex(d => d && d > cleanDate);
+        if (insertIdx === -1) insertIdx = dayDates.length;
+
+        dayDates.splice(insertIdx, 0, cleanDate);
+        days.splice(insertIdx, 0, []);
+        targetDayIndex = insertIdx;
+
+        // Shift firstTargetDayIndex if inserting before it
+        if (firstTargetDayIndex !== null && insertIdx <= firstTargetDayIndex) {
+          firstTargetDayIndex++;
+        }
       }
     } else {
-      const pi = document.getElementById('portadaFechaInicio');
-      if (pi && pi.value) nextDate = pi.value;
+      // Fallback if no date is present: use action.day or norm.day
+      const dayNum = (typeof action.day === 'number' && action.day >= 1) 
+        ? action.day 
+        : ((typeof norm.day === 'number' && norm.day >= 1) ? norm.day : 1);
+      targetDayIndex = Math.max(0, dayNum - 1);
+
+      if (targetDayIndex >= days.length) {
+        while (days.length <= targetDayIndex) {
+          days.push([]);
+          let nextDate = '';
+          if (days.length > 1) {
+            const prevDate = dayDates[days.length - 2];
+            if (prevDate) nextDate = addDaysToDate(prevDate, 1);
+          } else {
+            const pi = document.getElementById('portadaFechaInicio');
+            if (pi && pi.value) nextDate = pi.value;
+          }
+          dayDates.push(nextDate);
+        }
+      }
     }
-    dayDates.push(nextDate);
-    tabsNeedRender = true;
-  }
 
-  if (!days[dayIndex]) {
-    days[dayIndex] = [];
-  }
+    if (!days[targetDayIndex]) {
+      days[targetDayIndex] = [];
+    }
 
-  const item = {
-    type: norm.type,
-    data: norm.data
-  };
+    // Set time if start_time was provided
+    if (action.start_time) {
+      norm.data.fecha = action.start_time;
+      norm.data.salida = norm.data.salida || action.start_time;
+    }
 
-  days[dayIndex].push(item);
+    const item = {
+      type: norm.type,
+      data: norm.data
+    };
+
+    days[targetDayIndex].push(item);
+    addedCount++;
+
+    if (firstTargetDayIndex === null) {
+      firstTargetDayIndex = targetDayIndex;
+    }
+  });
+
+  if (addedCount === 0) return;
+
   unsavedChanges = true;
 
-  // Switch to target day and update UI
-  currentDay = dayIndex;
-
-  if (tabsNeedRender) {
-    renderTabs();
-  } else {
-    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-    const targetTab = document.querySelector(`.day-tab[data-day="${dayIndex}"]`);
-    if (targetTab) targetTab.classList.add('active');
+  // Switch active view to the first modified day
+  if (firstTargetDayIndex !== null) {
+    currentDay = firstTargetDayIndex;
   }
 
-  renderCanvas();
-  autoSaveProTrip();
-  showToast('<i class="fa-solid fa-sparkles"></i>', `Elemento agregado al Día ${dayNum}`);
+  // Render updated tabs toolbar and canvas
+  if (typeof renderTabs === 'function') {
+    renderTabs();
+  }
+  if (typeof renderCanvas === 'function') {
+    renderCanvas();
+  }
+  if (typeof autoSaveProTrip === 'function') {
+    autoSaveProTrip();
+  }
+
+  // Scroll to active tab in the toolbar
+  const targetTab = document.querySelector(`.day-tab[data-day="${firstTargetDayIndex}"]`) || document.querySelector('.canvas-toolbar .day-tab.active');
+  if (targetTab) {
+    targetTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  // Toast notification
+  if (typeof showToast === 'function') {
+    const targetDateLabel = dayDates[firstTargetDayIndex] ? ` (${dayDates[firstTargetDayIndex]})` : '';
+    showToast('<i class="fa-solid fa-cloud-arrow-up"></i>', `¡${addedCount} elementos agregados al Día ${firstTargetDayIndex + 1}${targetDateLabel}!`);
+  }
+
+  // Apply visual pulse/glow to canvas container
+  const canvasEl = document.getElementById('canvas-container') || document.querySelector('.canvas-items-wrapper');
+  if (canvasEl) {
+    canvasEl.classList.add('animate-pulse');
+    setTimeout(() => canvasEl.classList.remove('animate-pulse'), 1800);
+  }
 };
+
 
