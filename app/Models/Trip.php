@@ -31,6 +31,7 @@ class Trip extends Model
         'is_pro',
         'pro_state',
         'views_count',
+        'ai_queries_count',
         'created_at',
         'updated_at'
     ];
@@ -42,7 +43,28 @@ class Trip extends Model
         'days_dates' => 'array',
         'pro_state' => 'array',
         'is_pro' => 'boolean',
+        'ai_queries_count' => 'integer',
     ];
+
+    /**
+     * Check if user has reached AI queries limit (5 queries per trip for básico plan)
+     */
+    public function hasReachedAiLimit(?User $user = null): bool
+    {
+        $user = $user ?: \Illuminate\Support\Facades\Auth::user();
+        if (!$user) return false;
+
+        $effectivePlan = strtolower($user->plan ?? 'básico');
+        if ($user->isTrialActive() && $effectivePlan === User::PLAN_BASICO) {
+            $effectivePlan = User::PLAN_AVANZADO;
+        }
+
+        if (in_array($effectivePlan, [User::PLAN_AVANZADO, User::PLAN_COLABORATIVO, User::PLAN_CORPORATIVO])) {
+            return false; // Unlimited for Pro, Negocios, Corporativo, or Trial
+        }
+
+        return ($this->ai_queries_count ?? 0) >= 5;
+    }
 
     /**
      * Set items_data and add IDs to items if they don't have one

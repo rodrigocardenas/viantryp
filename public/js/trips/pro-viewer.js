@@ -2063,6 +2063,25 @@ window.downloadTripPdf = function() {
 
 window.openGoogleCalendarModal = function() {
   try {
+    const plan = "${(userPlan || '').replace(/"/g, '')}".toLowerCase();
+    const isTrial = ${isTrialActive ? 'true' : 'false'};
+    const globalPlan = (typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan) ? window.viantrypUserPlan.toLowerCase() : '';
+    const globalTrial = (typeof window.viantrypIsTrialActive !== 'undefined') ? window.viantrypIsTrialActive : false;
+    
+    const isNonBasicPlan = function(p) { return p && p !== 'básico' && p !== 'basico'; };
+    const isAllowed = isNonBasicPlan(plan) || isNonBasicPlan(globalPlan) || isTrial || globalTrial;
+
+    if (!isAllowed) {
+      if (typeof openUpgradeModal === 'function') {
+        openUpgradeModal();
+      } else if (typeof window.opener !== 'undefined' && window.opener && typeof window.opener.openUpgradeModal === 'function') {
+        window.opener.openUpgradeModal();
+      } else {
+        openProUpgradeInlineModal('Sincronización con Google Calendar', 'La sincronización directa con Google Calendar y la descarga de archivos .ICS son exclusivas del plan Viajero Pro. Actualiza tu plan para agendar tus viajes automáticamente.');
+      }
+      return;
+    }
+
     const m = document.getElementById('viantrypCalendarModal');
     if (!m) {
       alert('No se pudo encontrar el contenedor del modal del calendario.');

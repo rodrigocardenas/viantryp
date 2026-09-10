@@ -38,6 +38,17 @@ class TripAiController extends Controller
             ], 403);
         }
 
+        // 1.2 Check AI queries limit for this trip
+        if ($trip->hasReachedAiLimit(Auth::user())) {
+            return response()->json([
+                'success' => false,
+                'error_code' => 'LIMIT_REACHED',
+                'message' => 'Has alcanzado el límite de 5 consultas gratuitas de Tryp IA para este itinerario. Actualiza al Plan Viajero Pro para consultas ilimitadas.',
+                'response_text' => 'Has alcanzado el límite de 5 consultas gratuitas de Tryp IA para este itinerario. Actualiza tu plan a Viajero Pro para disfrutar de asistencia IA ilimitada.',
+                'suggested_actions' => []
+            ], 403);
+        }
+
         // 1.1 Limpieza de Historial de chat previo para este viaje
         session()->forget("trip_copilot_history_{$trip->id}");
         \Illuminate\Support\Facades\Cache::forget("trip_copilot_history_{$trip->id}");
@@ -107,6 +118,11 @@ class TripAiController extends Controller
 
         // 4. Send to TripAiService
         $aiResult = $this->aiService->processConversation($trip, $message, $uploadedFilesInfo);
+
+        // Increment AI queries counter for this trip
+        if ($aiResult && !empty($aiResult['success'])) {
+            $trip->increment('ai_queries_count');
+        }
 
         // 5. Link document attachments to action data
         if (!empty($aiResult['actions']) && is_array($aiResult['actions'])) {
