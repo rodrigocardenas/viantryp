@@ -180,11 +180,11 @@
         align-items: center;
         gap: 8px;
         padding: 10px 18px 10px 14px;
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(30, 194, 236, 0.3) !important;
         border-radius: 9999px;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 15px rgba(99, 102, 241, 0.3);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 15px rgba(30, 194, 236, 0.3);
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         user-select: none;
@@ -193,14 +193,14 @@
 
     .copilot-trigger:hover {
         transform: translateY(-2px) scale(1.03);
-        box-shadow: 0 14px 30px -5px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.6);
-        border-color: rgba(99, 102, 241, 0.6);
+        box-shadow: 0 14px 30px -5px rgba(0, 0, 0, 0.5), 0 0 25px rgba(30, 194, 236, 0.6);
+        border-color: #1ec2ec !important;
     }
 
     .copilot-trigger-glow {
         position: absolute;
         inset: -2px;
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(168, 85, 247, 0.5), rgba(236, 72, 153, 0.5));
+        background: linear-gradient(135deg, rgba(30, 194, 236, 0.6), rgba(14, 165, 233, 0.5), rgba(14, 122, 173, 0.5));
         border-radius: 9999px;
         filter: blur(8px);
         opacity: 0.7;
@@ -214,18 +214,19 @@
         justify-content: center;
         width: 24px;
         height: 24px;
-        color: #818cf8;
+        color: #1ec2ec;
     }
 
     .sparkles-icon {
         width: 20px;
         height: 20px;
+        color: #1ec2ec;
         animation: copilot-sparkle-pulse 3s infinite ease-in-out;
     }
 
     @keyframes copilot-sparkle-pulse {
-        0%, 100% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 0 2px rgba(129, 140, 248, 0.4)); }
-        50% { transform: rotate(10deg) scale(1.15); filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.8)); }
+        0%, 100% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 0 2px rgba(30, 194, 236, 0.6)); }
+        50% { transform: rotate(10deg) scale(1.15); filter: drop-shadow(0 0 8px rgba(30, 194, 236, 0.9)); }
     }
 
     .copilot-trigger-label {
@@ -251,7 +252,7 @@
     .trypai-drawer-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(15, 23, 42, 0.65);
+        background: rgba(15, 23, 42, 0.75) !important;
         backdrop-filter: blur(4px);
     }
 
@@ -260,7 +261,8 @@
         width: 100%;
         max-width: 440px;
         height: 100%;
-        background: #0f172a;
+        background: #0f172a !important;
+        color: #f8fafc !important;
         border-left: 1px solid rgba(255, 255, 255, 0.1);
         box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
         display: flex;
@@ -274,7 +276,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 16px 20px;
-        background: #1e293b;
+        background: #1e293b !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
@@ -288,23 +290,24 @@
         width: 32px;
         height: 32px;
         border-radius: 8px;
-        background: linear-gradient(135deg, #6366f1, #a855f7);
+        background: linear-gradient(135deg, #1ec2ec, #0ea5e9) !important;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: white !important;
+        box-shadow: 0 2px 10px rgba(30, 194, 236, 0.4);
     }
 
     .trypai-title-text {
         font-size: 16px;
         font-weight: 700;
-        color: white;
+        color: white !important;
         margin: 0;
     }
 
     .trypai-sub-badge {
         font-size: 11px;
-        color: #94a3b8;
+        color: #94a3b8 !important;
         display: block;
     }
 
@@ -318,7 +321,7 @@
         transition: color 0.2s;
     }
 
-    .trypai-close-btn:hover { color: white; }
+    .trypai-close-btn:hover { color: white !important; }
 
     /* Conversational Chat Body */
     .trypai-body {
@@ -327,6 +330,7 @@
         flex-direction: column;
         gap: 14px;
         flex: 1;
+        background: #0f172a !important;
         overflow-y: auto;
     }
 
@@ -344,14 +348,14 @@
         width: 28px;
         height: 28px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #6366f1, #a855f7);
+        background: linear-gradient(135deg, #1ec2ec, #0ea5e9) !important;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 13px;
-        color: white;
+        color: white !important;
         flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 2px 8px rgba(30, 194, 236, 0.4);
     }
 
     .chat-bubble {
@@ -360,19 +364,19 @@
         border-radius: 14px;
         font-size: 13px;
         line-height: 1.45;
-        color: #f1f5f9;
-        background: rgba(30, 41, 59, 0.7);
+        color: #f1f5f9 !important;
+        background: rgba(30, 41, 59, 0.8) !important;
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-top-left-radius: 3px;
     }
 
     .chat-msg.user .chat-bubble {
-        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-        color: white;
+        background: linear-gradient(135deg, #1ec2ec 0%, #0e7aad 100%) !important;
+        color: white !important;
         border: none;
         border-top-left-radius: 14px;
         border-top-right-radius: 3px;
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        box-shadow: 0 4px 12px rgba(30, 194, 236, 0.3);
     }
 
     .chat-options-grid {
@@ -389,17 +393,17 @@
         font-weight: 600;
         text-align: left;
         border-radius: 10px;
-        border: 1px solid rgba(99, 102, 241, 0.4);
-        background: rgba(15, 23, 42, 0.7);
-        color: #c7d2fe;
+        border: 1px solid rgba(30, 194, 236, 0.4) !important;
+        background: rgba(15, 23, 42, 0.7) !important;
+        color: #a5f3fc !important;
         cursor: pointer;
         transition: all 0.2s ease;
     }
 
     .chat-pill-btn:hover {
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.3));
-        border-color: #818cf8;
-        color: #ffffff;
+        background: linear-gradient(135deg, rgba(30, 194, 236, 0.25), rgba(14, 165, 233, 0.25)) !important;
+        border-color: #1ec2ec !important;
+        color: #ffffff !important;
         transform: translateX(3px);
     }
 
@@ -411,7 +415,7 @@
     .chat-change-mode-btn {
         background: transparent;
         border: none;
-        color: #818cf8;
+        color: #1ec2ec !important;
         font-size: 11px;
         cursor: pointer;
         text-decoration: underline;
@@ -422,18 +426,18 @@
     /* Dropzone */
     .trypai-dropzone {
         position: relative;
-        border: 2px dashed rgba(99, 102, 241, 0.4);
+        border: 2px dashed rgba(30, 194, 236, 0.4) !important;
         border-radius: 12px;
         padding: 22px 16px;
         text-align: center;
-        background: rgba(15, 23, 42, 0.5);
+        background: rgba(15, 23, 42, 0.5) !important;
         transition: all 0.2s ease;
         cursor: pointer;
     }
 
     .trypai-dropzone:hover, .trypai-dropzone.dragover {
-        border-color: #818cf8;
-        background: rgba(99, 102, 241, 0.12);
+        border-color: #1ec2ec !important;
+        background: rgba(30, 194, 236, 0.12) !important;
     }
 
     .trypai-file-input {
@@ -446,8 +450,8 @@
     }
 
     .trypai-upload-icon { font-size: 26px; margin-bottom: 4px; }
-    .trypai-drop-title { font-size: 13px; font-weight: 600; color: #f1f5f9; margin-bottom: 4px; }
-    .trypai-drop-hint { font-size: 11px; color: #64748b; margin: 0; }
+    .trypai-drop-title { font-size: 13px; font-weight: 600; color: #f1f5f9 !important; margin-bottom: 4px; }
+    .trypai-drop-hint { font-size: 11px; color: #64748b !important; margin: 0; }
 
     .trypai-file-list {
         margin-top: 10px;
@@ -461,15 +465,15 @@
         align-items: center;
         justify-content: space-between;
         padding: 8px 12px;
-        background: rgba(30, 41, 59, 0.8);
+        background: rgba(30, 41, 59, 0.8) !important;
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 8px;
         font-size: 12px;
-        color: #e2e8f0;
+        color: #e2e8f0 !important;
     }
 
     .trypai-file-remove {
-        color: #f87171;
+        color: #f87171 !important;
         cursor: pointer;
         font-weight: bold;
     }
@@ -477,11 +481,11 @@
     /* Textarea */
     .trypai-textarea {
         width: 100%;
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
         border-radius: 10px;
         padding: 12px;
-        color: #f8fafc;
+        color: #f8fafc !important;
         font-size: 13px;
         resize: vertical;
         outline: none;
@@ -489,11 +493,11 @@
     }
 
     .trypai-textarea:focus {
-        border-color: #6366f1;
-        box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+        border-color: #1ec2ec !important;
+        box-shadow: 0 0 10px rgba(30, 194, 236, 0.3) !important;
     }
 
-    .trypai-text-hint { font-size: 11px; color: #64748b; margin-top: 6px; }
+    .trypai-text-hint { font-size: 11px; color: #64748b !important; margin-top: 6px; }
 
     /* Submit Button */
     .trypai-submit-btn {
@@ -501,18 +505,18 @@
         padding: 12px;
         border-radius: 10px;
         border: none;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-        color: white;
+        background: linear-gradient(135deg, #1ec2ec 0%, #0ea5e9 100%) !important;
+        color: white !important;
         font-size: 13px;
         font-weight: 700;
         cursor: pointer;
         transition: all 0.2s ease;
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 4px 15px rgba(30, 194, 236, 0.4);
     }
 
     .trypai-submit-btn:hover {
         transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        box-shadow: 0 6px 20px rgba(30, 194, 236, 0.6);
     }
 
     /* Loading State */
@@ -525,8 +529,8 @@
         width: 36px;
         height: 36px;
         margin: 0 auto 12px;
-        border: 3px solid rgba(99, 102, 241, 0.2);
-        border-top-color: #6366f1;
+        border: 3px solid rgba(30, 194, 236, 0.2);
+        border-top-color: #1ec2ec;
         border-radius: 50%;
         animation: spin 1s infinite linear;
     }
@@ -536,7 +540,7 @@
     .trypai-loading-text {
         font-size: 13px;
         font-weight: 600;
-        color: #a5b4fc;
+        color: #7dd3fc !important;
         animation: pulse 2s infinite ease-in-out;
     }
 
@@ -576,9 +580,9 @@
     .trypai-loop-pill {
         padding: 7px 12px;
         border-radius: 9999px;
-        background: rgba(99, 102, 241, 0.2);
-        border: 1px solid rgba(99, 102, 241, 0.4);
-        color: #c7d2fe;
+        background: rgba(30, 194, 236, 0.2) !important;
+        border: 1px solid rgba(30, 194, 236, 0.4) !important;
+        color: #a5f3fc !important;
         font-size: 12px;
         font-weight: 600;
         cursor: pointer;
@@ -586,8 +590,8 @@
     }
 
     .trypai-loop-pill:hover {
-        background: #6366f1;
-        color: white;
+        background: #1ec2ec !important;
+        color: #0f172a !important;
     }
 
     /* Modal IngestionPreviewModal */
@@ -595,7 +599,7 @@
         position: fixed;
         inset: 0;
         z-index: 11000;
-        background: rgba(15, 23, 42, 0.85);
+        background: rgba(15, 23, 42, 0.85) !important;
         backdrop-filter: blur(8px);
         display: flex;
         align-items: center;
@@ -609,7 +613,8 @@
         width: 100%;
         max-width: 680px;
         max-height: 85vh;
-        background: #0f172a;
+        background: #0f172a !important;
+        color: #f8fafc !important;
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 16px;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
@@ -620,7 +625,7 @@
 
     .ingestion-modal-header {
         padding: 18px 24px;
-        background: #1e293b;
+        background: #1e293b !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         display: flex;
         align-items: flex-start;
@@ -630,13 +635,13 @@
     .ingestion-modal-title {
         font-size: 17px;
         font-weight: 700;
-        color: #f8fafc;
+        color: #f8fafc !important;
         margin: 0 0 4px 0;
     }
 
     .ingestion-modal-subtitle {
         font-size: 12px;
-        color: #94a3b8;
+        color: #94a3b8 !important;
         margin: 0;
     }
 
@@ -647,17 +652,18 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+        background: #0f172a !important;
     }
 
     .ingestion-day-group {
-        border-left: 3px solid #6366f1;
+        border-left: 3px solid #1ec2ec !important;
         padding-left: 14px;
     }
 
     .ingestion-day-title {
         font-size: 14px;
         font-weight: 700;
-        color: #818cf8;
+        color: #38bdf8 !important;
         margin-bottom: 10px;
         display: flex;
         align-items: center;
@@ -671,7 +677,7 @@
     }
 
     .ingestion-item-card {
-        background: #1e293b;
+        background: #1e293b !important;
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 12px;
         padding: 8px 12px;
@@ -686,8 +692,8 @@
     }
 
     .ingestion-item-card:hover {
-        border-color: rgba(99, 102, 241, 0.5);
-        background: #26334d;
+        border-color: rgba(30, 194, 236, 0.5) !important;
+        background: #26334d !important;
     }
 
     .ingestion-item-card .item-inner {
@@ -715,7 +721,7 @@
     }
 
     .ingestion-item-card .item-time-label {
-        background: rgba(14, 165, 233, 0.2) !important;
+        background: rgba(30, 194, 236, 0.2) !important;
         color: #38bdf8 !important;
         border: 1px solid rgba(56, 189, 248, 0.3) !important;
     }
@@ -729,7 +735,7 @@
         border-radius: 8px;
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid rgba(255, 255, 255, 0.15);
-        color: #f8fafc;
+        color: #f8fafc !important;
         cursor: pointer;
         flex-shrink: 0;
         font-size: 13px;
@@ -746,7 +752,7 @@
         margin-top: 3px;
         width: 16px;
         height: 16px;
-        accent-color: #6366f1;
+        accent-color: #1ec2ec !important;
         cursor: pointer;
     }
 
@@ -769,8 +775,8 @@
         font-weight: 700;
         padding: 2px 8px;
         border-radius: 6px;
-        background: rgba(99, 102, 241, 0.2);
-        color: #a5b4fc;
+        background: rgba(30, 194, 236, 0.2) !important;
+        color: #7dd3fc !important;
     }
 
     .ingestion-time-badge {
@@ -785,13 +791,13 @@
     .ingestion-item-title {
         font-size: 14px;
         font-weight: 600;
-        color: #f1f5f9;
+        color: #f1f5f9 !important;
         margin: 4px 0;
     }
 
     .ingestion-item-meta {
         font-size: 11px;
-        color: #94a3b8;
+        color: #94a3b8 !important;
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
@@ -809,7 +815,7 @@
         transition: color 0.2s;
     }
 
-    .ingestion-edit-btn:hover { color: #f8fafc; }
+    .ingestion-edit-btn:hover { color: #f8fafc !important; }
 
     /* Inline Edit Form */
     .ingestion-inline-edit {
@@ -822,17 +828,17 @@
     }
 
     .ingestion-inline-input {
-        background: #0f172a;
+        background: #0f172a !important;
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 6px;
         padding: 6px 10px;
-        color: white;
+        color: white !important;
         font-size: 12px;
     }
 
     .ingestion-modal-footer {
         padding: 16px 24px;
-        background: #1e293b;
+        background: #1e293b !important;
         border-top: 1px solid rgba(255, 255, 255, 0.08);
         display: flex;
         align-items: center;
@@ -845,7 +851,7 @@
         border-radius: 8px;
         border: 1px solid rgba(255, 255, 255, 0.15);
         background: transparent;
-        color: #cbd5e1;
+        color: #cbd5e1 !important;
         font-size: 13px;
         font-weight: 600;
         cursor: pointer;
@@ -857,17 +863,17 @@
         padding: 9px 18px;
         border-radius: 8px;
         border: none;
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        color: white;
+        background: linear-gradient(135deg, #1ec2ec, #0ea5e9) !important;
+        color: white !important;
         font-size: 13px;
         font-weight: 700;
         cursor: pointer;
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 4px 12px rgba(30, 194, 236, 0.4);
     }
 
     .ingestion-btn-primary:hover {
         transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.6);
+        box-shadow: 0 6px 16px rgba(30, 194, 236, 0.6);
     }
 
     @media (max-width: 768px) {
