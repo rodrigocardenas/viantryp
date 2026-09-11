@@ -2,10 +2,15 @@
 
 return [
     'codes' => [
-        'esencial' => env('PLAN_CODE_ESENCIAL'),
-        'avanzado' => env('PLAN_CODE_AVANZADO'),
-        'colaborativo' => env('PLAN_CODE_COLABORATIVO'),
-        'corporativo' => env('PLAN_CODE_CORPORATIVO'),
+        'explorador'   => env('PLAN_CODE_EXPLORADOR', env('PLAN_CODE_BASICO', '')),
+        'básico'       => env('PLAN_CODE_EXPLORADOR', env('PLAN_CODE_BASICO', '')),
+        'viajero_pro'  => env('PLAN_CODE_VIAJERO_PRO', env('PLAN_CODE_AVANZADO', env('PLAN_CODE_ESENCIAL', 'V7K2-MQ9X-E4NR,A3PH-XW8T-Z6LJ'))),
+        'viajero pro'  => env('PLAN_CODE_VIAJERO_PRO', env('PLAN_CODE_AVANZADO', env('PLAN_CODE_ESENCIAL', 'V7K2-MQ9X-E4NR,A3PH-XW8T-Z6LJ'))),
+        'avanzado'     => env('PLAN_CODE_VIAJERO_PRO', env('PLAN_CODE_AVANZADO', env('PLAN_CODE_ESENCIAL', 'V7K2-MQ9X-E4NR,A3PH-XW8T-Z6LJ'))),
+        'esencial'     => env('PLAN_CODE_VIAJERO_PRO', env('PLAN_CODE_AVANZADO', env('PLAN_CODE_ESENCIAL', 'V7K2-MQ9X-E4NR,A3PH-XW8T-Z6LJ'))),
+        'negocios'     => env('PLAN_CODE_NEGOCIOS', env('PLAN_CODE_COLABORATIVO', 'C9YD-RB5F-N2QK')),
+        'colaborativo' => env('PLAN_CODE_NEGOCIOS', env('PLAN_CODE_COLABORATIVO', 'C9YD-RB5F-N2QK')),
+        'corporativo'  => env('PLAN_CODE_CORPORATIVO', env('PLAN_CODE_NEGOCIOS', '')),
     ],
     'request_email' => env('PLAN_REQUEST_EMAIL', 'hola@viantryp.com'),
     'paddle' => [

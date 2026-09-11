@@ -333,44 +333,82 @@ class ProfileController extends Controller
     public function verifyPlanCode(Request $request)
     {
         $request->validate([
-            'plan' => 'required|string|in:básico,esencial,avanzado,colaborativo,corporativo',
+            'plan' => 'required|string',
             'code' => 'required|string',
         ]);
 
-        // Map plan keys to their .env variable
-        $planEnvKeys = [
-            'esencial'     => 'PLAN_CODE_ESENCIAL',
-            'avanzado'     => 'PLAN_CODE_AVANZADO',
-            'colaborativo' => 'PLAN_CODE_COLABORATIVO',
-            'corporativo'  => 'PLAN_CODE_CORPORATIVO',
+        $submittedCode = strtoupper(trim($request->code));
+        $submittedPlan = strtolower(trim($request->plan));
+
+        // Normalización de nombres de plan (Explorador -> básico, Viajero Pro -> avanzado, Negocios -> colaborativo)
+        $planMap = [
+            'explorador'   => 'básico',
+            'basico'       => 'básico',
+            'básico'       => 'básico',
+            'viajero pro'  => 'avanzado',
+            'viajeropro'   => 'avanzado',
+            'pro'          => 'avanzado',
+            'avanzado'     => 'avanzado',
+            'esencial'     => 'avanzado',
+            'negocios'     => 'colaborativo',
+            'colaborativo' => 'colaborativo',
+            'corporativo'  => 'colaborativo',
         ];
 
-        $plan = strtolower($request->plan);
-        $envKey = $planEnvKeys[$plan] ?? null;
+        // Códigos válidos para cada nivel de plan
+        $proCodes = array_filter(array_map('trim', explode(',',
+            config('plans.codes.viajero_pro', '') . ',' .
+            config('plans.codes.viajero pro', '') . ',' .
+            config('plans.codes.avanzado', '') . ',' .
+            config('plans.codes.esencial', '')
+        )));
 
-        if (!$envKey) {
-            // Plan 'básico' no requiere código (es gratuito / downgrade)
-            return $this->updatePlan($request);
+        $negociosCodes = array_filter(array_map('trim', explode(',',
+            config('plans.codes.negocios', '') . ',' .
+            config('plans.codes.colaborativo', '') . ',' .
+            config('plans.codes.corporativo', '')
+        )));
+
+        $targetPlan = null;
+        if (in_array($submittedCode, array_map('strtoupper', $proCodes))) {
+            $targetPlan = 'avanzado'; // Viajero Pro
+        } elseif (in_array($submittedCode, array_map('strtoupper', $negociosCodes))) {
+            $targetPlan = 'colaborativo'; // Negocios
         }
 
-        $validCodes = array_filter(array_map('trim', explode(',', config("plans.codes.{$plan}", ''))));
-        $submittedCode = strtoupper(trim($request->code));
-
-        if (empty($validCodes) || !in_array($submittedCode, array_map('strtoupper', $validCodes))) {
+        if (!$targetPlan) {
             return response()->json([
                 'success' => false,
-                'message' => 'Código inválido para el plan ' . ucfirst($plan) . '. Verifica el código o solicita acceso a nuestro equipo.'
+                'message' => 'Código promocional inválido o no reconocido. Por favor verifica el código.'
             ], 422);
         }
 
-        // Code is valid — proceed to update the plan
-        return $this->updatePlan($request);
+        // Actualizar el plan del usuario en la base de datos
+        $user = auth()->user();
+        $user->update([
+            'plan' => $targetPlan,
+            'trial_ends_at' => null
+        ]);
+
+        $displayNames = [
+            'básico' => 'Explorador',
+            'avanzado' => 'Viajero Pro',
+            'colaborativo' => 'Negocios'
+        ];
+
+        $planName = $displayNames[$targetPlan] ?? ucfirst($targetPlan);
+
+        return response()->json([
+            'success' => true,
+            'message' => '¡Felicidades! Has desbloqueado el plan ' . $planName . ' exitosamente.',
+            'plan' => $targetPlan
+        ]);
     }
 
     public function requestPlanUpgrade(Request $request)
     {
         $request->validate([
-            'plan'          => 'required|string|in:básico,esencial,avanzado,colaborativo,corporativo',
+            'plan'          => 'required|string',
             'contact_name'  => 'required|string|max:255',
             'contact_email' => 'required|email|max:255',
             'contact_phone' => 'nullable|string|max:30',
@@ -378,11 +416,16 @@ class ProfileController extends Controller
 
         $user = auth()->user();
         $planNames = [
-            'básico'       => 'Básico',
-            'esencial'     => 'Esencial',
-            'avanzado'     => 'Avanzado',
-            'colaborativo' => 'Colaborativo',
-            'corporativo'  => 'Corporativo',
+            'explorador'   => 'Explorador',
+            'básico'       => 'Explorador',
+            'basico'       => 'Explorador',
+            'viajero pro'  => 'Viajero Pro',
+            'viajeropro'   => 'Viajero Pro',
+            'avanzado'     => 'Viajero Pro',
+            'esencial'     => 'Viajero Pro',
+            'negocios'     => 'Negocios',
+            'colaborativo' => 'Negocios',
+            'corporativo'  => 'Negocios',
         ];
 
         $to = env('PLAN_REQUEST_EMAIL', env('MAIL_FROM_ADDRESS', 'hola@viantryp.com'));

@@ -2128,7 +2128,7 @@ body {
   inset: 0;
   background: rgba(15, 15, 30, .4);
   backdrop-filter: blur(7px);
-  z-index: 1000;
+  z-index: 12000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2517,8 +2517,8 @@ body {
 /* TOAST */
 .toast {
   position: fixed;
-  bottom: 22px;
-  right: 22px;
+  bottom: 88px;
+  right: 24px;
   background: var(--text);
   color: #fff;
   border-radius: 9px;
@@ -2527,7 +2527,7 @@ body {
   display: flex;
   align-items: center;
   gap: 9px;
-  z-index: 3000;
+  z-index: 10000;
   transform: translateY(50px);
   opacity: 0;
   transition: all .28s cubic-bezier(.34, 1.56, .64, 1);
@@ -3616,4 +3616,17 @@ body {
 }
 .gallery-picker-box:hover {
   border-color: #cbd5e1;
+}
+
+@media (max-width: 768px) {
+  body:has(.modal-overlay.open) #viantryp-copilot-container,
+  body:has(.modal-overlay.open) #copilot-trigger-btn,
+  body:has(.modal-overlay.show) #viantryp-copilot-container,
+  body:has(.modal-overlay.show) #copilot-trigger-btn,
+  .modal-overlay.open ~ #viantryp-copilot-container,
+  .modal-overlay.open ~ #copilot-trigger-btn,
+  .modal-overlay.show ~ #viantryp-copilot-container,
+  .modal-overlay.show ~ #copilot-trigger-btn {
+    display: none !important;
+  }
 }

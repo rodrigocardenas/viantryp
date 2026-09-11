@@ -1995,7 +1995,7 @@ window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
           <div style="width:56px; height:56px; background:#eff6ff; border-radius:18px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:16px; color:#1eaace; font-size:24px;">
             <i class="fa-solid fa-crown"></i>
           </div>
-          <h3 style="font-size:22px; font-weight:800; color:#0f172a; margin:0 0 8px 0; letter-spacing:-0.02em;">Función Exclusiva Viajero Pro</h3>
+          <h3 id="viantrypInlineModalTitle" style="font-size:22px; font-weight:800; color:#0f172a; margin:0 0 8px 0; letter-spacing:-0.02em;">Función Exclusiva Viajero Pro</h3>
           <p id="viantrypInlineModalDesc" style="font-size:14px; color:#64748b; margin:0 0 20px 0; line-height:1.5;">La descarga de itinerarios en PDF está disponible a partir del plan Viajero Pro. Actualiza tu plan para desbloquear todas las ventajas.</p>
           
           <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:16px; margin-bottom:24px; text-align:left;">
@@ -2024,6 +2024,11 @@ window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
       document.body.appendChild(modal);
     }
 
+    if (featureTitle) {
+      const titleEl = document.getElementById('viantrypInlineModalTitle');
+      if (titleEl) titleEl.textContent = featureTitle;
+    }
+
     if (featureDesc) {
       const descEl = document.getElementById('viantrypInlineModalDesc');
       if (descEl) descEl.textContent = featureDesc;
@@ -2047,8 +2052,6 @@ window.downloadTripPdf = function() {
     if (!isAllowed) {
       if (typeof openUpgradeModal === 'function') {
         openUpgradeModal();
-      } else if (typeof window.opener !== 'undefined' && window.opener && typeof window.opener.openUpgradeModal === 'function') {
-        window.opener.openUpgradeModal();
       } else {
         openProUpgradeInlineModal('Descargar PDF', 'La descarga de itinerarios en PDF está disponible a partir del plan Viajero Pro. Actualiza tu plan para exportar tus viajes en PDF.');
       }
@@ -2075,8 +2078,6 @@ window.openGoogleCalendarModal = function() {
     if (!isAllowed) {
       if (typeof openUpgradeModal === 'function') {
         openUpgradeModal();
-      } else if (typeof window.opener !== 'undefined' && window.opener && typeof window.opener.openUpgradeModal === 'function') {
-        window.opener.openUpgradeModal();
       } else {
         openProUpgradeInlineModal('Sincronización con Google Calendar', 'La sincronización directa con Google Calendar y la descarga de archivos .ICS son exclusivas del plan Viajero Pro. Actualiza tu plan para agendar tus viajes automáticamente.');
       }

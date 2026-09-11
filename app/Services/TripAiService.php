@@ -407,6 +407,133 @@ PROMPT;
             $startTimeVal = $act['start_time'] ?? null;
             $endDateVal = $act['end_date'] ?? null;
             $endTimeVal = $act['end_time'] ?? null;
+
+            // Extract top-level start/end dates and times from $d if missing on top-level
+            $extractDateTime = function($val) {
+                if (empty($val) || !is_string($val)) return ['date' => null, 'time' => null];
+                $v = trim($val);
+                if (str_contains($v, 'T') || str_contains($v, ' ')) {
+                    $parts = preg_split('/[T ]/', $v);
+                    $d = (!empty($parts[0]) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $parts[0])) ? $parts[0] : null;
+                    $t = (!empty($parts[1]) && preg_match('/^\d{1,2}:\d{2}/', $parts[1])) ? substr($parts[1], 0, 5) : null;
+                    return ['date' => $d, 'time' => $t];
+                }
+                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $v)) {
+                    return ['date' => $v, 'time' => null];
+                }
+                if (preg_match('/^\d{1,2}:\d{2}/', $v)) {
+                    return ['date' => null, 'time' => substr($v, 0, 5)];
+                }
+                return ['date' => null, 'time' => null];
+            };
+
+            if ($type === 'flight' || $type === 'transporte') {
+                $rawSalida = $d['salida'] ?? ($d['departure_time'] ?? '');
+                $rawLlegada = $d['llegada'] ?? ($d['arrival_time'] ?? '');
+
+                if (empty($startDateVal) && !empty($rawSalida)) {
+                    $ex = $extractDateTime($rawSalida);
+                    if ($ex['date']) $startDateVal = $ex['date'];
+                    if (empty($startTimeVal) && $ex['time']) $startTimeVal = $ex['time'];
+                }
+                if (empty($startTimeVal) && !empty($rawSalida)) {
+                    $ex = $extractDateTime($rawSalida);
+                    if ($ex['time']) $startTimeVal = $ex['time'];
+                }
+                if (empty($endDateVal) && !empty($rawLlegada)) {
+                    $ex = $extractDateTime($rawLlegada);
+                    if ($ex['date']) $endDateVal = $ex['date'];
+                    if (empty($endTimeVal) && $ex['time']) $endTimeVal = $ex['time'];
+                }
+                if (empty($endTimeVal) && !empty($rawLlegada)) {
+                    $ex = $extractDateTime($rawLlegada);
+                    if ($ex['time']) $endTimeVal = $ex['time'];
+                }
+            } elseif ($type === 'alojamiento') {
+                $rawCheckin = $d['checkin'] ?? ($d['check_in'] ?? '');
+                $rawCheckout = $d['checkout'] ?? ($d['check_out'] ?? '');
+
+                if (empty($startDateVal) && !empty($rawCheckin)) {
+                    $ex = $extractDateTime($rawCheckin);
+                    if ($ex['date']) $startDateVal = $ex['date'];
+                    if (empty($startTimeVal) && $ex['time']) $startTimeVal = $ex['time'];
+                }
+                if (empty($startTimeVal) && !empty($rawCheckin)) {
+                    $ex = $extractDateTime($rawCheckin);
+                    if ($ex['time']) $startTimeVal = $ex['time'];
+                }
+                if (empty($endDateVal) && !empty($rawCheckout)) {
+                    $ex = $extractDateTime($rawCheckout);
+                    if ($ex['date']) $endDateVal = $ex['date'];
+                    if (empty($endTimeVal) && $ex['time']) $endTimeVal = $ex['time'];
+                }
+                if (empty($endTimeVal) && !empty($rawCheckout)) {
+                    $ex = $extractDateTime($rawCheckout);
+                    if ($ex['time']) $endTimeVal = $ex['time'];
+                }
+            } elseif (in_array($type, ['actividad', 'comida', 'tour'])) {
+                $rawFecha = $d['fecha'] ?? ($d['time'] ?? '');
+                if (empty($startDateVal) && !empty($rawFecha)) {
+                    $ex = $extractDateTime($rawFecha);
+                    if ($ex['date']) $startDateVal = $ex['date'];
+                    if (empty($startTimeVal) && $ex['time']) $startTimeVal = $ex['time'];
+                }
+                if (empty($startTimeVal) && !empty($rawFecha)) {
+                    $ex = $extractDateTime($rawFecha);
+                    if ($ex['time']) $startTimeVal = $ex['time'];
+                }
+            }
+
+            // Helper to format date & time for data fields
+            $formatDt = function($dateVal, $timeVal, $defaultTime = '') {
+                $d = trim($dateVal ?? '');
+                $t = trim($timeVal ?? '');
+                $dStr = '';
+                $tStr = '';
+
+                if (str_contains($d, 'T') || str_contains($d, ' ')) {
+                    $parts = preg_split('/[T ]/', $d);
+                    $dStr = $parts[0];
+                    $tStr = !empty($parts[1]) ? substr($parts[1], 0, 5) : '';
+                } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $d)) {
+                    $dStr = $d;
+                } elseif (preg_match('/^\d{1,2}:\d{2}/', $d)) {
+                    $tStr = substr($d, 0, 5);
+                }
+
+                if (!empty($t)) {
+                    if (str_contains($t, 'T') || str_contains($t, ' ')) {
+                        $parts = preg_split('/[T ]/', $t);
+                        if (empty($dStr) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $parts[0])) {
+                            $dStr = $parts[0];
+                        }
+                        if (!empty($parts[1])) {
+                            $tStr = substr($parts[1], 0, 5);
+                        }
+                    } elseif (preg_match('/^\d{1,2}:\d{2}/', $t)) {
+                        $tStr = substr($t, 0, 5);
+                    }
+                }
+
+                if (empty($tStr)) $tStr = $defaultTime;
+                if (empty($dStr) || empty($tStr)) return !empty($dStr) ? $dStr : '';
+                return "{$dStr}T{$tStr}";
+            };
+
+            if ($type === 'flight' || $type === 'transporte') {
+                $d['salida'] = $formatDt($d['salida'] ?? $startDateVal, $startTimeVal, '10:00');
+                $d['llegada'] = $formatDt($d['llegada'] ?? $endDateVal ?? $startDateVal, $endTimeVal, '14:00');
+            } elseif ($type === 'alojamiento') {
+                $d['checkin'] = $formatDt($d['checkin'] ?? $startDateVal, $startTimeVal, '15:00');
+                $d['checkout'] = $formatDt($d['checkout'] ?? $endDateVal, $endTimeVal, '11:00');
+            } elseif ($type === 'actividad') {
+                $d['fecha'] = $formatDt($d['fecha'] ?? $startDateVal, $startTimeVal, '10:00');
+            } elseif ($type === 'comida') {
+                $d['fecha'] = $formatDt($d['fecha'] ?? $startDateVal, $startTimeVal, '13:00');
+            } elseif ($type === 'tour') {
+                $d['fecha'] = $formatDt($d['fecha'] ?? $startDateVal, $startTimeVal, '09:00');
+            }
+
             $locationQuery = $act['location_query'] ?? ($d['direccion'] ?? ($d['address'] ?? ($d['location'] ?? '')));
             $notesVal = $act['notes'] ?? ($d['reserva'] ?? ($d['confirmation_code'] ?? ($d['descripcion'] ?? '')));
 

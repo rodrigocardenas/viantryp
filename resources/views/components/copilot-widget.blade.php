@@ -671,18 +671,75 @@
     }
 
     .ingestion-item-card {
-        background: rgba(30, 41, 59, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
-        padding: 12px 14px;
+        background: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        padding: 8px 12px;
         display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        transition: border-color 0.2s;
+        align-items: center;
+        gap: 10px;
+        transition: border-color 0.2s, background 0.2s;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        margin-bottom: 10px;
+        position: relative;
+        overflow: hidden;
     }
 
     .ingestion-item-card:hover {
-        border-color: rgba(99, 102, 241, 0.4);
+        border-color: rgba(99, 102, 241, 0.5);
+        background: #26334d;
+    }
+
+    .ingestion-item-card .item-inner {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .ingestion-item-card .item-title {
+        color: #f8fafc !important;
+    }
+
+    .ingestion-item-card .item-subtitle span {
+        color: #cbd5e1 !important;
+    }
+
+    .ingestion-item-card .item-subtitle i {
+        color: #94a3b8 !important;
+    }
+
+    .ingestion-item-card .item-chip {
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: #e2e8f0 !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    }
+
+    .ingestion-item-card .item-time-label {
+        background: rgba(14, 165, 233, 0.2) !important;
+        color: #38bdf8 !important;
+        border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    }
+
+    .ingestion-item-card div[style*="color:var(--text-muted)"] {
+        color: #94a3b8 !important;
+    }
+
+    .ingestion-item-card .ingestion-edit-btn {
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #f8fafc;
+        cursor: pointer;
+        flex-shrink: 0;
+        font-size: 13px;
+        transition: all 0.15s;
+        margin-left: 6px;
+    }
+
+    .ingestion-item-card .ingestion-edit-btn:hover {
+        background: rgba(255, 255, 255, 0.18);
+        border-color: rgba(255, 255, 255, 0.3);
     }
 
     .ingestion-item-checkbox {
@@ -811,6 +868,19 @@
     .ingestion-btn-primary:hover {
         transform: translateY(-1px);
         box-shadow: 0 6px 16px rgba(99, 102, 241, 0.6);
+    }
+
+    @media (max-width: 768px) {
+        body:has(.modal-overlay.open) #viantryp-copilot-container,
+        body:has(.modal-overlay.open) #copilot-trigger-btn,
+        body:has(.modal-overlay.show) #viantryp-copilot-container,
+        body:has(.modal-overlay.show) #copilot-trigger-btn,
+        .modal-overlay.open ~ #viantryp-copilot-container,
+        .modal-overlay.open ~ #copilot-trigger-btn,
+        .modal-overlay.show ~ #viantryp-copilot-container,
+        .modal-overlay.show ~ #copilot-trigger-btn {
+            display: none !important;
+        }
     }
 </style>
 
@@ -1035,12 +1105,25 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerLoopScenarioB();
     });
 
+    function extractTimeFromItem(item) {
+        if (item.start_time) return item.start_time;
+        const raw = item.data?.salida || item.data?.checkin || item.data?.fecha || '';
+        if (!raw) return '';
+        if (raw.includes('T') || raw.includes(' ')) {
+            const parts = raw.replace(' ', 'T').split('T');
+            return parts[1] ? parts[1].substring(0, 5) : '';
+        }
+        if (/^\d{1,2}:\d{2}/.test(raw)) return raw.substring(0, 5);
+        return '';
+    }
+
     function renderModalItems(items) {
         // Group by Date / Day
         const groups = {};
         items.forEach((item, index) => {
             item._enabled = true; // default checked
             item._id = index;
+            if (!item.start_time) item.start_time = extractTimeFromItem(item);
             const dateKey = item.start_date || 'Fecha por definir';
             if (!groups[dateKey]) groups[dateKey] = [];
             groups[dateKey].push(item);
@@ -1057,40 +1140,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let html = '';
         Object.keys(groups).forEach(dateStr => {
+            let titleDate = dateStr;
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                try {
+                    const p = dateStr.split('-');
+                    const d = new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]));
+                    if (!isNaN(d.getTime())) {
+                        titleDate = d.toLocaleDateString('es', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+                        titleDate = titleDate.charAt(0).toUpperCase() + titleDate.slice(1);
+                    }
+                } catch (e) {}
+            }
+
             html += `
                 <div class="ingestion-day-group">
-                    <div class="ingestion-day-title">🗓️ ${dateStr}</div>
+                    <div class="ingestion-day-title">🗓️ ${escapeHtml(titleDate)}</div>
                     <div class="ingestion-items-list">
             `;
 
             groups[dateStr].forEach(item => {
-                const icon = getItemIcon(item.type);
-                const timeBadge = item.start_time ? `🕒 ${item.start_time}` : `[Hora Por Definir]`;
-                const locationStr = item.location_query || item.data?.direccion || item.data?.address || '';
-                const notesStr = item.notes || item.data?.reserva || item.data?.confirmation_code || '';
+                const normAction = (typeof normalizeCopilotAction === 'function') 
+                    ? normalizeCopilotAction(item) 
+                    : { type: item.type, data: item.data || {} };
 
-                html += `
-                    <div class="ingestion-item-card" id="item-card-${item._id}">
-                        <input type="checkbox" class="ingestion-item-checkbox" checked onchange="toggleItemCheck(${item._id}, this.checked)" />
+                const renderObj = {
+                    type: normAction.type,
+                    title: item.title,
+                    start_date: item.start_date,
+                    start_time: item.start_time,
+                    end_date: item.end_date,
+                    end_time: item.end_time,
+                    notes: item.notes,
+                    location_query: item.location_query,
+                    data: normAction.data
+                };
+
+                const innerHtml = (typeof window.getItemInnerHtml === 'function') 
+                    ? window.getItemInnerHtml(renderObj) 
+                    : `
                         <div class="ingestion-item-main">
                             <div class="ingestion-item-top">
-                                <span class="ingestion-item-badge">${icon} ${getTypeLabel(item.type)}</span>
-                                <span class="ingestion-time-badge">${timeBadge}</span>
+                                <span class="ingestion-item-badge">${getItemIcon(item.type)} ${getTypeLabel(item.type)}</span>
+                                <span class="ingestion-time-badge">${item.start_time ? `🕒 ${item.start_time}` : '[Hora Por Definir]'}</span>
                             </div>
-                            <div class="ingestion-item-title" id="title-val-${item._id}">${escapeHtml(item.title || 'Evento')}</div>
-                            <div class="ingestion-item-meta">
-                                ${locationStr ? `<span>📍 ${escapeHtml(locationStr)}</span>` : ''}
-                                ${notesStr ? `<span>🔖 ${escapeHtml(notesStr)}</span>` : ''}
-                            </div>
-                            <div class="ingestion-inline-edit hidden" id="edit-form-${item._id}">
-                                <input type="text" class="ingestion-inline-input" value="${escapeHtml(item.title || '')}" placeholder="Título" onchange="updateItemField(${item._id}, 'title', this.value)" />
-                                <div style="display:flex; gap:6px;">
-                                    <input type="text" class="ingestion-inline-input" value="${escapeHtml(item.start_date || '')}" placeholder="YYYY-MM-DD" onchange="updateItemField(${item._id}, 'start_date', this.value)" style="flex:1;" />
-                                    <input type="text" class="ingestion-inline-input" value="${escapeHtml(item.start_time || '')}" placeholder="HH:mm" onchange="updateItemField(${item._id}, 'start_time', this.value)" style="flex:1;" />
-                                </div>
-                            </div>
+                            <div class="ingestion-item-title">${escapeHtml(item.title || 'Evento')}</div>
                         </div>
-                        <button type="button" class="ingestion-edit-btn" title="Editar" onclick="toggleItemEdit(${item._id})">✏️</button>
+                    `;
+
+                html += `
+                    <div class="ingestion-item-card canvas-item tipo-${normAction.type}" id="item-card-${item._id}">
+                        <input type="checkbox" class="ingestion-item-checkbox" ${item._enabled !== false ? 'checked' : ''} onchange="toggleItemCheck(${item._id}, this.checked)" style="margin-right:2px; flex-shrink:0; width:18px; height:18px; cursor:pointer;" />
+                        <div style="flex:1; min-width:0;">
+                            ${innerHtml}
+                        </div>
+                        <button type="button" class="ingestion-edit-btn" title="Editar con formulario completo" onclick="openCopilotItemEditModal(${item._id})">✏️</button>
                     </div>
                 `;
             });
@@ -1108,20 +1211,58 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSelectedCount();
     };
 
-    window.toggleItemEdit = function(id) {
-        const editForm = document.getElementById(`edit-form-${id}`);
-        if (editForm) editForm.classList.toggle('hidden');
+    window.openCopilotItemEditModal = function(id) {
+        const item = processedItems.find(i => i._id === id);
+        if (!item) return;
+
+        window.copilotEditingIndex = id;
+
+        const normAction = (typeof normalizeCopilotAction === 'function') ? normalizeCopilotAction(item) : { type: item.type, data: item.data || {} };
+
+        if (typeof openModal === 'function') {
+            openModal(normAction.type, null, normAction.data);
+        } else {
+            alert('El editor no está disponible.');
+        }
     };
 
-    window.updateItemField = function(id, field, value) {
-        const item = processedItems.find(i => i._id === id);
-        if (item) {
-            item[field] = value;
-            if (field === 'title') {
-                const tEl = document.getElementById(`title-val-${id}`);
-                if (tEl) tEl.innerText = value;
+    window.onCopilotItemSaved = function(newData, type) {
+        if (window.copilotEditingIndex === null) return;
+        const item = processedItems.find(i => i._id === window.copilotEditingIndex);
+        if (!item) return;
+
+        item.data = { ...item.data, ...newData };
+        if (type) item.type = type;
+
+        if (newData.nombre || newData.restaurante || newData.titulo) {
+            item.title = newData.nombre || newData.restaurante || newData.titulo;
+        } else if (newData.origen && newData.destino) {
+            item.title = `${newData.origen} → ${newData.destino}`;
+        }
+
+        if (newData.salida || newData.checkin || newData.fecha) {
+            const dtStr = newData.salida || newData.checkin || newData.fecha;
+            if (dtStr.includes('T') || dtStr.includes(' ')) {
+                const parts = dtStr.replace(' ', 'T').split('T');
+                if (parts[0]) item.start_date = parts[0];
+                if (parts[1]) item.start_time = parts[1].substring(0, 5);
             }
         }
+        if (newData.llegada || newData.checkout) {
+            const dtStr = newData.llegada || newData.checkout;
+            if (dtStr.includes('T') || dtStr.includes(' ')) {
+                const parts = dtStr.replace(' ', 'T').split('T');
+                if (parts[0]) item.end_date = parts[0];
+                if (parts[1]) item.end_time = parts[1].substring(0, 5);
+            }
+        }
+
+        if (typeof showToast === 'function') {
+            showToast('<i class="fa-solid fa-pencil"></i>', 'Reserva actualizada');
+        }
+
+        window.copilotEditingIndex = null;
+        renderModalItems(processedItems);
     };
 
     function updateSelectedCount() {

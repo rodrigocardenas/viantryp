@@ -721,9 +721,35 @@ const C = {
 const dragGhost = document.getElementById('dragGhost');
 const canvasItems = document.getElementById('canvasItems');
 const emptyState = document.getElementById('emptyState');
+
 document.querySelectorAll('.element-card').forEach(card => {
-  card.addEventListener('dragstart', e => { dragType = card.dataset.type; dragLabel = card.dataset.label; dragSourceIndex = null; card.classList.add('dragging'); e.dataTransfer.effectAllowed = 'copy'; e.dataTransfer.setDragImage(new Image(), 0, 0); const cfg = C[dragType]; document.getElementById('ghostIcon').textContent = cfg.icon; document.getElementById('ghostLabel').textContent = dragLabel; dragGhost.style.opacity = '1' });
-  card.addEventListener('dragend', () => { card.classList.remove('dragging'); dragGhost.style.opacity = '0'; clearDropIndicators() });
+  card.addEventListener('dragstart', e => {
+    dragType = card.dataset.type;
+    dragLabel = card.dataset.label;
+    dragSourceIndex = null;
+    card.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'copy';
+    e.dataTransfer.setDragImage(new Image(), 0, 0);
+    const cfg = C[dragType];
+    if (cfg && cfg.icon && document.getElementById('ghostIcon')) {
+      document.getElementById('ghostIcon').innerHTML = cfg.icon;
+    }
+    if (document.getElementById('ghostLabel')) {
+      document.getElementById('ghostLabel').textContent = dragLabel || '';
+    }
+    if (dragGhost) {
+      if (e.clientX && e.clientY) {
+        dragGhost.style.left = (e.clientX + 12) + 'px';
+        dragGhost.style.top = (e.clientY - 18) + 'px';
+      }
+      dragGhost.style.opacity = '1';
+    }
+  });
+  card.addEventListener('dragend', () => {
+    card.classList.remove('dragging');
+    if (dragGhost) dragGhost.style.opacity = '0';
+    clearDropIndicators();
+  });
   card.addEventListener('dblclick', () => {
     if (typeof currentDay === 'number' || currentDay === 'portada' || currentDay === 'cierre') {
       openModal(card.dataset.type);
@@ -737,24 +763,78 @@ document.querySelectorAll('.element-card').forEach(card => {
     if (window.innerWidth < 992) {
       if (typeof currentDay === 'number' || currentDay === 'portada' || currentDay === 'cierre') {
         openModal(card.dataset.type);
-        // Sidebar is persistent now, no need to toggle
       } else {
         showToast('⚠️', 'Selecciona un día primero');
       }
     }
   });
 });
-document.addEventListener('dragover', e => { e.preventDefault(); dragGhost.style.left = (e.clientX + 12) + 'px'; dragGhost.style.top = (e.clientY - 18) + 'px' });
-canvasItems.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); if (dragSourceIndex !== null && dragSourceContainer === 'canvasItems') { const cl = getClosest([...canvasItems.querySelectorAll('.canvas-item')], e.clientY); showDropInd(cl.index, cl.before) } emptyState.classList.add('drag-over') });
-canvasItems.addEventListener('dragleave', e => { if (!canvasItems.contains(e.relatedTarget)) { clearDropIndicators(); emptyState.classList.remove('drag-over') } });
-emptyState.addEventListener('dragover', e => { e.preventDefault(); emptyState.classList.add('drag-over') });
-emptyState.addEventListener('dragleave', () => emptyState.classList.remove('drag-over'));
-emptyState.addEventListener('drop', e => { e.preventDefault(); emptyState.classList.remove('drag-over'); if (dragType && (typeof currentDay === 'number' || currentDay === 'portada' || currentDay === 'cierre')) openModal(dragType) });
-canvasItems.addEventListener('drop', e => {
-  e.preventDefault(); clearDropIndicators(); emptyState.classList.remove('drag-over');
-  if (dragSourceIndex !== null && dragSourceContainer === 'canvasItems') { const items = [...canvasItems.querySelectorAll('.canvas-item')]; const cl = getClosest(items, e.clientY); let to = cl.before ? cl.index : cl.index + 1; if (to > dragSourceIndex) to--; const arr = days[currentDay]; const [moved] = arr.splice(dragSourceIndex, 1); arr.splice(to, 0, moved); renderCanvas(); dragSourceIndex = null; dragSourceContainer = null; return }
-  if (dragType && (typeof currentDay === 'number' || currentDay === 'portada' || currentDay === 'cierre')) openModal(dragType);
+
+document.addEventListener('dragover', e => {
+  e.preventDefault();
+  if (dragGhost) {
+    dragGhost.style.left = (e.clientX + 12) + 'px';
+    dragGhost.style.top = (e.clientY - 18) + 'px';
+  }
 });
+
+canvasItems.addEventListener('dragover', e => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (dragSourceIndex !== null && dragSourceContainer === 'canvasItems') {
+    const cl = getClosest([...canvasItems.querySelectorAll('.canvas-item')], e.clientY);
+    showDropInd(cl.index, cl.before);
+  }
+  if (emptyState) emptyState.classList.add('drag-over');
+});
+
+canvasItems.addEventListener('dragleave', e => {
+  if (!canvasItems.contains(e.relatedTarget)) {
+    clearDropIndicators();
+    if (emptyState) emptyState.classList.remove('drag-over');
+  }
+});
+
+if (emptyState) {
+  emptyState.addEventListener('dragover', e => { e.preventDefault(); emptyState.classList.add('drag-over'); });
+  emptyState.addEventListener('dragleave', () => emptyState.classList.remove('drag-over'));
+  emptyState.addEventListener('drop', e => {
+    e.preventDefault();
+    if (emptyState) emptyState.classList.remove('drag-over');
+    if (dragGhost) dragGhost.style.opacity = '0';
+    if (dragType && (typeof currentDay === 'number' || currentDay === 'portada' || currentDay === 'cierre')) {
+      const typeToOpen = dragType;
+      dragType = null;
+      openModal(typeToOpen);
+    }
+  });
+}
+
+canvasItems.addEventListener('drop', e => {
+  e.preventDefault();
+  clearDropIndicators();
+  if (emptyState) emptyState.classList.remove('drag-over');
+  if (dragGhost) dragGhost.style.opacity = '0';
+  if (dragSourceIndex !== null && dragSourceContainer === 'canvasItems') {
+    const items = [...canvasItems.querySelectorAll('.canvas-item')];
+    const cl = getClosest(items, e.clientY);
+    let to = cl.before ? cl.index : cl.index + 1;
+    if (to > dragSourceIndex) to--;
+    const arr = days[currentDay];
+    const [moved] = arr.splice(dragSourceIndex, 1);
+    arr.splice(to, 0, moved);
+    renderCanvas();
+    autoSaveProTrip();
+    dragSourceIndex = null; dragSourceContainer = null;
+    return;
+  }
+  if (dragType && (typeof currentDay === 'number' || currentDay === 'portada' || currentDay === 'cierre')) {
+    const typeToOpen = dragType;
+    dragType = null;
+    openModal(typeToOpen);
+  }
+});
+
 function getClosest(items, y) { let minD = Infinity, index = items.length, before = false; items.forEach((item, i) => { const r = item.getBoundingClientRect(); const mid = r.top + r.height / 2; const d = Math.abs(y - mid); if (d < minD) { minD = d; index = i; before = y < mid } }); return { index, before } }
 function showDropInd(index, before) { clearDropIndicators(); const items = [...canvasItems.querySelectorAll('.canvas-item')]; const ind = document.createElement('div'); ind.className = 'drop-indicator visible'; if (!items.length) canvasItems.appendChild(ind); else if (before && items[index]) canvasItems.insertBefore(ind, items[index]); else if (items[index]) items[index].insertAdjacentElement('afterend', ind); else canvasItems.appendChild(ind) }
 function clearDropIndicators() { canvasItems.querySelectorAll('.drop-indicator').forEach(d => d.remove()) }
@@ -762,6 +842,7 @@ function clearDropIndicators() { canvasItems.querySelectorAll('.drop-indicator')
 // Drag-drop + reorder for portada/cierre item containers
 function setupContainerDrag(containerId) {
   const cont = document.getElementById(containerId);
+  if (!cont) return;
 
   function getItemsArr() {
     if (containerId === 'portadaItems') return portadaItems;
@@ -797,6 +878,7 @@ function setupContainerDrag(containerId) {
   cont.addEventListener('drop', e => {
     e.preventDefault(); e.stopPropagation();
     cont.querySelectorAll('.drop-indicator').forEach(d => d.remove());
+    if (dragGhost) dragGhost.style.opacity = '0';
     if (dragSourceIndex !== null && dragSourceContainer === containerId) {
       const items = [...cont.querySelectorAll('.canvas-item')];
       const itemsArr = getItemsArr();
@@ -809,39 +891,83 @@ function setupContainerDrag(containerId) {
       autoSaveProTrip();
       dragSourceIndex = null; dragSourceContainer = null; return;
     }
-    if (dragType) openModal(dragType);
+    if (dragType) {
+      const typeToOpen = dragType;
+      dragType = null;
+      openModal(typeToOpen);
+    }
   });
 }
 setupContainerDrag('portadaItems');
 setupContainerDrag('cierreItems');
+
 ['portadaCanvas', 'cierreCanvas'].forEach(cid => {
-  document.getElementById(cid).addEventListener('dragover', e => { e.preventDefault() });
-  document.getElementById(cid).addEventListener('drop', e => { e.preventDefault(); if (dragType) openModal(dragType) });
+  const el = document.getElementById(cid);
+  if (!el) return;
+  el.addEventListener('dragover', e => { e.preventDefault() });
+  el.addEventListener('drop', e => {
+    e.preventDefault();
+    if (dragGhost) dragGhost.style.opacity = '0';
+    if (dragType) {
+      const typeToOpen = dragType;
+      dragType = null;
+      openModal(typeToOpen);
+    }
+  });
 });
+
 ['portadaDropHint', 'cierreDropHint'].forEach(hid => {
   const hEl = document.getElementById(hid);
+  if (!hEl) return;
   hEl.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); hEl.style.borderColor = 'var(--accent)'; hEl.style.background = 'var(--accent-light)'; });
   hEl.addEventListener('dragleave', () => { hEl.style.borderColor = 'var(--border)'; hEl.style.background = ''; });
-  hEl.addEventListener('drop', e => { e.preventDefault(); e.stopPropagation(); hEl.style.borderColor = 'var(--border)'; hEl.style.background = ''; if (dragType) openModal(dragType); });
+  hEl.addEventListener('drop', e => {
+    e.preventDefault(); e.stopPropagation();
+    hEl.style.borderColor = 'var(--border)'; hEl.style.background = '';
+    if (dragGhost) dragGhost.style.opacity = '0';
+    if (dragType) {
+      const typeToOpen = dragType;
+      dragType = null;
+      openModal(typeToOpen);
+    }
+  });
 });
 
 // Make entire canvas scrollable area a drop zone for regular days
 const canvasEl = document.getElementById('canvas');
-canvasEl.addEventListener('dragover', e => { e.preventDefault(); const hint = document.getElementById('dropHint'); if (hint && hint.style.display !== 'none') hint.style.borderColor = 'var(--accent)'; });
-canvasEl.addEventListener('dragleave', e => { if (!canvasEl.contains(e.relatedTarget)) { const hint = document.getElementById('dropHint'); if (hint) hint.style.borderColor = 'var(--border)'; } });
-canvasEl.addEventListener('drop', e => {
-  // Only fire if not already handled by canvasItems
-  if (e.target.closest('#canvasItems') || e.target.closest('#portadaCanvas') || e.target.closest('#cierreCanvas')) return;
-  e.preventDefault();
-  const hint = document.getElementById('dropHint'); if (hint) hint.style.borderColor = 'var(--border)';
-  if (dragType && (typeof currentDay === 'number' || currentDay === 'portada' || currentDay === 'cierre')) openModal(dragType);
-});
+if (canvasEl) {
+  canvasEl.addEventListener('dragover', e => { e.preventDefault(); const hint = document.getElementById('dropHint'); if (hint && hint.style.display !== 'none') hint.style.borderColor = 'var(--accent)'; });
+  canvasEl.addEventListener('dragleave', e => { if (!canvasEl.contains(e.relatedTarget)) { const hint = document.getElementById('dropHint'); if (hint) hint.style.borderColor = 'var(--border)'; } });
+  canvasEl.addEventListener('drop', e => {
+    // Only fire if not already handled by canvasItems
+    if (e.target.closest('#canvasItems') || e.target.closest('#portadaCanvas') || e.target.closest('#cierreCanvas')) return;
+    e.preventDefault();
+    const hint = document.getElementById('dropHint'); if (hint) hint.style.borderColor = 'var(--border)';
+    if (dragGhost) dragGhost.style.opacity = '0';
+    if (dragType && (typeof currentDay === 'number' || currentDay === 'portada' || currentDay === 'cierre')) {
+      const typeToOpen = dragType;
+      dragType = null;
+      openModal(typeToOpen);
+    }
+  });
+}
 
 // dropHint itself is also a drop zone
 const dropHintEl = document.getElementById('dropHint');
-dropHintEl.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); dropHintEl.style.borderColor = 'var(--accent)'; dropHintEl.style.background = 'var(--accent-light)'; });
-dropHintEl.addEventListener('dragleave', () => { dropHintEl.style.borderColor = 'var(--border)'; dropHintEl.style.background = ''; });
-dropHintEl.addEventListener('drop', e => { e.preventDefault(); e.stopPropagation(); dropHintEl.style.borderColor = 'var(--border)'; dropHintEl.style.background = ''; if (dragType && typeof currentDay === 'number') openModal(dragType); });
+if (dropHintEl) {
+  dropHintEl.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); dropHintEl.style.borderColor = 'var(--accent)'; dropHintEl.style.background = 'var(--accent-light)'; });
+  dropHintEl.addEventListener('dragleave', () => { dropHintEl.style.borderColor = 'var(--border)'; dropHintEl.style.background = ''; });
+  dropHintEl.addEventListener('drop', e => {
+    e.preventDefault(); e.stopPropagation();
+    dropHintEl.style.borderColor = 'var(--border)'; dropHintEl.style.background = '';
+    if (dragGhost) dragGhost.style.opacity = '0';
+    if (dragType && (typeof currentDay === 'number' || currentDay === 'portada' || currentDay === 'cierre')) {
+      const typeToOpen = dragType;
+      dragType = null;
+      openModal(typeToOpen);
+    }
+  });
+}
 
 // TABS
 document.getElementById('dayTabs').addEventListener('click', e => {
@@ -1407,70 +1533,54 @@ function updatePriceVisibilityUI() {
   }
 }
 
-function buildItem(item, idx) {
-  const cfg = C[item.type]; const el = document.createElement('div');
-  el.className = `canvas-item tipo-${item.type}`; el.dataset.index = idx;
-  if (item.type === 'separador') {
-    const lbl = item.data.etiqueta || '';
-    el.innerHTML = `<div class="item-inner">
+window.getItemInnerHtml = function(item) {
+  if (!item) return '';
+  const type = item.type || 'actividad';
+  const cfg = C[type] || { icon: '<i class="fa-solid fa-compass"></i>', label: 'Elemento', color: '#64748b', bg: '#f1f5f9' };
+  const d = item.data || {};
+
+  if (type === 'separador') {
+    const lbl = d.etiqueta || '';
+    return `<div class="item-inner">
       <div class="sep-line"></div>
       ${lbl ? `<span class="sep-dot"></span><span style="font-size:11.5px;font-weight:600;color:var(--text-muted);white-space:nowrap;padding:0 6px;">${lbl}</span><span class="sep-dot"></span>` : '<span class="sep-dot"></span>'}
       <div class="sep-line"></div>
-      <div class="item-actions" style="margin-left:8px"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>
     </div>`;
-    setupReorder(el, idx); return el;
   }
-  if (item.type === 'titulo') { el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:3px;padding:18px 20px"><div class="titulo-text">${item.data.texto || 'Título'}</div></div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
-  if (item.type === 'texto') { el.style.position = 'relative'; el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:5px;padding:14px 16px"><div class="texto-content">${item.data.contenido || 'Texto...'}</div></div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`; el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1'); el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0'); setupReorder(el, idx); return el }
-  if (item.type === 'imagen') {
-    const hasImg = item.data.url && item.data.url.startsWith('http');
-    el.style.position = 'relative';
-    el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:9px;padding:11px"><div class="imagen-preview">${hasImg ? `<img src="${item.data.url}" alt="">` : '🖼️'}</div></div><div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s"><button class="item-action-btn" onclick="editItem(${idx})" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`;
-    el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1');
-    el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0');
-    setupReorder(el, idx); return el;
+  if (type === 'titulo') {
+    return `<div class="item-inner" style="flex-direction:column;gap:3px;padding:18px 20px"><div class="titulo-text">${d.texto || item.title || 'Título'}</div></div>`;
   }
-  if (item.type === 'caja') {
-    const bg = item.data.color_fondo || '#f59e0b';
-    const icon = item.data.icono || '💡';
-    el.style.background = bg.startsWith('#') && bg.length === 7 ? bg + '14' : bg;
-    el.style.borderLeft = `4px solid ${bg}`;
-    el.style.borderRadius = '10px';
-    el.innerHTML = `<div class="item-inner" style="gap:12px;align-items:flex-start;padding:12px 14px;">
+  if (type === 'texto') {
+    return `<div class="item-inner" style="flex-direction:column;gap:5px;padding:14px 16px"><div class="texto-content">${d.contenido || item.title || 'Texto...'}</div></div>`;
+  }
+  if (type === 'imagen') {
+    const hasImg = d.url && d.url.startsWith('http');
+    return `<div class="item-inner" style="flex-direction:column;gap:9px;padding:11px"><div class="imagen-preview">${hasImg ? `<img src="${d.url}" alt="">` : '🖼️'}</div></div>`;
+  }
+  if (type === 'caja') {
+    const bg = d.color_fondo || '#f59e0b';
+    const icon = d.icono || '💡';
+    return `<div class="item-inner" style="gap:12px;align-items:flex-start;padding:12px 14px;">
       <div style="font-size:22px;line-height:1;margin-top:2px;flex-shrink:0;">${icon}</div>
       <div style="flex:1">
-        <div class="item-title" style="font-size:14px;font-weight:700;color:var(--text);">${item.data.titulo || 'Tip Destacado'}</div>
-        <div class="texto-content" style="margin-top:4px;font-size:13px;color:var(--text-muted);">${item.data.contenido || ''}</div>
+        <div class="item-title" style="font-size:14px;font-weight:700;color:var(--text);">${d.titulo || item.title || 'Tip Destacado'}</div>
+        <div class="texto-content" style="margin-top:4px;font-size:13px;color:var(--text-muted);">${d.contenido || ''}</div>
       </div>
-      <div class="item-actions"><button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>
     </div>`;
-    setupReorder(el, idx); return el;
   }
-  if (item.type === 'gif') {
-    const hasImg = item.data.url && item.data.url.startsWith('http');
-    el.style.position = 'relative';
-    el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:9px;padding:11px">
-      <div class="imagen-preview">${hasImg ? `<img src="${item.data.url}" alt="">` : '<i class="fa-solid fa-bolt"></i>'}</div>
-    </div>
-    <div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s">
-      <button class="item-action-btn" onclick="editItem(${idx})" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-      <button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
-      <button class="item-action-btn delete" onclick="deleteItem(${idx})" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
-    </div>`;
-    el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1');
-    el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0');
-    setupReorder(el, idx); return el;
+  if (type === 'gif') {
+    const hasImg = d.url && d.url.startsWith('http');
+    return `<div class="item-inner" style="flex-direction:column;gap:9px;padding:11px"><div class="imagen-preview">${hasImg ? `<img src="${d.url}" alt="">` : '<i class="fa-solid fa-bolt"></i>'}</div></div>`;
   }
-  if (item.type === 'galeria') {
+  if (type === 'galeria') {
     let photos = [];
     try {
-      if (Array.isArray(item.data.photos)) photos = item.data.photos;
-      else if (typeof item.data.photos === 'string' && item.data.photos.startsWith('[')) photos = JSON.parse(item.data.photos);
-      else if (item.data.photos) photos = item.data.photos.split(',').map(s => s.trim()).filter(Boolean);
+      if (Array.isArray(d.photos)) photos = d.photos;
+      else if (typeof d.photos === 'string' && d.photos.startsWith('[')) photos = JSON.parse(d.photos);
+      else if (d.photos) photos = d.photos.split(',').map(s => s.trim()).filter(Boolean);
     } catch {
-      photos = item.data.photos ? item.data.photos.split(',').filter(Boolean) : [];
+      photos = d.photos ? d.photos.split(',').filter(Boolean) : [];
     }
-    el.style.position = 'relative';
     const count = photos.length;
     const thumbsHtml = count > 0
       ? `<div style="display:grid;grid-template-columns:repeat(${Math.min(count, 5)}, 1fr);gap:6px;width:100%;height:100px;border-radius:8px;overflow:hidden;">
@@ -1478,30 +1588,21 @@ function buildItem(item, idx) {
          </div>`
       : `<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px;border:1.5px dashed var(--border);border-radius:10px;"><i class="fa-solid fa-images" style="font-size:24px;color:var(--text-dim);margin-bottom:4px;display:block;"></i> Galería de fotos vacía</div>`;
 
-    el.innerHTML = `<div class="item-inner" style="flex-direction:column;gap:8px;padding:12px">
+    return `<div class="item-inner" style="flex-direction:column;gap:8px;padding:12px">
       ${thumbsHtml}
       <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text-muted);">
         <span><i class="fa-solid fa-images" style="color:var(--primary-blue)"></i> Galería (${count}/5 fotos)</span>
-        <span class="item-chip">${item.data.tamano || 'Mediano'}</span>
+        <span class="item-chip">${d.tamano || 'Mediano'}</span>
       </div>
-    </div>
-    <div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s">
-      <button class="item-action-btn" onclick="editItem(${idx})" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-      <button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
-      <button class="item-action-btn delete" onclick="deleteItem(${idx})" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
     </div>`;
-    el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1');
-    el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0');
-    setupReorder(el, idx); return el;
   }
-  if (item.type === 'ubicacion') {
-    const name = item.data.nombre || 'Ubicación';
-    const addr = item.data.direccion || '';
-    const note = item.data.nota || '';
-    const mapsUrl = item.data.maps_url || (name || addr ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((name ? name + ', ' : '') + addr)}` : 'https://maps.google.com');
+  if (type === 'ubicacion') {
+    const name = d.nombre || item.title || 'Ubicación';
+    const addr = d.direccion || item.location_query || '';
+    const note = d.nota || item.notes || '';
+    const mapsUrl = d.maps_url || (name || addr ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((name ? name + ', ' : '') + addr)}` : 'https://maps.google.com');
 
-    el.style.position = 'relative';
-    el.innerHTML = `<div class="item-inner" style="padding:14px 16px;gap:12px;align-items:center;background:var(--surface);border-radius:12px;border:1px solid var(--border);">
+    return `<div class="item-inner" style="padding:14px 16px;gap:12px;align-items:center;background:var(--surface);border-radius:12px;border:1px solid var(--border);">
       <div style="width:40px;height:40px;border-radius:50%;background:#e0f2fe;color:#0284c7;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">
         <i class="fa-solid fa-location-dot"></i>
       </div>
@@ -1510,90 +1611,93 @@ function buildItem(item, idx) {
         ${addr ? `<div style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;">${addr}</div>` : ''}
         ${note ? `<div style="font-size:11.5px;color:#0284c7;margin-top:3px;font-style:italic;"><i class="fa-regular fa-comment-dots"></i> ${note}</div>` : ''}
       </div>
-      <a href="${mapsUrl}" target="_blank" onclick="event.stopPropagation();" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;color:#0f172a;font-size:11.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:all 0.15s;" onmouseover="this.style.background='#0f172a';this.style.color='#fff';" onmouseout="this.style.background='#f8fafc';this.style.color='#0f172a';">
+      <a href="${mapsUrl}" target="_blank" onclick="event.stopPropagation();" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;color:#0f172a;font-size:11.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:all 0.15s;">
         Ver en Maps <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px;"></i>
       </a>
-    </div>
-    <div class="item-actions" style="position:absolute;right:12px;top:12px;opacity:0;transition:opacity .18s">
-      <button class="item-action-btn" onclick="editItem(${idx})" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-      <button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
-      <button class="item-action-btn delete" onclick="deleteItem(${idx})" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
     </div>`;
-    el.addEventListener('mouseenter', () => el.querySelector('.item-actions').style.opacity = '1');
-    el.addEventListener('mouseleave', () => el.querySelector('.item-actions').style.opacity = '0');
-    setupReorder(el, idx); return el;
   }
-  const d = item.data; let title = '', chips = [], sub = [];
-  switch (item.type) {
+
+  let title = '', chips = [], sub = [];
+  switch (type) {
     case 'flight':
       const getCity = str => str ? (str.includes('(') ? str.split('(')[0].trim() : str.split(' -')[0].trim()) : '';
-      title = (d.origen && d.destino) ? `${d.origen_city || getCity(d.origen)} → ${d.destino_city || getCity(d.destino)}` : 'Vuelo';
-      if (d.salida) sub.push('<i class="fa-solid fa-plane-departure"></i> ' + fmtDT(d.salida));
-      if (d.llegada) sub.push('<i class="fa-solid fa-plane-arrival"></i> ' + fmtDT(d.llegada));
+      title = (d.origen && d.destino) ? `${d.origen_city || getCity(d.origen)} → ${d.destino_city || getCity(d.destino)}` : (item.title || 'Vuelo');
+      if (d.salida) sub.push('<i class="fa-solid fa-plane-departure"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.salida) : d.salida));
+      if (d.llegada) sub.push('<i class="fa-solid fa-plane-arrival"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.llegada) : d.llegada));
       if (d.aerolinea) chips.push(d.aerolinea);
       if (d.vuelo) chips.push(d.vuelo);
       if (d.clase) chips.push(d.clase);
-      if (d.precio) chips.push('$' + formatNumber(d.precio) + ' USD');
+      if (d.precio) chips.push('$' + (typeof formatNumber === 'function' ? formatNumber(d.precio) : d.precio) + ' USD');
+      if (d.reserva) chips.push('Reserva: ' + d.reserva);
       break;
     case 'alojamiento':
-      title = d.nombre || 'Alojamiento';
-      if (d.checkin) sub.push('<i class="fa-solid fa-right-to-bracket"></i> ' + fmtDT(d.checkin.includes('T') ? d.checkin : d.checkin + 'T15:00:00'));
-      if (d.checkout) sub.push('<i class="fa-solid fa-right-from-bracket"></i> ' + fmtDT(d.checkout.includes('T') ? d.checkout : d.checkout + 'T12:00:00'));
+      title = d.nombre || item.title || 'Alojamiento';
+      if (d.checkin) sub.push('<i class="fa-solid fa-right-to-bracket"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.checkin.includes('T') ? d.checkin : d.checkin + 'T15:00:00') : d.checkin));
+      if (d.checkout) sub.push('<i class="fa-solid fa-right-from-bracket"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.checkout.includes('T') ? d.checkout : d.checkout + 'T12:00:00') : d.checkout));
+      if (d.direccion) sub.push('<i class="fa-solid fa-location-dot"></i> ' + d.direccion);
       if (d.alimentacion) chips.push('<i class="fa-solid fa-utensils"></i> ' + d.alimentacion);
       if (d.habitacion) chips.push('<i class="fa-solid fa-bed"></i> ' + d.habitacion);
-      if (d.precio) chips.push('$' + formatNumber(d.precio) + ' USD');
+      if (d.precio) chips.push('$' + (typeof formatNumber === 'function' ? formatNumber(d.precio) : d.precio) + ' USD');
+      if (d.reserva) chips.push('Reserva: ' + d.reserva);
       break;
     case 'transporte':
-      title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : (d.tipo || 'Transporte');
+      title = (d.origen && d.destino) ? `${d.origen} → ${d.destino}` : (d.tipo || item.title || 'Transporte');
       if (d.tipo) sub.push('<i class="fa-solid fa-car"></i> ' + d.tipo);
-      if (d.salida) sub.push('<i class="fa-solid fa-clock"></i> ' + fmtDT(d.salida));
-      if (d.llegada) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.llegada));
+      if (d.salida) sub.push('<i class="fa-solid fa-clock"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.salida) : d.salida));
+      if (d.llegada) sub.push('<i class="fa-regular fa-clock"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.llegada) : d.llegada));
       if (d.proveedor) chips.push(d.proveedor);
-      if (d.precio) chips.push('$' + formatNumber(d.precio) + ' USD');
+      if (d.precio) chips.push('$' + (typeof formatNumber === 'function' ? formatNumber(d.precio) : d.precio) + ' USD');
+      if (d.reserva) chips.push('Reserva: ' + d.reserva);
       break;
     case 'actividad':
-      title = d.nombre || 'Actividad';
-      if (d.direccion) sub.push('<i class="fa-solid fa-location-dot"></i> ' + d.direccion);
-      if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.fecha));
+      title = d.nombre || item.title || 'Actividad';
+      if (d.direccion || item.location_query) sub.push('<i class="fa-solid fa-location-dot"></i> ' + (d.direccion || item.location_query));
+      if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.fecha) : d.fecha));
       if (d.duracion) chips.push('<i class="fa-solid fa-stopwatch"></i> ' + d.duracion);
-      if (d.precio) chips.push('$' + formatNumber(d.precio) + ' USD');
+      if (d.precio) chips.push('$' + (typeof formatNumber === 'function' ? formatNumber(d.precio) : d.precio) + ' USD');
+      if (d.reserva || item.notes) chips.push('Reserva: ' + (d.reserva || item.notes));
       break;
     case 'comida':
-      title = d.restaurante || 'Comida';
-      if (d.direccion) sub.push('<i class="fa-solid fa-location-dot"></i> ' + d.direccion);
-      if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.fecha));
+      title = d.restaurante || item.title || 'Comida';
+      if (d.direccion || item.location_query) sub.push('<i class="fa-solid fa-location-dot"></i> ' + (d.direccion || item.location_query));
+      if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.fecha) : d.fecha));
       if (d.tipo) chips.push('<i class="fa-solid fa-utensils"></i> ' + d.tipo);
-      if (d.precio) chips.push('$' + formatNumber(d.precio) + ' USD');
+      if (d.precio) chips.push('$' + (typeof formatNumber === 'function' ? formatNumber(d.precio) : d.precio) + ' USD');
+      if (d.reserva || item.notes) chips.push('Reserva: ' + (d.reserva || item.notes));
       break;
     case 'tour':
-      title = d.nombre || 'Tour';
+      title = d.nombre || item.title || 'Tour';
       if (d.operador) sub.push('<i class="fa-solid fa-building"></i> ' + d.operador);
-      if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + fmtDT(d.fecha));
+      if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.fecha) : d.fecha));
       if (d.duracion) chips.push('<i class="fa-solid fa-stopwatch"></i> ' + d.duracion);
       if (d.personas) chips.push('<i class="fa-solid fa-users"></i> ' + d.personas);
-      if (d.precio) chips.push('$' + formatNumber(d.precio) + ' USD');
+      if (d.precio) chips.push('$' + (typeof formatNumber === 'function' ? formatNumber(d.precio) : d.precio) + ' USD');
+      if (d.reserva || item.notes) chips.push('Reserva: ' + (d.reserva || item.notes));
       break;
-    case 'documents':
-      title = d.documents_title || 'Documentos';
-      if (d.documents_description) sub.push(d.documents_description);
+    default:
+      title = item.title || d.nombre || d.titulo || 'Elemento';
+      if (d.direccion || item.location_query) sub.push('<i class="fa-solid fa-location-dot"></i> ' + (d.direccion || item.location_query));
+      if (item.start_time || d.fecha || d.salida) sub.push('<i class="fa-regular fa-clock"></i> ' + (item.start_time || (typeof fmtDT === 'function' ? fmtDT(d.fecha || d.salida) : (d.fecha || d.salida))));
+      if (d.reserva || item.notes) chips.push('Reserva: ' + (d.reserva || item.notes));
       break;
   }
-  const docs = item.type === 'documents' ? (d.documents ? (typeof d.documents === 'string' ? JSON.parse(d.documents) : d.documents) : []) : [];
+
+  const docs = type === 'documents' ? (d.documents ? (typeof d.documents === 'string' ? JSON.parse(d.documents) : d.documents) : []) : [];
   let attachFooter = '';
-  if (item.type === 'documents' && docs.length > 0) {
+  if (type === 'documents' && docs.length > 0) {
     attachFooter = `<div class="item-attach-footer"><i class="fa-solid fa-paperclip" style="font-size:10px;"></i> ${docs.length} archivo(s)</div>`;
   } else if (d.adjunto_url || d.adjunto) {
     attachFooter = `<div class="item-attach-footer"><i class="fa-solid fa-paperclip" style="font-size:10px;"></i> 1 archivo</div>`;
   }
 
-  const showThumb = item.type === 'tour';
+  const showThumb = type === 'tour';
   const firstPhoto = (d && d.photo_url) ? d.photo_url.split(',')[0].trim() : '';
   const photoThumb = (showThumb && firstPhoto) ? `<div class="item-card-photo" style="width:50px;height:50px;border-radius:8px;overflow:hidden;flex-shrink:0;border:1px solid var(--border);margin-left:8px;box-shadow:var(--shadow-sm);"><img src="${firstPhoto}" style="width:100%;height:100%;object-fit:cover;" /></div>` : '';
 
-  const timeStr = getItemTimeStr(item);
+  const timeStr = (typeof getItemTimeStr === 'function') ? getItemTimeStr(item) : (item.start_time ? `🕒 ${item.start_time}` : '');
   const timeHtml = timeStr ? `<div class="item-time-label">${timeStr}</div>` : '';
 
-  el.innerHTML = `<div class="item-inner">
+  return `<div class="item-inner">
     ${timeHtml}
     <div class="item-accent-bar" style="background:${cfg.color}"></div>
     <div class="item-icon" style="background:${cfg.bg}">${cfg.icon}</div>
@@ -1610,13 +1714,28 @@ function buildItem(item, idx) {
       </div>
     </div>
     ${photoThumb}
-  </div>
+  </div>`;
+};
+
+function buildItem(item, idx) {
+  const el = document.createElement('div');
+  el.className = `canvas-item tipo-${item.type}`; el.dataset.index = idx;
+
+  el.innerHTML = window.getItemInnerHtml(item) + `
   <div class="item-actions" style="position:absolute;right:12px;top:12px;">
     <button class="item-action-btn" onclick="editItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
     <button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
     <button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
   </div>`;
-  setupReorder(el, idx); return el;
+
+  if (['titulo', 'texto', 'imagen', 'gif', 'galeria', 'ubicacion'].includes(item.type)) {
+    el.style.position = 'relative';
+    el.addEventListener('mouseenter', () => { const act = el.querySelector('.item-actions'); if (act) act.style.opacity = '1'; });
+    el.addEventListener('mouseleave', () => { const act = el.querySelector('.item-actions'); if (act) act.style.opacity = '0'; });
+  }
+
+  setupReorder(el, idx);
+  return el;
 }
 function setupReorder(el, idx) {
   el.setAttribute('draggable', 'true');
@@ -1637,7 +1756,20 @@ function setupReorder(el, idx) {
     dragSourceIndex = null; dragSourceContainer = null;
   });
 }
-function fmtDT(s) { if (!s) return ''; try { const d = new Date(s); return d.toLocaleDateString('es', { day: '2-digit', month: 'short' }) + ' ' + d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }) } catch { return s } }
+function fmtDT(s) {
+  if (!s || typeof s !== 'string') return s || '';
+  const str = s.trim();
+  if (!str) return '';
+  if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(str)) return str.substring(0, 5);
+  try {
+    const cleanStr = str.includes(' ') && !str.includes('T') ? str.replace(' ', 'T') : str;
+    const d = new Date(cleanStr);
+    if (isNaN(d.getTime())) return str;
+    const datePart = d.toLocaleDateString('es', { day: '2-digit', month: 'short' });
+    const timePart = d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+    return `${datePart} ${timePart}`;
+  } catch { return str; }
+}
 function formatNumber(val) {
   if (val === null || val === undefined || val === '') return '';
   let str = val.toString().trim();
@@ -1730,8 +1862,25 @@ function formatPriceInput(e) {
     inp.value = formattedInt;
   }
 }
-function fmtDate(s) { if (!s) return ''; try { return new Date(s + 'T00:00:00').toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' }) } catch { return s } }
-function fmtDateTab(s) { if (!s) return ''; try { const d = new Date(s + 'T00:00:00'); return d.toLocaleDateString('es', { day: 'numeric', month: 'short' }) } catch { return s } }
+function fmtDate(s) {
+  if (!s || typeof s !== 'string') return s || '';
+  try {
+    const cleanStr = s.includes('T') ? s.split('T')[0] : s;
+    const d = new Date(cleanStr + 'T00:00:00');
+    if (isNaN(d.getTime())) return s;
+    return d.toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' });
+  } catch { return s; }
+}
+
+function fmtDateTab(s) {
+  if (!s || typeof s !== 'string') return s || '';
+  try {
+    const cleanStr = s.includes('T') ? s.split('T')[0] : s;
+    const d = new Date(cleanStr + 'T00:00:00');
+    if (isNaN(d.getTime())) return s;
+    return d.toLocaleDateString('es', { day: 'numeric', month: 'short' });
+  } catch { return s; }
+}
 function addDaysToDate(dateStr, daysToAdd) {
   if (!dateStr) return '';
   try {
@@ -1845,8 +1994,10 @@ function addPhotoFallback(container, type, showHelp = true, photoInp = null, app
   }
   return btnGroup;
 }
-function openModal(type, editIdx = null) {
-  if (typeof currentDay !== 'number' && currentDay !== 'portada' && currentDay !== 'cierre') return;
+window.copilotEditingIndex = null;
+
+function openModal(type, editIdx = null, customData = null) {
+  if (typeof currentDay !== 'number' && currentDay !== 'portada' && currentDay !== 'cierre' && customData === null) return;
 
   // Clean up any orphaned Google Places autocomplete containers from previous modal sessions
   document.querySelectorAll('.pac-container').forEach(el => el.remove());
@@ -1854,11 +2005,12 @@ function openModal(type, editIdx = null) {
   const isPremium = typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan !== 'básico';
 
   pendingType = type; editingIndex = editIdx; starRating = 0;
-  const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
-  const cfg = C[type]; const existData = editIdx !== null ? arr[editIdx].data : {};
+  const arr = (currentDay === 'portada') ? portadaItems : ((currentDay === 'cierre') ? cierreItems : (days[currentDay] || []));
+  const cfg = C[type] || C['actividad'];
+  const existData = customData || (editIdx !== null && arr[editIdx] ? arr[editIdx].data : {});
   document.getElementById('modalIcon').innerHTML = cfg.icon; document.getElementById('modalIcon').style.background = cfg.bg;
   const modalName = cfg.modalTitle || cfg.label;
-  document.getElementById('modalTitle').textContent = (editIdx !== null ? 'Editar ' : 'Agregar ') + modalName;
+  document.getElementById('modalTitle').textContent = ((editIdx !== null || customData !== null) ? 'Editar ' : 'Agregar ') + modalName;
   const subEl = document.getElementById('modalSubtitle');
   if (subEl) subEl.textContent = '';
   modalBody.innerHTML = '';
@@ -2482,27 +2634,31 @@ function buildField(field, data) {
   fg.appendChild(lbl);
 
   let val = data[field.k] || '';
-  if (!val && typeof currentDay === 'number') {
-    let dayDate = dayDates[currentDay];
-    if (!dayDate) {
-      const pi = document.getElementById('portadaFechaInicio');
-      if (pi && pi.value) {
-        dayDate = addDaysToDate(pi.value, currentDay);
+  let dayDate = (typeof currentDay === 'number' && dayDates[currentDay]) ? dayDates[currentDay] : '';
+  if (!dayDate && typeof currentDay === 'number') {
+    const pi = document.getElementById('portadaFechaInicio');
+    if (pi && pi.value) {
+      dayDate = addDaysToDate(pi.value, currentDay);
+    }
+  }
+
+  if (field.t === 'datetime-local') {
+    if (val) {
+      val = formatToDatetimeLocal(val, '', '09:00', dayDate);
+      if (!val && dayDate) {
+        val = dayDate + 'T09:00';
+      }
+    } else if (dayDate) {
+      if (field.k === 'llegada' || field.k === 'checkout') {
+        val = '';
+      } else if (field.k === 'checkin') {
+        val = dayDate + 'T15:00';
+      } else {
+        val = dayDate + 'T00:00';
       }
     }
-    if (dayDate) {
-      if (field.t === 'date') {
-        val = dayDate;
-      } else if (field.t === 'datetime-local') {
-        if (field.k === 'llegada' || field.k === 'checkout') {
-          val = '';
-        } else if (field.k === 'checkin') {
-          val = dayDate + 'T15:00';
-        } else {
-          val = dayDate + 'T00:00';
-        }
-      }
-    }
+  } else if (!val && dayDate && field.t === 'date') {
+    val = dayDate;
   }
 
   if (field.t === 'stars') {
@@ -3337,6 +3493,7 @@ function closeModal() {
   document.querySelectorAll('.pac-container').forEach(el => el.remove());
   modalOverlay.classList.remove('open');
   editingIndex = null;
+  window.copilotEditingIndex = null;
 }
 document.getElementById('modalClose').addEventListener('click', closeModal);
 document.getElementById('modalCancel').addEventListener('click', closeModal);
@@ -3399,6 +3556,13 @@ document.getElementById('modalSave').addEventListener('click', () => {
 
   modalBody.querySelectorAll('.color-swatch.selected').forEach(sw => { data[sw.dataset.key] = sw.dataset.color });
   if (starRating > 0) data.stars = starRating;
+
+  if (window.copilotEditingIndex !== null && typeof window.onCopilotItemSaved === 'function') {
+    window.onCopilotItemSaved(data, pendingType);
+    closeModal();
+    return;
+  }
+
   const type = editingIndex !== null ? (currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay])[editingIndex].type : pendingType;
   const item = { type, data };
   const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
@@ -3939,6 +4103,54 @@ function normalizeCopilotAction(action) {
   };
 }
 
+function formatToDatetimeLocal(dateVal, timeVal, defaultTime = '09:00', fallbackDate = '') {
+  let dStr = '';
+  let tStr = '';
+
+  const clean = (str) => (typeof str === 'string' ? str.trim() : '');
+  const dVal = clean(dateVal);
+  const tVal = clean(timeVal);
+  const fVal = clean(fallbackDate);
+
+  if (dVal.includes('T') || dVal.includes(' ')) {
+    const parts = dVal.replace(' ', 'T').split('T');
+    dStr = parts[0];
+    tStr = parts[1] ? parts[1].substring(0, 5) : '';
+  } else if (/^\d{4}-\d{2}-\d{2}$/.test(dVal)) {
+    dStr = dVal;
+  } else if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dVal)) {
+    const p = dVal.split('/');
+    dStr = `${p[2]}-${p[1].padStart(2, '0')}-${p[0].padStart(2, '0')}`;
+  } else if (/^\d{1,2}:\d{2}/.test(dVal)) {
+    const p = dVal.substring(0, 5).split(':');
+    tStr = `${p[0].padStart(2, '0')}:${p[1]}`;
+  }
+
+  if (tVal) {
+    if (tVal.includes('T') || tVal.includes(' ')) {
+      const parts = tVal.replace(' ', 'T').split('T');
+      if (!dStr && /^\d{4}-\d{2}-\d{2}$/.test(parts[0])) dStr = parts[0];
+      if (parts[1]) tStr = parts[1].substring(0, 5);
+    } else if (/^\d{1,2}:\d{2}/.test(tVal)) {
+      const p = tVal.substring(0, 5).split(':');
+      tStr = `${p[0].padStart(2, '0')}:${p[1]}`;
+    }
+  }
+
+  if (!dStr && fVal) {
+    if (fVal.includes('T') || fVal.includes(' ')) {
+      dStr = fVal.replace(' ', 'T').split('T')[0];
+    } else if (/^\d{4}-\d{2}-\d{2}$/.test(fVal)) {
+      dStr = fVal;
+    }
+  }
+
+  if (!dStr) return '';
+  if (!tStr) tStr = defaultTime;
+
+  return `${dStr}T${tStr}`;
+}
+
 window.ViantrypCopilot = window.ViantrypCopilot || {};
 
 window.ViantrypCopilot.onApplyAction = function (action) {
@@ -4017,10 +4229,29 @@ window.ViantrypCopilot.onApplyBatchActions = function (items) {
       days[targetDayIndex] = [];
     }
 
-    // Set time if start_time was provided
-    if (action.start_time) {
-      norm.data.fecha = action.start_time;
-      norm.data.salida = norm.data.salida || action.start_time;
+    // Set properly formatted datetime-local fields for all item types
+    const itemDate = (targetDayIndex !== null && dayDates[targetDayIndex]) ? dayDates[targetDayIndex] : (targetDate || '');
+    const startDate = action.start_date || (action.data && action.data.start_date) || itemDate;
+    const endDate = action.end_date || (action.data && action.data.end_date) || startDate;
+
+    const startTime = action.start_time || (action.data && (action.data.start_time || action.data.salida || action.data.checkin || action.data.fecha)) || '';
+    const endTime = action.end_time || (action.data && (action.data.end_time || action.data.llegada || action.data.checkout)) || '';
+
+    if (norm.type === 'flight') {
+      norm.data.salida = formatToDatetimeLocal(norm.data.salida, startTime, '10:00', startDate);
+      norm.data.llegada = formatToDatetimeLocal(norm.data.llegada, endTime, '14:00', endDate);
+    } else if (norm.type === 'alojamiento') {
+      norm.data.checkin = formatToDatetimeLocal(norm.data.checkin, startTime, '15:00', startDate);
+      norm.data.checkout = formatToDatetimeLocal(norm.data.checkout, endTime, '11:00', endDate);
+    } else if (norm.type === 'transporte') {
+      norm.data.salida = formatToDatetimeLocal(norm.data.salida, startTime, '09:00', startDate);
+      norm.data.llegada = formatToDatetimeLocal(norm.data.llegada, endTime, '11:00', endDate);
+    } else if (norm.type === 'actividad') {
+      norm.data.fecha = formatToDatetimeLocal(norm.data.fecha, startTime, '10:00', startDate);
+    } else if (norm.type === 'comida') {
+      norm.data.fecha = formatToDatetimeLocal(norm.data.fecha, startTime, '13:00', startDate);
+    } else if (norm.type === 'tour') {
+      norm.data.fecha = formatToDatetimeLocal(norm.data.fecha, startTime, '09:00', startDate);
     }
 
     const item = {
