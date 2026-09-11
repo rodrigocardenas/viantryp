@@ -1210,7 +1210,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
     @media print {
         @page {
             size: A4 portrait;
-            margin: 12mm 15mm;
+            margin: 10mm 12mm;
         }
         body {
             background: #ffffff !important;
@@ -1218,18 +1218,56 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
-        .topbar, .pv-nav, .pv-mobile-only-header, .pv-mobile-actions, #viantryp-copilot-container, .copilot-trigger, .modal-backdrop, .custom-modal, .pv-nav-pdf-section, .pv-nav-calendar-section, .pv-nav-map-section, button, .topbar-bg-decorators {
+        .topbar, .pv-nav, .pv-mobile-only-header, .pv-mobile-actions, #viantryp-copilot-container, .copilot-trigger, .modal-backdrop, .custom-modal, .pv-nav-pdf-section, .pv-nav-calendar-section, .pv-nav-map-section, button, .topbar-bg-decorators, .pv-topbar-actions {
             display: none !important;
+        }
+        .pv-topbar, .public-preview-header {
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            padding: 10px 20px !important;
+            margin: 0 0 16px 0 !important;
+            background: var(--accent-bg) !important;
+            border-radius: 10px !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            page-break-before: avoid !important;
+            break-before: avoid !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
+        .pv-topbar-title {
+            display: block !important;
+            color: #ffffff !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+        }
+        .pv-portada-wrap {
+            margin: 0 0 20px 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            page-break-before: avoid !important;
+            break-before: avoid !important;
         }
         .pv-layout {
             display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
         .pv-content {
             width: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
         }
-        .pv-day-card, .portada-card, .cierre-card, .pv-item-card {
+        .pv-day-card, .portada-card, .pv-portada-card, .cierre-card, .pv-item-card {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
             box-shadow: none !important;
