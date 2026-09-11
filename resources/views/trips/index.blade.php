@@ -2970,11 +2970,11 @@
                         <div class="sidebar-submenu" id="sidebarProfileSubmenu">
                             <a href="{{ route('profile.index', ['section' => ((auth()->user()->account_type ?? 'personal') === 'agency' ? 'agencia' : 'info')]) }}" class="sidebar-sublink">
                                 <i class="{{ (auth()->user()->account_type ?? 'personal') === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
-                                <span>Mi Cuenta y Ajustes</span>
+                                <span>Ajustes de Cuenta</span>
                             </a>
                             <a href="{{ route('profile.index', ['section' => 'tema']) }}" class="sidebar-sublink">
                                 <i class="fas fa-palette"></i>
-                                <span>Personalización de Marca</span>
+                                <span>Tema e Identidad Visual</span>
                             </a>
                             <a href="{{ route('profile.index', ['section' => 'subscription']) }}" class="sidebar-sublink">
                                 <i class="fas fa-credit-card"></i>

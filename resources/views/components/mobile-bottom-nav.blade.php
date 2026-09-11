@@ -203,7 +203,7 @@
                     <i class="{{ $currentUser->account_type === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
                 </div>
                 <div class="sheet-nav-text">
-                    <span class="sheet-nav-title">Mi Cuenta y Ajustes</span>
+                    <span class="sheet-nav-title">Ajustes de Cuenta</span>
                     <span class="sheet-nav-desc">Datos personales, agencia y preferencias</span>
                 </div>
                 <i class="fas fa-chevron-right sheet-chevron"></i>
@@ -214,7 +214,7 @@
                     <i class="fas fa-palette"></i>
                 </div>
                 <div class="sheet-nav-text">
-                    <span class="sheet-nav-title">Personalización de Marca</span>
+                    <span class="sheet-nav-title">Tema e Identidad Visual</span>
                     <span class="sheet-nav-desc">Paleta de colores y estilos visuales</span>
                 </div>
                 <i class="fas fa-chevron-right sheet-chevron"></i>

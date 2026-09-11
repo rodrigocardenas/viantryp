@@ -131,6 +131,126 @@
       margin-bottom: 0px;
     }
 
+    /* SUBSCRIPTION CARD RESPONSIVE STYLES */
+    .subscription-card-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+      background: #ffffff;
+    }
+    .subscription-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      min-height: 130px;
+    }
+    .sub-card-left {
+      padding: 24px 28px;
+    }
+    .sub-card-divider {
+      background: #e2e8f0;
+    }
+    .sub-card-right {
+      display: flex;
+      flex-direction: column;
+    }
+    .sub-card-right-box {
+      padding: 20px 28px;
+      flex: 1;
+    }
+    .subscription-card-footer {
+      padding: 14px 28px;
+      border-top: 1px solid #f1f5f9;
+      background: #fafbfc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .sub-footer-text {
+      font-size: 11.5px;
+      color: #64748b;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sub-footer-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 9px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      font-family: 'Manrope', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .sub-footer-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .receipt-title-mobile {
+      display: none;
+    }
+    .receipt-title-desktop {
+      display: inline;
+    }
+    @media (max-width: 768px) {
+      .subscription-card-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .sub-card-divider {
+        height: 1px !important;
+        width: 100% !important;
+      }
+      .sub-card-left, .sub-card-right-box {
+        padding: 18px 20px !important;
+      }
+      .subscription-card-footer {
+        padding: 16px 20px !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+      }
+      .sub-footer-text {
+        justify-content: center !important;
+        text-align: center !important;
+      }
+      .sub-footer-btn {
+        width: 100% !important;
+        justify-content: center !important;
+      }
+      .receipt-item-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+      }
+      .receipt-item-right {
+        text-align: left !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+      }
+      .receipt-icon-box {
+        display: none !important;
+      }
+      .receipt-title-desktop {
+        display: none !important;
+      }
+      .receipt-title-mobile {
+        display: inline !important;
+      }
+    }
+
     .avatar-big {
       width: 88px;
       height: 88px;
@@ -1670,11 +1790,11 @@
               <button type="button" class="sidebar-sublink nav-item active"
                 data-section="{{ $user->account_type === 'agency' ? 'agencia' : 'info' }}">
                 <i class="{{ $user->account_type === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
-                <span>Mi Cuenta y Ajustes</span>
+                <span>Ajustes de Cuenta</span>
               </button>
               <button type="button" class="sidebar-sublink nav-item" data-section="tema">
                 <i class="fas fa-palette"></i>
-                <span>Personalización de Marca</span>
+                <span>Tema e Identidad Visual</span>
               </button>
               <button type="button" class="sidebar-sublink nav-item" data-section="subscription">
                 <i class="fas fa-credit-card"></i>
@@ -1692,49 +1812,6 @@
           </div>
         </nav>
 
-        <!-- Sidebar Footer / Plan Usage -->
-        @php
-          $planUser = auth()->user();
-          $tripCount = \App\Models\Trip::where('user_id', $planUser->id)->count();
-          $editorCount = \DB::table('trip_collaborators')
-            ->join('trips', 'trip_collaborators.trip_id', '=', 'trips.id')
-            ->where('trips.user_id', $planUser->id)
-            ->where('trip_collaborators.role', 'editor')
-            ->distinct('trip_collaborators.email')
-            ->count();
-          $limits = $planUser->getPlanLimits();
-          $maxTrips = $limits['max_trips'] ?? 5;
-          $maxEditors = $limits['max_editors'] ?? 0;
-          $tripPercent = min(100, ($tripCount / max(1, $maxTrips)) * 100);
-          $editorPercent = $maxEditors > 0 ? min(100, ($editorCount / $maxEditors) * 100) : 0;
-        @endphp
-        <div class="sidebar-footer">
-          <div class="footer-title">USO DEL PLAN</div>
-          <div class="usage-item">
-            <div class="usage-label-row">
-              <span><i class="fas fa-route"></i> Itinerarios</span>
-              <span>{{ $tripCount }} / {{ $maxTrips >= 1000000 ? '∞' : $maxTrips }}</span>
-            </div>
-            <div class="usage-progress-bar">
-              <div class="usage-progress-fill" style="width: {{ $tripPercent }}%"></div>
-            </div>
-          </div>
-          <div class="usage-item">
-            <div class="usage-label-row">
-              <span><i class="fas fa-users"></i> Colaboradores</span>
-              <span>{{ $editorCount }} / {{ $maxEditors >= 1000000 ? '∞' : $maxEditors }}</span>
-            </div>
-            <div class="usage-progress-bar">
-              <div class="usage-progress-fill" style="width: {{ $editorPercent }}%"></div>
-            </div>
-          </div>
-          <div class="usage-upgrade-row">
-            <span class="plan-badge">{{ $planUser->plan_display_name }}</span>
-            <a href="javascript:void(0)" onclick="openUpgradeModal(true)" class="btn-upgrade-link">
-              Mejorar plan <i class="fas fa-arrow-up-right-from-square"></i>
-            </a>
-          </div>
-        </div>
       </aside>
 
       <!-- Main Content Area -->
@@ -1797,10 +1874,6 @@
         <!-- Dashboard Main Content Scroll Container -->
         <div class="dashboard-content-scroll">
           <div class="page-wrapper" style="max-width: 1200px; margin: 0 auto; padding: 40px;">
-            <h1 class="page-title"
-              style="font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 900; color: #0f172a; margin-bottom: 24px; text-transform: uppercase; letter-spacing: -0.5px;">
-              Ajustes de cuenta</h1>
-
             <div class="settings-grid">
               <!-- Right Column: MAIN CONTENT -->
               <div class="main-content">
@@ -1811,7 +1884,7 @@
                     <div class="card-body">
                       <!-- Avatar Section (Finpay style) -->
                       <div class="avatar-finpay-section"
-                        style="display: flex; align-items: center; gap: 24px; margin-bottom: 32px; border-bottom: 1px solid #f1f5f9; padding-bottom: 24px;">
+                        style="display: flex; align-items: center; gap: 24px; margin-bottom: 12px; border-bottom: 1px solid #f1f5f9; padding-bottom: 24px;">
                         <div class="avatar-wrapper" style="position: relative; display: inline-block;">
                           <div class="avatar-big" id="avatarBig"
                             style="width: 100px; height: 100px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-size: 32px; font-weight: 700; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer;">
@@ -1884,7 +1957,7 @@
                         style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0; flex-wrap: wrap; gap: 16px;">
                         <div style="flex: 1; min-width: 250px;">
                           <h3
-                            style="font-size: 15px; font-weight: 800; color: #0f172a; margin: 0 0 4px; font-family: 'DM Sans', sans-serif;">
+                            style="font-size: 15px; font-weight: 800; color: #0f172a; margin: 0 0 4px; font-family: 'Manrope', sans-serif;">
                             ¿Trabajas como negocio o agencia de viajes?</h3>
                           <p style="font-size: 12px; color: #64748b; margin: 0; line-height: 1.4; font-weight: 500;">
                             Cambia tu tipo de perfil para habilitar la personalización de marca corporativa, subir tu logo,
@@ -1946,7 +2019,7 @@
 
                       <!-- Avatar Section (Finpay style) -->
                       <div class="avatar-finpay-section"
-                        style="display: flex; align-items: center; gap: 20px; margin-bottom: 18px; border-bottom: 1px solid #f1f5f9; padding-bottom: 18px;">
+                        style="display: flex; align-items: center; gap: 20px; margin-bottom: 12px; border-bottom: 1px solid #f1f5f9; padding-bottom: 18px;">
                         <div class="avatar-wrapper" style="position: relative; display: inline-block;">
                           <div class="avatar-big" id="avatarBig"
                             style="width: 80px; height: 80px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-size: 26px; font-weight: 700; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer;">
@@ -2207,6 +2280,20 @@
                     <div class="section-label">Planes y Suscripción</div>
 
                     @php
+                      $planUser = auth()->user();
+                      $tripCount = \App\Models\Trip::where('user_id', $planUser->id)->count();
+                      $editorCount = \DB::table('trip_collaborators')
+                        ->join('trips', 'trip_collaborators.trip_id', '=', 'trips.id')
+                        ->where('trips.user_id', $planUser->id)
+                        ->where('trip_collaborators.role', 'editor')
+                        ->distinct('trip_collaborators.email')
+                        ->count();
+                      $limits = $planUser->getPlanLimits();
+                      $maxTrips = $limits['max_trips'] ?? 5;
+                      $maxEditors = $limits['max_editors'] ?? 0;
+                      $tripPercent = min(100, ($tripCount / max(1, $maxTrips)) * 100);
+                      $editorPercent = $maxEditors > 0 ? min(100, ($editorCount / $maxEditors) * 100) : 0;
+
                       $currentPlanKey = strtolower($planUser->plan ?? $user->plan);
                       $planLabels = [
                         'básico' => 'Plan Explorador',
@@ -2243,15 +2330,14 @@
                     @endphp
 
                     <!-- Ficha plan: 2 columnas sincronizada con Paddle -->
-                    <div
-                      style="border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; margin-bottom: 24px; box-shadow: 0 4px 12px -2px rgba(0,0,0,0.03);">
+                    <div class="subscription-card-box">
 
-                      <div style="display: grid; grid-template-columns: 1fr 1px 1fr; min-height: 130px;">
+                      <div class="subscription-card-grid">
 
-                        <!-- Izquierda: plan -->
-                        <div style="padding: 24px 28px;">
+                        <!-- Izquierda: plan y uso -->
+                        <div class="sub-card-left">
                           <div
-                            style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.3px; display: flex; align-items: center; gap: 8px;">
+                            style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                             <span>ESTADO DEL PLAN</span>
                             @if($isTrial)
                               <span
@@ -2260,7 +2346,7 @@
                             @elseif($isPaidPlan)
                               <span
                                 style="background:#dcfce7;color:#15803d;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;"><i
-                                  class="fas fa-check-circle"></i> ACTIVO (PADDLE)</span>
+                                  class="fas fa-check-circle"></i> ACTIVO</span>
                             @else
                               <span
                                 style="background:#f1f5f9;color:#64748b;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;">PLAN
@@ -2268,41 +2354,58 @@
                             @endif
                           </div>
                           <div
-                            style="font-size: 26px; font-weight: 900; color: #0f172a; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: -0.3px; margin-bottom: 6px;">
+                            style="font-size: 24px; font-weight: 600; color: #0f172a; font-family: 'Manrope', sans-serif; text-transform: none; letter-spacing: -0.3px; margin-bottom: 16px;">
                             {{ $planLabel }}
                           </div>
-                          <div style="font-size: 12.5px; color: #64748b; font-weight: 500; line-height: 1.4;">
-                            @if($currentPlanKey === 'básico')
-                              1 itinerario activo a la vez. Sin colaboradores de edición.
-                            @elseif($currentPlanKey === 'esencial')
-                              Hasta {{ $user->getPlanLimits()['max_trips'] }} itinerarios. Google Places incluido.
-                            @elseif($currentPlanKey === 'avanzado')
-                              Itinerarios activos ilimitados y hasta {{ $user->getPlanLimits()['max_editors'] }} editores
-                              incluidos.
-                            @elseif($currentPlanKey === 'colaborativo')
-                              Itinerarios ilimitados, colaboradores ilimitados y Marca Blanca con logo propio.
-                            @elseif($isTrial)
-                              Prueba gratuita activa.
-                            @else
-                              Acceso completo a las funciones profesionales.
-                            @endif
+
+                          <!-- Cuadros de uso del plan (Itinerarios y Colaboradores) -->
+                          <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <!-- Box 1: Itinerarios -->
+                            <div style="padding: 12px 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <div style="font-size: 12px; color: #94a3b8; font-weight: 600; letter-spacing: 0.3px;">
+                                  Itinerarios
+                                </div>
+                                <div style="font-size: 18px; font-weight: 600; color: #0f172a; font-family: 'Manrope', sans-serif;">
+                                  {{ $tripCount }} / {{ $maxTrips >= 1000000 ? '∞' : $maxTrips }}
+                                </div>
+                              </div>
+                              <div class="usage-progress-bar" style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
+                                <div class="usage-progress-fill" style="width: {{ $tripPercent }}%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+                              </div>
+                            </div>
+
+                            <!-- Box 2: Colaboradores -->
+                            <div style="padding: 12px 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <div style="font-size: 12px; color: #94a3b8; font-weight: 600; letter-spacing: 0.3px;">
+                                  Colaboradores
+                                </div>
+                                <div style="font-size: 18px; font-weight: 600; color: #0f172a; font-family: 'Manrope', sans-serif;">
+                                  {{ $editorCount }} / {{ $maxEditors >= 1000000 ? '∞' : $maxEditors }}
+                                </div>
+                              </div>
+                              <div class="usage-progress-bar" style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
+                                <div class="usage-progress-fill" style="width: {{ $editorPercent }}%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+                              </div>
+                            </div>
                           </div>
                         </div>
 
-                        <!-- Divisor vertical -->
-                        <div style="background: #e2e8f0;"></div>
+                        <!-- Divisor vertical/horizontal -->
+                        <div class="sub-card-divider"></div>
 
                         <!-- Derecha: fechas + costo en filas -->
-                        <div style="display: flex; flex-direction: column;">
+                        <div class="sub-card-right">
 
                           <!-- Próximo pago / fin de prueba -->
-                          <div style="padding: 20px 28px; flex: 1; border-bottom: 1px solid #e2e8f0;">
+                          <div class="sub-card-right-box" style="border-bottom: 1px solid #e2e8f0;">
                             <div
                               style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.3px;">
                               @if($isTrial) Fin de prueba gratuita @else Próxima fecha de facturación @endif
                             </div>
                             <div
-                              style="font-size: 20px; font-weight: 800; color: #0f172a; font-family: 'Barlow Condensed', sans-serif; margin-bottom: 4px;">
+                              style="font-size: 18px; font-weight: 600; color: #0f172a; font-family: 'Manrope', sans-serif; margin-bottom: 4px;">
                               {{ $endDate }}
                             </div>
                             <div style="font-size: 11.5px; color: #94a3b8; font-weight: 500;">
@@ -2317,12 +2420,12 @@
                           </div>
 
                           <!-- Costo mensual -->
-                          <div style="padding: 20px 28px; flex: 1;">
+                          <div class="sub-card-right-box">
                             <div
                               style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.3px;">
                               Costo recurrente</div>
                             <div
-                              style="font-size: 20px; font-weight: 800; color: #0f172a; font-family: 'Barlow Condensed', sans-serif; margin-bottom: 4px;">
+                              style="font-size: 18px; font-weight: 600; color: #0f172a; font-family: 'Manrope', sans-serif; margin-bottom: 4px;">
                               {{ $planPrice }}
                             </div>
                             <div style="font-size: 11.5px; color: #94a3b8; font-weight: 500;">
@@ -2338,62 +2441,15 @@
                       </div>
 
                       <!-- Pie: botón administrar -->
-                      <div
-                        style="padding: 14px 28px; border-top: 1px solid #f1f5f9; background: #fafbfc; display: flex; align-items: center; justify-content: space-between;">
-                        <div
-                          style="font-size: 11.5px; color: #64748b; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                      <div class="subscription-card-footer">
+                        <div class="sub-footer-text">
                           <i class="fas fa-lock" style="color: #1eaace;"></i> Facturación respaldada por <strong>Paddle
                             Merchant of Record</strong>
                         </div>
-                        <button onclick="openUpgradeModal()" style="
-                        display: inline-flex; align-items: center; gap: 8px;
-                        background: var(--accent); color: #ffffff; border: none;
-                        padding: 9px 20px; border-radius: 8px;
-                        font-weight: 700; font-size: 13px; font-family: 'Manrope', sans-serif;
-                        cursor: pointer; transition: all 0.2s ease;
-                      " onmouseover="this.style.opacity='0.9';this.style.transform='translateY(-1px)';"
-                          onmouseout="this.style.opacity='1';this.style.transform='none';">
+                        <button onclick="openUpgradeModal()" class="sub-footer-btn">
                           <i class="fas fa-layer-group" style="font-size:12px;"></i>
                           Cambiar o Gestionar Plan
                         </button>
-                      </div>
-                    </div>
-
-                    <!-- Uso del plan -->
-                    <div
-                      style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 20px;">
-                      <div
-                        style="padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: white;">
-                        <div
-                          style="font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">
-                          Itinerarios PRO</div>
-                        <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 8px;">
-                          <span style="font-size: 20px; font-weight: 800; color: var(--text);">{{ $tripCount }}</span>
-                          <span style="font-size: 13px; color: var(--muted); font-weight: 600;">/
-                            {{ $user->getPlanLimits()['max_trips'] >= 1000000 ? '∞' : $user->getPlanLimits()['max_trips'] }}</span>
-                        </div>
-                        <div style="height: 4px; background: #f1f5f9; border-radius: 10px; overflow: hidden;">
-                          @php $tripPerc = min(100, ($user->getPlanLimits()['max_trips'] > 0 ? ($tripCount / $user->getPlanLimits()['max_trips']) * 100 : 0)); @endphp
-                          <div
-                            style="width: {{ $tripPerc }}%; height: 100%; background: var(--accent); border-radius: 10px;">
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        style="padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: white;">
-                        <div
-                          style="font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">
-                          Editores Premium</div>
-                        <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 8px;">
-                          <span style="font-size: 20px; font-weight: 800; color: var(--text);">{{ $editorCount }}</span>
-                          <span style="font-size: 13px; color: var(--muted); font-weight: 600;">/
-                            {{ ($user->getPlanLimits()['max_editors'] ?? 0) >= 1000000 ? '∞' : ($user->getPlanLimits()['max_editors'] ?? 0) }}</span>
-                        </div>
-                        <div style="height: 4px; background: #f1f5f9; border-radius: 10px; overflow: hidden;">
-                          @php $editPerc = min(100, (($user->getPlanLimits()['max_editors'] ?? 0) > 0 ? ($editorCount / ($user->getPlanLimits()['max_editors'] ?? 0)) * 100 : 0)); @endphp
-                          <div style="width: {{ $editPerc }}%; height: 100%; background: #8b5cf6; border-radius: 10px;">
-                          </div>
-                        </div>
                       </div>
                     </div>
 
@@ -2403,22 +2459,23 @@
                         Facturas</label>
                       @if($isPaidPlan)
                         <div style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: white;">
-                          <div
-                            style="padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9;">
+                          <div class="receipt-item-row"
+                            style="padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9; flex-wrap: wrap; gap: 12px;">
                             <div style="display: flex; align-items: center; gap: 12px;">
-                              <div
-                                style="width: 36px; height: 36px; border-radius: 8px; background: #f0fdf4; display: flex; align-items: center; justify-content: center; color: #16a34a;">
+                              <div class="receipt-icon-box"
+                                style="width: 36px; height: 36px; border-radius: 8px; background: rgba(30, 170, 206, 0.1); display: flex; align-items: center; justify-content: center; color: #1eaace;">
                                 <i class="fas fa-check-circle"></i>
                               </div>
                               <div>
-                                <div style="font-weight: 700; font-size: 13.5px; color: #0f172a;">Suscripción Viantryp
-                                  {{ $planLabel }}
+                                <div style="font-weight: 700; font-size: 13.5px; color: #0f172a;">
+                                  <span class="receipt-title-desktop">Suscripción Viantryp {{ $planLabel }}</span>
+                                  <span class="receipt-title-mobile">{{ str_starts_with(strtolower($planLabel), 'plan') ? $planLabel : 'Plan ' . $planLabel }}</span>
                                 </div>
                                 <div style="font-size: 11.5px; color: #94a3b8;">Factura electrónica emitida en USD ·
                                   Pasarela Paddle</div>
                               </div>
                             </div>
-                            <div style="text-align: right;">
+                            <div class="receipt-item-right" style="text-align: right;">
                               <div style="font-weight: 800; font-size: 14px; color: #0f172a;">{{ $planPrice }}</div>
                               <span
                                 style="font-size: 10px; font-weight: 800; background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 20px;">PAGADO</span>
@@ -3183,7 +3240,7 @@
         doneBtnText: 'Finalizar',
         steps: [
           {
-            element: '.page-title',
+            element: '.settings-grid',
             popover: {
               title: '¡Tu Perfil!',
               description: 'Aquí es donde sucede la magia de la personalización. Configura cómo te ven tus clientes y el estilo de tus propuestas.'
