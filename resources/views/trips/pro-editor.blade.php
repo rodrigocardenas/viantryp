@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="google-places-api-key" content="{{ config('services.google.places_api_key', env('GOOGLE_PLACES_API_KEY')) }}">
   <title>Viantryp | Editor de Itinerario</title>
   <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
@@ -16,9 +17,9 @@
     href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  @if(auth()->user()->plan !== \App\Models\User::PLAN_BASICO)
+  @if(config('services.google.places_api_key', env('GOOGLE_PLACES_API_KEY')))
     <script
-      src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.places_api_key', env('GOOGLE_PLACES_API_KEY')) }}&libraries=places"></script>
+      src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.places_api_key', env('GOOGLE_PLACES_API_KEY')) }}&libraries=places&v=weekly"></script>
   @endif
   <link href="{{ asset('css/trips/pro-editor.css') }}?v={{ time() }}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
@@ -177,7 +178,7 @@
   @endauth
   <script>
     window.viantrypUserName = "{{ auth()->user()->display_name ?? 'Invitado' }}";
-    window.viantrypUserPlan = "{{ auth()->user()->plan }}";
+    window.viantrypUserPlan = "{{ auth()->user()->effective_plan }}";
     window.viantrypIsTrialActive = {{ auth()->user()->isTrialActive() ? 'true' : 'false' }};
     window.viantrypThemeColor = "{{ auth()->user()->theme_color ?? 'default' }}";
     window.viantrypDisplayNameType = "{{ auth()->user()->display_name_type ?? 'personal' }}";

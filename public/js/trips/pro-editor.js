@@ -1996,6 +1996,55 @@ function addPhotoFallback(container, type, showHelp = true, photoInp = null, app
 }
 window.copilotEditingIndex = null;
 
+function getGooglePlacesUsageCount() {
+  let count = 0;
+  const countInArray = (arr) => {
+    if (!Array.isArray(arr)) return;
+    arr.forEach(item => {
+      if (item && item.data) {
+        if (item.data._google_place_used || item.data.place_id || (item.data.photo_url && item.data.photo_url.includes('/storage/places/'))) {
+          count++;
+        }
+      }
+    });
+  };
+
+  if (typeof days === 'object' && days) {
+    Object.values(days).forEach(dayItems => countInArray(dayItems));
+  }
+  if (typeof portadaItems !== 'undefined') countInArray(portadaItems);
+  if (typeof cierreItems !== 'undefined') countInArray(cierreItems);
+
+  return count;
+}
+
+function checkGooglePlacesLimit() {
+  const isPremium = (typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan.toLowerCase() !== 'básico') || (window.viantrypIsTrialActive === true);
+  if (isPremium) {
+    return true;
+  }
+
+  if (editingIndex !== null) {
+    const arr = (currentDay === 'portada') ? portadaItems : ((currentDay === 'cierre') ? cierreItems : (days[currentDay] || []));
+    const existItem = arr[editingIndex];
+    if (existItem && existItem.data && (existItem.data._google_place_used || existItem.data.place_id || (existItem.data.photo_url && existItem.data.photo_url.includes('/storage/places/')))) {
+      return true;
+    }
+  }
+
+  const count = getGooglePlacesUsageCount();
+  if (count >= 5) {
+    if (typeof showToast === 'function') {
+      showToast('⭐', 'Has alcanzado el límite de 5 búsquedas con Google Places del Plan Básico.');
+    }
+    if (typeof openUpgradeModal === 'function') {
+      openUpgradeModal();
+    }
+    return false;
+  }
+  return true;
+}
+
 function openModal(type, editIdx = null, customData = null) {
   if (typeof currentDay !== 'number' && currentDay !== 'portada' && currentDay !== 'cierre' && customData === null) return;
 
@@ -2152,27 +2201,32 @@ function openModal(type, editIdx = null, customData = null) {
 
       if (nameInp) {
         const autocomplete = new window.google.maps.places.Autocomplete(nameInp, {});
-        const pacContainer = document.querySelector('.pac-container:last-of-type');
 
         nameInp.addEventListener('input', (e) => {
           if (e && !e.isTrusted) return;
           updateFallbackMapsUrl();
-          if (pacContainer) {
-            setTimeout(() => {
-              pacContainer.style.zIndex = '1000000';
-              pacContainer.style.position = 'fixed';
+          setTimeout(() => {
+            const pContainer = document.querySelector('.pac-container:last-of-type') || document.querySelector('.pac-container');
+            if (pContainer) {
+              pContainer.style.zIndex = '9999999';
+              pContainer.style.position = 'fixed';
               const rect = nameInp.getBoundingClientRect();
-              pacContainer.style.top = rect.bottom + 'px';
-              pacContainer.style.left = rect.left + 'px';
-              pacContainer.style.width = rect.width + 'px';
-              pacContainer.style.display = '';
-            }, 50);
-          }
+              pContainer.style.top = rect.bottom + 'px';
+              pContainer.style.left = rect.left + 'px';
+              pContainer.style.width = rect.width + 'px';
+              pContainer.style.display = '';
+            }
+          }, 50);
         });
 
         autocomplete.addListener('place_changed', () => {
           const place = autocomplete.getPlace();
           if (!place) return;
+          if (!checkGooglePlacesLimit()) {
+            nameInp.value = '';
+            return;
+          }
+          nameInp.dataset.googlePlaceUsed = 'true';
           if (place.name) nameInp.value = place.name;
           if (addrInp && place.formatted_address) {
             addrInp.value = place.formatted_address;
@@ -2190,27 +2244,32 @@ function openModal(type, editIdx = null, customData = null) {
 
       if (addrInp) {
         const autocompleteAddr = new window.google.maps.places.Autocomplete(addrInp, { types: ['geocode'] });
-        const pacContainer = document.querySelector('.pac-container:last-of-type');
 
         addrInp.addEventListener('input', (e) => {
           if (e && !e.isTrusted) return;
           updateFallbackMapsUrl();
-          if (pacContainer) {
-            setTimeout(() => {
-              pacContainer.style.zIndex = '1000000';
-              pacContainer.style.position = 'fixed';
+          setTimeout(() => {
+            const pContainer = document.querySelector('.pac-container:last-of-type') || document.querySelector('.pac-container');
+            if (pContainer) {
+              pContainer.style.zIndex = '9999999';
+              pContainer.style.position = 'fixed';
               const rect = addrInp.getBoundingClientRect();
-              pacContainer.style.top = rect.bottom + 'px';
-              pacContainer.style.left = rect.left + 'px';
-              pacContainer.style.width = rect.width + 'px';
-              pacContainer.style.display = '';
-            }, 50);
-          }
+              pContainer.style.top = rect.bottom + 'px';
+              pContainer.style.left = rect.left + 'px';
+              pContainer.style.width = rect.width + 'px';
+              pContainer.style.display = '';
+            }
+          }, 50);
         });
 
         autocompleteAddr.addListener('place_changed', () => {
           const place = autocompleteAddr.getPlace();
           if (!place) return;
+          if (!checkGooglePlacesLimit()) {
+            addrInp.value = '';
+            return;
+          }
+          addrInp.dataset.googlePlaceUsed = 'true';
           if (place.formatted_address) {
             addrInp.value = place.formatted_address;
             addrInp.dispatchEvent(new Event('input', { bubbles: true }));
@@ -2231,29 +2290,34 @@ function openModal(type, editIdx = null, customData = null) {
       const nameInp = modalBody.querySelector('input[data-key="' + keyMap[type] + '"]');
       if (nameInp) {
         const autocomplete = new window.google.maps.places.Autocomplete(nameInp, { types: ['establishment'] });
-        const pacContainer = document.querySelector('.pac-container:last-of-type');
 
         // Fix z-index for pac-container
         nameInp.addEventListener('input', (e) => {
           if (e && !e.isTrusted) return;
           delete nameInp.dataset.lat;
           delete nameInp.dataset.lng;
-          if (pacContainer) {
-            setTimeout(() => {
-              pacContainer.style.zIndex = '1000000';
-              pacContainer.style.position = 'fixed';
+          setTimeout(() => {
+            const pContainer = document.querySelector('.pac-container:last-of-type') || document.querySelector('.pac-container');
+            if (pContainer) {
+              pContainer.style.zIndex = '9999999';
+              pContainer.style.position = 'fixed';
               const rect = nameInp.getBoundingClientRect();
-              pacContainer.style.top = rect.bottom + 'px';
-              pacContainer.style.left = rect.left + 'px';
-              pacContainer.style.width = rect.width + 'px';
-              pacContainer.style.display = '';
-            }, 50);
-          }
+              pContainer.style.top = rect.bottom + 'px';
+              pContainer.style.left = rect.left + 'px';
+              pContainer.style.width = rect.width + 'px';
+              pContainer.style.display = '';
+            }
+          }, 50);
         });
 
         autocomplete.addListener('place_changed', () => {
           const place = autocomplete.getPlace();
           if (!place || !place.place_id) return;
+          if (!checkGooglePlacesLimit()) {
+            nameInp.value = '';
+            return;
+          }
+          nameInp.dataset.googlePlaceUsed = 'true';
 
           if (place.name) nameInp.value = place.name;
 
@@ -2315,29 +2379,34 @@ function openModal(type, editIdx = null, customData = null) {
         const inp = modalBody.querySelector('input[data-key="' + key + '"]');
         if (inp) {
           const autocomplete = new window.google.maps.places.Autocomplete(inp, {});
-          const pacContainer = document.querySelector('.pac-container:last-of-type');
 
           inp.addEventListener('input', (e) => {
             if (e && !e.isTrusted) return;
             delete inp.dataset.address;
             delete inp.dataset.lat;
             delete inp.dataset.lng;
-            if (pacContainer) {
-              setTimeout(() => {
-                pacContainer.style.zIndex = '1000000';
-                pacContainer.style.position = 'fixed';
+            setTimeout(() => {
+              const pContainer = document.querySelector('.pac-container:last-of-type') || document.querySelector('.pac-container');
+              if (pContainer) {
+                pContainer.style.zIndex = '9999999';
+                pContainer.style.position = 'fixed';
                 const rect = inp.getBoundingClientRect();
-                pacContainer.style.top = rect.bottom + 'px';
-                pacContainer.style.left = rect.left + 'px';
-                pacContainer.style.width = rect.width + 'px';
-                pacContainer.style.display = '';
-              }, 50);
-            }
+                pContainer.style.top = rect.bottom + 'px';
+                pContainer.style.left = rect.left + 'px';
+                pContainer.style.width = rect.width + 'px';
+                pContainer.style.display = '';
+              }
+            }, 50);
           });
 
           autocomplete.addListener('place_changed', () => {
             const place = autocomplete.getPlace();
             if (!place) return;
+            if (!checkGooglePlacesLimit()) {
+              inp.value = '';
+              return;
+            }
+            inp.dataset.googlePlaceUsed = 'true';
 
             // Show friendly name in the input box, save full geocodable address in dataset
             if (place.name) {
@@ -2455,28 +2524,33 @@ function openModal(type, editIdx = null, customData = null) {
 
             if (isHotel && activeNameInp) {
               const autocompleteNombre = new window.google.maps.places.Autocomplete(activeNameInp, { types: ['establishment'] });
-              const pacContainer = document.querySelector('.pac-container:last-of-type');
 
               activeNameInp.addEventListener('input', (e) => {
                 if (e && !e.isTrusted) return;
                 delete activeNameInp.dataset.lat;
                 delete activeNameInp.dataset.lng;
-                if (pacContainer) {
-                  setTimeout(() => {
-                    pacContainer.style.zIndex = '1000000';
-                    pacContainer.style.position = 'fixed';
+                setTimeout(() => {
+                  const pContainer = document.querySelector('.pac-container:last-of-type') || document.querySelector('.pac-container');
+                  if (pContainer) {
+                    pContainer.style.zIndex = '9999999';
+                    pContainer.style.position = 'fixed';
                     const rect = activeNameInp.getBoundingClientRect();
-                    pacContainer.style.top = rect.bottom + 'px';
-                    pacContainer.style.left = rect.left + 'px';
-                    pacContainer.style.width = rect.width + 'px';
-                    pacContainer.style.display = '';
-                  }, 50);
-                }
+                    pContainer.style.top = rect.bottom + 'px';
+                    pContainer.style.left = rect.left + 'px';
+                    pContainer.style.width = rect.width + 'px';
+                    pContainer.style.display = '';
+                  }
+                }, 50);
               });
 
               autocompleteNombre.addListener('place_changed', () => {
                 const place = autocompleteNombre.getPlace();
                 if (!place || !place.place_id) return;
+                if (!checkGooglePlacesLimit()) {
+                  activeNameInp.value = '';
+                  return;
+                }
+                activeNameInp.dataset.googlePlaceUsed = 'true';
 
                 if (place.name) activeNameInp.value = place.name;
 
@@ -2537,26 +2611,32 @@ function openModal(type, editIdx = null, customData = null) {
               });
             } else if (!isHotel && activeAddrInp) {
               const autocompleteDireccion = new window.google.maps.places.Autocomplete(activeAddrInp, { types: ['geocode'] });
-              const pacContainer = document.querySelector('.pac-container:last-of-type');
 
               activeAddrInp.addEventListener('input', (e) => {
                 if (e && !e.isTrusted) return;
-                if (pacContainer) {
-                  setTimeout(() => {
-                    pacContainer.style.zIndex = '1000000';
-                    pacContainer.style.position = 'fixed';
+                setTimeout(() => {
+                  const pContainer = document.querySelector('.pac-container:last-of-type') || document.querySelector('.pac-container');
+                  if (pContainer) {
+                    pContainer.style.zIndex = '9999999';
+                    pContainer.style.position = 'fixed';
                     const rect = activeAddrInp.getBoundingClientRect();
-                    pacContainer.style.top = rect.bottom + 'px';
-                    pacContainer.style.left = rect.left + 'px';
-                    pacContainer.style.width = rect.width + 'px';
-                    pacContainer.style.display = '';
-                  }, 50);
-                }
+                    pContainer.style.top = rect.bottom + 'px';
+                    pContainer.style.left = rect.left + 'px';
+                    pContainer.style.width = rect.width + 'px';
+                    pContainer.style.display = '';
+                  }
+                }, 50);
               });
 
               autocompleteDireccion.addListener('place_changed', () => {
                 const place = autocompleteDireccion.getPlace();
                 if (!place) return;
+                if (!checkGooglePlacesLimit()) {
+                  activeAddrInp.value = '';
+                  return;
+                }
+                activeAddrInp.dataset.googlePlaceUsed = 'true';
+
                 if (place.formatted_address) {
                   activeAddrInp.value = place.formatted_address;
                 } else if (place.name) {
@@ -3556,6 +3636,9 @@ document.getElementById('modalSave').addEventListener('click', () => {
 
   modalBody.querySelectorAll('.color-swatch.selected').forEach(sw => { data[sw.dataset.key] = sw.dataset.color });
   if (starRating > 0) data.stars = starRating;
+  if (modalBody.querySelector('[data-google-place-used="true"]') || (data.photo_url && data.photo_url.includes('/storage/places/')) || data.place_id) {
+    data._google_place_used = true;
+  }
 
   if (window.copilotEditingIndex !== null && typeof window.onCopilotItemSaved === 'function') {
     window.onCopilotItemSaved(data, pendingType);
