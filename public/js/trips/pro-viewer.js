@@ -225,38 +225,43 @@ function buildPreviewHTML(data) {
     const trimmed = url.trim();
     if (!trimmed || trimmed.startsWith('data:') || trimmed.startsWith('blob:')) return trimmed;
 
+    const resolved = fixUrl(trimmed);
+
     // Unsplash Direct Optimization (WebP / Auto format, compressed)
-    if (trimmed.includes('images.unsplash.com')) {
+    if (resolved.includes('images.unsplash.com')) {
       try {
-        const u = new URL(trimmed);
+        const u = new URL(resolved);
         u.searchParams.set('w', Math.min(width, 1200));
         u.searchParams.set('auto', 'format');
         u.searchParams.set('fit', 'max');
         u.searchParams.set('q', '75');
         return u.toString();
       } catch {
-        return trimmed;
+        return resolved;
       }
     }
 
     // Cloudinary Direct Optimization
-    if (trimmed.includes('res.cloudinary.com')) {
+    if (resolved.includes('res.cloudinary.com')) {
       try {
-        return trimmed.replace('/upload/', `/upload/w_${Math.min(width, 1200)},f_auto,q_auto/`);
+        return resolved.replace('/upload/', `/upload/w_${Math.min(width, 1200)},f_auto,q_auto/`);
       } catch {
-        return trimmed;
+        return resolved;
       }
     }
 
-    // Generic External Images (HTTP/HTTPS) -> wsrv.nl Cloudflare WebP Proxy
-    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
-      if (trimmed.includes('wsrv.nl') || trimmed.includes('localhost') || trimmed.includes('127.0.0.1')) {
-        return trimmed;
-      }
-      return `https://wsrv.nl/?url=${encodeURIComponent(trimmed)}&w=${width}&output=webp&q=80`;
+    // Never proxy internal domain uploads, storage paths, or localhost via wsrv.nl
+    if (resolved.includes('viantryp.com') || resolved.includes('/storage/') || resolved.includes('/documents/') || resolved.includes('localhost') || resolved.includes('127.0.0.1')) {
+      return resolved;
     }
 
-    return fixUrl(trimmed);
+    // External third-party web images -> wsrv.nl Cloudflare WebP Proxy
+    if (resolved.startsWith('http://') || resolved.startsWith('https://')) {
+      if (resolved.includes('wsrv.nl')) return resolved;
+      return `https://wsrv.nl/?url=${encodeURIComponent(resolved)}&w=${width}&output=webp&q=80`;
+    }
+
+    return resolved;
   };
 
   const cCarousel = (photo_url, icon) => {
