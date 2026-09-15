@@ -100,6 +100,7 @@ let portadaAdultos = 2, portadaNinos = 0;
 let portadaPhotoUrl = '';
 let isPriceManual = false;
 let hidePriceInPublic = false;
+let hideTravelersInPublic = false;
 let portadaSubtitle = '';
 const GIPHY_API_KEY = 'ga2U6DfG1RcG9EESPkiPph7sMM0uhrdy';
 let selectedUnsplashUrl = null, unsplashTarget = 'portada';
@@ -633,7 +634,7 @@ const C = {
     bg: '#e0f2fe',
     fields: [
       { k: 'url', l: 'Imagen', t: 'image-picker', fw: true },
-      { k: 'tamano', l: 'Tamaño de visualización', t: 'select', opts: ['Pequeño (380 x 220 px)', 'Mediano (100% x 380 px)', 'Grande (100% x 520 px)', 'Completo (Ancho total)'], fw: true }
+      { k: 'tamano', l: 'Tamaño de visualización', t: 'select', opts: ['Mediano (100% x 380 px)'], fw: true }
     ]
   },
   gif: {
@@ -644,7 +645,7 @@ const C = {
     bg: '#f9f0ff',
     fields: [
       { k: 'url', l: 'GIF', t: 'gif-picker', fw: true },
-      { k: 'tamano', l: 'Tamaño de visualización', t: 'select', opts: ['Pequeño (380 x 220 px)', 'Mediano (100% x 380 px)', 'Grande (100% x 520 px)', 'Completo (Ancho total)'], fw: true }
+      { k: 'tamano', l: 'Tamaño de visualización', t: 'select', opts: ['Mediano (100% x 380 px)'], fw: true }
     ]
   },
   galeria: {
@@ -655,7 +656,7 @@ const C = {
     bg: '#e0f2fe',
     fields: [
       { k: 'photos', l: 'Fotos (máximo 5)', t: 'gallery-picker', fw: true },
-      { k: 'tamano', l: 'Tamaño de visualización', t: 'select', opts: ['Pequeño (380 x 220 px)', 'Mediano (100% x 380 px)', 'Grande (100% x 520 px)', 'Completo (Ancho total)'], fw: true }
+      { k: 'tamano', l: 'Tamaño de visualización', t: 'select', opts: ['Mediano (100% x 380 px)'], fw: true }
     ]
   },
   ubicacion: {
@@ -1530,6 +1531,26 @@ function updatePriceVisibilityUI() {
   }
   if (btn) {
     btn.title = hidePriceInPublic ? 'Precio actualmente oculto para clientes (click para mostrar)' : 'Precio actualmente visible para clientes (click para ocultar)';
+  }
+}
+
+function toggleTravelersVisibility() {
+  hideTravelersInPublic = !hideTravelersInPublic;
+  updateTravelersVisibilityUI();
+  showToast(hideTravelersInPublic ? '👁️‍🗨️' : '👁️', hideTravelersInPublic ? 'Viajeros ocultos en vista compartida' : 'Viajeros visibles en vista compartida');
+  unsavedChanges = true;
+  autoSaveProTrip();
+}
+
+function updateTravelersVisibilityUI() {
+  const icon = document.getElementById('iconTravelersVisibility');
+  const btn = document.getElementById('btnToggleTravelersVisibility');
+  if (icon) {
+    icon.className = hideTravelersInPublic ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+    icon.style.color = hideTravelersInPublic ? '#f87171' : 'rgba(255,255,255,0.85)';
+  }
+  if (btn) {
+    btn.title = hideTravelersInPublic ? 'Viajeros actualmente ocultos para clientes (click para mostrar)' : 'Viajeros actualmente visibles para clientes (click para ocultar)';
   }
 }
 
@@ -3699,7 +3720,7 @@ function openPreview() {
   // Build preview HTML
   const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
   const previewHTML = buildPreviewHTML({
-    title, destination, portadaSubtitle, hidePriceInPublic, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems,
+    title, destination, portadaSubtitle, hidePriceInPublic, hideTravelersInPublic, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems,
     isPublicLink: false,
     csrfToken: csrfToken,
     tripId: window.tripId || '',
@@ -3740,6 +3761,7 @@ if (window.proState) {
   if (s.portadaPhotoUrl !== undefined) portadaPhotoUrl = s.portadaPhotoUrl;
   if (s.isPriceManual !== undefined) isPriceManual = s.isPriceManual;
   if (s.hidePriceInPublic !== undefined) hidePriceInPublic = s.hidePriceInPublic;
+  if (s.hideTravelersInPublic !== undefined) hideTravelersInPublic = s.hideTravelersInPublic;
   if (s.portadaSubtitle !== undefined) portadaSubtitle = s.portadaSubtitle;
 
   // Ensure days array has at least 1 day if empty, or match numeric tabs
@@ -4014,6 +4036,7 @@ async function performProSave(isSilent = true) {
     moneda,
     isPriceManual,
     hidePriceInPublic,
+    hideTravelersInPublic,
     totalViajeros,
     hasPortada,
     hasCierre,

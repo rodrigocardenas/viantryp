@@ -583,6 +583,9 @@
                     <button type="button" class="pcol-edit-btn" id="btnEditTravelers" onclick="toggleTravelersPopover(event)" title="Editar viajeros">
                       <i class="fa-solid fa-pencil"></i>
                     </button>
+                    <button type="button" class="pcol-visibility-btn" id="btnToggleTravelersVisibility" onclick="toggleTravelersVisibility()" title="Ocultar o mostrar viajeros en la vista pública">
+                      <i class="fa-solid fa-eye" id="iconTravelersVisibility"></i>
+                    </button>
                   </div>
                   <div class="pcol-main-val" id="displayTravelersMain" onclick="toggleTravelersPopover(event)">
                     2 adultos
@@ -740,8 +743,6 @@
         </div>
       </div>
       <div class="unsplash-footer">
-        <div style="flex:1;text-align:left"><img src="https://giphy.com/static/img/powered_by_giphy_light.png"
-            height="20"></div>
         <button class="btn btn-ghost" onclick="closeGiphy()">Cancelar</button>
         <button class="btn btn-primary" id="giphySelectBtn" onclick="confirmGiphy()" disabled
           style="background:#ce3df3;border-color:#ce3df3">Usar este GIF</button>
