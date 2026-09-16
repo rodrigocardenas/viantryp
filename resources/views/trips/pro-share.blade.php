@@ -37,8 +37,9 @@
         proState.userPlan = "{{ $trip->user->plan ?? 'básico' }}";
         proState.isTrialActive = {{ $trip->user->isTrialActive() ? 'true' : 'false' }};
         proState.googleClientId = "{{ config('services.google.client_id') }}";
+        proState.cartoApiKey = "{{ config('services.carto.api_key', env('CARTO_API_KEY', 'cb1_3nga_1_60f537c367af518f7e20cd2b')) }}";
         window.shareToken = @json(request()->route('token'));
-        window.cartoApiKey = "{{ config('services.carto.api_key', env('CARTO_API_KEY', '')) }}";
+        window.cartoApiKey = proState.cartoApiKey;
     </script>
     <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>
     <script>

@@ -1,5 +1,5 @@
 function buildPreviewHTML(data) {
-  const { title, destination, portadaSubtitle, hidePriceInPublic, hideTravelersInPublic, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor, displayNameType, agencyLogo, agencyName, userFullName, googleClientId, userPlan, isTrialActive } = data;
+  const { title, destination, portadaSubtitle, hidePriceInPublic, hideTravelersInPublic, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor, displayNameType, agencyLogo, agencyName, userFullName, googleClientId, userPlan, isTrialActive, cartoApiKey } = data;
   const activeNumericTabs = (numericTabs && Array.isArray(numericTabs) && numericTabs.length > 0) ? numericTabs : (days ? (Array.isArray(days) ? days.map((_, idx) => ({ idx, label: 'Día ' + (idx + 1) })) : Object.keys(days).map(idx => ({ idx: parseInt(idx), label: 'Día ' + (parseInt(idx) + 1) }))) : []);
 
   function formatNumber(val) {
@@ -2730,8 +2730,8 @@ function renderLeafletMap(points) {
     scrollWheelZoom: true
   });
 
-  const cartoKey = (typeof window !== 'undefined' && window.cartoApiKey) ? window.cartoApiKey : '';
-  const tileUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png' + (cartoKey ? '?api_key=' + encodeURIComponent(cartoKey) : '');
+  const activeCartoKey = (typeof cartoApiKey !== 'undefined' && cartoApiKey) ? cartoApiKey : ((typeof window !== 'undefined' && window.cartoApiKey) ? window.cartoApiKey : 'cb1_3nga_1_60f537c367af518f7e20cd2b');
+  const tileUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?api_key=' + encodeURIComponent(activeCartoKey);
 
   L.tileLayer(tileUrl, {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
