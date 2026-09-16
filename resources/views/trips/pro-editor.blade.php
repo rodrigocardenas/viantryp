@@ -194,6 +194,7 @@
     window.tripEndDate = @json($trip && $trip->end_date ? \Carbon\Carbon::parse($trip->end_date)->format('Y-m-d') : null);
     window.tripDestination = @json($trip->destination ?? '');
     window.viantrypGoogleClientId = "{{ config('services.google.client_id') }}";
+    window.cartoApiKey = "{{ config('services.carto.api_key', env('CARTO_API_KEY', '')) }}";
   </script>
 </head>
 

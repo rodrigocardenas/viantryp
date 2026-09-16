@@ -2730,9 +2730,13 @@ function renderLeafletMap(points) {
     scrollWheelZoom: true
   });
 
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China, TomTom',
-    maxZoom: 19
+  const cartoKey = (typeof window !== 'undefined' && window.cartoApiKey) ? window.cartoApiKey : '';
+  const tileUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png' + (cartoKey ? '?api_key=' + encodeURIComponent(cartoKey) : '');
+
+  L.tileLayer(tileUrl, {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 20
   }).addTo(viantrypMapInstance);
 
   redrawMapPoints(points);

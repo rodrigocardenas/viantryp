@@ -3863,6 +3863,7 @@
                     proState.userPlan = data.user_plan || 'básico';
                     proState.isTrialActive = !!data.is_trial_active;
                     proState.googleClientId = "{{ config('services.google.client_id') }}";
+                    window.cartoApiKey = "{{ config('services.carto.api_key', env('CARTO_API_KEY', '')) }}";
 
                     const previewHTML = buildPreviewHTML(proState);
                     const blob = new Blob([previewHTML], { type: 'text/html' });

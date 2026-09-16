@@ -60,4 +60,8 @@ return [
         'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
     ],
 
+    'carto' => [
+        'api_key' => env('CARTO_API_KEY', ''),
+    ],
+
 ];
