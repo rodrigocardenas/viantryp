@@ -2296,8 +2296,7 @@
 
                       $currentPlanKey = strtolower($planUser->plan ?? $user->plan);
                       $planLabels = [
-                        'básico' => 'Plan Explorador',
-                        'esencial' => 'Plan Esencial',
+                        'básico' => 'Plan Básico',
                         'avanzado' => 'Plan Viajero Pro',
                         'colaborativo' => 'Plan Negocios',
                         'corporativo' => 'Plan Corporativo',
@@ -2307,7 +2306,7 @@
                       $trialEnd = $isTrial ? $user->trial_ends_at : null;
                       $subStart = isset($user->subscription_starts_at) ? \Carbon\Carbon::parse($user->subscription_starts_at) : null;
                       $subEnd = isset($user->subscription_ends_at) ? \Carbon\Carbon::parse($user->subscription_ends_at) : null;
-                      $isPaidPlan = in_array($currentPlanKey, ['esencial', 'avanzado', 'colaborativo']);
+                      $isPaidPlan = in_array($currentPlanKey, ['avanzado', 'colaborativo']);
 
                       if ($isTrial && $trialEnd) {
                         $endDate = \Carbon\Carbon::parse($trialEnd)->format('d M, Y');
@@ -2321,7 +2320,6 @@
 
                       $planPrices = [
                         'básico' => '$0.00 USD / mes',
-                        'esencial' => '$5.00 USD / mes',
                         'avanzado' => '$6.99 USD / mes',
                         'colaborativo' => '$24.99 USD / mes',
                         'corporativo' => 'A medida / Ventas',

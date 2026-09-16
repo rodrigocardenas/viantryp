@@ -3116,7 +3116,7 @@
                             <div class="trial-banner-content">
                                 <div class="trial-icon"><i class="fas fa-rocket"></i></div>
                                 <div class="trial-text">
-                                    <h4>Prueba gratuita del Plan Avanzado</h4>
+                                    <h4>Prueba gratuita del Plan Viajero Pro</h4>
                                     <p>Te quedan <strong>{{ auth()->user()->getTrialDaysRemaining() }}
                                             {{ auth()->user()->getTrialDaysRemaining() == 1 ? 'día' : 'días' }}</strong> para
                                         disfrutar de todas las herramientas.</p>

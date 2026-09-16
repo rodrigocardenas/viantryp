@@ -209,7 +209,7 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         $validated = $request->validate([
-            'plan' => 'required|string|in:básico,esencial,avanzado,colaborativo,corporativo',
+            'plan' => 'required|string|in:básico,avanzado,colaborativo,corporativo',
         ]);
 
         $newPlan = strtolower($validated['plan']);
@@ -217,8 +217,7 @@ class ProfileController extends Controller
         // Define limits for validation
         $planLimits = [
             'básico'        => ['trips' => 1, 'editors' => 0],
-            'esencial'      => ['trips' => 3, 'editors' => 0],
-            'avanzado'      => ['trips' => 10, 'editors' => 2],
+            'avanzado'      => ['trips' => 1000000, 'editors' => 2],
             'colaborativo'  => ['trips' => 1000000, 'editors' => 1000000],
             'corporativo'   => ['trips' => 1000000, 'editors' => 1000000],
         ];
@@ -359,8 +358,7 @@ class ProfileController extends Controller
         $proCodes = array_filter(array_map('trim', explode(',',
             config('plans.codes.viajero_pro', '') . ',' .
             config('plans.codes.viajero pro', '') . ',' .
-            config('plans.codes.avanzado', '') . ',' .
-            config('plans.codes.esencial', '')
+            config('plans.codes.avanzado', '')
         )));
 
         $negociosCodes = array_filter(array_map('trim', explode(',',
@@ -456,7 +454,7 @@ class ProfileController extends Controller
         }
 
         $validated = $request->validate([
-            'plan' => 'required|string|in:básico,esencial,avanzado,colaborativo,corporativo',
+            'plan' => 'required|string|in:básico,avanzado,colaborativo,corporativo',
             'account_type' => 'required|string|in:personal,agency',
         ]);
 

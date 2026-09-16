@@ -6406,9 +6406,9 @@
         </div>
       </div>
       <div class="pricing-grid">
-        <!-- Explorador -->
+        <!-- Plan Básico -->
         <div class="plan reveal d1">
-          <div class="plan-name">Explorador</div>
+          <div class="plan-name">Plan Básico</div>
           <div class="plan-desc-special">Para probar y crear tu primer viaje</div>
           <div class="plan-price">
             <span class="currency">$</span>
@@ -6420,12 +6420,12 @@
           <div class="plan-savings" style="opacity:0; pointer-events:none; visibility:hidden;">Savings Spacer</div>
           <div class="plan-sub" style="opacity:0; pointer-events:none; visibility:hidden;">Sub Spacer</div>
           <ul class="plan-features">
-            <li><i class="fas fa-check"></i> 1 itinerario activo a la vez</li>
-            <li><i class="fas fa-check"></i> Fotos de Unsplash & GIFs ilimitados</li>
+            <li><i class="fas fa-check"></i> 1 itinerario activo</li>
+            <li><i class="fas fa-check"></i> Fotos Unsplash & GIFs ilimitados</li>
+            <li><i class="fas fa-check"></i> 5 consultas en Google Places activas</li>
+            <li><i class="fas fa-check"></i> 5 consultas Tryp IA por viaje</li>
+            <li><i class="fas fa-check"></i> 5 archivos adjuntos por itinerario</li>
             <li><i class="fas fa-check"></i> Personalización de colores y temas</li>
-            <li><i class="fas fa-check"></i> Visualizador web interactivo</li>
-            <li><i class="fas fa-check"></i> Búsqueda básica en Google Places</li>
-            <li><i class="fas fa-check"></i> Tryp IA (Asistente de Viantryp) - 5 consultas por viaje</li>
           </ul>
           <a href="{{ route('register') }}" class="plan-btn">Empezar gratis</a>
         </div>
@@ -6448,15 +6448,12 @@
           <div class="plan-savings" style="opacity: 0;">Ahorras 20% en plan anual</div>
           <div class="plan-sub" style="color: rgba(255, 255, 255, 0.7);">Todo para tus viajes sin límites:</div>
           <ul class="plan-features">
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Itinerarios activos ilimitados</strong>
-            </li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Hasta 2 colaboradores para editar en pareja
-                o grupo</strong></li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>20 itinerarios activos</strong></li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>2 colaboradores de edición de viaje</strong></li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>50 consultas en Google Places activas</strong></li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>20 archivos adjuntos por itinerario</strong></li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> Tryp IA (Asistente de Viantryp) Ilimitado</li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Exportación descargable en PDF</li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Google Places Ilimitado con Galería HD</li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Guardar y reutilizar tus propias plantillas</li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Sincronización directa con Google Calendar</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Exportación de PDF</strong></li>
           </ul>
           <a href="{{ route('plans.redirect') }}" class="plan-btn btn-pro"
             style="background: #1EAACE; border-color: #1EAACE; color: white;">Probar 7 días gratis</a>
@@ -6476,10 +6473,11 @@
           <div class="plan-savings" style="opacity: 0;">Ahorras 20% en plan anual</div>
           <div class="plan-sub">Todo lo del plan Viajero Pro, más:</div>
           <ul class="plan-features">
+            <li><i class="fas fa-check"></i> <strong>Itinerarios activos ilimitados</strong></li>
             <li><i class="fas fa-check"></i> <strong>Colaboradores y editores ilimitados</strong></li>
+            <li><i class="fas fa-check"></i> <strong>Consultas en Google Places ilimitadas</strong></li>
+            <li><i class="fas fa-check"></i> <strong>Archivos adjuntos ilimitados</strong></li>
             <li><i class="fas fa-check"></i> <strong>Marca Blanca: Logo propio de tu agencia en web y PDF</strong></li>
-            <li><i class="fas fa-check"></i> Biblioteca de plantillas privadas para tus clientes</li>
-            <li><i class="fas fa-check"></i> Ficha de contacto directo (WhatsApp, Email y Redes)</li>
             <li><i class="fas fa-check"></i> Soporte prioritario dedicado</li>
           </ul>
           <a href="{{ route('plans.redirect') }}" class="plan-btn btn-outline">Probar 7 días gratis</a>

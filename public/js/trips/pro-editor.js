@@ -8,6 +8,123 @@ function fixUrl(u) {
 }
 window.fixUrl = fixUrl;
 
+window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
+  try {
+    let modal = document.getElementById('viantrypInlineUpgradeModal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'viantrypInlineUpgradeModal';
+      modal.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:9999999 !important; display:flex; align-items:center; justify-content:center; padding:16px 12px; box-sizing:border-box; font-family:\'Manrope\', sans-serif; overflow-y:auto;';
+      
+      const appUrl = (typeof origin !== 'undefined' && origin) ? origin : window.location.origin;
+      modal.innerHTML = `
+        <div class="viantryp-inline-card" style="background:#ffffff; border-radius:24px; max-width:460px; width:100%; max-height:calc(100vh - 32px); overflow-y:auto; padding:32px 24px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); text-align:center; position:relative; box-sizing:border-box; font-family:\'Manrope\', sans-serif; margin:auto; -webkit-overflow-scrolling:touch;">
+          <button onclick="document.getElementById('viantrypInlineUpgradeModal').style.display='none'" style="position:absolute; top:16px; right:16px; background:#f1f5f9; border:none; width:34px; height:34px; border-radius:50%; font-size:20px; color:#64748b; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1; transition:0.2s;">&times;</button>
+          <div style="width:56px; height:56px; background:#eff6ff; border-radius:18px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:16px; color:#1eaace; font-size:24px;">
+            <i class="fa-solid fa-crown"></i>
+          </div>
+          <h3 id="viantrypInlineModalTitle" style="font-family:\'Manrope\', sans-serif; font-size:21px; font-weight:800; color:#0f172a; margin:0 0 8px 0; letter-spacing:-0.02em; line-height:1.3;">Función Exclusiva Viajero Pro</h3>
+          <p id="viantrypInlineModalDesc" style="font-family:\'Manrope\', sans-serif; font-size:13.5px; color:#64748b; margin:0 0 20px 0; line-height:1.55; font-weight:500;">Actualiza tu plan para desbloquear todas las ventajas.</p>
+          
+          <div id="viantrypInlineBenefitsBox" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:16px; margin-bottom:24px; text-align:left; font-family:\'Manrope\', sans-serif;">
+            <div id="viantrypInlineBenefitsTitle" style="font-weight:800; font-size:11.5px; color:#1e293b; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">Beneficios del Plan Viajero Pro:</div>
+            <div id="viantrypInlineBenefitsList">
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+                <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>20 itinerarios activos</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+                <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>2 colaboradores de edición de viaje</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+                <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>50 consultas en Google Places activas</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+                <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>20 archivos adjuntos por itinerario</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; font-weight:600;">
+                <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Exportación de PDF</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px; font-family:\'Manrope\', sans-serif;">
+            <button id="viantrypInlineCtaBtn" onclick="if(typeof openUpgradeModal === 'function'){ document.getElementById('viantrypInlineUpgradeModal').style.display='none'; openUpgradeModal(true); } else { window.location.href='${appUrl}/profile?tab=subscription'; }" style="display:block; width:100%; padding:14px; background:#1eaace; color:#ffffff; font-weight:700; font-size:14px; border-radius:14px; border:none; cursor:pointer; text-decoration:none; box-sizing:border-box; transition:all 0.2s; font-family:\'Manrope\', sans-serif;">
+              Mejorar Mi Plan Ahora →
+            </button>
+            <button onclick="document.getElementById('viantrypInlineUpgradeModal').style.display='none'" style="background:none; border:none; color:#64748b; font-size:13px; font-weight:600; cursor:pointer; padding:8px; font-family:\'Manrope\', sans-serif;">
+              Quizás más tarde
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    const currentPlan = (typeof window.viantrypUserPlan === 'string' && window.viantrypUserPlan) ? window.viantrypUserPlan.toLowerCase() : 'básico';
+    const isProPlanUser = (currentPlan === 'avanzado' || currentPlan === 'viajero pro');
+
+    const titleEl = document.getElementById('viantrypInlineModalTitle');
+    const descEl = document.getElementById('viantrypInlineModalDesc');
+    const benTitleEl = document.getElementById('viantrypInlineBenefitsTitle');
+    const benListEl = document.getElementById('viantrypInlineBenefitsList');
+    const ctaBtn = document.getElementById('viantrypInlineCtaBtn');
+
+    if (isProPlanUser) {
+      if (titleEl) titleEl.textContent = featureTitle || 'Límite del Plan Viajero Pro Alcanzado';
+      if (descEl) descEl.textContent = featureDesc || 'Has alcanzado el límite de tu Plan Viajero Pro. Actualiza a Plan Negocios para obtener herramientas ilimitadas.';
+      if (benTitleEl) benTitleEl.textContent = 'Beneficios del Plan Negocios:';
+      if (benListEl) {
+        benListEl.innerHTML = `
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Itinerarios activos ilimitados</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Colaboradores de edición ilimitados</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Consultas en Google Places ilimitadas</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Archivos adjuntos ilimitados</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Marca Blanca con Logo de Agencia</span>
+          </div>
+        `;
+      }
+      if (ctaBtn) ctaBtn.textContent = 'Mejorar a Plan Negocios →';
+    } else {
+      if (titleEl) titleEl.textContent = featureTitle || 'Función Exclusiva Viajero Pro';
+      if (descEl) descEl.textContent = featureDesc || 'Actualiza tu plan para desbloquear todas las ventajas.';
+      if (benTitleEl) benTitleEl.textContent = 'Beneficios del Plan Viajero Pro:';
+      if (benListEl) {
+        benListEl.innerHTML = `
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>20 itinerarios activos</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>2 colaboradores de edición de viaje</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>50 consultas en Google Places activas</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>20 archivos adjuntos por itinerario</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Exportación de PDF</span>
+          </div>
+        `;
+      }
+      if (ctaBtn) ctaBtn.textContent = 'Mejorar Mi Plan Ahora →';
+    }
+
+    modal.style.display = 'flex';
+  } catch (e) {
+    console.error('Error in openProUpgradeInlineModal:', e);
+  }
+};
+
 function parseVideoEmbed(url) {
   if (!url || typeof url !== 'string') return { valid: false };
   const u = url.trim();
@@ -342,8 +459,73 @@ function clearPortadaPhoto(e) {
   autoSaveProTrip();
 }
 
+function isUserPremium() {
+  const userPlan = (typeof window.viantrypUserPlan === 'string' && window.viantrypUserPlan) ? window.viantrypUserPlan.toLowerCase() : 'básico';
+  const isTrial = window.viantrypIsTrialActive === true;
+  if (isTrial) return true;
+  return ['avanzado', 'colaborativo', 'corporativo', 'viajero pro', 'negocios'].includes(userPlan);
+}
+
+function countUnsplashPhotosInEditor() {
+  let count = 0;
+  if (typeof portadaPhotoUrl === 'string' && portadaPhotoUrl.toLowerCase().includes('unsplash')) {
+    count++;
+  }
+  const checkItem = (item) => {
+    if (!item) return;
+    const url = (item.photo_url || item.image || (item.data && item.data.url) || item.url || '').toLowerCase();
+    const type = (item.type || '').toLowerCase();
+    if (url.includes('unsplash') || type === 'unsplash') {
+      count++;
+    }
+  };
+  if (Array.isArray(portadaItems)) portadaItems.forEach(checkItem);
+  if (Array.isArray(cierreItems)) cierreItems.forEach(checkItem);
+  if (typeof days === 'object' && days !== null) {
+    Object.values(days).forEach(day => {
+      if (Array.isArray(day)) day.forEach(checkItem);
+    });
+  }
+  return count;
+}
+
+function countGifsInEditor() {
+  let count = 0;
+  if (typeof portadaPhotoUrl === 'string') {
+    const pUrl = portadaPhotoUrl.toLowerCase();
+    if (pUrl.includes('giphy') || pUrl.includes('.gif')) {
+      count++;
+    }
+  }
+  const checkItem = (item) => {
+    if (!item) return;
+    const url = (item.photo_url || item.image || (item.data && item.data.url) || item.url || '').toLowerCase();
+    const type = (item.type || '').toLowerCase();
+    if (url.includes('giphy') || url.includes('.gif') || type === 'giphy') {
+      count++;
+    }
+  };
+  if (Array.isArray(portadaItems)) portadaItems.forEach(checkItem);
+  if (Array.isArray(cierreItems)) cierreItems.forEach(checkItem);
+  if (typeof days === 'object' && days !== null) {
+    Object.values(days).forEach(day => {
+      if (Array.isArray(day)) day.forEach(checkItem);
+    });
+  }
+  return count;
+}
+
+function checkUnsplashLimit() {
+  return true;
+}
+
+function checkGiphyLimit() {
+  return true;
+}
+
 // UNSPLASH
 function openUnsplash(target = 'portada', targetInput = null) {
+  if (!checkUnsplashLimit()) return;
   unsplashTarget = target;
   currentPhotoTargetInput = targetInput;
   selectedUnsplashUrl = null;
@@ -353,13 +535,24 @@ function openUnsplash(target = 'portada', targetInput = null) {
   grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:25px 20px;color:var(--text-dim);font-size:12px">Escribe algo para encontrar miles de imágenes...</div>';
 
   // Sugerencias iniciales
-  fetch(`/api/unsplash/search?query=travel&per_page=15`)
-    .then(res => res.json())
+  const tripParam = window.tripId ? `&trip_id=${window.tripId}` : '';
+  fetch(`/api/unsplash/search?query=travel&per_page=15${tripParam}`)
+    .then(res => {
+      if (res.status === 403) {
+        return res.json().then(errData => {
+          closeUnsplash();
+          if (typeof openUpgradeModal === 'function') openUpgradeModal();
+          throw new Error(errData.message || 'Límite alcanzado');
+        });
+      }
+      return res.json();
+    })
     .then(data => {
-      if (data.success && data.images && data.images.length > 0) {
+      if (data && data.success && data.images && data.images.length > 0) {
         renderUnsplashGrid(data.images);
       }
-    });
+    })
+    .catch(err => console.warn('Unsplash init search warning:', err));
 }
 function closeUnsplash() { document.getElementById('unsplashOverlay').classList.remove('open'); selectedUnsplashUrl = null }
 function searchUnsplash() {
@@ -371,10 +564,20 @@ function searchUnsplash() {
   const grid = document.getElementById('unsplashGrid');
   grid.innerHTML = '<div class="unsplash-loading"><div class="spinner"></div> Buscando imágenes...</div>';
 
-  fetch(`/api/unsplash/search?query=${encodeURIComponent(query)}&per_page=15`)
-    .then(res => res.json())
+  const tripParam = window.tripId ? `&trip_id=${window.tripId}` : '';
+  fetch(`/api/unsplash/search?query=${encodeURIComponent(query)}&per_page=15${tripParam}`)
+    .then(res => {
+      if (res.status === 403) {
+        return res.json().then(errData => {
+          closeUnsplash();
+          if (typeof openUpgradeModal === 'function') openUpgradeModal();
+          throw new Error(errData.message || 'Límite alcanzado');
+        });
+      }
+      return res.json();
+    })
     .then(data => {
-      if (data.success && data.images && data.images.length > 0) {
+      if (data && data.success && data.images && data.images.length > 0) {
         renderUnsplashGrid(data.images);
       } else {
         grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-dim)">No se encontraron imágenes para esta búsqueda.</div>';
@@ -382,7 +585,9 @@ function searchUnsplash() {
     })
     .catch(err => {
       console.error('Unsplash error:', err);
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#f0567a">Error de conexión con Unsplash.</div>';
+      if (!err.message || !err.message.includes('Límite alcanzado')) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#f0567a">Error de conexión con Unsplash.</div>';
+      }
     });
 }
 function renderUnsplashGrid(imgs) {
@@ -409,6 +614,10 @@ function renderUnsplashGrid(imgs) {
   });
 }
 function confirmUnsplash() {
+  if (!checkUnsplashLimit()) {
+    closeUnsplash();
+    return;
+  }
   if (selectedUnsplashUrl) {
     if (unsplashTarget === 'portada') {
       setPortadaPhoto(selectedUnsplashUrl);
@@ -474,6 +683,7 @@ function confirmUnsplash() {
 // GIPHY
 let currentGiphyTargetInput = null;
 function openGiphy(target = 'item_gif', targetInput = null) {
+  if (!checkGiphyLimit()) return;
   giphyTarget = target;
   currentGiphyTargetInput = targetInput;
   selectedGiphyUrl = null;
@@ -534,6 +744,10 @@ function renderGiphyGrid(gifs) {
   });
 }
 function confirmGiphy() {
+  if (!checkGiphyLimit()) {
+    closeGiphy();
+    return;
+  }
   if (selectedGiphyUrl) {
     const targetInp = currentGiphyTargetInput || (modalBody ? modalBody.querySelector('input[data-key="url"]') : null);
     if (targetInp && (giphyTarget === 'item_gif' || (modalOverlay && modalOverlay.classList.contains('open')))) {
@@ -2039,9 +2253,56 @@ function getGooglePlacesUsageCount() {
   return count;
 }
 
+
+function getPlanUsageCounts() {
+  let unsplashCount = 0;
+  let giphyCount = 0;
+  let googlePlacesCount = 0;
+
+  const checkItem = (item) => {
+    if (!item || !item.data) return;
+    const url = (item.data.photo_url || item.data.image || '').toLowerCase();
+    const type = (item.data.type || '').toLowerCase();
+    
+    if (item.data._google_place_used || item.data.place_id || url.includes('/storage/places/')) {
+      googlePlacesCount++;
+    }
+
+    if (url.includes('unsplash') || type === 'unsplash') {
+      unsplashCount++;
+    }
+
+    if (url.includes('giphy') || url.includes('.gif') || type === 'giphy') {
+      giphyCount++;
+    }
+  };
+
+  const checkArray = (arr) => {
+    if (!Array.isArray(arr)) return;
+    arr.forEach(checkItem);
+  };
+
+  if (typeof days === 'object' && days) {
+    Object.values(days).forEach(checkArray);
+  }
+  if (typeof portadaItems !== 'undefined') checkArray(portadaItems);
+  if (typeof cierreItems !== 'undefined') checkArray(cierreItems);
+
+  if (typeof proState !== 'undefined' && proState && proState.portadaPhotoUrl) {
+    const url = (proState.portadaPhotoUrl || '').toLowerCase();
+    if (url.includes('unsplash')) unsplashCount++;
+    if (url.includes('giphy') || url.includes('.gif')) giphyCount++;
+  }
+
+  return { unsplashCount, giphyCount, googlePlacesCount };
+}
+
+
 function checkGooglePlacesLimit() {
-  const isPremium = (typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan.toLowerCase() !== 'básico') || (window.viantrypIsTrialActive === true);
-  if (isPremium) {
+  const userPlan = (typeof window.viantrypUserPlan === 'string' && window.viantrypUserPlan) ? window.viantrypUserPlan.toLowerCase() : 'básico';
+  const isTrial = window.viantrypIsTrialActive === true;
+
+  if (['colaborativo', 'corporativo', 'negocios'].includes(userPlan)) {
     return true;
   }
 
@@ -2053,12 +2314,17 @@ function checkGooglePlacesLimit() {
     }
   }
 
-  const count = getGooglePlacesUsageCount();
-  if (count >= 5) {
-    if (typeof showToast === 'function') {
-      showToast('⭐', 'Has alcanzado el límite de 5 búsquedas con Google Places del Plan Básico.');
-    }
-    if (typeof openUpgradeModal === 'function') {
+  const counts = getPlanUsageCounts();
+  const limit = (userPlan === 'avanzado' || userPlan === 'viajero pro' || isTrial) ? 50 : 5;
+
+  if (counts.googlePlacesCount >= limit) {
+    if (typeof window.openProUpgradeInlineModal === 'function') {
+      if (limit === 5) {
+        window.openProUpgradeInlineModal('Límite de Google Places Alcanzado', 'Has alcanzado el límite de 5 búsquedas de Google Places por itinerario para el Plan Básico. Actualiza a Viajero Pro para hasta 50 búsquedas.');
+      } else {
+        window.openProUpgradeInlineModal('Límite de Google Places Alcanzado', 'Has alcanzado el límite de 50 búsquedas de Google Places por itinerario para tu Plan Viajero Pro.');
+      }
+    } else if (typeof openUpgradeModal === 'function') {
       openUpgradeModal();
     }
     return false;
@@ -2096,13 +2362,13 @@ function openModal(type, editIdx = null, customData = null) {
       gbox.className = 'field-group-box';
 
       if (!isPremium) {
-        let helpText = 'Si tienes un <strong>plan esencial o superior</strong>, estos campos se rellenarán automáticamente con Google Maps.';
+        let helpText = 'Si tienes un <strong>plan Viajero Pro o superior</strong>, estos campos se rellenarán automáticamente con Google Maps.';
         if (type === 'alojamiento') {
-          helpText = 'Si tienes un <strong>plan esencial o superior</strong>, estos campos se rellenarán automáticamente con Google Maps al escribir el nombre del hotel.';
+          helpText = 'Si tienes un <strong>plan Viajero Pro o superior</strong>, estos campos se rellenarán automáticamente con Google Maps al escribir el nombre del hotel.';
         } else if (type === 'actividad') {
-          helpText = 'Si tienes un <strong>plan esencial o superior</strong>, estos campos se rellenarán automáticamente con Google Maps al escribir el lugar de la actividad.';
+          helpText = 'Si tienes un <strong>plan Viajero Pro o superior</strong>, estos campos se rellenarán automáticamente con Google Maps al escribir el lugar de la actividad.';
         } else if (type === 'comida') {
-          helpText = 'Si tienes un <strong>plan esencial o superior</strong>, estos campos se rellenarán automáticamente con Google Maps al escribir el nombre del restaurante.';
+          helpText = 'Si tienes un <strong>plan Viajero Pro o superior</strong>, estos campos se rellenarán automáticamente con Google Maps al escribir el nombre del restaurante.';
         }
         gbox.appendChild(createInfoSpan(helpText, true));
       }
@@ -2363,7 +2629,8 @@ function openModal(type, editIdx = null, customData = null) {
             `;
           }
 
-          fetch(`/api/places/details?place_id=${place.place_id}`)
+          const tripParam = window.tripId ? `&trip_id=${window.tripId}` : '';
+          fetch(`/api/places/details?place_id=${place.place_id}${tripParam}`)
             .then(res => res.json())
             .then(data => {
               if (data.photos && data.photos.length > 0) {
@@ -2602,7 +2869,8 @@ function openModal(type, editIdx = null, customData = null) {
                   `;
                 }
 
-                fetch(`/api/places/details?place_id=${place.place_id}`)
+                const tripParam = window.tripId ? `&trip_id=${window.tripId}` : '';
+                fetch(`/api/places/details?place_id=${place.place_id}${tripParam}`)
                   .then(res => res.json())
                   .then(data => {
                     if (data.photos && data.photos.length > 0) {
@@ -2949,7 +3217,21 @@ function buildField(field, data) {
         headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
         body: formData
       })
-        .then(res => res.json())
+        .then(res => {
+          if (res.status === 403) {
+            return res.json().then(data => {
+              if (data.error_code === 'LIMIT_REACHED') {
+                if (typeof window.openProUpgradeInlineModal === 'function') {
+                  window.openProUpgradeInlineModal('Límite de Archivos Adjuntos Alcanzado', 'Has alcanzado el límite de 5 archivos adjuntos por itinerario de tu Plan Básico. Actualiza a Viajero Pro para adjuntos y documentos ilimitados.');
+                } else if (typeof openUpgradeModal === 'function') {
+                  openUpgradeModal();
+                }
+              }
+              throw new Error(data.message || 'Has alcanzado el límite de 5 archivos adjuntos.');
+            });
+          }
+          return res.json();
+        })
         .then(res => {
           uploadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Cargar archivo';
           uploadBtn.disabled = false;
@@ -3179,7 +3461,22 @@ function buildField(field, data) {
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
             body: formData
-          }).then(r => r.json());
+          }).then(r => {
+            if (r.status === 403) {
+              return r.json().then(data => {
+                if (data.error_code === 'LIMIT_REACHED') {
+                  if (typeof window.openProUpgradeInlineModal === 'function') {
+                    window.openProUpgradeInlineModal('Límite de Archivos Adjuntos Alcanzado', 'Has alcanzado el límite de 5 archivos adjuntos por itinerario de tu Plan Básico. Actualiza a Viajero Pro para adjuntos y documentos ilimitados.');
+                  } else if (typeof openUpgradeModal === 'function') {
+                    openUpgradeModal();
+                  }
+                }
+                showToast('⚠️', data.message || 'Límite alcanzado');
+                return null;
+              });
+            }
+            return r.json();
+          });
           if (res.success && res.url) {
             photos.push(res.url);
           }
@@ -3295,7 +3592,21 @@ function buildField(field, data) {
         headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
         body: formData
       })
-        .then(res => res.json())
+        .then(res => {
+          if (res.status === 403) {
+            return res.json().then(data => {
+              if (data.error_code === 'LIMIT_REACHED') {
+                if (typeof window.openProUpgradeInlineModal === 'function') {
+                  window.openProUpgradeInlineModal('Límite de Archivos Adjuntos Alcanzado', 'Has alcanzado el límite de 5 archivos adjuntos por itinerario de tu Plan Básico. Actualiza a Viajero Pro para adjuntos y documentos ilimitados.');
+                } else if (typeof openUpgradeModal === 'function') {
+                  openUpgradeModal();
+                }
+              }
+              throw new Error(data.message || 'Has alcanzado el límite de 5 archivos adjuntos.');
+            });
+          }
+          return res.json();
+        })
         .then(res => {
           btn.textContent = 'Explorar'; btn.disabled = false;
           if (res.success) {
@@ -3399,7 +3710,21 @@ function buildField(field, data) {
           method: 'POST',
           headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
           body: formData
-        }).then(res => res.json());
+        }).then(res => {
+          if (res.status === 403) {
+            return res.json().then(data => {
+              if (data.error_code === 'LIMIT_REACHED') {
+                if (typeof window.openProUpgradeInlineModal === 'function') {
+                  window.openProUpgradeInlineModal('Límite de Archivos Adjuntos Alcanzado', 'Has alcanzado el límite de 5 archivos adjuntos por itinerario de tu Plan Básico. Actualiza a Viajero Pro para adjuntos y documentos ilimitados.');
+                } else if (typeof openUpgradeModal === 'function') {
+                  openUpgradeModal();
+                }
+              }
+              return { error: data.message || 'Límite de 5 archivos adjuntos alcanzado.' };
+            });
+          }
+          return res.json();
+        });
       });
 
       Promise.all(uploadPromises).then(results => {
@@ -3700,47 +4025,70 @@ function showToast(icon, msg) {
 // VISTA PREVIA — genera HTML y lo abre en nueva pestaña
 // ============================================================
 function openPreview() {
-  const title = document.getElementById('portadaTitle')?.value || document.getElementById('itineraryNameInput')?.value || 'Mi Itinerario';
-  const destination = document.getElementById('portadaDestino')?.value || '';
-  const portadaSubtitle = document.getElementById('portadaSubtitle')?.value || '';
-  const fechaInicio = document.getElementById('portadaFechaInicio')?.value || '';
-  const fechaFin = document.getElementById('portadaFechaFin')?.value || '';
-  const precio = unformatNumber(document.getElementById('portadaPrecio')?.value || '');
-  const moneda = document.getElementById('portadaMoneda')?.value || 'USD';
-  const totalViajeros = portadaAdultos + portadaNinos;
-  const hasPortada = !!document.querySelector('.day-tab.portada-tab');
-  const hasCierre = !!document.querySelector('.day-tab.cierre-tab');
-  const closureCard = document.getElementById('cierreCardMain');
-  const showDefaultCierre = closureCard && closureCard.style.display !== 'none';
-  const totalItems = days.reduce((s, d) => s + (d ? d.length : 0), 0);
+  try {
+    const title = document.getElementById('portadaTitle')?.value || document.getElementById('itineraryNameInput')?.value || 'Mi Itinerario';
+    const destination = document.getElementById('portadaDestino')?.value || '';
+    const portadaSubtitle = document.getElementById('portadaSubtitle')?.value || '';
+    const fechaInicio = document.getElementById('portadaFechaInicio')?.value || '';
+    const fechaFin = document.getElementById('portadaFechaFin')?.value || '';
+    const precio = (typeof unformatNumber === 'function') ? unformatNumber(document.getElementById('portadaPrecio')?.value || '') : (document.getElementById('portadaPrecio')?.value || '');
+    const moneda = document.getElementById('portadaMoneda')?.value || 'USD';
+    const totalViajeros = (typeof portadaAdultos !== 'undefined' ? portadaAdultos : 2) + (typeof portadaNinos !== 'undefined' ? portadaNinos : 0);
+    const hasPortada = !!document.querySelector('.day-tab.portada-tab');
+    const hasCierre = !!document.querySelector('.day-tab.cierre-tab');
+    const closureCard = document.getElementById('cierreCardMain');
+    const showDefaultCierre = closureCard && closureCard.style.display !== 'none';
+    const totalItems = (typeof days !== 'undefined' && Array.isArray(days)) ? days.reduce((s, d) => s + (d ? d.length : 0), 0) : 0;
 
-  // Build day tabs info
-  const numericTabs = [...document.querySelectorAll('.day-tab:not(.portada-tab):not(.cierre-tab)')].map(t => ({ label: t.querySelector('.day-tab-label')?.textContent || t.textContent.trim(), idx: parseInt(t.dataset.day) }));
+    // Build day tabs info
+    const numericTabs = [...document.querySelectorAll('.day-tab:not(.portada-tab):not(.cierre-tab)')].map(t => ({ label: t.querySelector('.day-tab-label')?.textContent || t.textContent.trim(), idx: parseInt(t.dataset.day) }));
 
-  // Build preview HTML
-  const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
-  const previewHTML = buildPreviewHTML({
-    title, destination, portadaSubtitle, hidePriceInPublic, hideTravelersInPublic, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems,
-    isPublicLink: false,
-    csrfToken: csrfToken,
-    tripId: window.tripId || '',
-    userName: window.viantrypUserName || '',
-    origin: window.location.origin,
-    status: window.proStatus,
-    themeColor: window.viantrypThemeColor || 'default',
-    displayNameType: window.viantrypDisplayNameType || 'personal',
-    agencyLogo: window.viantrypAgencyLogo || '',
-    agencyName: window.viantrypAgencyName || '',
-    userFullName: window.viantrypUserFullName || '',
-    userPlan: window.viantrypUserPlan || 'básico',
-    isTrialActive: !!window.viantrypIsTrialActive,
-    googleClientId: window.viantrypGoogleClientId || ''
-  });
-  const blob = new Blob([previewHTML], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  window.open(url, '_blank');
-  showToast('<i class="fa-regular fa-eye"></i>', 'Vista previa abierta');
+    // Build preview HTML
+    const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
+    
+    if (typeof buildPreviewHTML !== 'function') {
+      alert('La función para generar la vista previa no está cargada correctamente.');
+      return;
+    }
+
+    const previewHTML = buildPreviewHTML({
+      title, destination, portadaSubtitle, 
+      hidePriceInPublic: typeof hidePriceInPublic !== 'undefined' ? hidePriceInPublic : false, 
+      hideTravelersInPublic: typeof hideTravelersInPublic !== 'undefined' ? hideTravelersInPublic : false, 
+      fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, 
+      days: typeof days !== 'undefined' ? days : [[]], 
+      dayDates: typeof dayDates !== 'undefined' ? dayDates : [''], 
+      portadaAdultos: typeof portadaAdultos !== 'undefined' ? portadaAdultos : 2, 
+      portadaNinos: typeof portadaNinos !== 'undefined' ? portadaNinos : 0, 
+      portadaPhotoUrl: typeof portadaPhotoUrl !== 'undefined' ? portadaPhotoUrl : '', 
+      portadaItems: typeof portadaItems !== 'undefined' ? portadaItems : [], 
+      cierreItems: typeof cierreItems !== 'undefined' ? cierreItems : [],
+      isPublicLink: false,
+      csrfToken: csrfToken,
+      tripId: window.tripId || '',
+      userName: window.viantrypUserName || '',
+      origin: window.location.origin,
+      status: window.proStatus,
+      themeColor: window.viantrypThemeColor || 'default',
+      displayNameType: window.viantrypDisplayNameType || 'personal',
+      agencyLogo: window.viantrypAgencyLogo || '',
+      agencyName: window.viantrypAgencyName || '',
+      userFullName: window.viantrypUserFullName || '',
+      userPlan: window.viantrypUserPlan || 'básico',
+      isTrialActive: !!window.viantrypIsTrialActive,
+      googleClientId: window.viantrypGoogleClientId || ''
+    });
+
+    const blob = new Blob([previewHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    if (typeof showToast === 'function') showToast('<i class="fa-regular fa-eye"></i>', 'Vista previa abierta');
+  } catch (err) {
+    console.error('Error in openPreview:', err);
+    alert('Ocurrió un error al abrir la vista previa: ' + err.message);
+  }
 }
+window.openPreview = openPreview;
 
 // buildPreviewHTML() has been moved to pro-viewer.js
 
@@ -4068,14 +4416,24 @@ async function performProSave(isSilent = true) {
       body: JSON.stringify({ pro_state: proStateObj })
     });
 
-    if (response.ok) {
+    const resData = await response.json().catch(() => ({}));
+    if (response.ok && resData.success !== false) {
       unsavedChanges = false;
       console.log('Viaje PRO guardado correctamente.');
       showToast('✅', '¡Viaje guardado correctamente!');
       return true;
     } else {
+      if (resData.error_code === 'LIMIT_REACHED') {
+        if (typeof window.openProUpgradeInlineModal === 'function') {
+          window.openProUpgradeInlineModal('Límite del Plan Básico Alcanzado', resData.message || 'Has alcanzado el límite de tu plan Básico.');
+        } else if (typeof openUpgradeModal === 'function') {
+          openUpgradeModal();
+        }
+        if (!isSilent) showToast('⚠️', resData.message || 'Has alcanzado el límite de tu plan.');
+        return false;
+      }
       console.error('Error al guardar el viaje PRO');
-      if (!isSilent) showToast('❌', 'Error al guardar el viaje');
+      if (!isSilent) showToast('❌', resData.message || 'Error al guardar el viaje');
       return false;
     }
   } catch (e) {

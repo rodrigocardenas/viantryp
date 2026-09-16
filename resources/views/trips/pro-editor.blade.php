@@ -172,6 +172,29 @@
         font-size: 12px;
       }
     }
+    #viantrypInlineUpgradeModal,
+    #upgradePlanModal,
+    .upgrade-premium-modal,
+    #planGateModal {
+      z-index: 9999999 !important;
+      font-family: 'Manrope', sans-serif !important;
+    }
+
+    @media (max-width: 480px) {
+      #viantrypInlineUpgradeModal {
+        padding: 10px 8px !important;
+      }
+      #viantrypInlineUpgradeModal .viantryp-inline-card {
+        padding: 22px 16px !important;
+        border-radius: 20px !important;
+      }
+      #viantrypInlineUpgradeModal h3 {
+        font-size: 18px !important;
+      }
+      #viantrypInlineUpgradeModal p {
+        font-size: 13px !important;
+      }
+    }
   </style>
   @auth
     @include('layouts.theme-styles')

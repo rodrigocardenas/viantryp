@@ -5,13 +5,13 @@
 
     $planData = [
         'básico' => [
-            'name' => 'Explorador',
+            'name' => 'Básico',
             'price_monthly' => 0,
             'price_annual' => 0,
             'is_custom' => false,
             'limit_trips' => 1,
             'limit_editors' => 0,
-            'benefits' => ['1 itinerario activo', 'Unsplash & GIFs', 'Visualizador Web'],
+            'benefits' => ['1 itinerario activo', '10 fotos Unsplash & 10 GIFs', '5 búsquedas Google Places', '5 consultas Tryp IA por viaje', '5 archivos adjuntos por viaje', 'Personalización de colores y temas'],
             'accent' => '#64748b'
         ],
         'avanzado' => [
@@ -19,9 +19,9 @@
             'price_monthly' => 6.99,
             'price_annual' => 5.59,
             'is_custom' => false,
-            'limit_trips' => 1000000,
+            'limit_trips' => 20,
             'limit_editors' => 2,
-            'benefits' => ['Itinerarios ilimitados', 'Hasta 2 colaboradores', '7 días prueba gratis'],
+            'benefits' => ['20 itinerarios activos', 'Hasta 2 colaboradores', '7 días prueba gratis'],
             'accent' => '#1EAACE',
             'popular' => true
         ],
@@ -75,7 +75,7 @@
                         style="font-family: 'Barlow Condensed', sans-serif; font-size: 30px; font-weight: 900; text-transform: uppercase; margin: 0 0 5px; color: #0f172a; letter-spacing: -0.5px;">
                         Elige tu plan de inicio</h2>
                     <p style="font-size: 14px; color: #64748b; max-width: 800px; margin: 0 auto; line-height: 1.5;">
-                        Selecciona el plan que mejor se adapte a tus necesidades. El plan Avanzado incluye 7 días de
+                        Selecciona el plan que mejor se adapte a tus necesidades. El plan Viajero Pro incluye 7 días de
                         prueba
                         gratuita
                     </p>
@@ -441,7 +441,7 @@
 
     function confirmInitialPlan(plan) {
         let msg = `Has seleccionado el plan ${plan.toUpperCase()}. ¿Deseas continuar?`;
-        if (plan === 'avanzado') msg = "Has seleccionado el plan AVANZADO. Se activarán tus 7 días de prueba gratuita. ¿Deseas continuar?";
+        if (plan === 'avanzado') msg = "Has seleccionado el plan VIAJERO PRO. Se activarán tus 7 días de prueba gratuita. ¿Deseas continuar?";
 
         if (!confirm(msg)) return;
 

@@ -17,6 +17,20 @@ class GooglePlacesController extends Controller
         ]);
 
         $placeId = $request->input('place_id');
+        $tripId = $request->input('trip_id');
+        $user = auth()->user() ?: $request->user();
+        if ($tripId && $user) {
+            $trip = \App\Models\Trip::find($tripId);
+            if ($trip && $trip->hasReachedGooglePlacesLimit($user)) {
+                return response()->json([
+                    'success' => false,
+                    'error_code' => 'LIMIT_REACHED',
+                    'limit_type' => 'google_places',
+                    'message' => 'Has alcanzado el límite de 10 búsquedas de Google Places por itinerario para el Plan Básico. Actualiza a Viajero Pro para búsquedas ilimitadas.'
+                ], 403);
+            }
+        }
+
         $apiKey = config('services.google.places_api_key');
 
         if (!$apiKey) {

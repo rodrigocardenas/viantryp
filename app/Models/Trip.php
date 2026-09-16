@@ -67,6 +67,158 @@ class Trip extends Model
     }
 
     /**
+     * Count Unsplash photos in this trip's pro_state
+     */
+    public function countUnsplashPhotos(): int
+    {
+        $proState = $this->pro_state;
+        if (empty($proState) || !is_array($proState)) return 0;
+
+        $count = 0;
+        if (!empty($proState['portadaPhotoUrl'])) {
+            $url = strtolower($proState['portadaPhotoUrl']);
+            if (str_contains($url, 'unsplash')) {
+                $count++;
+            }
+        }
+
+        $days = $proState['days'] ?? [];
+        foreach ($days as $day) {
+            if (!is_array($day)) continue;
+            foreach ($day as $item) {
+                if (!is_array($item)) continue;
+                $url = strtolower($item['photo_url'] ?? $item['image'] ?? '');
+                $type = strtolower($item['type'] ?? '');
+                if (str_contains($url, 'unsplash') || $type === 'unsplash') {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * Check if trip has reached Unsplash photos limit (unlimited)
+     */
+    public function hasReachedUnsplashLimit(?User $user = null): bool
+    {
+        return false;
+    }
+
+    /**
+     * Count Giphy GIFs in this trip's pro_state
+     */
+    public function countGifs(): int
+    {
+        $proState = $this->pro_state;
+        if (empty($proState) || !is_array($proState)) return 0;
+
+        $count = 0;
+        if (!empty($proState['portadaPhotoUrl'])) {
+            $url = strtolower($proState['portadaPhotoUrl']);
+            if (str_contains($url, 'giphy') || str_contains($url, '.gif')) {
+                $count++;
+            }
+        }
+
+        $days = $proState['days'] ?? [];
+        foreach ($days as $day) {
+            if (!is_array($day)) continue;
+            foreach ($day as $item) {
+                if (!is_array($item)) continue;
+                $url = strtolower($item['photo_url'] ?? $item['image'] ?? '');
+                $type = strtolower($item['type'] ?? '');
+                if (str_contains($url, 'giphy') || str_contains($url, '.gif') || $type === 'giphy') {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * Check if trip has reached GIFs limit (unlimited)
+     */
+    public function hasReachedGiphyLimit(?User $user = null): bool
+    {
+        return false;
+    }
+
+    /**
+     * Count Google Places items in this trip's pro_state
+     */
+    public function countGooglePlacesItems(): int
+    {
+        $proState = $this->pro_state;
+        if (empty($proState) || !is_array($proState)) return 0;
+
+        $count = 0;
+        $days = $proState['days'] ?? [];
+        foreach ($days as $day) {
+            if (!is_array($day)) continue;
+            foreach ($day as $item) {
+                if (!is_array($item)) continue;
+                $url = strtolower($item['photo_url'] ?? '');
+                if (!empty($item['place_id']) || !empty($item['_google_place_used']) || str_contains($url, '/storage/places/')) {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * Check if trip has reached Google Places items limit (5 for Plan Básico)
+     */
+    public function hasReachedGooglePlacesLimit(?User $user = null): bool
+    {
+        $user = $user ?: \Illuminate\Support\Facades\Auth::user();
+        if (!$user) return false;
+
+        $effectivePlan = strtolower($user->plan ?? 'básico');
+        if ($user->isTrialActive() && ($effectivePlan === User::PLAN_BASICO || $effectivePlan === 'basico')) {
+            $effectivePlan = User::PLAN_AVANZADO;
+        }
+
+        if (in_array($effectivePlan, [User::PLAN_AVANZADO, User::PLAN_COLABORATIVO, User::PLAN_CORPORATIVO])) {
+            return false;
+        }
+
+        return $this->countGooglePlacesItems() >= 5;
+    }
+
+    /**
+     * Count file attachments in this trip (all document & support files uploaded)
+     */
+    public function countAttachments(): int
+    {
+        return \App\Models\TripDocument::where('trip_id', $this->id)->count();
+    }
+
+    /**
+     * Check if trip has reached Attachment files limit (5 for Plan Básico)
+     */
+    public function hasReachedAttachmentLimit(?User $user = null): bool
+    {
+        $user = $user ?: \Illuminate\Support\Facades\Auth::user();
+        if (!$user) return false;
+
+        $effectivePlan = strtolower($user->plan ?? 'básico');
+        if ($user->isTrialActive() && ($effectivePlan === User::PLAN_BASICO || $effectivePlan === 'basico')) {
+            $effectivePlan = User::PLAN_AVANZADO;
+        }
+
+        if (in_array($effectivePlan, [User::PLAN_AVANZADO, User::PLAN_COLABORATIVO, User::PLAN_CORPORATIVO])) {
+            return false;
+        }
+
+        return $this->countAttachments() >= 5;
+    }
+
+    /**
      * Set items_data and add IDs to items if they don't have one
      */
     public function setItemsDataAttribute($value)

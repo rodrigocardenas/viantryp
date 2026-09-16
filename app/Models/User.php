@@ -55,7 +55,6 @@ class User extends Authenticatable
     ];
 
     public const PLAN_BASICO = 'básico';
-    public const PLAN_ESENCIAL = 'esencial';
     public const PLAN_AVANZADO = 'avanzado';
     public const PLAN_COLABORATIVO = 'colaborativo';
     public const PLAN_CORPORATIVO = 'corporativo';
@@ -160,17 +159,12 @@ class User extends Authenticatable
         return match ($effectivePlan) {
             self::PLAN_BASICO => [
                 'max_trips' => 1,
-                'max_attachments' => 1000000,
-                'max_editors' => 0,
-            ],
-            self::PLAN_ESENCIAL => [
-                'max_trips' => 3,
-                'max_attachments' => 1000000,
+                'max_attachments' => 5,
                 'max_editors' => 0,
             ],
             self::PLAN_AVANZADO => [
-                'max_trips' => 1000000, // Unlimited
-                'max_attachments' => 1000000, // Unlimited
+                'max_trips' => 20,
+                'max_attachments' => 20,
                 'max_editors' => 2,
             ],
             self::PLAN_COLABORATIVO, self::PLAN_CORPORATIVO => [
@@ -180,7 +174,7 @@ class User extends Authenticatable
             ],
             default => [
                 'max_trips' => 1,
-                'max_attachments' => 1000000,
+                'max_attachments' => 5,
                 'max_editors' => 0,
             ],
         };
@@ -195,8 +189,15 @@ class User extends Authenticatable
         return $count >= $limits['max_trips'];
     }
 
-    public function hasReachedAttachmentLimit(): bool
+    public function hasReachedAttachmentLimit(?Trip $trip = null): bool
     {
+        $limits = $this->getPlanLimits();
+        if (($limits['max_attachments'] ?? 0) >= 1000000) return false;
+
+        if ($trip) {
+            return $trip->countAttachments() >= ($limits['max_attachments'] ?? 5);
+        }
+
         return false;
     }
 
@@ -213,6 +214,15 @@ class User extends Authenticatable
             ->count();
 
         return $count >= ($limits['max_editors'] ?? 0);
+    }
+
+    public function getEffectivePlanAttribute(): string
+    {
+        $plan = strtolower($this->plan ?? self::PLAN_BASICO);
+        if ($this->isTrialActive() && ($plan === self::PLAN_BASICO || $plan === 'basico')) {
+            return self::PLAN_AVANZADO;
+        }
+        return $plan;
     }
 
     public function getDisplayNameAttribute()
@@ -241,8 +251,7 @@ class User extends Authenticatable
         }
 
         return match (mb_strtolower($effectivePlan)) {
-            self::PLAN_BASICO => 'Explorador',
-            self::PLAN_ESENCIAL => 'Esencial',
+            self::PLAN_BASICO => 'Básico',
             self::PLAN_AVANZADO => 'Viajero Pro',
             self::PLAN_COLABORATIVO => 'Negocios',
             self::PLAN_CORPORATIVO => 'Corporativo',

@@ -637,6 +637,44 @@ class TripController extends Controller
             'pro_state' => 'required|array'
         ]);
 
+        $user = Auth::user();
+        $effectivePlan = strtolower($user->plan ?? 'básico');
+        if ($user->isTrialActive() && ($effectivePlan === 'básico' || $effectivePlan === 'basico')) {
+            $effectivePlan = 'avanzado';
+        }
+
+        if ($effectivePlan === 'básico' || $effectivePlan === 'basico') {
+            $tempTrip = clone $trip;
+            $tempTrip->pro_state = $validated['pro_state'];
+            
+            if ($tempTrip->countUnsplashPhotos() > 10) {
+                return response()->json([
+                    'success' => false,
+                    'error_code' => 'LIMIT_REACHED',
+                    'limit_type' => 'unsplash',
+                    'message' => 'Has alcanzado el límite de 10 fotos de Unsplash por itinerario para el Plan Básico. Actualiza a Viajero Pro para imágenes ilimitadas.'
+                ], 403);
+            }
+
+            if ($tempTrip->countGifs() > 10) {
+                return response()->json([
+                    'success' => false,
+                    'error_code' => 'LIMIT_REACHED',
+                    'limit_type' => 'giphy',
+                    'message' => 'Has alcanzado el límite de 10 GIFs por itinerario para el Plan Básico. Actualiza a Viajero Pro para GIFs ilimitados.'
+                ], 403);
+            }
+
+            if ($tempTrip->countGooglePlacesItems() > 5) {
+                return response()->json([
+                    'success' => false,
+                    'error_code' => 'LIMIT_REACHED',
+                    'limit_type' => 'google_places',
+                    'message' => 'Has alcanzado el límite de 5 búsquedas de Google Places por itinerario para el Plan Básico. Actualiza a Viajero Pro para búsquedas ilimitadas.'
+                ], 403);
+            }
+        }
+
         $tripData = [
             'pro_state' => $validated['pro_state']
         ];
@@ -694,12 +732,12 @@ class TripController extends Controller
             ], 403);
         }
 
-        // We use a high limit for total attachments as per user request to not restrict plan limits
-        if ($request->user()->hasReachedAttachmentLimit()) {
+        if ($trip->hasReachedAttachmentLimit($request->user()) || $request->user()->hasReachedAttachmentLimit($trip)) {
             return response()->json([
                 'success' => false,
                 'error_code' => 'LIMIT_REACHED',
-                'message' => 'Has alcanzado el límite de archivos adjuntos de tu plan.'
+                'limit_type' => 'attachments',
+                'message' => 'Has alcanzado el límite de 5 archivos adjuntos por itinerario para el Plan Básico. Actualiza a Viajero Pro para adjuntos ilimitados.'
             ], 403);
         }
 
@@ -889,6 +927,19 @@ class TripController extends Controller
         $query = $request->input('query', 'travel');
         $page = $request->input('page', 1);
         $perPage = $request->input('per_page', 24);
+
+        $tripId = $request->input('trip_id');
+        if ($tripId) {
+            $trip = Trip::find($tripId);
+            if ($trip && $trip->hasReachedUnsplashLimit($request->user())) {
+                return response()->json([
+                    'success' => false,
+                    'error_code' => 'LIMIT_REACHED',
+                    'limit_type' => 'unsplash',
+                    'message' => 'Has alcanzado el límite de 10 fotos de Unsplash por itinerario para el Plan Básico. Actualiza a Viajero Pro para imágenes ilimitadas.'
+                ], 403);
+            }
+        }
 
         $accessKey = config('services.unsplash.access_key');
 

@@ -2049,33 +2049,41 @@ window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
     if (!modal) {
       modal = document.createElement('div');
       modal.id = 'viantrypInlineUpgradeModal';
-      modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.75); backdrop-filter:blur(6px); z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;';
+      modal.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:9999999 !important; display:flex; align-items:center; justify-content:center; padding:16px 12px; box-sizing:border-box; font-family:Manrope, sans-serif; overflow-y:auto;';
       
       const appUrl = (typeof origin !== 'undefined' && origin) ? origin : window.location.origin;
       modal.innerHTML = \`
-        <div style="background:#ffffff; border-radius:24px; max-width:480px; width:100%; padding:32px 28px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); text-align:center; position:relative; font-family:'Syne', 'Inter', system-ui, sans-serif; box-sizing:border-box;">
-          <button onclick="document.getElementById('viantrypInlineUpgradeModal').style.display='none'" style="position:absolute; top:18px; right:18px; background:none; border:none; font-size:24px; color:#64748b; cursor:pointer; line-height:1;">&times;</button>
+        <div class="viantryp-inline-card" style="background:#ffffff; border-radius:24px; max-width:460px; width:100%; max-height:calc(100vh - 32px); overflow-y:auto; padding:32px 24px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); text-align:center; position:relative; box-sizing:border-box; font-family:'Manrope', sans-serif; margin:auto; -webkit-overflow-scrolling:touch;">
+          <button onclick="document.getElementById('viantrypInlineUpgradeModal').style.display='none'" style="position:absolute; top:16px; right:16px; background:#f1f5f9; border:none; width:34px; height:34px; border-radius:50%; font-size:20px; color:#64748b; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1; transition:0.2s;">&times;</button>
           <div style="width:56px; height:56px; background:#eff6ff; border-radius:18px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:16px; color:#1eaace; font-size:24px;">
             <i class="fa-solid fa-crown"></i>
           </div>
-          <h3 id="viantrypInlineModalTitle" style="font-size:22px; font-weight:800; color:#0f172a; margin:0 0 8px 0; letter-spacing:-0.02em;">Función Exclusiva Viajero Pro</h3>
-          <p id="viantrypInlineModalDesc" style="font-size:14px; color:#64748b; margin:0 0 20px 0; line-height:1.5;">La descarga de itinerarios en PDF está disponible a partir del plan Viajero Pro. Actualiza tu plan para desbloquear todas las ventajas.</p>
+          <h3 id="viantrypInlineModalTitle" style="font-family:'Manrope', sans-serif; font-size:21px; font-weight:800; color:#0f172a; margin:0 0 8px 0; letter-spacing:-0.02em; line-height:1.3;">Función Exclusiva Viajero Pro</h3>
+          <p id="viantrypInlineModalDesc" style="font-family:'Manrope', sans-serif; font-size:13.5px; color:#64748b; margin:0 0 20px 0; line-height:1.55; font-weight:500;">La descarga de itinerarios en PDF está disponible a partir del plan Viajero Pro. Actualiza tu plan para desbloquear todas las ventajas.</p>
           
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:16px; margin-bottom:24px; text-align:left;">
-            <div style="font-weight:700; font-size:12px; color:#1e293b; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">Beneficios del Plan Viajero Pro:</div>
-            <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px;">
-              <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Itinerarios activos ilimitados</span>
-            </div>
-            <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px;">
-              <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Exportación descargable en PDF</span>
-            </div>
-            <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155;">
-              <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Hasta 2 colaboradores para editar en grupo</span>
+          <div id="viantrypInlineBenefitsBox" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:16px; margin-bottom:24px; text-align:left; font-family:'Manrope', sans-serif;">
+            <div id="viantrypInlineBenefitsTitle" style="font-weight:800; font-size:11.5px; color:#1e293b; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">Beneficios del Plan Viajero Pro:</div>
+            <div id="viantrypInlineBenefitsList">
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+                <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>20 itinerarios activos</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+                <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>2 colaboradores de edición de viaje</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+                <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>50 consultas en Google Places activas</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+                <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>20 archivos adjuntos por itinerario</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; font-weight:600;">
+                <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Exportación de PDF</span>
+              </div>
             </div>
           </div>
 
           <div style="display:flex; flex-direction:column; gap:10px;">
-            <a href="\${appUrl}/planes-redirect" target="_blank" style="display:block; width:100%; padding:14px; background:#1eaace; color:#ffffff; font-weight:700; font-size:14px; border-radius:14px; text-decoration:none; box-sizing:border-box; transition:all 0.2s;">
+            <a id="viantrypInlineCtaBtn" href="\${appUrl}/planes-redirect" target="_blank" style="display:block; width:100%; padding:14px; background:#1eaace; color:#ffffff; font-weight:700; font-size:14px; border-radius:14px; text-decoration:none; box-sizing:border-box; transition:all 0.2s;">
               Mejorar Mi Plan Ahora →
             </a>
             <button onclick="document.getElementById('viantrypInlineUpgradeModal').style.display='none'" style="background:none; border:none; color:#64748b; font-size:13px; font-weight:600; cursor:pointer; padding:8px;">
@@ -2087,15 +2095,65 @@ window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
       document.body.appendChild(modal);
     }
 
-    if (featureTitle) {
-      const titleEl = document.getElementById('viantrypInlineModalTitle');
-      if (titleEl) titleEl.textContent = featureTitle;
+    const currentPlan = (typeof window.viantrypUserPlan === 'string' && window.viantrypUserPlan) ? window.viantrypUserPlan.toLowerCase() : 'básico';
+    const isProPlanUser = (currentPlan === 'avanzado' || currentPlan === 'viajero pro');
+
+    const titleEl = document.getElementById('viantrypInlineModalTitle');
+    const descEl = document.getElementById('viantrypInlineModalDesc');
+    const benTitleEl = document.getElementById('viantrypInlineBenefitsTitle');
+    const benListEl = document.getElementById('viantrypInlineBenefitsList');
+    const ctaBtn = document.getElementById('viantrypInlineCtaBtn');
+
+    if (isProPlanUser) {
+      if (titleEl) titleEl.textContent = featureTitle || 'Límite del Plan Viajero Pro Alcanzado';
+      if (descEl) descEl.textContent = featureDesc || 'Has alcanzado el límite de tu Plan Viajero Pro. Actualiza a Plan Negocios para obtener herramientas ilimitadas.';
+      if (benTitleEl) benTitleEl.textContent = 'Beneficios del Plan Negocios:';
+      if (benListEl) {
+        benListEl.innerHTML = \`
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Itinerarios activos ilimitados</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Colaboradores de edición ilimitados</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Consultas en Google Places ilimitadas</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Archivos adjuntos ilimitados</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Marca Blanca con Logo de Agencia</span>
+          </div>
+        \`;
+      }
+      if (ctaBtn) ctaBtn.textContent = 'Mejorar a Plan Negocios →';
+    } else {
+      if (titleEl) titleEl.textContent = featureTitle || 'Función Exclusiva Viajero Pro';
+      if (descEl) descEl.textContent = featureDesc || 'Actualiza tu plan para desbloquear todas las ventajas.';
+      if (benTitleEl) benTitleEl.textContent = 'Beneficios del Plan Viajero Pro:';
+      if (benListEl) {
+        benListEl.innerHTML = \`
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>20 itinerarios activos</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>2 colaboradores de edición de viaje</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>50 consultas en Google Places activas</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>20 archivos adjuntos por itinerario</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Exportación de PDF</span>
+          </div>
+        \`;
+      }
+      if (ctaBtn) ctaBtn.textContent = 'Mejorar Mi Plan Ahora →';
     }
 
-    if (featureDesc) {
-      const descEl = document.getElementById('viantrypInlineModalDesc');
-      if (descEl) descEl.textContent = featureDesc;
-    }
     modal.style.display = 'flex';
   } catch (e) {
     console.error('Error in openProUpgradeInlineModal:', e);

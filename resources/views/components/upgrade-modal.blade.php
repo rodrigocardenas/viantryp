@@ -33,13 +33,13 @@
 
     $planData = [
         'básico' => [
-            'name' => 'Explorador',
+            'name' => 'Básico',
             'price_monthly' => 0,
             'price_annual' => 0,
             'is_custom' => false,
             'limit_trips' => 1,
             'limit_editors' => 0,
-            'benefits' => ['1 itinerario activo', 'Unsplash & GIFs', 'Visualizador Web'],
+            'benefits' => ['1 itinerario activo', 'Fotos Unsplash & GIFs ilimitados', '5 consultas en Google Places activas', '5 consultas Tryp IA por viaje', '5 archivos adjuntos por viaje', 'Personalización de colores y temas'],
             'accent' => '#64748b'
         ],
         'avanzado' => [
@@ -47,9 +47,16 @@
             'price_monthly' => 6.99,
             'price_annual' => 5.59,
             'is_custom' => false,
-            'limit_trips' => 1000000,
+            'limit_trips' => 20,
             'limit_editors' => 2,
-            'benefits' => ['Itinerarios ilimitados', 'Hasta 2 colaboradores', 'PDF & Google Calendar'],
+            'benefits' => [
+                '20 itinerarios activos',
+                '2 colaboradores de edición de viaje',
+                '50 consultas en Google Places activas',
+                '20 archivos adjuntos por itinerario',
+                'Tryp IA (Asistente de Viantryp) Ilimitado',
+                'Exportación de PDF'
+            ],
             'accent' => '#1EAACE',
             'popular' => true
         ],
@@ -60,7 +67,13 @@
             'is_custom' => false,
             'limit_trips' => 1000000,
             'limit_editors' => 1000000,
-            'benefits' => ['Editores ilimitados', 'Marca Blanca con Logo', 'Soporte prioritario'],
+            'benefits' => [
+                'Itinerarios activos ilimitados',
+                'Colaboradores de edición ilimitados',
+                'Consultas en Google Places ilimitadas',
+                'Archivos adjuntos ilimitados',
+                'Marca Blanca con Logo de Agencia'
+            ],
             'accent' => '#0e5a6a'
         ]
     ];
@@ -79,7 +92,6 @@
     // Warning logic
     $warningMap = [
         'básico' => 'Has alcanzado el límite. Sube tu plan a Viajero Pro para continuar.',
-        'esencial' => 'Has alcanzado el límite. Sube tu plan a Viajero Pro para continuar.',
         'avanzado' => 'Has alcanzado el límite de colaboradores. Sube tu plan a Negocios para editores ilimitados.',
         'colaborativo' => 'Gestiona tu suscripción o contacta con nuestro equipo.'
     ];
@@ -97,7 +109,7 @@
     }
 
     // Progression for targeted next-step card
-    $progression = ['básico' => 'avanzado', 'esencial' => 'avanzado', 'avanzado' => 'colaborativo', 'colaborativo' => null];
+    $progression = ['básico' => 'avanzado', 'avanzado' => 'colaborativo', 'colaborativo' => null];
     $nextKey = $progression[$currentPlan] ?? null;
     $nextData = $nextKey ? $planData[$nextKey] : null;
 @endphp
@@ -173,7 +185,7 @@
     }
 </script>
 
-<div id="upgradePlanModal" class="modal upgrade-premium-modal" style="display: none;">
+<div id="upgradePlanModal" class="upgrade-premium-modal" style="display: none;">
     <div class="modal-content {{ request()->routeIs('profile.index') ? 'modal-wide' : 'modal-standard' }}">
         <button class="close-btn" onclick="closeUpgradeModal()">&times;</button>
 
@@ -254,7 +266,7 @@
                         @endphp
                         <div class="p-card {{ $currentPlan === $key ? 'active' : '' }} {{ $isBlocked ? 'blocked' : '' }}">
                             @if(isset($data['popular']))
-                                <div class="p-popular">MÁS POPULAR</div>
+                                <div class="p-popular">RECOMENDADO</div>
                             @endif
                             @if($isBlocked && $currentPlan !== $key)
                                 <div class="p-blocked-badge">LÍMITE EXCEDIDO</div>
@@ -297,7 +309,7 @@
                             <div class="ns-plan-name">{{ $nextData['name'] }}</div>
                         </div>
                         @if(isset($nextData['popular']))
-                        <div class="popular-badge">MÁS POPULAR</div> @endif
+                        <div class="popular-badge">RECOMENDADO</div> @endif
                     </div>
                     <div class="ns-price" style="{{ !is_numeric($nextData['price_monthly']) ? 'font-size: 18px;' : '' }}">
                         @if(is_numeric($nextData['price_monthly']))<span class="currency">$</span>@endif<span class="amount"
@@ -343,7 +355,7 @@
                 <span>Tiempos de facturación en <a href="{{ route('home') }}#precios" target="_blank">Nuestros Planes
                         &rarr;</a></span>
                 <span style="color: #cbd5e1;">•</span>
-                <span><a href="#" onclick="openCodeGateModal('esencial'); return false;"
+                <span><a href="#" onclick="openCodeGateModal('avanzado'); return false;"
                         style="color: #1a7a8a; font-weight: 600; text-decoration: underline;">¿Tienes un código
                         promocional? &rarr;</a></span>
             </div>
@@ -365,7 +377,7 @@
 <!-- PLAN GATE MODAL -->
 <!-- ============================================================ -->
 <div id="planGateModal"
-    style="display:none; position:fixed; inset:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:10001; align-items:center; justify-content:center; font-family:'Manrope',sans-serif;">
+    style="display:none; position:fixed; inset:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:9999999 !important; align-items:center; justify-content:center; font-family:'Manrope',sans-serif;">
     <div
         style="background:#fff; border-radius:24px; width:100%; max-width:460px; margin:auto; box-shadow:0 40px 100px -20px rgba(0,0,0,0.4); animation:modalPop 0.35s cubic-bezier(0.175,0.885,0.32,1.1); position:relative; overflow:hidden;">
 
@@ -478,40 +490,50 @@
 
 <style>
     .upgrade-premium-modal {
-        position: fixed;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(15, 23, 42, 0.6);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        z-index: 10000;
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: 100vw !important;
+        max-height: 100vh !important;
+        background: rgba(15, 23, 42, 0.75) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        z-index: 9999999 !important;
         font-family: 'Manrope', sans-serif;
-        border: none;
-        outline: none;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        transform: none !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 20px 12px !important;
+        box-sizing: border-box !important;
+        overflow-y: auto !important;
     }
 
     .upgrade-premium-modal .modal-content {
-        background: #ffffff;
-        border-radius: 28px;
-        position: relative;
-        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.4);
-        animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-        overflow: hidden;
-        margin: auto;
+        background: #ffffff !important;
+        border-radius: 28px !important;
+        position: relative !important;
+        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.4) !important;
+        animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) !important;
+        overflow: hidden !important;
+        margin: auto !important;
+        max-height: calc(100vh - 40px) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
     }
 
     .modal-standard {
-        width: 100%;
-        max-width: 500px;
+        width: 100% !important;
+        max-width: 500px !important;
     }
 
     .modal-wide {
-        width: 100%;
-        max-width: 820px;
+        width: 100% !important;
+        max-width: 820px !important;
     }
 
     @keyframes modalPop {
@@ -547,6 +569,9 @@
 
     .upgrade-premium-modal .modal-body {
         padding: 28px;
+        overflow-y: auto !important;
+        max-height: calc(100vh - 80px) !important;
+        -webkit-overflow-scrolling: touch;
     }
 
     .modal-user-header {
@@ -1052,16 +1077,27 @@
     }
 
     @media (max-width: 768px) {
-        .upgrade-premium-modal .modal-content {
-            width: 95%;
-            margin: 15px auto;
-            max-height: 90vh;
-            overflow-y: auto;
-            border-radius: 20px;
+        .upgrade-premium-modal {
+            padding: 10px 8px !important;
+            align-items: flex-start !important;
         }
 
-        .modal-wide {
-            max-width: 100%;
+        .upgrade-premium-modal .modal-content {
+            width: 100% !important;
+            margin: 10px auto !important;
+            max-height: calc(100vh - 20px) !important;
+            border-radius: 20px !important;
+        }
+
+        .upgrade-premium-modal .modal-body {
+            padding: 20px 16px !important;
+            max-height: calc(100vh - 40px) !important;
+        }
+
+        .modal-wide,
+        .modal-standard {
+            max-width: 100% !important;
+            width: 100% !important;
         }
 
         .p-grid-container {
@@ -1072,7 +1108,7 @@
         }
 
         .p-card {
-            width: 100%;
+            width: 100% !important;
             box-sizing: border-box;
         }
 
@@ -1089,15 +1125,29 @@
         .benefits-list {
             grid-template-columns: 1fr;
         }
+
+        .ns-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
     }
 
     @media (max-width: 480px) {
-        .p-card {
-            width: 82%;
+        .upgrade-premium-modal {
+            padding: 5px !important;
         }
 
-        .modal-body {
-            padding: 20px 15px;
+        .upgrade-premium-modal .modal-content {
+            border-radius: 16px !important;
+        }
+
+        .p-card {
+            width: 100% !important;
+        }
+
+        .upgrade-premium-modal .modal-body {
+            padding: 16px 12px !important;
         }
     }
 
@@ -1177,7 +1227,7 @@
         }
 
         // Show modal immediately
-        modal.style.display = 'flex';
+        modal.style.setProperty('display', 'flex', 'important');
         document.body.style.overflow = 'hidden';
 
         try {
@@ -1220,7 +1270,10 @@
     }
     function closeUpgradeModal() {
         const modal = document.getElementById('upgradePlanModal');
-        if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
+        if (modal) { 
+            modal.style.setProperty('display', 'none', 'important');
+            document.body.style.overflow = 'auto'; 
+        }
     }
 
     // Pricing Toggle Logic for Modal
@@ -1323,7 +1376,7 @@
             return;
         }
 
-        // Abrir Paddle Checkout para planes de pago (Esencial, Avanzado, Colaborativo)
+        // Abrir Paddle Checkout para planes de pago (Avanzado, Colaborativo)
         const toggleSwitch = document.getElementById('modalPriceToggle') || document.getElementById('welcomePriceToggle');
         const isAnnual = toggleSwitch ? toggleSwitch.classList.contains('annual') : false;
         const cycle = isAnnual ? 'annual' : 'monthly';
@@ -1417,24 +1470,6 @@
 
     function switchToPlanRequest() { showPlanGateStep(2); }
     function switchToCodeStep() { showPlanGateStep(1); }
-
-    async function submitDirectPlanUpdate(planKey) {
-        try {
-            const res = await fetch('{{ route("profile.update.plan") }}', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
-                body: JSON.stringify({ plan: planKey })
-            });
-            const data = await res.json();
-            if (data.success) {
-                window.location.reload();
-            } else {
-                alert(data.message || 'Error al actualizar el plan.');
-            }
-        } catch (e) {
-            alert('Error de conexión.');
-        }
-    }
 
     async function submitPlanCode() {
         const code = document.getElementById('planAccessCodeInput').value.trim();
