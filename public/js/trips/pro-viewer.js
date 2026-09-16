@@ -2731,7 +2731,7 @@ function renderLeafletMap(points) {
   });
 
   const activeCartoKey = (typeof cartoApiKey !== 'undefined' && cartoApiKey) ? cartoApiKey : ((typeof window !== 'undefined' && window.cartoApiKey) ? window.cartoApiKey : 'cb1_3nga_1_60f537c367af518f7e20cd2b');
-  const tileUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?api_key=' + encodeURIComponent(activeCartoKey);
+  const tileUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=' + encodeURIComponent(activeCartoKey) + '&api_key=' + encodeURIComponent(activeCartoKey);
 
   L.tileLayer(tileUrl, {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',

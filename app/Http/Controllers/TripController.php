@@ -241,7 +241,8 @@ class TripController extends Controller
             'agency_logo' => $trip->user->agency_logo ? asset('storage/' . $trip->user->agency_logo) : null,
             'agency_name' => $trip->user->agency_name ?? '',
             'user_plan' => $trip->user->plan ?? 'básico',
-            'is_trial_active' => $trip->user->isTrialActive()
+            'is_trial_active' => $trip->user->isTrialActive(),
+            'carto_api_key' => config('services.carto.api_key', env('CARTO_API_KEY', 'cb1_3nga_1_60f537c367af518f7e20cd2b'))
         ]);
     }
 
