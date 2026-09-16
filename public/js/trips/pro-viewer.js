@@ -2403,6 +2403,25 @@ async function geocodeAddress(address) {
   const uniqueQueries = [...new Set(queryList.map(q => q.trim()).filter(q => q.length > 0))];
 
   for (const query of uniqueQueries) {
+    // 1. Try Photon (Komoot OSM Geocoder - fast, no strict rate limit block)
+    try {
+      const respP = await fetch('https://photon.komoot.io/api/?lang=es&limit=1&q=' + encodeURIComponent(query));
+      if (respP.ok) {
+        const dataP = await respP.json();
+        if (dataP && dataP.features && dataP.features.length > 0 && dataP.features[0].geometry) {
+          const coords = {
+            lat: parseFloat(dataP.features[0].geometry.coordinates[1]),
+            lon: parseFloat(dataP.features[0].geometry.coordinates[0])
+          };
+          localStorage.setItem(cacheKey, JSON.stringify(coords));
+          return coords;
+        }
+      }
+    } catch (eP) {
+      console.warn('Photon geocode fallback:', eP);
+    }
+
+    // 2. Fallback to Nominatim OpenStreetMap
     try {
       const response = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(query), {
         headers: {
@@ -2423,7 +2442,6 @@ async function geocodeAddress(address) {
     } catch (err) {
       console.error('Error in Nominatim geocoding:', err);
     }
-    // Breve pausa para cumplir políticas de uso de Nominatim
     await new Promise(r => setTimeout(r, 200));
   }
   return null;
@@ -2681,8 +2699,9 @@ function redrawMapPoints(points) {
   });
 
   if (activeMapDayIndex !== -1 && routeCoords.length > 1) {
+    const polyColor = typeof solidThemeColors !== 'undefined' && typeof themeColor !== 'undefined' ? (solidThemeColors[themeColor] || '#02b5cb') : '#02b5cb';
     viantrypMapPolyline = L.polyline(routeCoords, {
-      color: '${themeHex}',
+      color: polyColor,
       weight: 3,
       dashArray: '6, 8',
       opacity: 0.85
@@ -2698,6 +2717,14 @@ function redrawMapPoints(points) {
 }
 
 function renderLeafletMap(points) {
+  if (viantrypMapInstance) {
+    try { viantrypMapInstance.remove(); } catch(e) {}
+    viantrypMapInstance = null;
+  }
+
+  const container = document.getElementById('viantrypMapCanvas');
+  if (!container) return;
+
   viantrypMapInstance = L.map('viantrypMapCanvas', {
     zoomControl: true,
     scrollWheelZoom: true
