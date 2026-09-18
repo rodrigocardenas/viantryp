@@ -12,6 +12,14 @@ class Authenticate extends Middleware
      */
     protected function redirectTo(Request $request): ?string
     {
-        return $request->expectsJson() ? null : route('home');
+        if ($request->expectsJson()) {
+            return null;
+        }
+
+        if ($request->has('app') || $request->query('mode') === 'app') {
+            return route('app.onboarding');
+        }
+
+        return route('home');
     }
 }

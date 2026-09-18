@@ -35,10 +35,23 @@ Route::middleware('guest')->group(function () {
 // Logout route (authenticated users only)
 Route::middleware('auth')->post('logout', [GoogleAuthController::class , 'logout'])->name('logout');
 
-// Public landing page
-Route::get('/', function () {
+// Public landing page (Serves dedicated mobile onboarding to App, and clean landing to web)
+Route::get('/', function (\Illuminate\Http\Request $request) {
+    if ($request->has('app') || $request->query('mode') === 'app') {
+        if (auth()->check()) {
+            return redirect()->route('trips.index');
+        }
+        return view('mobile.onboarding');
+    }
     return view('landing');
 })->name('home');
+
+Route::get('/app-onboarding', function () {
+    if (auth()->check()) {
+        return redirect()->route('trips.index');
+    }
+    return view('mobile.onboarding');
+})->name('app.onboarding');
 
 // Dashboard redirect to trips
 Route::get('/dashboard', fn() => redirect()->route('trips.index'))->name('dashboard');
