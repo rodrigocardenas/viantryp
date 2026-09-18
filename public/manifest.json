@@ -2,7 +2,7 @@
     "name": "Viantryp",
     "short_name": "Viantryp",
     "description": "Tu plataforma inteligente para planificar y gestionar viajes",
-    "start_url": "/trips",
+    "start_url": "/?app=1",
     "scope": "/",
     "display": "standalone",
     "orientation": "portrait",
