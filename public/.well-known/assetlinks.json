@@ -1,8 +1,22 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.viantryp.www.twa",
-    "sha256_cert_fingerprints": ["F8:F8:A6:66:CD:A6:0E:46:9E:85:03:DD:B6:39:E3:FF:B1:C7:27:40:B6:06:9F:A0:BB:1A:81:68:64:F9:51:FB"]
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.viantryp.app",
+      "sha256_cert_fingerprints": [
+        "54:FA:5F:6B:7A:39:28:C2:A3:B1:02:A1:D9:92:5D:28:1E:88:44:0A:44:51:89:17:92:5B:BF:93:B2:4F:A0:ED"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.viantryp.www.twa",
+      "sha256_cert_fingerprints": [
+        "F8:F8:A6:66:CD:A6:0E:46:9E:85:03:DD:B6:39:E3:FF:B1:C7:27:40:B6:06:9F:A0:BB:1A:81:68:64:F9:51:FB"
+      ]
+    }
   }
-}]
+]
