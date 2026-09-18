@@ -23,3 +23,14 @@ Homestead.json
 Homestead.yaml
 
 /scratch/prod_backup/
+
+# Android TWA Build Outputs & Binaries
+*.apk
+*.aab
+*.idsig
+/android-twa/.gradle/
+/android-twa/build/
+/android-twa/app/build/
+/android-twa/app-release*
+/android-twa/manifest-checksum.txt
+
