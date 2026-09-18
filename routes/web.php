@@ -35,40 +35,11 @@ Route::middleware('guest')->group(function () {
 // Logout route (authenticated users only)
 Route::middleware('auth')->post('logout', [GoogleAuthController::class , 'logout'])->name('logout');
 
-if (!function_exists('isAppRequest')) {
-    function isAppRequest(\Illuminate\Http\Request $request): bool {
-        if ($request->has('app') || $request->query('mode') === 'app' || $request->cookie('viantryp_app_mode') === '1') {
-            return true;
-        }
-        $ua = $request->header('User-Agent', '');
-        $requestedWith = $request->header('X-Requested-With', '');
-        if (str_contains($requestedWith, 'viantryp') || str_contains($requestedWith, 'twa')) {
-            return true;
-        }
-        if (str_contains($ua, 'Android') && (str_contains($ua, '; wv') || str_contains($ua, 'Version/4.0') || str_contains($ua, 'Viantryp') || str_contains($ua, 'twa'))) {
-            return true;
-        }
-        return false;
-    }
-}
-
-// Public landing page (Serves dedicated mobile onboarding to App, and clean landing to web)
-Route::get('/', function (\Illuminate\Http\Request $request) {
-    if (isAppRequest($request)) {
-        if (auth()->check()) {
-            return redirect()->route('trips.index');
-        }
-        return response()->view('mobile.onboarding')->cookie('viantryp_app_mode', '1', 525600);
-    }
+// Public landing page
+Route::get('/', function () {
     return view('landing');
 })->name('home');
 
-Route::get('/app-onboarding', function (\Illuminate\Http\Request $request) {
-    if (auth()->check()) {
-        return redirect()->route('trips.index');
-    }
-    return response()->view('mobile.onboarding')->cookie('viantryp_app_mode', '1', 525600);
-})->name('app.onboarding');
 
 // Dashboard redirect to trips
 Route::get('/dashboard', fn() => redirect()->route('trips.index'))->name('dashboard');
