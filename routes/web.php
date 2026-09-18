@@ -65,6 +65,22 @@ Route::get('/pricing', fn() => redirect()->to('/#planes', 301));
 
 Route::get('/rgpd', fn() => view('pages.gdpr'))->name('gdpr');
 Route::get('/seguridad', fn() => view('pages.security'))->name('security');
+Route::get('/.well-known/assetlinks.json', function () {
+    $path = public_path('.well-known/assetlinks.json');
+    if (file_exists($path)) {
+        return response()->file($path, ['Content-Type' => 'application/json']);
+    }
+    return response()->json([
+        [
+            'relation' => ['delegate_permission/common.handle_all_urls'],
+            'target' => [
+                'namespace' => 'android_app',
+                'package_name' => 'com.viantryp.www.twa',
+                'sha256_cert_fingerprints' => ['F8:F8:A6:66:CD:A6:0E:46:9E:85:03:DD:B6:39:E3:FF:B1:C7:27:40:B6:06:9F:A0:BB:1A:81:68:64:F9:51:FB']
+            ]
+        ]
+    ]);
+});
 Route::get('/api/places/photo', [GooglePlacesController::class, 'getPlacePhoto'])->name('places.photo');
 
 // Planes redirect from landing page
