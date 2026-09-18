@@ -314,23 +314,18 @@
   document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const forceShow = urlParams.has('onboarding');
-    const hasSeen = localStorage.getItem('has_seen_onboarding') === 'true';
-
-    // Strictly detect APP environments:
-    // 1. Installed PWA in standalone mode
-    // 2. iOS Safari standalone app mode
-    // 3. Native App / Capacitor / WebView container
-    // 4. Explicit URL parameters (?app=1, ?pwa=1, ?onboarding=1)
+    const isSavedAppMode = localStorage.getItem('viantryp_app_mode') === '1' || 
+                           document.documentElement.classList.contains('is-viantryp-app') ||
+                           (document.body && document.body.classList.contains('is-viantryp-app'));
     const isStandalonePWA = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
                             (window.navigator && window.navigator.standalone === true);
     const isNativeApp = Boolean(window.isNativeApp || (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()));
-    const isAppParam = urlParams.has('app') || urlParams.has('pwa') || forceShow;
+    const isAppParam = urlParams.has('app') || urlParams.has('pwa') || forceShow || isSavedAppMode;
 
-    const isAppEnvironment = isStandalonePWA || isNativeApp || isAppParam;
+    const isAppEnvironment = isStandalonePWA || isNativeApp || isAppParam || isSavedAppMode;
 
-    // The Onboarding Carousel is ONLY displayed in APP mode!
-    // Standard mobile web browser visits will remain on the normal landing page.
-    if (isAppEnvironment && (!hasSeen || forceShow)) {
+    // The Onboarding Carousel is ALWAYS displayed for unauthenticated users in APP mode!
+    if (isAppEnvironment) {
       const wrapper = document.getElementById('onboarding-wrapper');
       const ctas = document.getElementById('onboarding-ctas');
 
