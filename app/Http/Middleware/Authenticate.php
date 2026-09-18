@@ -19,7 +19,7 @@ class Authenticate
                 return response()->json(['message' => 'Unauthenticated.'], 401);
             }
 
-            return redirect()->route('login');
+            return redirect()->route('home');
         }
 
         return $next($request);
