@@ -33,4 +33,6 @@ Homestead.yaml
 /android-twa/app/build/
 /android-twa/app-release*
 /android-twa/manifest-checksum.txt
+/android-twa/local.properties
+
 
