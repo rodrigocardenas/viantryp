@@ -22,7 +22,7 @@
 Homestead.json
 Homestead.yaml
 
-/scratch/prod_backup/
+/scratch/
 
 # Android TWA Build Outputs & Binaries
 *.apk
