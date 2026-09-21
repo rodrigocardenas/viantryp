@@ -5,6 +5,8 @@
       "namespace": "android_app",
       "package_name": "com.viantryp.app",
       "sha256_cert_fingerprints": [
+        "07:0A:5A:84:A1:68:76:FD:FA:3E:8C:58:41:BF:4E:DA:6A:BC:09:CA:BD:94:08:E3:E2:3E:28:94:0A:3C:B5:7C",
+        "2D:D3:DC:36:25:23:7E:FB:E9:0D:E3:D2:46:D2:E4:D1:C1:BA:62:F2:10:CC:4C:73:FA:93:F5:AC:30:22:AB:9E",
         "A8:67:D4:CB:2E:3D:A3:1D:D2:FF:86:2E:3A:09:72:DE:7E:06:10:17:7B:72:5C:F7:70:2F:A2:6F:AA:9D:97:0A",
         "54:FA:5F:6B:7A:39:28:C2:A3:B1:02:A1:D9:92:5D:28:1E:88:44:0A:44:51:89:17:92:5B:BF:93:B2:4F:A0:ED"
       ]
