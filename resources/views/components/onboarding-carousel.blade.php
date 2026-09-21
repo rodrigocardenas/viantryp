@@ -77,10 +77,10 @@
   }
 
   /* Slide Color Fill matching image header tone */
-  .slide-1 { background: #1d6278; }
-  .slide-2 { background: #c6e2ed; }
-  .slide-3 { background: #cbe2ed; }
-  .slide-4 { background: #398ba8; }
+  .slide-1 { background: #1b5a6c; }
+  .slide-2 { background: #cfebf6; }
+  .slide-3 { background: #d1e5ee; }
+  .slide-4 { background: #3889a6; }
 
   /* Clean PNG Image Container */
   .onboarding-img {
@@ -224,22 +224,22 @@
       <div class="swiper-wrapper">
         <!-- Slide 1 -->
         <div class="swiper-slide slide-1">
-          <img src="{{ asset('images/onboarding/app1.png') }}" alt="Viantryp" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app1.png') }}?v=20260921_hd" alt="Viantryp" class="onboarding-img" loading="eager">
         </div>
 
         <!-- Slide 2 -->
         <div class="swiper-slide slide-2">
-          <img src="{{ asset('images/onboarding/app2.png') }}" alt="Diseña tus viajes en cuestión de minutos" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app2.png') }}?v=20260921_hd" alt="Diseña tus viajes en cuestión de minutos" class="onboarding-img" loading="eager">
         </div>
 
         <!-- Slide 3 -->
         <div class="swiper-slide slide-3">
-          <img src="{{ asset('images/onboarding/app3.png') }}" alt="Plasma tu viaje en solo 3 pasos" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app3.png') }}?v=20260921_hd" alt="Plasma tu viaje en solo 3 pasos" class="onboarding-img" loading="eager">
         </div>
 
         <!-- Slide 4 -->
         <div class="swiper-slide slide-4">
-          <img src="{{ asset('images/onboarding/app4.png') }}" alt="Todo lo que necesitas en un solo lugar" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app4.png') }}?v=20260921_hd" alt="Todo lo que necesitas en un solo lugar" class="onboarding-img" loading="eager">
         </div>
       </div>
     </div>
