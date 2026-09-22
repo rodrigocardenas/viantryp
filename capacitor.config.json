@@ -1,0 +1,25 @@
+{
+  "appId": "com.viantryp.app",
+  "appName": "Viantryp",
+  "webDir": "public",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://viantryp.com",
+    "cleartext": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2500,
+      "launchAutoHide": true,
+      "backgroundColor": "#0d2b3e",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#0d2b3e"
+    }
+  }
+}

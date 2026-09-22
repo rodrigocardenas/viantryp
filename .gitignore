@@ -24,7 +24,7 @@ Homestead.yaml
 
 /scratch/
 
-# Android TWA Build Outputs & Binaries
+# Android TWA & Capacitor Build Outputs & Binaries
 *.apk
 *.aab
 *.idsig
@@ -34,5 +34,11 @@ Homestead.yaml
 /android-twa/app-release*
 /android-twa/manifest-checksum.txt
 /android-twa/local.properties
+
+/android/.gradle/
+/android/build/
+/android/app/build/
+/android/local.properties
+
 
 
