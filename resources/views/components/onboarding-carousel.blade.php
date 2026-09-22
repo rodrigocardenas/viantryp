@@ -82,7 +82,7 @@
   .slide-3 { background: #d1e5ee; }
   .slide-4 { background: #3889a6; }
 
-  /* Clean PNG Image Container */
+  /* Clean PNG Image Container - High-Res Crisp Rendering */
   .onboarding-img {
     width: 100%;
     height: 100%;
@@ -91,6 +91,8 @@
     display: block;
     user-select: none;
     -webkit-user-drag: none;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
   }
 
   /* Bottom Controls & Action Overlay */
@@ -224,22 +226,22 @@
       <div class="swiper-wrapper">
         <!-- Slide 1 -->
         <div class="swiper-slide slide-1">
-          <img src="{{ asset('images/onboarding/app1.png') }}?v=20260921_final_orig" alt="Viantryp" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app1.png') }}?v=20260921_2k_hd" alt="Viantryp" class="onboarding-img" loading="eager">
         </div>
 
         <!-- Slide 2 -->
         <div class="swiper-slide slide-2">
-          <img src="{{ asset('images/onboarding/app2.png') }}?v=20260921_final_orig" alt="Diseña tus viajes en cuestión de minutos" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app2.png') }}?v=20260921_2k_hd" alt="Diseña tus viajes en cuestión de minutos" class="onboarding-img" loading="eager">
         </div>
 
         <!-- Slide 3 -->
         <div class="swiper-slide slide-3">
-          <img src="{{ asset('images/onboarding/app3.png') }}?v=20260921_final_orig" alt="Plasma tu viaje en solo 3 pasos" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app3.png') }}?v=20260921_2k_hd" alt="Plasma tu viaje en solo 3 pasos" class="onboarding-img" loading="eager">
         </div>
 
         <!-- Slide 4 -->
         <div class="swiper-slide slide-4">
-          <img src="{{ asset('images/onboarding/app4.png') }}?v=20260921_final_orig" alt="Todo lo que necesitas en un solo lugar" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app4.png') }}?v=20260921_2k_hd" alt="Todo lo que necesitas en un solo lugar" class="onboarding-img" loading="eager">
         </div>
       </div>
     </div>
