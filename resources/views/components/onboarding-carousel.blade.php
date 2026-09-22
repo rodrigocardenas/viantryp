@@ -229,22 +229,22 @@
       <div class="swiper-wrapper">
         <!-- Slide 1 -->
         <div class="swiper-slide slide-1">
-          <img src="{{ asset('images/onboarding/app1.png') }}?v=20260921_user_hd" alt="Viantryp" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app1.png') }}?v=20260921_super_hd_4k" alt="Viantryp" class="onboarding-img" loading="eager">
         </div>
 
         <!-- Slide 2 -->
         <div class="swiper-slide slide-2">
-          <img src="{{ asset('images/onboarding/app2.png') }}?v=20260921_user_hd" alt="Diseña tus viajes en cuestión de minutos" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app2.png') }}?v=20260921_super_hd_4k" alt="Diseña tus viajes en cuestión de minutos" class="onboarding-img" loading="eager">
         </div>
 
         <!-- Slide 3 -->
         <div class="swiper-slide slide-3">
-          <img src="{{ asset('images/onboarding/app3.png') }}?v=20260921_user_hd" alt="Plasma tu viaje en solo 3 pasos" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app3.png') }}?v=20260921_super_hd_4k" alt="Plasma tu viaje en solo 3 pasos" class="onboarding-img" loading="eager">
         </div>
 
         <!-- Slide 4 -->
         <div class="swiper-slide slide-4">
-          <img src="{{ asset('images/onboarding/app4.png') }}?v=20260921_user_hd" alt="Todo lo que necesitas en un solo lugar" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app4.png') }}?v=20260921_super_hd_4k" alt="Todo lo que necesitas en un solo lugar" class="onboarding-img" loading="eager">
         </div>
       </div>
     </div>
