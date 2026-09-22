@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <script>
+    (function() {
+        var isCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+        var isStandalone = window.navigator.standalone === true || 
+                           (window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches));
+        var urlParams = new URLSearchParams(window.location.search);
+        var hasAppParam = urlParams.get('app') === '1' || urlParams.get('mode') === 'app';
+        var hasWebParam = urlParams.get('web') === '1' || urlParams.get('mode') === 'web';
+
+        if (hasWebParam) {
+            try { localStorage.removeItem('viantryp_app_mode'); } catch(e){}
+        } else if (hasAppParam || isCapacitor) {
+            try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
+        }
+
+        var isSavedAppMode = false;
+        try { isSavedAppMode = localStorage.getItem('viantryp_app_mode') === '1'; } catch(e){}
+
+        if (isStandalone || hasAppParam || isSavedAppMode || isCapacitor) {
+            document.documentElement.classList.add('is-viantryp-app');
+            if (document.body) document.body.classList.add('is-viantryp-app');
+            else document.addEventListener('DOMContentLoaded', function() { if(document.body) document.body.classList.add('is-viantryp-app'); });
+        }
+    })();
+    </script>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
