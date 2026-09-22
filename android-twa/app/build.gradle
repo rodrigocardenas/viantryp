@@ -147,9 +147,18 @@ android {
 
         
     }
+    signingConfigs {
+        release {
+            storeFile file("${rootDir}/../viantryp-release-official.keystore")
+            storePassword 'viantryp2026'
+            keyAlias 'viantryp'
+            keyPassword 'viantryp2026'
+        }
+    }
     buildTypes {
         release {
             minifyEnabled true
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
