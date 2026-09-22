@@ -57,7 +57,7 @@ android {
         applicationId "com.viantryp.app"
         minSdkVersion 21
         targetSdkVersion 36
-        versionCode 8
+        versionCode 9
         versionName "1.0.0"
 
         // The name for the application
