@@ -158,7 +158,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https"
-                    android:host="viantryp.com"
+                    android:host="www.viantryp.com"
                 />
             </intent-filter>
 

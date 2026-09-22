@@ -1,6 +1,6 @@
 {
   "packageId": "com.viantryp.app",
-  "host": "www.viantryp.com",
+  "host": "viantryp.com",
   "name": "Viantryp",
   "launcherName": "Viantryp",
   "display": "standalone",
@@ -13,17 +13,17 @@
   "backgroundColor": "#FFFFFF",
   "enableNotifications": true,
   "startUrl": "/?app=1",
-  "iconUrl": "https://www.viantryp.com/icons/icon-512x512.png",
-  "maskableIconUrl": "https://www.viantryp.com/icons/icon-512x512.png",
+  "iconUrl": "https://viantryp.com/icons/icon-512x512.png",
+  "maskableIconUrl": "https://viantryp.com/icons/icon-512x512.png",
   "signingKey": {
-    "path": "c:\\laragon\\www\\viantryp\\viantryp-release-key.keystore",
-    "alias": "viantryp-key"
+    "path": "c:\\laragon\\www\\viantryp\\viantryp-release-official.keystore",
+    "alias": "viantryp"
   },
   "appVersionName": "1.0.0",
-  "appVersionCode": 9,
+  "appVersionCode": 10,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
-  "webManifestUrl": "https://www.viantryp.com/manifest.json",
+  "webManifestUrl": "https://viantryp.com/manifest.json",
   "fallbackType": "webview",
   "features": {
     "locationDelegation": {
@@ -45,7 +45,7 @@
     "92:A1:99:58:49:71:B6:6B:4A:FC:12:FA:6F:A7:F7:47:9C:7A:3B:50:6C:4A:93:BA:75:DA:7E:4B:41:72:5C:72"
   ],
   "additionalTrustedOrigins": [
-    "https://viantryp.com"
+    "https://www.viantryp.com"
   ],
   "retainedBundles": [],
   "displayOverride": [],
