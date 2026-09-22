@@ -20,7 +20,7 @@
     "alias": "viantryp-key"
   },
   "appVersionName": "1.0.0",
-  "appVersionCode": 7,
+  "appVersionCode": 8,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://www.viantryp.com/manifest.json",
