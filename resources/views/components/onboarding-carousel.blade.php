@@ -78,15 +78,15 @@
 
   /* Slide Color Fill matching image header tone */
   .slide-1 { background: #1b5a6c; }
-  .slide-2 { background: #cfebf6; }
-  .slide-3 { background: #d1e5ee; }
+  .slide-2 { background: #eef7fb; }
+  .slide-3 { background: #eef6fc; }
   .slide-4 { background: #3889a6; }
 
-  /* Clean PNG Image Container - Smooth 3K Ultra-HD Rendering */
+  /* Clean PNG Image Container - 4K Crisp Anti-Aliased Fitting */
   .onboarding-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center top;
     display: block;
     user-select: none;
@@ -229,22 +229,22 @@
       <div class="swiper-wrapper">
         <!-- Slide 1 -->
         <div class="swiper-slide slide-1">
-          <img src="{{ asset('images/onboarding/app1.png') }}?v=20260921_super_hd_4k" alt="Viantryp" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app1.png') }}?v=20260921_4k_uhd_crisp" alt="Viantryp" class="onboarding-img" loading="eager">
         </div>
 
         <!-- Slide 2 -->
         <div class="swiper-slide slide-2">
-          <img src="{{ asset('images/onboarding/app2.png') }}?v=20260921_super_hd_4k" alt="Diseña tus viajes en cuestión de minutos" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app2.png') }}?v=20260921_4k_uhd_crisp" alt="Diseña tus viajes en cuestión de minutos" class="onboarding-img" loading="eager">
         </div>
 
         <!-- Slide 3 -->
         <div class="swiper-slide slide-3">
-          <img src="{{ asset('images/onboarding/app3.png') }}?v=20260921_super_hd_4k" alt="Plasma tu viaje en solo 3 pasos" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app3.png') }}?v=20260921_4k_uhd_crisp" alt="Plasma tu viaje en solo 3 pasos" class="onboarding-img" loading="eager">
         </div>
 
         <!-- Slide 4 -->
         <div class="swiper-slide slide-4">
-          <img src="{{ asset('images/onboarding/app4.png') }}?v=20260921_super_hd_4k" alt="Todo lo que necesitas en un solo lugar" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app4.png') }}?v=20260921_4k_uhd_crisp" alt="Todo lo que necesitas en un solo lugar" class="onboarding-img" loading="eager">
         </div>
       </div>
     </div>
