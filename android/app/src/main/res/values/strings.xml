@@ -4,4 +4,5 @@
     <string name="title_activity_main">Viantryp</string>
     <string name="package_name">com.viantryp.app</string>
     <string name="custom_url_scheme">com.viantryp.app</string>
+    <string name="server_client_id">68250907387-j3t0d73nqp5q82pc9j2vo6fnekavf5aq.apps.googleusercontent.com</string>
 </resources>
