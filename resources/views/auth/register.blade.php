@@ -735,7 +735,7 @@
                   await GoogleAuth.initialize({
                     clientId: '68250907387-j3t0d73nqp5q82pc9j2vo6fnekavf5aq.apps.googleusercontent.com',
                     scopes: ['profile', 'email'],
-                    grantOfflineAccess: true,
+                    grantOfflineAccess: false,
                   });
                 }
               } catch(initErr) {}
@@ -786,12 +786,20 @@
                     try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
                     window.location.href = resData.redirect;
                     return;
+                  } else if (resData.message) {
+                    alert(resData.message);
                   }
+                } else {
+                  alert('No se pudo obtener la cuenta de Google seleccionada.');
                 }
               }
             }
           } catch (err) {
             console.warn('Native Google Auth error:', err);
+            const msg = typeof err === 'string' ? err : (err && err.message ? err.message : JSON.stringify(err));
+            if (msg && !msg.toLowerCase().includes('cancel')) {
+              alert('Error de autenticación Google: ' + msg);
+            }
           }
         });
       } else {
