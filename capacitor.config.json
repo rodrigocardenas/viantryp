@@ -11,7 +11,7 @@
     "GoogleAuth": {
       "scopes": ["profile", "email"],
       "serverClientId": "68250907387-j3t0d73nqp5q82pc9j2vo6fnekavf5aq.apps.googleusercontent.com",
-      "forceCodeForRefreshToken": true
+      "forceCodeForRefreshToken": false
     },
     "SplashScreen": {
       "launchShowDuration": 3000,
