@@ -26,6 +26,88 @@
         }
     })();
     </script>
+    <style>
+        /* CRITICAL APP STYLES - Prevents FOUC (Flash of Unstyled Web Content) in App mode */
+        html.is-viantryp-app .viantryp-bottom-nav { display: block !important; }
+        @media (max-width: 768px) {
+            html.is-viantryp-app body,
+            body.is-viantryp-app {
+                padding-bottom: 74px !important;
+            }
+            html.is-viantryp-app .dashboard-sidebar,
+            body.is-viantryp-app .dashboard-sidebar,
+            html.is-viantryp-app .sidebar-backdrop,
+            body.is-viantryp-app .sidebar-backdrop,
+            html.is-viantryp-app .mobile-hamburger-btn,
+            body.is-viantryp-app .mobile-hamburger-btn,
+            html.is-viantryp-app .dashboard-topbar .topbar-search,
+            body.is-viantryp-app .dashboard-topbar .topbar-search,
+            html.is-viantryp-app .btn-topbar-create,
+            body.is-viantryp-app .btn-topbar-create,
+            html.is-viantryp-app .profile-dropdown-wrapper,
+            body.is-viantryp-app .profile-dropdown-wrapper,
+            html.is-viantryp-app .profile-trigger,
+            body.is-viantryp-app .profile-trigger,
+            html.is-viantryp-app #pwa-install-banner,
+            body.is-viantryp-app #pwa-install-banner,
+            html.is-viantryp-app .settings-sub-sidebar,
+            body.is-viantryp-app .settings-sub-sidebar {
+                display: none !important;
+            }
+            html.is-viantryp-app .app-topbar-logo,
+            body.is-viantryp-app .app-topbar-logo {
+                display: flex !important;
+                align-items: center !important;
+            }
+            html.is-viantryp-app .app-topbar-logo img,
+            body.is-viantryp-app .app-topbar-logo img {
+                height: 28px !important;
+                width: auto !important;
+                filter: brightness(0) invert(1) !important;
+            }
+            html.is-viantryp-app .dashboard-topbar,
+            body.is-viantryp-app .dashboard-topbar {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                padding: 0 18px !important;
+                height: 60px !important;
+                background: var(--sidebar-bg, linear-gradient(135deg, #1a7f77 0%, #0d2b3e 100%)) !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+                position: sticky !important;
+                top: 0 !important;
+                z-index: 200 !important;
+            }
+            html.is-viantryp-app .page-wrapper,
+            body.is-viantryp-app .page-wrapper {
+                padding: 20px 16px 80px 16px !important;
+            }
+            html.is-viantryp-app .dashboard-container,
+            body.is-viantryp-app .dashboard-container {
+                display: flex !important;
+                flex-direction: column !important;
+                min-height: 100vh !important;
+            }
+            html.is-viantryp-app .dashboard-main,
+            body.is-viantryp-app .dashboard-main {
+                width: 100% !important;
+                flex: 1 !important;
+                margin: 0 !important;
+            }
+            html.is-viantryp-app .settings-grid,
+            body.is-viantryp-app .settings-grid {
+                display: block !important;
+                grid-template-columns: 1fr !important;
+                width: 100% !important;
+                margin: 0 !important;
+            }
+            html.is-viantryp-app .main-content,
+            body.is-viantryp-app .main-content {
+                width: 100% !important;
+            }
+        }
+    </style>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
