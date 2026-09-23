@@ -1068,11 +1068,17 @@
             border: 1px solid #e2e8f0;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(15, 23, 42, 0.14), 0 2px 6px rgba(0, 0, 0, 0.04);
-            z-index: 1000;
+            z-index: 2600;
             min-width: 195px;
             padding: 5px;
             display: none;
             text-align: left;
+        }
+
+        .acts-menu.open-up {
+            top: auto !important;
+            bottom: calc(100% + 4px) !important;
+            box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.14), 0 -2px 6px rgba(0, 0, 0, 0.04);
         }
 
         .acts-menu.show {
@@ -1743,7 +1749,12 @@
             }
 
             .trip-row.menu-open {
-                z-index: 100 !important;
+                z-index: 2600 !important;
+                position: relative !important;
+            }
+
+            .acts-menu {
+                z-index: 2600 !important;
             }
 
             /* Modal overlay z-index priority over rows */
@@ -4870,37 +4881,6 @@
                 });
         }
 
-        function toggleActsMenu(event, tripId) {
-            event.stopPropagation();
-            const menu = document.getElementById(`menu-${tripId}`);
-            const allMenus = document.querySelectorAll('.acts-menu');
-            const row = menu.closest('.trip-row');
-            const allRows = document.querySelectorAll('.trip-row');
-
-            const isOpening = !menu.classList.contains('show');
-
-            // Close all other menus and remove active class from all rows
-            allMenus.forEach(m => m.classList.remove('show'));
-            allRows.forEach(r => r.classList.remove('menu-open'));
-
-            if (isOpening) {
-                menu.classList.add('show');
-                if (row) row.classList.add('menu-open');
-
-                // Close menu when clicking outside
-                const closeHandler = (e) => {
-                    if (!menu.contains(e.target)) {
-                        menu.classList.remove('show');
-                        if (row) row.classList.remove('menu-open');
-                        document.removeEventListener('click', closeHandler);
-                    }
-                };
-                // Use timeout to avoid immediate trigger if the click event bubbles
-                setTimeout(() => {
-                    document.addEventListener('click', closeHandler);
-                }, 10);
-            }
-        }
 
         function openSharingModal(tripId, role) {
             const roleLabel = role === 'editor' ? 'EDICIÓN' : 'LECTURA';
@@ -5448,6 +5428,7 @@
             });
             document.querySelectorAll('.acts-menu').forEach(m => {
                 m.classList.remove('show');
+                m.classList.remove('open-up');
                 m.style.display = 'none';
             });
         }
@@ -5466,9 +5447,23 @@
             if (!isVisible) {
                 const parentRow = menu.closest('.trip-row');
                 if (parentRow) {
-                    parentRow.style.zIndex = '100';
+                    parentRow.style.zIndex = '2600';
                     parentRow.classList.add('menu-open');
                 }
+                
+                // Smart positioning: check available space below
+                const triggerBtn = event ? (event.currentTarget || event.target.closest('.abt.more')) : null;
+                const rect = triggerBtn ? triggerBtn.getBoundingClientRect() : (menu.parentElement ? menu.parentElement.getBoundingClientRect() : null);
+                if (rect) {
+                    const spaceBelow = window.innerHeight - rect.bottom;
+                    // If less than 230px below, open upwards so bottom nav won't overlap
+                    if (spaceBelow < 230) {
+                        menu.classList.add('open-up');
+                    } else {
+                        menu.classList.remove('open-up');
+                    }
+                }
+
                 menu.style.display = 'block';
                 menu.classList.add('show');
             }
