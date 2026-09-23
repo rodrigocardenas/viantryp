@@ -8,6 +8,10 @@
     "cleartext": true
   },
   "plugins": {
+    "GoogleAuth": {
+      "scopes": ["profile", "email"],
+      "forceCodeForRefreshToken": true
+    },
     "SplashScreen": {
       "launchShowDuration": 3000,
       "launchAutoHide": true,

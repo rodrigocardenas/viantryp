@@ -437,6 +437,60 @@
         icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
       }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const googleBtn = document.getElementById('btnGoogleAuth') || document.querySelector('.btn-google');
+      if (!googleBtn) return;
+
+      const isNativeCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+
+      if (isNativeCapacitor) {
+        googleBtn.addEventListener('click', async function(e) {
+          e.preventDefault();
+          try {
+            let GoogleAuth = window.Capacitor.Plugins ? window.Capacitor.Plugins.GoogleAuth : null;
+            if (!GoogleAuth && window.Capacitor.registerPlugin) {
+              GoogleAuth = window.Capacitor.registerPlugin('GoogleAuth');
+            }
+            if (GoogleAuth) {
+              const googleUser = await GoogleAuth.signIn();
+              if (googleUser && (googleUser.email || (googleUser.authentication && googleUser.authentication.idToken))) {
+                const payload = {
+                  email: googleUser.email,
+                  idToken: googleUser.authentication ? googleUser.authentication.idToken : null,
+                  google_id: googleUser.id || googleUser.userId,
+                  givenName: googleUser.givenName || googleUser.name,
+                  familyName: googleUser.familyName,
+                  imageUrl: googleUser.imageUrl
+                };
+                const csrfEl = document.querySelector('meta[name="csrf-token"]');
+                const response = await fetch("{{ route('auth.google.native') }}", {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfEl ? csrfEl.getAttribute('content') : ''
+                  },
+                  body: JSON.stringify(payload)
+                });
+                const resData = await response.json();
+                if (resData.success && resData.redirect) {
+                  window.location.href = resData.redirect;
+                  return;
+                }
+              }
+            }
+          } catch (err) {
+            console.warn('Native Google Auth fallback:', err);
+          }
+          window.location.href = "{{ route('auth.google') }}?app=1";
+        });
+      } else {
+        const isAppMode = localStorage.getItem('viantryp_app_mode') === '1' || document.documentElement.classList.contains('is-viantryp-app');
+        if (isAppMode) {
+          googleBtn.href = "{{ route('auth.google') }}?app=1";
+        }
+      }
+    });
   </script>
 </body>
 </html>

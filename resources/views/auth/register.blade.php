@@ -525,7 +525,7 @@
         </div>
 
         <!-- Google first (conversion best practice) -->
-        <a href="{{ route('auth.google') }}" class="btn-google">
+        <a href="{{ route('auth.google', ['app' => request('app', '1')]) }}" class="btn-google" id="btnGoogleAuthRegister">
           <svg width="19" height="19" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -714,6 +714,60 @@
         label.style.color = 'var(--gray)';
       }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const googleBtn = document.getElementById('btnGoogleAuthRegister') || document.querySelector('.btn-google');
+      if (!googleBtn) return;
+
+      const isNativeCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+
+      if (isNativeCapacitor) {
+        googleBtn.addEventListener('click', async function(e) {
+          e.preventDefault();
+          try {
+            let GoogleAuth = window.Capacitor.Plugins ? window.Capacitor.Plugins.GoogleAuth : null;
+            if (!GoogleAuth && window.Capacitor.registerPlugin) {
+              GoogleAuth = window.Capacitor.registerPlugin('GoogleAuth');
+            }
+            if (GoogleAuth) {
+              const googleUser = await GoogleAuth.signIn();
+              if (googleUser && (googleUser.email || (googleUser.authentication && googleUser.authentication.idToken))) {
+                const payload = {
+                  email: googleUser.email,
+                  idToken: googleUser.authentication ? googleUser.authentication.idToken : null,
+                  google_id: googleUser.id || googleUser.userId,
+                  givenName: googleUser.givenName || googleUser.name,
+                  familyName: googleUser.familyName,
+                  imageUrl: googleUser.imageUrl
+                };
+                const csrfEl = document.querySelector('meta[name="csrf-token"]');
+                const response = await fetch("{{ route('auth.google.native') }}", {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfEl ? csrfEl.getAttribute('content') : ''
+                  },
+                  body: JSON.stringify(payload)
+                });
+                const resData = await response.json();
+                if (resData.success && resData.redirect) {
+                  window.location.href = resData.redirect;
+                  return;
+                }
+              }
+            }
+          } catch (err) {
+            console.warn('Native Google Auth fallback:', err);
+          }
+          window.location.href = "{{ route('auth.google') }}?app=1";
+        });
+      } else {
+        const isAppMode = localStorage.getItem('viantryp_app_mode') === '1' || document.documentElement.classList.contains('is-viantryp-app');
+        if (isAppMode) {
+          googleBtn.href = "{{ route('auth.google') }}?app=1";
+        }
+      }
+    });
   </script>
 </body>
 </html>

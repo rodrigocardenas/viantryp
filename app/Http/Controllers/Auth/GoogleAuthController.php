@@ -82,6 +82,75 @@ class GoogleAuthController extends Controller
     }
 
     /**
+     * Handle Native Google Auth from Capacitor Native App
+     */
+    public function handleNativeGoogleAuth(Request $request)
+    {
+        try {
+            $email = $request->input('email');
+            $idToken = $request->input('idToken') ?? $request->input('id_token');
+            $googleId = $request->input('google_id') ?? $request->input('userId');
+            $name = $request->input('name') ?? $request->input('givenName') ?? '';
+            $lastName = $request->input('last_name') ?? $request->input('familyName') ?? '';
+            $avatar = $request->input('avatar') ?? $request->input('imageUrl');
+
+            if (!$email) {
+                return response()->json(['success' => false, 'message' => 'Email no proporcionado'], 400);
+            }
+
+            // Find or create user
+            $user = User::where('email', $email)->orWhere(function($query) use ($googleId) {
+                if ($googleId) $query->where('google_id', $googleId);
+            })->first();
+
+            if ($user) {
+                $updateData = [];
+                if ($googleId && !$user->google_id) {
+                    $updateData['google_id'] = $googleId;
+                }
+                if ($avatar) {
+                    $updateData['avatar'] = $avatar;
+                }
+                if (!empty($updateData)) {
+                    $user->update($updateData);
+                }
+            } else {
+                if (!$name) {
+                    $parts = explode('@', $email);
+                    $name = $parts[0];
+                }
+
+                $user = User::create([
+                    'name' => $name,
+                    'last_name' => $lastName,
+                    'email' => $email,
+                    'google_id' => $googleId,
+                    'avatar' => $avatar,
+                    'password' => bcrypt(uniqid()),
+                    'plan' => User::PLAN_BASICO,
+                    'country' => $request->header('cf-ipcountry') ?? null,
+                ]);
+
+                $user->notify(new \App\Notifications\WelcomeNotification($user));
+            }
+
+            Auth::login($user, true);
+
+            $target = $user->wasRecentlyCreated ? route('profile.index', ['app' => '1']) : route('trips.index', ['app' => '1']);
+            $cookie = cookie('viantryp_app_mode', '1', 525600);
+
+            return response()->json([
+                'success' => true,
+                'redirect' => $target,
+                'message' => '¡Bienvenido! Has iniciado sesión con Google.'
+            ])->withCookie($cookie);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error al autenticar: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
      * Logout user
      */
     public function logout(Request $request)
