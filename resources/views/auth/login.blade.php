@@ -456,7 +456,7 @@
               try {
                 if (typeof GoogleAuth.initialize === 'function') {
                   await GoogleAuth.initialize({
-                    clientId: '68250907387-j3t0d73nqp5q82pc9j2vo6fnekavf5aq.apps.googleusercontent.com',
+                    clientId: '{{ config("services.google.client_id", "68250907387-5t11umbj4m0h0qr9p013l48uqof74orn.apps.googleusercontent.com") }}',
                     scopes: ['profile', 'email'],
                     grantOfflineAccess: true,
                   });
@@ -500,7 +500,8 @@
                     credentials: 'same-origin',
                     headers: {
                       'Content-Type': 'application/json',
-                      'Accept': 'application/json'
+                      'Accept': 'application/json',
+                      'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify(payload)
                   });
@@ -513,8 +514,11 @@
                 }
               }
             }
+            // Fallback si la respuesta nativa no redirigió
+            window.location.href = "{{ route('auth.google', ['app' => '1']) }}";
           } catch (err) {
-            console.warn('Native Google Auth error:', err);
+            console.warn('Native Google Auth error, switching to web OAuth fallback:', err);
+            window.location.href = "{{ route('auth.google', ['app' => '1']) }}";
           }
         });
       } else {
