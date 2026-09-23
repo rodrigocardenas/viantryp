@@ -1377,7 +1377,7 @@ ${(function() {
       <div style="flex:1"></div>
       <div class="pv-topbar-actions" style="display:flex;gap:12px;">
           <button class="pv-share-btn" onclick="shareProTrip()" style="background:#fff;color:#0f172a;border:none;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-share-nodes"></i> <span class="pv-back-text">Compartir</span></button>
-          <button class="pv-back-btn" onclick="window.close()" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;"><i class="fa-solid fa-times" style="font-size:16px"></i> <span class="pv-back-text">Cerrar</span></button>
+          <button class="pv-back-btn" onclick="closePreviewWindow()" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;"><i class="fa-solid fa-times" style="font-size:16px"></i> <span class="pv-back-text">Cerrar</span></button>
       </div>
     </div>`;
   }
@@ -3112,6 +3112,31 @@ window.openGalleryLightbox = function(photos, startIndex = 0) {
     if (touchEndX < touchStartX - 45) updateImage(currentIdx + 1);
     if (touchEndX > touchStartX + 45) updateImage(currentIdx - 1);
   }, { passive: true });
+};
+
+window.closePreviewWindow = function() {
+  try {
+    if (window.opener && !window.opener.closed) {
+      window.close();
+      return;
+    }
+  } catch(e) {}
+  try {
+    window.close();
+  } catch(e) {}
+
+  setTimeout(function() {
+    if (window.history && window.history.length > 1) {
+      window.history.back();
+    } else {
+      const fallbackId = '${tripId || ''}';
+      if (fallbackId) {
+        window.location.href = '${data.origin || ''}/trips/' + fallbackId + '/edit';
+      } else {
+        window.location.href = '${data.origin || ''}/trips';
+      }
+    }
+  }, 100);
 };
 </script>
 ${!isPublicLink && tripId ? `

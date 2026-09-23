@@ -4022,8 +4022,17 @@ function showToast(icon, msg) {
 // ============================================================
 // VISTA PREVIA — genera HTML y lo abre en nueva pestaña
 // ============================================================
-function openPreview() {
+async function openPreview() {
   try {
+    // 1. Guardar siempre los cambios antes de abrir la vista previa
+    if (window.tripId && typeof performProSave === 'function') {
+      if (typeof autoSaveTimer !== 'undefined' && autoSaveTimer) {
+        clearTimeout(autoSaveTimer);
+      }
+      showToast('<i class="fa-solid fa-spinner fa-spin"></i>', 'Guardando cambios...');
+      await performProSave(true);
+    }
+
     const title = document.getElementById('portadaTitle')?.value || document.getElementById('itineraryNameInput')?.value || 'Mi Itinerario';
     const destination = document.getElementById('portadaDestino')?.value || '';
     const portadaSubtitle = document.getElementById('portadaSubtitle')?.value || '';
@@ -4079,8 +4088,11 @@ function openPreview() {
 
     const blob = new Blob([previewHTML], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
-    if (typeof showToast === 'function') showToast('<i class="fa-regular fa-eye"></i>', 'Vista previa abierta');
+    const win = window.open(url, '_blank');
+    if (!win || win.closed || typeof win.closed === 'undefined') {
+      window.location.href = url;
+    }
+    if (typeof showToast === 'function') showToast('<i class="fa-regular fa-eye"></i>', 'Vista previa lista');
   } catch (err) {
     console.error('Error in openPreview:', err);
     alert('Ocurrió un error al abrir la vista previa: ' + err.message);
