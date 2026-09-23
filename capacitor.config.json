@@ -5,7 +5,14 @@
   "bundledWebRuntime": false,
   "server": {
     "url": "https://viantryp.com",
-    "cleartext": true
+    "cleartext": true,
+    "allowNavigation": [
+      "viantryp.com",
+      "*.viantryp.com",
+      "accounts.google.com",
+      "*.google.com",
+      "*.googleusercontent.com"
+    ]
   },
   "plugins": {
     "GoogleAuth": {
