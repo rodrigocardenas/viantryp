@@ -1051,9 +1051,6 @@
         <span class="pro-preview-badge"><i class="fa-solid fa-eye"></i> Vista Previa</span>
       </div>
       <div class="pro-preview-bar-actions">
-        <button type="button" class="pro-preview-open-tab-btn" onclick="openPreviewInNewTab()" title="Abrir en pestaña nueva">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> <span class="hide-mobile">Nueva pestaña</span>
-        </button>
         <button type="button" class="pro-preview-close-btn" onclick="closeProPreviewModal()" title="Cerrar vista previa">
           <i class="fa-solid fa-times"></i> <span>Cerrar</span>
         </button>

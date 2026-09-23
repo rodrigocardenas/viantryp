@@ -3765,15 +3765,20 @@ body {
 .pro-preview-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(30, 170, 206, 0.18);
-  color: #1eaace;
-  font-size: 12px;
+  gap: 8px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 13.5px;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 20px;
-  border: 1px solid rgba(30, 170, 206, 0.35);
+  padding: 0;
+  border: none;
   font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.3px;
+}
+
+.pro-preview-badge i {
+  color: #ffffff;
+  font-size: 13px;
 }
 
 .pro-preview-bar-actions {
