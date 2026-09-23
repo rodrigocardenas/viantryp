@@ -297,10 +297,32 @@
 }
 
 /* Activo únicamente en modo App / PWA en móviles */
+/* Suppress all web scrollbars in App Mode */
+html.is-viantryp-app,
+body.is-viantryp-app,
+.is-viantryp-app .dashboard-content-scroll,
+.is-viantryp-app .dashboard-wrapper,
+.is-viantryp-app .dashboard-container,
+.is-viantryp-app .dashboard-main,
+.is-viantryp-app .page-wrapper {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+html.is-viantryp-app::-webkit-scrollbar,
+body.is-viantryp-app::-webkit-scrollbar,
+.is-viantryp-app *::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
 @media (max-width: 768px) {
     .is-viantryp-app body,
     body.is-viantryp-app {
-        padding-bottom: 74px !important;
+        padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px)) !important;
+        background-color: #f8fafc !important;
+        overflow-x: hidden !important;
     }
 
     /* Ocultar el aviso de instalar app en modo App */
@@ -317,11 +339,31 @@
         display: none !important;
     }
 
+    .is-viantryp-app .dashboard-wrapper,
+    body.is-viantryp-app .dashboard-wrapper {
+        background-color: #f8fafc !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: 100vh !important;
+        border: none !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+    }
+
     .is-viantryp-app .dashboard-container,
     body.is-viantryp-app .dashboard-container {
         display: flex !important;
         flex-direction: column !important;
         min-height: 100vh !important;
+        background-color: #f8fafc !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100vw !important;
     }
 
     .is-viantryp-app .dashboard-main,
@@ -329,11 +371,26 @@
         width: 100% !important;
         flex: 1 !important;
         margin: 0 !important;
+        background-color: #f8fafc !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    .is-viantryp-app .dashboard-content-scroll,
+    body.is-viantryp-app .dashboard-content-scroll {
+        background-color: #f8fafc !important;
+        padding-bottom: calc(85px + env(safe-area-inset-bottom, 0px)) !important;
+        -webkit-overflow-scrolling: touch !important;
     }
 
     .is-viantryp-app .page-wrapper,
     body.is-viantryp-app .page-wrapper {
-        padding: 20px 16px 80px 16px !important;
+        padding: 16px 14px calc(80px + env(safe-area-inset-bottom, 0px)) 14px !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        background-color: #f8fafc !important;
     }
 
     /* Ocultar settings-sub-sidebar en modo App para mostrar directamente la tarjeta elegida */
@@ -348,24 +405,43 @@
         grid-template-columns: 1fr !important;
         width: 100% !important;
         margin: 0 !important;
+        background: transparent !important;
     }
 
     .is-viantryp-app .main-content,
     body.is-viantryp-app .main-content {
         width: 100% !important;
+        background: transparent !important;
     }
 
-    /* Topbar estilizado para la versión App en móviles con el mismo color del sidebar desktop (var(--sidebar-bg)) */
+    /* Tarjetas de ajustes en modo app */
+    .is-viantryp-app .tab-section.card,
+    body.is-viantryp-app .tab-section.card {
+        border-radius: 18px !important;
+        border: 1px solid #edf2f7 !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+        background: #ffffff !important;
+        margin-bottom: 20px !important;
+    }
+
+    .is-viantryp-app .tab-section.card .card-body,
+    body.is-viantryp-app .tab-section.card .card-body {
+        padding: 18px 14px !important;
+    }
+
+    /* Topbar estilizado para la versión App en móviles con soporte safe-area notch */
     .is-viantryp-app .dashboard-topbar,
     body.is-viantryp-app .dashboard-topbar {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 0 18px !important;
-        height: 60px !important;
+        padding-top: max(0px, env(safe-area-inset-top, 0px)) !important;
+        padding-left: 18px !important;
+        padding-right: 18px !important;
+        height: calc(58px + max(0px, env(safe-area-inset-top, 0px))) !important;
         background: var(--sidebar-bg, linear-gradient(135deg, #1a7f77 0%, #0d2b3e 100%)) !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12) !important;
         position: sticky !important;
         top: 0 !important;
         z-index: 200 !important;

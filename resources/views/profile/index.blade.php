@@ -1812,6 +1812,67 @@
     .tab-section.card .btn-secondary:hover {
       background: #e2e8f0 !important;
     }
+
+    /* Mobile Segmented Tabs Bar for App Mode */
+    .mobile-profile-tabs-bar {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .is-viantryp-app .mobile-profile-tabs-bar,
+      body.is-viantryp-app .mobile-profile-tabs-bar,
+      .mobile-profile-tabs-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 4px 2px 14px 2px;
+        margin-bottom: 12px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .mobile-profile-tabs-bar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .mobile-profile-tab-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 16px;
+        border-radius: 999px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        font-family: 'Manrope', sans-serif;
+      }
+
+      .mobile-profile-tab-pill.active {
+        background: var(--accent, #1a7f77) !important;
+        color: #ffffff !important;
+        border-color: var(--accent, #1a7f77) !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 12px rgba(26, 127, 119, 0.25) !important;
+      }
+
+      .mobile-profile-tab-pill i {
+        font-size: 13px;
+        color: inherit;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .presentation-option-label {
+        padding: 12px 10px !important;
+      }
+    }
   </style>
 @endpush
 
@@ -1991,6 +2052,29 @@
         <!-- Dashboard Main Content Scroll Container -->
         <div class="dashboard-content-scroll">
           <div class="page-wrapper" style="max-width: 1200px; margin: 0 auto; padding: 40px;">
+            @php
+              $currentReqSection = request('section', request('tab', ($user->account_type === 'agency' ? 'agencia' : 'info')));
+            @endphp
+            <!-- Mobile Segmented Tabs Bar (App Mode) -->
+            <div class="mobile-profile-tabs-bar">
+              <button type="button" class="mobile-profile-tab-pill nav-item {{ in_array($currentReqSection, ['info', 'agencia']) ? 'active' : '' }}" data-section="{{ $user->account_type === 'agency' ? 'agencia' : 'info' }}">
+                <i class="{{ $user->account_type === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
+                <span>{{ $user->account_type === 'agency' ? 'Agencia' : 'Cuenta' }}</span>
+              </button>
+              <button type="button" class="mobile-profile-tab-pill nav-item {{ $currentReqSection === 'tema' ? 'active' : '' }}" data-section="tema">
+                <i class="fas fa-palette"></i>
+                <span>Tema</span>
+              </button>
+              <button type="button" class="mobile-profile-tab-pill nav-item {{ $currentReqSection === 'subscription' ? 'active' : '' }}" data-section="subscription">
+                <i class="fas fa-credit-card"></i>
+                <span>Planes</span>
+              </button>
+              <button type="button" class="mobile-profile-tab-pill nav-item {{ $currentReqSection === 'seguridad' ? 'active' : '' }}" data-section="seguridad">
+                <i class="fas fa-shield-alt"></i>
+                <span>Seguridad</span>
+              </button>
+            </div>
+
             <div class="settings-grid">
               <!-- Right Column: MAIN CONTENT -->
               <div class="main-content">
