@@ -37,8 +37,11 @@ Route::middleware('guest')->group(function () {
 // Logout route (authenticated users only)
 Route::middleware('auth')->post('logout', [GoogleAuthController::class , 'logout'])->name('logout');
 
-// Public landing page
+// Public landing page (Redirects logged-in users directly to Mis Viajes)
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('trips.index');
+    }
     return view('landing');
 })->name('home');
 
