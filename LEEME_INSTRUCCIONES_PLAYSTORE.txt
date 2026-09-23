@@ -1,5 +1,5 @@
 ================================================================================
-                    VIANTRYP - RELEASE OFICIAL v20 (1.0.8)
+                    VIANTRYP - RELEASE OFICIAL v21 (1.0.9)
 ================================================================================
 
 Este directorio contiene los archivos oficiales y limpios listos para producción.
@@ -7,10 +7,10 @@ Este directorio contiene los archivos oficiales y limpios listos para producció
 --------------------------------------------------------------------------------
 1. ARCHIVO PARA SUBIR A GOOGLE PLAY STORE CONSOLE:
 --------------------------------------------------------------------------------
-   Archivo: Viantryp-release-v20.aab
+   Archivo: Viantryp-release-v21.aab
    Tipo: Android App Bundle (.aab) firmado y optimizado
-   Version Code: 20
-   Version Name: 1.0.8
+   Version Code: 21
+   Version Name: 1.0.9
    
    PASOS EN GOOGLE PLAY CONSOLE:
    1. Ingresa a https://play.google.com/console
@@ -27,7 +27,7 @@ Este directorio contiene los archivos oficiales y limpios listos para producció
 --------------------------------------------------------------------------------
 2. ARCHIVO PARA INSTALAR Y PROBAR DIRECTO EN CELULAR ANDROID (APK):
 --------------------------------------------------------------------------------
-   Archivo: Viantryp-release-v20.apk
+   Archivo: Viantryp-release-v21.apk
    Tipo: APK firmado listo para instalar directamente en cualquier teléfono.
 
 --------------------------------------------------------------------------------
