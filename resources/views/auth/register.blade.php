@@ -735,59 +735,79 @@
                   await GoogleAuth.initialize({
                     clientId: '68250907387-j3t0d73nqp5q82pc9j2vo6fnekavf5aq.apps.googleusercontent.com',
                     scopes: ['profile', 'email'],
-                    grantOfflineAccess: true,
+                    grantOfflineAccess: false,
                   });
                 }
               } catch(initErr) {}
 
-              const googleUser = await GoogleAuth.signIn();
-              if (googleUser) {
-                let userEmail = googleUser.email || (googleUser.profile && googleUser.profile.email);
-                let googleId = googleUser.id || googleUser.userId || (googleUser.profile && googleUser.profile.id);
-                let idToken = (googleUser.authentication && googleUser.authentication.idToken) || googleUser.idToken;
-                let givenName = googleUser.givenName || googleUser.name || (googleUser.profile && googleUser.profile.givenName) || '';
-                let familyName = googleUser.familyName || (googleUser.profile && googleUser.profile.familyName) || '';
-                let imageUrl = googleUser.imageUrl || (googleUser.profile && googleUser.profile.imageUrl) || '';
+              const origHtml = googleBtn.innerHTML;
+              googleBtn.style.opacity = '0.6';
+              googleBtn.style.pointerEvents = 'none';
 
-                if (!userEmail && idToken) {
-                  try {
-                    const base64Url = idToken.split('.')[1];
-                    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-                    const parsedToken = JSON.parse(jsonPayload);
-                    userEmail = parsedToken.email;
-                    googleId = googleId || parsedToken.sub;
-                    givenName = givenName || parsedToken.given_name || parsedToken.name;
-                    familyName = familyName || parsedToken.family_name;
-                    imageUrl = imageUrl || parsedToken.picture;
-                  } catch(e) {}
-                }
+              try {
+                const googleUser = await GoogleAuth.signIn();
+                if (googleUser) {
+                  let userEmail = googleUser.email || (googleUser.profile && googleUser.profile.email);
+                  let googleId = googleUser.id || googleUser.userId || (googleUser.profile && googleUser.profile.id);
+                  let idToken = (googleUser.authentication && googleUser.authentication.idToken) || googleUser.idToken;
+                  let givenName = googleUser.givenName || googleUser.name || (googleUser.profile && googleUser.profile.givenName) || '';
+                  let familyName = googleUser.familyName || (googleUser.profile && googleUser.profile.familyName) || '';
+                  let imageUrl = googleUser.imageUrl || (googleUser.profile && googleUser.profile.imageUrl) || '';
 
-                if (userEmail || idToken) {
-                  const payload = {
-                    email: userEmail,
-                    idToken: idToken,
-                    google_id: googleId,
-                    givenName: givenName,
-                    familyName: familyName,
-                    imageUrl: imageUrl
-                  };
-                  const response = await fetch('/auth/google/native', {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                  });
-                  const resData = await response.json();
-                  if (resData.success && resData.redirect) {
-                    try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
-                    window.location.href = resData.redirect;
-                    return;
+                  if (!userEmail && idToken) {
+                    try {
+                      const base64Url = idToken.split('.')[1];
+                      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+                      const parsedToken = JSON.parse(jsonPayload);
+                      userEmail = parsedToken.email;
+                      googleId = googleId || parsedToken.sub;
+                      givenName = givenName || parsedToken.given_name || parsedToken.name;
+                      familyName = familyName || parsedToken.family_name;
+                      imageUrl = imageUrl || parsedToken.picture;
+                    } catch(e) {}
+                  }
+
+                  if (userEmail || idToken) {
+                    const payload = {
+                      email: userEmail,
+                      idToken: idToken,
+                      google_id: googleId,
+                      givenName: givenName,
+                      familyName: familyName,
+                      imageUrl: imageUrl
+                    };
+                    const response = await fetch('/auth/google/native', {
+                      method: 'POST',
+                      credentials: 'same-origin',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                      },
+                      body: JSON.stringify(payload)
+                    });
+                    const resData = await response.json();
+                    if (resData.success && resData.redirect) {
+                      try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
+                      window.location.href = resData.redirect;
+                      return;
+                    } else if (resData.message) {
+                      alert(resData.message);
+                    }
+                  } else {
+                    alert('No se pudo obtener el correo de la cuenta de Google.');
                   }
                 }
+              } catch (signInErr) {
+                console.warn('Native Google Auth error:', signInErr);
+                const errMsg = typeof signInErr === 'string' ? signInErr : (signInErr && signInErr.message ? signInErr.message : '');
+                if (errMsg && !errMsg.toLowerCase().includes('cancel')) {
+                  alert('Autenticación fallida: ' + errMsg);
+                }
+              } finally {
+                googleBtn.style.opacity = '1';
+                googleBtn.style.pointerEvents = 'auto';
+                googleBtn.innerHTML = origHtml;
               }
             }
           } catch (err) {
