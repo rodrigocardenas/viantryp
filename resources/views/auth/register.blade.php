@@ -739,36 +739,59 @@
                   });
                 }
               } catch(initErr) {}
+
               const googleUser = await GoogleAuth.signIn();
-              if (googleUser && (googleUser.email || (googleUser.authentication && googleUser.authentication.idToken))) {
-                const payload = {
-                  email: googleUser.email,
-                  idToken: googleUser.authentication ? googleUser.authentication.idToken : null,
-                  google_id: googleUser.id || googleUser.userId,
-                  givenName: googleUser.givenName || googleUser.name,
-                  familyName: googleUser.familyName,
-                  imageUrl: googleUser.imageUrl
-                };
-                const csrfEl = document.querySelector('meta[name="csrf-token"]');
-                const response = await fetch("{{ route('auth.google.native') }}", {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfEl ? csrfEl.getAttribute('content') : ''
-                  },
-                  body: JSON.stringify(payload)
-                });
-                const resData = await response.json();
-                if (resData.success && resData.redirect) {
-                  window.location.href = resData.redirect;
-                  return;
+              if (googleUser) {
+                let userEmail = googleUser.email || (googleUser.profile && googleUser.profile.email);
+                let googleId = googleUser.id || googleUser.userId || (googleUser.profile && googleUser.profile.id);
+                let idToken = (googleUser.authentication && googleUser.authentication.idToken) || googleUser.idToken;
+                let givenName = googleUser.givenName || googleUser.name || (googleUser.profile && googleUser.profile.givenName) || '';
+                let familyName = googleUser.familyName || (googleUser.profile && googleUser.profile.familyName) || '';
+                let imageUrl = googleUser.imageUrl || (googleUser.profile && googleUser.profile.imageUrl) || '';
+
+                if (!userEmail && idToken) {
+                  try {
+                    const base64Url = idToken.split('.')[1];
+                    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+                    const parsedToken = JSON.parse(jsonPayload);
+                    userEmail = parsedToken.email;
+                    googleId = googleId || parsedToken.sub;
+                    givenName = givenName || parsedToken.given_name || parsedToken.name;
+                    familyName = familyName || parsedToken.family_name;
+                    imageUrl = imageUrl || parsedToken.picture;
+                  } catch(e) {}
+                }
+
+                if (userEmail || idToken) {
+                  const payload = {
+                    email: userEmail,
+                    idToken: idToken,
+                    google_id: googleId,
+                    givenName: givenName,
+                    familyName: familyName,
+                    imageUrl: imageUrl
+                  };
+                  const response = await fetch('/auth/google/native', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                  });
+                  const resData = await response.json();
+                  if (resData.success && resData.redirect) {
+                    localStorage.setItem('viantryp_app_mode', '1');
+                    window.location.replace(resData.redirect);
+                    return;
+                  }
                 }
               }
             }
           } catch (err) {
-            console.warn('Native Google Auth fallback:', err);
+            console.warn('Native Google Auth error:', err);
           }
-          window.location.href = "{{ route('auth.google') }}?app=1";
         });
       } else {
         const isAppMode = localStorage.getItem('viantryp_app_mode') === '1' || document.documentElement.classList.contains('is-viantryp-app');
