@@ -25,9 +25,12 @@
     transition: opacity 0.35s ease, visibility 0.35s ease;
   }
 
-  .onboarding-overlay.active {
-    opacity: 1;
-    visibility: visible;
+  .onboarding-overlay.active,
+  html.is-viantryp-app .onboarding-overlay,
+  body.is-viantryp-app .onboarding-overlay {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   /* Viewport Wrapper */

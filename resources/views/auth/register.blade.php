@@ -730,6 +730,15 @@
               GoogleAuth = window.Capacitor.registerPlugin('GoogleAuth');
             }
             if (GoogleAuth) {
+              try {
+                if (typeof GoogleAuth.initialize === 'function') {
+                  await GoogleAuth.initialize({
+                    clientId: '68250907387-j3t0d73nqp5q82pc9j2vo6fnekavf5aq.apps.googleusercontent.com',
+                    scopes: ['profile', 'email'],
+                    grantOfflineAccess: true,
+                  });
+                }
+              } catch(initErr) {}
               const googleUser = await GoogleAuth.signIn();
               if (googleUser && (googleUser.email || (googleUser.authentication && googleUser.authentication.idToken))) {
                 const payload = {
