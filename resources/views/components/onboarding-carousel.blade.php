@@ -25,6 +25,26 @@
     transition: opacity 0.35s ease, visibility 0.35s ease;
   }
 
+  /* Completely suppress scrollbars in App Mode */
+  html.is-viantryp-app,
+  body.is-viantryp-app {
+    overflow: hidden !important;
+    height: 100% !important;
+    max-height: 100vh !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  html.is-viantryp-app::-webkit-scrollbar,
+  body.is-viantryp-app::-webkit-scrollbar,
+  .onboarding-overlay::-webkit-scrollbar,
+  .onboarding-viewport::-webkit-scrollbar,
+  .swiper-slide::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
   .onboarding-overlay.active,
   html.is-viantryp-app .onboarding-overlay,
   body.is-viantryp-app .onboarding-overlay {
@@ -94,6 +114,7 @@
     display: block;
     user-select: none;
     -webkit-user-drag: none;
+    image-rendering: -webkit-optimize-contrast;
   }
 
   /* Bottom Controls & Action Overlay */
@@ -227,22 +248,22 @@
       <div class="swiper-wrapper">
         <!-- Slide 1 -->
         <div class="swiper-slide slide-1">
-          <img src="{{ asset('images/onboarding/app1.png') }}?v=20260921_restored_1a67269" alt="Viantryp" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app1.png') }}" alt="Viantryp" class="onboarding-img" fetchpriority="high">
         </div>
 
         <!-- Slide 2 -->
         <div class="swiper-slide slide-2">
-          <img src="{{ asset('images/onboarding/app2.png') }}?v=20260921_restored_1a67269" alt="Diseña tus viajes en cuestión de minutos" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app2.png') }}" alt="Diseña tus viajes en cuestión de minutos" class="onboarding-img">
         </div>
 
         <!-- Slide 3 -->
         <div class="swiper-slide slide-3">
-          <img src="{{ asset('images/onboarding/app3.png') }}?v=20260921_restored_1a67269" alt="Plasma tu viaje en solo 3 pasos" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app3.png') }}" alt="Plasma tu viaje en solo 3 pasos" class="onboarding-img">
         </div>
 
         <!-- Slide 4 -->
         <div class="swiper-slide slide-4">
-          <img src="{{ asset('images/onboarding/app4.png') }}?v=20260921_restored_1a67269" alt="Todo lo que necesitas en un solo lugar" class="onboarding-img" loading="eager">
+          <img src="{{ asset('images/onboarding/app4.png') }}" alt="Todo lo que necesitas en un solo lugar" class="onboarding-img">
         </div>
       </div>
     </div>
@@ -273,6 +294,17 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <script>
+  // Immediate memory preloading of all slides
+  [
+    '{{ asset("images/onboarding/app1.png") }}',
+    '{{ asset("images/onboarding/app2.png") }}',
+    '{{ asset("images/onboarding/app3.png") }}',
+    '{{ asset("images/onboarding/app4.png") }}'
+  ].forEach(function(src) {
+    var preloadImg = new Image();
+    preloadImg.src = src;
+  });
+
   let onboardingSwiper = null;
 
   function markOnboardingSeen() {
