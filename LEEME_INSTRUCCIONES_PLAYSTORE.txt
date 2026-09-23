@@ -1,0 +1,45 @@
+================================================================================
+                    VIANTRYP - RELEASE OFICIAL v20 (1.0.8)
+================================================================================
+
+Este directorio contiene los archivos oficiales y limpios listos para producción.
+
+--------------------------------------------------------------------------------
+1. ARCHIVO PARA SUBIR A GOOGLE PLAY STORE CONSOLE:
+--------------------------------------------------------------------------------
+   Archivo: Viantryp-release-v20.aab
+   Tipo: Android App Bundle (.aab) firmado y optimizado
+   Version Code: 20
+   Version Name: 1.0.8
+   
+   PASOS EN GOOGLE PLAY CONSOLE:
+   1. Ingresa a https://play.google.com/console
+   2. Selecciona tu app "Viantryp".
+   3. Ve a "Producción" (o "Pruebas cerradas / abiertas" según tu flujo).
+   4. Crea una nueva versión ("Crear nueva versión").
+   5. Arrastra y sube el archivo: Viantryp-release-v20.aab
+   6. En "Notas de la versión" (Release Notes), puedes colocar:
+      - Mejoras en inicio de sesión con Google y cambio de cuentas.
+      - Optimización de experiencia de usuario y diseño visual responsive.
+      - Soporte y ayuda interactiva en la plataforma.
+   7. Guarda, revisa y envía a revisión de Google.
+
+--------------------------------------------------------------------------------
+2. ARCHIVO PARA INSTALAR Y PROBAR DIRECTO EN CELULAR ANDROID (APK):
+--------------------------------------------------------------------------------
+   Archivo: Viantryp-release-v20.apk
+   Tipo: APK firmado listo para instalar directamente en cualquier teléfono.
+
+--------------------------------------------------------------------------------
+3. LLAVE DE FIRMA (KEYSTORE DE SEGURIDAD):
+--------------------------------------------------------------------------------
+   Archivo: viantryp-release-official.keystore
+   Alias: viantryp
+   Clave / Password: viantryp2026
+   Huella SHA-1: 16:0B:1A:58:C0:CA:0A:AA:36:0F:77:EB:30:08:77:8B:92:4E:CF:47
+
+   * IMPORTANTE: Guarda una copia de este archivo .keystore en un lugar seguro
+     (por ejemplo Google Drive o almacenamiento seguro), ya que se usa para
+     firmar todas las futuras actualizaciones de Viantryp en Google Play Store.
+
+================================================================================
