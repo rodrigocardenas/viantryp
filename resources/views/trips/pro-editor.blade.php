@@ -1061,6 +1061,7 @@
 
   <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>
   <script src="{{ asset('js/trips/pro-editor.js') }}?v={{ time() }}"></script>
+  <script src="{{ asset('js/pull-to-refresh.js') }}?v={{ time() }}"></script>
 </body>
 
 </html>

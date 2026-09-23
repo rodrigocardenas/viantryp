@@ -338,6 +338,7 @@
             });
         }
     </script>
+    <script src="{{ asset('js/pull-to-refresh.js') }}?v={{ time() }}"></script>
 </body>
 </html>
 
