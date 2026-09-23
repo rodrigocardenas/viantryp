@@ -739,9 +739,9 @@ body {
 }
 
 .day-tab-delete {
-  width: 16px;
-  height: 16px;
-  border-radius: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
   background: transparent;
   border: none;
   color: var(--text-dim);
@@ -753,44 +753,45 @@ body {
   padding: 0;
   transition: all .14s;
   flex-shrink: 0;
-  opacity: .35;
-  user-select: none
+  opacity: .5;
+  user-select: none;
+  margin-left: 3px;
 }
 
 .day-tab:hover .day-tab-delete {
-  opacity: .7
+  opacity: .85;
 }
 
 .day-tab.active .day-tab-delete {
-  opacity: .5;
-  color: var(--accent)
+  opacity: .75;
+  color: var(--accent);
 }
 
 .day-tab-delete:hover {
-  color: #e53e3e !important;
-  background: rgba(229, 62, 62, .12);
-  border-radius: 3px;
-  opacity: 1 !important
+  color: #ef4444 !important;
+  background: rgba(239, 68, 68, .15);
+  border-radius: 4px;
+  opacity: 1 !important;
 }
 
 .portada-tab .day-tab-delete {
   color: #c0552a;
-  opacity: .35
+  opacity: .5;
 }
 
 .portada-tab.active .day-tab-delete {
   color: #c0552a;
-  opacity: .5
+  opacity: .8;
 }
 
 .cierre-tab .day-tab-delete {
   color: #1a7182;
-  opacity: .35
+  opacity: .5;
 }
 
 .cierre-tab.active .day-tab-delete {
   color: #1a7182;
-  opacity: .5
+  opacity: .8;
 }
 
 .add-day-btn,
@@ -2802,6 +2803,31 @@ body {
   font-style: italic
 }
 
+.day-subbar-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #e53e3e;
+  background: rgba(229, 62, 62, 0.08);
+  border: 1px solid rgba(229, 62, 62, 0.2);
+  cursor: pointer;
+  transition: all .18s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.day-subbar-delete-btn:hover {
+  background: #e53e3e;
+  color: #ffffff;
+  border-color: #e53e3e;
+  box-shadow: 0 2px 8px rgba(229, 62, 62, 0.25);
+}
+
 /* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
    RESPONSIVE Ã¢â‚¬â€ BUILDER (SIDE-BY-SIDE MOD)
    Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
@@ -2959,14 +2985,27 @@ body {
   }
 
   .day-tab {
-    padding: 5px 10px;
+    padding: 5px 8px;
     font-size: 11.5px;
     white-space: nowrap;
   }
 
   .day-tab-delete {
-    display: none;
-    /* Simplify tabs on mobile */
+    display: inline-flex;
+    opacity: .6;
+    width: 18px;
+    height: 18px;
+    margin-left: 2px;
+  }
+
+  .day-tab.active .day-tab-delete {
+    opacity: .9;
+  }
+
+  .day-subbar-delete-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+    gap: 4px;
   }
 
   .day-subbar {

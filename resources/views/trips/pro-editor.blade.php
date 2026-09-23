@@ -556,6 +556,11 @@
         <span class="day-subbar-label" id="daySubbarLabel">DÍA 1</span>
         <input type="date" class="day-date-input" id="dayDateInput" oninput="saveDayDate()" onchange="saveDayDate()">
         <span class="day-date-nodate" id="dayNoDate">Sin fecha asignada</span>
+        <div style="flex:1"></div>
+        <button type="button" class="day-subbar-delete-btn" id="daySubbarDeleteBtn" onclick="confirmDeleteCurrentDay(event)" title="Eliminar este día">
+          <i class="fa-solid fa-trash-can"></i>
+          <span class="day-subbar-delete-text">Eliminar día</span>
+        </button>
       </div>
       <div class="canvas" id="canvas">
         <div class="canvas-inner" id="canvasInner">

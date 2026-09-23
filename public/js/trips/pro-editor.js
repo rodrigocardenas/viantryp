@@ -1186,9 +1186,9 @@ if (dropHintEl) {
 
 // TABS
 document.getElementById('dayTabs').addEventListener('click', e => {
+  if (e.target.closest('.day-tab-delete') || e.target.closest('#addDayBtn')) return;
   const tab = e.target.closest('.day-tab');
   if (!tab) return;
-  if (e.target.classList.contains('day-tab-delete')) return;
   const dayVal = tab.dataset.day;
   currentDay = dayVal === 'portada' ? 'portada' : dayVal === 'cierre' ? 'cierre' : parseInt(dayVal);
   document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
@@ -1309,8 +1309,15 @@ function deleteSection(type) {
 }
 
 // DELETE DAY
+function confirmDeleteCurrentDay(e) {
+  e && e.stopPropagation();
+  if (typeof currentDay === 'number') {
+    confirmDeleteDay(currentDay, e);
+  }
+}
 function confirmDeleteDay(dayIdx, e) {
   e && e.stopPropagation();
+  if (days.length <= 1) return showToast('⚠️', 'No puedes eliminar el único día');
   openConfirm('¿Eliminar Día ' + (dayIdx + 1) + '?', 'Se eliminarán todos los elementos de este día.', () => deleteDay(dayIdx));
 }
 function deleteDay(dayIdx) {
@@ -1340,26 +1347,17 @@ function renderTabs() {
 
   container.innerHTML = '';
 
-  // Portada
-  if (document.querySelector('.portada-tab') || currentDay === 'portada' || (window.proState && window.proState.portadaPhotoUrl !== undefined)) { // Always show if we have data or it's active
-    // Actually let's just show it if it's in the state as existing
-  }
-
-  // Re-render based on current state
-  // This is a bit complex to do perfectly without a full reactive system, 
-  // so let's just make sure the initial labs match the days array.
-
   let html = '';
 
-  // Portada (always present for now to avoid complexity, or check if it was intended to be deleted)
-  html += `<button class="day-tab portada-tab ${currentDay === 'portada' ? 'active' : ''}" data-day="portada"><span class="day-tab-label"><i class="fa-solid fa-sun" style="margin-right:4px"></i> Portada</span></button>`;
+  // Portada
+  html += `<button class="day-tab portada-tab ${currentDay === 'portada' ? 'active' : ''}" data-day="portada"><span class="day-tab-label"><i class="fa-solid fa-sun" style="margin-right:4px"></i> Portada</span><span class="day-tab-delete portada-cierre-delete" onclick="confirmDeleteSection('portada',event)" title="Eliminar portada"><i class="fa-solid fa-trash-can"></i></span></button>`;
 
   // Days
   days.forEach((_, i) => {
     const dateStr = dayDates[i] ? fmtDateTab(dayDates[i]) : ('Día ' + (i + 1));
     html += `<button class="day-tab ${currentDay === i ? 'active' : ''}" data-day="${i}" draggable="true" style="cursor:grab">
       <span class="day-tab-label"><span style="display:inline-flex; gap:1px; margin-right:7px; opacity:0.4; font-size:10px;"><i class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></span>${dateStr}</span>
-      <span class="day-tab-delete" onclick="confirmDeleteDay(${i},event)" title="Eliminar día"><i class="fa-solid fa-times"></i></span>
+      <span class="day-tab-delete" onclick="confirmDeleteDay(${i},event)" title="Eliminar día"><i class="fa-solid fa-xmark"></i></span>
     </button>`;
   });
 
@@ -1367,7 +1365,7 @@ function renderTabs() {
   html += `<button class="add-day-btn" id="addDayBtn" type="button" style="margin: 0 4px; padding: 4px 10px;"><i class="fa-solid fa-plus"></i> Día</button>`;
 
   // Cierre
-  html += `<button class="day-tab cierre-tab ${currentDay === 'cierre' ? 'active' : ''}" data-day="cierre"><span class="day-tab-label"><i class="fa-solid fa-moon" style="margin-right:4px"></i> Cierre</span></button>`;
+  html += `<button class="day-tab cierre-tab ${currentDay === 'cierre' ? 'active' : ''}" data-day="cierre"><span class="day-tab-label"><i class="fa-solid fa-moon" style="margin-right:4px"></i> Cierre</span><span class="day-tab-delete portada-cierre-delete" onclick="confirmDeleteSection('cierre',event)" title="Eliminar cierre"><i class="fa-solid fa-trash-can"></i></span></button>`;
 
   container.innerHTML = html;
 
