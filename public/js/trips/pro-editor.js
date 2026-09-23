@@ -4020,8 +4020,10 @@ function showToast(icon, msg) {
 }
 
 // ============================================================
-// VISTA PREVIA — genera HTML y lo abre en nueva pestaña
+// VISTA PREVIA — genera HTML y lo muestra en modal inmersivo
 // ============================================================
+let currentPreviewHTML = '';
+
 async function openPreview() {
   try {
     // 1. Guardar siempre los cambios antes de abrir la vista previa
@@ -4030,7 +4032,10 @@ async function openPreview() {
         clearTimeout(autoSaveTimer);
       }
       showToast('<i class="fa-solid fa-spinner fa-spin"></i>', 'Guardando cambios...');
-      await performProSave(true);
+      const saveResult = await performProSave(false);
+      if (!saveResult) {
+        console.warn('Advertencia: El guardado no se confirmó exitosamente.');
+      }
     }
 
     const title = document.getElementById('portadaTitle')?.value || document.getElementById('itineraryNameInput')?.value || 'Mi Itinerario';
@@ -4058,7 +4063,7 @@ async function openPreview() {
       return;
     }
 
-    const previewHTML = buildPreviewHTML({
+    currentPreviewHTML = buildPreviewHTML({
       title, destination, portadaSubtitle, 
       hidePriceInPublic: typeof hidePriceInPublic !== 'undefined' ? hidePriceInPublic : false, 
       hideTravelersInPublic: typeof hideTravelersInPublic !== 'undefined' ? hideTravelersInPublic : false, 
@@ -4086,19 +4091,70 @@ async function openPreview() {
       googleClientId: window.viantrypGoogleClientId || ''
     });
 
-    const blob = new Blob([previewHTML], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const win = window.open(url, '_blank');
-    if (!win || win.closed || typeof win.closed === 'undefined') {
-      window.location.href = url;
+    const modal = document.getElementById('proPreviewModal');
+    const iframe = document.getElementById('proPreviewIframe');
+
+    if (modal && iframe) {
+      modal.style.display = 'flex';
+      iframe.srcdoc = currentPreviewHTML;
+      if (typeof showToast === 'function') showToast('<i class="fa-regular fa-eye"></i>', 'Vista previa lista');
+    } else {
+      const blob = new Blob([currentPreviewHTML], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const win = window.open(url, '_blank');
+      if (!win || win.closed || typeof win.closed === 'undefined') {
+        window.location.href = url;
+      }
+      if (typeof showToast === 'function') showToast('<i class="fa-regular fa-eye"></i>', 'Vista previa lista');
     }
-    if (typeof showToast === 'function') showToast('<i class="fa-regular fa-eye"></i>', 'Vista previa lista');
   } catch (err) {
     console.error('Error in openPreview:', err);
     alert('Ocurrió un error al abrir la vista previa: ' + err.message);
   }
 }
+
+function closeProPreviewModal() {
+  const modal = document.getElementById('proPreviewModal');
+  const iframe = document.getElementById('proPreviewIframe');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+  if (iframe) {
+    iframe.srcdoc = '';
+  }
+}
+
+function openPreviewInNewTab() {
+  if (!currentPreviewHTML) return;
+  const blob = new Blob([currentPreviewHTML], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+
+// ESC key and Android hardware back button handler for preview modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('proPreviewModal');
+    if (modal && modal.style.display !== 'none') {
+      closeProPreviewModal();
+    }
+  }
+});
+
+if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+  try {
+    window.Capacitor.Plugins.App.addListener('backButton', () => {
+      const modal = document.getElementById('proPreviewModal');
+      if (modal && modal.style.display !== 'none') {
+        closeProPreviewModal();
+      }
+    });
+  } catch(e) {}
+}
+
 window.openPreview = openPreview;
+window.closeProPreviewModal = closeProPreviewModal;
+window.openPreviewInNewTab = openPreviewInNewTab;
 
 // buildPreviewHTML() has been moved to pro-viewer.js
 

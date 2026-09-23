@@ -1043,6 +1043,25 @@
   </script>
   <x-upgrade-modal />
   <x-copilot-widget :trip="$trip" />
+
+  <!-- FULLSCREEN PRO PREVIEW MODAL -->
+  <div id="proPreviewModal" class="pro-preview-overlay" style="display:none;">
+    <div class="pro-preview-header-bar">
+      <div class="pro-preview-bar-left">
+        <span class="pro-preview-badge"><i class="fa-solid fa-eye"></i> Vista Previa</span>
+      </div>
+      <div class="pro-preview-bar-actions">
+        <button type="button" class="pro-preview-open-tab-btn" onclick="openPreviewInNewTab()" title="Abrir en pestaña nueva">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> <span class="hide-mobile">Nueva pestaña</span>
+        </button>
+        <button type="button" class="pro-preview-close-btn" onclick="closeProPreviewModal()" title="Cerrar vista previa">
+          <i class="fa-solid fa-times"></i> <span>Cerrar</span>
+        </button>
+      </div>
+    </div>
+    <iframe id="proPreviewIframe" class="pro-preview-iframe" title="Vista Previa de Itinerario"></iframe>
+  </div>
+
   <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>
   <script src="{{ asset('js/trips/pro-editor.js') }}?v={{ time() }}"></script>
 </body>

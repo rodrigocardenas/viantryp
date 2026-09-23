@@ -3116,6 +3116,12 @@ window.openGalleryLightbox = function(photos, startIndex = 0) {
 
 window.closePreviewWindow = function() {
   try {
+    if (window.parent && window.parent !== window && typeof window.parent.closeProPreviewModal === 'function') {
+      window.parent.closeProPreviewModal();
+      return;
+    }
+  } catch(e) {}
+  try {
     if (window.opener && !window.opener.closed) {
       window.close();
       return;

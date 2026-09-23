@@ -3729,3 +3729,132 @@ body {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   border: 1px solid var(--border, #e2e8f0);
 }
+
+/* ─── FULLSCREEN PRO PREVIEW MODAL ─── */
+.pro-preview-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999999;
+  background: #0f172a;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeInPreviewModal .2s ease forwards;
+}
+
+.pro-preview-header-bar {
+  height: 48px;
+  background: #0d1e2e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.pro-preview-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pro-preview-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(30, 170, 206, 0.18);
+  color: #1eaace;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(30, 170, 206, 0.35);
+  font-family: 'Poppins', sans-serif;
+}
+
+.pro-preview-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pro-preview-open-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .18s;
+  font-family: 'Inter', sans-serif;
+}
+
+.pro-preview-open-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+.pro-preview-close-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: #ef4444;
+  border: 1px solid #ef4444;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .18s;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
+}
+
+.pro-preview-close-btn:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.pro-preview-iframe {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #ffffff;
+}
+
+@keyframes fadeInPreviewModal {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 640px) {
+  .pro-preview-header-bar {
+    height: 44px;
+    padding: 0 10px;
+  }
+  .pro-preview-header-bar .hide-mobile {
+    display: none;
+  }
+  .pro-preview-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+}
