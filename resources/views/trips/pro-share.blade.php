@@ -29,7 +29,7 @@
         proState.userName = window.viantrypUserName;
         proState.status = window.proStatus;
         proState.origin = window.location.origin;
-        proState.themeColor = "{{ $trip->user->theme_color ?? 'default' }}";
+        proState.themeColor = "{{ $trip->user->theme_color ?? 'gold' }}";
         proState.displayNameType = "{{ $trip->user->display_name_type ?? 'personal' }}";
         proState.agencyLogo = "{{ $trip->user->agency_logo ? asset('storage/' . $trip->user->agency_logo) : '' }}";
         proState.agencyName = @json($trip->user->agency_name ?? '');

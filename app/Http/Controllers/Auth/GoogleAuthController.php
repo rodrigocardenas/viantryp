@@ -59,6 +59,7 @@ class GoogleAuthController extends Controller
                         'avatar' => $googleUser->getAvatar(),
                         'password' => bcrypt(uniqid()), // Random password for OAuth users
                         'plan' => User::PLAN_BASICO,
+                        'theme_color' => 'gold',
                         'country' => request()->header('cf-ipcountry') ?? null,
                     ]);
 
@@ -71,7 +72,7 @@ class GoogleAuthController extends Controller
             Auth::login($user);
 
             if ($user->wasRecentlyCreated) {
-                return redirect()->intended(route('profile.index'))->with('success', '¡Bienvenido! Tu cuenta ha sido creada con Google. Por favor, completa tu perfil.');
+                return redirect()->intended(route('trips.index'))->with('success', '¡Bienvenido! Tu cuenta ha sido creada con Google.');
             }
 
             return redirect()->intended(route('trips.index'))->with('success', '¡Bienvenido! Has iniciado sesión con Google.');

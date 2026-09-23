@@ -7,8 +7,87 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap"
     rel="stylesheet">
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
   <style>
+  /* Driver.js Custom Styles (Consistent with Edit Pro) */
+  .driver-popover {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e2e8ef;
+    font-family: 'Manrope', sans-serif;
+  }
+
+  .driver-popover-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: #1a2e2c;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .driver-popover-description {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.5;
+    margin-top: 8px;
+  }
+
+  .driver-popover-btn {
+    background: #1ebdb1;
+    color: white;
+    text-shadow: none;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 0.2s;
+  }
+
+  .driver-popover-btn:hover {
+    background: #16a69b;
+  }
+
+  .driver-popover-close-btn {
+    color: #8f9db0;
+  }
+
+  .driver-popover-arrow {
+    border-color: #ffffff;
+  }
+
+  @media (max-width: 768px) {
+    .driver-popover {
+      max-width: min(calc(100vw - 32px), 360px) !important;
+      padding: 16px 18px !important;
+      border-radius: 14px !important;
+      box-sizing: border-box !important;
+    }
+    .driver-popover-title {
+      font-size: 18px !important;
+    }
+    .driver-popover-description {
+      font-size: 13px !important;
+      line-height: 1.4 !important;
+    }
+    .driver-popover-footer {
+      margin-top: 12px !important;
+      gap: 6px !important;
+    }
+    .driver-popover-btn {
+      padding: 7px 12px !important;
+      font-size: 11.5px !important;
+      min-height: 34px !important;
+    }
+    .driver-popover-progress-text {
+      font-size: 11px !important;
+    }
+  }
+
     :root {
       --accent-light: #e6f4f3;
       --accent-dark: #115e57;
@@ -818,15 +897,6 @@
       }
     }
 
-    /* Multi-element highlight helper */
-    .tutorial-extra-highlight {
-      z-index: 1000004 !important;
-      /* Above Driver.js overlay */
-      position: relative !important;
-      transition: all 0.2s ease !important;
-      background: var(--accent-light) !important;
-      color: var(--accent) !important;
-    }
 
     /* ==========================================================================
                NUEVO DISEÑO DASHBOARD (Mismo estilo que Mis Viajes)
@@ -1804,13 +1874,55 @@
                 <i class="fas fa-shield-alt"></i>
                 <span>Seguridad de la Cuenta</span>
               </button>
-              <a href="mailto:hola@viantryp.com" class="sidebar-sublink">
+              <a href="{{ route('contact') }}" target="_blank" class="sidebar-sublink">
                 <i class="fas fa-headset"></i>
                 <span>Soporte y Ayuda</span>
               </a>
             </div>
           </div>
         </nav>
+
+        @php
+          $tripCount = \App\Models\Trip::where('user_id', $user->id)->count();
+          $editorCount = \DB::table('trip_collaborators')
+              ->join('trips', 'trip_collaborators.trip_id', '=', 'trips.id')
+              ->where('trips.user_id', $user->id)
+              ->where('trip_collaborators.role', 'editor')
+              ->distinct('trip_collaborators.email')
+              ->count();
+          $limits = $user->getPlanLimits();
+          $maxTrips = $limits['max_trips'] ?? 5;
+          $maxEditors = $limits['max_editors'] ?? 0;
+          $tripPercent = min(100, ($tripCount / max(1, $maxTrips)) * 100);
+          $editorPercent = $maxEditors > 0 ? min(100, ($editorCount / $maxEditors) * 100) : 0;
+        @endphp
+        <div class="sidebar-footer">
+          <div class="footer-title">USO DEL PLAN</div>
+          <div class="usage-item">
+            <div class="usage-label-row">
+              <span><i class="fas fa-route"></i> Itinerarios</span>
+              <span>{{ $tripCount }} / {{ $maxTrips >= 1000000 ? '∞' : $maxTrips }}</span>
+            </div>
+            <div class="usage-progress-bar">
+              <div class="usage-progress-fill" style="width: {{ $tripPercent }}%"></div>
+            </div>
+          </div>
+          <div class="usage-item">
+            <div class="usage-label-row">
+              <span><i class="fas fa-users"></i> Colaboradores</span>
+              <span>{{ $editorCount }} / {{ $maxEditors >= 1000000 ? '∞' : $maxEditors }}</span>
+            </div>
+            <div class="usage-progress-bar">
+              <div class="usage-progress-fill" style="width: {{ $editorPercent }}%"></div>
+            </div>
+          </div>
+          <div class="usage-upgrade-row">
+            <span class="plan-badge">{{ $user->plan_display_name }}</span>
+            <a href="javascript:void(0)" onclick="openUpgradeModal(true)" class="btn-upgrade-link">
+              Mejorar plan <i class="fas fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </div>
 
       </aside>
 
@@ -1827,6 +1939,11 @@
           </a>
 
           <div class="topbar-actions">
+            <!-- Tutorial / Ayuda -->
+            <button type="button" onclick="initProfileTour(true)" class="btn-topbar-icon" title="Ver tutorial y ayuda" id="btnHelpTour">
+              <i class="fas fa-circle-question" style="font-size: 16px;"></i>
+            </button>
+
             <!-- Notifications -->
             <div class="noti-wrapper">
               <button id="notiTrigger" class="btn-topbar-icon" title="Notificaciones">
@@ -1978,162 +2095,179 @@
                   <div class="card tab-section {{ $user->account_type === 'agency' ? 'active' : '' }}" id="section-agencia">
                     <div class="card-body">
 
-                      <!-- OPCIONES DE PRESENTACIÓN (al tope) -->
-                      <div style="margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid #f1f5f9;">
+                      <!-- 1. OPCIONES DE PRESENTACIÓN (Selector superior) -->
+                      <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9;">
                         <label
-                          style="font-size: 13px; font-weight: 700; color: var(--text); text-transform: none; margin-bottom: 3px; display: block; letter-spacing: normal; font-family: 'Manrope', sans-serif;">¿Cómo
-                          quieres presentarte?</label>
+                          style="font-size: 14px; font-weight: 700; color: #0f172a; text-transform: none; margin-bottom: 4px; display: block; letter-spacing: normal; font-family: 'Manrope', sans-serif;">
+                          ¿Cómo quieres presentarte?
+                        </label>
                         <p
-                          style="font-size: 12px; color: var(--muted); margin: 0 0 12px; line-height: 1.4; font-weight: 500;">
-                          Elige la identidad visual que verán tus viajeros en sus itinerarios.</p>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                          style="font-size: 12.5px; color: #64748b; margin: 0 0 16px; line-height: 1.4; font-weight: 500;">
+                          Elige la identidad visual que verán tus viajeros en sus itinerarios.
+                        </p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
                           <!-- Option Agent -->
                           <label class="presentation-option-label" id="label-present-agent"
-                            style="display: flex; flex-direction: column; padding: 12px 14px; background: white; border: 1.5px solid {{ $user->display_name_type === 'personal' ? 'var(--accent)' : 'var(--border)' }}; border-radius: 10px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); text-transform: none; letter-spacing: normal;">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 3px;">
+                            style="display: flex; flex-direction: column; padding: 14px 16px; background: white; border: 1.5px solid {{ $user->display_name_type === 'personal' ? 'var(--accent)' : '#e2e8f0' }}; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.02); text-transform: none; letter-spacing: normal;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
                               <input type="radio" name="displayNameType" value="personal" {{ $user->display_name_type === 'personal' ? 'checked' : '' }}
-                                style="width: 14px; height: 14px; accent-color: var(--accent);"
-                                onchange="updatePresentationBorder()">
-                              <span style="font-size: 13px; font-weight: 600; color: var(--text);">Como agente</span>
+                                style="width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer;"
+                                onchange="handleIdentityTypeChange()">
+                              <span style="font-size: 13.5px; font-weight: 700; color: #0f172a;">Como agente</span>
                             </div>
-                            <span style="font-size: 11px; color: var(--muted); line-height: 1.3; padding-left: 22px;">Tu
-                              nombre personal y foto.</span>
+                            <span style="font-size: 11.5px; color: #64748b; line-height: 1.3; padding-left: 26px;">
+                              Tu nombre personal y foto.
+                            </span>
                           </label>
                           <!-- Option Agency -->
                           <label class="presentation-option-label" id="label-present-agency"
-                            style="display: flex; flex-direction: column; padding: 12px 14px; background: white; border: 1.5px solid {{ $user->display_name_type === 'agency' ? 'var(--accent)' : 'var(--border)' }}; border-radius: 10px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); text-transform: none; letter-spacing: normal;">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 3px;">
+                            style="display: flex; flex-direction: column; padding: 14px 16px; background: white; border: 1.5px solid {{ $user->display_name_type === 'agency' ? 'var(--accent)' : '#e2e8f0' }}; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.02); text-transform: none; letter-spacing: normal;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
                               <input type="radio" name="displayNameType" value="agency" {{ $user->display_name_type === 'agency' ? 'checked' : '' }}
-                                style="width: 14px; height: 14px; accent-color: var(--accent);"
-                                onchange="updatePresentationBorder()">
-                              <span style="font-size: 13px; font-weight: 600; color: var(--text);">Como agencia</span>
+                                style="width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer;"
+                                onchange="handleIdentityTypeChange()">
+                              <span style="font-size: 13.5px; font-weight: 700; color: #0f172a;">Como agencia</span>
                             </div>
-                            <span style="font-size: 11px; color: var(--muted); line-height: 1.3; padding-left: 22px;">Logo,
-                              nombre corporativo y eslogan.</span>
+                            <span style="font-size: 11.5px; color: #64748b; line-height: 1.3; padding-left: 26px;">
+                              Logo, nombre corporativo y eslogan.
+                            </span>
                           </label>
                         </div>
                       </div>
 
-                      <!-- DATOS DEL AGENTE -->
-                      <div class="section-label" style="margin-bottom: 6px; font-size: 10px;">Datos del Agente</div>
+                      <!-- 2. BLOQUE: DATOS DEL AGENTE (Visible solo si 'personal') -->
+                      <div id="block-identity-agent" style="{{ $user->display_name_type === 'personal' ? '' : 'display: none;' }}">
+                        <div class="section-label" style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">
+                          Datos del Agente
+                        </div>
 
-                      <!-- Avatar Section (Finpay style) -->
-                      <div class="avatar-finpay-section"
-                        style="display: flex; align-items: center; gap: 20px; margin-bottom: 12px; border-bottom: 1px solid #f1f5f9; padding-bottom: 18px;">
-                        <div class="avatar-wrapper" style="position: relative; display: inline-block;">
-                          <div class="avatar-big" id="avatarBig"
-                            style="width: 80px; height: 80px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-size: 26px; font-weight: 700; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer;">
-                            <span id="avatarInitial"
-                              style="{{ $user->avatar ? 'display:none' : '' }}; color: #ffffff;">{{ $user->display_initials }}</span>
-                            <img id="avatarImg"
-                              src="{{ $user->avatar ? (str_starts_with($user->avatar, 'http') ? $user->avatar : asset('storage/' . $user->avatar)) : '' }}"
-                              alt=""
-                              style="{{ $user->avatar ? '' : 'display:none' }}; width: 100%; height: 100%; object-fit: cover;">
+                        <!-- Componente de Carga Unificado: Foto del Agente (80x80) -->
+                        <div class="avatar-finpay-section"
+                          style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9;">
+                          <div class="avatar-wrapper" style="position: relative; display: inline-block;">
+                            <div class="avatar-big" id="avatarBig"
+                              style="width: 80px; height: 80px; border-radius: 14px; background: var(--accent-light); color: var(--accent); font-size: 26px; font-weight: 700; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1.5px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer;"
+                              onclick="document.getElementById('avatarUpload').click();" title="Haz clic para subir foto">
+                              <span id="avatarInitial" style="{{ $user->avatar ? 'display:none;' : '' }} color: var(--accent);">
+                                {{ $user->display_initials }}
+                              </span>
+                              <img id="avatarImg"
+                                src="{{ $user->avatar ? (str_starts_with($user->avatar, 'http') ? $user->avatar : asset('storage/' . $user->avatar)) : '' }}"
+                                alt=""
+                                style="{{ $user->avatar ? '' : 'display:none;' }} width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <input type="file" id="avatarUpload" accept="image/jpeg, image/png, image/webp" style="display:none">
                           </div>
-                          <input type="file" id="avatarUpload" accept="image/jpeg, image/png, image/webp"
-                            style="display:none">
+                          <div class="avatar-actions-col" style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                              <button type="button" onclick="document.getElementById('avatarUpload').click();"
+                                class="btn-upload-new"
+                                style="background: var(--accent); color: #ffffff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s;">
+                                {{ $user->avatar ? 'Cambiar foto' : 'Subir foto' }}
+                              </button>
+                              <button type="button" id="avatarDeleteBtn"
+                                style="{{ $user->avatar ? '' : 'display:none;' }} background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s;"
+                                onmouseover="this.style.background='#f1f5f9';" onmouseout="this.style.background='#f8fafc';">
+                                Eliminar foto
+                              </button>
+                            </div>
+                            <span style="font-size: 11.5px; color: #94a3b8;">JPG, PNG o WEBP · Máx. 2MB</span>
+                          </div>
                         </div>
-                        <div class="avatar-actions-col" style="display: flex; gap: 10px; align-items: center;">
-                          <button type="button" onclick="document.getElementById('avatarUpload').click();"
-                            class="btn-upload-new"
-                            style="background: var(--accent); color: #ffffff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s;">
-                            Subir foto
-                          </button>
-                          <button type="button" id="avatarDeleteBtn"
-                            style="{{ $user->avatar ? '' : 'display:none' }}; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s;"
-                            onmouseover="this.style.background='#e2e8f0';" onmouseout="this.style.background='#f1f5f9';">
-                            Eliminar foto
-                          </button>
+
+                        <!-- Grid de 2 columnas (gap-4 / 16px) -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                          <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Nombre completo</label>
+                            <input type="text" id="inputNombre" value="{{ trim($user->name . ' ' . $user->last_name) }}" placeholder="Tu nombre">
+                          </div>
+                          <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Correo Electrónico</label>
+                            <input type="email" value="{{ auth()->user()->email }}" disabled style="background: #f8fafc; cursor: not-allowed; color: #94a3b8;">
+                          </div>
+                          <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Teléfono del Agente</label>
+                            <input type="tel" id="inputPhone" value="{{ $user->phone }}" placeholder="+57 300 000 0000">
+                          </div>
+                          <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">País del Agente</label>
+                            <select id="inputCountry">
+                              <option value="Colombia" {{ $user->country == 'Colombia' ? 'selected' : '' }}>Colombia</option>
+                              <option value="México" {{ $user->country == 'México' ? 'selected' : '' }}>México</option>
+                              <option value="Argentina" {{ $user->country == 'Argentina' ? 'selected' : '' }}>Argentina</option>
+                              <option value="España" {{ $user->country == 'España' ? 'selected' : '' }}>España</option>
+                              <option value="Chile" {{ $user->country == 'Chile' ? 'selected' : '' }}>Chile</option>
+                              <option value="Perú" {{ $user->country == 'Perú' ? 'selected' : '' }}>Perú</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
 
-                      <div class="form-row">
-                        <div class="form-group">
-                          <label>Nombre completo</label>
-                          <input type="text" id="inputNombre" value="{{ trim($user->name . ' ' . $user->last_name) }}">
-                        </div>
-                        <div class="form-group">
-                          <label>Correo Electrónico</label>
-                          <input type="email" value="{{ auth()->user()->email }}" disabled>
-                        </div>
-                      </div>
-                      <div class="form-row">
-                        <div class="form-group">
-                          <label>Teléfono del Agente</label>
-                          <input type="tel" id="inputPhone" value="{{ $user->phone }}" placeholder="+57 300 000 0000">
-                        </div>
-                        <div class="form-group">
-                          <label>País del Agente</label>
-                          <select id="inputCountry">
-                            <option value="Colombia" {{ $user->country == 'Colombia' ? 'selected' : '' }}>Colombia</option>
-                            <option value="México" {{ $user->country == 'México' ? 'selected' : '' }}>México</option>
-                            <option value="Argentina" {{ $user->country == 'Argentina' ? 'selected' : '' }}>Argentina</option>
-                            <option value="España" {{ $user->country == 'España' ? 'selected' : '' }}>España</option>
-                            <option value="Chile" {{ $user->country == 'Chile' ? 'selected' : '' }}>Chile</option>
-                            <option value="Perú" {{ $user->country == 'Perú' ? 'selected' : '' }}>Perú</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <!-- DATOS DE LA AGENCIA -->
-                      <div class="section-label" style="margin-top: 8px; margin-bottom: 6px; font-size: 10px;">Datos de la
-                        Agencia</div>
-
-                      <div class="form-row">
-                        <div class="form-group">
-                          <label>Nombre de la Agencia</label>
-                          <input type="text" id="inputAgencia" value="{{ $user->agency_name }}">
-                        </div>
-                        <div class="form-group">
-                          <label>Eslogan</label>
-                          <input type="text" id="inputSlogan" value="{{ $user->agency_slogan }}"
-                            placeholder="Tu agencia de confianza">
-                        </div>
-                      </div>
-                      <div class="form-row">
-                        <div class="form-group">
-                          <label>Sitio Web</label>
-                          <input type="text" id="inputWebsite" value="{{ $user->agency_website }}"
-                            placeholder="https://miagencia.com">
-                        </div>
-                        <div class="form-group">
-                          <label>WhatsApp</label>
-                          <input type="tel" id="inputWhatsapp" value="{{ $user->agency_whatsapp }}"
-                            placeholder="+57 300 000 0000">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label style="display:flex; align-items:center; justify-content:space-between;">
-                          <span>Logo de la Agencia</span>
+                      <!-- 3. BLOQUE: DATOS DE LA AGENCIA (Visible solo si 'agency') -->
+                      <div id="block-identity-agency" style="{{ $user->display_name_type === 'agency' ? '' : 'display: none;' }}">
+                        <div class="section-label" style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+                          <span>Datos de la Agencia</span>
                           @if(!in_array(strtolower($user->plan ?? 'básico'), ['colaborativo', 'corporativo']))
-                            <span style="font-size:11px; font-weight:700; color:#0e5a6a; background:#e0f2fe; padding:2px 8px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;">
+                            <span style="font-size:11px; font-weight:700; color:#0e5a6a; background:#e0f2fe; padding:3px 10px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;">
                               <i class="fa-solid fa-lock" style="font-size:10px;"></i> Exclusivo Plan Negocios
                             </span>
                           @endif
-                        </label>
-                        <div class="logo-upload-area" id="logoDropArea">
-                          <input type="file" accept="image/*">
-                          <div id="logoPlaceholder">
-                            <div class="upload-icon">
-                              <svg viewBox="0 0 24 24">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                <polyline points="17 8 12 3 7 8" />
-                                <line x1="12" y1="3" x2="12" y2="15" />
-                              </svg>
+                        </div>
+
+                        <!-- Componente de Carga Unificado: Logo de la Agencia (80x80) -->
+                        <div class="logo-finpay-section"
+                          style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9;">
+                          <div class="logo-wrapper" style="position: relative; display: inline-block;">
+                            <div id="agencyLogoBox"
+                              style="width: 80px; height: 80px; border-radius: 14px; background: #f8fafc; border: 1.5px solid #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer;"
+                              onclick="document.getElementById('agencyLogoFileInput').click();" title="Haz clic para subir logo">
+                              <div id="logoPlaceholder" style="{{ $user->agency_logo ? 'display:none;' : '' }} display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8;">
+                                <i class="fas fa-building" style="font-size: 26px; color: #94a3b8;"></i>
+                              </div>
+                              <img id="logoPreview" class="logo-preview"
+                                src="{{ $user->agency_logo ? (str_starts_with($user->agency_logo, 'http') ? $user->agency_logo : asset('storage/' . $user->agency_logo)) : '' }}"
+                                alt="Logo"
+                                style="{{ $user->agency_logo ? '' : 'display:none;' }} width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
                             </div>
-                            <div class="upload-text">Sube el logo de tu agencia</div>
-                            <div class="upload-hint">PNG, SVG o JPG · Máx. 2MB · Recomendado 200×200px</div>
+                            <input type="file" id="agencyLogoFileInput" accept="image/*" style="display:none">
                           </div>
-                          <img id="logoPreview" class="logo-preview"
-                            src="{{ $user->agency_logo ? (str_starts_with($user->agency_logo, 'http') ? $user->agency_logo : asset('storage/' . $user->agency_logo)) : '' }}"
-                            alt="" style="{{ $user->agency_logo ? '' : 'display:none' }}">
+                          <div class="logo-actions-col" style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                              <button type="button" onclick="document.getElementById('agencyLogoFileInput').click();"
+                                class="btn-upload-new"
+                                style="background: var(--accent); color: #ffffff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s;">
+                                {{ $user->agency_logo ? 'Cambiar logo' : 'Subir logo' }}
+                              </button>
+                            </div>
+                            <span style="font-size: 11.5px; color: #94a3b8;">PNG, SVG o JPG · Máx. 2MB · Recomendado 200×200px</span>
+                          </div>
+                        </div>
+
+                        <!-- Grid de 2 columnas (gap-4 / 16px) -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                          <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Nombre de la Agencia</label>
+                            <input type="text" id="inputAgencia" value="{{ $user->agency_name }}" placeholder="Nombre de tu empresa">
+                          </div>
+                          <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Eslogan</label>
+                            <input type="text" id="inputSlogan" value="{{ $user->agency_slogan }}" placeholder="Tu agencia de confianza">
+                          </div>
+                          <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Sitio Web</label>
+                            <input type="text" id="inputWebsite" value="{{ $user->agency_website }}" placeholder="https://miagencia.com">
+                          </div>
+                          <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">WhatsApp</label>
+                            <input type="tel" id="inputWhatsapp" value="{{ $user->agency_whatsapp }}" placeholder="+57 300 000 0000">
+                          </div>
                         </div>
                       </div>
 
-                      <div class="btn-row" style="margin-top: 8px;">
-                        <button class="btn-save" id="saveAgencyInfo">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.5">
+                      <!-- BOTÓN GUARDAR INFORMACIÓN (Alineado a la derecha) -->
+                      <div class="btn-row" style="margin-top: 24px; display: flex; justify-content: flex-end;">
+                        <button class="btn-save" id="saveAgencyInfo" style="padding: 11px 28px; font-size: 14px;">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
                             <polyline points="17 21 17 13 7 13 7 21" />
                             <polyline points="7 3 7 8 15 8" />
@@ -2142,19 +2276,22 @@
                         </button>
                       </div>
 
-                      <div style="border-top: 1px solid #f0f2f5; margin: 20px 0 16px; padding-top: 0;"></div>
+                      <div style="border-top: 1px solid #f0f2f5; margin: 24px 0 20px; padding-top: 0;"></div>
 
+                      <!-- Switch to Personal Profile Footer -->
                       <div
-                        style="display: flex; align-items: center; justify-content: space-between; padding: 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; flex-wrap: wrap; gap: 12px;">
+                        style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; flex-wrap: wrap; gap: 12px;">
                         <div style="flex: 1; min-width: 200px;">
                           <h3
-                            style="font-size: 13px; font-weight: 800; color: #0f172a; margin: 0 0 3px; font-family: 'DM Sans', sans-serif;">
-                            ¿Usas Viantryp para viajes personales?</h3>
-                          <p style="font-size: 11px; color: #64748b; margin: 0; line-height: 1.4; font-weight: 500;">
-                            Desactiva la vista de marca corporativa cuando quieras.</p>
+                            style="font-size: 13.5px; font-weight: 800; color: #0f172a; margin: 0 0 3px; font-family: 'Manrope', sans-serif;">
+                            ¿Usas Viantryp para viajes personales?
+                          </h3>
+                          <p style="font-size: 11.5px; color: #64748b; margin: 0; line-height: 1.4; font-weight: 500;">
+                            Desactiva la vista de marca corporativa cuando quieras.
+                          </p>
                         </div>
                         <button type="button" onclick="requestChangeAccountType('personal')" class="p-btn"
-                          style="white-space: nowrap; width: auto; margin: 0; padding: 8px 16px; background: var(--accent); color: white; border-color: var(--accent); border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.2s;">
+                          style="white-space: nowrap; width: auto; margin: 0; padding: 8px 18px; background: var(--accent); color: white; border-color: var(--accent); border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.2s;">
                           Cambiar a Perfil Personal
                         </button>
                       </div>
@@ -2169,8 +2306,8 @@
                     <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Elige el color principal que
                       aparecerá en todos tus itinerarios y propuestas de viaje.</p>
 
-                    <div class="theme-grid" id="themeGrid" data-selected="{{ $user->theme_color ?? 'default' }}">
-                      <div class="theme-option {{ ($user->theme_color ?? 'default') == 'default' ? 'selected' : '' }}"
+                    <div class="theme-grid" id="themeGrid" data-selected="{{ $user->theme_color ?? 'gold' }}">
+                      <div class="theme-option {{ $user->theme_color == 'default' ? 'selected' : '' }}"
                         data-theme="default">
                         <div class="theme-swatch" style="background:#1a7f77"></div>
                         <span class="theme-name">Teal</span>
@@ -2179,7 +2316,7 @@
                         <div class="theme-swatch" style="background:#1a5f8f"></div>
                         <span class="theme-name">Ocean</span>
                       </div>
-                      <div class="theme-option {{ $user->theme_color == 'gold' ? 'selected' : '' }}" data-theme="gold">
+                      <div class="theme-option {{ ($user->theme_color ?? 'gold') == 'gold' ? 'selected' : '' }}" data-theme="gold">
                         <div class="theme-swatch" style="background:#b08000"></div>
                         <span class="theme-name">Gold</span>
                       </div>
@@ -2956,10 +3093,15 @@
       }
 
       // DISPLAY NAME PREFERENCE in real-time
+      window.handleIdentityTypeChange = function () {
+        updatePresentationBorder();
+        updateDisplayNames();
+      };
+
       document.querySelectorAll('input[name="displayNameType"]').forEach(function (radio) {
         radio.addEventListener('change', function () {
           var val = this.value;
-          // Sync radios between sections
+          // Sync radios between sections if multiple exist
           document.querySelectorAll('input[name="displayNameType"]').forEach(r => {
             if (r.value === val) r.checked = true;
           });
@@ -2974,23 +3116,35 @@
         const isPersonal = typeEl.value === 'personal';
         const agentLabel = document.getElementById('label-present-agent');
         const agencyLabel = document.getElementById('label-present-agency');
+        const blockAgent = document.getElementById('block-identity-agent');
+        const blockAgency = document.getElementById('block-identity-agency');
 
         if (agentLabel && agencyLabel) {
           if (isPersonal) {
             agentLabel.style.borderColor = 'var(--accent)';
             agentLabel.style.background = 'var(--accent-light)';
-            agencyLabel.style.borderColor = 'var(--border)';
+            agencyLabel.style.borderColor = '#e2e8f0';
             agencyLabel.style.background = 'white';
           } else {
-            agentLabel.style.borderColor = 'var(--border)';
+            agentLabel.style.borderColor = '#e2e8f0';
             agentLabel.style.background = 'white';
             agencyLabel.style.borderColor = 'var(--accent)';
             agencyLabel.style.background = 'var(--accent-light)';
           }
         }
+
+        if (blockAgent && blockAgency) {
+          if (isPersonal) {
+            blockAgent.style.display = 'block';
+            blockAgency.style.display = 'none';
+          } else {
+            blockAgent.style.display = 'none';
+            blockAgency.style.display = 'block';
+          }
+        }
       }
 
-      // Call initially to set correct active border color
+      // Call initially to set correct active border color and block visibility
       updatePresentationBorder();
 
       window.requestChangeAccountType = function (targetType) {
@@ -3077,7 +3231,7 @@
       }
 
       // LOGO UPLOAD
-      var logoInput = document.querySelector('.logo-upload-area input[type="file"]');
+      var logoInput = document.getElementById('agencyLogoFileInput') || document.querySelector('.logo-upload-area input[type="file"]');
       if (logoInput) {
         logoInput.addEventListener('change', function () {
           var file = this.files[0];
@@ -3110,9 +3264,14 @@
               if (res && res.handled) return;
               if (res.success) {
                 var preview = document.getElementById('logoPreview');
-                preview.src = res.url;
-                preview.style.display = 'block';
-                document.getElementById('logoPlaceholder').style.display = 'none';
+                if (preview) {
+                  preview.src = res.url;
+                  preview.style.display = 'block';
+                }
+                var placeholder = document.getElementById('logoPlaceholder');
+                if (placeholder) {
+                  placeholder.style.display = 'none';
+                }
 
                 updateDisplayNames();
                 showToast('Logo actualizado');
@@ -3210,107 +3369,79 @@
           }
         }, 500);
       }
-
-      // Auto-start tutorial (Solo si ya eligió su plan inicial)
-      @if($user->initial_plan_chosen_at)
+      // Auto-start Profile Tour si viene desde el tour de viajes (?tour=true) o si no lo ha visto
+      const tourUrlParams = new URLSearchParams(window.location.search);
+      if (tourUrlParams.get('tour') === 'true' || (!window.ViantrypTutorials.includes('profile') && {{ auth()->user()->initial_plan_chosen_at ? 'true' : 'false' }})) {
         setTimeout(() => {
-          if (typeof initProfileTutorial === 'function') {
-            initProfileTutorial();
+          if (typeof initProfileTour === 'function') {
+            initProfileTour();
           }
-        }, 1200);
-      @endif
-          });
+        }, 700);
+      }
+    });
 
-    function initProfileTutorial(force = false) {
-      if (!window.driver) return;
+    function initProfileTour(force = false) {
+      if (!window.driver || !window.driver.js) return;
       const driver = window.driver.js.driver;
       const tutorialsSeen = window.ViantrypTutorials || [];
       const hasSeenTutorial = tutorialsSeen.includes('profile');
 
-      if (hasSeenTutorial && !force) return;
+      const urlParams = new URLSearchParams(window.location.search);
+      const isForcedByUrl = urlParams.get('tour') === 'true';
+
+      if (!isForcedByUrl && hasSeenTutorial && !force) return;
+
+      let lastActiveStepIndex = 0;
+      const isMobile = window.innerWidth <= 768;
+      const hasMobileNav = isMobile && document.getElementById('viantrypBottomNav');
+      const stepFinishEl = (hasMobileNav && document.getElementById('tabMisViajes'))
+          ? '#tabMisViajes'
+          : (isMobile ? '.app-topbar-logo' : '.sidebar-link[href*="trips"]');
 
       const driverObj = driver({
         showProgress: true,
+        progressText: '@{{current}} de @{{total}}',
         animate: true,
         allowClose: true,
         nextBtnText: 'Siguiente',
         prevBtnText: 'Anterior',
-        doneBtnText: 'Finalizar',
+        doneBtnText: 'Finalizar e ir a Mis Viajes',
+        onHighlightStarted: (element, step, { state }) => {
+          lastActiveStepIndex = state ? state.activeIndex : 0;
+        },
         steps: [
           {
-            element: '.settings-grid',
+            element: '.tab-section.card:not([style*="display: none"])',
             popover: {
-              title: '¡Tu Perfil!',
-              description: 'Aquí es donde sucede la magia de la personalización. Configura cómo te ven tus clientes y el estilo de tus propuestas.'
+              title: 'Ajustes de Cuenta e Identidad',
+              description: 'Aquí puedes configurar si usas tu perfil Personal o de Agencia. Tu foto, nombre o logo corporativo aparecerán en la cabecera de tus itinerarios para tus viajeros.',
+              position: 'top'
+            },
+            onHighlightStarted: () => {
+              const accountType = '{{ $user->account_type ?? "personal" }}';
+              const targetSection = accountType === 'agency' ? 'agencia' : 'info';
+              const btn = document.querySelector(`.nav-item[data-section="${targetSection}"]`);
+              if (btn) btn.click();
             }
           },
-          @if($user->account_type === 'personal')
-                            {
-              element: '#savePersonalInfo',
-              popover: {
-                title: 'Información Personal',
-                description: 'Configura tus datos básicos de perfil personal para que se muestren de forma simplificada en tus itinerarios.',
-                position: 'top'
-              },
-              onHighlightStarted: () => {
-                const btn = document.querySelector('.nav-item[data-section="info"]');
-                if (btn) btn.click();
-              }
-            },
-          @else
-            {
-              element: '#label-present-agent',
-              popover: {
-                title: 'Identidad de Agente',
-                description: 'Si prefieres presentarte ante tus clientes usando tu nombre y foto personal, marca "Presentación de Agente".',
-                position: 'top'
-              },
-              onHighlightStarted: () => {
-                const btn = document.querySelector('.nav-item[data-section="agencia"]');
-                if (btn) btn.click();
-              }
-            },
-            {
-              element: '#label-present-agency',
-              popover: {
-                title: 'Identidad de Agencia',
-                description: '¿Prefieres usar tu marca corporativa? Sube el logo de tu agencia y selecciona esta opción para mostrar tu imagen empresarial en los itinerarios.',
-                position: 'top'
-              }
-            },
-          @endif
           {
-            element: '#themeGrid',
+            element: '#section-tema',
             popover: {
-              title: 'Personalización Visual',
-              description: '¡Dale color a tus propuestas! Elige el tema cromático que mejor represente tu estilo o marca de viajes. Verás el cambio reflejado al instante.',
+              title: 'Tema e Identidad Visual',
+              description: '¡Personaliza los colores de tu plataforma! Elige la paleta cromática que mejor represente tu estilo o marca de viajes. Verás el cambio reflejado al instante en tus itinerarios.',
               position: 'top'
             },
             onHighlightStarted: () => {
               const btn = document.querySelector('.nav-item[data-section="tema"]');
-              if (btn) {
-                btn.click();
-                btn.classList.add('tutorial-extra-highlight');
-              }
-            },
-            onDeselected: () => {
-              const btn = document.querySelector('.nav-item[data-section="tema"]');
-              if (btn) btn.classList.remove('tutorial-extra-highlight');
+              if (btn) btn.click();
             }
           },
           {
-            element: '.itinerary-preview',
-            popover: {
-              title: 'Vista Previa en Vivo',
-              description: 'Observa al instante cómo luce la cabecera de tu itinerario con los colores y presentación que has seleccionado.'
-            }
-          },
-          {
-            element: '.nav-item[data-section="subscription"]',
+            element: '#section-subscription',
             popover: {
               title: 'Planes y Suscripción',
-              description: 'Revisa los límites de tu plan actual, gestiona tus facturas y mejora tu suscripción cuando lo necesites.',
-              position: 'right'
+              description: 'Revisa los límites de tu plan actual, gestiona tus facturas y mejora tu suscripción cuando necesites más herramientas y capacidad.',
+              position: 'top'
             },
             onHighlightStarted: () => {
               const btn = document.querySelector('.nav-item[data-section="subscription"]');
@@ -3318,14 +3449,44 @@
             }
           },
           {
-            element: '.secondary-nav-link',
+            element: stepFinishEl,
             popover: {
-              title: '¡Empieza a Diseñar!',
-              description: '¡Excelente! Haz clic aquí en "Ir a Mis Viajes" para comenzar a crear propuestas profesionales increíbles para tus clientes.',
-              position: 'bottom'
+              title: '¡Todo Listo!',
+              description: 'Has completado el recorrido por tu perfil y configuración. ¡Ahora regresa a Mis Viajes para comenzar a crear experiencias increíbles!',
+              position: isMobile ? 'top' : 'right'
             }
           }
         ],
+        onPopoverRender: (popover, { config, state }) => {
+          if (driverObj.isLastStep()) {
+            const btns = popover.wrapper.querySelectorAll('button');
+            btns.forEach(btn => {
+              if (btn.classList.contains('driver-popover-next-btn') || 
+                  btn.classList.contains('driver-popover-done-btn') || 
+                  btn.textContent.includes('Finalizar') || 
+                  btn.textContent.includes('Mis Viajes') ||
+                  btn.textContent.includes('Ir a')) {
+                btn.onclick = (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  fetch('{{ route("profile.complete.tutorial") }}', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ tutorial: 'profile' })
+                  }).finally(() => {
+                    window.location.href = "{{ route('trips.index') }}";
+                  });
+                  setTimeout(() => {
+                    window.location.href = "{{ route('trips.index') }}";
+                  }, 300);
+                };
+              }
+            });
+          }
+        },
         onDestroyed: () => {
           if (!hasSeenTutorial) {
             fetch('{{ route("profile.complete.tutorial") }}', {
@@ -3339,6 +3500,9 @@
             if (!window.ViantrypTutorials.includes('profile')) {
               window.ViantrypTutorials.push('profile');
             }
+          }
+          if (lastActiveStepIndex === 3 || isForcedByUrl) {
+            window.location.href = "{{ route('trips.index') }}";
           }
         }
       });

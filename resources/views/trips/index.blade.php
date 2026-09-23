@@ -8,6 +8,84 @@
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
     <style>
+        /* Driver.js Custom Styles (Consistent with Edit Pro) */
+        .driver-popover {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e2e8ef;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .driver-popover-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+            color: #1a2e2c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .driver-popover-description {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        .driver-popover-btn {
+            background: #1ebdb1;
+            color: white;
+            text-shadow: none;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .driver-popover-btn:hover {
+            background: #16a69b;
+        }
+
+        .driver-popover-close-btn {
+            color: #8f9db0;
+        }
+
+        .driver-popover-arrow {
+            border-color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .driver-popover {
+                max-width: min(calc(100vw - 32px), 360px) !important;
+                padding: 16px 18px !important;
+                border-radius: 14px !important;
+                box-sizing: border-box !important;
+            }
+            .driver-popover-title {
+                font-size: 18px !important;
+            }
+            .driver-popover-description {
+                font-size: 13px !important;
+                line-height: 1.4 !important;
+            }
+            .driver-popover-footer {
+                margin-top: 12px !important;
+                gap: 6px !important;
+            }
+            .driver-popover-btn {
+                padding: 7px 12px !important;
+                font-size: 11.5px !important;
+                min-height: 34px !important;
+            }
+            .driver-popover-progress-text {
+                font-size: 11px !important;
+            }
+        }
+
         *,
         *::before,
         *::after {
@@ -29,59 +107,6 @@
             --white: #ffffff;
         }
 
-        /* Driver.js Custom Styles */
-        .driver-popover {
-            background-color: var(--white);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            border: 1px solid var(--bdr);
-            font-family: 'Manrope', sans-serif;
-        }
-
-        .driver-popover-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-weight: 800;
-            font-size: 20px;
-            color: var(--ink);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .driver-popover-description {
-            font-size: 14px;
-            color: var(--gray);
-            line-height: 1.5;
-            margin-top: 8px;
-        }
-
-        .driver-popover-footer {
-            margin-top: 15px;
-        }
-
-        .driver-popover-btn {
-            background: var(--teal);
-            color: white;
-            text-shadow: none;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 12px;
-            transition: all 0.2s;
-        }
-
-        .driver-popover-btn:hover {
-            background: var(--teal2);
-        }
-
-        .driver-popover-close-btn {
-            color: var(--gray2);
-        }
-
-        .driver-popover-arrow {
-            border-color: var(--white);
-        }
 
         .btn-help {
             width: 32px;
@@ -2984,7 +3009,7 @@
                                 <i class="fas fa-shield-alt"></i>
                                 <span>Seguridad de la Cuenta</span>
                             </a>
-                            <a href="mailto:hola@viantryp.com" class="sidebar-sublink">
+                            <a href="{{ route('contact') }}" target="_blank" class="sidebar-sublink">
                                 <i class="fas fa-headset"></i>
                                 <span>Soporte y Ayuda</span>
                             </a>
@@ -3063,7 +3088,10 @@
                             </button>
                         @endif
 
-
+                        <!-- Tutorial / Ayuda -->
+                        <button type="button" onclick="initTripsTour(true)" class="btn-topbar-icon" title="Ver tutorial y ayuda" id="btnHelpTour">
+                            <i class="fas fa-circle-question" style="font-size: 16px;"></i>
+                        </button>
 
                         <!-- Notifications -->
                         <div class="noti-wrapper">
@@ -3688,8 +3716,13 @@
                                                             <path
                                                                 d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
                                                         </svg></div>
-                                                    <h3>No hay viajes en tu lista.</h3>
-                                                    <p> Haz clic en ‘Crear viaje’ y empieza a explorar.</p>
+                                                    @if(($activeMainTab ?? request('filter')) === 'shared')
+                                                        <h3>Aún no te han compartido ningún viaje.</h3>
+                                                        <p>Cuando un organizador o agencia te invite a colaborar, aparecerán aquí.</p>
+                                                    @else
+                                                        <h3>No hay viajes en tu lista.</h3>
+                                                        <p>Haz clic en ‘Crear viaje’ y empieza a explorar.</p>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
@@ -3703,10 +3736,10 @@
         </div>
     </div>
     <x-upgrade-modal />
+    <x-welcome-modal />
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
     <script>
         // Dropdowns and Notifications initialization
         (function () {
@@ -4796,90 +4829,6 @@
             } catch(e) {}
         }
 
-        function initTutorial(force = false) {
-            const driver = window.driver.js.driver;
-            const tutorialsSeen = window.ViantrypTutorials || [];
-            const hasSeenTutorial = tutorialsSeen.includes('trips');
-
-            if (hasSeenTutorial && !force) return;
-
-            const driverObj = driver({
-                showProgress: true,
-                animate: true,
-                allowClose: true,
-                nextBtnText: 'Siguiente',
-                prevBtnText: 'Anterior',
-                doneBtnText: 'Finalizar',
-                steps: [
-                    {
-                        element: '.hero-title',
-                        popover: {
-                            title: '¡Bienvenido!',
-                            description: 'Este es tu Panel de Control. Aquí podrás gestionar todos tus itinerarios de forma profesional.'
-                        }
-                    },
-                    {
-                        element: '.segmented-control',
-                        popover: {
-                            title: 'Navegación de Viajes',
-                            description: 'Organizamos tus viajes en dos secciones principales para que siempre tengas el control.'
-                        }
-                    },
-                    {
-                        element: '.segment-item:nth-child(2)',
-                        popover: {
-                            title: 'Mis Viajes',
-                            description: 'Aquí encontrarás todos los itinerarios que has creado tú. Eres el propietario de esta información.'
-                        }
-                    },
-                    {
-                        element: '.segment-item:nth-child(3)',
-                        popover: {
-                            title: 'Compartidos',
-                            description: 'En esta pestaña verás los viajes que otros agentes han compartido contigo para colaborar.'
-                        }
-                    },
-                    {
-                        element: window.innerWidth > 768 ? '.toolbar .btn-create' : '.btn-mobile-only',
-                        popover: {
-                            title: 'Crear Viaje',
-                            description: 'Utiliza este botón para comenzar a diseñar una nueva experiencia para tus viajeros.'
-                        }
-                    },
-                    {
-                        element: '.sbox',
-                        popover: {
-                            title: 'Buscador Inteligente',
-                            description: 'Encuentra cualquier viaje rápidamente por nombre, destino o viajero.'
-                        }
-                    },
-                    {
-                        element: '.tbl-wrap',
-                        popover: {
-                            title: 'Gestión de Viajes',
-                            description: 'Aquí verás tus itinerarios. Configura tu vista a tu manera: cambia el tamaño de las columnas u ordénalas según lo que necesites.'
-                        }
-                    }
-                ],
-                onDestroyed: () => {
-                    if (!hasSeenTutorial) {
-                        fetch('{{ route("profile.complete.tutorial") }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({ tutorial: 'trips' })
-                        });
-                        if (!window.ViantrypTutorials.includes('trips')) {
-                            window.ViantrypTutorials.push('trips');
-                        }
-                    }
-                }
-            });
-
-            driverObj.drive();
-        }
 
         function switchTripsTab(tab, el) {
             window.location.href = `{{ route('trips.index') }}?filter=${tab}`;
@@ -4956,7 +4905,7 @@
         function openSharingModal(tripId, role) {
             const roleLabel = role === 'editor' ? 'EDICIÓN' : 'LECTURA';
             const roleText = role === 'editor' ? 'podrá realizar cambios en el itinerario PRO.' : 'solo podrá ver la propuesta del viaje.';
-            const themeColor = '{{ auth()->user()->theme_color ?? "default" }}';
+            const themeColor = '{{ auth()->user()->theme_color ?? "gold" }}';
 
             const modalHtml = `
                         <div id="shareTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
@@ -5557,8 +5506,150 @@
                 }
             }
 
-            // Pequeño delay para dejar que las animaciones de la tabla terminen
-            setTimeout(initTutorial, 800);
+            @if(auth()->user()->initial_plan_chosen_at)
+                setTimeout(() => {
+                    if (typeof initTripsTour === 'function') {
+                        initTripsTour();
+                    }
+                }, 700);
+            @endif
         });
+
+        function initTripsTour(force = false) {
+            if (!window.driver || !window.driver.js) return;
+            const driver = window.driver.js.driver;
+            const tutorialsSeen = window.ViantrypTutorials || [];
+            const hasSeenTutorial = tutorialsSeen.includes('trips');
+
+            if (hasSeenTutorial && !force) return;
+
+            let lastActiveStepIndex = 0;
+            const targetProfileUrl = "{{ route('profile.index') }}?section={{ auth()->user()->account_type === 'agency' ? 'agencia' : 'info' }}&tour=true";
+
+            const isMobile = window.innerWidth <= 768;
+            const hasMobileNav = isMobile && document.getElementById('viantrypBottomNav');
+
+            // Selectores responsivos para Web Escritorio vs Móvil / App
+            const stepPersonalEl = (hasMobileNav && document.getElementById('tabMisViajes')) 
+                ? '#tabMisViajes' 
+                : '.sidebar-link[href*="filter=personal"]';
+
+            const stepSharedEl = (hasMobileNav && document.getElementById('tabCompartidos')) 
+                ? '#tabCompartidos' 
+                : '.sidebar-link[href*="filter=shared"]';
+
+            const stepCreateEl = (hasMobileNav && document.getElementById('fabCreateTripBtn')) 
+                ? '#fabCreateTripBtn' 
+                : (isMobile ? '.mobile-hamburger-btn' : '.btn-topbar-create');
+
+            const stepProfileEl = (hasMobileNav && document.getElementById('tabPerfilMobile')) 
+                ? '#tabPerfilMobile' 
+                : (isMobile ? '.profile-trigger' : '#sidebarProfileGroup');
+
+            const driverObj = driver({
+                showProgress: true,
+                progressText: '@{{current}} de @{{total}}',
+                animate: true,
+                allowClose: true,
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Anterior',
+                doneBtnText: 'Ir a Ajustes de Cuenta',
+                onHighlightStarted: (element, step, { state }) => {
+                    lastActiveStepIndex = state ? state.activeIndex : 0;
+                },
+                steps: [
+                    {
+                        // Paso 1: Centrado en pantalla como bienvenida al panel
+                        popover: {
+                            title: '¡Bienvenido a Viantryp!',
+                            description: 'Este es tu Panel de Control. Aquí podrás gestionar todos tus itinerarios de viaje de forma visual, profesional y organizada.'
+                        }
+                    },
+                    {
+                        element: stepPersonalEl,
+                        popover: {
+                            title: 'Tus Itinerarios',
+                            description: 'En esta sección encontrarás todos los viajes que creas tú. Eres el propietario de toda esta información.',
+                            position: isMobile ? 'top' : 'right'
+                        }
+                    },
+                    {
+                        element: stepSharedEl,
+                        popover: {
+                            title: 'Viajes Compartidos',
+                            description: 'Si otro agente o colaborador te invita a ver o editar un viaje, podrás acceder a ellos directamente desde esta pestaña.',
+                            position: isMobile ? 'top' : 'right'
+                        }
+                    },
+                    {
+                        element: stepCreateEl,
+                        popover: {
+                            title: 'Crear y Buscar Viajes',
+                            description: 'Utiliza el botón "+ Crear viaje" para comenzar a diseñar una nueva propuesta y el buscador para encontrar cualquier itinerario rápidamente.',
+                            position: isMobile ? 'top' : 'bottom'
+                        }
+                    },
+                    {
+                        element: stepProfileEl,
+                        popover: {
+                            title: 'Personaliza tu Perfil y Marca',
+                            description: 'También puedes ajustar y personalizar la forma en que se muestran tus viajes y configurar tu marca. ¡Vamos a tus ajustes de cuenta para revisarlo!',
+                            position: isMobile ? 'top' : 'right'
+                        }
+                    }
+                ],
+                onPopoverRender: (popover, { config, state }) => {
+                    if (driverObj.isLastStep()) {
+                        const btns = popover.wrapper.querySelectorAll('button');
+                        btns.forEach(btn => {
+                            if (btn.classList.contains('driver-popover-next-btn') || 
+                                btn.classList.contains('driver-popover-done-btn') || 
+                                btn.textContent.includes('Perfil') || 
+                                btn.textContent.includes('Ajustes') ||
+                                btn.textContent.includes('Ir a')) {
+                                btn.onclick = (e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    fetch('{{ route("profile.complete.tutorial") }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        },
+                                        body: JSON.stringify({ tutorial: 'trips' })
+                                    }).finally(() => {
+                                        window.location.href = targetProfileUrl;
+                                    });
+                                    setTimeout(() => {
+                                        window.location.href = targetProfileUrl;
+                                    }, 300);
+                                };
+                            }
+                        });
+                    }
+                },
+                onDestroyed: () => {
+                    if (!hasSeenTutorial) {
+                        fetch('{{ route("profile.complete.tutorial") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({ tutorial: 'trips' })
+                        });
+                        if (!window.ViantrypTutorials.includes('trips')) {
+                            window.ViantrypTutorials.push('trips');
+                        }
+                    }
+                    if (lastActiveStepIndex === 4) {
+                        window.location.href = targetProfileUrl;
+                    }
+                }
+            });
+
+            driverObj.drive();
+        }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
 @endpush

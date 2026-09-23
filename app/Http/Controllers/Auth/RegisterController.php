@@ -70,6 +70,7 @@ class RegisterController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'plan' => User::PLAN_BASICO,
+            'theme_color' => 'gold',
             'country' => $request->header('cf-ipcountry') ?? null,
         ]);
 
@@ -83,7 +84,7 @@ class RegisterController extends Controller
         Auth::login($user);
         RateLimiter::clear($throttleKey);
 
-        return redirect()->intended(route('profile.index'))
-                        ->with('success', '¡Cuenta creada exitosamente! Bienvenido a Viantryp. Por favor, completa tu información de perfil.');
+        return redirect()->intended(route('trips.index'))
+                        ->with('success', '¡Cuenta creada exitosamente! Bienvenido a Viantryp.');
     }
 }

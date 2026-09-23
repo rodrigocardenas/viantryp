@@ -242,13 +242,13 @@
                 <i class="fas fa-chevron-right sheet-chevron"></i>
             </a>
 
-            <a href="mailto:hola@viantryp.com" class="sheet-nav-item">
+            <a href="{{ route('contact') }}" class="sheet-nav-item">
                 <div class="sheet-nav-icon">
                     <i class="fas fa-headset"></i>
                 </div>
                 <div class="sheet-nav-text">
                     <span class="sheet-nav-title">Soporte y Ayuda</span>
-                    <span class="sheet-nav-desc">Contáctanos por correo o tutoriales</span>
+                    <span class="sheet-nav-desc">Contáctanos para dudas o soporte</span>
                 </div>
                 <i class="fas fa-chevron-right sheet-chevron"></i>
             </a>

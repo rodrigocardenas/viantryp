@@ -59,6 +59,10 @@ class User extends Authenticatable
     public const PLAN_COLABORATIVO = 'colaborativo';
     public const PLAN_CORPORATIVO = 'corporativo';
 
+    protected $attributes = [
+        'theme_color' => 'gold',
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -99,6 +99,34 @@
       border-color: #ffffff;
     }
 
+    @media (max-width: 768px) {
+      .driver-popover {
+        max-width: min(calc(100vw - 32px), 360px) !important;
+        padding: 16px 18px !important;
+        border-radius: 14px !important;
+        box-sizing: border-box !important;
+      }
+      .driver-popover-title {
+        font-size: 18px !important;
+      }
+      .driver-popover-description {
+        font-size: 13px !important;
+        line-height: 1.4 !important;
+      }
+      .driver-popover-footer {
+        margin-top: 12px !important;
+        gap: 6px !important;
+      }
+      .driver-popover-btn {
+        padding: 7px 12px !important;
+        font-size: 11.5px !important;
+        min-height: 34px !important;
+      }
+      .driver-popover-progress-text {
+        font-size: 11px !important;
+      }
+    }
+
     .btn-help {
       width: 32px;
       height: 32px;
@@ -228,7 +256,7 @@
     window.viantrypUserName = "{{ auth()->user()->display_name ?? 'Invitado' }}";
     window.viantrypUserPlan = "{{ auth()->user()->effective_plan }}";
     window.viantrypIsTrialActive = {{ auth()->user()->isTrialActive() ? 'true' : 'false' }};
-    window.viantrypThemeColor = "{{ auth()->user()->theme_color ?? 'default' }}";
+    window.viantrypThemeColor = "{{ auth()->user()->theme_color ?? 'gold' }}";
     window.viantrypDisplayNameType = "{{ auth()->user()->display_name_type ?? 'personal' }}";
     window.viantrypAgencyLogo = "{{ auth()->user()->agency_logo ? asset('storage/' . auth()->user()->agency_logo) : '' }}";
     window.viantrypAgencyName = @json(auth()->user()->agency_name ?? '');
@@ -851,6 +879,7 @@
   <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
   <script>
     function initEditorTutorial(force = false) {
+      if (!window.driver || !window.driver.js) return;
       const driver = window.driver.js.driver;
       const tutorialsSeen = window.ViantrypTutorials || [];
       const hasSeenTutorial = tutorialsSeen.includes('editor');
@@ -858,8 +887,11 @@
       // Auto-open only if NOT seen yet AND it's the first trip
       if (!force && (hasSeenTutorial || !window.isFirstTrip)) return;
 
+      const isMobile = window.innerWidth <= 768;
+
       const driverObj = driver({
         showProgress: true,
+        progressText: '@{{current}} de @{{total}}',
         animate: true,
         allowClose: true,
         nextBtnText: 'Siguiente',
@@ -867,24 +899,27 @@
         doneBtnText: 'Finalizar',
         steps: [
           {
-            element: '.header-subtitle',
+            element: window.innerWidth > 768 ? '.header-subtitle' : '.header-title',
             popover: {
               title: '¡Bienvenido!',
-              description: 'Este es el Editor de Itinerarios. Aquí podrás diseñar cada detalle de la experiencia para tu viajero.'
+              description: 'Este es el Editor de Itinerarios. Aquí podrás diseñar cada detalle de la experiencia para tu viajero.',
+              position: 'bottom'
             }
           },
           {
             element: '.sidebar',
             popover: {
               title: 'Elementos y Diseño',
-              description: 'Arrastra servicios o elementos de diseño directamente al lienzo central para ir construyendo el viaje.'
+              description: 'Arrastra servicios o elementos de diseño directamente al lienzo para ir construyendo el viaje.',
+              position: isMobile ? 'top' : 'right'
             }
           },
           {
             element: '.canvas',
             popover: {
               title: 'Tu Lienzo',
-              description: 'Este es tu espacio de trabajo. Aquí es donde se divide y organiza todo el contenido de tu itinerario de forma visual.'
+              description: 'Este es tu espacio de trabajo. Aquí es donde se divide y organiza todo el contenido de tu itinerario de forma visual.',
+              position: isMobile ? 'top' : 'bottom'
             },
             onHighlightStarted: (element) => {
               // Ocultar temporalmente el banner para que solo se ilumine el lienzo (padding)
@@ -902,7 +937,8 @@
             element: '.canvas-toolbar',
             popover: {
               title: 'Barra de Herramientas',
-              description: 'Desde aquí gestionas los días del viaje, añades nuevas secciones y navegas rápidamente por todo el itinerario.'
+              description: 'Desde aquí gestionas los días del viaje, añades nuevas secciones y navegas rápidamente por todo el itinerario.',
+              position: 'bottom'
             }
           },
           {
@@ -910,7 +946,7 @@
             popover: {
               title: 'Banner Principal',
               description: 'En esta sección defines la información básica (foto y fechas) que se mostrará en el gran banner de inicio de tu viaje.',
-              position: 'bottom'
+              position: isMobile ? 'top' : 'bottom'
             },
             onHighlightStarted: (element) => {
               const tab = document.querySelector('.day-tab.portada-tab');
@@ -929,7 +965,7 @@
             popover: {
               title: 'Configuración del Día',
               description: 'Asigna la fecha correspondiente a cada día y comienza a añadir contenido para construir el itinerario perfecto.',
-              position: 'bottom'
+              position: isMobile ? 'top' : 'bottom'
             },
             onHighlightStarted: (element) => {
               const tab = document.querySelector('.day-tab[data-day="0"]');
@@ -963,22 +999,11 @@
             }
           },
           {
-            element: '.cierre-remove-btn',
-            popover: {
-              title: 'Personaliza tu cierre',
-              description: 'Si lo prefieres, puedes usar este botón para ocultar el banner predeterminado y diseñar un cierre con tu estilo.',
-              position: 'left'
-            },
-            onHighlightStarted: (element) => {
-              const tab = document.querySelector('.day-tab.cierre-tab');
-              if (tab) tab.click();
-            }
-          },
-          {
             element: '#btnPreviewTrip',
             popover: {
               title: 'Guardar y Vista Previa',
-              description: 'En todo momento podrás ir viendo los cambios en tiempo real de tu itinerario. Usa la vista previa para generar una idea clara de cómo va quedando el diseño del viaje.'
+              description: 'En todo momento podrás ir viendo los cambios en tiempo real de tu itinerario. Usa la vista previa para generar una idea clara de cómo va quedando el diseño del viaje.',
+              position: isMobile ? 'bottom' : 'left'
             }
           }
         ],

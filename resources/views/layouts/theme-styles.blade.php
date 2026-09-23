@@ -35,7 +35,7 @@
         'sunset'  => 'linear-gradient(185deg, #1a1005, #c0552a, #d35400)',
     ];
 
-    $userTheme = auth()->user()->theme_color ?? 'default';
+    $userTheme = auth()->user()->theme_color ?? 'gold';
     $gradientStarts = [
         'default' => '#1a7f77',
         'ocean'   => '#1a5f8f',

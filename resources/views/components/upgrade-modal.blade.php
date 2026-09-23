@@ -18,7 +18,7 @@
     $limits = $user->getPlanLimits();
 
     // Theme color mapping for the targeted card
-    $themeColorKey = $user->theme_color ?? 'default';
+    $themeColorKey = $user->theme_color ?? 'gold';
     $themes = [
         'default' => '#1c7182',
         'ocean' => '#1a5f8f',
