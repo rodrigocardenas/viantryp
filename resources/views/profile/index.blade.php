@@ -1816,6 +1816,16 @@
 @endpush
 
 @section('content')
+  @php
+    $rawSection = request('section', request('tab', ($user->account_type === 'agency' ? 'agencia' : 'info')));
+    if ($rawSection === 'agency' || $rawSection === 'agencia') {
+        $currentSection = ($user->account_type === 'agency') ? 'agencia' : 'info';
+    } elseif ($rawSection === 'info' || $rawSection === 'personal') {
+        $currentSection = ($user->account_type === 'personal') ? 'info' : 'agencia';
+    } else {
+        $currentSection = $rawSection;
+    }
+  @endphp
   <div class="dashboard-wrapper">
     <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar()"></div>
     <div class="dashboard-container">
@@ -1857,20 +1867,20 @@
                 style="margin-left: auto; font-size: 11px; transition: transform 0.2s ease;"></i>
             </a>
             <div class="sidebar-submenu" id="sidebarProfileSubmenu">
-              <button type="button" class="sidebar-sublink nav-item active"
+              <button type="button" class="sidebar-sublink nav-item {{ in_array($currentSection, ['info', 'agencia']) ? 'active' : '' }}"
                 data-section="{{ $user->account_type === 'agency' ? 'agencia' : 'info' }}">
                 <i class="{{ $user->account_type === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
                 <span>Ajustes de Cuenta</span>
               </button>
-              <button type="button" class="sidebar-sublink nav-item" data-section="tema">
+              <button type="button" class="sidebar-sublink nav-item {{ $currentSection === 'tema' ? 'active' : '' }}" data-section="tema">
                 <i class="fas fa-palette"></i>
                 <span>Tema e Identidad Visual</span>
               </button>
-              <button type="button" class="sidebar-sublink nav-item" data-section="subscription">
+              <button type="button" class="sidebar-sublink nav-item {{ $currentSection === 'subscription' ? 'active' : '' }}" data-section="subscription">
                 <i class="fas fa-credit-card"></i>
                 <span>Planes y Suscripción</span>
               </button>
-              <button type="button" class="sidebar-sublink nav-item" data-section="seguridad">
+              <button type="button" class="sidebar-sublink nav-item {{ $currentSection === 'seguridad' ? 'active' : '' }}" data-section="seguridad">
                 <i class="fas fa-shield-alt"></i>
                 <span>Seguridad de la Cuenta</span>
               </button>
@@ -1997,7 +2007,7 @@
 
                 <!-- INFORMACIÓN PERSONAL -->
                 @if($user->account_type === 'personal')
-                  <div class="card tab-section active" id="section-info">
+                  <div class="card tab-section {{ $currentSection === 'info' ? 'active' : '' }}" id="section-info">
                     <div class="card-body">
                       <!-- Avatar Section (Finpay style) -->
                       <div class="avatar-finpay-section"
@@ -2092,7 +2102,7 @@
 
                 <!-- AGENCIA -->
                 @if($user->account_type === 'agency')
-                  <div class="card tab-section {{ $user->account_type === 'agency' ? 'active' : '' }}" id="section-agencia">
+                  <div class="card tab-section {{ $currentSection === 'agencia' ? 'active' : '' }}" id="section-agencia">
                     <div class="card-body">
 
                       <!-- 1. OPCIONES DE PRESENTACIÓN (Selector superior) -->
@@ -2300,7 +2310,7 @@
                 @endif
 
                 <!-- TEMA -->
-                <div class="card tab-section" id="section-tema">
+                <div class="card tab-section {{ $currentSection === 'tema' ? 'active' : '' }}" id="section-tema">
                   <div class="card-body">
                     <div class="section-label">Tema e Identidad Visual</div>
                     <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Elige el color principal que
@@ -2382,7 +2392,7 @@
                 </div>
 
                 <!-- SEGURIDAD -->
-                <div class="card tab-section" id="section-seguridad">
+                <div class="card tab-section {{ $currentSection === 'seguridad' ? 'active' : '' }}" id="section-seguridad">
                   <div class="card-body">
                     <div class="section-label">Cambiar Contraseña</div>
                     <div class="form-group">
@@ -2412,7 +2422,7 @@
                 </div>
 
                 <!-- SUSCRIPCIÓN -->
-                <div class="card tab-section" id="section-subscription">
+                <div class="card tab-section {{ $currentSection === 'subscription' ? 'active' : '' }}" id="section-subscription">
                   <div class="card-body">
                     <div class="section-label">Planes y Suscripción</div>
 
@@ -2907,22 +2917,17 @@
 
       if (targetSection) {
         const targetBtn = document.querySelector(`[data-section="${targetSection}"]`);
-        if (targetBtn) {
-          setTimeout(() => {
-            targetBtn.click();
-            if (isPaid) {
-              showToast('¡Pago exitoso! Tu suscripción ha sido confirmada y activada.');
-              const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?section=subscription';
-              window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
-            }
-          }, 50);
-        } else {
-          // Fallback if data-section doesn't match directly
-          const sectionEl = document.getElementById('section-' + targetSection);
-          if (sectionEl) {
-            document.querySelectorAll('.tab-section').forEach(function (s) { s.classList.remove('active'); });
-            document.querySelectorAll('.sidebar-sublink, .nav-item').forEach(function (b) { b.classList.remove('active'); });
-            sectionEl.classList.add('active');
+        const sectionEl = document.getElementById('section-' + targetSection);
+        if (targetBtn || sectionEl) {
+          document.querySelectorAll('.tab-section').forEach(function (s) { s.classList.remove('active'); });
+          document.querySelectorAll('.sidebar-sublink, .nav-item').forEach(function (b) { b.classList.remove('active'); });
+          if (sectionEl) sectionEl.classList.add('active');
+          if (targetBtn) targetBtn.classList.add('active');
+
+          if (isPaid) {
+            showToast('¡Pago exitoso! Tu suscripción ha sido confirmada y activada.');
+            const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?section=subscription';
+            window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
           }
         }
       }
