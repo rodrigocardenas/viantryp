@@ -445,19 +445,6 @@
       const isNativeCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 
       if (isNativeCapacitor) {
-        if (window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-          try {
-            window.Capacitor.Plugins.App.addListener('appUrlOpen', function(data) {
-              if (data && data.url) {
-                if (data.url.includes('auth-callback') || data.url.includes('native-login')) {
-                  const targetUrl = data.url.replace('viantryp://auth-callback', 'https://viantryp.com/auth/native-login');
-                  window.location.href = targetUrl;
-                }
-              }
-            });
-          } catch(appErr) {}
-        }
-
         googleBtn.addEventListener('click', async function(e) {
           e.preventDefault();
           try {
@@ -471,7 +458,7 @@
                   await GoogleAuth.initialize({
                     clientId: '68250907387-j3t0d73nqp5q82pc9j2vo6fnekavf5aq.apps.googleusercontent.com',
                     scopes: ['profile', 'email'],
-                    grantOfflineAccess: false,
+                    grantOfflineAccess: true,
                   });
                 }
               } catch(initErr) {}
@@ -522,21 +509,12 @@
                     try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
                     window.location.href = resData.redirect;
                     return;
-                  } else if (resData.message) {
-                    alert(resData.message);
                   }
-                } else {
-                  alert('No se pudo obtener la cuenta de Google seleccionada.');
                 }
               }
             }
           } catch (err) {
-            console.warn('Native Google Auth plugin fallthrough to System Browser Deep Link:', err);
-            if (window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
-              await window.Capacitor.Plugins.Browser.open({ url: "https://viantryp.com/auth/google?app=1" });
-            } else {
-              window.location.href = "{{ route('auth.google') }}?app=1";
-            }
+            console.warn('Native Google Auth error:', err);
           }
         });
       } else {
