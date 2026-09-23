@@ -31,6 +31,7 @@ Route::middleware('guest')->group(function () {
     Route::get('auth/google', [GoogleAuthController::class , 'redirectToGoogle'])->name('auth.google');
     Route::get('auth/google/callback', [GoogleAuthController::class , 'handleGoogleCallback']);
     Route::post('auth/google/native', [GoogleAuthController::class , 'handleNativeGoogleAuth'])->name('auth.google.native');
+    Route::get('auth/native-login', [GoogleAuthController::class , 'handleNativeTokenLogin'])->name('auth.native.token');
 });
 
 // Logout route (authenticated users only)

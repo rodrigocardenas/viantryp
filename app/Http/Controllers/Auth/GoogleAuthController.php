@@ -136,18 +136,57 @@ class GoogleAuthController extends Controller
 
             Auth::login($user, true);
 
-            $target = $user->wasRecentlyCreated ? route('profile.index', ['app' => '1']) : route('trips.index', ['app' => '1']);
+            // Generate one-time login token for GET navigation
+            $oneTimeToken = \Illuminate\Support\Str::random(40);
+            \Illuminate\Support\Facades\Cache::put('native_login_' . $oneTimeToken, $user->id, 120);
+
+            $redirectUrl = route('auth.native.token', [
+                'token' => $oneTimeToken,
+                'app' => '1',
+                'is_new' => $user->wasRecentlyCreated ? '1' : '0'
+            ]);
+
             $cookie = cookie('viantryp_app_mode', '1', 525600);
 
             return response()->json([
                 'success' => true,
-                'redirect' => $target,
+                'redirect' => $redirectUrl,
                 'message' => '¡Bienvenido! Has iniciado sesión con Google.'
             ])->withCookie($cookie);
 
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error al autenticar: ' . $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Consume one-time token and perform full GET login navigation
+     */
+    public function handleNativeTokenLogin(Request $request)
+    {
+        $token = $request->input('token');
+        if (!$token) {
+            return redirect()->route('login')->with('error', 'Token de acceso no válido.');
+        }
+
+        $userId = \Illuminate\Support\Facades\Cache::pull('native_login_' . $token);
+        if (!$userId) {
+            return redirect()->route('login')->with('error', 'Token expirado o no válido.');
+        }
+
+        $user = User::find($userId);
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Usuario no encontrado.');
+        }
+
+        Auth::login($user, true);
+        $request->session()->put('viantryp_app_mode', '1');
+        $request->session()->regenerate();
+
+        $cookie = cookie('viantryp_app_mode', '1', 525600);
+        $targetRoute = $request->input('is_new') === '1' ? route('profile.index', ['app' => '1']) : route('trips.index', ['app' => '1']);
+
+        return redirect($targetRoute)->with('success', '¡Bienvenido! Has iniciado sesión con Google.')->withCookie($cookie);
     }
 
     /**

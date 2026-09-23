@@ -497,6 +497,7 @@
                   };
                   const response = await fetch('/auth/google/native', {
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: {
                       'Content-Type': 'application/json',
                       'Accept': 'application/json'
@@ -505,8 +506,8 @@
                   });
                   const resData = await response.json();
                   if (resData.success && resData.redirect) {
-                    localStorage.setItem('viantryp_app_mode', '1');
-                    window.location.replace(resData.redirect);
+                    try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
+                    window.location.href = resData.redirect;
                     return;
                   }
                 }
