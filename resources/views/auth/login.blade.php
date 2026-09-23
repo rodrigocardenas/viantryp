@@ -463,10 +463,6 @@
                 }
               } catch(initErr) {}
 
-              try {
-                await GoogleAuth.signOut();
-              } catch(signOutErr) {}
-
               const googleUser = await GoogleAuth.signIn();
               if (googleUser) {
                 let userEmail = googleUser.email || (googleUser.profile && googleUser.profile.email);
