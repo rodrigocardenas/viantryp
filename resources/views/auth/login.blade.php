@@ -445,6 +445,19 @@
       const isNativeCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 
       if (isNativeCapacitor) {
+        if (window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+          try {
+            window.Capacitor.Plugins.App.addListener('appUrlOpen', function(data) {
+              if (data && data.url) {
+                if (data.url.includes('auth-callback') || data.url.includes('native-login')) {
+                  const targetUrl = data.url.replace('viantryp://auth-callback', 'https://viantryp.com/auth/native-login');
+                  window.location.href = targetUrl;
+                }
+              }
+            });
+          } catch(appErr) {}
+        }
+
         googleBtn.addEventListener('click', async function(e) {
           e.preventDefault();
           try {
@@ -518,10 +531,11 @@
               }
             }
           } catch (err) {
-            console.warn('Native Google Auth error:', err);
-            const msg = typeof err === 'string' ? err : (err && err.message ? err.message : JSON.stringify(err));
-            if (msg && !msg.toLowerCase().includes('cancel')) {
-              alert('Error de autenticación Google: ' + msg);
+            console.warn('Native Google Auth plugin fallthrough to System Browser Deep Link:', err);
+            if (window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
+              await window.Capacitor.Plugins.Browser.open({ url: "https://viantryp.com/auth/google?app=1" });
+            } else {
+              window.location.href = "{{ route('auth.google') }}?app=1";
             }
           }
         });

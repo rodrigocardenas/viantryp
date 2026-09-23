@@ -13,8 +13,11 @@ class GoogleAuthController extends Controller
     /**
      * Redirect to Google OAuth
      */
-    public function redirectToGoogle()
+    public function redirectToGoogle(Request $request)
     {
+        if ($request->input('app') === '1') {
+            session(['viantryp_app_mode' => '1']);
+        }
         return Socialite::driver('google')->redirect();
     }
 
@@ -69,6 +72,45 @@ class GoogleAuthController extends Controller
 
             // Log the user in
             Auth::login($user);
+
+            $isAppMode = request()->input('app') === '1' || session('viantryp_app_mode') === '1' || request()->cookie('viantryp_app_mode') === '1';
+
+            if ($isAppMode) {
+                $oneTimeToken = \Illuminate\Support\Str::random(40);
+                \Illuminate\Support\Facades\Cache::put('native_login_' . $oneTimeToken, $user->id, 120);
+
+                $redirectUrl = route('auth.native.token', [
+                    'token' => $oneTimeToken,
+                    'app' => '1',
+                    'is_new' => $user->wasRecentlyCreated ? '1' : '0'
+                ]);
+
+                $deepLinkUrl = 'viantryp://auth-callback?token=' . $oneTimeToken . '&is_new=' . ($user->wasRecentlyCreated ? '1' : '0');
+
+                $cookie = cookie('viantryp_app_mode', '1', 525600);
+
+                return response()->make("
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Autenticando...</title>
+                        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+                    </head>
+                    <body style=\"font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8fafc;\">
+                        <div style=\"text-align: center; padding: 20px;\">
+                            <h2 style=\"color: #0f172a;\">¡Autenticación Exitosa!</h2>
+                            <p style=\"color: #64748b;\">Regresando a la aplicación Viantryp...</p>
+                            <script>
+                                window.location.href = '" . $deepLinkUrl . "';
+                                setTimeout(function() {
+                                    window.location.href = '" . $redirectUrl . "';
+                                }, 800);
+                            </script>
+                        </div>
+                    </body>
+                    </html>
+                ")->withCookie($cookie);
+            }
 
             if ($user->wasRecentlyCreated) {
                 return redirect()->intended(route('profile.index'))->with('success', '¡Bienvenido! Tu cuenta ha sido creada con Google. Por favor, completa tu perfil.');
