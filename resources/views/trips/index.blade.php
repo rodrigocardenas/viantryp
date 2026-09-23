@@ -2907,23 +2907,6 @@
                 padding: 25px 20px 0;
             }
         }
-
-        @media (max-width: 768px) {
-            .is-viantryp-app .quick-access-section,
-            body.is-viantryp-app .quick-access-section {
-                padding: 16px 16px 0 !important;
-            }
-
-            .is-viantryp-app .trips-list-section,
-            body.is-viantryp-app .trips-list-section {
-                padding: 18px 16px 0 !important;
-            }
-
-            .is-viantryp-app .dashboard-content-scroll,
-            body.is-viantryp-app .dashboard-content-scroll {
-                padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)) !important;
-            }
-        }
     </style>
 @endpush
 
