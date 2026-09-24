@@ -303,11 +303,7 @@
         padding-bottom: 74px !important;
     }
 
-    /* Ocultar el aviso de instalar app en modo App */
-    .is-viantryp-app #pwa-install-banner,
-    body.is-viantryp-app #pwa-install-banner {
-        display: none !important;
-    }
+
 
     /* Ocultar la barra lateral / sidebar en modo App */
     .is-viantryp-app .dashboard-sidebar,

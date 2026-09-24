@@ -264,6 +264,7 @@
     window.ViantrypTutorials = @json(auth()->user()->tutorials_seen ?? []);
     window.isFirstTrip = @json($isFirstTrip ?? false);
     window.tripId = {{ $trip->id ?? 'null' }};
+    window.tripShareToken = @json($trip->share_token ?? '');
     window.proStatus = "{{ $trip->status ?? 'draft' }}";
     window.proState = @json($trip->pro_state ?? null);
     window.tripStartDate = @json($trip && $trip->start_date ? \Carbon\Carbon::parse($trip->start_date)->format('Y-m-d') : null);

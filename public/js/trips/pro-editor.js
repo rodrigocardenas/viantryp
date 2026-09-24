@@ -640,6 +640,11 @@ function confirmUnsplash() {
       } else {
         showToast('⚠️', 'Máximo 5 fotos alcanzado');
       }
+    } else if ((unsplashTarget === 'image_photo' || unsplashTarget === 'item_image') && currentPhotoTargetInput) {
+      currentPhotoTargetInput.value = selectedUnsplashUrl;
+      currentPhotoTargetInput.dispatchEvent(new Event('input', { bubbles: true }));
+      currentPhotoTargetInput.dispatchEvent(new Event('change', { bubbles: true }));
+      showToast('📸', 'Foto seleccionada');
     } else {
       const targetInp = currentPhotoTargetInput || (modalBody ? (modalBody.querySelector('input[data-key="url"]') || modalBody.querySelector('input[data-key="photo_url"]')) : null);
       if (targetInp) {
@@ -1787,8 +1792,31 @@ window.getItemInnerHtml = function(item) {
     return `<div class="item-inner" style="flex-direction:column;gap:5px;padding:14px 16px"><div class="texto-content">${d.contenido || item.title || 'Texto...'}</div></div>`;
   }
   if (type === 'imagen') {
-    const hasImg = d.url && d.url.startsWith('http');
-    return `<div class="item-inner" style="flex-direction:column;gap:9px;padding:11px"><div class="imagen-preview">${hasImg ? `<img src="${d.url}" alt="">` : '🖼️'}</div></div>`;
+    let photos = [];
+    try {
+      if (Array.isArray(d.url)) photos = d.url;
+      else if (Array.isArray(d.photos)) photos = d.photos;
+      else if (typeof d.url === 'string' && d.url.startsWith('[')) photos = JSON.parse(d.url);
+      else if (typeof d.photos === 'string' && d.photos.startsWith('[')) photos = JSON.parse(d.photos);
+      else if (d.url) photos = d.url.split(',').map(s => s.trim()).filter(Boolean);
+      else if (d.photos) photos = d.photos.split(',').map(s => s.trim()).filter(Boolean);
+    } catch {
+      photos = d.url ? [d.url] : (d.photos ? [d.photos] : []);
+    }
+    const photoUrl = photos[0] || '';
+    const hasImg = Boolean(photoUrl);
+    const imgHtml = hasImg
+      ? `<img src="${fixUrl(photoUrl)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">`
+      : `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--text-dim);"><i class="fa-regular fa-image" style="font-size:26px;"></i><span style="font-size:11px;color:var(--text-muted);">Sin imagen seleccionada</span></div>`;
+    return `<div class="item-inner" style="flex-direction:column;gap:8px;padding:12px;">
+      <div class="imagen-preview" style="width:100%;height:148px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+        ${imgHtml}
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text-muted);">
+        <span><i class="fa-regular fa-image" style="color:var(--primary-blue)"></i> Imagen</span>
+        <span class="item-chip">${d.tamano || 'Mediano'}</span>
+      </div>
+    </div>`;
   }
   if (type === 'caja') {
     const bg = d.color_fondo || '#f59e0b';
@@ -1802,8 +1830,20 @@ window.getItemInnerHtml = function(item) {
     </div>`;
   }
   if (type === 'gif') {
-    const hasImg = d.url && d.url.startsWith('http');
-    return `<div class="item-inner" style="flex-direction:column;gap:9px;padding:11px"><div class="imagen-preview">${hasImg ? `<img src="${d.url}" alt="">` : '<i class="fa-solid fa-bolt"></i>'}</div></div>`;
+    const url = d.url || '';
+    const hasImg = Boolean(url);
+    const imgHtml = hasImg
+      ? `<img src="${fixUrl(url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" onerror="this.onerror=null;this.parentElement.innerHTML='<div style=\\\'display:flex;align-items:center;justify-content:center;height:100%;font-size:24px;color:#ce3df3;\\\'>⚡</div>';">`
+      : `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#ce3df3;"><i class="fa-solid fa-bolt" style="font-size:26px;"></i><span style="font-size:11px;color:var(--text-muted);">Sin GIF seleccionado</span></div>`;
+    return `<div class="item-inner" style="flex-direction:column;gap:8px;padding:12px;">
+      <div class="imagen-preview" style="width:100%;height:148px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+        ${imgHtml}
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text-muted);">
+        <span><i class="fa-solid fa-bolt" style="color:#ce3df3"></i> GIF</span>
+        <span class="item-chip">${d.tamano || 'Mediano'}</span>
+      </div>
+    </div>`;
   }
   if (type === 'galeria') {
     let photos = [];
@@ -2183,17 +2223,11 @@ function addPhotoFallback(container, type, showHelp = true, photoInp = null, app
   const googleTypes = ['alojamiento', 'actividad', 'comida', 'tour'];
   if (!googleTypes.includes(type)) return null;
 
-  const isPremium = typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan !== 'básico';
-
   if (showHelp) {
     const helpText = document.createElement('div');
     helpText.className = 'photo-fallback-help';
     helpText.style = 'margin-top:5px; margin-bottom:8px; font-size:12px; color:var(--text-muted); font-style:italic; line-height:1.4;';
-
-    helpText.textContent = isPremium
-      ? 'Si no deseas usar la imagen predeterminada de Google Maps, puedes usar una imagen de Unsplash o subir la tuya.'
-      : 'Tu plan no incluye foto automática: completa la URL eligiendo una imagen desde Unsplash o subiendo una propia.';
-
+    helpText.textContent = 'Si no deseas usar la imagen predeterminada de Google Maps, puedes usar una imagen de Unsplash o subir la tuya.';
     container.appendChild(helpText);
   }
 
@@ -2358,19 +2392,6 @@ function openModal(type, editIdx = null, customData = null) {
     if (f.group === 'google' && currentGroup !== 'google') {
       const gbox = document.createElement('div');
       gbox.className = 'field-group-box';
-
-      if (!isPremium) {
-        let helpText = 'Si tienes un <strong>plan Viajero Pro o superior</strong>, estos campos se rellenarán automáticamente con Google Maps.';
-        if (type === 'alojamiento') {
-          helpText = 'Si tienes un <strong>plan Viajero Pro o superior</strong>, estos campos se rellenarán automáticamente con Google Maps al escribir el nombre del hotel.';
-        } else if (type === 'actividad') {
-          helpText = 'Si tienes un <strong>plan Viajero Pro o superior</strong>, estos campos se rellenarán automáticamente con Google Maps al escribir el lugar de la actividad.';
-        } else if (type === 'comida') {
-          helpText = 'Si tienes un <strong>plan Viajero Pro o superior</strong>, estos campos se rellenarán automáticamente con Google Maps al escribir el nombre del restaurante.';
-        }
-        gbox.appendChild(createInfoSpan(helpText, true));
-      }
-
       modalBody.appendChild(gbox);
       currentTarget = gbox;
       currentGroup = 'google';
@@ -2396,8 +2417,8 @@ function openModal(type, editIdx = null, customData = null) {
         fieldEl = buildField(f, existData);
       }
 
-      // Premium info icons
-      if (isPremium && f.hasInfo) {
+      // Google places info icons
+      if (f.hasInfo) {
         const lbl = fieldEl.querySelector('.form-label');
         if (lbl) {
           let pText = 'Tu plan añade automáticamente datos de Google Maps al recuadro inferior al escribir ';
@@ -2415,7 +2436,7 @@ function openModal(type, editIdx = null, customData = null) {
       row.className = 'form-row';
 
       const f1 = buildField(f, existData);
-      if (isPremium && f.hasInfo) {
+      if (f.hasInfo) {
         const lbl = f1.querySelector('.form-label');
         if (lbl) {
           let pText = 'Tu plan añade automáticamente datos de Google Maps al recuadro inferior al escribir ';
@@ -2427,7 +2448,7 @@ function openModal(type, editIdx = null, customData = null) {
       }
 
       const f2 = buildField(next, existData);
-      if (isPremium && next.hasInfo) {
+      if (next.hasInfo) {
         const lbl = f2.querySelector('.form-label');
         if (lbl) {
           let pText = 'Tu plan añade automáticamente datos de Google Maps al recuadro inferior al escribir ';
@@ -2444,7 +2465,7 @@ function openModal(type, editIdx = null, customData = null) {
       i++;
     } else {
       fieldEl = buildField(f, existData);
-      if (isPremium && f.hasInfo) {
+      if (f.hasInfo) {
         const lbl = fieldEl.querySelector('.form-label');
         if (lbl) {
           let pText = 'Tu plan añade automáticamente datos de Google Maps al recuadro inferior al escribir ';
@@ -2783,10 +2804,7 @@ function openModal(type, editIdx = null, customData = null) {
           const helpText = modalBody.querySelector('.photo-fallback-help');
           if (helpText) {
             if (isHotel) {
-              const isPremium = typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan !== 'básico';
-              helpText.textContent = isPremium
-                ? 'Si no deseas usar la imagen predeterminada de Google Maps, puedes usar una imagen de Unsplash o subir la tuya.'
-                : 'Tu plan no incluye foto automática: completa la URL eligiendo una imagen desde Unsplash o subiendo una propia.';
+              helpText.textContent = 'Si no deseas usar la imagen predeterminada de Google Maps, puedes usar una imagen de Unsplash o subir la tuya.';
             } else {
               helpText.textContent = 'Adjunta una imagen del alojamiento o elige una desde Unsplash.';
             }
@@ -3123,12 +3141,22 @@ function buildField(field, data) {
   }
   else if (field.t === 'image-picker') {
     const wrap = document.createElement('div');
-    wrap.className = 'img-picker-box' + (val ? ' has-preview' : '');
+    wrap.className = 'gallery-picker-box img-picker-box';
+
+    let photo = val || '';
+    if (typeof photo === 'string' && photo.startsWith('[')) {
+      try {
+        const arr = JSON.parse(photo);
+        photo = Array.isArray(arr) ? (arr[0] || '') : '';
+      } catch {}
+    } else if (Array.isArray(photo)) {
+      photo = photo[0] || '';
+    }
 
     const hiddenInp = document.createElement('input');
     hiddenInp.type = 'hidden';
     hiddenInp.dataset.key = field.k;
-    hiddenInp.value = val || '';
+    hiddenInp.value = photo;
     wrap.appendChild(hiddenInp);
 
     const fileInp = document.createElement('input');
@@ -3137,87 +3165,89 @@ function buildField(field, data) {
     fileInp.style.display = 'none';
     wrap.appendChild(fileInp);
 
-    const previewWrap = document.createElement('div');
-    previewWrap.className = 'img-picker-preview-wrap';
-    previewWrap.style.display = val ? 'flex' : 'none';
+    const countLabel = document.createElement('div');
+    countLabel.style.cssText = 'font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;';
 
-    const previewImg = document.createElement('img');
-    previewImg.className = 'img-picker-preview-img';
-    previewImg.src = val ? fixUrl(val) : '';
-    previewWrap.appendChild(previewImg);
+    const grid = document.createElement('div');
+    grid.className = 'gallery-picker-grid';
+    grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:8px;margin-bottom:12px;';
 
-    const removeBtn = document.createElement('button');
-    removeBtn.type = 'button';
-    removeBtn.className = 'img-picker-remove-btn';
-    removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Cambiar imagen';
-    removeBtn.onclick = () => {
-      hiddenInp.value = '';
-      previewImg.src = '';
-      wrap.classList.remove('has-preview');
-      previewWrap.style.display = 'none';
-      emptyMsg.style.display = 'block';
-      actionsRow.style.display = 'grid';
+    const renderPhotos = () => {
+      grid.innerHTML = '';
+      if (photo) {
+        const item = document.createElement('div');
+        item.style.cssText = 'position:relative;width:100%;height:100px;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#000;';
+        item.innerHTML = `
+          <img src="${fixUrl(photo)}" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <button type="button" style="position:absolute;top:4px;right:4px;background:rgba(239,68,68,0.9);color:#fff;border:none;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;" title="Eliminar foto"><i class="fa-solid fa-trash"></i></button>
+        `;
+        item.querySelector('button').onclick = () => {
+          photo = '';
+          hiddenInp.value = '';
+          hiddenInp.dispatchEvent(new Event('input', { bubbles: true }));
+          hiddenInp.dispatchEvent(new Event('change', { bubbles: true }));
+          renderPhotos();
+          updateButtons();
+        };
+        grid.appendChild(item);
+      } else {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:18px 8px;color:var(--text-muted);font-size:12px;border:1.5px dashed var(--border);border-radius:10px;"><i class="fa-regular fa-image" style="font-size:26px;color:var(--text-dim);margin-bottom:6px;display:block;"></i> Elige una foto de Unsplash o sube un archivo desde tu dispositivo</div>';
+      }
     };
-    previewWrap.appendChild(removeBtn);
-
-    const emptyMsg = document.createElement('div');
-    emptyMsg.className = 'img-picker-empty-msg';
-    emptyMsg.style.cssText = 'font-size:12px;color:var(--text-muted);text-align:center;padding:10px 0;display:' + (val ? 'none' : 'block');
-    emptyMsg.innerHTML = '<i class="fa-regular fa-image" style="font-size:24px;color:var(--text-dim);margin-bottom:4px;display:block;"></i> Elige una foto de Unsplash o sube un archivo desde tu dispositivo';
 
     const actionsRow = document.createElement('div');
     actionsRow.className = 'img-picker-actions';
-    actionsRow.style.display = val ? 'none' : 'grid';
 
     const unsplashBtn = document.createElement('button');
     unsplashBtn.type = 'button';
     unsplashBtn.className = 'img-picker-btn img-picker-unsplash';
-    unsplashBtn.innerHTML = '<i class="fa-brands fa-unsplash" style="font-size:16px;"></i> Buscar en Unsplash';
+    unsplashBtn.innerHTML = '<i class="fa-brands fa-unsplash" style="font-size:15px;"></i> Buscar en Unsplash';
     unsplashBtn.onclick = () => {
-      openUnsplash('item_photo', hiddenInp);
+      openUnsplash('image_photo', hiddenInp);
     };
 
     const uploadBtn = document.createElement('button');
     uploadBtn.type = 'button';
     uploadBtn.className = 'img-picker-btn img-picker-upload';
     uploadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="font-size:15px;"></i> Cargar archivo';
-    uploadBtn.onclick = () => fileInp.click();
+    uploadBtn.onclick = () => {
+      fileInp.click();
+    };
 
-    fileInp.onchange = (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      if (file.size > 5 * 1024 * 1024) {
-        showToast('⚠️', 'La imagen no puede superar 5 MB');
+    const updateButtons = () => {
+      countLabel.innerHTML = `<span>Foto seleccionada</span><span style="color:${photo ? 'var(--primary-blue)' : 'var(--text-muted)'}">${photo ? '1 / 1' : '0 / 1'}</span>`;
+      if (photo) {
+        unsplashBtn.innerHTML = '<i class="fa-brands fa-unsplash" style="font-size:15px;"></i> Cambiar desde Unsplash';
+        uploadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="font-size:15px;"></i> Cambiar desde archivo';
+      } else {
+        unsplashBtn.innerHTML = '<i class="fa-brands fa-unsplash" style="font-size:15px;"></i> Buscar en Unsplash';
+        uploadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="font-size:15px;"></i> Cargar archivo';
+      }
+    };
+
+    fileInp.onchange = async (e) => {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      const f = files[0];
+      if (f.size > 5 * 1024 * 1024) {
+        showToast('⚠️', `${f.name} supera los 5 MB`);
         return;
       }
-
-      // Local preview
-      const reader = new FileReader();
-      reader.onload = (re) => {
-        previewImg.src = re.target.result;
-        wrap.classList.add('has-preview');
-        previewWrap.style.display = 'flex';
-        emptyMsg.style.display = 'none';
-        actionsRow.style.display = 'none';
-      };
-      reader.readAsDataURL(file);
-
-      // Upload
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', f);
       const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
       uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo...';
       uploadBtn.disabled = true;
 
-      fetch(`/trips/${window.tripId}/upload-attachment`, {
-        method: 'POST',
-        headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
-        body: formData
-      })
-        .then(res => {
-          if (res.status === 403) {
-            return res.json().then(data => {
+      try {
+        const res = await fetch(`/trips/${window.tripId}/upload-attachment`, {
+          method: 'POST',
+          headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+          body: formData
+        }).then(r => {
+          if (r.status === 403) {
+            return r.json().then(data => {
               if (data.error_code === 'LIMIT_REACHED') {
                 if (typeof window.openProUpgradeInlineModal === 'function') {
                   window.openProUpgradeInlineModal('Límite de Archivos Adjuntos Alcanzado', 'Has alcanzado el límite de 5 archivos adjuntos por itinerario de tu Plan Básico. Actualiza a Viajero Pro para adjuntos y documentos ilimitados.');
@@ -3225,50 +3255,55 @@ function buildField(field, data) {
                   openUpgradeModal();
                 }
               }
-              throw new Error(data.message || 'Has alcanzado el límite de 5 archivos adjuntos.');
+              showToast('⚠️', data.message || 'Límite alcanzado');
+              return null;
             });
           }
-          return res.json();
-        })
-        .then(res => {
-          uploadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Cargar archivo';
-          uploadBtn.disabled = false;
-          if (res.success && res.url) {
-            hiddenInp.value = res.url;
-            previewImg.src = fixUrl(res.url);
-            wrap.classList.add('has-preview');
-            previewWrap.style.display = 'flex';
-            emptyMsg.style.display = 'none';
-            actionsRow.style.display = 'none';
-            showToast('✅', 'Imagen subida correctamente');
-          } else {
-            showToast('⚠️', res.message || 'Error al subir');
-          }
-        })
-        .catch(err => {
-          uploadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Cargar archivo';
-          uploadBtn.disabled = false;
-          console.error(err);
-          showToast('⚠️', 'Error de conexión');
+          return r.json();
         });
+
+        if (res && res.success && res.url) {
+          photo = res.url;
+          hiddenInp.value = res.url;
+          renderPhotos();
+          updateButtons();
+          showToast('✅', 'Imagen subida correctamente');
+        } else if (res && !res.success) {
+          showToast('⚠️', res.message || 'Error al subir');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('⚠️', 'Error de conexión');
+      } finally {
+        uploadBtn.disabled = false;
+        fileInp.value = '';
+        updateButtons();
+      }
     };
 
-    // Listen to Unsplash selection updates
     hiddenInp.addEventListener('input', () => {
-      if (hiddenInp.value) {
-        previewImg.src = fixUrl(hiddenInp.value);
-        wrap.classList.add('has-preview');
-        previewWrap.style.display = 'flex';
-        emptyMsg.style.display = 'none';
-        actionsRow.style.display = 'none';
+      let raw = hiddenInp.value || '';
+      if (typeof raw === 'string' && raw.startsWith('[')) {
+        try {
+          const arr = JSON.parse(raw);
+          photo = Array.isArray(arr) ? (arr[0] || '') : '';
+        } catch {
+          photo = raw;
+        }
+      } else {
+        photo = raw;
       }
+      renderPhotos();
+      updateButtons();
     });
 
+    renderPhotos();
+    updateButtons();
+
+    wrap.appendChild(countLabel);
+    wrap.appendChild(grid);
     actionsRow.appendChild(unsplashBtn);
     actionsRow.appendChild(uploadBtn);
-
-    wrap.appendChild(emptyMsg);
-    wrap.appendChild(previewWrap);
     wrap.appendChild(actionsRow);
     fg.appendChild(wrap);
   }
@@ -4078,6 +4113,7 @@ async function openPreview() {
       isPublicLink: false,
       csrfToken: csrfToken,
       tripId: window.tripId || '',
+      shareToken: window.tripShareToken || '',
       userName: window.viantrypUserName || '',
       origin: window.location.origin,
       status: window.proStatus,

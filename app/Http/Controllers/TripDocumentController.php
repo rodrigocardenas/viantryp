@@ -50,8 +50,10 @@ class TripDocumentController extends Controller
         // Access control: either authenticated owner/collaborator or public access via valid trip token
         $isAuthorized = false;
 
-        if (Auth::check() && ($document->user_id === Auth::id() || ($document->trip && $document->trip->canView(Auth::id())))) {
-            $isAuthorized = true;
+        if (Auth::check()) {
+            if ($document->user_id === Auth::id() || ($document->trip && $document->trip->canView(Auth::id()))) {
+                $isAuthorized = true;
+            }
         } elseif ($token) {
             $trip = Trip::findByShareToken($token);
             if ($trip && $trip->id === $document->trip_id) {

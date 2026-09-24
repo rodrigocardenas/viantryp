@@ -1,23 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Viantryp | Restablecer Contraseña</title>
   <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
-      --dark:   #0f2a3a;
-      --teal:   #02b5cb;
-      --teal2:  #136075;
-      --light:  #f7f9f7;
-      --gray:   #64748b;
+      --dark: #0f2a3a;
+      --teal: #02b5cb;
+      --teal2: #136075;
+      --light: #f7f9f7;
+      --gray: #64748b;
       --border: #e2e8e0;
-      --white:  #ffffff;
+      --white: #ffffff;
     }
 
     body {
@@ -49,6 +58,7 @@
       display: flex;
       align-items: center;
     }
+
     .nav-logo-text {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 900;
@@ -57,7 +67,10 @@
       letter-spacing: -0.5px;
       line-height: 1;
     }
-    .nav-logo-text .dot { color: var(--teal); }
+
+    .nav-logo-text .dot {
+      color: var(--teal);
+    }
 
     .nav-links {
       position: absolute;
@@ -67,6 +80,7 @@
       align-items: center;
       gap: 6px;
     }
+
     .nav-link {
       text-decoration: none;
       color: #1e293b;
@@ -77,6 +91,7 @@
       border-radius: 8px;
       transition: background 0.18s, color 0.18s;
     }
+
     .nav-link:hover {
       background: var(--light);
       color: var(--teal);
@@ -87,6 +102,7 @@
       align-items: center;
       gap: 8px;
     }
+
     .nav-back {
       text-decoration: none;
       color: var(--dark);
@@ -101,17 +117,33 @@
       gap: 6px;
       transition: border-color 0.18s, color 0.18s, background 0.18s;
     }
+
     .nav-back:hover {
       border-color: var(--teal);
       color: var(--teal);
       background: #f0faf9;
     }
-    .nav-back svg { width: 15px; height: 15px; }
+
+    .nav-back svg {
+      width: 15px;
+      height: 15px;
+    }
 
     @media (max-width: 768px) {
-      nav { padding: 1rem; justify-content: space-between; height: auto; }
-      .nav-links { display: none; }
-      .nav-logo img { height: 26px !important; }
+      nav {
+        padding: 1rem;
+        justify-content: space-between;
+        height: auto;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-logo img {
+        height: 26px !important;
+      }
+
       .nav-back {
         font-size: 12px !important;
         padding: 0.4rem 0.6rem !important;
@@ -135,23 +167,36 @@
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .login-header {
       text-align: center;
       margin-bottom: 32px;
     }
-    h1, .login-header h1 {
+
+    h1,
+    .login-header h1 {
       font-family: 'Manrope', sans-serif !important;
       font-weight: 900;
       font-size: 32px;
       color: var(--dark);
       line-height: 1.1;
-      letter-spacing: -0.5px;
+      letter-spacing: -1.5px;
     }
-    .login-header h1 span { color: var(--teal); }
+
+    .login-header h1 span {
+      color: var(--teal);
+    }
+
     .login-header p {
       margin-top: 10px;
       color: var(--gray);
@@ -165,10 +210,13 @@
       border-radius: 20px;
       border: 1px solid var(--border);
       padding: 40px;
-      box-shadow: 0 4px 24px rgba(13,43,62,0.07);
+      box-shadow: 0 4px 24px rgba(13, 43, 62, 0.07);
     }
 
-    .field { margin-bottom: 24px; }
+    .field {
+      margin-bottom: 24px;
+    }
+
     .field label {
       display: block;
       font-size: 13px;
@@ -176,7 +224,11 @@
       color: var(--dark);
       margin-bottom: 8px;
     }
-    .input-wrap { position: relative; }
+
+    .input-wrap {
+      position: relative;
+    }
+
     .input-wrap input {
       width: 100%;
       height: 50px;
@@ -189,11 +241,16 @@
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
+
     .input-wrap input:focus {
       border-color: var(--teal);
-      box-shadow: 0 0 0 3px rgba(26,158,143,0.13);
+      box-shadow: 0 0 0 3px rgba(26, 158, 143, 0.13);
     }
-    .input-wrap input:disabled { background: #f8f9fa; cursor: not-allowed; }
+
+    .input-wrap input:disabled {
+      background: #f8f9fa;
+      cursor: not-allowed;
+    }
 
     .input-icon {
       position: absolute;
@@ -203,15 +260,29 @@
       color: #b0bec5;
       display: flex;
     }
+
     .toggle-pw {
-      background: none; border: none; cursor: pointer;
-      padding: 0; display: flex; color: #b0bec5;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      color: #b0bec5;
       transition: color 0.2s;
     }
-    .toggle-pw:hover { color: var(--teal); }
 
-    .error-msg { color: #ef4444; font-size: 12px; font-weight: 600; margin-top: 6px; display: block; }
-    
+    .toggle-pw:hover {
+      color: var(--teal);
+    }
+
+    .error-msg {
+      color: #ef4444;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 6px;
+      display: block;
+    }
+
     .password-rules {
       margin-top: 12px;
       padding: 12px;
@@ -220,40 +291,67 @@
       font-size: 12px;
       color: var(--gray);
     }
-    .password-rules strong { color: var(--dark); display: block; margin-bottom: 6px; }
-    .password-rules ul { list-style: disc; padding-left: 18px; }
+
+    .password-rules strong {
+      color: var(--dark);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .password-rules ul {
+      list-style: disc;
+      padding-left: 18px;
+    }
 
     .btn-primary {
-      width: 100%; height: 52px;
+      width: 100%;
+      height: 52px;
       background: var(--teal);
-      color: white; border: none; border-radius: 50px;
-      font-size: 16px; font-weight: 700;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 700;
       font-family: 'Barlow', sans-serif;
       cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
-      box-shadow: 0 4px 16px rgba(26,158,143,0.3);
+      box-shadow: 0 4px 16px rgba(26, 158, 143, 0.3);
       margin-bottom: 20px;
       margin-top: 10px;
     }
+
     .btn-primary:hover {
       background: var(--teal2);
       transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(26,158,143,0.38);
+      box-shadow: 0 8px 24px rgba(26, 158, 143, 0.38);
     }
 
     .back-action {
       text-align: center;
       font-size: 14px;
     }
+
     .back-action a {
-      color: var(--teal); font-weight: 700;
-      text-decoration: none; transition: color 0.2s;
-      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--teal);
+      font-weight: 700;
+      text-decoration: none;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
-    .back-action a:hover { color: var(--teal2); text-decoration: underline; }
+
+    .back-action a:hover {
+      color: var(--teal2);
+      text-decoration: underline;
+    }
   </style>
 </head>
+
 <body>
 
   <nav>
@@ -263,14 +361,15 @@
 
     <div class="nav-links">
       <a href="{{ route('home') }}#como-funciona" class="nav-link">Cómo funciona</a>
-      <a href="{{ route('home') }}#precios"       class="nav-link">Precios</a>
-      <a href="{{ route('contact') }}"           class="nav-link">Contacto</a>
+      <a href="{{ route('home') }}#precios" class="nav-link">Precios</a>
+      <a href="{{ route('contact') }}" class="nav-link">Contacto</a>
     </div>
 
     <div class="nav-right">
       <a href="{{ route('login') }}" class="nav-back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 12H5M5 12l7 7M5 12l7-7"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M19 12H5M5 12l7 7M5 12l7-7" />
         </svg>
         Regresar al login
       </a>
@@ -294,11 +393,13 @@
           <div class="field">
             <label for="email">Correo electrónico</label>
             <div class="input-wrap">
-              <input id="email" name="email" type="email" value="{{ old('email', $request->email) }}" readonly required />
+              <input id="email" name="email" type="email" value="{{ old('email', $request->email) }}" readonly
+                required />
               <span class="input-icon">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2z"/>
-                  <polyline points="22,6 12,13 2,6"/>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
                 </svg>
               </span>
             </div>
@@ -312,17 +413,22 @@
             <div class="input-wrap @error('password') has-error @enderror">
               <input id="password" name="password" type="password" placeholder="••••••••" required />
               <button class="toggle-pw input-icon" onclick="togglePassword('password', this)" type="button">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle class="eye-open" cx="12" cy="12" r="3"/>
-                  <path class="eye-closed" style="display:none" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path class="eye-closed" style="display:none" d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line class="eye-closed" style="display:none" x1="1" y1="1" x2="23" y2="23"/>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle class="eye-open" cx="12" cy="12" r="3" />
+                  <path class="eye-closed" style="display:none"
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                  <path class="eye-closed" style="display:none"
+                    d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                  <line class="eye-closed" style="display:none" x1="1" y1="1" x2="23" y2="23" />
                 </svg>
               </button>
             </div>
             @error('password')
               <span class="error-msg">{{ $message }}</span>
             @enderror
-            
+
             <div class="password-rules">
               <strong>Requisitos:</strong>
               <ul>
@@ -336,19 +442,27 @@
           <div class="field">
             <label for="password_confirmation">Confirmar Contraseña</label>
             <div class="input-wrap">
-              <input id="password_confirmation" name="password_confirmation" type="password" placeholder="••••••••" required />
-              <button class="toggle-pw input-icon" onclick="togglePassword('password_confirmation', this)" type="button">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle class="eye-open" cx="12" cy="12" r="3"/>
-                  <path class="eye-closed" style="display:none" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path class="eye-closed" style="display:none" d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line class="eye-closed" style="display:none" x1="1" y1="1" x2="23" y2="23"/>
+              <input id="password_confirmation" name="password_confirmation" type="password" placeholder="••••••••"
+                required />
+              <button class="toggle-pw input-icon" onclick="togglePassword('password_confirmation', this)"
+                type="button">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle class="eye-open" cx="12" cy="12" r="3" />
+                  <path class="eye-closed" style="display:none"
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                  <path class="eye-closed" style="display:none"
+                    d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                  <line class="eye-closed" style="display:none" x1="1" y1="1" x2="23" y2="23" />
                 </svg>
               </button>
             </div>
           </div>
 
           <button class="btn-primary" type="submit">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
               <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
               <polyline points="17 21 17 13 7 13 7 21"></polyline>
               <polyline points="7 3 7 8 15 8"></polyline>
@@ -359,8 +473,9 @@
 
         <div class="back-action">
           <a href="{{ route('login') }}">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 12H5M5 12l7 7M5 12l7-7"/>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M5 12l7 7M5 12l7-7" />
             </svg>
             Volver al inicio de sesión
           </a>
@@ -376,7 +491,7 @@
       const input = document.getElementById(inputId);
       const openPaths = btn.querySelectorAll('.eye-open');
       const closedPaths = btn.querySelectorAll('.eye-closed');
-      
+
       if (input.type === 'password') {
         input.type = 'text';
         openPaths.forEach(p => p.style.display = 'none');
@@ -387,6 +502,7 @@
         closedPaths.forEach(p => p.style.display = 'none');
       }
     }
-</script>
+  </script>
 </body>
+
 </html>

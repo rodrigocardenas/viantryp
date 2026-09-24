@@ -48,8 +48,6 @@
             body.is-viantryp-app .profile-dropdown-wrapper,
             html.is-viantryp-app .profile-trigger,
             body.is-viantryp-app .profile-trigger,
-            html.is-viantryp-app #pwa-install-banner,
-            body.is-viantryp-app #pwa-install-banner,
             html.is-viantryp-app .settings-sub-sidebar,
             body.is-viantryp-app .settings-sub-sidebar {
                 display: none !important;
@@ -269,54 +267,6 @@
         @include('components.mobile-bottom-nav')
     @endauth
 
-    {{-- PWA: Banner de instalacion --}}
-    <div id="pwa-install-banner" style="
-        display: none;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 99999;
-        background: linear-gradient(135deg, #0d2b3e 0%, #1a4a6e 100%);
-        color: white;
-        padding: 1rem 1.25rem;
-        align-items: center;
-        gap: 1rem;
-        box-shadow: 0 -4px 24px rgba(0,0,0,0.3);
-        border-top: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        font-family: 'Manrope', sans-serif;
-    ">
-        <img src="{{ asset('icons/icon-72x72.png') }}" alt="Viantryp" style="width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;">
-        <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.15rem;">Instalar Viantryp</div>
-            <div style="font-size: 0.8rem; opacity: 0.8; line-height: 1.3;">Añade la app a tu pantalla de inicio para acceder más rápido</div>
-        </div>
-        <div style="display: flex; gap: 0.5rem; flex-shrink: 0;">
-            <button id="pwa-install-dismiss" style="
-                background: rgba(255,255,255,0.15);
-                border: none;
-                color: white;
-                padding: 0.5rem 0.75rem;
-                border-radius: 8px;
-                font-size: 0.82rem;
-                cursor: pointer;
-                font-family: inherit;
-            ">Ahora no</button>
-            <button id="pwa-install-btn" style="
-                background: white;
-                color: #0d2b3e;
-                border: none;
-                padding: 0.5rem 1rem;
-                border-radius: 8px;
-                font-weight: 700;
-                font-size: 0.82rem;
-                cursor: pointer;
-                font-family: inherit;
-            ">Instalar</button>
-        </div>
-    </div>
-
     <!-- Notification System -->
     <div id="notification" class="notification">
         <div class="notification-content">
@@ -357,66 +307,13 @@
                 notification.style.display = 'none';
             }, 300);
         }
-    </script>
 
-    {{-- PWA: JS mejorado para iOS y Android --}}
-    <script>
-        const _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const _isAndroid = /Android/.test(navigator.userAgent);
-        const _isMobile = _isIOS || _isAndroid || window.innerWidth < 768;
-        const _isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
-
-        let _deferredPrompt = null;
-        const installBanner = document.getElementById('pwa-install-banner');
-        const installBtn = document.getElementById('pwa-install-btn');
-        const installDismiss = document.getElementById('pwa-install-dismiss');
-
-        // Registrar Service Worker
+        // Registrar Service Worker si está soportado
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then(reg => console.log('[Viantryp PWA] SW registrado:', reg.scope))
                     .catch(err => console.warn('[Viantryp PWA] SW error:', err));
-            });
-        }
-
-        // Capturar evento de instalacion Android/Chrome
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            _deferredPrompt = e;
-        });
-
-        // Mostrar banner en movil si no fue descartado recientemente, no esta instalada y no esta en modo app
-        window.addEventListener('load', () => {
-            const isAppMode = _isStandalone || localStorage.getItem('viantryp_app_mode') === '1' || window.location.search.includes('app=1');
-            if (!_isMobile || isAppMode) return;
-            const dismissed = localStorage.getItem('pwa-install-dismissed');
-            const alreadyDismissed = dismissed && (Date.now() - parseInt(dismissed)) < 7 * 24 * 60 * 60 * 1000;
-            if (!alreadyDismissed && installBanner) {
-                installBanner.style.display = 'flex';
-            }
-        });
-
-        // Boton instalar
-        if (installBtn) {
-            installBtn.addEventListener('click', async () => {
-                if (_isIOS) {
-                    // iOS: mostrar instrucciones (modal en landing o alert)
-                    alert('En iPhone: toca el botón Compartir (↑) en Safari → "Agregar a pantalla de inicio" → Agregar');
-                } else if (_deferredPrompt) {
-                    _deferredPrompt.prompt();
-                    const { outcome } = await _deferredPrompt.userChoice;
-                    console.log('[PWA] Resultado:', outcome);
-                    _deferredPrompt = null;
-                    if (installBanner) installBanner.style.display = 'none';
-                }
-            });
-        }
-
-        if (installDismiss) {
-            installDismiss.addEventListener('click', () => {
-                if (installBanner) installBanner.style.display = 'none';
-                localStorage.setItem('pwa-install-dismissed', Date.now());
             });
         }
     </script>

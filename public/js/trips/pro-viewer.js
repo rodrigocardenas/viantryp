@@ -205,19 +205,30 @@ function buildPreviewHTML(data) {
   };
   const starsHTML = n => n ? Array.from({ length: 5 }, (_, i) => `<svg width="16" height="16" viewBox="0 0 24 24" fill="${i < n ? '#f59e0b' : '#d1d5db'}"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`).join('') : '';
   const fixUrl = u => {
-    if (!u || !window.shareToken) return u;
+    if (!u || typeof u !== 'string') return '';
+    let resolved = u.trim();
+    if (!resolved) return '';
+
+    if (!resolved.startsWith('http://') && !resolved.startsWith('https://') && !resolved.startsWith('data:') && !resolved.startsWith('blob:')) {
+      const baseOrigin = (typeof origin !== 'undefined' && origin) ? origin : (typeof window !== 'undefined' && window.location ? window.location.origin : '');
+      if (resolved.startsWith('/')) {
+        resolved = baseOrigin + resolved;
+      } else {
+        resolved = baseOrigin + '/' + resolved;
+      }
+    }
 
     // Si ya tiene el token, no lo duplicamos
-    if (u.includes('token=')) return u;
+    if (resolved.includes('token=')) return resolved;
 
     // Detectar si es una URL interna de descarga de documentos
-    // Puede venir como /documents/X/download o como https://dominio.com/documents/X/download
-    const isInternal = u.includes('/documents/') && u.includes('/download');
+    const isInternal = resolved.includes('/documents/') && resolved.includes('/download');
+    const token = (typeof window !== 'undefined' && window.shareToken) ? window.shareToken : ((typeof data !== 'undefined' && data && data.shareToken) ? data.shareToken : '');
 
-    if (isInternal) {
-      return u + (u.includes('?') ? '&' : '?') + 'token=' + window.shareToken;
+    if (isInternal && token) {
+      return resolved + (resolved.includes('?') ? '&' : '?') + 'token=' + token;
     }
-    return u;
+    return resolved;
   };
 
   const optimizeImageUrl = (url, width = 1000) => {
@@ -250,8 +261,18 @@ function buildPreviewHTML(data) {
       }
     }
 
-    // Never proxy internal domain uploads, storage paths, or localhost via wsrv.nl
-    if (resolved.includes('viantryp.com') || resolved.includes('/storage/') || resolved.includes('/documents/') || resolved.includes('localhost') || resolved.includes('127.0.0.1')) {
+    // Never proxy internal domain uploads, storage paths, local domains or localhost via wsrv.nl
+    const hostname = (typeof window !== 'undefined' && window.location && window.location.hostname) ? window.location.hostname : '';
+    if (
+      (hostname && resolved.includes(hostname)) ||
+      resolved.includes('viantryp.com') ||
+      resolved.includes('/storage/') ||
+      resolved.includes('/documents/') ||
+      resolved.includes('localhost') ||
+      resolved.includes('127.0.0.1') ||
+      resolved.includes('.test') ||
+      resolved.includes('.local')
+    ) {
       return resolved;
     }
 
@@ -321,20 +342,32 @@ function buildPreviewHTML(data) {
 
       // ── IMAGEN ──
       if (item.type === 'imagen') {
+        let photos = [];
+        try {
+          if (Array.isArray(d.url)) photos = d.url;
+          else if (Array.isArray(d.photos)) photos = d.photos;
+          else if (typeof d.url === 'string' && d.url.startsWith('[')) photos = JSON.parse(d.url);
+          else if (typeof d.photos === 'string' && d.photos.startsWith('[')) photos = JSON.parse(d.photos);
+          else if (d.url) photos = d.url.split(',').map(s => s.trim()).filter(Boolean);
+          else if (d.photos) photos = d.photos.split(',').map(s => s.trim()).filter(Boolean);
+        } catch {
+          photos = d.url ? [d.url] : (d.photos ? [d.photos] : []);
+        }
+
         let sz = 'mediano';
         let targetW = 1000;
 
-        if (!d.url) {
+        if (photos.length === 0 || !photos[0]) {
           return `<div class="pv-imagen pv-size-${sz}"><div class="pv-img-ph"><i class="fa-regular fa-image"></i></div></div>`;
         }
 
-        const optimized = optimizeImageUrl(d.url, targetW);
-        const fixed = fixUrl(optimized);
-        const singleJson = JSON.stringify([fixed]).replace(/"/g, '&quot;');
+        const rawUrl = photos[0];
+        const u = fixUrl(optimizeImageUrl(rawUrl, targetW));
+        const singleJson = JSON.stringify([u]).replace(/"/g, '&quot;');
 
         return `<div class="pv-imagen pv-size-${sz} pv-smart-frame" style="position:relative;overflow:hidden;border-radius:12px;box-shadow:var(--shadow);background:#0f172a;box-sizing:border-box;cursor:zoom-in;" onclick="openGalleryLightbox(${singleJson}, 0); event.stopPropagation();">
-          <div class="pv-blur-backdrop" style="position:absolute;inset:-20px;background-image:url('${fixed}');background-size:cover;background-position:center;filter:blur(22px) brightness(0.6);opacity:0.85;transform:scale(1.2);pointer-events:none;"></div>
-          <img src="${fixed}" alt="" loading="lazy" decoding="async" class="pv-sharp-img" style="position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:1;">
+          <div class="pv-blur-backdrop" style="position:absolute;inset:-20px;background-image:url('${u}');background-size:cover;background-position:center;filter:blur(22px) brightness(0.6);opacity:0.85;transform:scale(1.2);pointer-events:none;"></div>
+          <img src="${u}" alt="" loading="lazy" decoding="async" class="pv-sharp-img" style="position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:1;">
           <div class="pv-expand-hint" style="position:absolute;top:12px;right:12px;background:rgba(15,23,42,0.6);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;z-index:2;backdrop-filter:blur(4px);pointer-events:none;"><i class="fa-solid fa-expand"></i></div>
         </div>`;
       }

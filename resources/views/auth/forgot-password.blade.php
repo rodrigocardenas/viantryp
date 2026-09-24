@@ -1,23 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Viantryp | Recuperar Contraseña</title>
   <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
-      --dark:   #0f2a3a;
-      --teal:   #02b5cb;
-      --teal2:  #136075;
-      --light:  #f7f9f7;
-      --gray:   #64748b;
+      --dark: #0f2a3a;
+      --teal: #02b5cb;
+      --teal2: #136075;
+      --light: #f7f9f7;
+      --gray: #64748b;
       --border: #e2e8e0;
-      --white:  #ffffff;
+      --white: #ffffff;
     }
 
     body {
@@ -49,6 +58,7 @@
       display: flex;
       align-items: center;
     }
+
     .nav-logo-text {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 900;
@@ -57,7 +67,10 @@
       letter-spacing: -0.5px;
       line-height: 1;
     }
-    .nav-logo-text .dot { color: var(--teal); }
+
+    .nav-logo-text .dot {
+      color: var(--teal);
+    }
 
     .nav-links {
       position: absolute;
@@ -67,6 +80,7 @@
       align-items: center;
       gap: 6px;
     }
+
     .nav-link {
       text-decoration: none;
       color: #1e293b;
@@ -77,6 +91,7 @@
       border-radius: 8px;
       transition: background 0.18s, color 0.18s;
     }
+
     .nav-link:hover {
       background: var(--light);
       color: var(--teal);
@@ -87,6 +102,7 @@
       align-items: center;
       gap: 8px;
     }
+
     .nav-back {
       text-decoration: none;
       color: var(--dark);
@@ -101,17 +117,33 @@
       gap: 6px;
       transition: border-color 0.18s, color 0.18s, background 0.18s;
     }
+
     .nav-back:hover {
       border-color: var(--teal);
       color: var(--teal);
       background: #f0faf9;
     }
-    .nav-back svg { width: 15px; height: 15px; }
+
+    .nav-back svg {
+      width: 15px;
+      height: 15px;
+    }
 
     @media (max-width: 768px) {
-      nav { padding: 1rem; justify-content: space-between; height: auto; }
-      .nav-links { display: none; }
-      .nav-logo img { height: 26px !important; }
+      nav {
+        padding: 1rem;
+        justify-content: space-between;
+        height: auto;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-logo img {
+        height: 26px !important;
+      }
+
       .nav-back {
         font-size: 12px !important;
         padding: 0.4rem 0.6rem !important;
@@ -135,23 +167,36 @@
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .login-header {
       text-align: center;
       margin-bottom: 32px;
     }
-    h1, .login-header h1 {
+
+    h1,
+    .login-header h1 {
       font-family: 'Manrope', sans-serif !important;
       font-weight: 900;
       font-size: 39px;
       color: var(--dark);
       line-height: 1.1;
-      letter-spacing: -0.5px;
+      letter-spacing: -1.5px;
     }
-    .login-header h1 span { color: var(--teal); }
+
+    .login-header h1 span {
+      color: var(--teal);
+    }
+
     .login-header p {
       margin-top: 10px;
       color: var(--gray);
@@ -165,10 +210,13 @@
       border-radius: 20px;
       border: 1px solid var(--border);
       padding: 40px;
-      box-shadow: 0 4px 24px rgba(13,43,62,0.07);
+      box-shadow: 0 4px 24px rgba(13, 43, 62, 0.07);
     }
 
-    .field { margin-bottom: 24px; }
+    .field {
+      margin-bottom: 24px;
+    }
+
     .field label {
       display: block;
       font-size: 13px;
@@ -176,7 +224,11 @@
       color: var(--dark);
       margin-bottom: 8px;
     }
-    .input-wrap { position: relative; }
+
+    .input-wrap {
+      position: relative;
+    }
+
     .input-wrap input {
       width: 100%;
       height: 50px;
@@ -189,10 +241,12 @@
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
+
     .input-wrap input:focus {
       border-color: var(--teal);
-      box-shadow: 0 0 0 3px rgba(26,158,143,0.13);
+      box-shadow: 0 0 0 3px rgba(26, 158, 143, 0.13);
     }
+
     .input-icon {
       position: absolute;
       right: 14px;
@@ -202,45 +256,82 @@
       display: flex;
     }
 
-    .error-msg { color: #ef4444; font-size: 12px; font-weight: 600; margin-top: 6px; display: block; }
-    
+    .error-msg {
+      color: #ef4444;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 6px;
+      display: block;
+    }
+
     .status-msg {
-      background: #f0fdf4; border: 1px solid #bcf0da; padding: 14px 18px; border-radius: 12px;
-      margin-bottom: 24px; display: flex; align-items: flex-start; gap: 12px; color: #15803d; font-size: 14px; font-weight: 500;
+      background: #f0fdf4;
+      border: 1px solid #bcf0da;
+      padding: 14px 18px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      color: #15803d;
+      font-size: 14px;
+      font-weight: 500;
       line-height: 1.4;
     }
-    .status-msg svg { margin-top: 2px; flex-shrink: 0; }
+
+    .status-msg svg {
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
 
     .btn-primary {
-      width: 100%; height: 52px;
+      width: 100%;
+      height: 52px;
       background: var(--teal);
-      color: white; border: none; border-radius: 50px;
-      font-size: 16px; font-weight: 700;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 700;
       font-family: 'Barlow', sans-serif;
       cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
-      box-shadow: 0 4px 16px rgba(26,158,143,0.3);
+      box-shadow: 0 4px 16px rgba(26, 158, 143, 0.3);
       margin-bottom: 20px;
     }
+
     .btn-primary:hover {
       background: var(--teal2);
       transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(26,158,143,0.38);
+      box-shadow: 0 8px 24px rgba(26, 158, 143, 0.38);
     }
 
     .back-action {
       text-align: center;
       font-size: 14px;
     }
+
     .back-action a {
-      color: var(--teal); font-weight: 700;
-      text-decoration: none; transition: color 0.2s;
-      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--teal);
+      font-weight: 700;
+      text-decoration: none;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
-    .back-action a:hover { color: var(--teal2); text-decoration: underline; }
+
+    .back-action a:hover {
+      color: var(--teal2);
+      text-decoration: underline;
+    }
   </style>
 </head>
+
 <body>
 
   <nav>
@@ -250,14 +341,15 @@
 
     <div class="nav-links">
       <a href="{{ route('home') }}#como-funciona" class="nav-link">Cómo funciona</a>
-      <a href="{{ route('home') }}#precios"       class="nav-link">Precios</a>
-      <a href="{{ route('contact') }}"           class="nav-link">Contacto</a>
+      <a href="{{ route('home') }}#precios" class="nav-link">Precios</a>
+      <a href="{{ route('contact') }}" class="nav-link">Contacto</a>
     </div>
 
     <div class="nav-right">
       <a href="{{ route('login') }}" class="nav-back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 12H5M5 12l7 7M5 12l7-7"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M19 12H5M5 12l7 7M5 12l7-7" />
         </svg>
         Regresar al login
       </a>
@@ -276,9 +368,10 @@
 
         @if (session('status'))
           <div class="status-msg">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
             </svg>
             <span>{{ session('status') }}</span>
           </div>
@@ -290,11 +383,13 @@
           <div class="field">
             <label for="email">Correo electrónico</label>
             <div class="input-wrap @error('email') has-error @enderror">
-              <input id="email" name="email" type="email" placeholder="tu@email.com" autocomplete="email" value="{{ old('email') }}" required />
+              <input id="email" name="email" type="email" placeholder="tu@email.com" autocomplete="email"
+                value="{{ old('email') }}" required />
               <span class="input-icon">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2z"/>
-                  <polyline points="22,6 12,13 2,6"/>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
                 </svg>
               </span>
             </div>
@@ -304,7 +399,8 @@
           </div>
 
           <button class="btn-primary" type="submit">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
               <line x1="22" y1="2" x2="11" y2="13"></line>
               <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
             </svg>
@@ -314,8 +410,9 @@
 
         <div class="back-action">
           <a href="{{ route('login') }}">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 12H5M5 12l7 7M5 12l7-7"/>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M5 12l7 7M5 12l7-7" />
             </svg>
             Volver al inicio de sesión
           </a>
@@ -326,4 +423,5 @@
     </div>
   </main>
 </body>
+
 </html>

@@ -1,23 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Viantryp | Iniciar Sesión</title>
   <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
-      --dark:   #0f2a3a;
-      --teal:   #02b5cb;
-      --teal2:  #136075;
-      --light:  #f7f9f7;
-      --gray:   #64748b;
+      --dark: #0f2a3a;
+      --teal: #02b5cb;
+      --teal2: #136075;
+      --light: #f7f9f7;
+      --gray: #64748b;
       --border: #e2e8f0;
-      --white:  #ffffff;
+      --white: #ffffff;
     }
 
     body {
@@ -50,6 +59,7 @@
       display: flex;
       align-items: center;
     }
+
     .nav-logo-text {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 900;
@@ -58,7 +68,10 @@
       letter-spacing: -0.5px;
       line-height: 1;
     }
-    .nav-logo-text .dot { color: var(--teal); }
+
+    .nav-logo-text .dot {
+      color: var(--teal);
+    }
 
     /* Center links */
     .nav-links {
@@ -69,6 +82,7 @@
       align-items: center;
       gap: 6px;
     }
+
     .nav-link {
       text-decoration: none;
       color: #1e293b;
@@ -79,6 +93,7 @@
       border-radius: 8px;
       transition: background 0.18s, color 0.18s;
     }
+
     .nav-link:hover {
       background: var(--light);
       color: var(--teal);
@@ -90,6 +105,7 @@
       align-items: center;
       gap: 8px;
     }
+
     .nav-back {
       text-decoration: none;
       color: var(--dark);
@@ -104,24 +120,44 @@
       gap: 6px;
       transition: border-color 0.18s, color 0.18s, background 0.18s;
     }
+
     .nav-back:hover {
       border-color: var(--teal);
       color: var(--teal);
       background: #f0faf9;
     }
-    .nav-back svg { width: 15px; height: 15px; }
+
+    .nav-back svg {
+      width: 15px;
+      height: 15px;
+    }
 
     /* Responsive Nav (similar to landing) */
     @media (max-width: 768px) {
-      nav { padding: 1rem; justify-content: space-between; height: auto; }
-      .nav-links { display: none; }
-      .nav-logo img { height: 26px !important; }
+      nav {
+        padding: 1rem;
+        justify-content: space-between;
+        height: auto;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-logo img {
+        height: 26px !important;
+      }
+
       .nav-back {
         font-size: 12px !important;
         padding: 0.4rem 0.6rem !important;
         white-space: nowrap;
       }
-      .nav-right { gap: 0.1rem; margin-right: 0.5rem; }
+
+      .nav-right {
+        gap: 0.1rem;
+        margin-right: 0.5rem;
+      }
     }
 
     /* ─── MAIN ─── */
@@ -140,8 +176,15 @@
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* Header */
@@ -149,15 +192,21 @@
       text-align: center;
       margin-bottom: 32px;
     }
-    h1, .login-header h1 {
+
+    h1,
+    .login-header h1 {
       font-family: 'Manrope', sans-serif !important;
       font-weight: 900;
       font-size: 39px;
       color: var(--dark);
       line-height: 1.1;
-      letter-spacing: -0.5px;
+      letter-spacing: -1.5px;
     }
-    .login-header h1 span { color: var(--teal); }
+
+    .login-header h1 span {
+      color: var(--teal);
+    }
+
     .login-header p {
       margin-top: 10px;
       color: var(--gray);
@@ -171,11 +220,14 @@
       border-radius: 16px;
       border: 1px solid var(--border);
       padding: 36px 36px 32px;
-      box-shadow: 0 4px 24px rgba(13,43,62,0.07);
+      box-shadow: 0 4px 24px rgba(13, 43, 62, 0.07);
     }
 
     /* Fields */
-    .field { margin-bottom: 20px; }
+    .field {
+      margin-bottom: 20px;
+    }
+
     .field label {
       display: block;
       font-size: 13px;
@@ -184,7 +236,11 @@
       margin-bottom: 7px;
       letter-spacing: 0.2px;
     }
-    .input-wrap { position: relative; }
+
+    .input-wrap {
+      position: relative;
+    }
+
     .input-wrap input {
       width: 100%;
       height: 48px;
@@ -198,11 +254,16 @@
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .input-wrap input::placeholder { color: #b0bec5; }
+
+    .input-wrap input::placeholder {
+      color: #b0bec5;
+    }
+
     .input-wrap input:focus {
       border-color: var(--teal);
-      box-shadow: 0 0 0 3px rgba(26,158,143,0.13);
+      box-shadow: 0 0 0 3px rgba(26, 158, 143, 0.13);
     }
+
     .input-icon {
       position: absolute;
       right: 13px;
@@ -211,21 +272,50 @@
       color: #b0bec5;
       display: flex;
     }
+
     .toggle-pw {
-      background: none; border: none; cursor: pointer;
-      padding: 0; display: flex; color: #b0bec5;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      color: #b0bec5;
       transition: color 0.2s;
     }
-    .toggle-pw:hover { color: var(--teal); }
+
+    .toggle-pw:hover {
+      color: var(--teal);
+    }
 
     /* error styling */
-    .input-wrap.has-error input { border-color: #ef4444; }
-    .input-wrap.has-error input:focus { box-shadow: 0 0 0 3px rgba(239,68,68,0.13); }
-    .error-msg { color: #ef4444; font-size: 12px; font-weight: 600; margin-top: 6px; display: block; }
-    
+    .input-wrap.has-error input {
+      border-color: #ef4444;
+    }
+
+    .input-wrap.has-error input:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.13);
+    }
+
+    .error-msg {
+      color: #ef4444;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 6px;
+      display: block;
+    }
+
     .general-error {
-      background: #fef2f2; border: 1px solid #fca5a5; padding: 12px 16px; border-radius: 10px;
-      margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #b91c1c; font-size: 13px; font-weight: 600;
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #b91c1c;
+      font-size: 13px;
+      font-weight: 600;
     }
 
     /* Options row */
@@ -235,62 +325,106 @@
       justify-content: space-between;
       margin: -4px 0 24px;
     }
+
     .remember {
-      display: flex; align-items: center; gap: 7px;
-      cursor: pointer; color: var(--gray); font-size: 13px; font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      color: var(--gray);
+      font-size: 13px;
+      font-weight: 500;
     }
+
     .remember input[type=checkbox] {
-      width: 15px; height: 15px;
+      width: 15px;
+      height: 15px;
       accent-color: var(--teal);
       cursor: pointer;
     }
+
     .forgot-link {
-      font-size: 13px; font-weight: 600;
-      color: var(--teal); text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--teal);
+      text-decoration: none;
       transition: color 0.2s;
     }
-    .forgot-link:hover { color: var(--teal2); }
+
+    .forgot-link:hover {
+      color: var(--teal2);
+    }
 
     /* Buttons */
     .btn-primary {
-      width: 100%; height: 50px;
+      width: 100%;
+      height: 50px;
       background: var(--teal);
-      color: white; border: none; border-radius: 50px;
-      font-size: 16px; font-weight: 700;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 700;
       font-family: 'Barlow', sans-serif;
       cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
-      box-shadow: 0 4px 16px rgba(26,158,143,0.3);
+      box-shadow: 0 4px 16px rgba(26, 158, 143, 0.3);
     }
+
     .btn-primary:hover {
       background: var(--teal2);
       transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(26,158,143,0.38);
+      box-shadow: 0 8px 24px rgba(26, 158, 143, 0.38);
     }
-    .btn-primary:active { transform: translateY(0); }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
 
     .divider {
-      display: flex; align-items: center; gap: 12px;
-      margin: 22px 0; color: #b0bec5; font-size: 13px; font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 22px 0;
+      color: #b0bec5;
+      font-size: 13px;
+      font-weight: 500;
     }
-    .divider::before, .divider::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
     }
 
     .btn-google {
-      width: 100%; height: 50px; background: var(--white);
+      width: 100%;
+      height: 50px;
+      background: var(--white);
       text-decoration: none;
-      border: 1.5px solid var(--border); border-radius: 50px;
-      font-size: 15px; font-weight: 600;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 600;
       font-family: 'Barlow', sans-serif;
-      color: var(--dark); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
+      color: var(--dark);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       transition: border-color 0.18s, box-shadow 0.18s, transform 0.14s;
     }
+
     .btn-google:hover {
       border-color: var(--teal);
-      box-shadow: 0 4px 14px rgba(26,158,143,0.12);
+      box-shadow: 0 4px 14px rgba(26, 158, 143, 0.12);
       transform: translateY(-1px);
     }
 
@@ -301,13 +435,20 @@
       font-size: 14px;
       color: var(--gray);
     }
+
     .signup-row a {
-      color: var(--teal); font-weight: 700;
-      text-decoration: none; transition: color 0.2s;
+      color: var(--teal);
+      font-weight: 700;
+      text-decoration: none;
+      transition: color 0.2s;
     }
-    .signup-row a:hover { color: var(--teal2); }
+
+    .signup-row a:hover {
+      color: var(--teal2);
+    }
   </style>
 </head>
+
 <body>
 
   <!-- ── NAVBAR ── -->
@@ -318,14 +459,15 @@
 
     <div class="nav-links">
       <a href="{{ route('home') }}#como-funciona" class="nav-link">Cómo funciona</a>
-      <a href="{{ route('home') }}#precios"       class="nav-link">Precios</a>
-      <a href="{{ route('contact') }}"           class="nav-link">Contacto</a>
+      <a href="{{ route('home') }}#precios" class="nav-link">Precios</a>
+      <a href="{{ route('contact') }}" class="nav-link">Contacto</a>
     </div>
 
     <div class="nav-right">
       <a href="{{ route('home') }}" class="nav-back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 12H5M5 12l7 7M5 12l7-7"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M19 12H5M5 12l7 7M5 12l7-7" />
         </svg>
         Volver al inicio
       </a>
@@ -348,10 +490,11 @@
 
           @if($errors->has('general'))
             <div class="general-error">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                <line x1="12" y1="9" x2="12" y2="13"/>
-                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
               </svg>
               <span>{{ $errors->first('general') }}</span>
             </div>
@@ -360,11 +503,13 @@
           <div class="field">
             <label for="email">Correo electrónico</label>
             <div class="input-wrap @error('email') has-error @enderror">
-              <input id="email" name="email" type="email" placeholder="tu@email.com" autocomplete="email" value="{{ old('email') }}" required />
+              <input id="email" name="email" type="email" placeholder="tu@email.com" autocomplete="email"
+                value="{{ old('email') }}" required />
               <span class="input-icon">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2z"/>
-                  <polyline points="22,6 12,13 2,6"/>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
                 </svg>
               </span>
             </div>
@@ -376,11 +521,13 @@
           <div class="field">
             <label for="password">Contraseña</label>
             <div class="input-wrap @error('password') has-error @enderror">
-              <input id="password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required />
+              <input id="password" name="password" type="password" placeholder="••••••••"
+                autocomplete="current-password" required />
               <button class="toggle-pw input-icon" onclick="togglePw()" type="button">
-                <svg id="eye-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
+                <svg id="eye-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
                 </svg>
               </button>
             </div>
@@ -397,8 +544,9 @@
           </div>
 
           <button class="btn-primary" type="submit">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" />
             </svg>
             Iniciar Sesión
           </button>
@@ -408,10 +556,14 @@
 
         <a href="{{ route('auth.google') }}" class="btn-google">
           <svg width="19" height="19" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            <path fill="#4285F4"
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+            <path fill="#34A853"
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+            <path fill="#FBBC05"
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
+            <path fill="#EA4335"
+              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
           </svg>
           Continuar con Google
         </a>
@@ -428,7 +580,7 @@
   <script>
     function togglePw() {
       const input = document.getElementById('password');
-      const icon  = document.getElementById('eye-icon');
+      const icon = document.getElementById('eye-icon');
       if (input.type === 'password') {
         input.type = 'text';
         icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
@@ -438,14 +590,14 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const googleBtn = document.getElementById('btnGoogleAuth') || document.querySelector('.btn-google');
       if (!googleBtn) return;
 
       const isNativeCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 
       if (isNativeCapacitor) {
-        googleBtn.addEventListener('click', async function(e) {
+        googleBtn.addEventListener('click', async function (e) {
           e.preventDefault();
           try {
             let GoogleAuth = window.Capacitor.Plugins ? window.Capacitor.Plugins.GoogleAuth : null;
@@ -461,11 +613,11 @@
                     grantOfflineAccess: true,
                   });
                 }
-              } catch(initErr) {}
+              } catch (initErr) { }
 
               try {
                 await GoogleAuth.signOut();
-              } catch(signOutErr) {}
+              } catch (signOutErr) { }
 
               const googleUser = await GoogleAuth.signIn();
               if (googleUser) {
@@ -487,7 +639,7 @@
                     givenName = givenName || parsedToken.given_name || parsedToken.name;
                     familyName = familyName || parsedToken.family_name;
                     imageUrl = imageUrl || parsedToken.picture;
-                  } catch(e) {}
+                  } catch (e) { }
                 }
 
                 if (userEmail || idToken) {
@@ -511,7 +663,7 @@
                   });
                   const resData = await response.json();
                   if (resData.success && resData.redirect) {
-                    try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
+                    try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
                     window.location.href = resData.redirect;
                     return;
                   }
@@ -534,4 +686,5 @@
     });
   </script>
 </body>
+
 </html>
