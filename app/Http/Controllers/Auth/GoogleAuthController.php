@@ -70,14 +70,10 @@ class GoogleAuthController extends Controller
                 }
             }
 
-            // Log the user in
-            Auth::login($user);
+            // Log the user in with persistent remember-me cookie
+            Auth::login($user, true);
 
-            if ($user->wasRecentlyCreated) {
-                return redirect()->intended(route('trips.index'))->with('success', '¡Bienvenido! Tu cuenta ha sido creada con Google.');
-            }
-
-            return redirect()->intended(route('trips.index'))->with('success', '¡Bienvenido! Has iniciado sesión con Google.');
+            return redirect()->route('trips.index')->with('success', '¡Bienvenido! Has iniciado sesión con Google.');
 
         } catch (\Exception $e) {
             return redirect()->route('trips.index')->with('error', 'Error al iniciar sesión con Google. Por favor, inténtalo de nuevo.');
