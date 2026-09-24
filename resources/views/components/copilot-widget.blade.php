@@ -59,7 +59,7 @@
                         💬 <strong>¿Cómo deseas agregar información a tu itinerario hoy?</strong>
                         <div class="chat-options-grid">
                             <button type="button" class="chat-pill-btn" id="btn-mode-file">
-                                📄 Cargar Archivo / PDF
+                                📄 Cargar PDF o Imagen
                             </button>
                             <button type="button" class="chat-pill-btn" id="btn-mode-text">
                                 ✍️ Pegar Texto / Confirmación
@@ -87,11 +87,11 @@
                 <!-- Input Section: File Dropzone -->
                 <div id="trypai-section-file" class="trypai-input-section hidden">
                     <div class="trypai-dropzone" id="trypai-dropzone">
-                        <input type="file" id="trypai-file-input" multiple accept=".pdf,.png,.jpg,.jpeg" class="trypai-file-input" />
+                        <input type="file" id="trypai-file-input" multiple accept=".pdf,.png,.jpg,.jpeg,.webp" class="trypai-file-input" />
                         <div class="trypai-dropzone-content">
                             <div class="trypai-upload-icon">📁</div>
                             <p class="trypai-drop-title">Arrastra tus archivos aquí o haz clic</p>
-                            <p class="trypai-drop-hint">PDFs de reservas, billetes de avión, confirmaciones de Booking/Airbnb o vouchers en imagen</p>
+                            <p class="trypai-drop-hint">Documentos PDF e imágenes (PNG, JPG, WEBP) de reservas, billetes de avión, confirmaciones de Booking/Airbnb o vouchers</p>
                         </div>
                     </div>
                     <div id="trypai-file-list" class="trypai-file-list"></div>
@@ -975,8 +975,8 @@ document.addEventListener('DOMContentLoaded', () => {
         currentMode = mode;
 
         if (mode === 'file') {
-            userChoiceText.innerText = 'Quiero cargar un archivo o PDF 📄';
-            promptText.innerHTML = '¡Perfecto! Arrastra o sube tus confirmaciones en PDF o imagen aquí abajo:';
+            userChoiceText.innerText = 'Quiero cargar un archivo (PDF o Imagen) 📄';
+            promptText.innerHTML = '¡Perfecto! Arrastra o sube tus confirmaciones en PDF o imagen (PNG/JPG/WEBP) aquí abajo:';
             
             sectionFile.classList.remove('hidden');
             sectionText.classList.add('hidden');

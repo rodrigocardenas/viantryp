@@ -53,15 +53,17 @@ class TripAiService
                 'generationConfig' => [
                     'responseMimeType' => 'application/json',
                     'temperature' => 0.2,
-                    'maxOutputTokens' => 4096,
+                    'maxOutputTokens' => 8192,
                 ]
             ];
 
+            // Order candidate models by stability, high multimodal capacity and fast response times
             $candidateModels = array_unique([
+                'gemini-flash-lite-latest',
+                'gemini-3.5-flash-lite',
+                'gemini-3.5-flash',
                 'gemini-3.1-flash-lite',
                 $this->model,
-                'gemini-flash-lite-latest',
-                'gemini-flash-latest',
             ]);
 
             $response = null;
@@ -70,7 +72,7 @@ class TripAiService
             foreach ($candidateModels as $candidateModel) {
                 try {
                     $endpoint = "https://generativelanguage.googleapis.com/v1beta/models/{$candidateModel}:generateContent?key={$this->apiKey}";
-                    $candidateResponse = Http::timeout(12)
+                    $candidateResponse = Http::timeout(35)
                         ->withOptions([
                             'curl' => [
                                 CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
@@ -100,8 +102,8 @@ class TripAiService
 
                 return [
                     'success' => false,
-                    'response_text' => 'Estoy reiniciando mi sistema. Por favor intenta tu mensaje de nuevo.',
-                    'message' => 'Estoy reiniciando mi sistema. Por favor intenta tu mensaje de nuevo.',
+                    'response_text' => 'El servicio de IA tardó en procesar la solicitud o está temporalmente ocupado. Por favor intenta enviar tu mensaje nuevamente.',
+                    'message' => 'El servicio de IA tardó en procesar la solicitud o está temporalmente ocupado. Por favor intenta enviar tu mensaje nuevamente.',
                     'suggested_actions' => [],
                     'actions' => [],
                     'suggestions' => ['✈️ Vuelo', '🏨 Hotel', '📍 Actividad', '🍽️ Restaurante']
@@ -116,8 +118,8 @@ class TripAiService
                 Log::error('Gemini Error:', ['Invalid JSON received from Gemini: ' . substr($rawText, 0, 200)]);
                 return [
                     'success' => false,
-                    'response_text' => 'Estoy reiniciando mi sistema. Por favor intenta tu mensaje de nuevo.',
-                    'message' => 'Estoy reiniciando mi sistema. Por favor intenta tu mensaje de nuevo.',
+                    'response_text' => 'El servicio de IA no pudo estructurar la respuesta. Por favor intenta enviar tu mensaje nuevamente.',
+                    'message' => 'El servicio de IA no pudo estructurar la respuesta. Por favor intenta enviar tu mensaje nuevamente.',
                     'suggested_actions' => [],
                     'actions' => [],
                     'suggestions' => []
@@ -142,8 +144,8 @@ class TripAiService
 
             return [
                 'success' => false,
-                'response_text' => 'Estoy reiniciando mi sistema. Por favor intenta tu mensaje de nuevo.',
-                'message' => 'Estoy reiniciando mi sistema. Por favor intenta tu mensaje de nuevo.',
+                'response_text' => 'El servicio de IA tardó en procesar la solicitud o está temporalmente ocupado. Por favor intenta enviar tu mensaje nuevamente.',
+                'message' => 'El servicio de IA tardó en procesar la solicitud o está temporalmente ocupado. Por favor intenta enviar tu mensaje nuevamente.',
                 'suggested_actions' => [],
                 'actions' => [],
                 'suggestions' => []
