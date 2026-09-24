@@ -131,6 +131,12 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Tryp AI Disclaimer -->
+            <div class="trypai-disclaimer">
+                <i class="fa-solid fa-circle-info" style="font-size:11px; opacity:0.8; margin-right:4px;"></i>
+                <em>Tryp AI puede cometer errores. Por favor, verifica la información importante antes de confirmar tu itinerario.</em>
+            </div>
         </div>
     </div>
 
@@ -153,12 +159,17 @@
 
             <!-- Modal Footer -->
             <div class="ingestion-modal-footer">
-                <button type="button" id="btn-preview-cancel" class="ingestion-btn-secondary">
-                    Cancelar / Descartar
-                </button>
-                <button type="button" id="btn-preview-confirm" class="ingestion-btn-primary">
-                    🚀 Agregar al Lienzo (<span id="preview-selected-count">0</span>)
-                </button>
+                <div class="ingestion-footer-disclaimer">
+                    <em>Tryp AI puede cometer errores. Revisa las fechas y detalles antes de agregar.</em>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button type="button" id="btn-preview-cancel" class="ingestion-btn-secondary">
+                        Cancelar / Descartar
+                    </button>
+                    <button type="button" id="btn-preview-confirm" class="ingestion-btn-primary">
+                        🚀 Agregar al Lienzo (<span id="preview-selected-count">0</span>)
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -836,13 +847,32 @@
         font-size: 12px;
     }
 
+    .trypai-disclaimer {
+        padding: 10px 16px;
+        font-size: 11.5px;
+        color: #94a3b8 !important;
+        background: rgba(15, 23, 42, 0.75);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        text-align: center;
+        line-height: 1.4;
+        flex-shrink: 0;
+    }
+
+    .ingestion-footer-disclaimer {
+        flex: 1;
+        font-size: 11.5px;
+        color: #94a3b8 !important;
+        text-align: left;
+        line-height: 1.3;
+    }
+
     .ingestion-modal-footer {
         padding: 16px 24px;
         background: #1e293b !important;
         border-top: 1px solid rgba(255, 255, 255, 0.08);
         display: flex;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: space-between;
         gap: 12px;
     }
 
