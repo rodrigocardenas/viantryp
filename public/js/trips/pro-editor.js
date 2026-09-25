@@ -826,7 +826,24 @@ function showCierreCard() {
 
 // CONFIGS
 const C = {
-  flight: { icon: '<i class="fa-solid fa-plane"></i>', label: 'Vuelo', color: '#0ea5e9', bg: '#e0f2fe', fields: [{ k: 'origen', l: 'Ciudad origen', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'destino', l: 'Ciudad destino', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'aerolinea', l: 'Aerolínea', t: 'text', ph: 'Air France', airlineApi: true }, { k: 'vuelo', l: 'No. de vuelo', t: 'text', ph: 'AF9474' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'clase', l: 'Clase', t: 'select', ph: 'Selecciona...', opts: ['Económica', 'Ejecutiva', 'Primera'] }, { k: 'precio', l: 'Precio', t: 'number', ph: '800' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'VLO-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
+  flight: {
+    icon: '<i class="fa-solid fa-plane"></i>',
+    label: 'Vuelo',
+    color: '#0ea5e9',
+    bg: '#e0f2fe',
+    fields: [
+      { k: 'aerolinea', l: 'Aerolínea', t: 'text', ph: 'Ej: Avianca', fw: true },
+      { k: 'vuelo', l: 'Número de vuelo', t: 'text', ph: 'Ej: AV205', fw: true },
+      { k: 'origen', l: 'Origen', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true },
+      { k: 'destino', l: 'Destino', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true },
+      { k: 'salida', l: 'Salida', t: 'datetime-local' },
+      { k: 'llegada', l: 'Llegada', t: 'datetime-local' },
+      { k: 'precio', l: 'Precio', t: 'number', ph: '800', fw: true },
+      { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'VLO-12345', fw: true },
+      { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true },
+      { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...', fw: true }
+    ]
+  },
   alojamiento: { icon: '<i class="fa-solid fa-hotel"></i>', label: 'Alojamiento', color: '#f0567a', bg: '#fde8ee', fields: [{ k: 'tipo_alojamiento', l: 'Tipo de Alojamiento', t: 'select', opts: ['Hotel', 'Airbnb u otro'], fw: true }, { k: 'nombre', l: 'Nombre del hotel', t: 'text', ph: 'Hotel Luxe París', fw: true, hasInfo: true }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Escribe o busca en Google Maps...', group: 'google', fw: true, hasPin: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'checkin', l: 'Check-in', t: 'datetime-local' }, { k: 'checkout', l: 'Check-out', t: 'datetime-local' }, { k: 'habitacion', l: 'Tipo habitación', t: 'select', ph: 'Selecciona...', opts: ['Sencilla', 'Doble', 'Triple', 'Suite', 'Alojamiento entero', 'Habitaciones mixtas'] }, { k: 'alimentacion', l: 'Alimentación', t: 'select', ph: 'Selecciona...', opts: ['Solo alojamiento', 'Desayuno incluido', 'Media pensión', 'Pensión completa', 'Todo incluido'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ALJ-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '150' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Desayuno incluido...' }] },
   transporte: { icon: '<i class="fa-solid fa-car"></i>', label: 'Transporte', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'tipo', l: 'Tipo', t: 'select', opts: ['Auto de alquiler', 'Taxi/Uber', 'Tren', 'Bus', 'Ferry', 'Moto'] }, { k: 'proveedor', l: 'Proveedor', t: 'text', ph: 'Hertz, Renfe...' }, { k: 'origen', l: 'Desde', t: 'text', ph: 'Aeropuerto CDG' }, { k: 'destino', l: 'Hasta', t: 'text', ph: 'Hotel Centro' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'precio', l: 'Precio', t: 'number', ph: '50' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TRL-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Confirmación...' }] },
   actividad: { icon: '<i class="fa-solid fa-compass"></i>', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', fields: [{ k: 'nombre', l: 'Nombre actividad', t: 'text', ph: 'Cena con vista, Tour privado...', fw: true }, { k: 'direccion', l: 'Lugar (Google Maps) · opcional', t: 'text', ph: 'Torre Eiffel, Museo del Louvre...', fw: true, hasInfo: true }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...', fw: true }, { k: 'website', l: 'Link de la actividad · opcional', t: 'text', ph: 'https://...', fw: true }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '25' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
@@ -1355,7 +1372,7 @@ function renderTabs() {
   let html = '';
 
   // Portada
-  html += `<button class="day-tab portada-tab ${currentDay === 'portada' ? 'active' : ''}" data-day="portada"><span class="day-tab-label"><i class="fa-solid fa-sun" style="margin-right:4px"></i> Portada</span><span class="day-tab-delete portada-cierre-delete" onclick="confirmDeleteSection('portada',event)" title="Eliminar portada"><i class="fa-solid fa-trash-can"></i></span></button>`;
+  html += `<button class="day-tab portada-tab ${currentDay === 'portada' ? 'active' : ''}" data-day="portada"><span class="day-tab-label"><i class="fa-solid fa-sun" style="margin-right:4px"></i> Portada</span></button>`;
 
   // Days
   days.forEach((_, i) => {
@@ -1370,7 +1387,7 @@ function renderTabs() {
   html += `<button class="add-day-btn" id="addDayBtn" type="button" style="margin: 0 4px; padding: 4px 10px;"><i class="fa-solid fa-plus"></i> Día</button>`;
 
   // Cierre
-  html += `<button class="day-tab cierre-tab ${currentDay === 'cierre' ? 'active' : ''}" data-day="cierre"><span class="day-tab-label"><i class="fa-solid fa-moon" style="margin-right:4px"></i> Cierre</span><span class="day-tab-delete portada-cierre-delete" onclick="confirmDeleteSection('cierre',event)" title="Eliminar cierre"><i class="fa-solid fa-trash-can"></i></span></button>`;
+  html += `<button class="day-tab cierre-tab ${currentDay === 'cierre' ? 'active' : ''}" data-day="cierre"><span class="day-tab-label"><i class="fa-solid fa-moon" style="margin-right:4px"></i> Cierre</span></button>`;
 
   container.innerHTML = html;
 
@@ -1929,13 +1946,46 @@ window.getItemInnerHtml = function(item) {
   let title = '', chips = [], sub = [];
   switch (type) {
     case 'flight':
-      const getCity = str => str ? (str.includes('(') ? str.split('(')[0].trim() : str.split(' -')[0].trim()) : '';
-      title = (d.origen && d.destino) ? `${d.origen_city || getCity(d.origen)} → ${d.destino_city || getCity(d.destino)}` : (item.title || 'Vuelo');
+      const parseFlightLoc = (val, cityHint, iataHint) => {
+        let city = cityHint || '';
+        let iata = iataHint || '';
+        if (!val && !city) return { city: '', iata: '' };
+        const str = String(val || city).trim();
+
+        if (!city && str.includes(' - ')) {
+          const parts = str.split(' - ').map(s => s.trim()).filter(Boolean);
+          if (parts[0].length <= 4 && /^[A-Za-z0-9]{3,4}$/.test(parts[0])) {
+            if (!iata) iata = parts[0].toUpperCase();
+            if (parts.length > 1) city = parts[1];
+          } else {
+            const match = parts[0].match(/^(.*?)\s*\(([A-Za-z0-9]{3,4})\)/);
+            if (match) {
+              city = match[1].trim();
+              if (!iata) iata = match[2].toUpperCase();
+            } else {
+              city = parts[0];
+            }
+          }
+        } else if (!city && str.includes('(')) {
+          const match = str.match(/^(.*?)\s*\(([A-Za-z0-9]{3,4})\)/);
+          if (match) {
+            city = match[1].trim();
+            if (!iata) iata = match[2].toUpperCase();
+          } else {
+            city = str.split('(')[0].trim();
+          }
+        } else if (!city) {
+          city = str;
+        }
+        return { city, iata };
+      };
+      const oriLoc = parseFlightLoc(d.origen, d.origen_city, d.origen_iata);
+      const desLoc = parseFlightLoc(d.destino, d.destino_city, d.destino_iata);
+      title = (d.origen && d.destino) ? `${oriLoc.city || d.origen} → ${desLoc.city || d.destino}` : (item.title || 'Vuelo');
       if (d.salida) sub.push('<i class="fa-solid fa-plane-departure"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.salida) : d.salida));
       if (d.llegada) sub.push('<i class="fa-solid fa-plane-arrival"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.llegada) : d.llegada));
       if (d.aerolinea) chips.push(d.aerolinea);
       if (d.vuelo) chips.push(d.vuelo);
-      if (d.clase) chips.push(d.clase);
       if (d.precio) chips.push('$' + (typeof formatNumber === 'function' ? formatNumber(d.precio) : d.precio) + ' USD');
       if (d.reserva) chips.push('Reserva: ' + d.reserva);
       break;
@@ -2432,6 +2482,254 @@ function checkGooglePlacesLimit() {
   return true;
 }
 
+function buildFlightModal(modalBody, existData, editIdx) {
+  modalBody.innerHTML = '';
+
+  let dayDate = (typeof currentDay === 'number' && dayDates[currentDay]) ? dayDates[currentDay] : '';
+  if (!dayDate && typeof currentDay === 'number') {
+    const pi = document.getElementById('portadaFechaInicio');
+    if (pi && pi.value) dayDate = addDaysToDate(pi.value, currentDay);
+  }
+  if (!dayDate) dayDate = new Date().toISOString().split('T')[0];
+
+  const defaultSalida = existData.salida || '';
+  const defaultLlegada = existData.llegada || '';
+  const searchDateVal = existData.fecha || (existData.salida ? existData.salida.split('T')[0] : dayDate);
+
+  // 1. Search Bar
+  const searchWrap = document.createElement('div');
+  searchWrap.className = 'flight-search-bar-wrap';
+  searchWrap.innerHTML = `
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" id="flightSearchNumLabel" style="display:flex; align-items:center; justify-content:space-between; height:18px;">
+          <span>Número de Vuelo</span>
+        </label>
+        <input type="text" class="form-input" id="flightSearchNumber" data-key="vuelo" placeholder="Ej: AV205" style="text-transform:uppercase; height:38px;" value="${existData.vuelo || ''}">
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex; align-items:center; height:18px;">
+          <span>Fecha del Vuelo</span>
+        </label>
+        <input type="date" class="form-input" id="flightSearchDate" data-key="fecha" style="height:38px;" value="${searchDateVal}">
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary btn-flight-search" id="btnFlightSearch">
+      <i class="fa-solid fa-magnifying-glass"></i> Buscar vuelo
+    </button>
+    <div class="flight-status-indicator" id="flightSearchLoading" style="display:none;">
+      <div class="spinner"></div>
+      <span>Consultando vuelo en AeroDataBox…</span>
+    </div>
+    <div class="flight-error-box" id="flightSearchError" style="display:none;">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <div>
+        <div class="flight-error-text">No se encontró información para este vuelo o la fecha es inválida.</div>
+        <button type="button" class="btn-switch-manual" id="btnSwitchToManualFromError">Completar manualmente</button>
+      </div>
+    </div>
+    <div class="hotel-manual-address-wrap" style="margin-top: 2px;">
+      <button type="button" class="btn-manual-address-toggle" id="flightManualToggleBtn">
+        <i class="fa-solid fa-plane"></i> ¿No lo encuentras? Ingresa la información manualmente
+      </button>
+    </div>
+  `;
+
+  const numLabel = searchWrap.querySelector('#flightSearchNumLabel');
+  if (numLabel) {
+    numLabel.appendChild(createInfoSpan('Tu plan añade automáticamente los datos del vuelo al recuadro inferior al ingresar el número de vuelo correcto y la fecha. Si no lo encuentras, puedes completar los campos manualmente.'));
+  }
+
+  modalBody.appendChild(searchWrap);
+
+  // 2. Flight Details Box (.field-group-box) - visible from the beginning
+  const groupBox = document.createElement('div');
+  groupBox.id = 'flightGroupBox';
+  groupBox.className = 'field-group-box';
+  groupBox.style.display = 'flex';
+
+  groupBox.appendChild(buildField({ k: 'aerolinea', l: 'Aerolínea', t: 'text', ph: 'Ej: Avianca', fw: true }, existData));
+
+  const rowOriDes = document.createElement('div');
+  rowOriDes.className = 'form-row';
+  rowOriDes.appendChild(buildField({ k: 'origen', l: 'Origen', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, existData));
+  rowOriDes.appendChild(buildField({ k: 'destino', l: 'Destino', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, existData));
+  groupBox.appendChild(rowOriDes);
+
+  const rowSalLle = document.createElement('div');
+  rowSalLle.className = 'form-row';
+  rowSalLle.appendChild(buildField({ k: 'salida', l: 'Fecha y hora de salida', t: 'datetime-local' }, { salida: defaultSalida }));
+  rowSalLle.appendChild(buildField({ k: 'llegada', l: 'Fecha y hora de llegada', t: 'datetime-local' }, { llegada: defaultLlegada }));
+  groupBox.appendChild(rowSalLle);
+
+  modalBody.appendChild(groupBox);
+
+  // 3. Extra Fields Container - visible from the beginning
+  const extraSec = document.createElement('div');
+  extraSec.id = 'flightExtraSection';
+  extraSec.style.display = 'flex';
+  extraSec.style.flexDirection = 'column';
+  extraSec.style.gap = '13px';
+
+  extraSec.appendChild(buildField({ k: 'precio', l: 'Precio', t: 'number', ph: '800', fw: true }, existData));
+  extraSec.appendChild(buildField({ k: 'reserva', l: 'Código de Reserva', t: 'text', ph: 'Ej: VLO-12345', fw: true }, existData));
+  extraSec.appendChild(buildField({ k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, existData));
+  extraSec.appendChild(buildField({ k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...', fw: true }, existData));
+
+  modalBody.appendChild(extraSec);
+
+  const manualWrap = searchWrap.querySelector('.hotel-manual-address-wrap');
+  if (editIdx !== null && (existData.aerolinea || existData.origen || existData.salida)) {
+    if (manualWrap) manualWrap.style.display = 'none';
+  }
+
+  const focusAerolinea = () => {
+    if (manualWrap) manualWrap.style.display = 'none';
+    const errBox = searchWrap.querySelector('#flightSearchError');
+    if (errBox) errBox.style.display = 'none';
+
+    const aerolineaInp = groupBox.querySelector('[data-key="aerolinea"]');
+    if (aerolineaInp) {
+      aerolineaInp.focus();
+      aerolineaInp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  const manualToggleBtn = searchWrap.querySelector('#flightManualToggleBtn');
+  if (manualToggleBtn) {
+    manualToggleBtn.onclick = (e) => {
+      e.preventDefault();
+      focusAerolinea();
+    };
+  }
+
+  const btnErrorManual = searchWrap.querySelector('#btnSwitchToManualFromError');
+  if (btnErrorManual) {
+    btnErrorManual.onclick = (e) => {
+      e.preventDefault();
+      focusAerolinea();
+    };
+  }
+
+  // Handle Search Flight API
+  const handleFlightSearch = () => {
+    const isPremium = typeof window.viantrypUserPlan !== 'undefined' && window.viantrypUserPlan !== 'básico';
+    const isTrial = window.viantrypIsTrialActive === true;
+    if (!isPremium && !isTrial) {
+      if (typeof window.openProUpgradeInlineModal === 'function') {
+        window.openProUpgradeInlineModal('Búsqueda Automática de Vuelos', 'La búsqueda automática de vuelos en tiempo real está disponible en los planes Viajero Pro y Negocios. Puedes completar los datos manualmente o actualizar tu plan.');
+      } else if (typeof openUpgradeModal === 'function') {
+        openUpgradeModal();
+      }
+      return;
+    }
+
+    const numInp = searchWrap.querySelector('#flightSearchNumber');
+    const dateInp = searchWrap.querySelector('#flightSearchDate');
+    const errBox = searchWrap.querySelector('#flightSearchError');
+    const loadBox = searchWrap.querySelector('#flightSearchLoading');
+    const searchBtn = searchWrap.querySelector('#btnFlightSearch');
+
+    const fNum = numInp ? numInp.value.trim().toUpperCase() : '';
+    const fDate = dateInp ? dateInp.value.trim() : '';
+
+    if (!fNum) {
+      showToast('⚠️', 'Ingresa un número de vuelo');
+      if (numInp) numInp.focus();
+      return;
+    }
+
+    if (errBox) errBox.style.display = 'none';
+    if (loadBox) loadBox.style.display = 'flex';
+    if (searchBtn) searchBtn.disabled = true;
+
+    fetch(`/api/flights/lookup?flight_number=${encodeURIComponent(fNum)}&date=${encodeURIComponent(fDate)}`)
+      .then(res => res.json().then(data => ({ status: res.status, ok: res.ok, data })))
+      .then(res => {
+        if (loadBox) loadBox.style.display = 'none';
+        if (searchBtn) searchBtn.disabled = false;
+
+        if (res.ok && res.data && res.data.success && res.data.data) {
+          const d = res.data.data;
+          const setVal = (k, v) => {
+            const el = modalBody.querySelector(`[data-key="${k}"]`);
+            if (el && v !== undefined && v !== null) {
+              el.value = v;
+              el.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+          };
+          if (d.vuelo || d.flight_number) setVal('vuelo', d.vuelo || d.flight_number);
+          if (d.fecha) setVal('fecha', d.fecha);
+          setVal('aerolinea', d.aerolinea || d.airline_name || '');
+          setVal('origen', d.origen || d.departure_airport || '');
+          setVal('destino', d.destino || d.arrival_airport || '');
+
+          const oriInp = modalBody.querySelector('[data-key="origen"]');
+          if (oriInp) {
+            if (d.origen_city) oriInp.dataset.city = d.origen_city;
+            if (d.origen_iata || d.departure_airport) oriInp.dataset.iata = d.origen_iata || d.departure_airport;
+            if (d.origen_airport_name || d.departure_airport_name) oriInp.dataset.airportName = d.origen_airport_name || d.departure_airport_name;
+          }
+
+          const desInp = modalBody.querySelector('[data-key="destino"]');
+          if (desInp) {
+            if (d.destino_city) desInp.dataset.city = d.destino_city;
+            if (d.destino_iata || d.arrival_airport) desInp.dataset.iata = d.destino_iata || d.arrival_airport;
+            if (d.destino_airport_name || d.arrival_airport_name) desInp.dataset.airportName = d.destino_airport_name || d.arrival_airport_name;
+          }
+
+          // Handle departure and arrival datetime formatting
+          let salVal = d.salida || d.departure_datetime || '';
+          if (!salVal && (d.fecha || fDate) && d.hora_salida) {
+            salVal = (d.fecha || fDate) + 'T' + d.hora_salida;
+          }
+          let lleVal = d.llegada || d.arrival_datetime || '';
+          if (!lleVal && (d.fecha || fDate) && d.hora_llegada) {
+            lleVal = (d.fecha || fDate) + 'T' + d.hora_llegada;
+          }
+          setVal('salida', salVal ? salVal.substring(0, 16) : '');
+          setVal('llegada', lleVal ? lleVal.substring(0, 16) : '');
+
+          if (manualWrap) manualWrap.style.display = 'none';
+          showToast('✈️', res.data.source === 'local_database' ? 'Vuelo cargado (Base de Datos)' : 'Datos de vuelo cargados');
+        } else {
+          if (res.status === 403 && res.data?.error_code === 'UPGRADE_REQUIRED') {
+            if (typeof window.openProUpgradeInlineModal === 'function') {
+              window.openProUpgradeInlineModal('Búsqueda Automática de Vuelos', res.data.message || 'La búsqueda automática de vuelos está disponible en los planes Viajero Pro y Negocios.');
+            } else if (typeof openUpgradeModal === 'function') {
+              openUpgradeModal();
+            }
+            return;
+          }
+
+          const errMsgEl = errBox ? errBox.querySelector('.flight-error-text') : null;
+          if (errMsgEl && res.data?.message) {
+            errMsgEl.textContent = res.data.message;
+          }
+          if (errBox) errBox.style.display = 'flex';
+        }
+      })
+      .catch(err => {
+        if (loadBox) loadBox.style.display = 'none';
+        if (searchBtn) searchBtn.disabled = false;
+        if (errBox) errBox.style.display = 'flex';
+      });
+  };
+
+  const searchBtn = searchWrap.querySelector('#btnFlightSearch');
+  if (searchBtn) searchBtn.onclick = handleFlightSearch;
+
+  const numInp = searchWrap.querySelector('#flightSearchNumber');
+  if (numInp) {
+    numInp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleFlightSearch();
+      }
+    });
+  }
+}
+
 function openModal(type, editIdx = null, customData = null) {
   if (typeof currentDay !== 'number' && currentDay !== 'portada' && currentDay !== 'cierre' && customData === null) return;
 
@@ -2450,6 +2748,17 @@ function openModal(type, editIdx = null, customData = null) {
   const subEl = document.getElementById('modalSubtitle');
   if (subEl) subEl.textContent = '';
   modalBody.innerHTML = '';
+
+  if (type === 'flight') {
+    buildFlightModal(modalBody, existData, editIdx);
+    modalOverlay.classList.add('open');
+    setTimeout(() => {
+      const f = modalBody.querySelector('input:not([type="hidden"]),select,textarea');
+      if (f) f.focus();
+    }, 220);
+    return;
+  }
+
   const fields = cfg.fields;
   let currentGroup = null;
   let currentTarget = modalBody;
@@ -4211,6 +4520,8 @@ function buildField(field, data) {
       inp.value = (field.k === 'precio') ? formatNumber(val) : val;
       inp.dataset.key = field.k;
       if (data && data[field.k + '_city']) inp.dataset.city = data[field.k + '_city'];
+      if (data && data[field.k + '_iata']) inp.dataset.iata = data[field.k + '_iata'];
+      if (data && (data[field.k + '_airport_name'] || data[field.k + '_name'])) inp.dataset.airportName = data[field.k + '_airport_name'] || data[field.k + '_name'];
       if (data && data[field.k + '_address']) inp.dataset.address = data[field.k + '_address'];
       if (data && data[field.k + '_lat']) inp.dataset.lat = data[field.k + '_lat'];
       if (data && data[field.k + '_lng']) inp.dataset.lng = data[field.k + '_lng'];
@@ -4251,7 +4562,7 @@ function buildField(field, data) {
       }
     }
 
-    if (field.airportApi || field.airlineApi) {
+    if (field.airportApi) {
       const drop = document.createElement('div'); drop.className = 'api-autocomplete-drop'; drop.style = 'position:absolute; background:#fff; border:1px solid #ccc; border-radius:4px; max-height:200px; overflow-y:auto; z-index:100; display:none; width:100%; box-shadow:0 4px 6px rgba(0,0,0,0.1); margin-top:2px;';
       fg.style.position = 'relative';
       fg.appendChild(drop);
@@ -4264,8 +4575,7 @@ function buildField(field, data) {
         const q = e.target.value.trim();
         if (q.length < 3) { drop.style.display = 'none'; return; }
         timeout = setTimeout(() => {
-          const endpoint = field.airportApi ? '/api/airports' : '/api/airlines';
-          fetch(`${endpoint}?q=${encodeURIComponent(q)}`)
+          fetch(`/api/airports?q=${encodeURIComponent(q)}`)
             .then(res => res.json())
             .then(data => {
               drop.innerHTML = '';
@@ -4279,6 +4589,8 @@ function buildField(field, data) {
                 item.onclick = () => {
                   inp.value = it.text;
                   if (it.city) inp.dataset.city = it.city;
+                  if (it.iata_code) inp.dataset.iata = it.iata_code;
+                  if (it.name) inp.dataset.airportName = it.name;
                   if (it.latitude) inp.dataset.lat = it.latitude;
                   if (it.longitude) inp.dataset.lng = it.longitude;
                   drop.style.display = 'none';
@@ -4329,6 +4641,23 @@ document.getElementById('modalSave').addEventListener('click', () => {
   }
 
   const type = editingIndex !== null ? (currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay])[editingIndex].type : pendingType;
+
+  if (type === 'flight') {
+    modalBody.querySelectorAll('[data-key]').forEach(el => {
+      const key = el.dataset.key;
+      data[key] = el.value !== undefined ? el.value : '';
+      if (el.dataset.city) data[key + '_city'] = el.dataset.city;
+      if (el.dataset.iata) data[key + '_iata'] = el.dataset.iata;
+      if (el.dataset.airportName) data[key + '_airport_name'] = el.dataset.airportName;
+      if (el.dataset.address) data[key + '_address'] = el.dataset.address;
+      if (el.dataset.lat) data[key + '_lat'] = el.dataset.lat;
+      if (el.dataset.lng) data[key + '_lng'] = el.dataset.lng;
+    });
+    if (data.salida && !data.fecha) {
+      data.fecha = data.salida.split('T')[0];
+    }
+  }
+
   const item = { type, data };
   const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
   if (editingIndex !== null) { arr[editingIndex] = item; showToast('<i class="fa-solid fa-pencil"></i>', 'Elemento actualizado') }

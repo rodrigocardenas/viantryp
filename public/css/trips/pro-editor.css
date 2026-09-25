@@ -3461,12 +3461,12 @@ body {
   padding: 2px 0;
   color: var(--accent, #7c6fef);
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   text-decoration: underline;
   text-underline-offset: 3px;
   transition: color 0.18s ease, opacity 0.18s ease;
@@ -3478,7 +3478,7 @@ body {
 }
 
 .btn-manual-address-toggle i {
-  font-size: 11px;
+  font-size: 10.5px;
 }
 
 /* Activity Modal - Optional Place & Dynamic Place Section */
@@ -4139,4 +4139,166 @@ body {
   color: #64748b;
   line-height: 1.45;
   font-weight: 400;
+}
+
+/* ============================================================
+   FLIGHT MODAL - MODE TABS & DUAL FLOW (AUTO & MANUAL)
+   ============================================================ */
+.flight-mode-tabs {
+  display: flex;
+  background: var(--surface2, #f0f1f7);
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
+  margin-bottom: 4px;
+  border: 1px solid var(--border);
+}
+
+.flight-mode-tab {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flight-mode-tab.active {
+  background: var(--surface, #ffffff);
+  color: #0ea5e9;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  font-weight: 700;
+}
+
+.flight-mode-tab:hover:not(.active) {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.flight-search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-flight-search {
+  background: linear-gradient(135deg, #1a6a78, #1a7a8a);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  padding: 9px 18px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 14px rgba(26, 106, 120, 0.28);
+}
+
+.btn-flight-search:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 20px rgba(26, 106, 120, 0.38);
+  filter: brightness(1.05);
+}
+
+.btn-flight-search:active {
+  transform: translateY(0);
+}
+
+.btn-flight-search:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.flight-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.flight-status-indicator .spinner {
+  width: 16px;
+  height: 16px;
+  border: 2.5px solid rgba(2, 132, 199, 0.2);
+  border-top-color: #0284c7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.flight-error-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.flight-error-box i {
+  font-size: 15px;
+  margin-top: 2px;
+  color: #ef4444;
+}
+
+.flight-error-box .btn-switch-manual {
+  display: inline-block;
+  margin-top: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  color: #b91c1c;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.flight-error-box .btn-switch-manual:hover {
+  color: #7f1d1d;
+}
+
+.flight-auto-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.flight-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }

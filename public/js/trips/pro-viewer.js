@@ -495,36 +495,322 @@ function buildPreviewHTML(data) {
         const sal = d.salida ? fmtDateTime(d.salida) : { day: '', time: '' };
         const lle = d.llegada ? fmtDateTime(d.llegada) : { day: '', time: '' };
 
-        // Use d.origen_city/d.destino_city directly if it exists, otherwise fallback to parsing origin
-        const getCity = str => str ? (str.includes('(') ? str.split('(')[0].trim() : str.split(' -')[0].trim()) : '';
-        const oriCity = d.origen_city || getCity(d.origen);
-        const desCity = d.destino_city || getCity(d.destino);
+        const IATA_AIRPORT_NAMES = {
+          BOG: 'Aeropuerto Internacional El Dorado',
+          MDE: 'Aeropuerto Internacional José María Córdova',
+          EOH: 'Aeropuerto Olaya Herrera',
+          CLO: 'Aeropuerto Internacional Alfonso Bonilla Aragón',
+          CTG: 'Aeropuerto Internacional Rafael Núñez',
+          BAQ: 'Aeropuerto Internacional Ernesto Cortissoz',
+          SMR: 'Aeropuerto Internacional Simón Bolívar',
+          ADZ: 'Aeropuerto Internacional Gustavo Rojas Pinilla',
+          PEI: 'Aeropuerto Internacional Matecaña',
+          BGA: 'Aeropuerto Internacional Palonegro',
+          CUC: 'Aeropuerto Internacional Camilo Daza',
+          AXM: 'Aeropuerto Internacional El Edén',
+          VUP: 'Aeropuerto Alfonso López Pumarejo',
+          EYP: 'Aeropuerto El Alcaraván',
+          NVA: 'Aeropuerto Benito Salas',
+          MTR: 'Aeropuerto Los Garzones',
+          PSO: 'Aeropuerto Antonio Nariño',
+          FLA: 'Aeropuerto Gustavo Artunduaga',
+          RCH: 'Aeropuerto Almirante Padilla',
+          MZL: 'Aeropuerto La Nubia',
+          IBE: 'Aeropuerto Perales',
+          MAD: 'Aeropuerto Adolfo Suárez Madrid-Barajas',
+          BCN: 'Aeropuerto Josep Tarradellas Barcelona-El Prat',
+          VLC: 'Aeropuerto de Valencia',
+          AGP: 'Aeropuerto de Málaga-Costa del Sol',
+          SVQ: 'Aeropuerto de Sevilla',
+          BIO: 'Aeropuerto de Bilbao',
+          ALC: 'Aeropuerto de Alicante-Elche Miguel Hernández',
+          PMI: 'Aeropuerto de Palma de Mallorca',
+          IBZ: 'Aeropuerto de Ibiza',
+          MAH: 'Aeropuerto de Menorca',
+          CDG: 'Aeropuerto Charles de Gaulle',
+          ORY: 'Aeropuerto de París-Orly',
+          BVA: 'Aeropuerto de Beauvais-Tillé',
+          NCE: 'Aeropuerto de Niza Costa Azul',
+          LYS: 'Aeropuerto de Lyon-Saint Exupéry',
+          MRS: 'Aeropuerto de Marsella-Provenza',
+          LHR: 'Aeropuerto de Londres-Heathrow',
+          LGW: 'Aeropuerto de Londres-Gatwick',
+          STN: 'Aeropuerto de Londres-Stansted',
+          LTN: 'Aeropuerto de Londres-Luton',
+          MAN: 'Aeropuerto de Mánchester',
+          EDI: 'Aeropuerto de Edimburgo',
+          DUB: 'Aeropuerto de Dublín',
+          AMS: 'Aeropuerto de Ámsterdam-Schiphol',
+          BRU: 'Aeropuerto de Bruselas',
+          FRA: 'Aeropuerto de Fráncfort del Meno',
+          MUC: 'Aeropuerto de Múnich-Franz Josef Strauss',
+          BER: 'Aeropuerto de Berlín-Brandeburgo',
+          HAM: 'Aeropuerto de Hamburgo',
+          DUS: 'Aeropuerto de Düsseldorf',
+          ZRH: 'Aeropuerto de Zúrich',
+          GVA: 'Aeropuerto Internacional de Ginebra',
+          VIE: 'Aeropuerto de Viena-Schwechat',
+          FCO: 'Aeropuerto de Roma-Fiumicino Leonardo da Vinci',
+          CIA: 'Aeropuerto de Roma-Ciampino',
+          MXP: 'Aeropuerto de Milán-Malpensa',
+          LIN: 'Aeropuerto de Milán-Linate',
+          BGY: 'Aeropuerto de Bérgamo-Orio al Serio',
+          VCE: 'Aeropuerto Marco Polo de Venecia',
+          BLQ: 'Aeropuerto de Bolonia-Guglielmo Marconi',
+          NAP: 'Aeropuerto de Nápoles-Capodichino',
+          ATH: 'Aeropuerto Internacional Eleftherios Venizelos',
+          LIS: 'Aeropuerto Humberto Delgado de Lisboa',
+          OPO: 'Aeropuerto Francisco Sá Carneiro de Oporto',
+          FAO: 'Aeropuerto de Faro',
+          IST: 'Aeropuerto de Estambul',
+          SAW: 'Aeropuerto Internacional Sabiha Gökçen',
+          WAW: 'Aeropuerto de Varsovia-Chopin',
+          PRG: 'Aeropuerto Václav Havel de Praga',
+          BUD: 'Aeropuerto de Budapest-Ferenc Liszt',
+          OSL: 'Aeropuerto de Oslo-Gardermoen',
+          ARN: 'Aeropuerto de Estocolmo-Arlanda',
+          CPH: 'Aeropuerto de Copenhague-Kastrup',
+          HEL: 'Aeropuerto de Helsinki-Vantaa',
+          KEF: 'Aeropuerto Internacional de Keflavík',
+          MIA: 'Aeropuerto Internacional de Miami',
+          MCO: 'Aeropuerto Internacional de Orlando',
+          FLL: 'Aeropuerto Internacional de Fort Lauderdale-Hollywood',
+          TPA: 'Aeropuerto Internacional de Tampa',
+          JFK: 'Aeropuerto Internacional John F. Kennedy',
+          EWR: 'Aeropuerto Internacional Libertad de Newark',
+          LGA: 'Aeropuerto LaGuardia',
+          BOS: 'Aeropuerto Internacional Logan de Boston',
+          PHL: 'Aeropuerto Internacional de Filadelfia',
+          IAD: 'Aeropuerto Internacional de Washington-Dulles',
+          DCA: 'Aeropuerto Nacional Ronald Reagan',
+          BWI: 'Aeropuerto Internacional de Baltimore-Washington',
+          ATL: 'Aeropuerto Internacional Hartsfield-Jackson Atlanta',
+          CLT: 'Aeropuerto Internacional de Charlotte-Douglas',
+          ORD: "Aeropuerto Internacional O'Hare",
+          MDW: 'Aeropuerto Internacional Midway',
+          DFW: 'Aeropuerto Internacional de Dallas-Fort Worth',
+          IAH: 'Aeropuerto Intercontinental George Bush',
+          HOU: 'Aeropuerto William P. Hobby',
+          AUS: 'Aeropuerto Internacional de Austin-Bergstrom',
+          DEN: 'Aeropuerto Internacional de Denver',
+          LAS: 'Aeropuerto Internacional Harry Reid',
+          PHX: 'Aeropuerto Internacional de Phoenix-Sky Harbor',
+          LAX: 'Aeropuerto Internacional de Los Ángeles',
+          SFO: 'Aeropuerto Internacional de San Francisco',
+          SAN: 'Aeropuerto Internacional de San Diego',
+          SEA: 'Aeropuerto Internacional de Seattle-Tacoma',
+          PDX: 'Aeropuerto Internacional de Portland',
+          SLC: 'Aeropuerto Internacional de Salt Lake City',
+          MSP: 'Aeropuerto Internacional de Mineápolis-Saint Paul',
+          DTW: 'Aeropuerto Metropolitano de Detroit',
+          BNA: 'Aeropuerto Internacional de Nashville',
+          MSY: 'Aeropuerto Internacional Louis Armstrong',
+          YYZ: 'Aeropuerto Internacional Toronto Pearson',
+          YVR: 'Aeropuerto Internacional de Vancouver',
+          YUL: 'Aeropuerto Internacional Pierre Elliott Trudeau de Montreal',
+          YYC: 'Aeropuerto Internacional de Calgary',
+          YOW: 'Aeropuerto Internacional de Ottawa',
+          MEX: 'Aeropuerto Internacional Benito Juárez',
+          NLU: 'Aeropuerto Internacional Felipe Ángeles (AIFA)',
+          CUN: 'Aeropuerto Internacional de Cancún',
+          GDL: 'Aeropuerto Internacional de Guadalajara',
+          MTY: 'Aeropuerto Internacional de Monterrey',
+          TIJ: 'Aeropuerto Internacional de Tijuana',
+          PVR: 'Aeropuerto Internacional de Puerto Vallarta',
+          SJD: 'Aeropuerto Internacional de Los Cabos',
+          MID: 'Aeropuerto Internacional de Mérida',
+          PTY: 'Aeropuerto Internacional de Tocumen',
+          PAC: 'Aeropuerto Marcos A. Gelabert',
+          SJO: 'Aeropuerto Internacional Juan Santamaría',
+          LIR: 'Aeropuerto Internacional Daniel Oduber Quirós',
+          SAL: 'Aeropuerto Internacional de El Salvador San Óscar Romero',
+          GUA: 'Aeropuerto Internacional La Aurora',
+          SAP: 'Aeropuerto Internacional Ramón Villeda Morales',
+          TGU: 'Aeropuerto Internacional Toncontín',
+          XPL: 'Aeropuerto Internacional de Palmerola',
+          MGA: 'Aeropuerto Internacional Augusto C. Sandino',
+          HAV: 'Aeropuerto Internacional José Martí',
+          SDQ: 'Aeropuerto Internacional Las Américas',
+          PUJ: 'Aeropuerto Internacional de Punta Cana',
+          STI: 'Aeropuerto Internacional del Cibao',
+          LRM: 'Aeropuerto Internacional de La Romana',
+          SJU: 'Aeropuerto Internacional Luis Muñoz Marín',
+          BQN: 'Aeropuerto Rafael Hernández',
+          LIM: 'Aeropuerto Internacional Jorge Chávez',
+          CUZ: 'Aeropuerto Internacional Alejandro Velasco Astete',
+          AQP: 'Aeropuerto Internacional Rodríguez Ballón',
+          UIO: 'Aeropuerto Internacional Mariscal Sucre',
+          GYE: 'Aeropuerto Internacional José Joaquín de Olmedo',
+          SCL: 'Aeropuerto Internacional Arturo Merino Benítez',
+          CJC: 'Aeropuerto El Loa de Calama',
+          PUQ: 'Aeropuerto Presidente Carlos Ibáñez del Campo',
+          IPC: 'Aeropuerto Internacional Mataveri',
+          EZE: 'Aeropuerto Internacional Ministro Pistarini (Ezeiza)',
+          AEP: 'Aeroparque Jorge Newbery',
+          COR: 'Aeropuerto Internacional Ingeniero Ambrosio Taravella',
+          MDZ: 'Aeropuerto Internacional Gobernador Francisco Gabrielli',
+          BRC: 'Aeropuerto Internacional Teniente Luis Candelaria',
+          IGR: 'Aeropuerto Internacional de Puerto Iguazú',
+          SLA: 'Aeropuerto Internacional Martín Miguel de Güemes',
+          USH: 'Aeropuerto Internacional de Ushuaia Malvinas Argentinas',
+          GRU: 'Aeropuerto Internacional de São Paulo-Guarulhos',
+          CGH: 'Aeropuerto de Congonhas',
+          GIG: 'Aeropuerto Internacional de Galeão',
+          SDU: 'Aeropuerto Santos Dumont',
+          BSB: 'Aeropuerto Internacional Presidente Juscelino Kubitschek',
+          CNF: 'Aeropuerto Internacional Tancredo Neves',
+          SSA: 'Aeropuerto Internacional de Salvador',
+          REC: 'Aeropuerto Internacional de Recife',
+          FOR: 'Aeropuerto Internacional Pinto Martins',
+          POA: 'Aeropuerto Internacional Salgado Filho',
+          CWB: 'Aeropuerto Internacional Afonso Pena',
+          FLN: 'Aeropuerto Internacional Hercílio Luz',
+          LPB: 'Aeropuerto Internacional El Alto',
+          VVI: 'Aeropuerto Internacional Viru Viru',
+          CBB: 'Aeropuerto Internacional Jorge Wilstermann',
+          ASU: 'Aeropuerto Internacional Silvio Pettirossi',
+          MVD: 'Aeropuerto Internacional de Carrasco',
+          PDP: 'Aeropuerto Internacional de Laguna del Sauce',
+          CCS: 'Aeropuerto Internacional de Maiquetía Simón Bolívar',
+          DXB: 'Aeropuerto Internacional de Dubái',
+          AUH: 'Aeropuerto Internacional Zayed de Abu Dabi',
+          DOH: 'Aeropuerto Internacional de Hamad',
+          JED: 'Aeropuerto Internacional Rey Abdulaziz',
+          RUH: 'Aeropuerto Internacional Rey Khalid',
+          AMM: 'Aeropuerto Internacional Reina Alia',
+          TLV: 'Aeropuerto Internacional Ben Gurión',
+          CAI: 'Aeropuerto Internacional de El Cairo',
+          CMN: 'Aeropuerto Internacional Mohammed V',
+          RAK: 'Aeropuerto de Marrakech-Menara',
+          JNB: 'Aeropuerto Internacional O. R. Tambo',
+          CPT: 'Aeropuerto Internacional de Ciudad del Cabo',
+          HND: 'Aeropuerto Internacional de Tokio-Haneda',
+          NRT: 'Aeropuerto Internacional de Narita',
+          KIX: 'Aeropuerto Internacional de Kansai',
+          ICN: 'Aeropuerto Internacional de Incheon',
+          HKG: 'Aeropuerto Internacional de Hong Kong',
+          TPE: 'Aeropuerto Internacional de Taiwán Taoyuan',
+          BKK: 'Aeropuerto de Suvarnabhumi',
+          DMK: 'Aeropuerto Internacional Don Mueang',
+          HKT: 'Aeropuerto Internacional de Phuket',
+          SIN: 'Aeropuerto Changi de Singapur',
+          KUL: 'Aeropuerto Internacional de Kuala Lumpur',
+          CGK: 'Aeropuerto Internacional Soekarno-Hatta',
+          DPS: 'Aeropuerto Internacional Ngurah Rai (Bali)',
+          MNL: 'Aeropuerto Internacional Ninoy Aquino',
+          SGN: 'Aeropuerto Internacional Tan Son Nhat',
+          HAN: 'Aeropuerto Internacional de Nội Bài',
+          DEL: 'Aeropuerto Internacional Indira Gandhi',
+          BOM: 'Aeropuerto Internacional Chhatrapati Shivaji',
+          SYD: 'Aeropuerto Internacional Kingsford Smith',
+          MEL: 'Aeropuerto de Melbourne-Tullamarine',
+          AKL: 'Aeropuerto de Auckland'
+        };
+
+        const parseFlightLoc = (val, cityHint, iataHint, airportHint) => {
+          let city = cityHint || '';
+          let iata = iataHint || '';
+          let airportName = airportHint || '';
+          const str = String(val || city || '').trim();
+
+          if (!str && !city && !iata && !airportName) {
+            return { city: '', iata: '', airportName: '', stationLabel: '—' };
+          }
+
+          // 1. Check if str contains ' - ' (e.g. "París (CDG) - Aeropuerto Charles de Gaulle" or "CDG - París")
+          if (str.includes(' - ')) {
+            const parts = str.split(' - ').map(s => s.trim()).filter(Boolean);
+            if (parts.length >= 2) {
+              if (parts[0].length <= 4 && /^[A-Za-z0-9]{3,4}$/.test(parts[0])) {
+                if (!iata) iata = parts[0].toUpperCase();
+                if (!city) city = parts[1];
+                if (!airportName && parts.length > 2) airportName = parts.slice(2).join(' - ');
+              } else {
+                if (!airportName && parts.length >= 2) airportName = parts.slice(1).join(' - ');
+                const match = parts[0].match(/^(.*?)\s*\(([A-Za-z0-9]{3,4})\)/);
+                if (match) {
+                  if (!city) city = match[1].trim();
+                  if (!iata) iata = match[2].toUpperCase();
+                } else if (!city) {
+                  city = parts[0];
+                }
+              }
+            }
+          }
+
+          // 2. Check parenthesis (e.g. "París (CDG)")
+          if (!iata || !city) {
+            const match = str.match(/^(.*?)\s*\(([A-Za-z0-9]{3,4})\)/);
+            if (match) {
+              if (!city) city = match[1].trim();
+              if (!iata) iata = match[2].toUpperCase();
+            }
+          }
+
+          // 3. Fallback for IATA code from string
+          if (!iata) {
+            const iataMatch = str.match(/\b([A-Z]{3})\b/);
+            if (iataMatch) iata = iataMatch[1].toUpperCase();
+          }
+
+          // 4. Fallback for city
+          if (!city) {
+            city = str;
+          }
+
+          // 5. Fallback for airportName from IATA dictionary if missing
+          if (!airportName && iata && IATA_AIRPORT_NAMES[iata.toUpperCase()]) {
+            airportName = IATA_AIRPORT_NAMES[iata.toUpperCase()];
+          }
+
+          // Clean up airportName if identical to city or iata
+          if (airportName && (airportName.toLowerCase() === city.toLowerCase() || airportName.toUpperCase() === iata.toUpperCase())) {
+            if (iata && IATA_AIRPORT_NAMES[iata.toUpperCase()]) {
+              airportName = IATA_AIRPORT_NAMES[iata.toUpperCase()];
+            } else {
+              airportName = '';
+            }
+          }
+
+          let stationLabel = city;
+          if (iata && city && city.toUpperCase() !== iata.toUpperCase()) {
+            stationLabel = `${city} (${iata})`;
+          } else if (iata && !city) {
+            stationLabel = iata;
+          }
+
+          return { city, iata, airportName, stationLabel };
+        };
+
+        const oriLoc = parseFlightLoc(d.origen, d.origen_city, d.origen_iata || d.departure_airport, d.origen_airport_name || d.departure_airport_name);
+        const desLoc = parseFlightLoc(d.destino, d.destino_city, d.destino_iata || d.arrival_airport, d.destino_airport_name || d.arrival_airport_name);
 
         return `<div class="pv-card">
-          <div class="pvc-section-label" style="color:var(--accent); display:flex; justify-content:space-between; align-items:center;">
-             <span><i class="fa-solid fa-plane"></i> Vuelo ${oriCity && desCity ? oriCity + ' → ' + desCity : ''}</span>
-             <div class="pv-flight-header-details" style="display:flex; align-items:center; gap:8px;">
-               ${d.aerolinea ? `<span style="font-weight:400; opacity:0.8">${d.aerolinea}</span>` : ''}
+          <div class="pvc-section-label" style="color:var(--accent); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+             <span style="font-weight:700;"><i class="fa-solid fa-plane"></i> Vuelo<span class="pv-flight-desktop-route">${oriLoc.city && desLoc.city ? ' ' + oriLoc.city + ' → ' + desLoc.city : ''}</span></span>
+             <div class="pv-flight-header-details">
+               ${d.aerolinea ? `<span style="font-weight:500; font-size:12px; opacity:0.85">${d.aerolinea}</span>` : ''}
                ${d.vuelo ? `<span style="background:var(--accent); color:#fff; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:600; text-transform:uppercase;">${d.vuelo}</span>` : ''}
              </div>
           </div>
           <div class="pv-route-row pv-flight-route">
             <div class="pv-route-end">
               <div class="pv-route-time">${sal.time || '—'}</div>
-              <div class="pv-route-station">${d.origen || 'Origen'}</div>
-              ${sal.day ? `<div class="pv-route-sub">${sal.day}</div>` : ''}
+              <div class="pv-route-station">${oriLoc.stationLabel || d.origen || 'Origen'}</div>
+              ${oriLoc.airportName ? `<div class="pv-route-airport" style="font-size:12px; font-weight:500; color:#8a91a1; margin-top:2px; line-height:1.25;">${oriLoc.airportName}</div>` : ''}
+              ${sal.day ? `<div class="pv-route-sub" style="margin-top:2px;">${sal.day}</div>` : ''}
             </div>
             <div class="pv-route-mid">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="color:var(--muted)"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
             </div>
             <div class="pv-route-end pv-route-right">
               <div class="pv-route-time">${lle.time || '—'}</div>
-              <div class="pv-route-station">${d.destino || 'Destino'}</div>
-              ${lle.day ? `<div class="pv-route-sub">${lle.day}</div>` : ''}
+              <div class="pv-route-station">${desLoc.stationLabel || d.destino || 'Destino'}</div>
+              ${desLoc.airportName ? `<div class="pv-route-airport" style="font-size:12px; font-weight:500; color:#8a91a1; margin-top:2px; line-height:1.25;">${desLoc.airportName}</div>` : ''}
+              ${lle.day ? `<div class="pv-route-sub" style="margin-top:2px;">${lle.day}</div>` : ''}
             </div>
           </div>
           <div class="pv-chips-row">
-            ${d.clase ? `<span class="pv-chip"><i class="fa-solid fa-couch"></i> ${d.clase}</span>` : ''}
             ${d.precio ? `<span class="pv-chip"><i class="fa-solid fa-coins"></i> $${formatNumber(d.precio)} USD</span>` : ''}
           </div>
           ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
@@ -970,17 +1256,19 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pvc-caja-content{font-size:13px;color:var(--muted);line-height:1.55}
 
 /* ─── RUTA (VUELO / TRANSPORTE) ─── */
-.pv-route-row{display:grid;grid-template-columns:1fr 44px 1fr;align-items:center;gap:10px;margin:6px 0 14px}
-.pv-route-end{display:flex;flex-direction:column;gap:2px}
+.pv-route-row{display:grid;grid-template-columns:1fr 44px 1fr;align-items:flex-start;gap:12px;margin:8px 0 14px}
+.pv-route-end{display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left}
 .pv-route-right{text-align:right;align-items:flex-end}
-.pv-route-time{font-family:'Poppins',sans-serif;font-size:24px;font-weight:800;color:var(--text);letter-spacing:-.5px}
-.pv-route-station{font-size:14px;font-weight:700;color:var(--text);line-height:1.3}
+.pv-route-time{font-family:'Poppins',sans-serif;font-size:24px;font-weight:800;color:var(--text);letter-spacing:-.5px;line-height:1.15}
+.pv-route-station{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;word-break:break-word}
+.pv-route-airport{font-size:12px;font-weight:500;color:#8a91a1;margin-top:2px;line-height:1.25;word-break:break-word}
 .pv-station-big{font-size:13px;font-weight:700;max-width:160px;line-height:1.3}
-.pv-route-sub{font-size:11.5px;color:var(--dim);margin-top:1px}
-.pv-route-mid{display:flex;align-items:center;justify-content:center}
+.pv-route-sub{font-size:11.5px;color:var(--dim);margin-top:2px;line-height:1.2}
+.pv-route-mid{display:flex;align-items:center;justify-content:center;padding-top:4px}
 .pv-airline-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .pv-airline-name{font-size:13px;font-weight:600;color:var(--muted)}
 .pv-flight-code{background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;letter-spacing:.3px}
+.pv-flight-header-details{display:flex;align-items:center;gap:8px;flex-shrink:0}
 
 /* ─── CHIPS ─── */
 .pv-chips-row{display:flex;flex-wrap:wrap;gap:7px}
@@ -1058,14 +1346,20 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
   .pv-portada-extra-items{padding:0 14px}
   .pv-hotel-layout,.pv-media-layout{grid-template-columns:1fr}
   .pv-hotel-photo-slot,.pv-media-photo-slot{height:180px}
-  .pv-route-time{font-size:18px}
+  .pv-route-row{grid-template-columns:1fr 30px 1fr;gap:10px;margin:6px 0 12px}
+  .pv-route-time{font-size:19px}
+  .pv-route-station{font-size:13px}
+  .pv-route-airport{font-size:11.5px;line-height:1.25}
+  .pv-route-sub{font-size:11px}
+  .pv-route-mid{padding-top:3px}
+  .pv-route-mid svg{width:18px;height:18px}
   .pv-station-big{font-size:12px;max-width:120px}
   .pv-cierre{padding:28px 20px}
   .pv-cierre-title{font-size:18px}
   .public-preview-header{padding:0 10px !important;}
-  .pv-flight-header-details{display:none !important;}
+  .pv-flight-header-details{display:flex !important;flex-wrap:wrap;gap:6px;align-items:center;}
+  .pv-flight-desktop-route{display:none !important;}
   .pv-chips-row{align-items:center;}
-  .pv-flight-mobile-details{display:flex !important;}
   .pv-texto { font-size: 12px !important; }
 }
 @media(max-width:420px){
@@ -1075,10 +1369,15 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
   .pv-portada-title{font-size:16px}
   .pvday-title{font-size:14px}
   .pv-pm-value{font-size:12px}
-  .pv-route-row{gap:6px}
   .pv-card{padding:14px 14px}
-  .pv-route-row.pv-flight-route { display:flex; justify-content:space-between; align-items:flex-start; text-align:left; }
-  .pv-route-row.pv-flight-route .pv-route-right { text-align:right; align-items:flex-end; }
+  .pv-route-row{grid-template-columns:1fr 22px 1fr;gap:6px;margin:6px 0 10px}
+  .pv-route-time{font-size:16px}
+  .pv-route-station{font-size:12px}
+  .pv-route-airport{font-size:10.5px;line-height:1.2}
+  .pv-route-sub{font-size:10px}
+  .pv-route-mid{padding-top:2px}
+  .pv-route-mid svg{width:15px;height:15px}
+  .pv-flight-header-details{gap:4px}
 }
 /* Animations */
 .pv-day{animation:fadeUp .35s ease both}

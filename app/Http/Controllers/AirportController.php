@@ -39,6 +39,8 @@ class AirportController extends Controller
             return [
                 'id' => $displayText,
                 'text' => $displayText,
+                'name' => $airport->name,
+                'iata_code' => $airport->iata_code,
                 'city' => $airport->city,
                 'country' => $airport->country,
                 'latitude' => $airport->latitude,

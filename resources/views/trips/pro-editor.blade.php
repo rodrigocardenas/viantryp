@@ -535,9 +535,7 @@
       <div class="canvas-toolbar">
         <div class="day-tabs" id="dayTabs">
           <button class="day-tab portada-tab active" data-day="portada"><span class="day-tab-label"><i
-                class="fa-solid fa-image"></i> Portada</span><span class="day-tab-delete portada-cierre-delete"
-              onclick="confirmDeleteSection('portada',event)" title="Eliminar portada"><i
-                class="fa-solid fa-trash-can"></i></span></button>
+                class="fa-solid fa-image"></i> Portada</span></button>
           <button class="day-tab" data-day="0" draggable="true" style="cursor:grab"><span class="day-tab-label"><span
                 style="display:inline-flex; gap:1px; margin-right:7px; opacity:0.4; font-size:10px;"><i
                   class="fa-solid fa-ellipsis-vertical"></i><i class="fa-solid fa-ellipsis-vertical"></i></span>Día
@@ -546,9 +544,7 @@
           <button class="add-day-btn" id="addDayBtn" type="button" style="margin: 0 4px; padding: 4px 10px;"><i
               class="fa-solid fa-plus"></i> Día</button>
           <button class="day-tab cierre-tab" data-day="cierre"><span class="day-tab-label"><i
-                class="fa-solid fa-flag-checkered"></i> Cierre</span><span class="day-tab-delete portada-cierre-delete"
-              onclick="confirmDeleteSection('cierre',event)" title="Eliminar cierre"><i
-                class="fa-solid fa-trash-can"></i></span></button>
+                class="fa-solid fa-flag-checkered"></i> Cierre</span></button>
         </div>
         <div style="flex:1"></div>
       </div>

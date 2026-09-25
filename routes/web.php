@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\AirportController;
 use App\Http\Controllers\TripAiController;
+use App\Http\Controllers\FlightLookupController;
 
 // Authentication routes
 Route::middleware('guest')->group(function () {
@@ -106,6 +107,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('airlines', AirlineController::class);
     Route::get('api/airlines', [AirlineController::class , 'apiIndex'])->name('api.airlines.index');
     Route::get('api/airports', [AirportController::class , 'apiIndex'])->name('api.airports.index');
+    Route::get('api/flights/lookup', [FlightLookupController::class , 'lookup'])->name('api.flights.lookup')->middleware('throttle:20,1');
     Route::get('api/unsplash/search', [TripController::class , 'searchUnsplash'])->name('api.unsplash.search');
 
     // Additional trip routes

@@ -64,4 +64,10 @@ return [
         'api_key' => env('CARTO_API_KEY', ''),
     ],
 
+    'aerodatabox' => [
+        'api_key' => env('RAPIDAPI_AERODATABOX_KEY'),
+        'host' => env('RAPIDAPI_AERODATABOX_HOST', 'aerodatabox.p.rapidapi.com'),
+        'monthly_limit' => (int) env('AERODATABOX_MONTHLY_LIMIT', 380),
+    ],
+
 ];
