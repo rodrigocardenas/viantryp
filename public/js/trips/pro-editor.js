@@ -827,9 +827,9 @@ function showCierreCard() {
 // CONFIGS
 const C = {
   flight: { icon: '<i class="fa-solid fa-plane"></i>', label: 'Vuelo', color: '#0ea5e9', bg: '#e0f2fe', fields: [{ k: 'origen', l: 'Ciudad origen', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'destino', l: 'Ciudad destino', t: 'text', ph: 'Cód. IATA o ciudad', airportApi: true }, { k: 'aerolinea', l: 'Aerolínea', t: 'text', ph: 'Air France', airlineApi: true }, { k: 'vuelo', l: 'No. de vuelo', t: 'text', ph: 'AF9474' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'clase', l: 'Clase', t: 'select', ph: 'Selecciona...', opts: ['Económica', 'Ejecutiva', 'Primera'] }, { k: 'precio', l: 'Precio', t: 'number', ph: '800' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'VLO-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
-  alojamiento: { icon: '<i class="fa-solid fa-hotel"></i>', label: 'Alojamiento', color: '#f0567a', bg: '#fde8ee', fields: [{ k: 'tipo_alojamiento', l: 'Tipo de Alojamiento', t: 'select', opts: ['Hotel', 'Airbnb u otro'], fw: true }, { k: 'nombre', l: 'Nombre del hotel', t: 'text', ph: 'Hotel Luxe París', fw: true, hasInfo: true }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', group: 'google', fw: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'checkin', l: 'Check-in', t: 'datetime-local' }, { k: 'checkout', l: 'Check-out', t: 'datetime-local' }, { k: 'habitacion', l: 'Tipo habitación', t: 'select', ph: 'Selecciona...', opts: ['Sencilla', 'Doble', 'Triple', 'Suite', 'Alojamiento entero', 'Habitaciones mixtas'] }, { k: 'alimentacion', l: 'Alimentación', t: 'select', ph: 'Selecciona...', opts: ['Solo alojamiento', 'Desayuno incluido', 'Media pensión', 'Pensión completa', 'Todo incluido'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ALJ-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '150' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Desayuno incluido...' }] },
+  alojamiento: { icon: '<i class="fa-solid fa-hotel"></i>', label: 'Alojamiento', color: '#f0567a', bg: '#fde8ee', fields: [{ k: 'tipo_alojamiento', l: 'Tipo de Alojamiento', t: 'select', opts: ['Hotel', 'Airbnb u otro'], fw: true }, { k: 'nombre', l: 'Nombre del hotel', t: 'text', ph: 'Hotel Luxe París', fw: true, hasInfo: true }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Escribe o busca en Google Maps...', group: 'google', fw: true, hasPin: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'checkin', l: 'Check-in', t: 'datetime-local' }, { k: 'checkout', l: 'Check-out', t: 'datetime-local' }, { k: 'habitacion', l: 'Tipo habitación', t: 'select', ph: 'Selecciona...', opts: ['Sencilla', 'Doble', 'Triple', 'Suite', 'Alojamiento entero', 'Habitaciones mixtas'] }, { k: 'alimentacion', l: 'Alimentación', t: 'select', ph: 'Selecciona...', opts: ['Solo alojamiento', 'Desayuno incluido', 'Media pensión', 'Pensión completa', 'Todo incluido'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ALJ-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '150' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Desayuno incluido...' }] },
   transporte: { icon: '<i class="fa-solid fa-car"></i>', label: 'Transporte', color: '#22c87a', bg: '#d1fae8', fields: [{ k: 'tipo', l: 'Tipo', t: 'select', opts: ['Auto de alquiler', 'Taxi/Uber', 'Tren', 'Bus', 'Ferry', 'Moto'] }, { k: 'proveedor', l: 'Proveedor', t: 'text', ph: 'Hertz, Renfe...' }, { k: 'origen', l: 'Desde', t: 'text', ph: 'Aeropuerto CDG' }, { k: 'destino', l: 'Hasta', t: 'text', ph: 'Hotel Centro' }, { k: 'salida', l: 'Salida', t: 'datetime-local' }, { k: 'llegada', l: 'Llegada', t: 'datetime-local' }, { k: 'precio', l: 'Precio', t: 'number', ph: '50' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TRL-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Confirmación...' }] },
-  actividad: { icon: '<i class="fa-solid fa-compass"></i>', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', fields: [{ k: 'nombre', l: 'Nombre actividad', t: 'text', ph: 'Cena con vista, Tour privado...', fw: true }, { k: 'direccion', l: 'Lugar (Google Maps)', t: 'text', ph: 'Torre Eiffel, Museo del Louvre...', fw: true, hasInfo: true }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'website', l: 'Link de la actividad', t: 'text', ph: 'https://...', fw: true }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '25' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
+  actividad: { icon: '<i class="fa-solid fa-compass"></i>', label: 'Actividad', color: '#f59e0b', bg: '#fef3c7', fields: [{ k: 'nombre', l: 'Nombre actividad', t: 'text', ph: 'Cena con vista, Tour privado...', fw: true }, { k: 'direccion', l: 'Lugar (Google Maps) · opcional', t: 'text', ph: 'Torre Eiffel, Museo del Louvre...', fw: true, hasInfo: true }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Descripción...', fw: true }, { k: 'website', l: 'Link de la actividad · opcional', t: 'text', ph: 'https://...', fw: true }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['1h', '2h', '3h', '4h', 'Medio día', 'Día completo'] }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'ACT-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '25' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
   comida: { icon: '<i class="fa-solid fa-utensils"></i>', label: 'Comida', color: '#f96b3a', bg: '#ffe8e0', fields: [{ k: 'restaurante', l: 'Restaurante', t: 'text', ph: 'Le Jules Verne', fw: true, hasInfo: true }, { k: 'direccion', l: 'Dirección', t: 'text', ph: 'Avenida...', group: 'google', fw: true }, { k: 'phone', l: 'Teléfono', t: 'text', ph: '+1 234...', group: 'google' }, { k: 'website', l: 'Sitio Web', t: 'text', ph: 'https://...', group: 'google' }, { k: 'stars', l: 'Calificación', t: 'stars', group: 'google' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', group: 'google' }, { k: 'tipo', l: 'Tipo', t: 'select', opts: ['Desayuno', 'Almuerzo', 'Cena', 'Brunch', 'Snack'] }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'RES-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '80' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Menú degustación...' }] },
   tour: { icon: '<i class="fa-solid fa-map-location-dot"></i>', label: 'Tour', color: '#8b5cf6', bg: '#f5f3ff', fields: [{ k: 'nombre', l: 'Nombre del tour', t: 'text', ph: 'Tour Versalles' }, { k: 'operador', l: 'Operador', t: 'text', ph: 'Get Your Guide' }, { k: 'fecha', l: 'Fecha y hora', t: 'datetime-local' }, { k: 'duracion', l: 'Duración', t: 'select', opts: ['2h', '4h', 'Medio día', 'Día completo', '2 días', '3+ días'] }, { k: 'personas', l: 'No. personas', t: 'number', ph: '2' }, { k: 'reserva', l: 'Código reserva', t: 'text', ph: 'TOU-12345' }, { k: 'adjunto', l: 'Archivo adjunto', t: 'file-upload', fw: true }, { k: 'precio', l: 'Precio', t: 'number', ph: '120' }, { k: 'photo_url', l: 'Foto seleccionada', t: 'text', ph: 'https://...', fw: true }, { k: 'descripcion', l: 'Descripción', t: 'textarea', ph: 'Incluye entrada, guía...' }, { k: 'notas', l: 'Notas', t: 'textarea', ph: 'Info adicional...' }] },
   texto: { icon: '<i class="fa-solid fa-font"></i>', label: 'Texto', modalTitle: 'Texto', color: '#64748b', bg: '#f1f5f9', fields: [{ k: 'contenido', l: 'Contenido', t: 'richtext', ph: 'Escribe aquí...', fw: true }] },
@@ -1771,6 +1771,42 @@ function updateTravelersVisibilityUI() {
   }
 }
 
+function formatReviewsCount(count) {
+  if (!count && count !== 0) return '';
+  const num = parseInt(count);
+  if (isNaN(num) || num <= 0) return '';
+  if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+  return num.toString();
+}
+
+function updateGoogleRatingInModal(sr, rating, reviews) {
+  if (!sr) return;
+  const rNum = parseFloat(rating);
+  const rounded = (!isNaN(rNum) && rNum > 0) ? Math.round(rNum) : 0;
+  sr.querySelectorAll('.star').forEach((st, idx) => st.classList.toggle('active', idx < rounded));
+
+  const hid = sr.querySelector('input[data-key="stars"]') || sr.querySelector('input[type="hidden"]');
+  if (hid) hid.value = (!isNaN(rNum) && rNum > 0) ? rating : '';
+
+  const hidReviews = sr.querySelector('input[data-key="user_ratings_total"]');
+  if (hidReviews && typeof reviews !== 'undefined') hidReviews.value = reviews || '';
+
+  const currentReviews = hidReviews ? hidReviews.value : (reviews || '');
+  const badge = sr.querySelector('.modal-google-rating-text');
+  if (badge) {
+    if (!isNaN(rNum) && rNum > 0) {
+      badge.style.display = 'inline-flex';
+      const sStr = rNum % 1 === 0 ? rNum.toFixed(1) : rNum.toString();
+      const rFmt = currentReviews ? formatReviewsCount(currentReviews) : '';
+      badge.textContent = `⭐ ${sStr}/5 (${rFmt ? rFmt + ' opiniones en Google' : 'opiniones en Google'})`;
+    } else {
+      badge.style.display = 'none';
+      badge.textContent = '';
+    }
+  }
+}
+
 window.getItemInnerHtml = function(item) {
   if (!item) return '';
   const type = item.type || 'actividad';
@@ -1908,6 +1944,14 @@ window.getItemInnerHtml = function(item) {
       if (d.checkin) sub.push('<i class="fa-solid fa-right-to-bracket"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.checkin.includes('T') ? d.checkin : d.checkin + 'T15:00:00') : d.checkin));
       if (d.checkout) sub.push('<i class="fa-solid fa-right-from-bracket"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.checkout.includes('T') ? d.checkout : d.checkout + 'T12:00:00') : d.checkout));
       if (d.direccion) sub.push('<i class="fa-solid fa-location-dot"></i> ' + d.direccion);
+      if (d.stars) {
+        const sNum = parseFloat(d.stars);
+        if (!isNaN(sNum) && sNum > 0) {
+          const sStr = sNum % 1 === 0 ? sNum.toFixed(1) : sNum.toString();
+          const rCount = d.user_ratings_total ? formatReviewsCount(d.user_ratings_total) : '';
+          chips.push(`⭐ ${sStr}/5 (${rCount ? rCount + ' opiniones en Google' : 'opiniones en Google'})`);
+        }
+      }
       if (d.alimentacion) chips.push('<i class="fa-solid fa-utensils"></i> ' + d.alimentacion);
       if (d.habitacion) chips.push('<i class="fa-solid fa-bed"></i> ' + d.habitacion);
       if (d.precio) chips.push('$' + (typeof formatNumber === 'function' ? formatNumber(d.precio) : d.precio) + ' USD');
@@ -1925,6 +1969,14 @@ window.getItemInnerHtml = function(item) {
     case 'actividad':
       title = d.nombre || item.title || 'Actividad';
       if (d.direccion || item.location_query) sub.push('<i class="fa-solid fa-location-dot"></i> ' + (d.direccion || item.location_query));
+      if (d.stars) {
+        const sNum = parseFloat(d.stars);
+        if (!isNaN(sNum) && sNum > 0) {
+          const sStr = sNum % 1 === 0 ? sNum.toFixed(1) : sNum.toString();
+          const rCount = d.user_ratings_total ? formatReviewsCount(d.user_ratings_total) : '';
+          chips.push(`⭐ ${sStr}/5 (${rCount ? rCount + ' opiniones en Google' : 'opiniones en Google'})`);
+        }
+      }
       if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.fecha) : d.fecha));
       if (d.duracion) chips.push('<i class="fa-solid fa-stopwatch"></i> ' + d.duracion);
       if (d.precio) chips.push('$' + (typeof formatNumber === 'function' ? formatNumber(d.precio) : d.precio) + ' USD');
@@ -1933,6 +1985,14 @@ window.getItemInnerHtml = function(item) {
     case 'comida':
       title = d.restaurante || item.title || 'Comida';
       if (d.direccion || item.location_query) sub.push('<i class="fa-solid fa-location-dot"></i> ' + (d.direccion || item.location_query));
+      if (d.stars) {
+        const sNum = parseFloat(d.stars);
+        if (!isNaN(sNum) && sNum > 0) {
+          const sStr = sNum % 1 === 0 ? sNum.toFixed(1) : sNum.toString();
+          const rCount = d.user_ratings_total ? formatReviewsCount(d.user_ratings_total) : '';
+          chips.push(`⭐ ${sStr}/5 (${rCount ? rCount + ' opiniones en Google' : 'opiniones en Google'})`);
+        }
+      }
       if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.fecha) : d.fecha));
       if (d.tipo) chips.push('<i class="fa-solid fa-utensils"></i> ' + d.tipo);
       if (d.precio) chips.push('$' + (typeof formatNumber === 'function' ? formatNumber(d.precio) : d.precio) + ' USD');
@@ -1941,6 +2001,14 @@ window.getItemInnerHtml = function(item) {
     case 'tour':
       title = d.nombre || item.title || 'Tour';
       if (d.operador) sub.push('<i class="fa-solid fa-building"></i> ' + d.operador);
+      if (d.stars) {
+        const sNum = parseFloat(d.stars);
+        if (!isNaN(sNum) && sNum > 0) {
+          const sStr = sNum % 1 === 0 ? sNum.toFixed(1) : sNum.toString();
+          const rCount = d.user_ratings_total ? formatReviewsCount(d.user_ratings_total) : '';
+          chips.push(`⭐ ${sStr}/5 (${rCount ? rCount + ' opiniones en Google' : 'opiniones en Google'})`);
+        }
+      }
       if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.fecha) : d.fecha));
       if (d.duracion) chips.push('<i class="fa-solid fa-stopwatch"></i> ' + d.duracion);
       if (d.personas) chips.push('<i class="fa-solid fa-users"></i> ' + d.personas);
@@ -2486,6 +2554,12 @@ function openModal(type, editIdx = null, customData = null) {
 
   modalOverlay.classList.add('open');
 
+  const closeAllPacContainers = () => {
+    document.querySelectorAll('.pac-container').forEach(el => {
+      el.style.display = 'none';
+    });
+  };
+
   setTimeout(() => {
     const f = modalBody.querySelector('input,textarea,select'); if (f) f.focus();
 
@@ -2508,24 +2582,14 @@ function openModal(type, editIdx = null, customData = null) {
       if (nameInp) {
         const autocomplete = new window.google.maps.places.Autocomplete(nameInp, {});
 
+        nameInp.addEventListener('blur', () => setTimeout(closeAllPacContainers, 200));
         nameInp.addEventListener('input', (e) => {
           if (e && !e.isTrusted) return;
           updateFallbackMapsUrl();
-          setTimeout(() => {
-            const pContainer = document.querySelector('.pac-container:last-of-type') || document.querySelector('.pac-container');
-            if (pContainer) {
-              pContainer.style.zIndex = '9999999';
-              pContainer.style.position = 'fixed';
-              const rect = nameInp.getBoundingClientRect();
-              pContainer.style.top = rect.bottom + 'px';
-              pContainer.style.left = rect.left + 'px';
-              pContainer.style.width = rect.width + 'px';
-              pContainer.style.display = '';
-            }
-          }, 50);
         });
 
         autocomplete.addListener('place_changed', () => {
+          closeAllPacContainers();
           const place = autocomplete.getPlace();
           if (!place) return;
           if (!checkGooglePlacesLimit()) {
@@ -2551,31 +2615,21 @@ function openModal(type, editIdx = null, customData = null) {
       if (addrInp) {
         const autocompleteAddr = new window.google.maps.places.Autocomplete(addrInp, { types: ['geocode'] });
 
+        addrInp.addEventListener('blur', () => setTimeout(closeAllPacContainers, 200));
         addrInp.addEventListener('input', (e) => {
           if (e && !e.isTrusted) return;
           updateFallbackMapsUrl();
-          setTimeout(() => {
-            const pContainer = document.querySelector('.pac-container:last-of-type') || document.querySelector('.pac-container');
-            if (pContainer) {
-              pContainer.style.zIndex = '9999999';
-              pContainer.style.position = 'fixed';
-              const rect = addrInp.getBoundingClientRect();
-              pContainer.style.top = rect.bottom + 'px';
-              pContainer.style.left = rect.left + 'px';
-              pContainer.style.width = rect.width + 'px';
-              pContainer.style.display = '';
-            }
-          }, 50);
         });
 
         autocompleteAddr.addListener('place_changed', () => {
+          closeAllPacContainers();
           const place = autocompleteAddr.getPlace();
           if (!place) return;
           if (!checkGooglePlacesLimit()) {
             addrInp.value = '';
             return;
           }
-          addrInp.dataset.googlePlaceUsed = 'true';
+          activeAddrInp.dataset.googlePlaceUsed = 'true';
           if (place.formatted_address) {
             addrInp.value = place.formatted_address;
             addrInp.dispatchEvent(new Event('input', { bubbles: true }));
@@ -2597,26 +2651,17 @@ function openModal(type, editIdx = null, customData = null) {
       if (nameInp) {
         const autocomplete = new window.google.maps.places.Autocomplete(nameInp, { types: ['establishment'] });
 
-        // Fix z-index for pac-container
+        nameInp.addEventListener('blur', () => setTimeout(closeAllPacContainers, 200));
         nameInp.addEventListener('input', (e) => {
           if (e && !e.isTrusted) return;
           delete nameInp.dataset.lat;
           delete nameInp.dataset.lng;
-          setTimeout(() => {
-            const pContainer = document.querySelector('.pac-container:last-of-type') || document.querySelector('.pac-container');
-            if (pContainer) {
-              pContainer.style.zIndex = '9999999';
-              pContainer.style.position = 'fixed';
-              const rect = nameInp.getBoundingClientRect();
-              pContainer.style.top = rect.bottom + 'px';
-              pContainer.style.left = rect.left + 'px';
-              pContainer.style.width = rect.width + 'px';
-              pContainer.style.display = '';
-            }
-          }, 50);
         });
 
         autocomplete.addListener('place_changed', () => {
+          closeAllPacContainers();
+          setTimeout(closeAllPacContainers, 50);
+          setTimeout(closeAllPacContainers, 150);
           const place = autocomplete.getPlace();
           if (!place || !place.place_id) return;
           if (!checkGooglePlacesLimit()) {
@@ -2625,12 +2670,19 @@ function openModal(type, editIdx = null, customData = null) {
           }
           nameInp.dataset.googlePlaceUsed = 'true';
 
-          if (place.name) nameInp.value = place.name;
+          if (place.name) {
+            nameInp.value = place.name;
+          }
 
           if (place.geometry && place.geometry.location) {
             nameInp.dataset.lat = place.geometry.location.lat();
             nameInp.dataset.lng = place.geometry.location.lng();
           }
+
+          nameInp.blur();
+          closeAllPacContainers();
+          setTimeout(closeAllPacContainers, 80);
+          setTimeout(closeAllPacContainers, 200);
 
           const setVal = (k, v) => { const el = modalBody.querySelector('input[data-key="' + k + '"]'); if (el) { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); } };
           if (place.formatted_address && type !== 'actividad') setVal('direccion', place.formatted_address);
@@ -2659,6 +2711,13 @@ function openModal(type, editIdx = null, customData = null) {
                 const inp = modalBody.querySelector('input[data-key="photo_url"]');
                 if (inp) inp.dispatchEvent(new Event('input', { bubbles: true }));
               }
+              if (data.rating) {
+                starRating = data.rating;
+                const sr = modalBody.querySelector('.star-rating');
+                if (sr) {
+                  updateGoogleRatingInModal(sr, data.rating, data.user_ratings_total);
+                }
+              }
             })
             .catch(err => {
               console.error('Error fetching place details:', err);
@@ -2670,10 +2729,7 @@ function openModal(type, editIdx = null, customData = null) {
             starRating = place.rating;
             const sr = modalBody.querySelector('.star-rating');
             if (sr) {
-              const rounded = Math.round(starRating);
-              sr.querySelectorAll('.star').forEach((st, idx) => st.classList.toggle('active', idx < rounded));
-              const hid = sr.querySelector('input[type="hidden"]');
-              if (hid) hid.value = rounded;
+              updateGoogleRatingInModal(sr, place.rating, place.user_ratings_total);
             }
           }
         });
@@ -2687,26 +2743,16 @@ function openModal(type, editIdx = null, customData = null) {
         if (inp) {
           const autocomplete = new window.google.maps.places.Autocomplete(inp, {});
 
+          inp.addEventListener('blur', () => setTimeout(closeAllPacContainers, 200));
           inp.addEventListener('input', (e) => {
             if (e && !e.isTrusted) return;
             delete inp.dataset.address;
             delete inp.dataset.lat;
             delete inp.dataset.lng;
-            setTimeout(() => {
-              const pContainer = document.querySelector('.pac-container:last-of-type') || document.querySelector('.pac-container');
-              if (pContainer) {
-                pContainer.style.zIndex = '9999999';
-                pContainer.style.position = 'fixed';
-                const rect = inp.getBoundingClientRect();
-                pContainer.style.top = rect.bottom + 'px';
-                pContainer.style.left = rect.left + 'px';
-                pContainer.style.width = rect.width + 'px';
-                pContainer.style.display = '';
-              }
-            }, 50);
           });
 
           autocomplete.addListener('place_changed', () => {
+            closeAllPacContainers();
             const place = autocomplete.getPlace();
             if (!place) return;
             if (!checkGooglePlacesLimit()) {
@@ -2741,11 +2787,14 @@ function openModal(type, editIdx = null, customData = null) {
     if (type === 'alojamiento') {
       const selectTipo = modalBody.querySelector('select[data-key="tipo_alojamiento"]');
       if (selectTipo) {
+        let manualAddressRevealed = false;
+
         const handleTipoChange = () => {
           const val = selectTipo.value || 'Hotel';
           const isHotel = val === 'Hotel';
 
           // Clean up any existing Google autocomplete containers before recreating inputs
+          closeAllPacContainers();
           document.querySelectorAll('.pac-container').forEach(el => el.remove());
 
           // Update Nombre label
@@ -2760,7 +2809,35 @@ function openModal(type, editIdx = null, customData = null) {
                 lbl.appendChild(infoIcon);
               }
             }
+
+            // Ensure fallback link button exists below Nombre del hotel
+            let fallbackCont = parent ? parent.querySelector('.hotel-manual-address-wrap') : null;
+            if (!fallbackCont && parent) {
+              fallbackCont = document.createElement('div');
+              fallbackCont.className = 'hotel-manual-address-wrap';
+              fallbackCont.innerHTML = `
+                <button type="button" class="btn-manual-address-toggle" id="hotelManualAddressBtn">
+                  <i class="fa-solid fa-location-dot"></i> ¿No lo encuentras? Ingresa la dirección manualmente
+                </button>
+              `;
+              parent.appendChild(fallbackCont);
+
+              const manualBtn = fallbackCont.querySelector('#hotelManualAddressBtn');
+              if (manualBtn) {
+                manualBtn.onclick = (e) => {
+                  e.preventDefault();
+                  manualAddressRevealed = true;
+                  const currentAddrInp = modalBody.querySelector('input[data-key="direccion"]');
+                  const currentAddrFg = currentAddrInp ? currentAddrInp.closest('.form-group') : null;
+                  if (currentAddrFg) currentAddrFg.style.display = '';
+                  if (fallbackCont) fallbackCont.style.display = 'none';
+                  if (currentAddrInp) currentAddrInp.focus();
+                };
+              }
+            }
           }
+
+          const fallbackCont = modalBody.querySelector('.hotel-manual-address-wrap');
 
           // Toggle visibility of specific fields inside the google group box
           const gBox = modalBody.querySelector('.field-group-box');
@@ -2789,6 +2866,25 @@ function openModal(type, editIdx = null, customData = null) {
               }
             });
 
+            // Toggle Dirección field visibility in Hotel vs Airbnb
+            const addrField = gBox.querySelector('input[data-key="direccion"]');
+            const addrFg = addrField ? addrField.closest('.form-group') : null;
+            if (addrFg) {
+              if (isHotel) {
+                const hasAddrVal = addrField && addrField.value && addrField.value.trim().length > 0;
+                if (manualAddressRevealed || hasAddrVal) {
+                  addrFg.style.display = '';
+                  if (fallbackCont) fallbackCont.style.display = 'none';
+                } else {
+                  addrFg.style.display = 'none';
+                  if (fallbackCont) fallbackCont.style.display = 'flex';
+                }
+              } else {
+                addrFg.style.display = '';
+                if (fallbackCont) fallbackCont.style.display = 'none';
+              }
+            }
+
             // Toggle infoIcon/help text inside google box if any
             const infoSpan = gBox.querySelector('.info-icon');
             if (infoSpan) {
@@ -2810,7 +2906,7 @@ function openModal(type, editIdx = null, customData = null) {
             }
           }
 
-          // Setup Google Autocomplete dynamically
+          // Setup Google Autocomplete dynamically (exact match to traslados)
           if (window.google && window.google.maps && window.google.maps.places) {
             const addrInp = modalBody.querySelector('input[data-key="direccion"]');
 
@@ -2826,28 +2922,44 @@ function openModal(type, editIdx = null, customData = null) {
             const activeNameInp = nameInp ? cleanInput(nameInp) : null;
             const activeAddrInp = addrInp ? cleanInput(addrInp) : null;
 
+            // Google Places address autocomplete for Dirección (enabled for BOTH Hotel and Airbnb branches)
+            if (activeAddrInp) {
+              const autocompleteDireccion = new window.google.maps.places.Autocomplete(activeAddrInp, {});
+
+              activeAddrInp.addEventListener('blur', () => setTimeout(closeAllPacContainers, 200));
+
+              autocompleteDireccion.addListener('place_changed', () => {
+                closeAllPacContainers();
+                const place = autocompleteDireccion.getPlace();
+                if (!place) return;
+                if (!checkGooglePlacesLimit()) {
+                  activeAddrInp.value = '';
+                  return;
+                }
+                activeAddrInp.dataset.googlePlaceUsed = 'true';
+
+                if (place.formatted_address) {
+                  activeAddrInp.value = place.formatted_address;
+                } else if (place.name) {
+                  activeAddrInp.value = place.name;
+                }
+                activeAddrInp.dispatchEvent(new Event('input', { bubbles: true }));
+              });
+            }
+
+            // Google Places hotel establishment autocomplete for Nombre (Hotel branch)
             if (isHotel && activeNameInp) {
               const autocompleteNombre = new window.google.maps.places.Autocomplete(activeNameInp, { types: ['establishment'] });
 
+              activeNameInp.addEventListener('blur', () => setTimeout(closeAllPacContainers, 200));
               activeNameInp.addEventListener('input', (e) => {
                 if (e && !e.isTrusted) return;
                 delete activeNameInp.dataset.lat;
                 delete activeNameInp.dataset.lng;
-                setTimeout(() => {
-                  const pContainer = document.querySelector('.pac-container:last-of-type') || document.querySelector('.pac-container');
-                  if (pContainer) {
-                    pContainer.style.zIndex = '9999999';
-                    pContainer.style.position = 'fixed';
-                    const rect = activeNameInp.getBoundingClientRect();
-                    pContainer.style.top = rect.bottom + 'px';
-                    pContainer.style.left = rect.left + 'px';
-                    pContainer.style.width = rect.width + 'px';
-                    pContainer.style.display = '';
-                  }
-                }, 50);
               });
 
               autocompleteNombre.addListener('place_changed', () => {
+                closeAllPacContainers();
                 const place = autocompleteNombre.getPlace();
                 if (!place || !place.place_id) return;
                 if (!checkGooglePlacesLimit()) {
@@ -2870,7 +2982,14 @@ function openModal(type, editIdx = null, customData = null) {
                     el.dispatchEvent(new Event('input', { bubbles: true }));
                   }
                 };
-                if (place.formatted_address) setVal('direccion', place.formatted_address);
+                if (place.formatted_address) {
+                  setVal('direccion', place.formatted_address);
+                  const currentAddrInp = modalBody.querySelector('input[data-key="direccion"]');
+                  const currentAddrFg = currentAddrInp ? currentAddrInp.closest('.form-group') : null;
+                  if (currentAddrFg) currentAddrFg.style.display = '';
+                  const currentFallback = modalBody.querySelector('.hotel-manual-address-wrap');
+                  if (currentFallback) currentFallback.style.display = 'none';
+                }
                 if (place.formatted_phone_number) setVal('phone', place.formatted_phone_number);
                 if (place.website) setVal('website', place.website);
 
@@ -2896,6 +3015,13 @@ function openModal(type, editIdx = null, customData = null) {
                       const inp = modalBody.querySelector('input[data-key="photo_url"]');
                       if (inp) inp.dispatchEvent(new Event('input', { bubbles: true }));
                     }
+                    if (data.rating) {
+                      starRating = data.rating;
+                      const sr = modalBody.querySelector('.star-rating');
+                      if (sr) {
+                        updateGoogleRatingInModal(sr, data.rating, data.user_ratings_total);
+                      }
+                    }
                   })
                   .catch(err => {
                     console.error('Error fetching place details:', err);
@@ -2907,45 +3033,8 @@ function openModal(type, editIdx = null, customData = null) {
                   starRating = place.rating;
                   const sr = modalBody.querySelector('.star-rating');
                   if (sr) {
-                    const rounded = Math.round(starRating);
-                    sr.querySelectorAll('.star').forEach((st, idx) => st.classList.toggle('active', idx < rounded));
-                    const hid = sr.querySelector('input[type="hidden"]');
-                    if (hid) hid.value = rounded;
+                    updateGoogleRatingInModal(sr, place.rating, place.user_ratings_total);
                   }
-                }
-              });
-            } else if (!isHotel && activeAddrInp) {
-              const autocompleteDireccion = new window.google.maps.places.Autocomplete(activeAddrInp, { types: ['geocode'] });
-
-              activeAddrInp.addEventListener('input', (e) => {
-                if (e && !e.isTrusted) return;
-                setTimeout(() => {
-                  const pContainer = document.querySelector('.pac-container:last-of-type') || document.querySelector('.pac-container');
-                  if (pContainer) {
-                    pContainer.style.zIndex = '9999999';
-                    pContainer.style.position = 'fixed';
-                    const rect = activeAddrInp.getBoundingClientRect();
-                    pContainer.style.top = rect.bottom + 'px';
-                    pContainer.style.left = rect.left + 'px';
-                    pContainer.style.width = rect.width + 'px';
-                    pContainer.style.display = '';
-                  }
-                }, 50);
-              });
-
-              autocompleteDireccion.addListener('place_changed', () => {
-                const place = autocompleteDireccion.getPlace();
-                if (!place) return;
-                if (!checkGooglePlacesLimit()) {
-                  activeAddrInp.value = '';
-                  return;
-                }
-                activeAddrInp.dataset.googlePlaceUsed = 'true';
-
-                if (place.formatted_address) {
-                  activeAddrInp.value = place.formatted_address;
-                } else if (place.name) {
-                  activeAddrInp.value = place.name;
                 }
               });
             }
@@ -2954,6 +3043,260 @@ function openModal(type, editIdx = null, customData = null) {
 
         selectTipo.addEventListener('change', handleTipoChange);
         handleTipoChange(); // run immediately
+      }
+    }
+
+    // Add Actividad optional place & dynamic section logic
+    if (type === 'actividad') {
+      const addrInp = modalBody.querySelector('input[data-key="direccion"]');
+      const starsInp = modalBody.querySelector('.star-rating input[data-key="stars"]') || modalBody.querySelector('[data-key="stars"]');
+      const starsFg = starsInp ? (starsInp.closest('.form-group') || starsInp.closest('.star-rating')) : null;
+      if (starsFg) {
+        starsFg.classList.add('activity-stars-wrapper');
+      }
+
+      // Add "Esta actividad no tiene un lugar específico" checkbox under the "Lugar" field
+      if (addrInp) {
+        const addrFg = addrInp.closest('.form-group');
+        let noPlaceWrap = addrFg ? addrFg.querySelector('.activity-no-place-wrap') : null;
+        if (!noPlaceWrap && addrFg) {
+          noPlaceWrap = document.createElement('div');
+          noPlaceWrap.className = 'activity-no-place-wrap';
+          noPlaceWrap.innerHTML = `
+            <label class="activity-no-place-label" for="activityNoPlaceCheckbox">
+              <input type="checkbox" id="activityNoPlaceCheckbox" class="activity-no-place-checkbox">
+              <span>Esta actividad no tiene un lugar específico</span>
+            </label>
+          `;
+          addrFg.appendChild(noPlaceWrap);
+        }
+
+        const noPlaceCheckbox = addrFg ? addrFg.querySelector('#activityNoPlaceCheckbox') : null;
+
+        const updateActivityPlaceState = (source = 'auto') => {
+          const hasPlace = addrInp && addrInp.value && addrInp.value.trim().length > 0;
+
+          if (hasPlace) {
+            if (noPlaceCheckbox && noPlaceCheckbox.checked) {
+              noPlaceCheckbox.checked = false;
+            }
+            if (addrInp) {
+              addrInp.disabled = false;
+              addrInp.classList.remove('is-disabled');
+            }
+            if (starsFg) {
+              starsFg.classList.remove('is-hidden');
+            }
+          } else {
+            if (source === 'checkbox-check') {
+              if (addrInp) {
+                addrInp.value = '';
+                addrInp.disabled = true;
+                addrInp.classList.add('is-disabled');
+                delete addrInp.dataset.lat;
+                delete addrInp.dataset.lng;
+                delete addrInp.dataset.googlePlaceUsed;
+              }
+            } else if (source === 'checkbox-uncheck') {
+              if (addrInp) {
+                addrInp.disabled = false;
+                addrInp.classList.remove('is-disabled');
+              }
+            }
+            if (starsFg) {
+              starsFg.classList.add('is-hidden');
+            }
+          }
+        };
+
+        if (noPlaceCheckbox) {
+          noPlaceCheckbox.addEventListener('change', () => {
+            if (noPlaceCheckbox.checked) {
+              updateActivityPlaceState('checkbox-check');
+            } else {
+              updateActivityPlaceState('checkbox-uncheck');
+              addrInp.focus();
+            }
+          });
+        }
+
+        addrInp.addEventListener('input', () => {
+          updateActivityPlaceState('input');
+        });
+
+        addrInp.addEventListener('change', () => {
+          updateActivityPlaceState('input');
+        });
+
+        addrInp.addEventListener('blur', () => {
+          updateActivityPlaceState('input');
+          setTimeout(closeAllPacContainers, 150);
+        });
+
+        // Run initial evaluation
+        updateActivityPlaceState('init');
+      }
+    }
+
+    // Add Comida manual address toggle & optional place logic
+    if (type === 'comida') {
+      const restInp = modalBody.querySelector('input[data-key="restaurante"]');
+      const gBox = modalBody.querySelector('.field-group-box');
+      const addrInp = gBox ? gBox.querySelector('input[data-key="direccion"]') : null;
+      const phoneInp = gBox ? gBox.querySelector('input[data-key="phone"]') : null;
+      const webInp = gBox ? gBox.querySelector('input[data-key="website"]') : null;
+      const starsInp = gBox ? (gBox.querySelector('.star-rating input[data-key="stars"]') || gBox.querySelector('[data-key="stars"]')) : null;
+
+      const addrFg = addrInp ? addrInp.closest('.form-group') : null;
+      const phoneWebRow = (phoneInp && phoneInp.closest('.form-row')) || (phoneInp ? phoneInp.closest('.form-group') : null);
+      const starsFg = starsInp ? (starsInp.closest('.form-group') || starsInp.closest('.star-rating')) : null;
+
+      if (addrFg) addrFg.classList.add('comida-collapsible-field');
+      if (phoneWebRow) phoneWebRow.classList.add('comida-collapsible-field');
+      if (starsFg) starsFg.classList.add('comida-collapsible-field');
+
+      let manualRevealed = (existData && (existData.direccion || existData.phone || existData.website)) ? true : false;
+
+      if (restInp) {
+        const restFg = restInp.closest('.form-group');
+
+        // Fallback link: "¿No lo encuentras? Ingresa los datos manualmente"
+        let fallbackCont = restFg ? restFg.querySelector('.comida-manual-address-wrap') : null;
+        if (!fallbackCont && restFg) {
+          fallbackCont = document.createElement('div');
+          fallbackCont.className = 'comida-manual-address-wrap';
+          fallbackCont.innerHTML = `
+            <button type="button" class="btn-manual-address-toggle" id="comidaManualAddressBtn">
+              <i class="fa-solid fa-location-dot"></i> ¿No lo encuentras? Ingresa los datos manualmente
+            </button>
+          `;
+          restFg.appendChild(fallbackCont);
+
+          const manualBtn = fallbackCont.querySelector('#comidaManualAddressBtn');
+          if (manualBtn) {
+            manualBtn.onclick = (e) => {
+              e.preventDefault();
+              manualRevealed = true;
+              updateComidaPlaceState('manual-btn');
+              if (addrInp) addrInp.focus();
+            };
+          }
+        }
+
+        // Checkbox: "Esta comida no tiene un lugar específico"
+        let noPlaceWrap = restFg ? restFg.querySelector('.comida-no-place-wrap') : null;
+        if (!noPlaceWrap && restFg) {
+          noPlaceWrap = document.createElement('div');
+          noPlaceWrap.className = 'comida-no-place-wrap';
+          noPlaceWrap.innerHTML = `
+            <label class="comida-no-place-label" for="comidaNoPlaceCheckbox">
+              <input type="checkbox" id="comidaNoPlaceCheckbox" class="comida-no-place-checkbox">
+              <span>Esta comida no tiene un lugar específico</span>
+            </label>
+          `;
+          restFg.appendChild(noPlaceWrap);
+        }
+
+        const noPlaceCheckbox = restFg ? restFg.querySelector('#comidaNoPlaceCheckbox') : null;
+
+        const updateComidaPlaceState = (source = 'auto') => {
+          const isNoPlace = noPlaceCheckbox && noPlaceCheckbox.checked;
+          const hasRest = restInp && restInp.value && restInp.value.trim().length > 0;
+          const hasAddr = addrInp && addrInp.value && addrInp.value.trim().length > 0;
+
+          if (isNoPlace) {
+            if (source === 'checkbox-check') {
+              restInp.value = '';
+              restInp.disabled = true;
+              restInp.classList.add('is-disabled');
+              delete restInp.dataset.lat;
+              delete restInp.dataset.lng;
+              delete restInp.dataset.googlePlaceUsed;
+            }
+            if (fallbackCont) fallbackCont.style.display = 'none';
+            if (addrFg) addrFg.classList.add('is-hidden');
+            if (phoneWebRow) phoneWebRow.classList.add('is-hidden');
+            if (starsFg) starsFg.classList.add('is-hidden');
+          } else {
+            restInp.disabled = false;
+            restInp.classList.remove('is-disabled');
+
+            if (hasRest) {
+              if (fallbackCont) fallbackCont.style.display = 'none';
+              if (addrFg) addrFg.classList.remove('is-hidden');
+              if (phoneWebRow) phoneWebRow.classList.remove('is-hidden');
+              if (starsFg) starsFg.classList.remove('is-hidden');
+            } else if (manualRevealed || hasAddr) {
+              if (fallbackCont) fallbackCont.style.display = 'none';
+              if (addrFg) addrFg.classList.remove('is-hidden');
+              if (phoneWebRow) phoneWebRow.classList.remove('is-hidden');
+              if (starsFg) starsFg.classList.add('is-hidden');
+            } else {
+              if (fallbackCont) fallbackCont.style.display = 'flex';
+              if (addrFg) addrFg.classList.add('is-hidden');
+              if (phoneWebRow) phoneWebRow.classList.add('is-hidden');
+              if (starsFg) starsFg.classList.add('is-hidden');
+            }
+          }
+        };
+
+        if (noPlaceCheckbox) {
+          noPlaceCheckbox.addEventListener('change', () => {
+            if (noPlaceCheckbox.checked) {
+              updateComidaPlaceState('checkbox-check');
+            } else {
+              updateComidaPlaceState('checkbox-uncheck');
+              restInp.focus();
+            }
+          });
+        }
+
+        restInp.addEventListener('input', () => {
+          updateComidaPlaceState('input');
+        });
+
+        restInp.addEventListener('change', () => {
+          updateComidaPlaceState('input');
+        });
+
+        restInp.addEventListener('blur', () => {
+          updateComidaPlaceState('input');
+          setTimeout(closeAllPacContainers, 150);
+        });
+
+        // Setup address autocomplete for Dirección in Comida when revealed
+        if (addrInp && window.google && window.google.maps && window.google.maps.places) {
+          const autocompleteComidaDireccion = new window.google.maps.places.Autocomplete(addrInp, {});
+          addrInp.addEventListener('blur', () => setTimeout(closeAllPacContainers, 150));
+          autocompleteComidaDireccion.addListener('place_changed', () => {
+            closeAllPacContainers();
+            setTimeout(closeAllPacContainers, 50);
+            setTimeout(closeAllPacContainers, 150);
+            const place = autocompleteComidaDireccion.getPlace();
+            if (!place) return;
+            if (!checkGooglePlacesLimit()) {
+              addrInp.value = '';
+              return;
+            }
+            addrInp.dataset.googlePlaceUsed = 'true';
+            if (place.formatted_address) {
+              addrInp.value = place.formatted_address;
+            } else if (place.name) {
+              addrInp.value = place.name;
+            }
+            if (place.geometry && place.geometry.location) {
+              addrInp.dataset.lat = place.geometry.location.lat();
+              addrInp.dataset.lng = place.geometry.location.lng();
+            }
+            addrInp.blur();
+            closeAllPacContainers();
+            setTimeout(closeAllPacContainers, 80);
+            updateComidaPlaceState('addr-place');
+          });
+        }
+
+        // Run initial evaluation
+        updateComidaPlaceState('init');
       }
     }
   }, 220);
@@ -3049,27 +3392,26 @@ function buildField(field, data) {
   if (field.t === 'stars') {
     const sr = document.createElement('div');
     sr.className = 'star-rating';
-    const init = parseInt(val) || 0;
+    const init = parseFloat(val) || 0;
 
     // Hidden input to store value for saveElement
     const hid = document.createElement('input');
     hid.type = 'hidden';
     hid.dataset.key = field.k;
-    hid.value = init;
+    hid.value = init || '';
     sr.appendChild(hid);
 
-    for (let s = 1; s <= 5; s++) {
-      const star = document.createElement('span');
-      star.className = 'star' + (s <= init ? ' active' : '');
-      star.textContent = '★';
-      star.dataset.val = s;
-      star.addEventListener('click', () => {
-        const rating = parseInt(star.dataset.val);
-        hid.value = rating;
-        sr.querySelectorAll('.star').forEach((st, idx) => st.classList.toggle('active', idx < rating));
-      });
-      sr.appendChild(star);
-    }
+    const hidReviews = document.createElement('input');
+    hidReviews.type = 'hidden';
+    hidReviews.dataset.key = 'user_ratings_total';
+    hidReviews.value = data.user_ratings_total || '';
+    sr.appendChild(hidReviews);
+
+    const badge = document.createElement('div');
+    badge.className = 'modal-google-rating-text';
+    sr.appendChild(badge);
+
+    updateGoogleRatingInModal(sr, init, data.user_ratings_total);
     fg.appendChild(sr);
   }
   else if (field.t === 'separator-chips') {
@@ -3872,6 +4214,10 @@ function buildField(field, data) {
       if (data && data[field.k + '_address']) inp.dataset.address = data[field.k + '_address'];
       if (data && data[field.k + '_lat']) inp.dataset.lat = data[field.k + '_lat'];
       if (data && data[field.k + '_lng']) inp.dataset.lng = data[field.k + '_lng'];
+
+      if (field.hasPin) {
+        inp.classList.add('has-pin-icon');
+      }
       fg.appendChild(inp);
 
       // Block invalid keys and sanitize input interactively
@@ -3959,62 +4305,19 @@ document.getElementById('modalCancel').addEventListener('click', closeModal);
 // modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal() });
 document.getElementById('modalSave').addEventListener('click', () => {
   const data = {};
-  let hasError = false;
-
-  // Clear previous validation styles
-  modalBody.querySelectorAll('.form-input, .form-textarea, .form-select, .rte-editor').forEach(el => el.classList.remove('field-error'));
 
   modalBody.querySelectorAll('[data-key]').forEach(el => {
     const key = el.dataset.key;
-    const value = (el.classList.contains('rte-editor') ? el.innerHTML : el.value || '').trim();
-
-    // 1. Validate numbers/prices/stars
-    if (key === 'precio' && value !== '') {
-      const cleanVal = unformatNumber(value);
-      if (!/^\d+(\.\d{1,2})?$/.test(cleanVal)) {
-        el.classList.add('field-error');
-        hasError = true;
-      }
-    } else if ((key === 'personas' || key === 'stars' || el.type === 'number') && value !== '') {
-      if (!/^\d+$/.test(value)) {
-        el.classList.add('field-error');
-        hasError = true;
-      }
-    }
-
-    // 2. Validate phone
-    const isPhoneField = key === 'phone' || el.type === 'tel';
-    if (isPhoneField && value !== '') {
-      if (!/^[0-9+\s\-()]+$/.test(value)) {
-        el.classList.add('field-error');
-        hasError = true;
-      }
-    }
-
-    // 3. Validate email
-    const isEmailField = key === 'email' || key === 'correo' || el.type === 'email';
-    if (isEmailField && value !== '') {
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        el.classList.add('field-error');
-        hasError = true;
-      }
-    }
-
     if (el.classList.contains('rte-editor')) data[key] = el.innerHTML;
-    else data[key] = el.value;
+    else data[key] = el.value !== undefined ? el.value : '';
     if (el.dataset.city) data[key + '_city'] = el.dataset.city;
     if (el.dataset.address) data[key + '_address'] = el.dataset.address;
     if (el.dataset.lat) data[key + '_lat'] = el.dataset.lat;
     if (el.dataset.lng) data[key + '_lng'] = el.dataset.lng;
   });
 
-  if (hasError) {
-    showToast('⚠️', 'Por favor verifica los campos marcados en rojo.');
-    return;
-  }
-
   modalBody.querySelectorAll('.color-swatch.selected').forEach(sw => { data[sw.dataset.key] = sw.dataset.color });
-  if (starRating > 0) data.stars = starRating;
+  if (starRating > 0 && !data.stars) data.stars = starRating;
   if (modalBody.querySelector('[data-google-place-used="true"]') || (data.photo_url && data.photo_url.includes('/storage/places/')) || data.place_id) {
     data._google_place_used = true;
   }
@@ -4060,13 +4363,29 @@ function showToast(icon, msg) {
 let currentPreviewHTML = '';
 
 async function openPreview() {
+  const loadingOverlay = document.getElementById('proPreviewLoadingOverlay');
+  if (loadingOverlay) {
+    loadingOverlay.style.display = 'flex';
+    requestAnimationFrame(() => loadingOverlay.classList.add('is-active'));
+  }
+
+  const hideLoading = () => {
+    if (loadingOverlay) {
+      loadingOverlay.classList.remove('is-active');
+      setTimeout(() => {
+        if (!loadingOverlay.classList.contains('is-active')) {
+          loadingOverlay.style.display = 'none';
+        }
+      }, 250);
+    }
+  };
+
   try {
     // 1. Guardar siempre los cambios antes de abrir la vista previa
     if (window.tripId && typeof performProSave === 'function') {
       if (typeof autoSaveTimer !== 'undefined' && autoSaveTimer) {
         clearTimeout(autoSaveTimer);
       }
-      showToast('<i class="fa-solid fa-spinner fa-spin"></i>', 'Guardando cambios...');
       const saveResult = await performProSave(false);
       if (!saveResult) {
         console.warn('Advertencia: El guardado no se confirmó exitosamente.');
@@ -4094,6 +4413,7 @@ async function openPreview() {
     const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
     
     if (typeof buildPreviewHTML !== 'function') {
+      hideLoading();
       alert('La función para generar la vista previa no está cargada correctamente.');
       return;
     }
@@ -4133,6 +4453,7 @@ async function openPreview() {
     if (modal && iframe) {
       modal.style.display = 'flex';
       iframe.srcdoc = currentPreviewHTML;
+      hideLoading();
       if (typeof showToast === 'function') showToast('<i class="fa-regular fa-eye"></i>', 'Vista previa lista');
     } else {
       const blob = new Blob([currentPreviewHTML], { type: 'text/html' });
@@ -4141,9 +4462,11 @@ async function openPreview() {
       if (!win || win.closed || typeof win.closed === 'undefined') {
         window.location.href = url;
       }
+      hideLoading();
       if (typeof showToast === 'function') showToast('<i class="fa-regular fa-eye"></i>', 'Vista previa lista');
     }
   } catch (err) {
+    hideLoading();
     console.error('Error in openPreview:', err);
     alert('Ocurrió un error al abrir la vista previa: ' + err.message);
   }

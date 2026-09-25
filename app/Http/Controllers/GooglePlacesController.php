@@ -42,7 +42,7 @@ class GooglePlacesController extends Controller
         try {
             $response = Http::get("https://maps.googleapis.com/maps/api/place/details/json", [
                 'place_id' => $placeId,
-                'fields' => 'name,formatted_address,photos,rating,reviews,opening_hours,website,international_phone_number,price_level,types',
+                'fields' => 'name,formatted_address,photos,rating,user_ratings_total,reviews,opening_hours,website,international_phone_number,price_level,types',
                 'key' => $apiKey,
             ]);
 

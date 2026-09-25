@@ -1045,6 +1045,15 @@
   <x-upgrade-modal />
   <x-copilot-widget :trip="$trip" />
 
+  <!-- PRO PREVIEW GENERATING LOADING OVERLAY -->
+  <div id="proPreviewLoadingOverlay" class="pro-preview-loading-overlay" style="display:none;">
+    <div class="pro-preview-loading-card">
+      <div class="pro-preview-loading-spinner"></div>
+      <div class="pro-preview-loading-title">Generando vista previa...</div>
+      <div class="pro-preview-loading-sub">Guardando cambios y preparando tu itinerario</div>
+    </div>
+  </div>
+
   <!-- FULLSCREEN PRO PREVIEW MODAL -->
   <div id="proPreviewModal" class="pro-preview-overlay" style="display:none;">
     <div class="pro-preview-header-bar">

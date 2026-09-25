@@ -204,6 +204,27 @@ function buildPreviewHTML(data) {
     return res.valid ? res.embedUrl : null;
   };
   const starsHTML = n => n ? Array.from({ length: 5 }, (_, i) => `<svg width="16" height="16" viewBox="0 0 24 24" fill="${i < n ? '#f59e0b' : '#d1d5db'}"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`).join('') : '';
+  const formatReviewsCount = count => {
+    if (!count && count !== 0) return '';
+    const num = parseInt(count);
+    if (isNaN(num) || num <= 0) return '';
+    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return num.toString();
+  };
+  const renderGoogleRatingBadge = d => {
+    if (!d || !d.stars) return '';
+    const ratingNum = parseFloat(d.stars);
+    if (isNaN(ratingNum) || ratingNum <= 0) return '';
+    const formattedScore = ratingNum % 1 === 0 ? ratingNum.toFixed(1) : ratingNum.toString();
+    const reviews = d.user_ratings_total ? formatReviewsCount(d.user_ratings_total) : (d.reviews_count ? formatReviewsCount(d.reviews_count) : '');
+    const reviewText = reviews ? `(${reviews} opiniones en Google)` : `(Google)`;
+    return `<div class="pv-google-rating-badge" title="Calificación en Google Maps">
+      <span class="pv-gr-star">⭐</span>
+      <span class="pv-gr-score">${formattedScore}/5</span>
+      <span class="pv-gr-reviews">${reviewText}</span>
+    </div>`;
+  };
   const fixUrl = u => {
     if (!u || typeof u !== 'string') return '';
     let resolved = u.trim();
@@ -546,7 +567,7 @@ function buildPreviewHTML(data) {
                     ${d.nombre || 'Hotel'} <i class="fa-solid fa-up-right-from-square"></i>
                   </a>
                 </div>
-                ${d.stars ? `<div class="pv-stars-row">${starsHTML(d.stars)}<span class="pv-stars-score">(${Number.isInteger(d.stars) ? d.stars + '.0' : d.stars})</span></div>` : ''}
+                ${renderGoogleRatingBadge(d)}
               </div>
               ${d.direccion ? `<div class="pv-hotel-addr"><i class="fa-solid fa-location-dot" style="color:var(--muted)"></i> ${d.direccion}</div>` : ''}
               <div class="pv-hotel-details">
@@ -640,7 +661,7 @@ function buildPreviewHTML(data) {
                 </a>
               </div>
               ${d.direccion || d.lugar ? `<div class="pv-media-addr" style="color:#666; font-weight:500; font-size:13px; margin-bottom:4px;"><i class="fa-solid fa-location-dot" style="color:var(--muted); margin-right:4px;"></i>${d.direccion || d.lugar}</div>` : ''}
-              ${d.stars ? `<div class="pv-stars-row" style="margin-bottom:8px;">${starsHTML(d.stars)} <span class="pv-stars-score" style="font-size:12px; opacity:0.8;">(${Number.isInteger(d.stars) ? d.stars + '.0' : d.stars})</span></div>` : ''}
+              ${renderGoogleRatingBadge(d) ? `<div style="margin-bottom:8px;">${renderGoogleRatingBadge(d)}</div>` : ''}
               
               ${timeRange ? `<div class="pv-media-time"><i class="fa-solid fa-clock"></i> ${timeRange.replace(' - ', ' - Duración : ')}</div>` : ''}
               ${d.descripcion ? `<div class="pv-media-desc">${d.descripcion}</div>` : ''}
@@ -676,7 +697,7 @@ function buildPreviewHTML(data) {
                     ${d.restaurante || 'Restaurante'} <i class="fa-solid fa-up-right-from-square"></i>
                   </a>
                 </div>
-                ${d.stars ? `<div class="pv-stars-row">${starsHTML(d.stars)}<span class="pv-stars-score">(${Number.isInteger(d.stars) ? d.stars + '.0' : d.stars})</span></div>` : ''}
+                ${renderGoogleRatingBadge(d)}
               </div>
               ${d.direccion || d.ciudad ? `<div class="pv-media-addr"><i class="fa-solid fa-location-dot" style="color:var(--muted)"></i> ${d.direccion || d.ciudad}</div>` : ''}
               ${dt.day ? `<div class="pv-media-time"><i class="fa-solid fa-clock"></i> ${dt.day}${dt.time ? ' · ' + dt.time : ''}</div>` : ''}
@@ -717,6 +738,7 @@ function buildPreviewHTML(data) {
                     ${d.nombre || 'Tour'} <i class="fa-solid fa-up-right-from-square"></i>
                   </a>
                 </div>
+                ${renderGoogleRatingBadge(d)}
               </div>
               ${d.operador ? `<div class="pv-media-addr"><i class="fa-solid fa-location-dot" style="color:var(--muted)"></i> ${d.operador}</div>` : ''}
               ${timeRange ? `<div class="pv-media-time"><i class="fa-solid fa-clock"></i> ${timeRange.includes(' - ') ? timeRange.replace(' - ', ' - Duración : ') : 'Duración : ' + timeRange}</div>` : ''}
@@ -974,7 +996,10 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .pv-hotel-name{font-size:17px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:4px}
 .pv-hotel-addr{font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:4px;margin-bottom:10px}
 .pv-stars-row{display:flex;align-items:center;gap:2px;margin-bottom:10px}
-.pv-stars-score{font-size:12.5px;color:var(--muted);margin-left:4px;font-weight:600}
+.pv-google-rating-badge{display:inline-flex;align-items:center;gap:4px;background:none;color:#64748b;border:none;padding:0;font-size:12px;font-weight:500;line-height:1.2;margin-bottom:6px;width:fit-content}
+.pv-google-rating-badge .pv-gr-star{font-size:12px}
+.pv-google-rating-badge .pv-gr-score{font-weight:600;color:#64748b}
+.pv-google-rating-badge .pv-gr-reviews{font-weight:400;color:#64748b}
 .pv-hotel-details{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 .pv-hd-row{font-size:13px;color:var(--text)}
 .pv-hd-row .pv-hd-label{font-weight:600}
