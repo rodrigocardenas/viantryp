@@ -33,6 +33,7 @@ Route::middleware('guest')->group(function () {
     Route::get('auth/google/callback', [GoogleAuthController::class , 'handleGoogleCallback']);
     Route::post('auth/google/native', [GoogleAuthController::class , 'handleNativeGoogleAuth'])->name('auth.google.native');
     Route::get('auth/native-login', [GoogleAuthController::class , 'handleNativeTokenLogin'])->name('auth.native.token');
+    Route::match(['get', 'post'], 'auth/google/gsi-callback', [GoogleAuthController::class , 'handleGsiCallback'])->name('auth.google.gsi');
 });
 
 // Logout route (authenticated users only)

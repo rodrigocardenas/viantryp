@@ -771,12 +771,13 @@
       const clientId = '{{ config("services.google.client_id", "68250907387-5t11umbj4m0h0qr9p013l48uqof74orn.apps.googleusercontent.com") }}';
       const googleBtn = document.getElementById('btnGoogleAuthRegister') || document.querySelector('.btn-google');
 
-      // 1. Inicializar Google Identity Services (GSI)
+      // 1. Inicializar Google Identity Services (GSI) con modo redirect para móviles/TWA
       function initGsi() {
         if (window.google && window.google.accounts && window.google.accounts.id) {
           window.google.accounts.id.initialize({
             client_id: clientId,
-            callback: handleGoogleCredentialResponse,
+            ux_mode: 'redirect',
+            login_uri: '{{ url("/auth/google/gsi-callback") }}',
             auto_select: false,
             cancel_on_tap_outside: true,
             context: 'signup'

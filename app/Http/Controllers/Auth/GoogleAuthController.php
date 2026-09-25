@@ -210,6 +210,91 @@ class GoogleAuthController extends Controller
     }
 
     /**
+     * Handle Google Identity Services (GSI) redirect POST callback
+     */
+    public function handleGsiCallback(Request $request)
+    {
+        try {
+            $credential = $request->input('credential') ?? $request->input('id_token') ?? $request->input('idToken');
+
+            if (!$credential) {
+                return redirect()->route('login')->with('error', 'No se recibió la credencial de Google.');
+            }
+
+            // Decode the JWT token payload
+            $email = null;
+            $googleId = null;
+            $name = '';
+            $lastName = '';
+            $avatar = null;
+
+            $tokenParts = explode('.', $credential);
+            if (count($tokenParts) === 3) {
+                $jwtPayload = json_decode(base64_decode(strtr($tokenParts[1], '-_', '+/')), true);
+                if ($jwtPayload) {
+                    $email = $jwtPayload['email'] ?? null;
+                    $googleId = $jwtPayload['sub'] ?? null;
+                    $name = $jwtPayload['given_name'] ?? $jwtPayload['name'] ?? '';
+                    $lastName = $jwtPayload['family_name'] ?? '';
+                    $avatar = $jwtPayload['picture'] ?? null;
+                }
+            }
+
+            if (!$email) {
+                return redirect()->route('login')->with('error', 'No se pudo obtener el correo de Google.');
+            }
+
+            // Find or create user
+            $user = User::where('email', $email)->orWhere(function($query) use ($googleId) {
+                if ($googleId) $query->where('google_id', $googleId);
+            })->first();
+
+            if ($user) {
+                $updateData = [];
+                if ($googleId && !$user->google_id) {
+                    $updateData['google_id'] = $googleId;
+                }
+                if ($avatar) {
+                    $updateData['avatar'] = $avatar;
+                }
+                if (!empty($updateData)) {
+                    $user->update($updateData);
+                }
+            } else {
+                if (!$name) {
+                    $parts = explode('@', $email);
+                    $name = $parts[0];
+                }
+
+                $user = User::create([
+                    'name' => $name,
+                    'last_name' => $lastName,
+                    'email' => $email,
+                    'google_id' => $googleId,
+                    'avatar' => $avatar,
+                    'password' => bcrypt(uniqid()),
+                    'plan' => User::PLAN_BASICO,
+                    'country' => $request->header('cf-ipcountry') ?? null,
+                ]);
+
+                $user->notify(new \App\Notifications\WelcomeNotification($user));
+            }
+
+            Auth::login($user, true);
+            $request->session()->put('viantryp_app_mode', '1');
+            $request->session()->regenerate();
+
+            $cookie = cookie('viantryp_app_mode', '1', 525600);
+            $targetRoute = $user->wasRecentlyCreated ? route('profile.index', ['app' => '1']) : route('trips.index', ['app' => '1']);
+
+            return redirect($targetRoute)->with('success', '¡Bienvenido! Has iniciado sesión con Google.')->withCookie($cookie);
+
+        } catch (\Exception $e) {
+            return redirect()->route('login')->with('error', 'Error al procesar el inicio de sesión: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Logout user
      */
     public function logout(Request $request)

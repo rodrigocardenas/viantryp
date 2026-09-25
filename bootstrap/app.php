@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'paddle/*',
             'auth/google/native',
+            'auth/google/gsi-callback',
         ]);
 
         // Apply security headers to every response
