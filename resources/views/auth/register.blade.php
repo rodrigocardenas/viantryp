@@ -719,24 +719,32 @@
       const googleBtn = document.getElementById('btnGoogleAuthRegister') || document.querySelector('.btn-google');
       if (!googleBtn) return;
 
-      const isNativeCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+      googleBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
 
-      if (isNativeCapacitor) {
-        googleBtn.addEventListener('click', async function(e) {
-          e.preventDefault();
+        // Detect if running inside Capacitor native app
+        const hasCapacitor = Boolean(window.Capacitor);
+        const isNative = Boolean(
+          window.Capacitor && (
+            (typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()) ||
+            window.Capacitor.Plugins ||
+            window.Capacitor.platform === 'android' ||
+            window.Capacitor.platform === 'ios'
+          )
+        );
+        const isAppMode = isNative || hasCapacitor || localStorage.getItem('viantryp_app_mode') === '1' || document.documentElement.classList.contains('is-viantryp-app');
+
+        if (isNative || hasCapacitor) {
           try {
             let GoogleAuth = window.Capacitor.Plugins ? window.Capacitor.Plugins.GoogleAuth : null;
             if (!GoogleAuth && window.Capacitor.registerPlugin) {
               GoogleAuth = window.Capacitor.registerPlugin('GoogleAuth');
             }
+
             if (GoogleAuth) {
               try {
                 if (typeof GoogleAuth.initialize === 'function') {
-                  await GoogleAuth.initialize({
-                    clientId: '{{ config("services.google.client_id", "68250907387-5t11umbj4m0h0qr9p013l48uqof74orn.apps.googleusercontent.com") }}',
-                    scopes: ['profile', 'email'],
-                    grantOfflineAccess: false,
-                  });
+                  await GoogleAuth.initialize();
                 }
               } catch(initErr) {}
 
@@ -790,20 +798,21 @@
                   }
                 }
               }
+              // Usuario canceló la hoja nativa o cerró sin error
+              return;
             }
-            // Fallback si la respuesta nativa no redirigió
-            window.location.href = "{{ route('auth.google', ['app' => '1']) }}";
           } catch (err) {
-            console.warn('Native Google Auth error, switching to web OAuth fallback:', err);
-            window.location.href = "{{ route('auth.google', ['app' => '1']) }}";
+            console.warn('Native Google Auth error/cancelled:', err);
+            // Si el usuario canceló el diálogo nativo (código 12501 en Android), no hacemos nada
+            if (err && (err.message === '12501' || String(err).includes('12501') || String(err).includes('cancel'))) {
+              return;
+            }
           }
-        });
-      } else {
-        const isAppMode = localStorage.getItem('viantryp_app_mode') === '1' || document.documentElement.classList.contains('is-viantryp-app');
-        if (isAppMode) {
-          googleBtn.href = "{{ route('auth.google') }}?app=1";
         }
-      }
+
+        // Navegador web tradicional únicamente
+        window.location.href = isAppMode ? "{{ route('auth.google', ['app' => '1']) }}" : "{{ route('auth.google') }}";
+      });
     });
   </script>
 </body>
