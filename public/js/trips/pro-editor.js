@@ -1799,7 +1799,7 @@ function updateGoogleRatingInModal(sr, rating, reviews) {
       badge.style.display = 'inline-flex';
       const sStr = rNum % 1 === 0 ? rNum.toFixed(1) : rNum.toString();
       const rFmt = currentReviews ? formatReviewsCount(currentReviews) : '';
-      badge.textContent = `⭐ ${sStr}/5 (${rFmt ? rFmt + ' opiniones en Google' : 'opiniones en Google'})`;
+      badge.textContent = `⭐ ${sStr}/5 (${rFmt ? rFmt + ' opiniones en Google' : 'según opiniones de Google'})`;
     } else {
       badge.style.display = 'none';
       badge.textContent = '';
@@ -1949,7 +1949,7 @@ window.getItemInnerHtml = function(item) {
         if (!isNaN(sNum) && sNum > 0) {
           const sStr = sNum % 1 === 0 ? sNum.toFixed(1) : sNum.toString();
           const rCount = d.user_ratings_total ? formatReviewsCount(d.user_ratings_total) : '';
-          chips.push(`⭐ ${sStr}/5 (${rCount ? rCount + ' opiniones en Google' : 'opiniones en Google'})`);
+          chips.push(`⭐ ${sStr}/5 (${rCount ? rCount + ' opiniones en Google' : 'según opiniones de Google'})`);
         }
       }
       if (d.alimentacion) chips.push('<i class="fa-solid fa-utensils"></i> ' + d.alimentacion);
@@ -1974,7 +1974,7 @@ window.getItemInnerHtml = function(item) {
         if (!isNaN(sNum) && sNum > 0) {
           const sStr = sNum % 1 === 0 ? sNum.toFixed(1) : sNum.toString();
           const rCount = d.user_ratings_total ? formatReviewsCount(d.user_ratings_total) : '';
-          chips.push(`⭐ ${sStr}/5 (${rCount ? rCount + ' opiniones en Google' : 'opiniones en Google'})`);
+          chips.push(`⭐ ${sStr}/5 (${rCount ? rCount + ' opiniones en Google' : 'según opiniones de Google'})`);
         }
       }
       if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.fecha) : d.fecha));
@@ -1990,7 +1990,7 @@ window.getItemInnerHtml = function(item) {
         if (!isNaN(sNum) && sNum > 0) {
           const sStr = sNum % 1 === 0 ? sNum.toFixed(1) : sNum.toString();
           const rCount = d.user_ratings_total ? formatReviewsCount(d.user_ratings_total) : '';
-          chips.push(`⭐ ${sStr}/5 (${rCount ? rCount + ' opiniones en Google' : 'opiniones en Google'})`);
+          chips.push(`⭐ ${sStr}/5 (${rCount ? rCount + ' opiniones en Google' : 'según opiniones de Google'})`);
         }
       }
       if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.fecha) : d.fecha));
@@ -2006,7 +2006,7 @@ window.getItemInnerHtml = function(item) {
         if (!isNaN(sNum) && sNum > 0) {
           const sStr = sNum % 1 === 0 ? sNum.toFixed(1) : sNum.toString();
           const rCount = d.user_ratings_total ? formatReviewsCount(d.user_ratings_total) : '';
-          chips.push(`⭐ ${sStr}/5 (${rCount ? rCount + ' opiniones en Google' : 'opiniones en Google'})`);
+          chips.push(`⭐ ${sStr}/5 (${rCount ? rCount + ' opiniones en Google' : 'según opiniones de Google'})`);
         }
       }
       if (d.fecha) sub.push('<i class="fa-regular fa-clock"></i> ' + (typeof fmtDT === 'function' ? fmtDT(d.fecha) : d.fecha));

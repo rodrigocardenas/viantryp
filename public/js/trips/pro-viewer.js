@@ -218,7 +218,7 @@ function buildPreviewHTML(data) {
     if (isNaN(ratingNum) || ratingNum <= 0) return '';
     const formattedScore = ratingNum % 1 === 0 ? ratingNum.toFixed(1) : ratingNum.toString();
     const reviews = d.user_ratings_total ? formatReviewsCount(d.user_ratings_total) : (d.reviews_count ? formatReviewsCount(d.reviews_count) : '');
-    const reviewText = reviews ? `(${reviews} opiniones en Google)` : `(Google)`;
+    const reviewText = reviews ? `(${reviews} opiniones en Google)` : `(según opiniones de Google)`;
     return `<div class="pv-google-rating-badge" title="Calificación en Google Maps">
       <span class="pv-gr-star">⭐</span>
       <span class="pv-gr-score">${formattedScore}/5</span>
