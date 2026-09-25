@@ -44,7 +44,7 @@ class SecurityHeaders
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
             "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
             "img-src 'self' data: blob: https:",
-            "connect-src 'self' https://maps.googleapis.com https://api.unsplash.com https://api.giphy.com https://nominatim.openstreetmap.org https://photon.komoot.io https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.paddle.com https://sandbox-api.paddle.com https://buy.paddle.com https://api.paddle.com",
+            "connect-src 'self' https://accounts.google.com https://maps.googleapis.com https://api.unsplash.com https://api.giphy.com https://nominatim.openstreetmap.org https://photon.komoot.io https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.paddle.com https://sandbox-api.paddle.com https://buy.paddle.com https://api.paddle.com",
             "frame-src 'self' https://accounts.google.com https://*.paddle.com https://buy.paddle.com https://sandbox-buy.paddle.com",
             "child-src 'self' https://*.paddle.com https://buy.paddle.com https://sandbox-buy.paddle.com",
             "media-src 'self' https://*.giphy.com",

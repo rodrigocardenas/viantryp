@@ -91,14 +91,31 @@ class GoogleAuthController extends Controller
     {
         try {
             $email = $request->input('email');
-            $idToken = $request->input('idToken') ?? $request->input('id_token');
+            $idToken = $request->input('credential') ?? $request->input('idToken') ?? $request->input('id_token');
             $googleId = $request->input('google_id') ?? $request->input('userId');
             $name = $request->input('name') ?? $request->input('givenName') ?? '';
             $lastName = $request->input('last_name') ?? $request->input('familyName') ?? '';
             $avatar = $request->input('avatar') ?? $request->input('imageUrl');
 
+            // Si viene el token JWT de Google Identity Services (GSI), decodificamos el payload
+            if ($idToken && (!$email || !$googleId)) {
+                try {
+                    $tokenParts = explode('.', $idToken);
+                    if (count($tokenParts) === 3) {
+                        $jwtPayload = json_decode(base64_decode(strtr($tokenParts[1], '-_', '+/')), true);
+                        if ($jwtPayload) {
+                            $email = $email ?: ($jwtPayload['email'] ?? null);
+                            $googleId = $googleId ?: ($jwtPayload['sub'] ?? null);
+                            $name = $name ?: ($jwtPayload['given_name'] ?? $jwtPayload['name'] ?? '');
+                            $lastName = $lastName ?: ($jwtPayload['family_name'] ?? '');
+                            $avatar = $avatar ?: ($jwtPayload['picture'] ?? null);
+                        }
+                    }
+                } catch (\Exception $e) { }
+            }
+
             if (!$email) {
-                return response()->json(['success' => false, 'message' => 'Email no proporcionado'], 400);
+                return response()->json(['success' => false, 'message' => 'Email no proporcionado por Google'], 400);
             }
 
             // Find or create user

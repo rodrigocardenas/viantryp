@@ -554,19 +554,22 @@
 
         <div class="divider">O continúa con</div>
 
-        <a href="{{ route('auth.google') }}" class="btn-google">
-          <svg width="19" height="19" viewBox="0 0 24 24">
-            <path fill="#4285F4"
-              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-            <path fill="#34A853"
-              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-            <path fill="#FBBC05"
-              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
-            <path fill="#EA4335"
-              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-          </svg>
-          Continuar con Google
-        </a>
+        <div class="google-btn-container" style="position: relative; width: 100%;">
+          <a href="{{ route('auth.google') }}" id="btnGoogleAuth" class="btn-google">
+            <svg width="19" height="19" viewBox="0 0 24 24">
+              <path fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
+              <path fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+            </svg>
+            <span>Continuar con Google</span>
+          </a>
+          <div id="g_id_signin_layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.001; z-index: 10; overflow: hidden; pointer-events: auto;"></div>
+        </div>
 
       </div>
 
@@ -576,6 +579,9 @@
 
     </div>
   </main>
+
+  {{-- Google Identity Services SDK --}}
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <script>
     function togglePw() {
@@ -590,104 +596,120 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    // Manejador centralizado de credenciales de Google Identity Services (GSI)
+    async function handleGoogleCredentialResponse(response) {
+      if (!response || !response.credential) return;
+
       const googleBtn = document.getElementById('btnGoogleAuth') || document.querySelector('.btn-google');
-      if (!googleBtn) return;
+      if (googleBtn) {
+        googleBtn.style.opacity = '0.6';
+        googleBtn.style.pointerEvents = 'none';
+      }
 
-      googleBtn.addEventListener('click', async function (e) {
-        e.preventDefault();
+      try {
+        const res = await fetch('/auth/google/native', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          },
+          body: JSON.stringify({
+            credential: response.credential,
+            idToken: response.credential
+          })
+        });
 
-        // Detect if running inside Capacitor native app
-        const hasCapacitor = Boolean(window.Capacitor);
-        const isNative = Boolean(
-          window.Capacitor && (
-            (typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()) ||
-            window.Capacitor.Plugins ||
-            window.Capacitor.platform === 'android' ||
-            window.Capacitor.platform === 'ios'
-          )
-        );
-        const isAppMode = isNative || hasCapacitor || localStorage.getItem('viantryp_app_mode') === '1' || document.documentElement.classList.contains('is-viantryp-app');
-
-        if (isNative || hasCapacitor) {
-          try {
-            let GoogleAuth = window.Capacitor.Plugins ? window.Capacitor.Plugins.GoogleAuth : null;
-            if (!GoogleAuth && window.Capacitor.registerPlugin) {
-              GoogleAuth = window.Capacitor.registerPlugin('GoogleAuth');
-            }
-
-            if (GoogleAuth) {
-              try {
-                if (typeof GoogleAuth.initialize === 'function') {
-                  await GoogleAuth.initialize();
-                }
-              } catch (initErr) { }
-
-              const googleUser = await GoogleAuth.signIn();
-              if (googleUser) {
-                let userEmail = googleUser.email || (googleUser.profile && googleUser.profile.email);
-                let googleId = googleUser.id || googleUser.userId || (googleUser.profile && googleUser.profile.id);
-                let idToken = (googleUser.authentication && googleUser.authentication.idToken) || googleUser.idToken;
-                let givenName = googleUser.givenName || googleUser.name || (googleUser.profile && googleUser.profile.givenName) || '';
-                let familyName = googleUser.familyName || (googleUser.profile && googleUser.profile.familyName) || '';
-                let imageUrl = googleUser.imageUrl || (googleUser.profile && googleUser.profile.imageUrl) || '';
-
-                if (!userEmail && idToken) {
-                  try {
-                    const base64Url = idToken.split('.')[1];
-                    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-                    const parsedToken = JSON.parse(jsonPayload);
-                    userEmail = parsedToken.email;
-                    googleId = googleId || parsedToken.sub;
-                    givenName = givenName || parsedToken.given_name || parsedToken.name;
-                    familyName = familyName || parsedToken.family_name;
-                    imageUrl = imageUrl || parsedToken.picture;
-                  } catch (e) { }
-                }
-
-                if (userEmail || idToken) {
-                  const payload = {
-                    email: userEmail,
-                    idToken: idToken,
-                    google_id: googleId,
-                    givenName: givenName,
-                    familyName: familyName,
-                    imageUrl: imageUrl
-                  };
-                  const response = await fetch('/auth/google/native', {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Accept': 'application/json',
-                      'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify(payload)
-                  });
-                  const resData = await response.json();
-                  if (resData.success && resData.redirect) {
-                    try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
-                    window.location.href = resData.redirect;
-                    return;
-                  }
-                }
-              }
-              // Usuario canceló la hoja nativa de Google o cerró sin error
-              return;
-            }
-          } catch (err) {
-            console.warn('Native Google Auth error/cancelled:', err);
-            // Si el usuario canceló el diálogo nativo (código 12501 en Android), no hacemos nada
-            if (err && (err.message === '12501' || String(err).includes('12501') || String(err).includes('cancel'))) {
-              return;
-            }
+        const resData = await res.json();
+        if (resData.success && resData.redirect) {
+          try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
+          window.location.href = resData.redirect;
+          return;
+        } else {
+          alert(resData.message || 'Error al autenticar con Google.');
+          if (googleBtn) {
+            googleBtn.style.opacity = '1';
+            googleBtn.style.pointerEvents = 'auto';
           }
         }
+      } catch (err) {
+        console.error('Error enviando credenciales de Google:', err);
+        if (googleBtn) {
+          googleBtn.style.opacity = '1';
+          googleBtn.style.pointerEvents = 'auto';
+        }
+      }
+    }
 
-        // Navegador web tradicional únicamente
-        window.location.href = isAppMode ? "{{ route('auth.google', ['app' => '1']) }}" : "{{ route('auth.google') }}";
-      });
+    document.addEventListener('DOMContentLoaded', function () {
+      const clientId = '{{ config("services.google.client_id", "68250907387-5t11umbj4m0h0qr9p013l48uqof74orn.apps.googleusercontent.com") }}';
+      const googleBtn = document.getElementById('btnGoogleAuth') || document.querySelector('.btn-google');
+
+      // 1. Inicializar Google Identity Services (GSI)
+      function initGsi() {
+        if (window.google && window.google.accounts && window.google.accounts.id) {
+          window.google.accounts.id.initialize({
+            client_id: clientId,
+            callback: handleGoogleCredentialResponse,
+            auto_select: false,
+            cancel_on_tap_outside: true,
+            context: 'signin'
+          });
+
+          const layer = document.getElementById('g_id_signin_layer');
+          if (layer) {
+            window.google.accounts.id.renderButton(layer, {
+              theme: 'outline',
+              size: 'large',
+              width: 380,
+              type: 'standard',
+              shape: 'pill'
+            });
+          }
+
+          // Disparar One Tap automáticamente si está disponible en la app
+          window.google.accounts.id.prompt();
+        } else {
+          setTimeout(initGsi, 200);
+        }
+      }
+      initGsi();
+
+      // 2. Manejador de clic de respaldo para Capacitor o Web
+      if (googleBtn) {
+        googleBtn.addEventListener('click', async function (e) {
+          e.preventDefault();
+
+          // Si Google Identity está listo, lanzar el prompt
+          if (window.google && window.google.accounts && window.google.accounts.id) {
+            window.google.accounts.id.prompt();
+            return;
+          }
+
+          // Si es Capacitor nativo
+          if (window.Capacitor && (window.Capacitor.isNativePlatform || window.Capacitor.Plugins)) {
+            try {
+              let GoogleAuth = window.Capacitor.Plugins ? window.Capacitor.Plugins.GoogleAuth : null;
+              if (!GoogleAuth && window.Capacitor.registerPlugin) {
+                GoogleAuth = window.Capacitor.registerPlugin('GoogleAuth');
+              }
+              if (GoogleAuth) {
+                const user = await GoogleAuth.signIn();
+                if (user && (user.idToken || (user.authentication && user.authentication.idToken))) {
+                  handleGoogleCredentialResponse({ credential: user.idToken || user.authentication.idToken });
+                  return;
+                }
+              }
+            } catch (capErr) {
+              console.warn('Capacitor Google Auth:', capErr);
+            }
+          }
+
+          // Redirección tradicional únicamente si no hay soporte in-app
+          window.location.href = "{{ route('auth.google') }}";
+        });
+      }
     });
   </script>
 </body>
