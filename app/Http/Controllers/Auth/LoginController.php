@@ -42,7 +42,7 @@ class LoginController extends Controller
         }
 
         $credentials = $request->only('email', 'password');
-        $remember = $request->boolean('remember');
+        $remember = $request->boolean('remember') || $request->has('app') || $request->cookie('viantryp_app_mode') === '1';
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();

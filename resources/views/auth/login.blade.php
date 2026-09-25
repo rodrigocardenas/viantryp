@@ -610,14 +610,10 @@
                   await GoogleAuth.initialize({
                     clientId: '{{ config("services.google.client_id", "68250907387-5t11umbj4m0h0qr9p013l48uqof74orn.apps.googleusercontent.com") }}',
                     scopes: ['profile', 'email'],
-                    grantOfflineAccess: true,
+                    grantOfflineAccess: false,
                   });
                 }
               } catch (initErr) { }
-
-              try {
-                await GoogleAuth.signOut();
-              } catch (signOutErr) { }
 
               const googleUser = await GoogleAuth.signIn();
               if (googleUser) {

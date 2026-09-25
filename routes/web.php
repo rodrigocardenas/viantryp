@@ -38,8 +38,11 @@ Route::middleware('guest')->group(function () {
 // Logout route (authenticated users only)
 Route::middleware('auth')->post('logout', [GoogleAuthController::class , 'logout'])->name('logout');
 
-// Public landing page
+// Public landing page (redirects to trips if already authenticated)
 Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('trips.index');
+    }
     return view('landing');
 })->name('home');
 

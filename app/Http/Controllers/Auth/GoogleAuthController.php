@@ -70,8 +70,8 @@ class GoogleAuthController extends Controller
                 }
             }
 
-            // Log the user in
-            Auth::login($user);
+            // Log the user in with remember token
+            Auth::login($user, true);
 
             if ($user->wasRecentlyCreated) {
                 return redirect()->intended(route('trips.index'))->with('success', '¡Bienvenido! Tu cuenta ha sido creada con Google.');
