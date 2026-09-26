@@ -721,10 +721,10 @@
       }
     }
 
-    // Manejador centralizado de credenciales de Google Identity Services (GSI)
-    async function handleGoogleCredentialResponse(response) {
-      if (!response || !response.credential) return;
+    const clientId = '{{ config("services.google.client_id", "68250907387-5t11umbj4m0h0qr9p013l48uqof74orn.apps.googleusercontent.com") }}';
 
+    // Manejador nativo de Google Auth para la App Capacitor
+    async function doNativeCapacitorGoogleAuth() {
       const googleBtn = document.getElementById('btnGoogleAuthRegister') || document.querySelector('.btn-google');
       if (googleBtn) {
         googleBtn.style.opacity = '0.6';
@@ -732,34 +732,65 @@
       }
 
       try {
-        const res = await fetch('/auth/google/native', {
-          method: 'POST',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-          },
-          body: JSON.stringify({
-            credential: response.credential,
-            idToken: response.credential
-          })
-        });
+        let GoogleAuth = window.Capacitor?.Plugins?.GoogleAuth;
+        if (!GoogleAuth && window.Capacitor?.registerPlugin) {
+          GoogleAuth = window.Capacitor.registerPlugin('GoogleAuth');
+        }
 
-        const resData = await res.json();
-        if (resData.success && resData.redirect) {
-          try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
-          window.location.href = resData.redirect;
-          return;
-        } else {
-          alert(resData.message || 'Error al autenticar con Google.');
-          if (googleBtn) {
-            googleBtn.style.opacity = '1';
-            googleBtn.style.pointerEvents = 'auto';
+        if (GoogleAuth) {
+          try {
+            await GoogleAuth.initialize({
+              clientId: clientId,
+              scopes: 'profile,email',
+              grantOfflineAccess: false
+            });
+          } catch(initErr) {
+            console.warn('GoogleAuth.initialize notice:', initErr);
+          }
+
+          const googleUser = await GoogleAuth.signIn();
+          if (googleUser) {
+            const idToken = (googleUser.authentication && googleUser.authentication.idToken) || googleUser.idToken;
+            const email = googleUser.email || (googleUser.profile && googleUser.profile.email);
+            const googleId = googleUser.id || googleUser.userId || (googleUser.profile && googleUser.profile.id);
+            const givenName = googleUser.givenName || googleUser.name || (googleUser.profile && googleUser.profile.givenName) || '';
+            const familyName = googleUser.familyName || (googleUser.profile && googleUser.profile.familyName) || '';
+            const imageUrl = googleUser.imageUrl || (googleUser.profile && googleUser.profile.imageUrl) || '';
+
+            if (idToken || email) {
+              const res = await fetch('/auth/google/native', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                  'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                  idToken: idToken,
+                  credential: idToken,
+                  email: email,
+                  google_id: googleId,
+                  givenName: givenName,
+                  familyName: familyName,
+                  imageUrl: imageUrl
+                })
+              });
+
+              const resData = await res.json();
+              if (resData.success && resData.redirect) {
+                try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
+                window.location.href = resData.redirect;
+                return;
+              } else {
+                alert(resData.message || 'Error al registrarse con Google.');
+              }
+            }
           }
         }
       } catch (err) {
-        console.error('Error enviando credenciales de Google:', err);
+        console.warn('Native Google Auth cancelled/failed:', err);
+      } finally {
         if (googleBtn) {
           googleBtn.style.opacity = '1';
           googleBtn.style.pointerEvents = 'auto';
@@ -768,73 +799,61 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      const clientId = '{{ config("services.google.client_id", "68250907387-5t11umbj4m0h0qr9p013l48uqof74orn.apps.googleusercontent.com") }}';
       const googleBtn = document.getElementById('btnGoogleAuthRegister') || document.querySelector('.btn-google');
+      const isNativeApp = Boolean(window.Capacitor && (window.Capacitor.isNativePlatform || window.Capacitor.Plugins));
 
-      // 1. Inicializar Google Identity Services (GSI) con modo redirect para móviles/TWA
-      function initGsi() {
-        if (window.google && window.google.accounts && window.google.accounts.id) {
-          window.google.accounts.id.initialize({
-            client_id: clientId,
-            ux_mode: 'redirect',
-            login_uri: '{{ url("/auth/google/callback") }}',
-            auto_select: false,
-            cancel_on_tap_outside: true,
-            context: 'signup'
+      if (isNativeApp) {
+        // En la App Nativa: Ocultamos la capa GSI web para que el toque siempre vaya al plugin nativo de Android
+        const layer = document.getElementById('g_id_signin_layer_register');
+        if (layer) layer.style.display = 'none';
+
+        if (googleBtn) {
+          googleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            doNativeCapacitorGoogleAuth();
           });
-
-          const layer = document.getElementById('g_id_signin_layer_register');
-          if (layer) {
-            window.google.accounts.id.renderButton(layer, {
-              theme: 'outline',
-              size: 'large',
-              width: 380,
-              type: 'standard',
-              shape: 'pill'
-            });
-          }
-
-          // Disparar One Tap automáticamente si está disponible en la app
-          window.google.accounts.id.prompt();
-        } else {
-          setTimeout(initGsi, 200);
         }
-      }
-      initGsi();
-
-      // 2. Manejador de clic de respaldo para Capacitor o Web
-      if (googleBtn) {
-        googleBtn.addEventListener('click', async function(e) {
-          e.preventDefault();
-
-          // Si Google Identity está listo, lanzar el prompt
+      } else {
+        // En Navegador Web de escritorio / móvil: Usamos Google Identity Services (GSI)
+        function initGsi() {
           if (window.google && window.google.accounts && window.google.accounts.id) {
-            window.google.accounts.id.prompt();
-            return;
-          }
+            window.google.accounts.id.initialize({
+              client_id: clientId,
+              ux_mode: 'redirect',
+              login_uri: '{{ url("/auth/google/callback") }}',
+              auto_select: false,
+              cancel_on_tap_outside: true,
+              context: 'signup'
+            });
 
-          // Si es Capacitor nativo
-          if (window.Capacitor && (window.Capacitor.isNativePlatform || window.Capacitor.Plugins)) {
-            try {
-              let GoogleAuth = window.Capacitor.Plugins ? window.Capacitor.Plugins.GoogleAuth : null;
-              if (!GoogleAuth && window.Capacitor.registerPlugin) {
-                GoogleAuth = window.Capacitor.registerPlugin('GoogleAuth');
-              }
-              if (GoogleAuth) {
-                const user = await GoogleAuth.signIn();
-                if (user && (user.idToken || (user.authentication && user.authentication.idToken))) {
-                  handleGoogleCredentialResponse({ credential: user.idToken || user.authentication.idToken });
-                  return;
-                }
-              }
-            } catch (capErr) {
-              console.warn('Capacitor Google Auth:', capErr);
+            const layer = document.getElementById('g_id_signin_layer_register');
+            if (layer) {
+              window.google.accounts.id.renderButton(layer, {
+                theme: 'outline',
+                size: 'large',
+                width: 380,
+                type: 'standard',
+                shape: 'pill'
+              });
             }
-          }
 
-          // Redirección tradicional únicamente si no hay soporte in-app
-          window.location.href = "{{ route('auth.google') }}";
-        });
+            window.google.accounts.id.prompt();
+          } else {
+            setTimeout(initGsi, 200);
+          }
+        }
+        initGsi();
+
+        if (googleBtn) {
+          googleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (window.google && window.google.accounts && window.google.accounts.id) {
+              window.google.accounts.id.prompt();
+            } else {
+              window.location.href = "{{ route('auth.google') }}";
+            }
+          });
+        }
       }
     });
   </script>
