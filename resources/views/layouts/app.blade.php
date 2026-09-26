@@ -318,6 +318,44 @@
         }
     </script>
     <script src="{{ asset('js/pull-to-refresh.js') }}?v={{ time() }}"></script>
+    {{-- Native Google Sign-Out on Logout --}}
+    {{-- Only runs inside the Capacitor Android app.                          --}}
+    {{-- Intercepts ALL logout form submissions, calls GoogleAuth.signOut()   --}}
+    {{-- to clear the cached Google session, then lets the form submit normally --}}
+    <script>
+    (function () {
+        if (!window.Capacitor) return; // Solo en la app nativa
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Interceptar todos los formularios cuya acción sea el logout
+            document.querySelectorAll('form[action*="logout"]').forEach(function (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    var submittedForm = this;
+
+                    // Intentar hacer signOut de Google antes de cerrar sesión en el servidor
+                    try {
+                        var GoogleAuth = window.Capacitor.Plugins && window.Capacitor.Plugins.GoogleAuth;
+                        if (!GoogleAuth && window.Capacitor.registerPlugin) {
+                            GoogleAuth = window.Capacitor.registerPlugin('GoogleAuth');
+                        }
+
+                        if (GoogleAuth && typeof GoogleAuth.signOut === 'function') {
+                            GoogleAuth.signOut()
+                                .catch(function () { /* Ignorar si no había sesión */ })
+                                .finally(function () { submittedForm.submit(); });
+                        } else {
+                            submittedForm.submit();
+                        }
+                    } catch (err) {
+                        submittedForm.submit(); // Siempre cerrar sesión aunque falle el signOut
+                    }
+                });
+            });
+        });
+    })();
+    </script>
 </body>
+
 </html>
 
