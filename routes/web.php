@@ -27,13 +27,18 @@ Route::middleware('guest')->group(function () {
     Route::post('/reset-password', [ForgotPasswordController::class , 'resetPassword'])->name('password.update');
 });
 
-// Google OAuth routes (guest only)
+// Google OAuth routes (guest only - browser flow)
 Route::middleware('guest')->group(function () {
     Route::get('auth/google', [GoogleAuthController::class , 'redirectToGoogle'])->name('auth.google');
     Route::match(['get', 'post'], 'auth/google/callback', [GoogleAuthController::class , 'handleGoogleCallback']);
-    Route::post('auth/google/native', [GoogleAuthController::class , 'handleNativeGoogleAuth'])->name('auth.google.native');
-    Route::get('auth/native-login', [GoogleAuthController::class , 'handleNativeTokenLogin'])->name('auth.native.token');
 });
+
+// Native Capacitor auth endpoints — public (no guest middleware)
+// These must be accessible even if the browser still has an old session cookie
+// after GoogleAuth.signOut() on the client, because the server session may not
+// have been cleared yet when the user taps an account in the account picker.
+Route::post('auth/google/native', [GoogleAuthController::class , 'handleNativeGoogleAuth'])->name('auth.google.native');
+Route::get('auth/native-login', [GoogleAuthController::class , 'handleNativeTokenLogin'])->name('auth.native.token');
 
 // Logout route (authenticated users only)
 Route::middleware('auth')->post('logout', [GoogleAuthController::class , 'logout'])->name('logout');
