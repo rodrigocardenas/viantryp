@@ -160,22 +160,15 @@ class GoogleAuthController extends Controller
             }
 
             Auth::login($user, true);
-
-            // Generate one-time login token for GET navigation
-            $oneTimeToken = \Illuminate\Support\Str::random(40);
-            \Illuminate\Support\Facades\Cache::put('native_login_' . $oneTimeToken, $user->id, 120);
-
-            $redirectUrl = route('auth.native.token', [
-                'token' => $oneTimeToken,
-                'app' => '1',
-                'is_new' => $user->wasRecentlyCreated ? '1' : '0'
-            ]);
+            $request->session()->put('viantryp_app_mode', '1');
+            $request->session()->regenerate();
 
             $cookie = cookie('viantryp_app_mode', '1', 525600);
+            $targetRoute = $user->wasRecentlyCreated ? route('profile.index', ['app' => '1']) : route('trips.index', ['app' => '1']);
 
             return response()->json([
                 'success' => true,
-                'redirect' => $redirectUrl,
+                'redirect' => $targetRoute,
                 'message' => '¡Bienvenido! Has iniciado sesión con Google.'
             ])->withCookie($cookie);
 
