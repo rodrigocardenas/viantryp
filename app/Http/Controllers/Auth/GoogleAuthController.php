@@ -302,6 +302,10 @@ class GoogleAuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('trips.index')->with('success', 'Has cerrado sesión exitosamente.');
+        if ($request->has('app') || $request->cookie('viantryp_app_mode') === '1') {
+            return redirect()->route('login', ['app' => '1'])->with('success', 'Has cerrado sesión exitosamente.');
+        }
+
+        return redirect()->route('login')->with('success', 'Has cerrado sesión exitosamente.');
     }
 }

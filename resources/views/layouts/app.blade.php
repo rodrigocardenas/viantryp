@@ -318,41 +318,70 @@
         }
     </script>
     <script src="{{ asset('js/pull-to-refresh.js') }}?v={{ time() }}"></script>
-    {{-- Native Google Sign-Out on Logout --}}
-    {{-- Only runs inside the Capacitor Android app.                          --}}
-    {{-- Intercepts ALL logout form submissions, calls GoogleAuth.signOut()   --}}
-    {{-- to clear the cached Google session, then lets the form submit normally --}}
+    {{-- Native & Web Google Sign-Out on Logout --}}
+    {{-- Intercepts ALL logout form submissions, calls GoogleAuth.signOut() / disableAutoSelect() --}}
+    {{-- to clear cached Google account credentials, then completes the logout cleanly --}}
     <script>
     (function () {
-        if (!window.Capacitor) return; // Solo en la app nativa
+        const clientId = '{{ config("services.google.client_id", "68250907387-5t11umbj4m0h0qr9p013l48uqof74orn.apps.googleusercontent.com") }}';
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Interceptar todos los formularios cuya acción sea el logout
-            document.querySelectorAll('form[action*="logout"]').forEach(function (form) {
-                form.addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    var submittedForm = this;
+        async function handleLogoutAction(form) {
+            if (form._isLoggingOut) return;
+            form._isLoggingOut = true;
 
-                    // Intentar hacer signOut de Google antes de cerrar sesión en el servidor
-                    try {
-                        var GoogleAuth = window.Capacitor.Plugins && window.Capacitor.Plugins.GoogleAuth;
-                        if (!GoogleAuth && window.Capacitor.registerPlugin) {
-                            GoogleAuth = window.Capacitor.registerPlugin('GoogleAuth');
-                        }
+            // 1. Google Identity Services Web (Deshabilitar auto-select para que muestre el selector de cuentas)
+            try {
+                if (window.google && window.google.accounts && window.google.accounts.id && typeof window.google.accounts.id.disableAutoSelect === 'function') {
+                    window.google.accounts.id.disableAutoSelect();
+                }
+            } catch (gsiErr) {}
 
-                        if (GoogleAuth && typeof GoogleAuth.signOut === 'function') {
-                            GoogleAuth.signOut()
-                                .catch(function () { /* Ignorar si no había sesión */ })
-                                .finally(function () { submittedForm.submit(); });
-                        } else {
-                            submittedForm.submit();
-                        }
-                    } catch (err) {
-                        submittedForm.submit(); // Siempre cerrar sesión aunque falle el signOut
+            // 2. Capacitor Android Native GoogleAuth SignOut
+            try {
+                var isNative = Boolean(window.Capacitor && (window.Capacitor.isNativePlatform || window.Capacitor.Plugins));
+                if (isNative) {
+                    var GoogleAuth = window.Capacitor.Plugins && window.Capacitor.Plugins.GoogleAuth;
+                    if (!GoogleAuth && window.Capacitor.registerPlugin) {
+                        GoogleAuth = window.Capacitor.registerPlugin('GoogleAuth');
                     }
-                });
-            });
-        });
+                    if (GoogleAuth) {
+                        try {
+                            await GoogleAuth.initialize({
+                                clientId: clientId,
+                                scopes: 'profile,email',
+                                grantOfflineAccess: false
+                            });
+                        } catch (initErr) {
+                            console.warn('GoogleAuth init notice during logout:', initErr);
+                        }
+                        try {
+                            if (typeof GoogleAuth.signOut === 'function') {
+                                await GoogleAuth.signOut();
+                            }
+                        } catch (signOutErr) {
+                            console.warn('GoogleAuth signOut notice during logout:', signOutErr);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn('Logout native handler notice:', err);
+            }
+
+            // Proceder a enviar el formulario de logout de forma nativa
+            HTMLFormElement.prototype.submit.call(form);
+        }
+
+        // Delegación de eventos para capturar submit de cualquier formulario de logout
+        document.addEventListener('submit', function (e) {
+            var form = e.target;
+            if (form && form.action && form.action.indexOf('logout') !== -1) {
+                if (!form._isLoggingOut) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    handleLogoutAction(form);
+                }
+            }
+        }, true);
     })();
     </script>
 </body>

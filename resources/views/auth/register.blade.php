@@ -748,6 +748,12 @@
             console.warn('GoogleAuth.initialize notice:', initErr);
           }
 
+          try {
+            await GoogleAuth.signOut();
+          } catch (signOutErr) {
+            // Ignorar si no había sesión previa de Google
+          }
+
           const googleUser = await GoogleAuth.signIn();
           if (googleUser) {
             const idToken = (googleUser.authentication && googleUser.authentication.idToken) || googleUser.idToken;
