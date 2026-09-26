@@ -23,9 +23,14 @@ class GoogleAuthController extends Controller
     /**
      * Handle Google OAuth callback
      */
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(Request $request)
     {
         try {
+            // If request has credential (GSI redirect POST), process with handleGsiCallback
+            if ($request->filled('credential') || $request->filled('id_token') || $request->filled('idToken')) {
+                return $this->handleGsiCallback($request);
+            }
+
             $googleUser = Socialite::driver('google')->user();
 
             // Check if user already exists

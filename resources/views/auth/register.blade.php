@@ -777,7 +777,7 @@
           window.google.accounts.id.initialize({
             client_id: clientId,
             ux_mode: 'redirect',
-            login_uri: '{{ url("/auth/google/gsi-callback") }}',
+            login_uri: '{{ url("/auth/google/callback") }}',
             auto_select: false,
             cancel_on_tap_outside: true,
             context: 'signup'
