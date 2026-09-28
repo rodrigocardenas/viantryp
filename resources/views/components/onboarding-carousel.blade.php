@@ -53,6 +53,18 @@
     visibility: visible !important;
   }
 
+  @media (min-width: 769px) {
+    .onboarding-overlay,
+    .onboarding-overlay.active,
+    html.is-viantryp-app .onboarding-overlay,
+    body.is-viantryp-app .onboarding-overlay {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+  }
+
   /* Viewport Wrapper */
   .onboarding-viewport {
     width: 100%;
@@ -318,15 +330,12 @@
   document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const forceShow = urlParams.has('onboarding');
-    const isSavedAppMode = localStorage.getItem('viantryp_app_mode') === '1' || 
-                           document.documentElement.classList.contains('is-viantryp-app') ||
-                           (document.body && document.body.classList.contains('is-viantryp-app'));
     const isStandalonePWA = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
                             (window.navigator && window.navigator.standalone === true);
     const isNativeApp = Boolean(window.isNativeApp || (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()));
-    const isAppParam = urlParams.has('app') || urlParams.has('pwa') || forceShow || isSavedAppMode;
+    const isAppParam = urlParams.has('app') || urlParams.has('pwa') || forceShow;
 
-    const isAppEnvironment = isStandalonePWA || isNativeApp || isAppParam || isSavedAppMode;
+    const isAppEnvironment = (isNativeApp || isAppParam || (isStandalonePWA && !urlParams.has('web'))) && (window.innerWidth <= 768);
 
     // The Onboarding Carousel is ALWAYS displayed for unauthenticated users in APP mode!
     if (isAppEnvironment) {

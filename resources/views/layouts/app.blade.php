@@ -10,16 +10,16 @@
         var hasAppParam = urlParams.get('app') === '1' || urlParams.get('mode') === 'app';
         var hasWebParam = urlParams.get('web') === '1' || urlParams.get('mode') === 'web';
 
-        if (hasWebParam) {
+        // Si estamos en un navegador web normal (no Capacitor ni Standalone ni ?app=1), limpiamos cualquier residuo antiguo
+        if (hasWebParam || (!isCapacitor && !isStandalone && !hasAppParam)) {
             try { localStorage.removeItem('viantryp_app_mode'); } catch(e){}
         } else if (hasAppParam || isCapacitor) {
             try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
         }
 
-        var isSavedAppMode = false;
-        try { isSavedAppMode = localStorage.getItem('viantryp_app_mode') === '1'; } catch(e){}
+        var isAppMode = isCapacitor || hasAppParam || (isStandalone && !hasWebParam);
 
-        if (isStandalone || hasAppParam || isSavedAppMode || isCapacitor) {
+        if (isAppMode) {
             document.documentElement.classList.add('is-viantryp-app');
             if (document.body) document.body.classList.add('is-viantryp-app');
             else document.addEventListener('DOMContentLoaded', function() { if(document.body) document.body.classList.add('is-viantryp-app'); });
@@ -28,12 +28,19 @@
     </script>
     <style>
         /* CRITICAL APP STYLES - Prevents FOUC (Flash of Unstyled Web Content) in App mode */
-        html.is-viantryp-app .viantryp-bottom-nav { display: block !important; }
         @media (max-width: 768px) {
+            html.is-viantryp-app .viantryp-bottom-nav { display: block !important; }
             html.is-viantryp-app body,
             body.is-viantryp-app {
                 padding-bottom: 74px !important;
             }
+        }
+        @media (min-width: 769px) {
+            .viantryp-bottom-nav,
+            html.is-viantryp-app .viantryp-bottom-nav {
+                display: none !important;
+            }
+        }
             html.is-viantryp-app .dashboard-sidebar,
             body.is-viantryp-app .dashboard-sidebar,
             html.is-viantryp-app .sidebar-backdrop,

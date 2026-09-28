@@ -286,11 +286,10 @@ class GoogleAuthController extends Controller
             }
 
             Auth::login($user, true);
-            $request->session()->put('viantryp_app_mode', '1');
             $request->session()->regenerate();
 
-            $cookie = cookie('viantryp_app_mode', '1', 525600);
-            $targetRoute = $user->wasRecentlyCreated ? route('profile.index', ['app' => '1']) : route('trips.index', ['app' => '1']);
+            $cookie = cookie()->forget('viantryp_app_mode');
+            $targetRoute = $user->wasRecentlyCreated ? route('profile.index') : route('trips.index');
 
             return redirect($targetRoute)->with('success', '¡Bienvenido! Has iniciado sesión con Google.')->withCookie($cookie);
 

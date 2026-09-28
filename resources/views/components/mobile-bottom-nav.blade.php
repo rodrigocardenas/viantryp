@@ -36,15 +36,16 @@
     const hasAppParam = urlParams.get('app') === '1' || urlParams.get('mode') === 'app';
     const hasWebParam = urlParams.get('web') === '1' || urlParams.get('mode') === 'web';
     
-    if (hasWebParam) {
+    // Si estamos en un navegador web normal (no Capacitor ni Standalone ni ?app=1), limpiamos cualquier residuo antiguo
+    if (hasWebParam || (!isCapacitor && !isStandalone && !hasAppParam)) {
         try { localStorage.removeItem('viantryp_app_mode'); } catch(e){}
     } else if (hasAppParam || isCapacitor) {
         try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
     }
 
-    const isSavedAppMode = localStorage.getItem('viantryp_app_mode') === '1';
+    const isAppMode = isCapacitor || hasAppParam || (isStandalone && !hasWebParam);
 
-    if (isStandalone || hasAppParam || isSavedAppMode || isCapacitor) {
+    if (isAppMode) {
         document.documentElement.classList.add('is-viantryp-app');
         if (document.body) document.body.classList.add('is-viantryp-app');
         else document.addEventListener('DOMContentLoaded', () => { if(document.body) document.body.classList.add('is-viantryp-app'); });
