@@ -538,7 +538,8 @@ class Trip extends Model
             return $query;
         }
 
-        return $query->where('title', 'like', "%{$search}%");
+        $escaped = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search);
+        return $query->where('title', 'like', "%{$escaped}%");
     }
 
     /**

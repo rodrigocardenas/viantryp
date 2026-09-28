@@ -123,13 +123,13 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/{trip}/status', [TripController::class , 'updateStatus'])->name('trips.update-status');
     Route::post('trips/{trip}/code', [TripController::class , 'updateCode'])->name('trips.update-code');
     Route::post('trips/{trip}/inline-update', [TripController::class , 'inlineUpdate'])->name('trips.inline-update');
-    Route::post('trips/{trip}/cover', [TripController::class , 'uploadCover'])->name('trips.upload-cover');
+    Route::post('trips/{trip}/cover', [TripController::class , 'uploadCover'])->name('trips.upload-cover')->middleware('throttle:20,1');
     Route::post('trips/{trip}/duplicate', [TripController::class , 'duplicate'])->name('trips.duplicate');
     Route::post('trips/{trip}/generate-share-token', [TripController::class , 'generateShareToken'])->name('trips.generate-share-token');
     Route::get('/trips/{trip}/get-pro-data', [TripController::class, 'getProData'])->name('trips.pro-data');
     Route::post('trips/{trip}/save-pro-state', [TripController::class , 'saveProState'])->name('trips.save-pro-state');
     Route::post('trips/{trip}/ai/chat-agent', [TripAiController::class, 'handleChat'])->name('trips.ai.chat')->middleware('throttle:10,1');
-    Route::post('trips/{trip}/upload-attachment', [TripController::class , 'uploadAttachment'])->name('trips.upload-attachment');
+    Route::post('trips/{trip}/upload-attachment', [TripController::class , 'uploadAttachment'])->name('trips.upload-attachment')->middleware('throttle:20,1');
     Route::post('trips/{trip}/send-email', [TripController::class , 'sendEmail'])->name('trips.send-email')->middleware('throttle:10,1');
     Route::post('trips/bulk-delete', [TripController::class , 'bulkDelete'])->name('trips.bulk-delete');
     Route::post('trips/bulk-duplicate', [TripController::class , 'bulkDuplicate'])->name('trips.bulk-duplicate');

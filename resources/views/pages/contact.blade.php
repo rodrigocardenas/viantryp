@@ -68,6 +68,10 @@
 
           <form action="{{ route('contact.submit') }}" method="POST" style="display:flex; flex-direction:column; gap:1.2rem;">
             @csrf
+            {{-- Honeypot anti-spam field --}}
+            <div style="position:absolute; left:-9999px; top:-9999px; opacity:0; pointer-events:none;" aria-hidden="true">
+              <input type="text" name="website_hp" tabindex="-1" autocomplete="off">
+            </div>
             <div class="form-row">
               <div>
                 <label style="font-size:0.82rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;">Nombre *</label>
