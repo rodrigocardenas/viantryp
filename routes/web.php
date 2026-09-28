@@ -22,7 +22,7 @@ Route::middleware('guest')->group(function () {
 
     // Password Reset Routes
     Route::get('/forgot-password', [ForgotPasswordController::class , 'showForgotForm'])->name('password.request');
-    Route::post('/forgot-password', [ForgotPasswordController::class , 'sendResetLink'])->name('password.email');
+    Route::post('/forgot-password', [ForgotPasswordController::class , 'sendResetLink'])->name('password.email')->middleware('throttle:5,1');
     Route::get('/reset-password/{token}', [ForgotPasswordController::class , 'showResetForm'])->name('password.reset');
     Route::post('/reset-password', [ForgotPasswordController::class , 'resetPassword'])->name('password.update');
 });
@@ -37,7 +37,7 @@ Route::middleware('guest')->group(function () {
 // These must be accessible even if the browser still has an old session cookie
 // after GoogleAuth.signOut() on the client, because the server session may not
 // have been cleared yet when the user taps an account in the account picker.
-Route::post('auth/google/native', [GoogleAuthController::class , 'handleNativeGoogleAuth'])->name('auth.google.native');
+Route::post('auth/google/native', [GoogleAuthController::class , 'handleNativeGoogleAuth'])->name('auth.google.native')->middleware('throttle:15,1');
 Route::get('auth/native-login', [GoogleAuthController::class , 'handleNativeTokenLogin'])->name('auth.native.token');
 
 // Logout route (authenticated users only)
@@ -58,7 +58,7 @@ Route::get('/dashboard', fn() => redirect()->route('trips.index'))->name('dashbo
 // Public info pages
 Route::get('/contacto', fn() => view('pages.contact'))->name('contact');
 Route::get('/contact', fn() => redirect()->route('contact', [], 301));
-Route::post('/contacto', [\App\Http\Controllers\ContactController::class, 'submit'])->name('contact.submit');
+Route::post('/contacto', [\App\Http\Controllers\ContactController::class, 'submit'])->name('contact.submit')->middleware('throttle:5,1');
 
 Route::get('/terminos-de-uso', fn() => view('pages.terms'))->name('terms');
 Route::get('/terms', fn() => redirect()->route('terms', [], 301));
@@ -93,7 +93,7 @@ Route::get('/.well-known/assetlinks.json', function () {
         ]
     ]);
 });
-Route::get('/api/places/photo', [GooglePlacesController::class, 'getPlacePhoto'])->name('places.photo');
+Route::get('/api/places/photo', [GooglePlacesController::class, 'getPlacePhoto'])->name('places.photo')->middleware('throttle:60,1');
 
 // Planes redirect from landing page
 Route::middleware('auth')->get('/planes-redirect', function () {
@@ -116,7 +116,7 @@ Route::middleware('auth')->group(function () {
     Route::get('api/airlines', [AirlineController::class , 'apiIndex'])->name('api.airlines.index');
     Route::get('api/airports', [AirportController::class , 'apiIndex'])->name('api.airports.index');
     Route::get('api/flights/lookup', [FlightLookupController::class , 'lookup'])->name('api.flights.lookup')->middleware('throttle:20,1');
-    Route::get('api/unsplash/search', [TripController::class , 'searchUnsplash'])->name('api.unsplash.search');
+    Route::get('api/unsplash/search', [TripController::class , 'searchUnsplash'])->name('api.unsplash.search')->middleware('throttle:30,1');
 
     // Additional trip routes
     Route::post('user/custom-statuses', [TripController::class , 'updateCustomStatuses'])->name('user.custom-statuses');
@@ -130,7 +130,7 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/{trip}/save-pro-state', [TripController::class , 'saveProState'])->name('trips.save-pro-state');
     Route::post('trips/{trip}/ai/chat-agent', [TripAiController::class, 'handleChat'])->name('trips.ai.chat')->middleware('throttle:10,1');
     Route::post('trips/{trip}/upload-attachment', [TripController::class , 'uploadAttachment'])->name('trips.upload-attachment');
-    Route::post('trips/{trip}/send-email', [TripController::class , 'sendEmail'])->name('trips.send-email');
+    Route::post('trips/{trip}/send-email', [TripController::class , 'sendEmail'])->name('trips.send-email')->middleware('throttle:10,1');
     Route::post('trips/bulk-delete', [TripController::class , 'bulkDelete'])->name('trips.bulk-delete');
     Route::post('trips/bulk-duplicate', [TripController::class , 'bulkDuplicate'])->name('trips.bulk-duplicate');
     Route::post('trips/{trip}/invite', [TripController::class , 'inviteCollaborator'])->name('trips.invite');
@@ -179,7 +179,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Google Places API routes (outside auth middleware for AJAX requests)
-Route::match(['get', 'post'], 'api/places/details', [GooglePlacesController::class , 'getPlaceDetails'])->name('places.details');
+Route::match(['get', 'post'], 'api/places/details', [GooglePlacesController::class , 'getPlaceDetails'])->name('places.details')->middleware('throttle:30,1');
 
 // Shared trip preview route (no authentication required)
 Route::get('trips/share/{token}', [TripController::class , 'share'])->name('trips.share');

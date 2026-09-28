@@ -102,25 +102,31 @@ class GoogleAuthController extends Controller
             $lastName = $request->input('last_name') ?? $request->input('familyName') ?? '';
             $avatar = $request->input('avatar') ?? $request->input('imageUrl');
 
-            // Si viene el token JWT de Google Identity Services (GSI), decodificamos el payload
-            if ($idToken && (!$email || !$googleId)) {
+            // Verificar criptográficamente el token de Google
+            if ($idToken) {
                 try {
-                    $tokenParts = explode('.', $idToken);
-                    if (count($tokenParts) === 3) {
-                        $jwtPayload = json_decode(base64_decode(strtr($tokenParts[1], '-_', '+/')), true);
-                        if ($jwtPayload) {
-                            $email = $email ?: ($jwtPayload['email'] ?? null);
-                            $googleId = $googleId ?: ($jwtPayload['sub'] ?? null);
-                            $name = $name ?: ($jwtPayload['given_name'] ?? $jwtPayload['name'] ?? '');
-                            $lastName = $lastName ?: ($jwtPayload['family_name'] ?? '');
-                            $avatar = $avatar ?: ($jwtPayload['picture'] ?? null);
-                        }
+                    $googleClient = new \Google\Client(['client_id' => config('services.google.client_id')]);
+                    $verifiedPayload = $googleClient->verifyIdToken($idToken);
+                    if ($verifiedPayload) {
+                        $email = $verifiedPayload['email'] ?? $email;
+                        $googleId = $verifiedPayload['sub'] ?? $googleId;
+                        $name = $name ?: ($verifiedPayload['given_name'] ?? $verifiedPayload['name'] ?? '');
+                        $lastName = $lastName ?: ($verifiedPayload['family_name'] ?? '');
+                        $avatar = $avatar ?: ($verifiedPayload['picture'] ?? null);
+                    } else {
+                        \Illuminate\Support\Facades\Log::warning('Token de Google inválido recibido en handleNativeGoogleAuth.');
+                        return response()->json(['success' => false, 'message' => 'Token de autenticación de Google inválido.'], 401);
                     }
-                } catch (\Exception $e) { }
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::warning('Excepción al verificar token de Google: ' . $e->getMessage());
+                    return response()->json(['success' => false, 'message' => 'Error al validar credenciales con Google.'], 401);
+                }
+            } else {
+                return response()->json(['success' => false, 'message' => 'Token de Google no proporcionado.'], 400);
             }
 
             if (!$email) {
-                return response()->json(['success' => false, 'message' => 'Email no proporcionado por Google'], 400);
+                return response()->json(['success' => false, 'message' => 'Email no proporcionado por Google.'], 400);
             }
 
             // Find or create user
@@ -173,7 +179,8 @@ class GoogleAuthController extends Controller
             ])->withCookie($cookie);
 
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Error al autenticar: ' . $e->getMessage()], 500);
+            \Illuminate\Support\Facades\Log::error('Native auth error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Error al autenticar con Google. Por favor, inténtalo de nuevo.'], 500);
         }
     }
 
@@ -219,24 +226,24 @@ class GoogleAuthController extends Controller
                 return redirect()->route('login')->with('error', 'No se recibió la credencial de Google.');
             }
 
-            // Decode the JWT token payload
-            $email = null;
-            $googleId = null;
-            $name = '';
-            $lastName = '';
-            $avatar = null;
-
-            $tokenParts = explode('.', $credential);
-            if (count($tokenParts) === 3) {
-                $jwtPayload = json_decode(base64_decode(strtr($tokenParts[1], '-_', '+/')), true);
-                if ($jwtPayload) {
-                    $email = $jwtPayload['email'] ?? null;
-                    $googleId = $jwtPayload['sub'] ?? null;
-                    $name = $jwtPayload['given_name'] ?? $jwtPayload['name'] ?? '';
-                    $lastName = $jwtPayload['family_name'] ?? '';
-                    $avatar = $jwtPayload['picture'] ?? null;
-                }
+            // Verificar criptográficamente el token JWT con Google
+            try {
+                $googleClient = new \Google\Client(['client_id' => config('services.google.client_id')]);
+                $verifiedPayload = $googleClient->verifyIdToken($credential);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning('GSI verification error: ' . $e->getMessage());
+                $verifiedPayload = false;
             }
+
+            if (!$verifiedPayload) {
+                return redirect()->route('login')->with('error', 'Credencial de Google inválida o expirada.');
+            }
+
+            $email = $verifiedPayload['email'] ?? null;
+            $googleId = $verifiedPayload['sub'] ?? null;
+            $name = $verifiedPayload['given_name'] ?? $verifiedPayload['name'] ?? '';
+            $lastName = $verifiedPayload['family_name'] ?? '';
+            $avatar = $verifiedPayload['picture'] ?? null;
 
             if (!$email) {
                 return redirect()->route('login')->with('error', 'No se pudo obtener el correo de Google.');
@@ -288,7 +295,8 @@ class GoogleAuthController extends Controller
             return redirect($targetRoute)->with('success', '¡Bienvenido! Has iniciado sesión con Google.')->withCookie($cookie);
 
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Error al procesar el inicio de sesión: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('GSI auth error: ' . $e->getMessage());
+            return redirect()->route('login')->with('error', 'Error al procesar el inicio de sesión con Google.');
         }
     }
 

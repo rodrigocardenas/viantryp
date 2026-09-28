@@ -1,6 +1,5 @@
-const CACHE_NAME = 'viantryp-v5';
+const CACHE_NAME = 'viantryp-v6';
 const STATIC_ASSETS = [
-    '/',
     '/manifest.json',
     '/favicon.png',
     '/icons/icon-192x192.png',
@@ -70,13 +69,7 @@ self.addEventListener('fetch', event => {
             })
             .catch(() => {
                 // Fallback to cache if network fails
-                return caches.match(event.request).then(cached => {
-                    if (cached) return cached;
-                    // Return offline page for navigation requests
-                    if (event.request.destination === 'document') {
-                        return caches.match('/');
-                    }
-                });
+                return caches.match(event.request);
             })
     );
 });

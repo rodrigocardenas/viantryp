@@ -5,7 +5,7 @@
   "bundledWebRuntime": false,
   "server": {
     "url": "https://viantryp.com",
-    "cleartext": true,
+    "cleartext": false,
     "allowNavigation": [
       "viantryp.com",
       "*.viantryp.com",

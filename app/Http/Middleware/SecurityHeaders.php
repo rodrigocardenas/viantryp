@@ -25,26 +25,29 @@ class SecurityHeaders
             'camera=(), microphone=(), usb=(), geolocation=(self), payment=*'
         );
 
+        // ─── Browser Protections ──────────────────────────────────────────────
+        $response->headers->set('X-Content-Type-Options', 'nosniff');
+        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+        $response->headers->set('X-XSS-Protection', '1; mode=block');
+        $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+
         // ─── Content Security Policy ──────────────────────────────────────────
         // Whitelists every external domain actually used by Viantryp:
-        //   Scripts : Google Maps, jQuery, jsDelivr (Select2 + Driver.js), Google Auth, Paddle
-        //   Styles  : Google Fonts, FontAwesome (cdnjs), jsDelivr
+        //   Scripts : Google Maps, jQuery, jsDelivr (Select2 + Driver.js), Google Auth, Paddle, ProfitWell, Cloudflare
+        //   Styles  : Google Fonts, FontAwesome (cdnjs), jsDelivr, Paddle
         //   Fonts   : Google Fonts gstatic, FontAwesome (cdnjs)
         //   Images  : any HTTPS source (needed for user-supplied hotel/activity images
         //             from booking sites, Unsplash, Giphy thumbnails, Google Places, etc.)
-        //   Connect : Google Maps, Unsplash API, Giphy API, Paddle API
+        //   Connect : Google Maps, Unsplash API, Giphy API, Paddle API, Cloudflare Insights
         //   Frames  : Google OAuth popup, Paddle Checkout
         //   Media   : Giphy GIFs (served from *.giphy.com CDN)
-        //
-        // unsafe-inline is required because Viantryp uses inline <script> and <style>
-        // blocks extensively in Blade templates. This does NOT weaken origin whitelisting.
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://code.jquery.com https://cdn.jsdelivr.net https://accounts.google.com https://cdn.paddle.com https://buy.paddle.com https://*.paddle.com",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://code.jquery.com https://cdn.jsdelivr.net https://accounts.google.com https://cdn.paddle.com https://buy.paddle.com https://*.paddle.com https://public.profitwell.com https://static.cloudflareinsights.com",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.paddle.com https://*.paddle.com",
             "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
             "img-src 'self' data: blob: https:",
-            "connect-src 'self' https://accounts.google.com https://maps.googleapis.com https://api.unsplash.com https://api.giphy.com https://nominatim.openstreetmap.org https://photon.komoot.io https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.paddle.com https://sandbox-api.paddle.com https://buy.paddle.com https://api.paddle.com",
+            "connect-src 'self' https://accounts.google.com https://maps.googleapis.com https://api.unsplash.com https://api.giphy.com https://nominatim.openstreetmap.org https://photon.komoot.io https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.paddle.com https://sandbox-api.paddle.com https://buy.paddle.com https://api.paddle.com https://cloudflareinsights.com",
             "frame-src 'self' https://accounts.google.com https://*.paddle.com https://buy.paddle.com https://sandbox-buy.paddle.com",
             "child-src 'self' https://*.paddle.com https://buy.paddle.com https://sandbox-buy.paddle.com",
             "media-src 'self' https://*.giphy.com",

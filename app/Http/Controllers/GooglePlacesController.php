@@ -94,9 +94,9 @@ class GooglePlacesController extends Controller
 
             return response()->json($data['result']);
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Google Places details error: ' . $e->getMessage());
             return response()->json([
-                'error' => 'Internal server error',
-                'message' => $e->getMessage()
+                'error' => 'No se pudieron obtener los detalles del lugar.'
             ], 500);
         }
     }
@@ -127,8 +127,8 @@ class GooglePlacesController extends Controller
         $url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference={$photoreference}&key={$apiKey}";
 
         try {
-            // First time this photo is requested, download it from Google
-            $response = Http::get($url);
+            // First time this photo is requested, download it from Google to our server
+            $response = Http::timeout(10)->get($url);
             
             if ($response->successful()) {
                 // Save it to disk so we never pay for it again
@@ -136,11 +136,10 @@ class GooglePlacesController extends Controller
                 return redirect(asset("storage/{$path}"));
             }
         } catch (\Exception $e) {
-            // If download fails, we fall through to the old redirect mechanism
             \Illuminate\Support\Facades\Log::error('Google Places Photo Download Error: ' . $e->getMessage());
         }
 
-        // Fallback: redirect directly to Google (incurs cost, but ensures image loads if cache fails)
-        return redirect($url);
+        // Never redirect directly to Google with the private API key exposed.
+        abort(404, 'Imagen no encontrada.');
     }
 }

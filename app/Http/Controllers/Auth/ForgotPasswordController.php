@@ -26,16 +26,14 @@ class ForgotPasswordController extends Controller
     public function sendResetLink(Request $request)
     {
         $request->validate([
-            'email' => 'required|email:rfc,dns|max:255|exists:users,email'
+            'email' => 'required|email:rfc,dns|max:255'
         ]);
 
-        $status = Password::sendResetLink(
+        Password::sendResetLink(
             $request->only('email')
         );
 
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with(['status' => 'Hemos enviado un enlace de recuperación a tu correo electrónico.'])
-            : back()->withErrors(['email' => 'No pudimos enviar el enlace de recuperación. Inténtalo de nuevo.']);
+        return back()->with(['status' => 'Si tu correo está registrado, hemos enviado un enlace de recuperación.']);
     }
 
     /**
