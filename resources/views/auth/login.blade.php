@@ -714,10 +714,20 @@
         }
 
       } catch (err) {
-        // Mostrar error visible para diagnóstico
-        const errMsg = err ? (err.message || err.code || JSON.stringify(err)) : 'Error desconocido';
-        console.error('[DIAG] Google Auth FAILED:', err);
-        alert('[DIAG] Error en Google Auth:\n' + errMsg);
+        // Mostrar error visible y detallado con código de estado para diagnóstico
+        const msg = (err && err.message) ? err.message : 'Sin mensaje';
+        const code = (err && (err.code || err.statusCode)) ? (err.code || err.statusCode) : 'Sin código';
+        let details = '';
+        try {
+          details = JSON.stringify(err, Object.getOwnPropertyNames(err));
+        } catch (jsonErr) {
+          details = String(err);
+        }
+        console.error('[DIAG] Google Auth FAILED:', err, 'Code:', code);
+        alert('[DIAG] Error en Google Auth:\n' +
+              'Mensaje: ' + msg + '\n' +
+              'Código: ' + code + '\n' +
+              'Detalle: ' + details.substring(0, 300));
       } finally {
         if (googleBtn) {
           googleBtn.style.opacity = '1';
