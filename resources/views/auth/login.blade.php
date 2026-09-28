@@ -612,68 +612,112 @@
           GoogleAuth = window.Capacitor.registerPlugin('GoogleAuth');
         }
 
-        if (GoogleAuth) {
-          try {
-            await GoogleAuth.initialize({
-              clientId: clientId,
-              scopes: 'profile,email',
-              grantOfflineAccess: false
-            });
-          } catch(initErr) {
-            console.warn('GoogleAuth.initialize notice:', initErr);
-          }
-
-          // Forzar el selector de cuentas cerrando la sesión de Google previa.
-          // Esto evita que al hacer logout y volver a entrar se auto-seleccione
-          // la última cuenta sin mostrar el listado de cuentas disponibles.
-          try {
-            await GoogleAuth.signOut();
-          } catch (signOutErr) {
-            // Ignorar si no había sesión previa de Google
-          }
-
-          const googleUser = await GoogleAuth.signIn();
-          if (googleUser) {
-            const idToken = (googleUser.authentication && googleUser.authentication.idToken) || googleUser.idToken;
-            const email = googleUser.email || (googleUser.profile && googleUser.profile.email);
-            const googleId = googleUser.id || googleUser.userId || (googleUser.profile && googleUser.profile.id);
-            const givenName = googleUser.givenName || googleUser.name || (googleUser.profile && googleUser.profile.givenName) || '';
-            const familyName = googleUser.familyName || (googleUser.profile && googleUser.profile.familyName) || '';
-            const imageUrl = googleUser.imageUrl || (googleUser.profile && googleUser.profile.imageUrl) || '';
-
-            if (idToken || email) {
-              const res = await fetch('/auth/google/native', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
-                  'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                  idToken: idToken,
-                  credential: idToken,
-                  email: email,
-                  google_id: googleId,
-                  givenName: givenName,
-                  familyName: familyName,
-                  imageUrl: imageUrl
-                })
-              });
-
-              const resData = await res.json();
-              if (resData.success && resData.redirect) {
-                try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
-                window.location.href = resData.redirect;
-                return;
-              } else {
-                alert(resData.message || 'Error al iniciar sesión con Google.');
-              }
-            }
-          }
+        if (!GoogleAuth) {
+          alert('[DIAG] GoogleAuth plugin no disponible en este dispositivo.');
+          return;
         }
+
+        try {
+          await GoogleAuth.initialize({
+            clientId: clientId,
+            scopes: 'profile,email',
+            grantOfflineAccess: false
+          });
+        } catch(initErr) {
+          console.warn('GoogleAuth.initialize notice:', initErr);
+        }
+
+        // Forzar el selector de cuentas cerrando la sesión de Google previa.
+        try {
+          await GoogleAuth.signOut();
+        } catch (signOutErr) {
+          // Ignorar si no había sesión previa de Google
+        }
+
+        const googleUser = await GoogleAuth.signIn();
+
+        if (!googleUser) {
+          alert('[DIAG] GoogleAuth.signIn() retornó null/undefined. El usuario canceló o el plugin falló.');
+          return;
+        }
+
+        // Diagnóstico: ver qué datos retornó el plugin
+        console.log('[DIAG] googleUser keys:', Object.keys(googleUser));
+        console.log('[DIAG] googleUser:', JSON.stringify(googleUser).substring(0, 500));
+
+        const idToken = (googleUser.authentication && googleUser.authentication.idToken) || googleUser.idToken;
+        const email = googleUser.email || (googleUser.profile && googleUser.profile.email);
+        const googleId = googleUser.id || googleUser.userId || (googleUser.profile && googleUser.profile.id);
+        const givenName = googleUser.givenName || googleUser.name || (googleUser.profile && googleUser.profile.givenName) || '';
+        const familyName = googleUser.familyName || (googleUser.profile && googleUser.profile.familyName) || '';
+        const imageUrl = googleUser.imageUrl || (googleUser.profile && googleUser.profile.imageUrl) || '';
+
+        console.log('[DIAG] Datos extraídos — email:', email, '| idToken existe:', !!idToken, '| googleId:', googleId);
+
+        if (!idToken && !email) {
+          alert('[DIAG] No se obtuvo ni idToken ni email del plugin GoogleAuth.\n\nDatos recibidos:\n' + JSON.stringify(googleUser).substring(0, 300));
+          return;
+        }
+
+        // Enviar datos al servidor
+        let res;
+        try {
+          res = await fetch('/auth/google/native', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+              idToken: idToken,
+              credential: idToken,
+              email: email,
+              google_id: googleId,
+              givenName: givenName,
+              familyName: familyName,
+              imageUrl: imageUrl
+            })
+          });
+        } catch (fetchErr) {
+          alert('[DIAG] fetch() falló (red/Cloudflare bloqueó):\n' + (fetchErr.message || fetchErr));
+          return;
+        }
+
+        console.log('[DIAG] Respuesta del servidor — status:', res.status, '| content-type:', res.headers.get('content-type'));
+
+        // Verificar que la respuesta sea HTTP OK
+        if (!res.ok) {
+          const errorBody = await res.text();
+          alert('[DIAG] Servidor respondió HTTP ' + res.status + ':\n' + errorBody.substring(0, 300));
+          return;
+        }
+
+        // Verificar que la respuesta sea JSON (no un challenge de Cloudflare)
+        const contentType = res.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+          const body = await res.text();
+          alert('[DIAG] Respuesta NO es JSON (content-type: ' + contentType + '):\n' + body.substring(0, 300));
+          return;
+        }
+
+        const resData = await res.json();
+        console.log('[DIAG] Respuesta JSON:', JSON.stringify(resData));
+
+        if (resData.success && resData.redirect) {
+          try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
+          window.location.href = resData.redirect;
+          return;
+        } else {
+          alert(resData.message || 'Error al iniciar sesión con Google.');
+        }
+
       } catch (err) {
-        console.warn('Native Google Auth cancelled/failed:', err);
+        // Mostrar error visible para diagnóstico
+        const errMsg = err ? (err.message || err.code || JSON.stringify(err)) : 'Error desconocido';
+        console.error('[DIAG] Google Auth FAILED:', err);
+        alert('[DIAG] Error en Google Auth:\n' + errMsg);
       } finally {
         if (googleBtn) {
           googleBtn.style.opacity = '1';
