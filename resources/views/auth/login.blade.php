@@ -579,6 +579,17 @@
 
     </div>
   </main>
+  
+  <!-- Overlay de carga durante el inicio de sesión con Google -->
+  <div id="authLoadingOverlay" style="display: none; position: fixed; inset: 0; background: rgba(13, 43, 62, 0.75); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 999999; flex-direction: column; align-items: center; justify-content: center; gap: 16px;">
+    <div style="width: 44px; height: 44px; border: 3.5px solid rgba(255,255,255,0.2); border-top-color: #00bf8f; border-radius: 50%; animation: spinAuth 0.8s linear infinite;"></div>
+    <div style="color: #ffffff; font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px; letter-spacing: 0.3px;">Iniciando sesión...</div>
+  </div>
+  <style>
+    @keyframes spinAuth {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 
   {{-- Google Identity Services SDK --}}
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -637,13 +648,13 @@
         const googleUser = await GoogleAuth.signIn();
 
         if (!googleUser) {
-          alert('[DIAG] GoogleAuth.signIn() retornó null/undefined. El usuario canceló o el plugin falló.');
+          // El usuario canceló la selección de cuenta
           return;
         }
 
-        // Diagnóstico: ver qué datos retornó el plugin
-        console.log('[DIAG] googleUser keys:', Object.keys(googleUser));
-        console.log('[DIAG] googleUser:', JSON.stringify(googleUser).substring(0, 500));
+        // Mostrar indicador de carga inmediatamente al seleccionar la cuenta
+        const authLoader = document.getElementById('authLoadingOverlay');
+        if (authLoader) authLoader.style.display = 'flex';
 
         const idToken = (googleUser.authentication && googleUser.authentication.idToken) || googleUser.idToken;
         const email = googleUser.email || (googleUser.profile && googleUser.profile.email);
@@ -652,10 +663,9 @@
         const familyName = googleUser.familyName || (googleUser.profile && googleUser.profile.familyName) || '';
         const imageUrl = googleUser.imageUrl || (googleUser.profile && googleUser.profile.imageUrl) || '';
 
-        console.log('[DIAG] Datos extraídos — email:', email, '| idToken existe:', !!idToken, '| googleId:', googleId);
-
         if (!idToken && !email) {
-          alert('[DIAG] No se obtuvo ni idToken ni email del plugin GoogleAuth.\n\nDatos recibidos:\n' + JSON.stringify(googleUser).substring(0, 300));
+          if (authLoader) authLoader.style.display = 'none';
+          alert('No se pudo obtener la información de la cuenta de Google.');
           return;
         }
 
@@ -681,53 +691,39 @@
             })
           });
         } catch (fetchErr) {
-          alert('[DIAG] fetch() falló (red/Cloudflare bloqueó):\n' + (fetchErr.message || fetchErr));
+          if (authLoader) authLoader.style.display = 'none';
+          alert('Error de conexión al iniciar sesión.');
           return;
         }
-
-        console.log('[DIAG] Respuesta del servidor — status:', res.status, '| content-type:', res.headers.get('content-type'));
 
         // Verificar que la respuesta sea HTTP OK
         if (!res.ok) {
-          const errorBody = await res.text();
-          alert('[DIAG] Servidor respondió HTTP ' + res.status + ':\n' + errorBody.substring(0, 300));
-          return;
-        }
-
-        // Verificar que la respuesta sea JSON (no un challenge de Cloudflare)
-        const contentType = res.headers.get('content-type') || '';
-        if (!contentType.includes('application/json')) {
-          const body = await res.text();
-          alert('[DIAG] Respuesta NO es JSON (content-type: ' + contentType + '):\n' + body.substring(0, 300));
+          if (authLoader) authLoader.style.display = 'none';
+          alert('Error en el servidor al autenticar.');
           return;
         }
 
         const resData = await res.json();
-        console.log('[DIAG] Respuesta JSON:', JSON.stringify(resData));
 
         if (resData.success && resData.redirect) {
           try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
           window.location.href = resData.redirect;
           return;
         } else {
+          if (authLoader) authLoader.style.display = 'none';
           alert(resData.message || 'Error al iniciar sesión con Google.');
         }
 
       } catch (err) {
-        // Mostrar error visible y detallado con código de estado para diagnóstico
-        const msg = (err && err.message) ? err.message : 'Sin mensaje';
-        const code = (err && (err.code || err.statusCode)) ? (err.code || err.statusCode) : 'Sin código';
-        let details = '';
-        try {
-          details = JSON.stringify(err, Object.getOwnPropertyNames(err));
-        } catch (jsonErr) {
-          details = String(err);
+        const authLoader = document.getElementById('authLoadingOverlay');
+        if (authLoader) authLoader.style.display = 'none';
+
+        // Si el usuario canceló la selección de cuenta, no mostrar alerta de error
+        const isCancel = (err && (err.code === '12501' || err.code === 12501 || (err.message && err.message.includes('canceled'))));
+        if (!isCancel) {
+          console.error('Google Auth error:', err);
+          alert('Error al iniciar sesión con Google. Por favor, intenta de nuevo.');
         }
-        console.error('[DIAG] Google Auth FAILED:', err, 'Code:', code);
-        alert('[DIAG] Error en Google Auth:\n' +
-              'Mensaje: ' + msg + '\n' +
-              'Código: ' + code + '\n' +
-              'Detalle: ' + details.substring(0, 300));
       } finally {
         if (googleBtn) {
           googleBtn.style.opacity = '1';
