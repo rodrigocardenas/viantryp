@@ -65,22 +65,27 @@
                 border-radius: 14px !important;
                 box-sizing: border-box !important;
             }
+
             .driver-popover-title {
                 font-size: 18px !important;
             }
+
             .driver-popover-description {
                 font-size: 13px !important;
                 line-height: 1.4 !important;
             }
+
             .driver-popover-footer {
                 margin-top: 12px !important;
                 gap: 6px !important;
             }
+
             .driver-popover-btn {
                 padding: 7px 12px !important;
                 font-size: 11.5px !important;
                 min-height: 34px !important;
             }
+
             .driver-popover-progress-text {
                 font-size: 11px !important;
             }
@@ -146,8 +151,8 @@
         }
 
         /* ════════════════════════════════════════
-                   TOPBAR
-                ════════════════════════════════════════ */
+                       TOPBAR
+                    ════════════════════════════════════════ */
         .topbar {
             position: sticky;
             top: 0;
@@ -297,8 +302,8 @@
         }
 
         /* ════════════════════════════════════════
-                   HERO BAND
-                ════════════════════════════════════════ */
+                       HERO BAND
+                    ════════════════════════════════════════ */
         .hero {
             background: var(--white);
             padding: 48px 40px 0;
@@ -480,8 +485,8 @@
         }
 
         /* ════════════════════════════════════════
-                   MAIN CONTENT
-                ════════════════════════════════════════ */
+                       MAIN CONTENT
+                    ════════════════════════════════════════ */
         .content {
             flex: 1;
             padding: 40px 10px 56px;
@@ -1337,7 +1342,7 @@
                 height: 100vh !important;
                 z-index: 3000 !important;
                 transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                box-shadow: 4px 0 20px rgba(0,0,0,0.2) !important;
+                box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2) !important;
                 display: flex !important;
                 flex-direction: column !important;
             }
@@ -1983,8 +1988,8 @@
         }
 
         /* ════════════════════════════════════════
-                   NUEVO DISEÑO DASHBOARD (ESTILO GOOGLE DRIVE)
-                ════════════════════════════════════════ */
+                       NUEVO DISEÑO DASHBOARD (ESTILO GOOGLE DRIVE)
+                    ════════════════════════════════════════ */
         body {
             background-color: var(--accent) !important;
             margin: 0 !important;
@@ -2998,14 +3003,18 @@
                     </div>
 
                     <div class="sidebar-item-group" id="sidebarProfileGroup">
-                        <a href="javascript:void(0)" onclick="toggleProfileSubmenu(event)" class="sidebar-link" id="sidebarProfileToggle">
+                        <a href="javascript:void(0)" onclick="toggleProfileSubmenu(event)" class="sidebar-link"
+                            id="sidebarProfileToggle">
                             <i class="fas fa-user-circle"></i>
                             <span>Perfil</span>
-                            <i class="fas fa-chevron-down submenu-arrow" style="margin-left: auto; font-size: 11px; transition: transform 0.2s ease;"></i>
+                            <i class="fas fa-chevron-down submenu-arrow"
+                                style="margin-left: auto; font-size: 11px; transition: transform 0.2s ease;"></i>
                         </a>
                         <div class="sidebar-submenu" id="sidebarProfileSubmenu">
-                            <a href="{{ route('profile.index', ['section' => ((auth()->user()->account_type ?? 'personal') === 'agency' ? 'agencia' : 'info')]) }}" class="sidebar-sublink">
-                                <i class="{{ (auth()->user()->account_type ?? 'personal') === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
+                            <a href="{{ route('profile.index', ['section' => ((auth()->user()->account_type ?? 'personal') === 'agency' ? 'agencia' : 'info')]) }}"
+                                class="sidebar-sublink">
+                                <i
+                                    class="{{ (auth()->user()->account_type ?? 'personal') === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
                                 <span>Ajustes de Cuenta</span>
                             </a>
                             <a href="{{ route('profile.index', ['section' => 'tema']) }}" class="sidebar-sublink">
@@ -3081,7 +3090,8 @@
                         <i class="fas fa-bars"></i>
                     </button>
                     <a href="{{ route('trips.index') }}" class="app-topbar-logo" title="Viantryp">
-                        <img src="/images/logo-viantryp.png" alt="Viantryp" style="height: 28px; width: auto; filter: brightness(0) invert(1); object-fit: contain; display: block;">
+                        <img src="/images/logo-viantryp.png" alt="Viantryp"
+                            style="height: 28px; width: auto; filter: brightness(0) invert(1); object-fit: contain; display: block;">
                     </a>
                     <div class="topbar-search">
                         <div class="search-box-wrapper">
@@ -3100,7 +3110,8 @@
                         @endif
 
                         <!-- Tutorial / Ayuda -->
-                        <button type="button" onclick="initTripsTour(true)" class="btn-topbar-icon" title="Ver tutorial y ayuda" id="btnHelpTour">
+                        <button type="button" onclick="initTripsTour(true)" class="btn-topbar-icon"
+                            title="Ver tutorial y ayuda" id="btnHelpTour">
                             <i class="fas fa-circle-question" style="font-size: 16px;"></i>
                         </button>
 
@@ -3194,7 +3205,8 @@
                                             $rtripColor = is_array($rtripColorInfo) ? ($rtripColorInfo['color'] ?? 'blue') : 'blue';
                                         @endphp
                                         <div class="card-folder-header-row" style="margin-bottom: 12px;">
-                                            <span class="status-badge status-color-{{ $rtripColor }} status-{{ $rtrip->status }}">
+                                            <span
+                                                class="status-badge status-color-{{ $rtripColor }} status-{{ $rtrip->status }}">
                                                 {{ getStatusLabel($rtrip->status, $userCustomStatuses) }}
                                             </span>
                                         </div>
@@ -3206,7 +3218,8 @@
                                         </div>
                                         <div class="card-folder-meta">
                                             <div class="card-folder-date">
-                                                Inicio del viaje: {{ $rtrip->start_date ? \Carbon\Carbon::parse($rtrip->start_date)->format('d/m/Y') : 'Sin fecha' }}
+                                                Inicio del viaje:
+                                                {{ $rtrip->start_date ? \Carbon\Carbon::parse($rtrip->start_date)->format('d/m/Y') : 'Sin fecha' }}
                                             </div>
                                         </div>
                                     </div>
@@ -3271,10 +3284,13 @@
                             <table id="mainTable">
                                 <thead>
                                     <tr>
-                                        <th style="width: 48px; text-align: center;"><input type="checkbox" id="checkAll" onchange="toggleSelectAll(this)" /></th>
+                                        <th style="width: 48px; text-align: center;"><input type="checkbox" id="checkAll"
+                                                onchange="toggleSelectAll(this)" /></th>
                                         <th style="width: 4px; padding: 0;"></th>
                                         <th class="sortable" style="user-select: none; width: 190px;">
-                                            <i class="fas fa-plane" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Nombre del Viaje
+                                            <i class="fas fa-plane"
+                                                style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Nombre del
+                                            Viaje
                                             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M6 9l6 6 6-6" />
@@ -3296,7 +3312,8 @@
                                             </div>
                                         </th>
                                         <th class="sortable" style="user-select: none; width: 150px;">
-                                            <i class="fas fa-calendar-alt" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Fechas
+                                            <i class="fas fa-calendar-alt"
+                                                style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Fechas
                                             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M6 9l6 6 6-6" />
@@ -3319,7 +3336,8 @@
                                         </th>
                                         @if($isAgency)
                                             <th class="sortable" style="user-select: none; width: 150px;">
-                                                <i class="fas fa-user" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Cliente
+                                                <i class="fas fa-user"
+                                                    style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Cliente
                                                 <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                         <path d="M6 9l6 6 6-6" />
@@ -3328,21 +3346,22 @@
                                                 <div class="header-dropdown" onclick="event.stopPropagation()">
                                                     <div class="header-dropdown-item"
                                                         onclick="sortTableFromMenu(this, 'asc', 'string')"><svg
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2">
-                                                        <path d="M12 19V5M5 12l7-7 7 7" />
-                                                    </svg> Ordenar A - Z</div>
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2">
+                                                            <path d="M12 19V5M5 12l7-7 7 7" />
+                                                        </svg> Ordenar A - Z</div>
                                                     <div class="header-dropdown-item"
                                                         onclick="sortTableFromMenu(this, 'desc', 'string')"><svg
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2">
-                                                        <path d="M12 5v14M5 12l7 7 7-7" />
-                                                    </svg> Ordenar Z - A</div>
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2">
+                                                            <path d="M12 5v14M5 12l7 7 7-7" />
+                                                        </svg> Ordenar Z - A</div>
                                                 </div>
                                             </th>
                                         @else
                                             <th class="sortable" style="user-select: none; width: 150px;">
-                                                <i class="fas fa-map-marker-alt" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Destino
+                                                <i class="fas fa-map-marker-alt"
+                                                    style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Destino
                                                 <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                         <path d="M6 9l6 6 6-6" />
@@ -3351,21 +3370,23 @@
                                                 <div class="header-dropdown" onclick="event.stopPropagation()">
                                                     <div class="header-dropdown-item"
                                                         onclick="sortTableFromMenu(this, 'asc', 'string')"><svg
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2">
-                                                        <path d="M12 19V5M5 12l7-7 7 7" />
-                                                    </svg> Ordenar A - Z</div>
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2">
+                                                            <path d="M12 19V5M5 12l7-7 7 7" />
+                                                        </svg> Ordenar A - Z</div>
                                                     <div class="header-dropdown-item"
                                                         onclick="sortTableFromMenu(this, 'desc', 'string')"><svg
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2">
-                                                        <path d="M12 5v14M5 12l7 7 7-7" />
-                                                    </svg> Ordenar Z - A</div>
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2">
+                                                            <path d="M12 5v14M5 12l7 7 7-7" />
+                                                        </svg> Ordenar Z - A</div>
                                                 </div>
                                             </th>
                                         @endif
-                                        <th class="sortable" style="user-select: none; width: 130px; text-align: center; padding: 13px 4px;">
-                                            <i class="fas fa-tag" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Estado
+                                        <th class="sortable"
+                                            style="user-select: none; width: 130px; text-align: center; padding: 13px 4px;">
+                                            <i class="fas fa-tag"
+                                                style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Estado
                                             <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M6 9l6 6 6-6" />
@@ -3388,7 +3409,8 @@
                                         </th>
                                         @if($activeMainTab === 'shared')
                                             <th class="sortable" style="user-select: none; width: 140px;">
-                                                <i class="fas fa-user-shield" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Propietario
+                                                <i class="fas fa-user-shield"
+                                                    style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Propietario
                                                 <div class="col-menu-btn" onclick="toggleHeaderMenu(event, this)">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                         <path d="M6 9l6 6 6-6" />
@@ -3411,7 +3433,8 @@
                                             </th>
                                         @endif
                                         <th class="right" style="width: 160px; text-align: center;">
-                                            <i class="fas fa-bolt" style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Acciones
+                                            <i class="fas fa-bolt"
+                                                style="font-size: 11px; color: #94a3b8; margin-right: 4px;"></i>Acciones
                                         </th>
                                     </tr>
                                 </thead>
@@ -3422,8 +3445,8 @@
                                                 data-is-pro="{{ $trip->is_pro ? '1' : '0' }}"
                                                 style="animation-delay: {{ $index * 0.04 }}s; animation: rowIn 0.28s ease both; cursor: pointer;"
                                                 onclick="if(window.innerWidth > 768) { window.location='{{ route('trips.edit', $trip->id) }}'; }">
-                                                <td onclick="event.stopPropagation()" style="width: 48px; text-align: center;"><input type="checkbox"
-                                                        class="rchk trip-checkbox" data-trip-id="{{ $trip->id }}"
+                                                <td onclick="event.stopPropagation()" style="width: 48px; text-align: center;">
+                                                    <input type="checkbox" class="rchk trip-checkbox" data-trip-id="{{ $trip->id }}"
                                                         onchange="updateSelectAllState()" /></td>
                                                 <td class="bar-cell"></td>
                                                 <td style="width: 190px;">
@@ -3433,7 +3456,9 @@
                                                             title="{{ $trip->title }}">{{ $trip->title }}</span>
                                                     </div>
                                                     @if($isAgency && $trip->destinations && count($trip->destinations) > 0)
-                                                        <div class="trip-dest"><span>{{ rtrim($trip->destinations->pluck('name')->join(' · '), ' · ') ?: 'Sin destino' }}</span></div>
+                                                        <div class="trip-dest">
+                                                            <span>{{ rtrim($trip->destinations->pluck('name')->join(' · '), ' · ') ?: 'Sin destino' }}</span>
+                                                        </div>
                                                     @endif
 
                                                     {{-- Mobile only info chips --}}
@@ -3463,7 +3488,7 @@
                                                 @php
                                                     $startDate = $trip->start_date ? \Carbon\Carbon::parse($trip->start_date) : null;
                                                     $endDate = $trip->end_date ? \Carbon\Carbon::parse($trip->end_date) : null;
-                                                    
+
                                                     $datesFormatted = null;
                                                     if ($startDate && $endDate && $startDate->ne($endDate)) {
                                                         if ($startDate->isSameMonth($endDate) && $startDate->isSameYear($endDate)) {
@@ -3478,11 +3503,13 @@
                                                     }
                                                 @endphp
                                                 <td style="width: 150px; white-space: nowrap;">
-                                                    <div class="trip-date" style="font-size: 12.5px; color: #475569; font-weight: 500; white-space: nowrap;">
+                                                    <div class="trip-date"
+                                                        style="font-size: 12.5px; color: #475569; font-weight: 500; white-space: nowrap;">
                                                         @if($datesFormatted)
                                                             <span>{{ $datesFormatted }}</span>
                                                         @else
-                                                            <span style="color:#94a3b8; font-size:12px; font-style:italic;">Por definir</span>
+                                                            <span style="color:#94a3b8; font-size:12px; font-style:italic;">Por
+                                                                definir</span>
                                                         @endif
                                                     </div>
                                                 </td>
@@ -3511,7 +3538,8 @@
                                                                 <div class="client-email-container"
                                                                     onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_email')"
                                                                     style="margin-top: 2px;" title="Haz clic para editar">
-                                                                    <span class="email-display traveler-email-clean" id="email-display-{{ $trip->id }}">{{ $client->email }}</span>
+                                                                    <span class="email-display traveler-email-clean"
+                                                                        id="email-display-{{ $trip->id }}">{{ $client->email }}</span>
                                                                     <input type="email" class="field-input code-input"
                                                                         id="email-input-{{ $trip->id }}"
                                                                         style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 11.5px; text-transform: none;"
@@ -3521,7 +3549,8 @@
                                                                 </div>
                                                             @endif
                                                         @else
-                                                            <span style="color:#94a3b8; font-size:12px; font-style:italic;">Sin asignar</span>
+                                                            <span style="color:#94a3b8; font-size:12px; font-style:italic;">Sin
+                                                                asignar</span>
                                                         @endif
                                                     </td>
                                                 @else
@@ -3534,28 +3563,34 @@
                                                                 <span>{{ $destinationText }}</span>
                                                             </div>
                                                         @else
-                                                            <span style="color: #94a3b8; font-size: 12px; font-style: italic;">Sin destino</span>
+                                                            <span style="color: #94a3b8; font-size: 12px; font-style: italic;">Sin
+                                                                destino</span>
                                                         @endif
                                                     </td>
                                                 @endif
 
                                                 {{-- Columna Estado --}}
-                                                <td onclick="event.stopPropagation()" style="width: 130px; text-align: center; padding: 12px 4px;">
+                                                <td onclick="event.stopPropagation()"
+                                                    style="width: 130px; text-align: center; padding: 12px 4px;">
                                                     @php
                                                         $currStatusInfo = $userCustomStatuses[$trip->status] ?? ['label' => ucfirst($trip->status), 'color' => 'blue'];
                                                         $currColor = is_array($currStatusInfo) ? ($currStatusInfo['color'] ?? 'blue') : 'blue';
                                                     @endphp
-                                                    <select class="status-select status-color-{{ $currColor }} status-{{ $trip->status }}"
+                                                    <select
+                                                        class="status-select status-color-{{ $currColor }} status-{{ $trip->status }}"
                                                         data-status="{{ $trip->status }}"
                                                         onchange="if(this.value === '__manage__'){ openManageStatusesModal(); this.value = this.getAttribute('data-status'); return; } changeTripStatus({{ $trip->id }}, this.value)"
                                                         style="margin: 0 auto;">
                                                         @foreach($userCustomStatuses as $stKey => $stInfo)
                                                             @if($stKey !== 'discarded')
                                                                 @php $stLabel = is_array($stInfo) ? ($stInfo['label'] ?? $stKey) : $stInfo; @endphp
-                                                                <option value="{{ $stKey }}" {{ $trip->status === $stKey ? 'selected' : '' }}>{{ $stLabel }}</option>
+                                                                <option value="{{ $stKey }}" {{ $trip->status === $stKey ? 'selected' : '' }}>
+                                                                    {{ $stLabel }}</option>
                                                             @endif
                                                         @endforeach
-                                                        <option value="__manage__" style="font-weight: 400 !important; color: #64748b !important;">⚙ Editar estados...</option>
+                                                        <option value="__manage__"
+                                                            style="font-weight: 400 !important; color: #64748b !important;">⚙ Editar
+                                                            estados...</option>
                                                     </select>
                                                 </td>
 
@@ -3586,7 +3621,8 @@
                                                 @endif
 
                                                 {{-- Columna Acciones Optimizada (3 botones directos + menú 3 puntos) --}}
-                                                <td class="acts-cell" style="width: 160px; text-align: right; padding-right: 16px;" onclick="event.stopPropagation()">
+                                                <td class="acts-cell" style="width: 160px; text-align: right; padding-right: 16px;"
+                                                    onclick="event.stopPropagation()">
                                                     <div class="acts">
                                                         @if($activeMainTab === 'shared' && isset($isPending) && $isPending)
                                                             <a href="{{ route('trips.accept-invite', ['token' => $myCollab->token]) }}"
@@ -3641,11 +3677,14 @@
                                                                     <!-- Añadir colaboradores -->
                                                                     <div class="acts-menu-item"
                                                                         onclick="openSharingModal({{ $trip->id }}, 'editor')">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                                                                            <circle cx="9" cy="7" r="4"/>
-                                                                            <line x1="19" y1="8" x2="19" y2="14"/>
-                                                                            <line x1="22" y1="11" x2="16" y2="11"/>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                                                            <circle cx="9" cy="7" r="4" />
+                                                                            <line x1="19" y1="8" x2="19" y2="14" />
+                                                                            <line x1="22" y1="11" x2="16" y2="11" />
                                                                         </svg>
                                                                         <span>Añadir colaboradores</span>
                                                                     </div>
@@ -3653,11 +3692,14 @@
                                                                     <!-- Ver colaboradores -->
                                                                     <div class="acts-menu-item"
                                                                         onclick="openCollaboratorsModal({{ $trip->id }})">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                                                            <circle cx="9" cy="7" r="4"/>
-                                                                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                                                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                                                            <circle cx="9" cy="7" r="4" />
+                                                                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                                                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                                                                         </svg>
                                                                         <span>Ver colaboradores</span>
                                                                     </div>
@@ -3665,9 +3707,13 @@
                                                                     <!-- Duplicar viaje -->
                                                                     <div class="acts-menu-item"
                                                                         onclick="duplicateTrip({{ $trip->id }})">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-                                                                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                                                            <path
+                                                                                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
                                                                         </svg>
                                                                         <span>Duplicar viaje</span>
                                                                     </div>
@@ -3675,11 +3721,14 @@
                                                                     <!-- Cambiar propietario -->
                                                                     <div class="acts-menu-item"
                                                                         onclick="openTransferModal({{ $trip->id }})">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                            <path d="M16 3h5v5"/>
-                                                                            <path d="m21 3-7 7"/>
-                                                                            <path d="M8 21H3v-5"/>
-                                                                            <path d="m3 21 7-7"/>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path d="M16 3h5v5" />
+                                                                            <path d="m21 3-7 7" />
+                                                                            <path d="M8 21H3v-5" />
+                                                                            <path d="m3 21 7-7" />
                                                                         </svg>
                                                                         <span>Cambiar propietario</span>
                                                                     </div>
@@ -3691,10 +3740,13 @@
                                                                 @if($activeMainTab === 'shared')
                                                                     <div class="acts-menu-item danger"
                                                                         onclick="confirmLeaveCollaboration({{ $trip->id }}, '{{ $trip->title }}')">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                            <path d="M3 6h18"/>
-                                                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                                                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path d="M3 6h18" />
+                                                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                                                                         </svg>
                                                                         <span>Eliminar</span>
                                                                     </div>
@@ -3702,10 +3754,13 @@
                                                                     @if($trip->user_id == Auth::id())
                                                                         <div class="acts-menu-item danger"
                                                                             onclick="delRow({{ $trip->id }})">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                                <path d="M3 6h18"/>
-                                                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                                                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                                stroke-width="2" stroke-linecap="round"
+                                                                                stroke-linejoin="round">
+                                                                                <path d="M3 6h18" />
+                                                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                                                                             </svg>
                                                                             <span>Eliminar</span>
                                                                         </div>
@@ -3729,7 +3784,8 @@
                                                         </svg></div>
                                                     @if(($activeMainTab ?? request('filter')) === 'shared')
                                                         <h3>Aún no te han compartido ningún viaje.</h3>
-                                                        <p>Cuando un organizador o agencia te invite a colaborar, aparecerán aquí.</p>
+                                                        <p>Cuando un organizador o agencia te invite a colaborar, aparecerán aquí.
+                                                        </p>
                                                     @else
                                                         <h3>No hay viajes en tu lista.</h3>
                                                         <p>Haz clic en ‘Crear viaje’ y empieza a explorar.</p>
@@ -3798,11 +3854,11 @@
                                 list.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--gray2); font-size: 12px;">No tienes notificaciones nuevas</div>';
                             } else {
                                 list.innerHTML = d.notifications.map(n => `
-                                        <div style="padding: 12px 16px; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: background 0.2s; ${n.read_at ? '' : 'background: #f0f9f8;'}" onclick="handleNotiClick('${n.id}', '${n.data.invite_url}')">
-                                            <div style="font-size: 13px; color: var(--dark); font-weight: ${n.read_at ? '400' : '600'}; margin-bottom: 4px;">${n.data.message}</div>
-                                            <div style="font-size: 11px; color: var(--gray2);">${new Date(n.created_at).toLocaleString()}</div>
-                                        </div>
-                                    `).join('');
+                                            <div style="padding: 12px 16px; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: background 0.2s; ${n.read_at ? '' : 'background: #f0f9f8;'}" onclick="handleNotiClick('${n.id}', '${n.data.invite_url}')">
+                                                <div style="font-size: 13px; color: var(--dark); font-weight: ${n.read_at ? '400' : '600'}; margin-bottom: 4px;">${n.data.message}</div>
+                                                <div style="font-size: 11px; color: var(--gray2);">${new Date(n.created_at).toLocaleString()}</div>
+                                            </div>
+                                        `).join('');
                             }
                         });
                 };
@@ -3932,201 +3988,201 @@
                 return;
             @endif
 
-            // Eliminar modal previo si existe
-            const existingModal = document.getElementById('createTripModal');
+                // Eliminar modal previo si existe
+                const existingModal = document.getElementById('createTripModal');
             if (existingModal) existingModal.remove();
 
             const userAccountType = '{{ strtoupper(auth()->user()->account_type ?? "PERSONAL") }}';
             const isAgency = userAccountType === 'AGENCY';
 
             const modalHtml = `
-                <div id="createTripModal" style="position:fixed; inset:0; z-index:2000; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(15, 23, 42, 0.6); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); animation: viantrypFadeIn 0.2s ease-out;">
-                    <div class="create-trip-card" style="background:#ffffff; width:100%; max-width:512px; border-radius:18px; box-shadow:0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.06); overflow:hidden; animation: viantrypSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
-                        
-                        <!-- Header -->
-                        <div style="padding:20px 24px 16px; border-bottom:1px solid #f1f5f9; display:flex; align-items:flex-start; justify-content:space-between; gap:16px;">
-                            <div>
-                                <h3 style="margin:0; font-size:18px; font-weight:700; color:#0f172a; font-family:'Manrope', sans-serif; letter-spacing:-0.2px;">Crear nuevo itinerario</h3>
-                                <p style="margin:2px 0 0; font-size:13px; color:#64748b; font-weight:400;">Comienza a diseñar una experiencia inolvidable.</p>
+                    <div id="createTripModal" style="position:fixed; inset:0; z-index:2000; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(15, 23, 42, 0.6); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); animation: viantrypFadeIn 0.2s ease-out;">
+                        <div class="create-trip-card" style="background:#ffffff; width:100%; max-width:512px; border-radius:18px; box-shadow:0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.06); overflow:hidden; animation: viantrypSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
+
+                            <!-- Header -->
+                            <div style="padding:20px 24px 16px; border-bottom:1px solid #f1f5f9; display:flex; align-items:flex-start; justify-content:space-between; gap:16px;">
+                                <div>
+                                    <h3 style="margin:0; font-size:18px; font-weight:700; color:#0f172a; font-family:'Manrope', sans-serif; letter-spacing:-0.2px;">Crear nuevo itinerario</h3>
+                                    <p style="margin:2px 0 0; font-size:13px; color:#64748b; font-weight:400;">Comienza a diseñar una experiencia inolvidable.</p>
+                                </div>
+                                <button type="button" id="closeCreateTripModalBtn" style="background:transparent; border:none; color:#94a3b8; cursor:pointer; padding:6px; border-radius:8px; display:flex; align-items:center; justify-content:center; transition:all 0.15s;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M18 6 6 18"/>
+                                        <path d="m6 6 12 12"/>
+                                    </svg>
+                                </button>
                             </div>
-                            <button type="button" id="closeCreateTripModalBtn" style="background:transparent; border:none; color:#94a3b8; cursor:pointer; padding:6px; border-radius:8px; display:flex; align-items:center; justify-content:center; transition:all 0.15s;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M18 6 6 18"/>
-                                    <path d="m6 6 12 12"/>
-                                </svg>
-                            </button>
-                        </div>
 
-                        <!-- Formulario -->
-                        <form id="createTripForm">
-                            <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px; max-height:calc(85vh - 150px); overflow-y:auto;">
-                                
-                                <!-- Nombre del viaje -->
-                                <div>
-                                    <label style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">
-                                        <span>Nombre del viaje <span style="color:#e11d48;">*</span></span>
-                                    </label>
-                                    <input type="text" name="title" required placeholder="Luna de Miel en Bali" class="modal-saas-input" style="width:100%; height:42px; padding:0 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13.5px; color:#0f172a; outline:none; transition:all 0.2s; background:#ffffff;">
-                                </div>
+                            <!-- Formulario -->
+                            <form id="createTripForm">
+                                <div style="padding:22px 24px; display:flex; flex-direction:column; gap:16px; max-height:calc(85vh - 150px); overflow-y:auto;">
 
-                                <!-- Destino principal -->
-                                <div>
-                                    <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">
-                                        Destino principal <span style="font-weight:400; color:#94a3b8; font-size:11.5px;">(Opcional)</span>
-                                    </label>
-                                    <div style="position:relative;">
-                                        <div style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94a3b8; display:flex; pointer-events:none;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
-                                                <circle cx="12" cy="10" r="3"/>
-                                            </svg>
-                                        </div>
-                                        <input type="text" name="destination" placeholder="Ej: Bali, Indonesia" class="modal-saas-input" style="width:100%; height:42px; padding:0 14px 0 38px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13.5px; color:#0f172a; outline:none; transition:all 0.2s; background:#ffffff;">
-                                    </div>
-                                </div>
-
-                                <!-- Fechas del viaje -->
-                                <div>
-                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                        <label style="font-size:12px; font-weight:600; color:#334155;">Fechas del viaje</label>
-                                    </div>
-                                    
-                                    <div id="datesGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                                        <div>
-                                            <span style="display:block; font-size:11px; color:#64748b; margin-bottom:4px; font-weight:500;">Salida</span>
-                                            <div style="position:relative;">
-                                                <input type="date" name="start_date" id="tripStartDate" class="modal-saas-input" style="width:100%; height:40px; padding:0 10px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13px; color:#0f172a; outline:none; transition:all 0.2s; background:#ffffff;">
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <span style="display:block; font-size:11px; color:#64748b; margin-bottom:4px; font-weight:500;">Regreso</span>
-                                            <div style="position:relative;">
-                                                <input type="date" name="end_date" id="tripEndDate" class="modal-saas-input" style="width:100%; height:40px; padding:0 10px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13px; color:#0f172a; outline:none; transition:all 0.2s; background:#ffffff;">
-                                            </div>
-                                        </div>
+                                    <!-- Nombre del viaje -->
+                                    <div>
+                                        <label style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">
+                                            <span>Nombre del viaje <span style="color:#e11d48;">*</span></span>
+                                        </label>
+                                        <input type="text" name="title" required placeholder="Luna de Miel en Bali" class="modal-saas-input" style="width:100%; height:42px; padding:0 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13.5px; color:#0f172a; outline:none; transition:all 0.2s; background:#ffffff;">
                                     </div>
 
-                                    <!-- Checkbox fechas no definidas -->
-                                    <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
-                                        <input type="checkbox" id="noDatesCheckbox" style="width:16px; height:16px; accent-color:var(--teal, #1a9a8a); cursor:pointer; border-radius:4px;">
-                                        <label for="noDatesCheckbox" style="font-size:12.5px; color:#64748b; cursor:pointer; user-select:none; font-weight:500;">Aún no tengo fechas definidas</label>
-                                    </div>
-                                </div>
-
-                                ${isAgency ? `
-                                <!-- Sección Dinámica para Agencias -->
-                                <div style="border-top:1px dashed #e2e8f0; padding-top:14px; margin-top:2px;">
-                                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-                                        <div style="display:flex; align-items:center; gap:8px;">
-                                            <div style="display:flex; align-items:center; justify-content:center; color:#0f172a;">
+                                    <!-- Destino principal -->
+                                    <div>
+                                        <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:6px;">
+                                            Destino principal <span style="font-weight:400; color:#94a3b8; font-size:11.5px;">(Opcional)</span>
+                                        </label>
+                                        <div style="position:relative;">
+                                            <div style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94a3b8; display:flex; pointer-events:none;">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                                                    <circle cx="12" cy="7" r="4"/>
+                                                    <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
+                                                    <circle cx="12" cy="10" r="3"/>
                                                 </svg>
                                             </div>
-                                            <span style="font-size:12.5px; font-weight:600; color:#1e293b;">Asignar a un cliente</span>
+                                            <input type="text" name="destination" placeholder="Ej: Bali, Indonesia" class="modal-saas-input" style="width:100%; height:42px; padding:0 14px 0 38px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13.5px; color:#0f172a; outline:none; transition:all 0.2s; background:#ffffff;">
                                         </div>
-                                        <label style="position:relative; display:inline-block; width:38px; height:22px; cursor:pointer; margin:0;">
-                                            <input type="checkbox" id="assignClientToggle" checked style="opacity:0; width:0; height:0;">
-                                            <span class="agency-switch-slider" style="position:absolute; inset:0; border-radius:20px; transition:0.25s;"></span>
-                                        </label>
                                     </div>
 
-                                    <div id="clientAssignmentBox" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:10px; transition:all 0.25s ease;">
-                                        <div>
-                                            <label style="display:block; font-size:11.5px; font-weight:600; color:#475569; margin-bottom:4px;">Nombre completo del cliente</label>
-                                            <div style="position:relative;">
-                                                <div style="position:absolute; left:11px; top:50%; transform:translateY(-50%); color:#94a3b8; display:flex; pointer-events:none;">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <!-- Fechas del viaje -->
+                                    <div>
+                                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                            <label style="font-size:12px; font-weight:600; color:#334155;">Fechas del viaje</label>
+                                        </div>
+
+                                        <div id="datesGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                                            <div>
+                                                <span style="display:block; font-size:11px; color:#64748b; margin-bottom:4px; font-weight:500;">Salida</span>
+                                                <div style="position:relative;">
+                                                    <input type="date" name="start_date" id="tripStartDate" class="modal-saas-input" style="width:100%; height:40px; padding:0 10px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13px; color:#0f172a; outline:none; transition:all 0.2s; background:#ffffff;">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <span style="display:block; font-size:11px; color:#64748b; margin-bottom:4px; font-weight:500;">Regreso</span>
+                                                <div style="position:relative;">
+                                                    <input type="date" name="end_date" id="tripEndDate" class="modal-saas-input" style="width:100%; height:40px; padding:0 10px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13px; color:#0f172a; outline:none; transition:all 0.2s; background:#ffffff;">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Checkbox fechas no definidas -->
+                                        <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
+                                            <input type="checkbox" id="noDatesCheckbox" style="width:16px; height:16px; accent-color:var(--teal, #1a9a8a); cursor:pointer; border-radius:4px;">
+                                            <label for="noDatesCheckbox" style="font-size:12.5px; color:#64748b; cursor:pointer; user-select:none; font-weight:500;">Aún no tengo fechas definidas</label>
+                                        </div>
+                                    </div>
+
+                                    ${isAgency ? `
+                                    <!-- Sección Dinámica para Agencias -->
+                                    <div style="border-top:1px dashed #e2e8f0; padding-top:14px; margin-top:2px;">
+                                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                                            <div style="display:flex; align-items:center; gap:8px;">
+                                                <div style="display:flex; align-items:center; justify-content:center; color:#0f172a;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                         <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
                                                         <circle cx="12" cy="7" r="4"/>
                                                     </svg>
                                                 </div>
-                                                <input type="text" id="clientNameInput" name="client_name" placeholder="Ej: Juan Pérez" class="modal-saas-input" style="width:100%; height:38px; padding:0 12px 0 34px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:13px; color:#0f172a; outline:none; background:#ffffff;">
+                                                <span style="font-size:12.5px; font-weight:600; color:#1e293b;">Asignar a un cliente</span>
                                             </div>
+                                            <label style="position:relative; display:inline-block; width:38px; height:22px; cursor:pointer; margin:0;">
+                                                <input type="checkbox" id="assignClientToggle" checked style="opacity:0; width:0; height:0;">
+                                                <span class="agency-switch-slider" style="position:absolute; inset:0; border-radius:20px; transition:0.25s;"></span>
+                                            </label>
                                         </div>
-                                        <div>
-                                            <label style="display:block; font-size:11.5px; font-weight:600; color:#475569; margin-bottom:4px;">Correo electrónico del cliente</label>
-                                            <div style="position:relative;">
-                                                <div style="position:absolute; left:11px; top:50%; transform:translateY(-50%); color:#94a3b8; display:flex; pointer-events:none;">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                        <rect width="20" height="16" x="2" y="4" rx="2"/>
-                                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                                                    </svg>
+
+                                        <div id="clientAssignmentBox" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:10px; transition:all 0.25s ease;">
+                                            <div>
+                                                <label style="display:block; font-size:11.5px; font-weight:600; color:#475569; margin-bottom:4px;">Nombre completo del cliente</label>
+                                                <div style="position:relative;">
+                                                    <div style="position:absolute; left:11px; top:50%; transform:translateY(-50%); color:#94a3b8; display:flex; pointer-events:none;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                                            <circle cx="12" cy="7" r="4"/>
+                                                        </svg>
+                                                    </div>
+                                                    <input type="text" id="clientNameInput" name="client_name" placeholder="Ej: Juan Pérez" class="modal-saas-input" style="width:100%; height:38px; padding:0 12px 0 34px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:13px; color:#0f172a; outline:none; background:#ffffff;">
                                                 </div>
-                                                <input type="email" id="clientEmailInput" name="client_email" placeholder="cliente@ejemplo.com" class="modal-saas-input" style="width:100%; height:38px; padding:0 12px 0 34px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:13px; color:#0f172a; outline:none; background:#ffffff;">
                                             </div>
+                                            <div>
+                                                <label style="display:block; font-size:11.5px; font-weight:600; color:#475569; margin-bottom:4px;">Correo electrónico del cliente</label>
+                                                <div style="position:relative;">
+                                                    <div style="position:absolute; left:11px; top:50%; transform:translateY(-50%); color:#94a3b8; display:flex; pointer-events:none;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <rect width="20" height="16" x="2" y="4" rx="2"/>
+                                                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                                                        </svg>
+                                                    </div>
+                                                    <input type="email" id="clientEmailInput" name="client_email" placeholder="cliente@ejemplo.com" class="modal-saas-input" style="width:100%; height:38px; padding:0 12px 0 34px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:13px; color:#0f172a; outline:none; background:#ffffff;">
+                                                </div>
+                                            </div>
+                                            <p style="margin:2px 0 0; font-size:11.5px; color:#64748b; line-height:1.4;">Podrás vincular este itinerario para compartirlo directamente con tu cliente.</p>
                                         </div>
-                                        <p style="margin:2px 0 0; font-size:11.5px; color:#64748b; line-height:1.4;">Podrás vincular este itinerario para compartirlo directamente con tu cliente.</p>
                                     </div>
+                                    ` : ''}
+
                                 </div>
-                                ` : ''}
 
-                            </div>
-
-                            <!-- Footer Actions -->
-                            <div style="padding:16px 24px; background:#f8fafc; border-top:1px solid #f1f5f9; display:flex; align-items:center; justify-content:flex-end; gap:10px;">
-                                <button type="button" id="cancelCreateTripBtn" style="height:42px; padding:0 18px; border:1.5px solid #e2e8f0; background:#ffffff; color:#475569; font-weight:600; border-radius:10px; cursor:pointer; font-size:13px; transition:all 0.15s;">
-                                    Cancelar
-                                </button>
-                                <button type="submit" id="submitCreateTripBtn" style="height:42px; padding:0 22px; border:none; background:var(--teal, #1a9a8a); color:#ffffff; font-weight:600; border-radius:10px; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(26,154,138,0.25); transition:all 0.2s;">
-                                    <span>Crear y Diseñar Viaje</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M5 12h14"/>
-                                        <path d="m12 5 7 7-7 7"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </form>
+                                <!-- Footer Actions -->
+                                <div style="padding:16px 24px; background:#f8fafc; border-top:1px solid #f1f5f9; display:flex; align-items:center; justify-content:flex-end; gap:10px;">
+                                    <button type="button" id="cancelCreateTripBtn" style="height:42px; padding:0 18px; border:1.5px solid #e2e8f0; background:#ffffff; color:#475569; font-weight:600; border-radius:10px; cursor:pointer; font-size:13px; transition:all 0.15s;">
+                                        Cancelar
+                                    </button>
+                                    <button type="submit" id="submitCreateTripBtn" style="height:42px; padding:0 22px; border:none; background:var(--teal, #1a9a8a); color:#ffffff; font-weight:600; border-radius:10px; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(26,154,138,0.25); transition:all 0.2s;">
+                                        <span>Crear y Diseñar Viaje</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M5 12h14"/>
+                                            <path d="m12 5 7 7-7 7"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
 
-                <style>
-                    @keyframes viantrypFadeIn { from { opacity: 0; } to { opacity: 1; } }
-                    @keyframes viantrypSlideUp { from { transform: translateY(16px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-                    @keyframes viantrypSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                    .modal-saas-input:focus {
-                        border-color: var(--teal, #1a9a8a) !important;
-                        box-shadow: 0 0 0 3px rgba(26, 154, 138, 0.15) !important;
-                    }
-                    .modal-saas-input:disabled {
-                        background-color: #f1f5f9 !important;
-                        color: #94a3b8 !important;
-                        cursor: not-allowed !important;
-                        border-color: #e2e8f0 !important;
-                    }
-                    .agency-switch-slider {
-                        border: 1.5px solid transparent;
-                    }
-                    .agency-switch-slider:before {
-                        position: absolute;
-                        content: "";
-                        height: 14px;
-                        width: 14px;
-                        left: 2px;
-                        bottom: 2px;
-                        background-color: white;
-                        border-radius: 50%;
-                        transition: 0.2s;
-                        box-shadow: 0 1px 2px rgba(0,0,0,0.15);
-                    }
-                    #assignClientToggle:checked + .agency-switch-slider {
-                        background-color: var(--teal, #1a9a8a);
-                        border-color: var(--teal, #1a9a8a);
-                    }
-                    #assignClientToggle:checked + .agency-switch-slider:before {
-                        background-color: #ffffff;
-                        transform: translateX(16px);
-                    }
-                    #assignClientToggle:not(:checked) + .agency-switch-slider {
-                        background-color: transparent !important;
-                        border-color: #cbd5e1 !important;
-                    }
-                    #assignClientToggle:not(:checked) + .agency-switch-slider:before {
-                        background-color: #94a3b8;
-                    }
-                </style>
-            `;
+                    <style>
+                        @keyframes viantrypFadeIn { from { opacity: 0; } to { opacity: 1; } }
+                        @keyframes viantrypSlideUp { from { transform: translateY(16px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+                        @keyframes viantrypSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                        .modal-saas-input:focus {
+                            border-color: var(--teal, #1a9a8a) !important;
+                            box-shadow: 0 0 0 3px rgba(26, 154, 138, 0.15) !important;
+                        }
+                        .modal-saas-input:disabled {
+                            background-color: #f1f5f9 !important;
+                            color: #94a3b8 !important;
+                            cursor: not-allowed !important;
+                            border-color: #e2e8f0 !important;
+                        }
+                        .agency-switch-slider {
+                            border: 1.5px solid transparent;
+                        }
+                        .agency-switch-slider:before {
+                            position: absolute;
+                            content: "";
+                            height: 14px;
+                            width: 14px;
+                            left: 2px;
+                            bottom: 2px;
+                            background-color: white;
+                            border-radius: 50%;
+                            transition: 0.2s;
+                            box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+                        }
+                        #assignClientToggle:checked + .agency-switch-slider {
+                            background-color: var(--teal, #1a9a8a);
+                            border-color: var(--teal, #1a9a8a);
+                        }
+                        #assignClientToggle:checked + .agency-switch-slider:before {
+                            background-color: #ffffff;
+                            transform: translateX(16px);
+                        }
+                        #assignClientToggle:not(:checked) + .agency-switch-slider {
+                            background-color: transparent !important;
+                            border-color: #cbd5e1 !important;
+                        }
+                        #assignClientToggle:not(:checked) + .agency-switch-slider:before {
+                            background-color: #94a3b8;
+                        }
+                    </style>
+                `;
 
             document.body.insertAdjacentHTML('beforeend', modalHtml);
 
@@ -4198,11 +4254,11 @@
                 const submitBtn = document.getElementById('submitCreateTripBtn');
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `
-                    <svg style="animation: viantrypSpin 0.9s linear infinite;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-                    </svg>
-                    <span>Creando...</span>
-                `;
+                        <svg style="animation: viantrypSpin 0.9s linear infinite;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                        </svg>
+                        <span>Creando...</span>
+                    `;
 
                 const formData = new FormData(form);
                 const data = {};
@@ -4233,24 +4289,24 @@
                         alert('Error al crear el viaje: ' + (result.message || 'Error desconocido'));
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = `
-                            <span>Crear y Diseñar Viaje</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M5 12h14"/>
-                                <path d="m12 5 7 7-7 7"/>
-                            </svg>
-                        `;
+                                <span>Crear y Diseñar Viaje</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14"/>
+                                    <path d="m12 5 7 7-7 7"/>
+                                </svg>
+                            `;
                     }
                 } catch (error) {
                     console.error('Error:', error);
                     alert('Ocurrió un error de red o del servidor.');
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = `
-                        <span>Crear y Diseñar Viaje</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M5 12h14"/>
-                            <path d="m12 5 7 7-7 7"/>
-                        </svg>
-                    `;
+                            <span>Crear y Diseñar Viaje</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14"/>
+                                <path d="m12 5 7 7-7 7"/>
+                            </svg>
+                        `;
                 }
             };
         }
@@ -4588,101 +4644,101 @@
 
             // Create modal HTML with premium styles matching auth-header.blade.php
             const modalHtml = `
-                        <div id="shareModal" class="share-modal-overlay" style="
-                            position: fixed;
-                            top: 0;
-                            left: 0;
-                            right: 0;
-                            bottom: 0;
-                            background: rgba(0, 0, 0, 0.5);
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            z-index: 10000;
-                            font-family: 'Poppins', sans-serif;
-                        ">
-                            <div class="share-modal" style="
-                                background: white;
-                                border-radius: 16px;
-                                padding: 2rem;
-                                max-width: 500px;
-                                width: 90%;
-                                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-                                position: relative;
+                            <div id="shareModal" class="share-modal-overlay" style="
+                                position: fixed;
+                                top: 0;
+                                left: 0;
+                                right: 0;
+                                bottom: 0;
+                                background: rgba(0, 0, 0, 0.5);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                z-index: 10000;
+                                font-family: 'Poppins', sans-serif;
                             ">
-                                <div class="share-modal-header" style="
-                                    text-align: center;
-                                    margin-bottom: 1.5rem;
+                                <div class="share-modal" style="
+                                    background: white;
+                                    border-radius: 16px;
+                                    padding: 2rem;
+                                    max-width: 500px;
+                                    width: 90%;
+                                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+                                    position: relative;
                                 ">
-                                    <h3 style="
-                                        font-size: 1.5rem;
-                                        font-weight: 700;
-                                        color: #1f2937;
-                                        margin: 0 0 0.5rem 0;
-                                    ">Compartir viaje</h3>
-                                    <p style="
-                                        color: #6b7280;
-                                        margin: 0;
-                                        font-size: 0.9rem;
-                                    ">Cualquiera con este enlace podrá ver el itinerario.</p>
-                                </div>
-
-                                <div class="share-modal-body">
-                                    <div class="share-url-container" style="
+                                    <div class="share-modal-header" style="
+                                        text-align: center;
                                         margin-bottom: 1.5rem;
                                     ">
-                                        <label style="
-                                            display: block;
-                                            font-size: 0.85rem;
-                                            font-weight: 600;
-                                            color: #374151;
-                                            margin-bottom: 0.5rem;
-                                        ">Copiar enlace:</label>
-                                        <div class="share-url-input-group" style="
-                                            display: flex;
-                                            gap: 0.5rem;
-                                        ">
-                                            <input type="text" id="shareUrlInput" value="${url}" readonly style="
-                                                flex: 1;
-                                                padding: 0.75rem;
-                                                border: 1px solid #d1d5db;
-                                                border-radius: 8px;
-                                                font-size: 0.9rem;
-                                                background: #f9fafb;
-                                                color: #374151;
-                                                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-                                            ">
-                                            <button id="copyShareUrlBtn" class="btn-create" style="
-                                                padding: 0 1.25rem;
-                                                white-space: nowrap;
-                                                height: 44px;
-                                            ">
-                                                <i class="fas fa-copy"></i>
-                                                Copiar
-                                            </button>
-                                        </div>
+                                        <h3 style="
+                                            font-size: 1.5rem;
+                                            font-weight: 700;
+                                            color: #1f2937;
+                                            margin: 0 0 0.5rem 0;
+                                        ">Compartir viaje</h3>
+                                        <p style="
+                                            color: #6b7280;
+                                            margin: 0;
+                                            font-size: 0.9rem;
+                                        ">Cualquiera con este enlace podrá ver el itinerario.</p>
                                     </div>
 
-                                    <div class="share-modal-actions" style="
-                                        display: flex;
-                                        gap: 0.75rem;
-                                        justify-content: flex-end;
-                                    ">
-                                        <button id="closeShareModalBtn" style="
-                                            padding: 0.625rem 1.25rem;
-                                            background: #f3f4f6;
-                                            color: #374151;
-                                            border: 1px solid #d1d5db;
-                                            border-radius: 8px;
-                                            cursor: pointer;
-                                            font-weight: 500;
-                                            transition: all 0.3s ease;
-                                        ">Cerrar</button>
+                                    <div class="share-modal-body">
+                                        <div class="share-url-container" style="
+                                            margin-bottom: 1.5rem;
+                                        ">
+                                            <label style="
+                                                display: block;
+                                                font-size: 0.85rem;
+                                                font-weight: 600;
+                                                color: #374151;
+                                                margin-bottom: 0.5rem;
+                                            ">Copiar enlace:</label>
+                                            <div class="share-url-input-group" style="
+                                                display: flex;
+                                                gap: 0.5rem;
+                                            ">
+                                                <input type="text" id="shareUrlInput" value="${url}" readonly style="
+                                                    flex: 1;
+                                                    padding: 0.75rem;
+                                                    border: 1px solid #d1d5db;
+                                                    border-radius: 8px;
+                                                    font-size: 0.9rem;
+                                                    background: #f9fafb;
+                                                    color: #374151;
+                                                    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+                                                ">
+                                                <button id="copyShareUrlBtn" class="btn-create" style="
+                                                    padding: 0 1.25rem;
+                                                    white-space: nowrap;
+                                                    height: 44px;
+                                                ">
+                                                    <i class="fas fa-copy"></i>
+                                                    Copiar
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="share-modal-actions" style="
+                                            display: flex;
+                                            gap: 0.75rem;
+                                            justify-content: flex-end;
+                                        ">
+                                            <button id="closeShareModalBtn" style="
+                                                padding: 0.625rem 1.25rem;
+                                                background: #f3f4f6;
+                                                color: #374151;
+                                                border: 1px solid #d1d5db;
+                                                border-radius: 8px;
+                                                cursor: pointer;
+                                                font-weight: 500;
+                                                transition: all 0.3s ease;
+                                            ">Cerrar</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
 
             // Add modal to body
             document.body.insertAdjacentHTML('beforeend', modalHtml);
@@ -4837,7 +4893,7 @@
             // Limpiar caché antiguo de anchos de columnas que corrompía los índices
             try {
                 localStorage.removeItem('tripsTableWidths');
-            } catch(e) {}
+            } catch (e) { }
         }
 
 
@@ -4888,31 +4944,31 @@
             const themeColor = '{{ auth()->user()->theme_color ?? "gold" }}';
 
             const modalHtml = `
-                        <div id="shareTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
-                            <div style="background:white; width:90%; max-width:400px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
-                                <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
-                                    <h3 style="margin:0; font-size:18px;">Compartir para ${role === 'editor' ? 'editar' : 'ver'}</h3>
-                                    <p style="margin:5px 0 0; font-size:12px; opacity:0.9;">Permisos de ${roleLabel}</p>
-                                </div>
-                                <div style="padding:24px;">
-                                    <form id="shareTripForm">
-                                        <input type="hidden" name="role" value="${role}">
-                                        <div style="margin-bottom:16px;">
-                                            <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px;">Correo electrónico del colaborador</label>
-                                            <input type="email" name="email" required placeholder="ejemplo@correo.com" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none;">
-                                            <p style="font-size:11px; color:var(--gray2); margin-top:8px;">
-                                                <strong>Nota:</strong> El usuario ${roleText}
-                                            </p>
-                                        </div>
-                                        <div style="display:flex; gap:12px; margin-top:24px;">
-                                            <button type="button" onclick="document.getElementById('shareTripModal').remove()" style="flex:1; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
-                                            <button type="submit" style="flex:1; height:44px; border:none; background:var(--accent); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px; box-shadow:0 4px 12px rgba(26,106,120,0.2);">Enviar Invitación</button>
-                                        </div>
-                                    </form>
+                            <div id="shareTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
+                                <div style="background:white; width:90%; max-width:400px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
+                                    <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
+                                        <h3 style="margin:0; font-size:18px;">Compartir para ${role === 'editor' ? 'editar' : 'ver'}</h3>
+                                        <p style="margin:5px 0 0; font-size:12px; opacity:0.9;">Permisos de ${roleLabel}</p>
+                                    </div>
+                                    <div style="padding:24px;">
+                                        <form id="shareTripForm">
+                                            <input type="hidden" name="role" value="${role}">
+                                            <div style="margin-bottom:16px;">
+                                                <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px;">Correo electrónico del colaborador</label>
+                                                <input type="email" name="email" required placeholder="ejemplo@correo.com" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none;">
+                                                <p style="font-size:11px; color:var(--gray2); margin-top:8px;">
+                                                    <strong>Nota:</strong> El usuario ${roleText}
+                                                </p>
+                                            </div>
+                                            <div style="display:flex; gap:12px; margin-top:24px;">
+                                                <button type="button" onclick="document.getElementById('shareTripModal').remove()" style="flex:1; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
+                                                <button type="submit" style="flex:1; height:44px; border:none; background:var(--accent); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px; box-shadow:0 4px 12px rgba(26,106,120,0.2);">Enviar Invitación</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
 
             document.body.insertAdjacentHTML('beforeend', modalHtml);
 
@@ -4966,32 +5022,32 @@
 
         function openTransferModal(tripId) {
             const modalHtml = `
-                        <div id="transferTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
-                            <div style="background:white; width:90%; max-width:400px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
-                                <div style="background:#1e293b; padding:20px; color:white; text-align:center;">
-                                    <h3 style="margin:0; font-size:18px;">Cambiar Propietario</h3>
-                                    <p style="margin:5px 0 0; font-size:12px; opacity:0.9;">Transferir el viaje a otro agente</p>
-                                </div>
-                                <div style="padding:24px;">
-                                    <form id="transferTripForm">
-                                        <div style="margin-bottom:16px;">
-                                            <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px;">Correo del nuevo dueño</label>
-                                            <input type="email" name="email" required placeholder="hola@viantryp.com" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none;">
-                                            <div style="background:#fff7ed; padding:12px; border-radius:8px; border:1px solid #ffedd5; margin-top:16px;">
-                                                <p style="font-size:11px; color:#9a3412; margin:0;">
-                                                    <strong>⚠ Importante:</strong> Al transferir, el viaje pasará a tu pestaña de <b>Viajes Compartidos</b> y tú quedarás como editor. La marca y colores del viaje cambiarán al perfil del nuevo dueño.
-                                                </p>
+                            <div id="transferTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
+                                <div style="background:white; width:90%; max-width:400px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
+                                    <div style="background:#1e293b; padding:20px; color:white; text-align:center;">
+                                        <h3 style="margin:0; font-size:18px;">Cambiar Propietario</h3>
+                                        <p style="margin:5px 0 0; font-size:12px; opacity:0.9;">Transferir el viaje a otro agente</p>
+                                    </div>
+                                    <div style="padding:24px;">
+                                        <form id="transferTripForm">
+                                            <div style="margin-bottom:16px;">
+                                                <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray2); margin-bottom:6px;">Correo del nuevo dueño</label>
+                                                <input type="email" name="email" required placeholder="hola@viantryp.com" style="width:100%; height:44px; padding:0 14px; border:1.5px solid var(--bdr); border-radius:10px; font-size:14px; outline:none;">
+                                                <div style="background:#fff7ed; padding:12px; border-radius:8px; border:1px solid #ffedd5; margin-top:16px;">
+                                                    <p style="font-size:11px; color:#9a3412; margin:0;">
+                                                        <strong>⚠ Importante:</strong> Al transferir, el viaje pasará a tu pestaña de <b>Viajes Compartidos</b> y tú quedarás como editor. La marca y colores del viaje cambiarán al perfil del nuevo dueño.
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div style="display:flex; gap:12px; margin-top:24px;">
-                                            <button type="button" onclick="document.getElementById('transferTripModal').remove()" style="flex:1; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
-                                            <button type="submit" style="flex:1; height:44px; border:none; background:#1e293b; color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px;">Transferir Viaje</button>
-                                        </div>
-                                    </form>
+                                            <div style="display:flex; gap:12px; margin-top:24px;">
+                                                <button type="button" onclick="document.getElementById('transferTripModal').remove()" style="flex:1; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
+                                                <button type="submit" style="flex:1; height:44px; border:none; background:#1e293b; color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px;">Transferir Viaje</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
 
             document.body.insertAdjacentHTML('beforeend', modalHtml);
 
@@ -5049,64 +5105,64 @@
 
         function openTripInfoModal(info) {
             const modalHtml = `
-                <div id="tripInfoModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
-                    <div style="background:white; width:90%; max-width:460px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.12); animation: slideUp 0.3s ease;">
-                        <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
-                            <h3 style="margin:0; font-size:18px; font-weight:700;">Información del viaje</h3>
-                            <p style="margin:4px 0 0; font-size:12px; opacity:0.9; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${info.title}</p>
-                        </div>
-                        <div style="padding:20px 24px; display:flex; flex-direction:column; gap:12px; max-height:70vh; overflow-y:auto;">
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                                <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef;">
-                                    <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;"><i class="fas fa-calendar-alt"></i> Inicio de viaje</span>
-                                    <strong style="font-size:13px; color:#0f172a;">${info.start_date}</strong>
-                                </div>
-                                <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef;">
-                                    <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;"><i class="fas fa-calendar-check"></i> Final del viaje</span>
-                                    <strong style="font-size:13px; color:#0f172a;">${info.end_date}</strong>
-                                </div>
+                    <div id="tripInfoModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
+                        <div style="background:white; width:90%; max-width:460px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.12); animation: slideUp 0.3s ease;">
+                            <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
+                                <h3 style="margin:0; font-size:18px; font-weight:700;">Información del viaje</h3>
+                                <p style="margin:4px 0 0; font-size:12px; opacity:0.9; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${info.title}</p>
                             </div>
+                            <div style="padding:20px 24px; display:flex; flex-direction:column; gap:12px; max-height:70vh; overflow-y:auto;">
+                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                                    <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef;">
+                                        <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;"><i class="fas fa-calendar-alt"></i> Inicio de viaje</span>
+                                        <strong style="font-size:13px; color:#0f172a;">${info.start_date}</strong>
+                                    </div>
+                                    <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef;">
+                                        <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;"><i class="fas fa-calendar-check"></i> Final del viaje</span>
+                                        <strong style="font-size:13px; color:#0f172a;">${info.end_date}</strong>
+                                    </div>
+                                </div>
 
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                                <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef;">
-                                    <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;"><i class="fas fa-eye"></i> Vistas</span>
-                                    <strong style="font-size:13px; color:#0f172a;">${info.views_count} vistas</strong>
+                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                                    <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef;">
+                                        <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;"><i class="fas fa-eye"></i> Vistas</span>
+                                        <strong style="font-size:13px; color:#0f172a;">${info.views_count} vistas</strong>
+                                    </div>
+                                    <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef;">
+                                        <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;"><i class="fas fa-dollar-sign"></i> Valor Total</span>
+                                        <strong style="font-size:13px; color:#0f172a;">${info.price}</strong>
+                                    </div>
                                 </div>
-                                <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef;">
-                                    <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;"><i class="fas fa-dollar-sign"></i> Valor Total</span>
-                                    <strong style="font-size:13px; color:#0f172a;">${info.price}</strong>
-                                </div>
-                            </div>
 
-                            <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef; display:flex; flex-direction:column; gap:8px;">
-                                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #edf2f7; padding-bottom:6px;">
-                                    <span style="font-size:12px; color:#64748b;"><i class="fas fa-user"></i> Viajero:</span>
-                                    <strong style="font-size:12.5px; color:#0f172a;">${info.traveler}</strong>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #edf2f7; padding-bottom:6px;">
-                                    <span style="font-size:12px; color:#64748b;"><i class="fas fa-tag"></i> Estado:</span>
-                                    <strong style="font-size:12.5px; color:#0f172a;">${info.status}</strong>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #edf2f7; padding-bottom:6px;">
-                                    <span style="font-size:12px; color:#64748b;"><i class="fas fa-user-edit"></i> Última modificación por:</span>
-                                    <strong style="font-size:12.5px; color:#0f172a;">${info.updated_by}</strong>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #edf2f7; padding-bottom:6px;">
-                                    <span style="font-size:12px; color:#64748b;"><i class="fas fa-clock"></i> Última modificación:</span>
-                                    <strong style="font-size:12.5px; color:#0f172a;">${info.updated_at}</strong>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <span style="font-size:12px; color:#64748b;"><i class="fas fa-calendar-plus"></i> Fecha de creación:</span>
-                                    <strong style="font-size:12.5px; color:#0f172a;">${info.created_at}</strong>
+                                <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8ef; display:flex; flex-direction:column; gap:8px;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #edf2f7; padding-bottom:6px;">
+                                        <span style="font-size:12px; color:#64748b;"><i class="fas fa-user"></i> Viajero:</span>
+                                        <strong style="font-size:12.5px; color:#0f172a;">${info.traveler}</strong>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #edf2f7; padding-bottom:6px;">
+                                        <span style="font-size:12px; color:#64748b;"><i class="fas fa-tag"></i> Estado:</span>
+                                        <strong style="font-size:12.5px; color:#0f172a;">${info.status}</strong>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #edf2f7; padding-bottom:6px;">
+                                        <span style="font-size:12px; color:#64748b;"><i class="fas fa-user-edit"></i> Última modificación por:</span>
+                                        <strong style="font-size:12.5px; color:#0f172a;">${info.updated_by}</strong>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #edf2f7; padding-bottom:6px;">
+                                        <span style="font-size:12px; color:#64748b;"><i class="fas fa-clock"></i> Última modificación:</span>
+                                        <strong style="font-size:12.5px; color:#0f172a;">${info.updated_at}</strong>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <span style="font-size:12px; color:#64748b;"><i class="fas fa-calendar-plus"></i> Fecha de creación:</span>
+                                        <strong style="font-size:12.5px; color:#0f172a;">${info.created_at}</strong>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div style="padding:0 24px 20px;">
-                            <button type="button" onclick="document.getElementById('tripInfoModal').remove()" style="width:100%; height:42px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cerrar</button>
+                            <div style="padding:0 24px 20px;">
+                                <button type="button" onclick="document.getElementById('tripInfoModal').remove()" style="width:100%; height:42px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cerrar</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
 
             const old = document.getElementById('tripInfoModal');
             if (old) old.remove();
@@ -5117,23 +5173,23 @@
         function openCollaboratorsModal(tripId) {
             // Create modal structure
             const modalHtml = `
-                        <div id="collaboratorsModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
-                            <div style="background:white; width:90%; max-width:450px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
-                                <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
-                                    <h3 style="margin:0; font-size:18px;">Colaboradores del viaje</h3>
-                                    <p style="margin:5px 0 0; font-size:12px; opacity:0.9;">Gestiona quién tiene acceso a este viaje</p>
-                                </div>
-                                <div style="padding:24px;" id="collaboratorsListContainer">
-                                    <div style="text-align:center; padding:20px;">
-                                        <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--accent);"></i>
+                            <div id="collaboratorsModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
+                                <div style="background:white; width:90%; max-width:450px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
+                                    <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
+                                        <h3 style="margin:0; font-size:18px;">Colaboradores del viaje</h3>
+                                        <p style="margin:5px 0 0; font-size:12px; opacity:0.9;">Gestiona quién tiene acceso a este viaje</p>
+                                    </div>
+                                    <div style="padding:24px;" id="collaboratorsListContainer">
+                                        <div style="text-align:center; padding:20px;">
+                                            <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--accent);"></i>
+                                        </div>
+                                    </div>
+                                    <div style="padding:0 24px 24px;">
+                                        <button type="button" onclick="document.getElementById('collaboratorsModal').remove()" style="width:100%; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cerrar</button>
                                     </div>
                                 </div>
-                                <div style="padding:0 24px 24px;">
-                                    <button type="button" onclick="document.getElementById('collaboratorsModal').remove()" style="width:100%; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cerrar</button>
-                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
 
             document.body.insertAdjacentHTML('beforeend', modalHtml);
 
@@ -5149,24 +5205,24 @@
                 if (data.success) {
                     if (data.collaborators.length === 0) {
                         container.innerHTML = `
-                                    <div style="text-align:center; padding:20px; color:var(--gray2);">
-                                        <p style="margin:0;">No hay colaboradores activos para este viaje.</p>
-                                    </div>
-                                `;
+                                        <div style="text-align:center; padding:20px; color:var(--gray2);">
+                                            <p style="margin:0;">No hay colaboradores activos para este viaje.</p>
+                                        </div>
+                                    `;
                     } else {
                         let html = '<div style="display:flex; flex-direction:column; gap:12px;">';
                         data.collaborators.forEach(collab => {
                             html += `
-                                        <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; border:1px solid var(--bdr); border-radius:10px; background:#f9fafb;">
-                                            <div style="display:flex; flex-direction:column;">
-                                                <span style="font-size:13px; font-weight:600; color:var(--ink);">${collab.email}</span>
-                                                <span style="font-size:11px; color:var(--gray2); text-transform:uppercase;">${collab.role === 'editor' ? 'Editor' : 'Lector'} ${collab.accepted_at ? '' : '(Pendiente)'}</span>
+                                            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; border:1px solid var(--bdr); border-radius:10px; background:#f9fafb;">
+                                                <div style="display:flex; flex-direction:column;">
+                                                    <span style="font-size:13px; font-weight:600; color:var(--ink);">${collab.email}</span>
+                                                    <span style="font-size:11px; color:var(--gray2); text-transform:uppercase;">${collab.role === 'editor' ? 'Editor' : 'Lector'} ${collab.accepted_at ? '' : '(Pendiente)'}</span>
+                                                </div>
+                                                <button onclick="removeCollaborator(${tripId}, '${collab.email}')" style="background:transparent; border:none; color:#d94040; cursor:pointer; padding:5px; transition:opacity 0.2s;" title="Eliminar acceso">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
                                             </div>
-                                            <button onclick="removeCollaborator(${tripId}, '${collab.email}')" style="background:transparent; border:none; color:#d94040; cursor:pointer; padding:5px; transition:opacity 0.2s;" title="Eliminar acceso">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </div>
-                                    `;
+                                        `;
                         });
                         html += '</div>';
                         container.innerHTML = html;
@@ -5251,48 +5307,48 @@
                     const currColorObj = colorOptions.find(c => c.id === selectedColorId) || colorOptions[1];
 
                     let colorDotsHtml = colorOptions.map(c => `
-                        <button type="button" onclick="selectRowColor('${item.key}', '${c.id}', event)"
-                            style="width:18px; height:18px; border-radius:50%; background:${c.bg}; border:1.5px solid ${selectedColorId === c.id ? c.text : c.border}; cursor:pointer; padding:0; display:inline-flex; align-items:center; justify-content:center; transition:transform 0.15s ease;"
-                            title="${c.name}">
-                            ${selectedColorId === c.id ? `<span style="width:4px; height:4px; border-radius:50%; background:${c.text};"></span>` : ''}
-                        </button>
-                    `).join('');
+                            <button type="button" onclick="selectRowColor('${item.key}', '${c.id}', event)"
+                                style="width:18px; height:18px; border-radius:50%; background:${c.bg}; border:1.5px solid ${selectedColorId === c.id ? c.text : c.border}; cursor:pointer; padding:0; display:inline-flex; align-items:center; justify-content:center; transition:transform 0.15s ease;"
+                                title="${c.name}">
+                                ${selectedColorId === c.id ? `<span style="width:4px; height:4px; border-radius:50%; background:${c.text};"></span>` : ''}
+                            </button>
+                        `).join('');
 
                     html += `
-                        <div class="status-row-item" style="margin-bottom:14px; position:relative;" data-key="${item.key}">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                <label class="status-row-label" style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; margin:0;">Estado #${index + 1}</label>
-                                ${!isDefault ? `
-                                    <button type="button" class="btn-remove-status" onclick="removeStatusRow('${item.key}')" style="border:none; background:transparent; color:#ef4444; cursor:pointer; font-size:11.5px; padding:0;" title="Eliminar estado">
-                                        <i class="fas fa-trash-alt"></i> Eliminar
+                            <div class="status-row-item" style="margin-bottom:14px; position:relative;" data-key="${item.key}">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                    <label class="status-row-label" style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; margin:0;">Estado #${index + 1}</label>
+                                    ${!isDefault ? `
+                                        <button type="button" class="btn-remove-status" onclick="removeStatusRow('${item.key}')" style="border:none; background:transparent; color:#ef4444; cursor:pointer; font-size:11.5px; padding:0;" title="Eliminar estado">
+                                            <i class="fas fa-trash-alt"></i> Eliminar
+                                        </button>
+                                    ` : ''}
+                                </div>
+
+                                <div style="display:flex; gap:8px; align-items:center; position:relative;">
+                                    <!-- Bolita sutil de color (Trigger del selector de colores) -->
+                                    <button type="button" onclick="toggleColorMenu('${item.key}', event)"
+                                        style="width:20px; height:20px; border-radius:50%; background:${currColorObj.bg}; border:1.5px solid ${currColorObj.text}; cursor:pointer; flex-shrink:0; padding:0; display:inline-flex; align-items:center; justify-content:center; transition:all 0.15s ease;"
+                                        title="Cambiar color (${currColorObj.name})">
+                                        <span style="width:5px; height:5px; border-radius:50%; background:${currColorObj.text}; opacity:0.9;"></span>
                                     </button>
-                                ` : ''}
-                            </div>
 
-                            <div style="display:flex; gap:8px; align-items:center; position:relative;">
-                                <!-- Bolita sutil de color (Trigger del selector de colores) -->
-                                <button type="button" onclick="toggleColorMenu('${item.key}', event)"
-                                    style="width:20px; height:20px; border-radius:50%; background:${currColorObj.bg}; border:1.5px solid ${currColorObj.text}; cursor:pointer; flex-shrink:0; padding:0; display:inline-flex; align-items:center; justify-content:center; transition:all 0.15s ease;"
-                                    title="Cambiar color (${currColorObj.name})">
-                                    <span style="width:5px; height:5px; border-radius:50%; background:${currColorObj.text}; opacity:0.9;"></span>
-                                </button>
+                                    <!-- Campo de Texto para el Nombre del Estado -->
+                                    <input type="text" class="status-input-val" data-key="${item.key}" value="${item.label}" required maxlength="30" style="flex:1; height:38px; padding:0 12px; border:1.5px solid var(--bdr); border-radius:8px; font-size:13px; outline:none; background:white; box-sizing:border-box;">
 
-                                <!-- Campo de Texto para el Nombre del Estado -->
-                                <input type="text" class="status-input-val" data-key="${item.key}" value="${item.label}" required maxlength="30" style="flex:1; height:38px; padding:0 12px; border:1.5px solid var(--bdr); border-radius:8px; font-size:13px; outline:none; background:white; box-sizing:border-box;">
-
-                                <!-- Menu desplegable sutil de colores para este estado -->
-                                <div id="colorMenu-${item.key}" class="color-picker-dropdown"
-                                    style="display:none; position:absolute; top:40px; left:0; z-index:2200; background:white; border-radius:10px; padding:6px 8px; box-shadow:0 6px 18px rgba(0,0,0,0.12); border:1px solid #eaecf0; gap:5px; align-items:center;">
-                                    ${colorDotsHtml}
+                                    <!-- Menu desplegable sutil de colores para este estado -->
+                                    <div id="colorMenu-${item.key}" class="color-picker-dropdown"
+                                        style="display:none; position:absolute; top:40px; left:0; z-index:2200; background:white; border-radius:10px; padding:6px 8px; box-shadow:0 6px 18px rgba(0,0,0,0.12); border:1px solid #eaecf0; gap:5px; align-items:center;">
+                                        ${colorDotsHtml}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
                 });
                 container.innerHTML = html;
             }
 
-            window.toggleColorMenu = function(key, e) {
+            window.toggleColorMenu = function (key, e) {
                 if (e) e.stopPropagation();
                 const menu = document.getElementById('colorMenu-' + key);
                 const isOpened = menu && menu.style.display === 'flex';
@@ -5302,7 +5358,7 @@
                 }
             };
 
-            window.selectRowColor = function(key, colorId, e) {
+            window.selectRowColor = function (key, colorId, e) {
                 if (e) e.stopPropagation();
                 document.querySelectorAll('.status-input-val').forEach(input => {
                     const k = input.getAttribute('data-key');
@@ -5315,12 +5371,12 @@
                 renderRows();
             };
 
-            window.removeStatusRow = function(key) {
+            window.removeStatusRow = function (key) {
                 statusesList = statusesList.filter(s => s.key !== key);
                 renderRows();
             };
 
-            window.addNewStatusRow = function() {
+            window.addNewStatusRow = function () {
                 document.querySelectorAll('.status-input-val').forEach(input => {
                     const k = input.getAttribute('data-key');
                     const found = statusesList.find(s => s.key === k);
@@ -5336,29 +5392,29 @@
             };
 
             const modalHtml = `
-                <div id="manageStatusesModal" onclick="document.querySelectorAll('.color-picker-dropdown').forEach(m => m.style.display = 'none')" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
-                    <div style="background:white; width:90%; max-width:440px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.12); animation: slideUp 0.3s ease;" onclick="event.stopPropagation()">
-                        <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
-                            <h3 style="margin:0; font-size:18px; font-weight:700;"><i class="fas fa-sliders-h" style="margin-right:6px;"></i> Gestionar Nombres y Colores de Estados</h3>
-                            <p style="margin:4px 0 0; font-size:12px; opacity:0.9;">Haz clic en la bolita de color para elegir su tono pastel</p>
-                        </div>
-                        <div style="padding:20px 24px; max-height:70vh; overflow-y:auto;" onclick="document.querySelectorAll('.color-picker-dropdown').forEach(m => m.style.display = 'none')">
-                            <form id="manageStatusesForm">
-                                <div id="statusesInputsContainer"></div>
+                    <div id="manageStatusesModal" onclick="document.querySelectorAll('.color-picker-dropdown').forEach(m => m.style.display = 'none')" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
+                        <div style="background:white; width:90%; max-width:440px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.12); animation: slideUp 0.3s ease;" onclick="event.stopPropagation()">
+                            <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
+                                <h3 style="margin:0; font-size:18px; font-weight:700;"><i class="fas fa-sliders-h" style="margin-right:6px;"></i> Gestionar Nombres y Colores de Estados</h3>
+                                <p style="margin:4px 0 0; font-size:12px; opacity:0.9;">Haz clic en la bolita de color para elegir su tono pastel</p>
+                            </div>
+                            <div style="padding:20px 24px; max-height:70vh; overflow-y:auto;" onclick="document.querySelectorAll('.color-picker-dropdown').forEach(m => m.style.display = 'none')">
+                                <form id="manageStatusesForm">
+                                    <div id="statusesInputsContainer"></div>
 
-                                <button type="button" onclick="addNewStatusRow()" style="width:100%; height:38px; border:1.5px dashed #cbd5e1; background:#f8fafc; color:#475569; font-weight:600; border-radius:8px; cursor:pointer; font-size:12.5px; margin:8px 0 20px; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.15s ease;">
-                                    <i class="fas fa-plus" style="color:var(--accent);"></i> Agregar otro estado
-                                </button>
+                                    <button type="button" onclick="addNewStatusRow()" style="width:100%; height:38px; border:1.5px dashed #cbd5e1; background:#f8fafc; color:#475569; font-weight:600; border-radius:8px; cursor:pointer; font-size:12.5px; margin:8px 0 20px; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.15s ease;">
+                                        <i class="fas fa-plus" style="color:var(--accent);"></i> Agregar otro estado
+                                    </button>
 
-                                <div style="display:flex; gap:10px;">
-                                    <button type="button" onclick="document.getElementById('manageStatusesModal').remove()" style="flex:1; height:42px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
-                                    <button type="submit" style="flex:1; height:42px; border:none; background:var(--accent); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px;"><i class="fas fa-save" style="margin-right:4px;"></i> Guardar Cambios</button>
-                                </div>
-                            </form>
+                                    <div style="display:flex; gap:10px;">
+                                        <button type="button" onclick="document.getElementById('manageStatusesModal').remove()" style="flex:1; height:42px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
+                                        <button type="submit" style="flex:1; height:42px; border:none; background:var(--accent); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px;"><i class="fas fa-save" style="margin-right:4px;"></i> Guardar Cambios</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
 
             const old = document.getElementById('manageStatusesModal');
             if (old) old.remove();
@@ -5450,7 +5506,7 @@
                     parentRow.style.zIndex = '2600';
                     parentRow.classList.add('menu-open');
                 }
-                
+
                 // Smart positioning: check available space below
                 const triggerBtn = event ? (event.currentTarget || event.target.closest('.abt.more')) : null;
                 const rect = triggerBtn ? triggerBtn.getBoundingClientRect() : (menu.parentElement ? menu.parentElement.getBoundingClientRect() : null);
@@ -5469,7 +5525,7 @@
             }
         }
 
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (e.target.closest('.acts-menu-item')) {
                 closeAllActsMenus();
             } else if (!e.target.closest('.acts-menu-container')) {
@@ -5501,13 +5557,13 @@
                 }
             }
 
-            @if(auth()->user()->initial_plan_chosen_at)
-                setTimeout(() => {
-                    if (typeof initTripsTour === 'function') {
-                        initTripsTour();
-                    }
-                }, 700);
-            @endif
+                @if(auth()->user()->initial_plan_chosen_at)
+                    setTimeout(() => {
+                        if (typeof initTripsTour === 'function') {
+                            initTripsTour();
+                        }
+                    }, 700);
+                @endif
         });
 
         function initTripsTour(force = false) {
@@ -5525,20 +5581,20 @@
             const hasMobileNav = isMobile && document.getElementById('viantrypBottomNav');
 
             // Selectores responsivos para Web Escritorio vs Móvil / App
-            const stepPersonalEl = (hasMobileNav && document.getElementById('tabMisViajes')) 
-                ? '#tabMisViajes' 
+            const stepPersonalEl = (hasMobileNav && document.getElementById('tabMisViajes'))
+                ? '#tabMisViajes'
                 : '.sidebar-link[href*="filter=personal"]';
 
-            const stepSharedEl = (hasMobileNav && document.getElementById('tabCompartidos')) 
-                ? '#tabCompartidos' 
+            const stepSharedEl = (hasMobileNav && document.getElementById('tabCompartidos'))
+                ? '#tabCompartidos'
                 : '.sidebar-link[href*="filter=shared"]';
 
-            const stepCreateEl = (hasMobileNav && document.getElementById('fabCreateTripBtn')) 
-                ? '#fabCreateTripBtn' 
+            const stepCreateEl = (hasMobileNav && document.getElementById('fabCreateTripBtn'))
+                ? '#fabCreateTripBtn'
                 : (isMobile ? '.mobile-hamburger-btn' : '.btn-topbar-create');
 
-            const stepProfileEl = (hasMobileNav && document.getElementById('tabPerfilMobile')) 
-                ? '#tabPerfilMobile' 
+            const stepProfileEl = (hasMobileNav && document.getElementById('tabPerfilMobile'))
+                ? '#tabPerfilMobile'
                 : (isMobile ? '.profile-trigger' : '#sidebarProfileGroup');
 
             const driverObj = driver({
@@ -5580,7 +5636,7 @@
                         element: stepCreateEl,
                         popover: {
                             title: 'Crear y Buscar Viajes',
-                            description: 'Utiliza el botón "+ Crear viaje" para comenzar a diseñar una nueva propuesta y el buscador para encontrar cualquier itinerario rápidamente.',
+                            description: 'Utiliza el botón "+ Crear viaje" para comenzar a diseñar un nuevo itinerario y el buscador para encontrar cualquier itinerario rápidamente.',
                             position: isMobile ? 'top' : 'bottom'
                         }
                     },
@@ -5597,9 +5653,9 @@
                     if (driverObj.isLastStep()) {
                         const btns = popover.wrapper.querySelectorAll('button');
                         btns.forEach(btn => {
-                            if (btn.classList.contains('driver-popover-next-btn') || 
-                                btn.classList.contains('driver-popover-done-btn') || 
-                                btn.textContent.includes('Perfil') || 
+                            if (btn.classList.contains('driver-popover-next-btn') ||
+                                btn.classList.contains('driver-popover-done-btn') ||
+                                btn.textContent.includes('Perfil') ||
                                 btn.textContent.includes('Ajustes') ||
                                 btn.textContent.includes('Ir a')) {
                                 btn.onclick = (e) => {
