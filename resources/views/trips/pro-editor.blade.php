@@ -3,34 +3,35 @@
 
 <head>
   <script>
-  (function() {
+    (function () {
       var isCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
-      var isStandalone = window.navigator.standalone === true || 
-                         (window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches));
+      var isStandalone = window.navigator.standalone === true ||
+        (window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches));
       var urlParams = new URLSearchParams(window.location.search);
       var hasAppParam = urlParams.get('app') === '1' || urlParams.get('mode') === 'app';
       var hasWebParam = urlParams.get('web') === '1' || urlParams.get('mode') === 'web';
 
       // Si estamos en un navegador web normal (no Capacitor ni Standalone ni ?app=1), limpiamos cualquier residuo antiguo
       if (hasWebParam || (!isCapacitor && !isStandalone && !hasAppParam)) {
-          try { localStorage.removeItem('viantryp_app_mode'); } catch(e){}
+        try { localStorage.removeItem('viantryp_app_mode'); } catch (e) { }
       } else if (hasAppParam || isCapacitor) {
-          try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
+        try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
       }
 
       var isAppMode = isCapacitor || hasAppParam || (isStandalone && !hasWebParam);
 
       if (isAppMode) {
-          document.documentElement.classList.add('is-viantryp-app');
-          if (document.body) document.body.classList.add('is-viantryp-app');
-          else document.addEventListener('DOMContentLoaded', function() { if(document.body) document.body.classList.add('is-viantryp-app'); });
+        document.documentElement.classList.add('is-viantryp-app');
+        if (document.body) document.body.classList.add('is-viantryp-app');
+        else document.addEventListener('DOMContentLoaded', function () { if (document.body) document.body.classList.add('is-viantryp-app'); });
       }
-  })();
+    })();
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <meta name="google-places-api-key" content="{{ config('services.google.places_api_key', env('GOOGLE_PLACES_API_KEY')) }}">
+  <meta name="google-places-api-key"
+    content="{{ config('services.google.places_api_key', env('GOOGLE_PLACES_API_KEY')) }}">
   <title>Viantryp | Editor de Itinerario</title>
   <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
@@ -106,22 +107,27 @@
         border-radius: 14px !important;
         box-sizing: border-box !important;
       }
+
       .driver-popover-title {
         font-size: 18px !important;
       }
+
       .driver-popover-description {
         font-size: 13px !important;
         line-height: 1.4 !important;
       }
+
       .driver-popover-footer {
         margin-top: 12px !important;
         gap: 6px !important;
       }
+
       .driver-popover-btn {
         padding: 7px 12px !important;
         font-size: 11.5px !important;
         min-height: 34px !important;
       }
+
       .driver-popover-progress-text {
         font-size: 11px !important;
       }
@@ -225,6 +231,7 @@
         font-size: 12px;
       }
     }
+
     #viantrypInlineUpgradeModal,
     #upgradePlanModal,
     .upgrade-premium-modal,
@@ -237,13 +244,16 @@
       #viantrypInlineUpgradeModal {
         padding: 10px 8px !important;
       }
+
       #viantrypInlineUpgradeModal .viantryp-inline-card {
         padding: 22px 16px !important;
         border-radius: 20px !important;
       }
+
       #viantrypInlineUpgradeModal h3 {
         font-size: 18px !important;
       }
+
       #viantrypInlineUpgradeModal p {
         font-size: 13px !important;
       }
@@ -521,7 +531,8 @@
             <div class="element-card type-ubicacion" draggable="true" data-type="ubicacion" data-label="Ubicación">
               <div class="el-drag-handle"><i class="fa-solid fa-ellipsis-vertical"></i><i
                   class="fa-solid fa-ellipsis-vertical"></i></div>
-              <div class="el-icon" style="color:#0ea5e9;background:#e0f2fe"><i class="fa-solid fa-location-dot"></i></div>
+              <div class="el-icon" style="color:#0ea5e9;background:#e0f2fe"><i class="fa-solid fa-location-dot"></i>
+              </div>
               <div class="el-info">
                 <div class="el-name">Ubicación</div>
                 <div class="el-sub">Google Maps o Punto</div>
@@ -554,7 +565,8 @@
         <input type="date" class="day-date-input" id="dayDateInput" oninput="saveDayDate()" onchange="saveDayDate()">
         <span class="day-date-nodate" id="dayNoDate">Sin fecha asignada</span>
         <div style="flex:1"></div>
-        <button type="button" class="day-subbar-delete-btn" id="daySubbarDeleteBtn" onclick="confirmDeleteCurrentDay(event)" title="Eliminar este día">
+        <button type="button" class="day-subbar-delete-btn" id="daySubbarDeleteBtn"
+          onclick="confirmDeleteCurrentDay(event)" title="Eliminar este día">
           <i class="fa-solid fa-trash-can"></i>
           <span class="day-subbar-delete-text">Eliminar día</span>
         </button>
@@ -571,19 +583,24 @@
                 <!-- Botón flotante superior derecho de gestión de foto -->
                 <div class="portada-floating-actions">
                   <div class="portada-photo-dropdown-wrap">
-                    <button type="button" class="portada-glass-btn" id="portadaPhotoActionBtn" onclick="togglePhotoMenu(event)">
-                      <i class="fa-solid fa-camera"></i> <span id="portadaPhotoBtnLabel">Agregar foto</span> <i class="fa-solid fa-chevron-down" style="font-size:10px;margin-left:2px"></i>
+                    <button type="button" class="portada-glass-btn" id="portadaPhotoActionBtn"
+                      onclick="togglePhotoMenu(event)">
+                      <i class="fa-solid fa-camera"></i> <span id="portadaPhotoBtnLabel">Agregar foto</span> <i
+                        class="fa-solid fa-chevron-down" style="font-size:10px;margin-left:2px"></i>
                     </button>
                     <div class="portada-photo-menu" id="portadaPhotoMenu">
-                      <button type="button" class="photo-menu-item" onclick="openUnsplash('portada'); closePhotoMenu();">
+                      <button type="button" class="photo-menu-item"
+                        onclick="openUnsplash('portada'); closePhotoMenu();">
                         <i class="fa-brands fa-unsplash"></i> Buscar en Unsplash
                       </button>
                       <label class="photo-menu-item" style="margin:0;cursor:pointer;">
                         <i class="fa-solid fa-cloud-arrow-up"></i> Subir archivo local
-                        <input type="file" accept="image/*" style="display:none" onchange="handlePortadaUpload(event); closePhotoMenu();">
+                        <input type="file" accept="image/*" style="display:none"
+                          onchange="handlePortadaUpload(event); closePhotoMenu();">
                       </label>
                       <div class="photo-menu-divider" id="photoMenuDivider" style="display:none"></div>
-                      <button type="button" class="photo-menu-item text-danger" id="photoMenuRemoveBtn" onclick="clearPortadaPhoto(event); closePhotoMenu();" style="display:none">
+                      <button type="button" class="photo-menu-item text-danger" id="photoMenuRemoveBtn"
+                        onclick="clearPortadaPhoto(event); closePhotoMenu();" style="display:none">
                         <i class="fa-solid fa-trash-can"></i> Quitar foto
                       </button>
                     </div>
@@ -601,13 +618,15 @@
 
                   <!-- Título Principal Editorial -->
                   <div class="portada-title-wrap">
-                    <input class="portada-title-input" id="portadaTitle" placeholder="Añade un título memorable para tu viaje..."
-                      value="{{ $trip->title ?? '' }}">
+                    <input class="portada-title-input" id="portadaTitle"
+                      placeholder="Añade un título memorable para tu viaje..." value="{{ $trip->title ?? '' }}">
                   </div>
 
                   <!-- Subtítulo / Descripción narrativa editable inline -->
                   <div class="portada-subtitle-wrap">
-                    <textarea class="portada-subtitle-input" id="portadaSubtitle" placeholder="Escribe un subtítulo o una breve historia de este viaje..." rows="1" oninput="autoResizeTextarea(this)"></textarea>
+                    <textarea class="portada-subtitle-input" id="portadaSubtitle"
+                      placeholder="Escribe un subtítulo o una breve historia de este viaje..." rows="1"
+                      oninput="autoResizeTextarea(this)"></textarea>
                   </div>
                 </div>
               </div>
@@ -618,7 +637,8 @@
                 <div class="portada-footer-col" id="colFechas">
                   <div class="pcol-header">
                     <span class="pcol-label"><i class="fa-regular fa-calendar-days"></i> FECHAS</span>
-                    <button type="button" class="pcol-edit-btn" id="btnEditDates" onclick="toggleDatesPopover(event)" title="Editar fechas">
+                    <button type="button" class="pcol-edit-btn" id="btnEditDates" onclick="toggleDatesPopover(event)"
+                      title="Editar fechas">
                       <i class="fa-solid fa-pencil"></i>
                     </button>
                   </div>
@@ -648,7 +668,8 @@
                           value="{{ $trip && $trip->end_date ? \Carbon\Carbon::parse($trip->end_date)->format('Y-m-d') : '' }}">
                       </div>
                       <div class="popover-actions">
-                        <button type="button" class="popover-btn-clear" onclick="clearTripDates()">Aún por definir</button>
+                        <button type="button" class="popover-btn-clear" onclick="clearTripDates()">Aún por
+                          definir</button>
                         <button type="button" class="popover-btn-apply" onclick="applyTripDates()">Listo</button>
                       </div>
                     </div>
@@ -659,10 +680,12 @@
                 <div class="portada-footer-col" id="colViajeros">
                   <div class="pcol-header">
                     <span class="pcol-label"><i class="fa-solid fa-users"></i> VIAJEROS</span>
-                    <button type="button" class="pcol-edit-btn" id="btnEditTravelers" onclick="toggleTravelersPopover(event)" title="Editar viajeros">
+                    <button type="button" class="pcol-edit-btn" id="btnEditTravelers"
+                      onclick="toggleTravelersPopover(event)" title="Editar viajeros">
                       <i class="fa-solid fa-pencil"></i>
                     </button>
-                    <button type="button" class="pcol-visibility-btn" id="btnToggleTravelersVisibility" onclick="toggleTravelersVisibility()" title="Ocultar o mostrar viajeros en la vista pública">
+                    <button type="button" class="pcol-visibility-btn" id="btnToggleTravelersVisibility"
+                      onclick="toggleTravelersVisibility()" title="Ocultar o mostrar viajeros en la vista pública">
                       <i class="fa-solid fa-eye" id="iconTravelersVisibility"></i>
                     </button>
                   </div>
@@ -678,7 +701,8 @@
                     <div class="popover-arrow"></div>
                     <div class="popover-header">
                       <span>Número de Viajeros</span>
-                      <button type="button" class="popover-close" onclick="closeTravelersPopover(event)">&times;</button>
+                      <button type="button" class="popover-close"
+                        onclick="closeTravelersPopover(event)">&times;</button>
                     </div>
                     <div class="popover-body">
                       <div class="traveler-counter-row">
@@ -713,7 +737,8 @@
                 <div class="portada-footer-col" id="colPrecio">
                   <div class="pcol-header">
                     <span class="pcol-label"><i class="fa-solid fa-coins"></i> VALOR TOTAL</span>
-                    <button type="button" class="pcol-edit-btn" id="btnEditPrice" onclick="handlePricePencilClick(event)" title="Editar valor total">
+                    <button type="button" class="pcol-edit-btn" id="btnEditPrice"
+                      onclick="handlePricePencilClick(event)" title="Editar valor total">
                       <i class="fa-solid fa-pencil"></i>
                     </button>
                     <div class="pcol-info-wrap">
@@ -721,10 +746,12 @@
                         <i class="fa-solid fa-circle-info"></i>
                       </button>
                       <div class="pcol-info-tooltip">
-                        Suma calculada automáticamente según los servicios agregados. Puedes escribir un monto manual en cualquier momento.
+                        Suma calculada automáticamente según los servicios agregados. Puedes escribir un monto manual en
+                        cualquier momento.
                       </div>
                     </div>
-                    <button type="button" class="pcol-visibility-btn" id="btnTogglePriceVisibility" onclick="togglePriceVisibility()" title="Ocultar o mostrar precio en la vista pública">
+                    <button type="button" class="pcol-visibility-btn" id="btnTogglePriceVisibility"
+                      onclick="togglePriceVisibility()" title="Ocultar o mostrar precio en la vista pública">
                       <i class="fa-solid fa-eye" id="iconPriceVisibility"></i>
                     </button>
                   </div>
@@ -755,9 +782,11 @@
 
                     <!-- Estado Manual (Sobrescrito): Aviso interactivo con botón de restaurar -->
                     <div class="price-manual-notice" id="priceManualNotice" style="display:none">
-                      <span class="pmn-label"><i class="fa-solid fa-pencil" style="font-size:9.5px"></i> Monto manual</span>
+                      <span class="pmn-label"><i class="fa-solid fa-pencil" style="font-size:9.5px"></i> Monto
+                        manual</span>
                       <span class="pmn-sep">•</span>
-                      <button type="button" class="price-restore-btn" id="portadaPriceRefresh" onclick="restoreAutoCalculatedPrice()" title="Restaurar suma automática de servicios">
+                      <button type="button" class="price-restore-btn" id="portadaPriceRefresh"
+                        onclick="restoreAutoCalculatedPrice()" title="Restaurar suma automática de servicios">
                         <i class="fa-solid fa-rotate-left"></i> Restaurar suma automática
                       </button>
                     </div>
@@ -876,16 +905,23 @@
 
   <!-- DATE MISMATCH WARNING MODAL -->
   <div class="confirm-overlay" id="dateMismatchOverlay" style="z-index: 9999999;">
-    <div class="confirm-box" style="text-align: center; max-width: 440px; padding: 30px 26px; border-radius: 20px; background: #ffffff; box-shadow: 0 20px 45px rgba(0,0,0,0.25);">
-      <div class="confirm-title" id="dateMismatchTitle" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 19px; font-weight: 700; color: #0f172a; margin-bottom: 12px; letter-spacing: -0.01em;">Aviso de fecha</div>
-      <div class="confirm-msg" id="dateMismatchMsg" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13.5px; line-height: 1.6; color: #475569; margin-bottom: 24px;">
-        No coincide el día de inicio de este elemento con el día que lo tienes en el itinerario. Si decides continuar de esta manera dale a «Aceptar», o puedes modificar la fecha si lo prefieres.
+    <div class="confirm-box"
+      style="text-align: center; max-width: 440px; padding: 30px 26px; border-radius: 20px; background: #ffffff; box-shadow: 0 20px 45px rgba(0,0,0,0.25);">
+      <div class="confirm-title" id="dateMismatchTitle"
+        style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 19px; font-weight: 700; color: #0f172a; margin-bottom: 12px; letter-spacing: -0.01em;">
+        Aviso de fecha</div>
+      <div class="confirm-msg" id="dateMismatchMsg"
+        style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13.5px; line-height: 1.6; color: #475569; margin-bottom: 24px;">
+        No coincide el día de inicio de este elemento con el día que lo tienes en el itinerario. Si decides continuar de
+        esta manera dale a «Aceptar», o puedes modificar la fecha si lo prefieres.
       </div>
       <div class="confirm-btns" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-        <button type="button" class="btn btn-ghost" id="dateMismatchCancelBtn" style="padding: 10px 18px; border-radius: 12px; font-weight: 600; font-size: 13.5px; cursor: pointer; font-family: 'Inter', sans-serif;">
+        <button type="button" class="btn btn-ghost" id="dateMismatchCancelBtn"
+          style="padding: 10px 18px; border-radius: 12px; font-weight: 600; font-size: 13.5px; cursor: pointer; font-family: 'Inter', sans-serif;">
           Modificar fecha
         </button>
-        <button type="button" class="btn btn-primary" id="dateMismatchOkBtn" style="padding: 10px 24px; border-radius: 12px; font-weight: 700; background: #1eaace; border: none; color: white; cursor: pointer; font-size: 13.5px; font-family: 'Inter', sans-serif;">
+        <button type="button" class="btn btn-primary" id="dateMismatchOkBtn"
+          style="padding: 10px 24px; border-radius: 12px; font-weight: 700; background: #1eaace; border: none; color: white; cursor: pointer; font-size: 13.5px; font-family: 'Inter', sans-serif;">
           Aceptar
         </button>
       </div>
@@ -965,7 +1001,7 @@
             element: '.portada-card',
             popover: {
               title: 'Banner Principal',
-              description: 'En esta sección defines la información básica (foto y fechas) que se mostrará en el gran banner de inicio de tu viaje.',
+              description: 'Personaliza tu viaje añadiendo la imagen de portada, las fechas y la información básica que le darán vida a tu itinerario.',
               position: isMobile ? 'top' : 'bottom'
             },
             onHighlightStarted: (element) => {
@@ -1075,7 +1111,8 @@
         <span class="pro-preview-badge"><i class="fa-solid fa-eye"></i> Vista Previa</span>
       </div>
       <div class="pro-preview-bar-actions">
-        <button type="button" class="pro-preview-close-btn" onclick="closeProPreviewModal()" title="Cerrar vista previa">
+        <button type="button" class="pro-preview-close-btn" onclick="closeProPreviewModal()"
+          title="Cerrar vista previa">
           <i class="fa-solid fa-times"></i> <span>Cerrar</span>
         </button>
       </div>
