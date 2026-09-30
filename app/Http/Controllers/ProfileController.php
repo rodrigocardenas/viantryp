@@ -137,16 +137,25 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         $request->validate([
-            'avatar' => 'required|image|max:2048'
+            'avatar' => 'required|image|max:10240'
         ]);
 
         if ($request->hasFile('avatar')) {
+            // Eliminar avatar anterior del almacenamiento si era un archivo local
+            if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar);
+            }
+
             $path = $request->file('avatar')->store('avatars', 'public');
             $user->update(['avatar' => $path]);
-            return response()->json(['success' => true, 'url' => asset('storage/' . $path)]);
+            return response()->json([
+                'success' => true, 
+                'url' => asset('storage/' . $path),
+                'message' => 'Foto de perfil actualizada con éxito'
+            ]);
         }
 
-        return response()->json(['success' => false], 400);
+        return response()->json(['success' => false, 'message' => 'No se recibió ninguna imagen'], 400);
     }
 
     public function uploadLogo(Request $request)
@@ -183,9 +192,11 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         if ($user->avatar) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar);
+            if (!str_starts_with($user->avatar, 'http')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar);
+            }
             $user->update(['avatar' => null]);
-            return response()->json(['success' => true, 'message' => 'Avatar eliminado']);
+            return response()->json(['success' => true, 'message' => 'Foto de perfil eliminada']);
         }
         return response()->json(['success' => false, 'message' => 'No hay avatar para eliminar'], 400);
     }

@@ -2014,7 +2014,8 @@
                         style="display: flex; align-items: center; gap: 24px; margin-bottom: 12px; border-bottom: 1px solid #f1f5f9; padding-bottom: 24px;">
                         <div class="avatar-wrapper" style="position: relative; display: inline-block;">
                           <div class="avatar-big" id="avatarBig"
-                            style="width: 100px; height: 100px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-size: 32px; font-weight: 700; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer;">
+                            onclick="document.getElementById('avatarUpload').click();" title="Haz clic para cambiar foto"
+                            style="width: 100px; height: 100px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-size: 32px; font-weight: 700; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; transition: opacity 0.2s;">
                             <span id="avatarInitial"
                               style="{{ $user->avatar ? 'display:none' : '' }}; color: #ffffff;">{{ $user->display_initials }}</span>
                             <img id="avatarImg"
@@ -2022,14 +2023,14 @@
                               alt=""
                               style="{{ $user->avatar ? '' : 'display:none' }}; width: 100%; height: 100%; object-fit: cover;">
                           </div>
-                          <input type="file" id="avatarUpload" accept="image/jpeg, image/png, image/webp"
+                          <input type="file" id="avatarUpload" accept="image/*"
                             style="display:none">
                         </div>
                         <div class="avatar-actions-col" style="display: flex; gap: 12px; align-items: center;">
                           <button type="button" onclick="document.getElementById('avatarUpload').click();"
-                            class="btn-upload-new"
+                            class="btn-upload-new avatar-btn-trigger"
                             style="background: var(--accent); color: #ffffff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s;">
-                            Subir foto
+                            {{ $user->avatar ? 'Cambiar foto' : 'Subir foto' }}
                           </button>
                           <button type="button" id="avatarDeleteBtn"
                             style="{{ $user->avatar ? '' : 'display:none' }}; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s;"
@@ -2166,12 +2167,12 @@
                                 alt=""
                                 style="{{ $user->avatar ? '' : 'display:none;' }} width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <input type="file" id="avatarUpload" accept="image/jpeg, image/png, image/webp" style="display:none">
+                            <input type="file" id="avatarUpload" accept="image/*" style="display:none">
                           </div>
                           <div class="avatar-actions-col" style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
                             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                               <button type="button" onclick="document.getElementById('avatarUpload').click();"
-                                class="btn-upload-new"
+                                class="btn-upload-new avatar-btn-trigger"
                                 style="background: var(--accent); color: #ffffff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s;">
                                 {{ $user->avatar ? 'Cambiar foto' : 'Subir foto' }}
                               </button>
@@ -2181,7 +2182,7 @@
                                 Eliminar foto
                               </button>
                             </div>
-                            <span style="font-size: 11.5px; color: #94a3b8;">JPG, PNG o WEBP · Máx. 2MB</span>
+                            <span style="font-size: 11.5px; color: #94a3b8;">JPG, PNG o WEBP · Optimización automática</span>
                           </div>
                         </div>
 
@@ -3285,82 +3286,197 @@
         });
       }
 
-      // AVATAR UPLOAD
-      var avatarInput = document.getElementById('avatarUpload');
-      if (avatarInput) {
-        avatarInput.addEventListener('change', function () {
-          var file = this.files[0];
-          if (!file) return;
-
-          if (file.size > 2 * 1024 * 1024) {
-            showToast('La imagen es muy pesada. Máximo 2MB.');
-            this.value = '';
-            return;
+      // AVATAR COMPRESSION & CROP HELPER
+      function compressAndCropAvatar(file, maxSize = 600, quality = 0.88) {
+        return new Promise((resolve) => {
+          if (!file || !file.type || !file.type.startsWith('image/')) {
+            return resolve(file);
           }
+          const reader = new FileReader();
+          reader.onerror = () => resolve(file);
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onerror = () => resolve(file);
+            img.onload = () => {
+              try {
+                const canvas = document.createElement('canvas');
+                const width = img.naturalWidth || img.width;
+                const height = img.naturalHeight || img.height;
 
-          const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
-          if (!validTypes.includes(file.type)) {
-            showToast('Formato no válido. Usa JPG, PNG o WEBP.');
-            this.value = '';
-            return;
-          }
+                // Center-crop square for avatar
+                const minDim = Math.min(width, height);
+                const startX = (width - minDim) / 2;
+                const startY = (height - minDim) / 2;
 
-          const formData = new FormData();
-          formData.append('avatar', file);
+                const targetSize = Math.min(minDim, maxSize);
+                canvas.width = targetSize;
+                canvas.height = targetSize;
 
-          fetch('{{ route('profile.upload.avatar') }}', {
-            method: 'POST',
-            headers: { 'X-CSRF-TOKEN': csrfToken },
-            body: formData
-          })
-            .then(res => res.json())
-            .then(res => {
-              if (res.success) {
-                var img = document.getElementById('avatarImg');
-                img.src = res.url;
-                img.style.display = 'block';
-                document.getElementById('avatarInitial').style.display = 'none';
-                document.getElementById('avatarDeleteBtn').style.display = 'flex';
-                showToast('Avatar actualizado');
+                const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, targetSize, targetSize);
+
+                canvas.toBlob((blob) => {
+                  if (blob) {
+                    const compressed = new File([blob], 'avatar.jpg', { type: 'image/jpeg', lastModified: Date.now() });
+                    resolve(compressed);
+                  } else {
+                    resolve(file);
+                  }
+                }, 'image/jpeg', quality);
+              } catch (err) {
+                console.warn('Canvas crop error, fallback to original', err);
+                resolve(file);
               }
-            });
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
         });
       }
+
+      // AVATAR UPLOAD HANDLERS
+      document.querySelectorAll('input[type="file"][id="avatarUpload"]').forEach(avatarInput => {
+        avatarInput.addEventListener('change', async function () {
+          const file = this.files[0];
+          if (!file) return;
+
+          const avatarContainers = document.querySelectorAll('.avatar-big, #avatarBig');
+          const triggerBtns = document.querySelectorAll('.btn-upload-new, .avatar-btn-trigger');
+          const prevBtnTexts = [];
+          triggerBtns.forEach((btn, i) => {
+            prevBtnTexts[i] = btn.textContent;
+            btn.textContent = 'Subiendo...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+          });
+          avatarContainers.forEach(el => {
+            el.style.opacity = '0.5';
+            el.style.pointerEvents = 'none';
+          });
+
+          // Previsualización instantánea local
+          const tempUrl = URL.createObjectURL(file);
+          document.querySelectorAll('#avatarImg').forEach(img => {
+            img.src = tempUrl;
+            img.style.display = 'block';
+          });
+          document.querySelectorAll('#avatarInitial').forEach(ini => ini.style.display = 'none');
+
+          try {
+            // Optimizar y recortar imagen en el navegador al instante
+            const optimizedFile = await compressAndCropAvatar(file, 600, 0.88);
+
+            const formData = new FormData();
+            formData.append('avatar', optimizedFile);
+
+            const response = await fetch('{{ route('profile.upload.avatar') }}', {
+              method: 'POST',
+              headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+              },
+              body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+              const finalUrl = data.url;
+              document.querySelectorAll('#avatarImg').forEach(img => {
+                img.src = finalUrl;
+                img.style.display = 'block';
+              });
+              document.querySelectorAll('#avatarInitial').forEach(ini => ini.style.display = 'none');
+              document.querySelectorAll('#avatarDeleteBtn').forEach(btn => btn.style.display = 'inline-block');
+              triggerBtns.forEach(btn => btn.textContent = 'Cambiar foto');
+
+              // Actualizar avatares en la barra de navegación / sidebar
+              document.querySelectorAll('#navAvatar img, .profile-trigger .avatar img, .ubadge .avatar img').forEach(img => {
+                img.src = finalUrl;
+              });
+
+              showToast('Foto de perfil actualizada con éxito');
+            } else {
+              showToast(data.message || 'No se pudo actualizar la foto de perfil');
+            }
+          } catch (err) {
+            console.error('Avatar upload error:', err);
+            showToast('Error de conexión al subir la foto de perfil');
+          } finally {
+            avatarContainers.forEach(el => {
+              el.style.opacity = '1';
+              el.style.pointerEvents = 'auto';
+            });
+            triggerBtns.forEach((btn, i) => {
+              btn.disabled = false;
+              btn.style.opacity = '1';
+              if (btn.textContent === 'Subiendo...') {
+                btn.textContent = prevBtnTexts[i] || 'Cambiar foto';
+              }
+            });
+            avatarInput.value = '';
+          }
+        });
+      });
 
       // AVATAR EDIT BTN
       var avatarEditBtn = document.querySelector('.avatar-edit-btn');
       if (avatarEditBtn) {
         avatarEditBtn.addEventListener('click', function () {
-          document.getElementById('avatarUpload').click();
+          const firstUpload = document.getElementById('avatarUpload');
+          if (firstUpload) firstUpload.click();
         });
       }
 
       // AVATAR DELETE BTN
-      var avatarDeleteBtn = document.getElementById('avatarDeleteBtn');
-      if (avatarDeleteBtn) {
-        avatarDeleteBtn.addEventListener('click', function () {
-          if (confirm('¿Estás seguro de que quieres eliminar tu foto de perfil?')) {
-            fetch('{{ route('profile.delete.avatar') }}', {
+      document.querySelectorAll('#avatarDeleteBtn').forEach(btn => {
+        btn.addEventListener('click', async function () {
+          if (!confirm('¿Estás seguro de que quieres eliminar tu foto de perfil?')) return;
+
+          btn.disabled = true;
+          btn.style.opacity = '0.6';
+
+          try {
+            const response = await fetch('{{ route('profile.delete.avatar') }}', {
               method: 'POST',
-              headers: { 'X-CSRF-TOKEN': csrfToken },
-            })
-              .then(res => res.json())
-              .then(res => {
-                if (res.success) {
-                  document.getElementById('avatarImg').style.display = 'none';
-                  document.getElementById('avatarInitial').style.display = 'block';
-                  avatarDeleteBtn.style.display = 'none';
+              headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+              }
+            });
+            const data = await response.json();
 
-                  // Actualizar avatares de navegación
-                  var navAvatars = document.querySelectorAll('.avatar img');
-                  navAvatars.forEach(img => img.parentElement.innerHTML = document.getElementById('avatarInitial').textContent);
+            if (response.ok && data.success) {
+              document.querySelectorAll('#avatarImg').forEach(img => {
+                img.style.display = 'none';
+                img.src = '';
+              });
+              document.querySelectorAll('#avatarInitial').forEach(ini => ini.style.display = 'block');
+              document.querySelectorAll('#avatarDeleteBtn').forEach(b => b.style.display = 'none');
+              document.querySelectorAll('.btn-upload-new, .avatar-btn-trigger').forEach(b => b.textContent = 'Subir foto');
 
-                  showToast('Foto de perfil eliminada');
+              // Actualizar avatares de navegación a iniciales
+              const initialText = (document.querySelector('#avatarInitial') || {}).textContent || '';
+              document.querySelectorAll('.avatar img').forEach(img => {
+                if (img.parentElement && img.parentElement.id !== 'avatarBig') {
+                  img.parentElement.textContent = initialText;
                 }
               });
+
+              showToast('Foto de perfil eliminada');
+            } else {
+              showToast(data.message || 'Error al eliminar la foto');
+            }
+          } catch (err) {
+            showToast('Error de conexión al eliminar la foto');
+          } finally {
+            btn.disabled = false;
+            btn.style.opacity = '1';
           }
         });
-      }
+      });
 
       // Auto-open upgrade modal if ?upgrade=true
       const upgradeUrlParams = new URLSearchParams(window.location.search);

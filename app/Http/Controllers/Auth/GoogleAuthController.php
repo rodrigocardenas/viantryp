@@ -37,8 +37,8 @@ class GoogleAuthController extends Controller
             $user = User::where('google_id', $googleUser->getId())->first();
 
             if ($user) {
-                // Sincronizar el avatar de Google cada vez que el usuario inicia sesión.
-                if ($googleUser->getAvatar()) {
+                // Sincronizar el avatar de Google solo si el usuario aún no tiene avatar o si aún usa el avatar de Google (no uno personalizado)
+                if ($googleUser->getAvatar() && (empty($user->avatar) || str_starts_with($user->avatar, 'http'))) {
                     $user->update(['avatar' => $googleUser->getAvatar()]);
                 }
             } else {
@@ -46,11 +46,13 @@ class GoogleAuthController extends Controller
                 $user = User::where('email', $googleUser->getEmail())->first();
 
                 if ($user) {
-                    // Update existing user with Google ID
-                    $user->update([
+                    $updateFields = [
                         'google_id' => $googleUser->getId(),
-                        'avatar' => $googleUser->getAvatar(),
-                    ]);
+                    ];
+                    if ($googleUser->getAvatar() && (empty($user->avatar) || str_starts_with($user->avatar, 'http'))) {
+                        $updateFields['avatar'] = $googleUser->getAvatar();
+                    }
+                    $user->update($updateFields);
                 } else {
                     $fullName = $googleUser->getName();
                     $parts = explode(' ', trim($fullName));
@@ -139,7 +141,7 @@ class GoogleAuthController extends Controller
                 if ($googleId && !$user->google_id) {
                     $updateData['google_id'] = $googleId;
                 }
-                if ($avatar) {
+                if ($avatar && (empty($user->avatar) || str_starts_with($user->avatar, 'http'))) {
                     $updateData['avatar'] = $avatar;
                 }
                 if (!empty($updateData)) {
