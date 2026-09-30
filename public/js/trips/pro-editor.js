@@ -39,6 +39,9 @@ window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
                 <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>50 consultas en Google Places activas</span>
               </div>
               <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+                <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Tryp IA (Asistente de Viantryp) Ilimitado</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
                 <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>20 archivos adjuntos por itinerario</span>
               </div>
               <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; font-weight:600;">
@@ -107,6 +110,9 @@ window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
           </div>
           <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
             <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>50 consultas en Google Places activas</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Tryp IA (Asistente de Viantryp) Ilimitado</span>
           </div>
           <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
             <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>20 archivos adjuntos por itinerario</span>
@@ -1488,6 +1494,41 @@ function closeConfirm() { document.getElementById('confirmOverlay').classList.re
 document.getElementById('confirmOkBtn').addEventListener('click', () => { if (confirmCallback) confirmCallback(); closeConfirm() });
 document.getElementById('confirmOverlay').addEventListener('click', e => { if (e.target === document.getElementById('confirmOverlay')) closeConfirm() });
 
+// DATE MISMATCH WARNING
+let dateMismatchCallback = null;
+function openDateMismatchWarning(msg, cb) {
+  dateMismatchCallback = typeof cb === 'function' ? cb : null;
+  const overlay = document.getElementById('dateMismatchOverlay');
+  const msgEl = document.getElementById('dateMismatchMsg');
+  const defaultMsg = 'No coincide el día de inicio de este elemento con el día que lo tienes en el itinerario. Si decides continuar de esta manera dale a «Aceptar», o puedes modificar la fecha si lo prefieres.';
+  if (msgEl) msgEl.textContent = msg || defaultMsg;
+  if (overlay) overlay.classList.add('open');
+}
+function cancelDateMismatchWarning() {
+  const overlay = document.getElementById('dateMismatchOverlay');
+  if (overlay) overlay.classList.remove('open');
+  dateMismatchCallback = null;
+}
+function closeDateMismatchWarning() {
+  const overlay = document.getElementById('dateMismatchOverlay');
+  if (overlay) overlay.classList.remove('open');
+  if (dateMismatchCallback) {
+    const cb = dateMismatchCallback;
+    dateMismatchCallback = null;
+    cb();
+  }
+}
+window.openDateMismatchWarning = openDateMismatchWarning;
+window.closeDateMismatchWarning = closeDateMismatchWarning;
+window.cancelDateMismatchWarning = cancelDateMismatchWarning;
+
+const dmOkBtn = document.getElementById('dateMismatchOkBtn');
+if (dmOkBtn) dmOkBtn.addEventListener('click', closeDateMismatchWarning);
+const dmCancelBtn = document.getElementById('dateMismatchCancelBtn');
+if (dmCancelBtn) dmCancelBtn.addEventListener('click', cancelDateMismatchWarning);
+const dmOverlay = document.getElementById('dateMismatchOverlay');
+if (dmOverlay) dmOverlay.addEventListener('click', e => { if (e.target === dmOverlay) cancelDateMismatchWarning(); });
+
 // RENDER
 function renderCanvas() {
   updatePortadaPriceFromServices();
@@ -1552,6 +1593,22 @@ function getItemDateTime(item) {
   }
 }
 
+function getItemStartDate(item) {
+  if (!item) return null;
+  const d = item.data || item;
+  let dt = (typeof getItemDateTime === 'function') ? getItemDateTime(item) : null;
+  if (!dt && d) {
+    dt = d.salida || d.checkin || d.fecha || d.start_date || null;
+  }
+  if (!dt || typeof dt !== 'string') return null;
+  const str = dt.trim();
+  if (str.includes('T')) return str.split('T')[0];
+  if (str.includes(' ')) return str.split(' ')[0];
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+  return null;
+}
+window.getItemStartDate = getItemStartDate;
+
 function getItemTimeStr(item) {
   const dt = getItemDateTime(item);
   if (!dt) return '';
@@ -1599,19 +1656,9 @@ function getItemTimeOnly(dt) {
 
 function sortDayItemsChronologically(arr, dayIdx) {
   if (!arr || arr.length <= 1) return;
-  const targetDate = (typeof dayIdx === 'number' && dayDates[dayIdx]) ? dayDates[dayIdx] : null;
   const itemsWithDates = [];
   const indices = [];
   arr.forEach((item, idx) => {
-    if (targetDate && item && item.data) {
-      const d = item.data;
-      if (item.type === 'flight' && d.salida) d.salida = updateDateTimePart(d.salida, targetDate);
-      if (item.type === 'alojamiento' && d.checkin) d.checkin = updateDateTimePart(d.checkin, targetDate);
-      if (item.type === 'transporte' && d.salida) d.salida = updateDateTimePart(d.salida, targetDate);
-      if (item.type === 'actividad' && d.fecha) d.fecha = updateDateTimePart(d.fecha, targetDate);
-      if (item.type === 'comida' && d.fecha) d.fecha = updateDateTimePart(d.fecha, targetDate);
-      if (item.type === 'tour' && d.fecha) d.fecha = updateDateTimePart(d.fecha, targetDate);
-    }
     const dt = getItemDateTime(item);
     if (dt) {
       itemsWithDates.push({ item, dt });
@@ -2118,6 +2165,24 @@ function buildItem(item, idx) {
     <button class="item-action-btn" onclick="duplicateItem(${idx})" title="Duplicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
     <button class="item-action-btn delete" onclick="deleteItem(${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
   </div>`;
+
+  // Advertencia visual si la fecha inicial no coincide con la fecha del día
+  if (typeof currentDay === 'number' && dayDates && dayDates[currentDay]) {
+    const currentDayDate = dayDates[currentDay];
+    const itemStartDate = getItemStartDate(item);
+    if (itemStartDate && currentDayDate && itemStartDate !== currentDayDate) {
+      const banner = document.createElement('div');
+      banner.className = 'item-date-mismatch-banner';
+      banner.style.cssText = 'margin: 6px 12px 10px 12px; padding: 6px 10px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; font-size: 11.5px; font-weight: 600; color: #b45309; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;';
+      banner.title = 'Haz clic para ver aviso';
+      banner.innerHTML = `<span style="font-size: 13px;">⚠️</span><span>No coincide el día de inicio de este elemento con este día del itinerario</span>`;
+      banner.onclick = (e) => {
+        e.stopPropagation();
+        openDateMismatchWarning('No coincide el día de inicio de este elemento con el día que lo tienes en el itinerario. Si decides continuar de esta manera dale a «Aceptar», o puedes modificar la fecha si lo prefieres.');
+      };
+      el.appendChild(banner);
+    }
+  }
 
   if (['titulo', 'texto', 'imagen', 'gif', 'galeria', 'ubicacion'].includes(item.type)) {
     el.style.position = 'relative';
@@ -4658,13 +4723,29 @@ document.getElementById('modalSave').addEventListener('click', () => {
     }
   }
 
-  const item = { type, data };
-  const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
-  if (editingIndex !== null) { arr[editingIndex] = item; showToast('<i class="fa-solid fa-pencil"></i>', 'Elemento actualizado') }
-  else { arr.push(item); showToast('<i class="fa-solid fa-check"></i>', 'Elemento agregado') }
-  unsavedChanges = true;
-  renderCanvas(); closeModal();
-  autoSaveProTrip();
+  const executeSave = () => {
+    const item = { type, data };
+    const arr = currentDay === 'portada' ? portadaItems : currentDay === 'cierre' ? cierreItems : days[currentDay];
+    if (editingIndex !== null) { arr[editingIndex] = item; showToast('<i class="fa-solid fa-pencil"></i>', 'Elemento actualizado') }
+    else { arr.push(item); showToast('<i class="fa-solid fa-check"></i>', 'Elemento agregado') }
+    unsavedChanges = true;
+    renderCanvas(); closeModal();
+    autoSaveProTrip();
+  };
+
+  // Comprobar coincidencia de fecha con el día actual del itinerario
+  if (typeof currentDay === 'number' && dayDates && dayDates[currentDay]) {
+    const currentDayDate = dayDates[currentDay];
+    const itemStartDate = getItemStartDate({ type, data });
+    if (itemStartDate && currentDayDate && itemStartDate !== currentDayDate) {
+      openDateMismatchWarning('No coincide el día de inicio de este elemento con el día que lo tienes en el itinerario. Si decides continuar de esta manera dale a «Aceptar», o puedes modificar la fecha si lo prefieres.', () => {
+        executeSave();
+      });
+      return;
+    }
+  }
+
+  executeSave();
 });
 
 // TOAST

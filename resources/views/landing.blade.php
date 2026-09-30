@@ -6453,7 +6453,7 @@
             <li><i class="fas fa-check"></i> 1 itinerario activo</li>
             <li><i class="fas fa-check"></i> Fotos Unsplash & GIFs ilimitados</li>
             <li><i class="fas fa-check"></i> 5 consultas en Google Places activas</li>
-            <li><i class="fas fa-check"></i> 5 consultas Tryp IA por viaje</li>
+            <li><i class="fas fa-check"></i> 5 consultas Tryp IA por viaje (máx. 2 elementos por consulta)</li>
             <li><i class="fas fa-check"></i> 5 archivos adjuntos por itinerario</li>
             <li><i class="fas fa-check"></i> Personalización de colores y temas</li>
           </ul>
@@ -6482,7 +6482,7 @@
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>2 colaboradores de edición de viaje</strong></li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>50 consultas en Google Places activas</strong></li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>20 archivos adjuntos por itinerario</strong></li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Tryp IA (Asistente de Viantryp) Ilimitado</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Tryp IA (Asistente de Viantryp) Ilimitado (máx. 2 elementos por consulta)</li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Exportación de PDF</strong></li>
           </ul>
           <a href="{{ route('plans.redirect') }}" class="plan-btn btn-pro"
@@ -6507,6 +6507,7 @@
             <li><i class="fas fa-check"></i> <strong>Colaboradores y editores ilimitados</strong></li>
             <li><i class="fas fa-check"></i> <strong>Consultas en Google Places ilimitadas</strong></li>
             <li><i class="fas fa-check"></i> <strong>Archivos adjuntos ilimitados</strong></li>
+            <li><i class="fas fa-check"></i> <strong>Tryp IA Ilimitado</strong> (máx. 2 elementos por consulta)</li>
             <li><i class="fas fa-check"></i> <strong>Marca Blanca: Logo propio de tu agencia en web y PDF</strong></li>
             <li><i class="fas fa-check"></i> Soporte prioritario dedicado</li>
           </ul>

@@ -63,6 +63,9 @@ class TripAiController extends Controller
             if (!is_array($files)) {
                 $files = [$files];
             }
+            if (count($files) > 2) {
+                $files = array_slice($files, 0, 2);
+            }
 
             DB::transaction(function () use ($files, $trip, &$uploadedFilesInfo, &$createdDocuments) {
                 foreach ($files as $file) {
@@ -145,6 +148,9 @@ class TripAiController extends Controller
 
         $respText = $aiResult['response_text'] ?? ($aiResult['message'] ?? 'He procesado tu información.');
         $actions = $aiResult['actions'] ?? ($aiResult['suggested_actions'] ?? []);
+        if (count($actions) > 2) {
+            $actions = array_slice($actions, 0, 2);
+        }
 
         return response()->json([
             'success' => $aiResult['success'] ?? true,

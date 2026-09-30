@@ -2430,6 +2430,9 @@ window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
                 <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>50 consultas en Google Places activas</span>
               </div>
               <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+                <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Tryp IA (Asistente de Viantryp) Ilimitado</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
                 <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>20 archivos adjuntos por itinerario</span>
               </div>
               <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; font-weight:600;">
@@ -2498,6 +2501,9 @@ window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
           </div>
           <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
             <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>50 consultas en Google Places activas</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
+            <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>Tryp IA (Asistente de Viantryp) Ilimitado</span>
           </div>
           <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#334155; margin-bottom:8px; font-weight:600;">
             <i class="fa-solid fa-circle-check" style="color:#1eaace;"></i> <span>20 archivos adjuntos por itinerario</span>

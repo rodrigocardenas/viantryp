@@ -130,6 +130,11 @@ class TripAiService
             $rawItems = $parsedJson['items'] ?? ($parsedJson['actions'] ?? []);
             $normalizedItems = $this->normalizeActions($rawItems, $trip);
 
+            // Regla estricta para todos los planes: Máximo 2 elementos por prompt para garantizar respuestas ultra rápidas
+            if (count($normalizedItems) > 2) {
+                $normalizedItems = array_slice($normalizedItems, 0, 2);
+            }
+
             return [
                 'success' => true,
                 'response_text' => $respMsg,
@@ -220,7 +225,15 @@ CONTEXTO DEL VIAJE ACTUAL
 - ORDENA TODOS LOS ELEMENTOS CRONOLÓGICAMENTE por `start_date` y luego por `start_time`.
 
 ==================================================
-4. FORMATO DE RESPUESTA (JSON SCHEMA PURO OBLIGATORIO)
+4. REGLA ESTRICTA DE VELOCIDAD: MÁXIMO 2 ELEMENTOS
+==================================================
+- DEBES EXTRAER Y RETORNAR COMO MÁXIMO 2 ELEMENTOS / ACCIONES en el arreglo "items".
+- Si el usuario proporciona 3 o más reservas, actividades, vuelos o elementos (ya sea en texto o en archivos adjuntos), PROCESA ÚNICAMENTE LOS DOS PRIMEROS (los cronológicamente iniciales o más relevantes) e IGNORA POR COMPLETO LOS DEMÁS.
+- Esto es fundamental para reducir el tiempo de razonamiento y garantizar una respuesta ultra rápida e instantánea.
+- Si el usuario incluyó más de 2 elementos, incluye una breve aclaración en "message" como: "He procesado los 2 primeros elementos para responder con la mayor rapidez. Puedes agregar los demás en otra consulta."
+
+==================================================
+5. FORMATO DE RESPUESTA (JSON SCHEMA PURO OBLIGATORIO)
 ==================================================
 Debes responder SIEMPRE con un único objeto JSON válido con esta estructura exacta (sin markdown extra ni bloques fuera de JSON):
 
@@ -623,9 +636,11 @@ PROMPT;
                 }
             }
 
+            $actions = array_slice($actions, 0, 2);
+
             return [
                 'success' => true,
-                'message' => "He recibido y analizado **{$fileCount} documento(s)**. He generado las tarjetas correspondientes con los datos extraídos para que puedas agregarlas al lienzo.",
+                'message' => "He recibido y analizado **{$fileCount} documento(s)**. He generado las tarjetas correspondientes (hasta 2 elementos) para que puedas agregarlas al lienzo.",
                 'actions' => $actions
             ];
         }

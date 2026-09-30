@@ -36,7 +36,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
   <link
-    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
   <link
     href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap"
@@ -871,6 +871,24 @@
       <div class="confirm-msg" id="confirmMsg">Esta acción no se puede deshacer.</div>
       <div class="confirm-btns"><button class="btn btn-ghost" onclick="closeConfirm()">Cancelar</button><button
           class="btn btn-danger" id="confirmOkBtn">🗑 Eliminar</button></div>
+    </div>
+  </div>
+
+  <!-- DATE MISMATCH WARNING MODAL -->
+  <div class="confirm-overlay" id="dateMismatchOverlay" style="z-index: 9999999;">
+    <div class="confirm-box" style="text-align: center; max-width: 440px; padding: 30px 26px; border-radius: 20px; background: #ffffff; box-shadow: 0 20px 45px rgba(0,0,0,0.25);">
+      <div class="confirm-title" id="dateMismatchTitle" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 19px; font-weight: 700; color: #0f172a; margin-bottom: 12px; letter-spacing: -0.01em;">Aviso de fecha</div>
+      <div class="confirm-msg" id="dateMismatchMsg" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13.5px; line-height: 1.6; color: #475569; margin-bottom: 24px;">
+        No coincide el día de inicio de este elemento con el día que lo tienes en el itinerario. Si decides continuar de esta manera dale a «Aceptar», o puedes modificar la fecha si lo prefieres.
+      </div>
+      <div class="confirm-btns" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button type="button" class="btn btn-ghost" id="dateMismatchCancelBtn" style="padding: 10px 18px; border-radius: 12px; font-weight: 600; font-size: 13.5px; cursor: pointer; font-family: 'Inter', sans-serif;">
+          Modificar fecha
+        </button>
+        <button type="button" class="btn btn-primary" id="dateMismatchOkBtn" style="padding: 10px 24px; border-radius: 12px; font-weight: 700; background: #1eaace; border: none; color: white; cursor: pointer; font-size: 13.5px; font-family: 'Inter', sans-serif;">
+          Aceptar
+        </button>
+      </div>
     </div>
   </div>
   <div class="drag-ghost" id="dragGhost"><span id="ghostIcon"></span><span id="ghostLabel"></span></div>
