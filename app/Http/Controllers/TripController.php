@@ -437,6 +437,78 @@ class TripController extends Controller
         ]);
     }
 
+    /**
+     * Update or assign client details (name and email) for a trip
+     */
+    public function updateClient(Request $request, Trip $trip): JsonResponse
+    {
+        // Ensure the trip belongs to the authenticated user or can edit
+        if ($trip->user_id !== Auth::id() && !$trip->canEdit(Auth::id())) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para actualizar este viaje.'
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'client_name' => 'nullable|string|max:255',
+            'client_email' => 'nullable|email|max:255',
+        ]);
+
+        $name = trim($validated['client_name'] ?? '');
+        $email = !empty($validated['client_email']) ? trim($validated['client_email']) : null;
+
+        if (empty($name) && empty($email)) {
+            // Unlink any existing client
+            $trip->persons()->where('type', 'client')->detach();
+            return response()->json([
+                'success' => true,
+                'message' => 'Cliente desvinculado exitosamente.',
+                'client' => null
+            ]);
+        }
+
+        $client = null;
+        if ($email) {
+            $existingPerson = Person::where('email', $email)->first();
+            if ($existingPerson) {
+                if (!empty($name)) {
+                    $existingPerson->update(['name' => $name]);
+                }
+                $trip->persons()->where('type', 'client')->detach();
+                $trip->persons()->syncWithoutDetaching([$existingPerson->id]);
+                $client = $existingPerson;
+            }
+        }
+
+        if (!$client) {
+            $client = $trip->persons()->where('type', 'client')->first();
+            if ($client) {
+                $client->update([
+                    'name' => !empty($name) ? $name : ($client->name ?: 'Viajero'),
+                    'email' => $email
+                ]);
+            } else {
+                $client = Person::create([
+                    'name' => !empty($name) ? $name : 'Viajero',
+                    'email' => $email,
+                    'type' => 'client'
+                ]);
+                $trip->persons()->attach($client->id);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cliente actualizado exitosamente.',
+            'client' => [
+                'id' => $client->id,
+                'name' => $client->name,
+                'email' => $client->email
+            ]
+        ]);
+    }
+
 
     /**
      * Share trip preview (public access via token)

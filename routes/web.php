@@ -123,6 +123,7 @@ Route::middleware('auth')->group(function () {
     Route::post('trips/{trip}/status', [TripController::class , 'updateStatus'])->name('trips.update-status');
     Route::post('trips/{trip}/code', [TripController::class , 'updateCode'])->name('trips.update-code');
     Route::post('trips/{trip}/inline-update', [TripController::class , 'inlineUpdate'])->name('trips.inline-update');
+    Route::post('trips/{trip}/client', [TripController::class , 'updateClient'])->name('trips.update-client');
     Route::post('trips/{trip}/cover', [TripController::class , 'uploadCover'])->name('trips.upload-cover')->middleware('throttle:20,1');
     Route::post('trips/{trip}/duplicate', [TripController::class , 'duplicate'])->name('trips.duplicate');
     Route::post('trips/{trip}/generate-share-token', [TripController::class , 'generateShareToken'])->name('trips.generate-share-token');

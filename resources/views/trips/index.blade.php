@@ -35,7 +35,7 @@
         }
 
         .driver-popover-btn {
-            background: #1ebdb1;
+            background: var(--accent);
             color: white;
             text-shadow: none;
             border: none;
@@ -47,7 +47,9 @@
         }
 
         .driver-popover-btn:hover {
-            background: #16a69b;
+            background: var(--accent);
+            opacity: 0.9;
+            filter: brightness(0.95);
         }
 
         .driver-popover-close-btn {
@@ -101,9 +103,9 @@
 
         :root {
             --ink: #0f2a3a;
-            --teal: #1a9a8a;
-            --teal2: #0c4a5b;
-            --tealL: rgba(26, 154, 138, 0.10);
+            --teal: var(--accent);
+            --teal2: var(--sidebar-accent-color, var(--accent));
+            --tealL: var(--accent-light, rgba(26, 154, 138, 0.10));
             --cream: #f4f6f8;
             --sand: #e2e8ef;
             --bdr: rgba(15, 42, 58, 0.09);
@@ -457,7 +459,7 @@
             height: 44px;
             padding: 0 24px;
             border-radius: 50px;
-            background: var(--teal);
+            background: var(--accent);
             color: white;
             border: none;
             font-size: 14px;
@@ -465,14 +467,15 @@
             font-family: 'Manrope', sans-serif;
             cursor: pointer;
             text-decoration: none;
-            box-shadow: 0 4px 16px rgba(26, 158, 143, 0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
             transition: all 0.2s;
         }
 
         .btn-create:hover {
-            background: var(--teal2);
+            background: var(--accent);
+            opacity: 0.92;
             transform: translateY(-1px);
-            box-shadow: 0 8px 24px rgba(26, 158, 143, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
             color: white;
         }
 
@@ -528,8 +531,8 @@
         }
 
         .sbox input:focus {
-            border-color: var(--teal);
-            box-shadow: 0 0 0 3px rgba(26, 154, 138, 0.10);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-border, rgba(0, 0, 0, 0.08));
         }
 
         .sico {
@@ -821,7 +824,7 @@
         .email-display {
             font-size: 10px;
             font-weight: 500;
-            color: #1a9a8a;
+            color: var(--sidebar-accent-color, var(--accent));
             white-space: normal;
             word-break: break-all;
             max-width: 100%;
@@ -959,10 +962,8 @@
             border-color: #cbd5e1 !important;
         }
 
-        /* EFECTO HOVER PARA EDITAR ID, NOMBRE Y CORREO DEL VIAJERO */
-        .id-container,
-        .client-name,
-        .client-email-container {
+        /* EFECTO HOVER PARA EDITAR ID DEL VIAJE */
+        .id-container {
             display: inline-flex;
             align-items: center;
             gap: 4px;
@@ -974,16 +975,12 @@
             cursor: pointer;
         }
 
-        .id-container:hover,
-        .client-name:hover,
-        .client-email-container:hover {
+        .id-container:hover {
             background-color: #f1f5f9;
             border-color: #cbd5e1;
         }
 
-        .id-container::after,
-        .client-name::after,
-        .client-email-container::after {
+        .id-container::after {
             content: "\f304";
             font-family: "Font Awesome 5 Free";
             font-weight: 900;
@@ -995,12 +992,20 @@
             margin-left: 2px;
         }
 
-        .id-container:hover::after,
-        .client-name:hover::after,
-        .client-email-container:hover::after {
+        .id-container:hover::after {
             opacity: 1;
             transform: scale(1);
             color: var(--teal);
+        }
+
+        .client-name {
+            display: block;
+            line-height: 1.35;
+        }
+
+        .client-email-container {
+            display: block;
+            line-height: 1.3;
         }
 
         .name-display.traveler-name-clean {
@@ -1172,10 +1177,10 @@
         }
 
         .abt.view:hover {
-            border-color: var(--teal);
-            color: var(--teal);
-            background: rgba(26, 154, 138, 0.07);
-            box-shadow: 0 3px 10px rgba(26, 154, 138, 0.18);
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-light, rgba(26, 154, 138, 0.07));
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
 
         .abt.edit:hover {
@@ -1842,7 +1847,7 @@
 
         /* TRIAL BANNER */
         .trial-banner {
-            background: linear-gradient(135deg, #1a9a8a 0%, #0c4a5b 100%);
+            background: var(--sidebar-bg, linear-gradient(135deg, var(--accent) 0%, #0c4a5b 100%));
             border-radius: 16px;
             padding: 16px 24px;
             margin-bottom: 30px;
@@ -1850,7 +1855,7 @@
             align-items: center;
             justify-content: space-between;
             color: white;
-            box-shadow: 0 10px 25px rgba(26, 154, 138, 0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
             animation: slideDownFade 0.5s ease;
         }
 
@@ -1905,7 +1910,7 @@
 
         .btn-trial-upgrade {
             background: white;
-            color: #0c4a5b;
+            color: var(--sidebar-accent-color, var(--accent));
             border: none;
             padding: 10px 20px;
             border-radius: 10px;
@@ -2862,6 +2867,44 @@
             margin-top: 4px;
         }
 
+        .client-cell-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .btn-edit-client {
+            opacity: 0.7;
+            transition: all 0.2s ease;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+            color: #94a3b8;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .trip-row:hover .btn-edit-client,
+        .btn-edit-client:hover {
+            opacity: 1;
+        }
+
+        .btn-edit-client:hover {
+            color: var(--sidebar-accent-color, var(--accent)) !important;
+            background: var(--accent-light, rgba(26, 154, 138, 0.12)) !important;
+            transform: scale(1.08);
+        }
+
+        .modal-saas-input:focus {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 3px var(--accent-border, rgba(0, 0, 0, 0.08)) !important;
+        }
+
         /* RESPONSIVIDAD PARA EL ESCRITORIO DEL DASHBOARD */
         @media (max-width: 1024px) and (min-width: 769px) {
             .dashboard-wrapper {
@@ -3466,16 +3509,32 @@
                                                         @php
                                                             $clientMobile = collect($trip->persons)->firstWhere('type', 'client') ?? collect($trip->persons)->first();
                                                         @endphp
-                                                        @if($isAgency && $clientMobile)
-                                                            <div class="mobile-client-name">
-                                                                {{ $clientMobile->name }}
+                                                        @if($isAgency)
+                                                            <div class="mobile-client-section" id="mobile-client-section-{{ $trip->id }}">
+                                                                @if($clientMobile && (!empty($clientMobile->name) || !empty($clientMobile->email)))
+                                                                    <div class="mobile-client-name" id="mobile-client-name-{{ $trip->id }}">
+                                                                        {{ $clientMobile->name ?: 'Sin nombre' }}
+                                                                    </div>
+                                                                    @if($clientMobile->email)
+                                                                        <a href="mailto:{{ $clientMobile->email }}" class="mobile-client-email" id="mobile-client-email-{{ $trip->id }}"
+                                                                            onclick="event.stopPropagation()">
+                                                                            {{ $clientMobile->email }}
+                                                                        </a>
+                                                                    @endif
+                                                                @else
+                                                                    <div class="mobile-client-unassigned" id="mobile-unassigned-{{ $trip->id }}" style="font-size: 11.5px; color: #94a3b8; font-style: italic; display: flex; align-items: center; gap: 5px;">
+                                                                        <span>Sin cliente</span>
+                                                                        <button type="button" 
+                                                                            onclick="event.stopPropagation(); openAssignClientModal({{ $trip->id }})" 
+                                                                            style="background: none; border: none; padding: 2px 4px; color: var(--sidebar-accent-color, var(--accent)); cursor: pointer; display: inline-flex; align-items: center;"
+                                                                            title="Asignar cliente">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                                                            </svg>
+                                                                        </button>
+                                                                    </div>
+                                                                @endif
                                                             </div>
-                                                            @if($clientMobile->email)
-                                                                <a href="mailto:{{ $clientMobile->email }}" class="mobile-client-email"
-                                                                    onclick="event.stopPropagation()">
-                                                                    {{ $clientMobile->email }}
-                                                                </a>
-                                                            @endif
                                                         @endif
                                                         <div class="mobile-trip-date">
                                                             Fechas:
@@ -3518,40 +3577,42 @@
                                                 @if($isAgency)
                                                     @php
                                                         $client = collect($trip->persons)->firstWhere('type', 'client') ?? collect($trip->persons)->first();
+                                                        $hasClient = $client && (!empty($client->name) || !empty($client->email));
                                                     @endphp
                                                     <td style="width: 150px;">
-                                                        @if($client && (!empty($client->name) || !empty($client->email)))
-                                                            <div class="client-name"
-                                                                onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_name')"
-                                                                title="Haz clic para editar">
-                                                                <span class="name-display traveler-name-clean"
-                                                                    id="name-display-{{ $trip->id }}">{{ $client->name ?: 'Sin nombre' }}</span>
-                                                                <input type="text" class="field-input code-input"
-                                                                    id="name-input-{{ $trip->id }}"
-                                                                    style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 13px; text-transform: none;"
-                                                                    onblur="saveTripField({{ $trip->id }}, 'client_name')"
-                                                                    onkeypress="handleFieldKeyPress(event, {{ $trip->id }}, 'client_name')"
-                                                                    onclick="event.stopPropagation()">
+                                                        <div class="client-cell-container" id="client-cell-{{ $trip->id }}">
+                                                            <div class="client-info-box" id="client-info-{{ $trip->id }}" style="flex: 1; min-width: 0;">
+                                                                <span class="unassigned-client-text" id="unassigned-display-{{ $trip->id }}"
+                                                                    style="color:#94a3b8; font-size:12px; font-style:italic; {{ $hasClient ? 'display: none;' : '' }}">
+                                                                    Sin asignar
+                                                                </span>
+
+                                                                <div class="client-name" id="name-container-{{ $trip->id }}"
+                                                                    style="{{ $hasClient ? '' : 'display: none;' }}">
+                                                                    <span class="name-display traveler-name-clean"
+                                                                        id="name-display-{{ $trip->id }}">{{ $client->name ?? '' }}</span>
+                                                                </div>
+
+                                                                <div class="client-email-container" id="email-container-{{ $trip->id }}"
+                                                                    style="{{ ($hasClient && !empty($client->email)) ? 'margin-top: 2px;' : 'display: none; margin-top: 2px;' }}">
+                                                                    <span class="email-display traveler-email-clean"
+                                                                        id="email-display-{{ $trip->id }}">{{ $client->email ?? '' }}</span>
+                                                                </div>
                                                             </div>
 
-                                                            @if($client->email)
-                                                                <div class="client-email-container"
-                                                                    onclick="event.stopPropagation(); editTripField({{ $trip->id }}, 'client_email')"
-                                                                    style="margin-top: 2px;" title="Haz clic para editar">
-                                                                    <span class="email-display traveler-email-clean"
-                                                                        id="email-display-{{ $trip->id }}">{{ $client->email }}</span>
-                                                                    <input type="email" class="field-input code-input"
-                                                                        id="email-input-{{ $trip->id }}"
-                                                                        style="display: none; width: 100%; border-radius: 4px; border: 1px solid var(--bdr); padding: 4px; font-family: inherit; font-size: 11.5px; text-transform: none;"
-                                                                        onblur="saveTripField({{ $trip->id }}, 'client_email')"
-                                                                        onkeypress="handleFieldKeyPress(event, {{ $trip->id }}, 'client_email')"
-                                                                        onclick="event.stopPropagation()">
-                                                                </div>
-                                                            @endif
-                                                        @else
-                                                            <span style="color:#94a3b8; font-size:12px; font-style:italic;">Sin
-                                                                asignar</span>
-                                                        @endif
+                                                            <button type="button"
+                                                                class="btn-edit-client"
+                                                                id="btn-edit-client-{{ $trip->id }}"
+                                                                data-trip-id="{{ $trip->id }}"
+                                                                data-name="{{ $client->name ?? '' }}"
+                                                                data-email="{{ $client->email ?? '' }}"
+                                                                onclick="event.stopPropagation(); openAssignClientModal({{ $trip->id }})"
+                                                                title="{{ $hasClient ? 'Editar cliente' : 'Asignar cliente' }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 @else
                                                     @php
@@ -3627,7 +3688,7 @@
                                                         @if($activeMainTab === 'shared' && isset($isPending) && $isPending)
                                                             <a href="{{ route('trips.accept-invite', ['token' => $myCollab->token]) }}"
                                                                 class="btn-create"
-                                                                style="padding: 6px 12px; font-size: 11px; height: 28px; background: var(--teal); border: none; color: white; border-radius: 6px; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                                                                style="padding: 6px 12px; font-size: 11px; height: 28px; background: var(--accent); border: none; color: white; border-radius: 6px; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
                                                                 <i class="fas fa-check"></i> Aceptar
                                                             </a>
                                                         @endif
@@ -4064,7 +4125,7 @@
 
                                         <!-- Checkbox fechas no definidas -->
                                         <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
-                                            <input type="checkbox" id="noDatesCheckbox" style="width:16px; height:16px; accent-color:var(--teal, #1a9a8a); cursor:pointer; border-radius:4px;">
+                                            <input type="checkbox" id="noDatesCheckbox" style="width:16px; height:16px; accent-color:var(--accent); cursor:pointer; border-radius:4px;">
                                             <label for="noDatesCheckbox" style="font-size:12.5px; color:#64748b; cursor:pointer; user-select:none; font-weight:500;">Aún no tengo fechas definidas</label>
                                         </div>
                                     </div>
@@ -4125,7 +4186,7 @@
                                     <button type="button" id="cancelCreateTripBtn" style="height:42px; padding:0 18px; border:1.5px solid #e2e8f0; background:#ffffff; color:#475569; font-weight:600; border-radius:10px; cursor:pointer; font-size:13px; transition:all 0.15s;">
                                         Cancelar
                                     </button>
-                                    <button type="submit" id="submitCreateTripBtn" style="height:42px; padding:0 22px; border:none; background:var(--teal, #1a9a8a); color:#ffffff; font-weight:600; border-radius:10px; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(26,154,138,0.25); transition:all 0.2s;">
+                                    <button type="submit" id="submitCreateTripBtn" style="height:42px; padding:0 22px; border:none; background:var(--accent); color:#ffffff; font-weight:600; border-radius:10px; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(0,0,0,0.18); transition:all 0.2s;">
                                         <span>Crear y Diseñar Viaje</span>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M5 12h14"/>
@@ -4142,8 +4203,8 @@
                         @keyframes viantrypSlideUp { from { transform: translateY(16px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
                         @keyframes viantrypSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                         .modal-saas-input:focus {
-                            border-color: var(--teal, #1a9a8a) !important;
-                            box-shadow: 0 0 0 3px rgba(26, 154, 138, 0.15) !important;
+                            border-color: var(--accent) !important;
+                            box-shadow: 0 0 0 3px var(--accent-border, rgba(0, 0, 0, 0.08)) !important;
                         }
                         .modal-saas-input:disabled {
                             background-color: #f1f5f9 !important;
@@ -4167,8 +4228,8 @@
                             box-shadow: 0 1px 2px rgba(0,0,0,0.15);
                         }
                         #assignClientToggle:checked + .agency-switch-slider {
-                            background-color: var(--teal, #1a9a8a);
-                            border-color: var(--teal, #1a9a8a);
+                            background-color: var(--accent);
+                            border-color: var(--accent);
                         }
                         #assignClientToggle:checked + .agency-switch-slider:before {
                             background-color: #ffffff;
@@ -4593,6 +4654,12 @@
                     }
                     inputField.style.display = 'none';
                     displaySpan.style.display = 'inline-block';
+
+                    const editBtn = document.getElementById(`btn-edit-client-${tripId}`);
+                    if (editBtn) {
+                        if (fieldName === 'client_name') editBtn.setAttribute('data-name', newValue);
+                        if (fieldName === 'client_email') editBtn.setAttribute('data-email', newValue);
+                    }
                 } else {
                     showNotification('Error', d.message || 'No se pudo actualizar el campo.', 'error');
                     // Restore on error
@@ -4624,6 +4691,251 @@
                 inputField.style.display = 'none';
                 displaySpan.style.display = 'inline-block';
             }
+        }
+
+        // Modal para asignar / editar cliente en perfil de agencia
+        function openAssignClientModal(tripId) {
+            const existingModal = document.getElementById('assignClientModal');
+            if (existingModal) existingModal.remove();
+
+            const btn = document.getElementById(`btn-edit-client-${tripId}`);
+            let currentName = btn ? (btn.getAttribute('data-name') || '') : '';
+            let currentEmail = btn ? (btn.getAttribute('data-email') || '') : '';
+
+            // Fallback from DOM if not in dataset
+            if (!currentName) {
+                const nameEl = document.getElementById(`name-display-${tripId}`);
+                if (nameEl && nameEl.textContent.trim() !== 'Sin nombre' && nameEl.textContent.trim() !== 'Sin viajero') {
+                    currentName = nameEl.textContent.trim();
+                }
+            }
+            if (!currentEmail) {
+                const emailEl = document.getElementById(`email-display-${tripId}`);
+                if (emailEl && emailEl.textContent.trim() !== 'Añadir correo') {
+                    currentEmail = emailEl.textContent.trim();
+                }
+            }
+
+            const modalHtml = `
+                <div id="assignClientModal" style="
+                    position: fixed;
+                    inset: 0;
+                    background: rgba(15, 23, 42, 0.45);
+                    backdrop-filter: blur(3px);
+                    -webkit-backdrop-filter: blur(3px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10050;
+                    padding: 16px;
+                    font-family: 'Manrope', sans-serif;
+                    animation: viantrypFadeIn 0.2s ease-out;
+                ">
+                    <div style="
+                        background: #ffffff;
+                        width: 100%;
+                        max-width: 440px;
+                        border-radius: 16px;
+                        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.06);
+                        overflow: hidden;
+                        animation: viantrypSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+                    ">
+                        <!-- Header -->
+                        <div style="padding: 18px 22px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 34px; height: 34px; border-radius: 10px; background: var(--accent-light, rgba(26, 154, 138, 0.1)); color: var(--sidebar-accent-color, var(--accent)); display: flex; align-items: center; justify-content: center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #0f172a;">Datos del Cliente</h3>
+                                    <p style="margin: 2px 0 0; font-size: 12px; color: #64748b;">Asigna el nombre y correo para este viaje.</p>
+                                </div>
+                            </div>
+                            <button type="button" id="closeAssignClientModalBtn" style="background: transparent; border: none; color: #94a3b8; cursor: pointer; padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.15s;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 6 6 18"/>
+                                    <path d="m6 6 12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Formulario -->
+                        <form id="assignClientForm">
+                            <div style="padding: 20px 22px; display: flex; flex-direction: column; gap: 14px;">
+                                <!-- Nombre del Cliente -->
+                                <div>
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 5px;">
+                                        Nombre completo
+                                    </label>
+                                    <div style="position: relative;">
+                                        <div style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #94a3b8; display: flex; pointer-events: none;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                                <circle cx="12" cy="7" r="4"/>
+                                            </svg>
+                                        </div>
+                                        <input type="text" id="modalClientName" name="client_name" value="${currentName.replace(/"/g, '&quot;')}" placeholder="Ej: Juan Pérez" class="modal-saas-input" style="width: 100%; height: 40px; padding: 0 12px 0 34px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #0f172a; outline: none; background: #ffffff;">
+                                    </div>
+                                </div>
+
+                                <!-- Correo Electrónico -->
+                                <div>
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 5px;">
+                                        Correo electrónico
+                                    </label>
+                                    <div style="position: relative;">
+                                        <div style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #94a3b8; display: flex; pointer-events: none;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect width="20" height="16" x="2" y="4" rx="2"/>
+                                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                                            </svg>
+                                        </div>
+                                        <input type="email" id="modalClientEmail" name="client_email" value="${currentEmail.replace(/"/g, '&quot;')}" placeholder="cliente@ejemplo.com" class="modal-saas-input" style="width: 100%; height: 40px; padding: 0 12px 0 34px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #0f172a; outline: none; background: #ffffff;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Footer Actions -->
+                            <div style="padding: 14px 22px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                                <button type="button" id="cancelAssignClientBtn" style="height: 38px; padding: 0 16px; border: 1.5px solid #e2e8f0; background: #ffffff; color: #475569; font-weight: 600; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.15s;">
+                                    Cancelar
+                                </button>
+                                <button type="submit" id="saveAssignClientBtn" style="height: 38px; padding: 0 18px; border: none; background: var(--accent); color: #ffffff; font-weight: 600; border-radius: 8px; cursor: pointer; font-size: 12.5px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 3px 10px rgba(0,0,0,0.18); transition: all 0.2s;">
+                                    <span>Guardar cliente</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            const modal = document.getElementById('assignClientModal');
+            const form = document.getElementById('assignClientForm');
+            const closeBtn = document.getElementById('closeAssignClientModalBtn');
+            const cancelBtn = document.getElementById('cancelAssignClientBtn');
+            const nameInput = document.getElementById('modalClientName');
+            const emailInput = document.getElementById('modalClientEmail');
+            const submitBtn = document.getElementById('saveAssignClientBtn');
+
+            nameInput.focus();
+
+            const closeModal = () => modal.remove();
+            if (closeBtn) closeBtn.onclick = closeModal;
+            if (cancelBtn) cancelBtn.onclick = closeModal;
+            modal.onclick = (e) => {
+                if (e.target === modal) closeModal();
+            };
+
+            const handleKey = (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                    document.removeEventListener('keydown', handleKey);
+                }
+            };
+            document.addEventListener('keydown', handleKey);
+
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                const clientName = nameInput.value.trim();
+                const clientEmail = emailInput.value.trim();
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <svg style="animation: viantrypSpin 0.9s linear infinite;" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                    </svg>
+                    <span>Guardando...</span>
+                `;
+
+                try {
+                    const response = await fetch(`{{ url('trips') }}/${tripId}/client`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            client_name: clientName,
+                            client_email: clientEmail
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        closeModal();
+                        showNotification('Éxito', data.message || 'Cliente actualizado exitosamente.');
+
+                        const clientObj = data.client;
+                        if (btn) {
+                            btn.setAttribute('data-name', clientObj ? (clientObj.name || '') : '');
+                            btn.setAttribute('data-email', clientObj ? (clientObj.email || '') : '');
+                            btn.setAttribute('title', clientObj ? 'Editar cliente' : 'Asignar cliente');
+                        }
+
+                        const unassignedSpan = document.getElementById(`unassigned-display-${tripId}`);
+                        const nameContainer = document.getElementById(`name-container-${tripId}`);
+                        const emailContainer = document.getElementById(`email-container-${tripId}`);
+                        const nameDisplay = document.getElementById(`name-display-${tripId}`);
+                        const emailDisplay = document.getElementById(`email-display-${tripId}`);
+
+                        if (clientObj && (clientObj.name || clientObj.email)) {
+                            if (unassignedSpan) unassignedSpan.style.display = 'none';
+                            if (nameContainer) nameContainer.style.display = 'block';
+                            if (nameDisplay) nameDisplay.textContent = clientObj.name || 'Sin nombre';
+                            if (emailDisplay) emailDisplay.textContent = clientObj.email || '';
+                            if (emailContainer) {
+                                emailContainer.style.display = clientObj.email ? 'block' : 'none';
+                            }
+
+                            // Mobile updates
+                            const mobUnassigned = document.getElementById(`mobile-unassigned-${tripId}`);
+                            const mobName = document.getElementById(`mobile-client-name-${tripId}`);
+                            const mobEmail = document.getElementById(`mobile-client-email-${tripId}`);
+                            if (mobUnassigned) mobUnassigned.style.display = 'none';
+                            if (mobName) {
+                                mobName.style.display = 'block';
+                                mobName.textContent = clientObj.name || 'Sin nombre';
+                            }
+                            if (mobEmail) {
+                                if (clientObj.email) {
+                                    mobEmail.style.display = 'block';
+                                    mobEmail.textContent = clientObj.email;
+                                    mobEmail.href = `mailto:${clientObj.email}`;
+                                } else {
+                                    mobEmail.style.display = 'none';
+                                }
+                            }
+                        } else {
+                            if (unassignedSpan) unassignedSpan.style.display = 'inline';
+                            if (nameContainer) nameContainer.style.display = 'none';
+                            if (emailContainer) emailContainer.style.display = 'none';
+
+                            // Mobile unassigned
+                            const mobUnassigned = document.getElementById(`mobile-unassigned-${tripId}`);
+                            const mobName = document.getElementById(`mobile-client-name-${tripId}`);
+                            const mobEmail = document.getElementById(`mobile-client-email-${tripId}`);
+                            if (mobUnassigned) mobUnassigned.style.display = 'flex';
+                            if (mobName) mobName.style.display = 'none';
+                            if (mobEmail) mobEmail.style.display = 'none';
+                        }
+                    } else {
+                        showNotification('Error', data.message || 'Error al actualizar el cliente.');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<span>Guardar cliente</span>';
+                    }
+                } catch (error) {
+                    console.error('Error saving client:', error);
+                    showNotification('Error', 'Error de conexión al guardar el cliente.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>Guardar cliente</span>';
+                }
+            };
         }
 
         // Share Modal
@@ -5024,7 +5336,7 @@
             const modalHtml = `
                             <div id="transferTripModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 42, 58, 0.4); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.3s ease;">
                                 <div style="background:white; width:90%; max-width:400px; border-radius:16px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.3s ease;">
-                                    <div style="background:#1e293b; padding:20px; color:white; text-align:center;">
+                                    <div style="background:var(--accent); padding:20px; color:white; text-align:center;">
                                         <h3 style="margin:0; font-size:18px;">Cambiar Propietario</h3>
                                         <p style="margin:5px 0 0; font-size:12px; opacity:0.9;">Transferir el viaje a otro agente</p>
                                     </div>
@@ -5041,7 +5353,7 @@
                                             </div>
                                             <div style="display:flex; gap:12px; margin-top:24px;">
                                                 <button type="button" onclick="document.getElementById('transferTripModal').remove()" style="flex:1; height:44px; border:none; background:var(--sand); color:var(--ink); font-weight:600; border-radius:10px; cursor:pointer; font-size:13px;">Cancelar</button>
-                                                <button type="submit" style="flex:1; height:44px; border:none; background:#1e293b; color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px;">Transferir Viaje</button>
+                                                <button type="submit" style="flex:1; height:44px; border:none; background:var(--accent); color:white; font-weight:700; border-radius:10px; cursor:pointer; font-size:13px; box-shadow:0 4px 12px rgba(0,0,0,0.15);">Transferir Viaje</button>
                                             </div>
                                         </form>
                                     </div>
