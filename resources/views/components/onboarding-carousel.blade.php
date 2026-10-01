@@ -126,7 +126,10 @@
     display: block;
     user-select: none;
     -webkit-user-drag: none;
-    image-rendering: -webkit-optimize-contrast;
+    image-rendering: auto;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
   }
 
   /* Bottom Controls & Action Overlay */
