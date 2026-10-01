@@ -217,36 +217,6 @@
                 </div>
             @endif
 
-            <!-- USAGE SECTION -->
-            <div class="usage-section">
-                <div class="section-title">TU ESTADO DE USO</div>
-                <div class="usage-grid {{ request()->routeIs('profile.index') ? '' : 'usage-grid-compact' }}">
-                    <div class="usage-card">
-                        <div class="usage-label">Itinerarios</div>
-                        <div class="usage-stats">
-                            <span class="current" id="modal-trip-count">{{ $tripCount }}</span><span class="limit"
-                                id="modal-trip-limit">/{{ $limits['max_trips'] >= 1000000 ? '∞' : $limits['max_trips'] }}</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar {{ $tripProgress >= 100 ? 'limit-reached' : '' }}"
-                                id="modal-trip-bar" style="width: {{ $tripProgress }}%"></div>
-                        </div>
-                    </div>
-
-                    <div class="usage-card">
-                        <div class="usage-label">Editores</div>
-                        <div class="usage-stats">
-                            <span class="current" id="modal-editor-count">{{ $editorCount }}</span><span class="limit"
-                                id="modal-editor-limit">/{{ ($limits['max_editors'] ?? 0) >= 1000000 ? '∞' : ($limits['max_editors'] ?? 0) }}</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar {{ $editorProgress >= 100 ? 'limit-reached' : '' }}"
-                                id="modal-editor-bar" style="width: {{ $editorProgress }}%; background: #6366f1;"></div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
 
             <!-- PRICING TOGGLE -->
             <div class="pricing-toggle-wrap">
@@ -352,10 +322,7 @@
             </div>
 
             <div class="modal-footer-links"
-                style="margin-top: 10px; display: flex; justify-content: center; gap: 12px; font-size: 12px;">
-                <span>Tiempos de facturación en <a href="{{ route('home') }}#precios" target="_blank">Nuestros Planes
-                        &rarr;</a></span>
-                <span style="color: #cbd5e1;">•</span>
+                style="margin-top: 10px; display: flex; justify-content: center; font-size: 12px;">
                 <span><a href="#" onclick="openCodeGateModal('avanzado'); return false;"
                         style="color: #1a7a8a; font-weight: 600; text-decoration: underline;">¿Tienes un código
                         promocional? &rarr;</a></span>
