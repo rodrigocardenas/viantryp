@@ -3,29 +3,29 @@
 
 <head>
   <script>
-  (function() {
+    (function () {
       var isCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
-      var isStandalone = window.navigator.standalone === true || 
-                         (window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches));
+      var isStandalone = window.navigator.standalone === true ||
+        (window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches));
       var urlParams = new URLSearchParams(window.location.search);
       var hasAppParam = urlParams.get('app') === '1' || urlParams.get('mode') === 'app';
       var hasWebParam = urlParams.get('web') === '1' || urlParams.get('mode') === 'web';
 
       // Si estamos en un navegador web normal (no Capacitor ni Standalone ni ?app=1), limpiamos cualquier residuo antiguo
       if (hasWebParam || (!isCapacitor && !isStandalone && !hasAppParam)) {
-          try { localStorage.removeItem('viantryp_app_mode'); } catch(e){}
+        try { localStorage.removeItem('viantryp_app_mode'); } catch (e) { }
       } else if (hasAppParam || isCapacitor) {
-          try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
+        try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
       }
 
       var isAppMode = isCapacitor || hasAppParam || (isStandalone && !hasWebParam);
 
       if (isAppMode) {
-          document.documentElement.classList.add('is-viantryp-app');
-          if (document.body) document.body.classList.add('is-viantryp-app');
-          else document.addEventListener('DOMContentLoaded', function() { if(document.body) document.body.classList.add('is-viantryp-app'); });
+        document.documentElement.classList.add('is-viantryp-app');
+        if (document.body) document.body.classList.add('is-viantryp-app');
+        else document.addEventListener('DOMContentLoaded', function () { if (document.body) document.body.classList.add('is-viantryp-app'); });
       }
-  })();
+    })();
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6453,7 +6453,7 @@
             <li><i class="fas fa-check"></i> 1 itinerario activo</li>
             <li><i class="fas fa-check"></i> Fotos Unsplash & GIFs ilimitados</li>
             <li><i class="fas fa-check"></i> 5 consultas en Google Places activas</li>
-            <li><i class="fas fa-check"></i> 5 consultas Tryp IA por viaje (máx. 2 elementos por consulta)</li>
+            <li><i class="fas fa-check"></i> 5 consultas Tryp IA por viaje</li>
             <li><i class="fas fa-check"></i> 5 archivos adjuntos por itinerario</li>
             <li><i class="fas fa-check"></i> Personalización de colores y temas</li>
           </ul>
@@ -6479,10 +6479,14 @@
           <div class="plan-sub" style="color: rgba(255, 255, 255, 0.7);">Todo para tus viajes sin límites:</div>
           <ul class="plan-features">
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>20 itinerarios activos</strong></li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>2 colaboradores de edición de viaje</strong></li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>50 consultas en Google Places activas</strong></li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>20 archivos adjuntos por itinerario</strong></li>
-            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Tryp IA (Asistente de Viantryp) Ilimitado (máx. 2 elementos por consulta)</li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>2 colaboradores de edición de
+                viaje</strong></li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>50 consultas en Google Places
+                activas</strong></li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>20 archivos adjuntos por
+                itinerario</strong></li>
+            <li><i class="fas fa-check" style="color: #1EAACE;"></i> Tryp IA (Asistente de Viantryp) Ilimitado (máx. 2
+              elementos por consulta)</li>
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Exportación de PDF</strong></li>
           </ul>
           <a href="{{ route('plans.redirect') }}" class="plan-btn btn-pro"
@@ -6507,7 +6511,7 @@
             <li><i class="fas fa-check"></i> <strong>Colaboradores y editores ilimitados</strong></li>
             <li><i class="fas fa-check"></i> <strong>Consultas en Google Places ilimitadas</strong></li>
             <li><i class="fas fa-check"></i> <strong>Archivos adjuntos ilimitados</strong></li>
-            <li><i class="fas fa-check"></i> <strong>Tryp IA Ilimitado</strong> (máx. 2 elementos por consulta)</li>
+            <li><i class="fas fa-check"></i> <strong>Tryp IA Ilimitado</strong></li>
             <li><i class="fas fa-check"></i> <strong>Marca Blanca: Logo propio de tu agencia en web y PDF</strong></li>
             <li><i class="fas fa-check"></i> Soporte prioritario dedicado</li>
           </ul>

@@ -39,7 +39,7 @@
             'is_custom' => false,
             'limit_trips' => 1,
             'limit_editors' => 0,
-            'benefits' => ['1 itinerario activo', 'Fotos Unsplash & GIFs ilimitados', '5 consultas en Google Places activas', '5 consultas Tryp IA por viaje (máx. 2 elementos por consulta)', '5 archivos adjuntos por viaje', 'Personalización de colores y temas'],
+            'benefits' => ['1 itinerario activo', 'Fotos Unsplash & GIFs ilimitados', '5 consultas en Google Places activas', '5 consultas Tryp IA por viaje', '5 archivos adjuntos por viaje', 'Personalización de colores y temas'],
             'accent' => '#64748b'
         ],
         'avanzado' => [
@@ -54,7 +54,7 @@
                 '2 colaboradores de edición de viaje',
                 '50 consultas en Google Places activas',
                 '20 archivos adjuntos por itinerario',
-                'Tryp IA (Asistente de Viantryp) Ilimitado (máx. 2 elementos por consulta)',
+                'Tryp IA (Asistente de Viantryp) Ilimitado',
                 'Exportación de PDF'
             ],
             'accent' => '#1EAACE',
@@ -72,7 +72,7 @@
                 'Colaboradores de edición ilimitados',
                 'Consultas en Google Places ilimitadas',
                 'Archivos adjuntos ilimitados',
-                'Tryp IA Ilimitado (máx. 2 elementos por consulta)',
+                'Tryp IA Ilimitado',
                 'Marca Blanca con Logo de Agencia'
             ],
             'accent' => '#0e5a6a'
@@ -232,7 +232,7 @@
                 <div class="p-grid-container">
                     @foreach($planData as $key => $data)
                         @php 
-                                                                    $isBlocked = ($tripCount > $data['limit_trips']) ||
+                                                                                                                                $isBlocked = ($tripCount > $data['limit_trips']) ||
                             ($editorCount > $data['limit_editors']); 
                         @endphp
                         <div class="p-card {{ $currentPlan === $key ? 'active' : '' }} {{ $isBlocked ? 'blocked' : '' }}">
@@ -1238,9 +1238,9 @@
     }
     function closeUpgradeModal() {
         const modal = document.getElementById('upgradePlanModal');
-        if (modal) { 
+        if (modal) {
             modal.style.setProperty('display', 'none', 'important');
-            document.body.style.overflow = 'auto'; 
+            document.body.style.overflow = 'auto';
         }
     }
 

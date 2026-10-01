@@ -15,7 +15,7 @@
                 '1 itinerario activo',
                 'Fotos Unsplash & GIFs ilimitados',
                 '5 consultas en Google Places activas',
-                '5 consultas Tryp IA por viaje (máx. 2 elementos por consulta)',
+                '5 consultas Tryp IA por viaje',
                 '5 archivos adjuntos por viaje',
                 'Personalización de colores y temas'
             ],
@@ -33,7 +33,7 @@
                 '2 colaboradores de edición de viaje',
                 '50 consultas en Google Places activas',
                 '20 archivos adjuntos por itinerario',
-                'Tryp IA (Asistente de Viantryp) Ilimitado (máx. 2 elementos por consulta)',
+                'Tryp IA (Asistente de Viantryp) Ilimitado',
                 'Exportación de PDF'
             ],
             'accent' => '#1EAACE',
@@ -51,7 +51,7 @@
                 'Colaboradores y editores ilimitados',
                 'Consultas en Google Places ilimitadas',
                 'Archivos adjuntos ilimitados',
-                'Tryp IA Ilimitado (máx. 2 elementos por consulta)',
+                'Tryp IA Ilimitado',
                 'Marca Blanca con Logo de Agencia',
                 'Soporte prioritario dedicado'
             ],
