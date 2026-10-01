@@ -602,10 +602,11 @@
         background: #fffbeb;
         border: 1px solid #fef3c7;
         border-radius: 12px;
-        padding: 14px 18px;
+        padding: 12px 16px;
         display: flex;
         gap: 10px;
-        margin-bottom: 24px;
+        margin-bottom: 14px;
+        font-size: 12px;
     }
 
     .alert-dot {
@@ -613,15 +614,16 @@
         height: 8px;
         background: #f59e0b;
         border-radius: 50%;
-        margin-top: 5px;
+        margin-top: 4px;
         flex-shrink: 0;
     }
 
     .upgrade-alert p {
         margin: 0;
-        font-size: 14px;
+        font-size: 12px;
         color: #92400e;
         font-weight: 500;
+        line-height: 1.45;
     }
 
     .section-title {
@@ -726,7 +728,7 @@
 
     .ns-plan-name {
         font-family: 'Inter', sans-serif;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 900;
         text-transform: uppercase;
     }
@@ -762,7 +764,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 600;
     }
 
