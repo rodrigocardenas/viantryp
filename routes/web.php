@@ -43,11 +43,8 @@ Route::get('auth/native-login', [GoogleAuthController::class , 'handleNativeToke
 // Logout route (authenticated users only)
 Route::middleware('auth')->post('logout', [GoogleAuthController::class , 'logout'])->name('logout');
 
-// Public landing page (redirects to trips if already authenticated)
+// Public landing page / Home
 Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect()->route('trips.index');
-    }
     return view('landing');
 })->name('home');
 

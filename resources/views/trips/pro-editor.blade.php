@@ -176,6 +176,7 @@
       font-weight: 600;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       text-decoration: none;
       transition: all 0.15s;
       font-family: 'Manrope', sans-serif;
@@ -193,12 +194,80 @@
 
     .secondary-nav-link i {
       margin-right: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    @media (max-width: 768px) {
+    .secondary-nav-link i:only-child {
+      margin-right: 0 !important;
+      margin-left: 0 !important;
+    }
+
+    #btnPreviewTrip.secondary-nav-link {
+      height: 32px;
+      padding: 6px 24px;
+    }
+
+    @media (max-width: 991px) {
       .btn-help {
         display: none !important;
       }
+      .topbar-actions .secondary-nav-link span {
+        display: none !important;
+      }
+      .topbar-actions .secondary-nav-link {
+        width: 32px !important;
+        min-width: 32px !important;
+        height: 32px !important;
+        padding: 0 !important;
+        justify-content: center !important;
+        border-radius: 50px !important;
+      }
+      .topbar-actions .secondary-nav-link i {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+      }
+      .topbar-actions #btnPreviewTrip.secondary-nav-link {
+        width: 44px !important;
+        min-width: 44px !important;
+        height: 32px !important;
+        border-radius: 50px !important;
+      }
+      .topbar-actions [data-action="back"].secondary-nav-link,
+      .topbar-actions .secondary-nav-link:first-child {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+    }
+
+    .is-viantryp-app .topbar-actions .secondary-nav-link span {
+      display: none !important;
+    }
+    .is-viantryp-app .topbar-actions .secondary-nav-link {
+      width: 32px !important;
+      min-width: 32px !important;
+      height: 32px !important;
+      padding: 0 !important;
+      justify-content: center !important;
+      border-radius: 50px !important;
+    }
+    .is-viantryp-app .topbar-actions .secondary-nav-link i {
+      margin-right: 0 !important;
+      margin-left: 0 !important;
+    }
+    .is-viantryp-app .topbar-actions #btnPreviewTrip.secondary-nav-link {
+      width: 44px !important;
+      min-width: 44px !important;
+      height: 32px !important;
+      border-radius: 50px !important;
+    }
+    .is-viantryp-app .topbar-actions [data-action="back"].secondary-nav-link,
+    .is-viantryp-app .topbar-actions .secondary-nav-link:first-child {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
     }
 
 
@@ -305,12 +374,10 @@
     <div class="topbar-spacer"></div>
 
     <div class="topbar-right">
-      <div class="topbar-left">
-        <button class="nav-link" style="border:none; cursor:pointer;" data-action="back" onclick="confirmExit()">
-          <i class="fas fa-arrow-left" style="margin-right:4px;"></i> <span>Volver</span>
-        </button>
-      </div>
       <div class="topbar-actions">
+        <button class="secondary-nav-link" data-action="back" onclick="confirmExit()" title="Volver" style="padding: 0 12px; justify-content: center;">
+          <i class="fas fa-arrow-left"></i>
+        </button>
         <button class="secondary-nav-link" onclick="manualSaveProTrip()">
           <i class="fa-solid fa-floppy-disk"></i> <span>Guardar cambios</span>
         </button>

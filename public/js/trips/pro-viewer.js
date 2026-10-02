@@ -1704,40 +1704,40 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </style>
 </head>
 <body>
-${(function() {
-  const currentPlan = (userPlan || '').toString().toLowerCase();
-  const isMarcaBlancaPlan = (currentPlan === 'colaborativo' || currentPlan === 'corporativo');
-  const validLogo = isMarcaBlancaPlan ? agencyLogo : null;
+${(function () {
+      const currentPlan = (userPlan || '').toString().toLowerCase();
+      const isMarcaBlancaPlan = (currentPlan === 'colaborativo' || currentPlan === 'corporativo');
+      const validLogo = isMarcaBlancaPlan ? agencyLogo : null;
 
-  if (isPublicLink) {
-    return `<div class="public-preview-header">
+      if (isPublicLink) {
+        return `<div class="public-preview-header">
       ${(displayNameType === 'agency' && (validLogo || agencyName))
-        ? `<div style="display:flex;align-items:center;gap:12px;">
+            ? `<div style="display:flex;align-items:center;gap:12px;">
              ${validLogo ? `<img src="${validLogo}" alt="${agencyName}" class="gps-logo-img">` : ''}
              ${agencyName ? `<span class="gps-logo-text" style="font-size:13px;">${agencyName}</span>` : ''}
            </div>`
-        : `<span class="gps-logo-text">${userFullName || userName}</span>`
-      }
+            : `<span class="gps-logo-text">${userFullName || userName}</span>`
+          }
       <img src="${origin || ''}/images/logo-viantryp.png" alt="Viantryp Logo" class="viantryp-logo" style="width:80px;height:auto;filter:brightness(0) invert(1);object-fit:contain;">
     </div>`;
-  } else {
-    return `<div class="pv-topbar">
+      } else {
+        return `<div class="pv-topbar">
       <div class="pv-logo" style="display:flex;align-items:center;">
         ${(displayNameType === 'agency' && (validLogo || agencyName))
-          ? `<div style="display:flex;align-items:center;gap:12px;">
+            ? `<div style="display:flex;align-items:center;gap:12px;">
                ${validLogo ? `<img src="${validLogo}" alt="${agencyName}" class="gps-logo-img" style="max-height:30px;">` : ''}
                ${agencyName ? `<span class="gps-logo-text" style="font-size:13px;">${agencyName}</span>` : ''}
              </div>`
-          : `<span class="gps-logo-text">${userFullName || userName}</span>`
-        }
+            : `<span class="gps-logo-text">${userFullName || userName}</span>`
+          }
       </div>
       <div style="flex:1"></div>
       <div class="pv-topbar-actions" style="display:flex;gap:12px;">
           <button class="pv-share-btn" onclick="shareProTrip()" style="background:#fff;color:#0f172a;border:none;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-share-nodes"></i> <span class="pv-back-text">Compartir</span></button>
       </div>
     </div>`;
-  }
-})()}
+      }
+    })()}
 
 ${hasPortada ? `
 <div class="pv-portada-wrap">
@@ -3550,7 +3550,7 @@ ${!isPublicLink && tripId ? `
                 <i class="fa-solid fa-paper-plane"></i>
               </div>
               <h3 style="margin:0 0 12px;font-family:\'Barlow\',sans-serif;font-size:24px;font-weight:700;color:#1a2e2c;">¡Itinerario listo!</h3>
-              <p style="margin:0 0 32px;font-size:15px;color:#64748b;line-height:1.6;font-family:\'Barlow\',sans-serif;">Comparte este enlace con tu cliente para que tenga su itinerario de viaje en linea.</p>
+              <p style="margin:0 0 32px;font-size:15px;color:#64748b;line-height:1.6;font-family:\'Barlow\',sans-serif;">Copia y comparte el enlace de este viaje para que puedan ver el itinerario en tiempo real.</p>
               
               <div style="background:#f8fafc;border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:32px;border:1.5px solid #eef2f6;">
                 <input type="text" value="\${url}" readonly style="flex:1;background:transparent;border:none;outline:none;font-size:14px;color:#334155;text-overflow:ellipsis;font-family:\'Barlow\',sans-serif;" id="shareUrlInput">
