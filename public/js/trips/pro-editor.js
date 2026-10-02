@@ -8,14 +8,14 @@ function fixUrl(u) {
 }
 window.fixUrl = fixUrl;
 
-window.openProUpgradeInlineModal = function(featureTitle, featureDesc) {
+window.openProUpgradeInlineModal = function (featureTitle, featureDesc) {
   try {
     let modal = document.getElementById('viantrypInlineUpgradeModal');
     if (!modal) {
       modal = document.createElement('div');
       modal.id = 'viantrypInlineUpgradeModal';
       modal.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:9999999 !important; display:flex; align-items:center; justify-content:center; padding:16px 12px; box-sizing:border-box; font-family:\'Manrope\', sans-serif; overflow-y:auto;';
-      
+
       const appUrl = (typeof origin !== 'undefined' && origin) ? origin : window.location.origin;
       modal.innerHTML = `
         <div class="viantryp-inline-card" style="background:#ffffff; border-radius:24px; max-width:460px; width:100%; max-height:calc(100vh - 32px); overflow-y:auto; padding:32px 24px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); text-align:center; position:relative; box-sizing:border-box; font-family:\'Manrope\', sans-serif; margin:auto; -webkit-overflow-scrolling:touch;">
@@ -1811,7 +1811,7 @@ function updatePriceVisibilityUI() {
     icon.style.color = hidePriceInPublic ? '#f87171' : 'rgba(255,255,255,0.85)';
   }
   if (btn) {
-    btn.title = hidePriceInPublic ? 'Precio actualmente oculto para clientes (click para mostrar)' : 'Precio actualmente visible para clientes (click para ocultar)';
+    btn.title = hidePriceInPublic ? 'Precio actualmente oculto en el link público (click para mostrar)' : 'Precio actualmente visible en el link público (click para ocultar)';
   }
 }
 
@@ -1831,7 +1831,7 @@ function updateTravelersVisibilityUI() {
     icon.style.color = hideTravelersInPublic ? '#f87171' : 'rgba(255,255,255,0.85)';
   }
   if (btn) {
-    btn.title = hideTravelersInPublic ? 'Viajeros actualmente ocultos para clientes (click para mostrar)' : 'Viajeros actualmente visibles para clientes (click para ocultar)';
+    btn.title = hideTravelersInPublic ? 'Viajeros actualmente ocultos en el link público (click para mostrar)' : 'Viajeros actualmente visibles en el link público (click para ocultar)';
   }
 }
 
@@ -1871,7 +1871,7 @@ function updateGoogleRatingInModal(sr, rating, reviews) {
   }
 }
 
-window.getItemInnerHtml = function(item) {
+window.getItemInnerHtml = function (item) {
   if (!item) return '';
   const type = item.type || 'actividad';
   const cfg = C[type] || { icon: '<i class="fa-solid fa-compass"></i>', label: 'Elemento', color: '#64748b', bg: '#f1f5f9' };
@@ -2478,7 +2478,7 @@ function getPlanUsageCounts() {
     if (!item || !item.data) return;
     const url = (item.data.photo_url || item.data.image || '').toLowerCase();
     const type = (item.data.type || '').toLowerCase();
-    
+
     if (item.data._google_place_used || item.data.place_id || url.includes('/storage/places/')) {
       googlePlacesCount++;
     }
@@ -3864,7 +3864,7 @@ function buildField(field, data) {
       try {
         const arr = JSON.parse(photo);
         photo = Array.isArray(arr) ? (arr[0] || '') : '';
-      } catch {}
+      } catch { }
     } else if (Array.isArray(photo)) {
       photo = photo[0] || '';
     }
@@ -4821,7 +4821,7 @@ async function openPreview() {
 
     // Build preview HTML
     const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
-    
+
     if (typeof buildPreviewHTML !== 'function') {
       hideLoading();
       alert('La función para generar la vista previa no está cargada correctamente.');
@@ -4829,16 +4829,16 @@ async function openPreview() {
     }
 
     currentPreviewHTML = buildPreviewHTML({
-      title, destination, portadaSubtitle, 
-      hidePriceInPublic: typeof hidePriceInPublic !== 'undefined' ? hidePriceInPublic : false, 
-      hideTravelersInPublic: typeof hideTravelersInPublic !== 'undefined' ? hideTravelersInPublic : false, 
-      fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, 
-      days: typeof days !== 'undefined' ? days : [[]], 
-      dayDates: typeof dayDates !== 'undefined' ? dayDates : [''], 
-      portadaAdultos: typeof portadaAdultos !== 'undefined' ? portadaAdultos : 2, 
-      portadaNinos: typeof portadaNinos !== 'undefined' ? portadaNinos : 0, 
-      portadaPhotoUrl: typeof portadaPhotoUrl !== 'undefined' ? portadaPhotoUrl : '', 
-      portadaItems: typeof portadaItems !== 'undefined' ? portadaItems : [], 
+      title, destination, portadaSubtitle,
+      hidePriceInPublic: typeof hidePriceInPublic !== 'undefined' ? hidePriceInPublic : false,
+      hideTravelersInPublic: typeof hideTravelersInPublic !== 'undefined' ? hideTravelersInPublic : false,
+      fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs,
+      days: typeof days !== 'undefined' ? days : [[]],
+      dayDates: typeof dayDates !== 'undefined' ? dayDates : [''],
+      portadaAdultos: typeof portadaAdultos !== 'undefined' ? portadaAdultos : 2,
+      portadaNinos: typeof portadaNinos !== 'undefined' ? portadaNinos : 0,
+      portadaPhotoUrl: typeof portadaPhotoUrl !== 'undefined' ? portadaPhotoUrl : '',
+      portadaItems: typeof portadaItems !== 'undefined' ? portadaItems : [],
       cierreItems: typeof cierreItems !== 'undefined' ? cierreItems : [],
       isPublicLink: false,
       csrfToken: csrfToken,
@@ -4918,7 +4918,7 @@ if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App
         closeProPreviewModal();
       }
     });
-  } catch(e) {}
+  } catch (e) { }
 }
 
 window.openPreview = openPreview;
@@ -5503,8 +5503,8 @@ window.ViantrypCopilot.onApplyBatchActions = function (items) {
       }
     } else {
       // Fallback if no date is present: use action.day or norm.day
-      const dayNum = (typeof action.day === 'number' && action.day >= 1) 
-        ? action.day 
+      const dayNum = (typeof action.day === 'number' && action.day >= 1)
+        ? action.day
         : ((typeof norm.day === 'number' && norm.day >= 1) ? norm.day : 1);
       targetDayIndex = Math.max(0, dayNum - 1);
 
