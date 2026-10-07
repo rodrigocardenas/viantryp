@@ -43,8 +43,11 @@ Route::get('auth/native-login', [GoogleAuthController::class , 'handleNativeToke
 // Logout route (authenticated users only)
 Route::middleware('auth')->post('logout', [GoogleAuthController::class , 'logout'])->name('logout');
 
-// Public landing page / Home
+// Public landing page / Home (Redirects directly to Mis Viajes if session is active)
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('trips.index', request()->query());
+    }
     return view('landing');
 })->name('home');
 

@@ -1326,7 +1326,7 @@
             transition: opacity 0.3s ease;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .mobile-hamburger-btn {
                 display: inline-flex !important;
             }
@@ -1355,6 +1355,38 @@
             .dashboard-sidebar.mobile-open {
                 left: 0 !important;
             }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .dashboard-topbar {
+                padding: 0 20px !important;
+                height: 70px !important;
+            }
+
+            .btn-topbar-create {
+                display: inline-flex !important;
+                height: 38px !important;
+                padding: 0 16px !important;
+                font-size: 13px !important;
+                gap: 6px !important;
+                margin-right: 8px !important;
+            }
+
+            .topbar-search {
+                display: flex !important;
+                max-width: 320px !important;
+            }
+
+            .noti-wrapper {
+                display: block !important;
+            }
+
+            .profile-trigger {
+                display: flex !important;
+            }
+        }
+
+        @media (max-width: 768px) {
 
             /* VIAJES RECIENTES: Desplazamiento horizontal hacia la izquierda/derecha en móvil */
             .quick-access-grid {

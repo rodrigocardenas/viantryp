@@ -34,13 +34,6 @@
             body.is-viantryp-app {
                 padding-bottom: 74px !important;
             }
-        }
-        @media (min-width: 769px) {
-            .viantryp-bottom-nav,
-            html.is-viantryp-app .viantryp-bottom-nav {
-                display: none !important;
-            }
-        }
             html.is-viantryp-app .dashboard-sidebar,
             body.is-viantryp-app .dashboard-sidebar,
             html.is-viantryp-app .sidebar-backdrop,
@@ -110,6 +103,68 @@
             html.is-viantryp-app .main-content,
             body.is-viantryp-app .main-content {
                 width: 100% !important;
+            }
+        }
+        @media (min-width: 769px) {
+            .viantryp-bottom-nav,
+            html.is-viantryp-app .viantryp-bottom-nav {
+                display: none !important;
+            }
+            html.is-viantryp-app .btn-topbar-create,
+            body.is-viantryp-app .btn-topbar-create {
+                display: inline-flex !important;
+            }
+            html.is-viantryp-app .profile-dropdown-wrapper,
+            body.is-viantryp-app .profile-dropdown-wrapper {
+                display: block !important;
+            }
+            html.is-viantryp-app .profile-trigger,
+            body.is-viantryp-app .profile-trigger {
+                display: flex !important;
+            }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            html.is-viantryp-app .mobile-hamburger-btn,
+            body.is-viantryp-app .mobile-hamburger-btn,
+            .mobile-hamburger-btn {
+                display: inline-flex !important;
+            }
+            html.is-viantryp-app .dashboard-sidebar,
+            body.is-viantryp-app .dashboard-sidebar,
+            .dashboard-sidebar {
+                position: fixed !important;
+                top: 0 !important;
+                left: -280px !important;
+                width: 260px !important;
+                height: 100vh !important;
+                z-index: 3000 !important;
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2) !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            html.is-viantryp-app .dashboard-sidebar.mobile-open,
+            body.is-viantryp-app .dashboard-sidebar.mobile-open,
+            .dashboard-sidebar.mobile-open {
+                left: 0 !important;
+            }
+            html.is-viantryp-app .sidebar-backdrop.active,
+            body.is-viantryp-app .sidebar-backdrop.active,
+            .sidebar-backdrop.active {
+                display: block !important;
+            }
+            html.is-viantryp-app .mobile-sidebar-close,
+            body.is-viantryp-app .mobile-sidebar-close,
+            .mobile-sidebar-close {
+                display: inline-flex !important;
+            }
+            html.is-viantryp-app .btn-topbar-create,
+            body.is-viantryp-app .btn-topbar-create {
+                display: inline-flex !important;
+                height: 38px !important;
+                padding: 0 16px !important;
+                font-size: 13px !important;
+                gap: 6px !important;
             }
         }
     </style>
