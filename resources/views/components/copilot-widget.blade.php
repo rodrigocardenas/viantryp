@@ -44,7 +44,7 @@
             </div>
 
             <!-- Body Area (Chat Thread) -->
-            <div class="trypai-body" id="trypai-chat-thread">
+            <div class="trypai-body {{ $hasReachedAiLimit ? 'hidden' : '' }}" id="trypai-chat-thread" style="{{ $hasReachedAiLimit ? 'display: none !important;' : '' }}">
                 <!-- Single Welcome & Explanation Bubble -->
                 <div class="chat-msg assistant">
                     <div class="chat-avatar">✨</div>
@@ -104,7 +104,7 @@
 
                 <!-- Input Section: Free Text -->
                 <div id="trypai-section-text" class="trypai-input-section hidden">
-                    <textarea id="trypai-text-input" class="trypai-textarea" rows="5" placeholder="Pega aquí el correo de confirmación, WhatsApp o notas (máximo 4 reservas o elementos)..."></textarea>
+                    <textarea id="trypai-text-input" class="trypai-textarea" rows="6" placeholder="Ejemplo:&#10;• Vuelo Avianca AV120 de BOG a MAD, 15 Oct, 14:30. Res: ABC123&#10;• Hotel Riu Plaza Madrid, Check-in 16 Oct - Check-out 20 Oct&#10;• Tour Museo del Prado, 17 Oct, 10:00 hrs&#10;• Cena Restaurante Botín, 18 Oct, 20:30 hrs"></textarea>
                     <p class="trypai-text-hint">⚡ <em>Para una respuesta rápida y precisa, Tryp IA (Beta) procesa hasta 4 elementos por consulta (ej: vuelos, hoteles o actividades). Si incluyes más, la IA generará los cuatro primeros.</em></p>
                 </div>
 
@@ -133,6 +133,25 @@
                             <div id="trypai-loop-msg"></div>
                             <div class="trypai-loop-options" id="trypai-loop-options"></div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Body Area: Locked State (when limit reached) -->
+            <div class="trypai-body {{ $hasReachedAiLimit ? '' : 'hidden' }}" id="trypai-limit-locked-view" style="{{ $hasReachedAiLimit ? 'display: flex;' : 'display: none;' }} flex-direction: column; justify-content: flex-start; padding-top: 24px;">
+                <div class="chat-msg assistant" style="width: 100%;">
+                    <div class="chat-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706) !important; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);">👑</div>
+                    <div class="chat-bubble" style="border: 1px solid rgba(245, 158, 11, 0.45); background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%) !important; width: 100%; box-sizing: border-box; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(245, 158, 11, 0.15); border-radius: 14px; border-top-left-radius: 4px; padding: 16px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                            <span style="font-size: 16px;">⚠️</span>
+                            <strong style="color: #fbbf24; font-size: 14px; font-weight: 700; letter-spacing: 0.2px;">Límite de interacciones alcanzado</strong>
+                        </div>
+                        <p id="trypai-limit-card-text" style="font-size: 13px; line-height: 1.55; color: #e2e8f0; margin: 0 0 16px 0;">
+                            Has alcanzado el límite de 5 interacciones con Tryp IA (Asistente de Viantryp) para este viaje en el Plan Básico.
+                        </p>
+                        <button type="button" onclick="if(typeof window.openProUpgradeInlineModal === 'function'){ window.openProUpgradeInlineModal('Límite de Tryp IA Alcanzado', 'Has alcanzado el límite de 5 interacciones con Tryp IA por itinerario para el Plan Básico. Actualiza a Viajero Pro para asistencia ilimitada.'); } else if(typeof openUpgradeModal === 'function'){ openUpgradeModal(true); }" style="background: linear-gradient(135deg, #1eaace 0%, #0e7aad 100%) !important; color: white !important; font-weight: 700; border: none; width: 100%; text-align: center; padding: 12px 16px; cursor: pointer; border-radius: 10px; box-shadow: 0 4px 14px rgba(30, 170, 206, 0.4); font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 20px rgba(30, 170, 206, 0.6)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 14px rgba(30, 170, 206, 0.4)';">
+                            <span>✨ Actualizar a Viajero Pro (Ilimitado) →</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -450,7 +469,7 @@
         text-decoration: underline;
     }
 
-    .hidden, .trypai-loading.hidden, .trypai-input-section.hidden, .trypai-action-row.hidden, .chat-msg.hidden, .trypai-loop-ux.hidden { display: none !important; }
+    .hidden, .trypai-body.hidden, .trypai-loading.hidden, .trypai-input-section.hidden, .trypai-action-row.hidden, .chat-msg.hidden, .trypai-loop-ux.hidden { display: none !important; }
 
     /* Dropzone */
     .trypai-dropzone {
@@ -682,6 +701,45 @@
         flex-direction: column;
         gap: 20px;
         background: #0f172a !important;
+    }
+
+    .ingestion-more-alert {
+        background: linear-gradient(135deg, rgba(30, 170, 206, 0.16) 0%, rgba(14, 122, 173, 0.1) 100%) !important;
+        border: 1px solid rgba(30, 194, 236, 0.35) !important;
+        border-radius: 12px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        color: #f1f5f9;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .ingestion-more-icon {
+        font-size: 18px;
+        line-height: 1.2;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+    .ingestion-more-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .ingestion-more-title {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        color: #38bdf8;
+        margin-bottom: 3px;
+    }
+
+    .ingestion-more-desc {
+        font-size: 12px;
+        line-height: 1.45;
+        color: #cbd5e1;
+        margin: 0;
     }
 
     .ingestion-day-group {
@@ -948,6 +1006,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const modeBtnFile = document.getElementById('btn-mode-file');
     const modeBtnText = document.getElementById('btn-mode-text');
     const changeModeBtn = document.getElementById('btn-change-mode');
+    const chatQuestionMsg = document.getElementById('chat-question-msg');
+    let conversationEnded = false;
+    let farewellTimeout = null;
 
     const userChoiceMsg = document.getElementById('chat-user-choice');
     const userChoiceText = document.getElementById('chat-user-choice-text');
@@ -984,13 +1045,69 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Open/Close Drawer
     function openDrawer() {
+        if (farewellTimeout) clearTimeout(farewellTimeout);
         drawer.classList.remove('hidden');
         const containerEl = document.getElementById('viantryp-copilot-container');
         if (containerEl && containerEl.dataset.aiLimitReached === '1') {
-            showLimitReachedUi('Has alcanzado el límite de 5 consultas gratuitas de Tryp IA para este itinerario en el Plan Básico.');
+            showLimitReachedUi('Has alcanzado el límite de 5 interacciones con Tryp IA (Asistente de Viantryp) para este viaje en el Plan Básico.');
+            return;
+        }
+        if (conversationEnded) {
+            conversationEnded = false;
+            showQuestionModeSelector();
         }
     }
     function closeDrawer() { drawer.classList.add('hidden'); }
+
+    function hideAllInputPanels() {
+        sectionFile.classList.add('hidden');
+        sectionText.classList.add('hidden');
+        actionRow.classList.add('hidden');
+        loadingEl.classList.add('hidden');
+        userChoiceMsg.classList.add('hidden');
+        assistantPromptMsg.classList.add('hidden');
+        if (chatQuestionMsg) chatQuestionMsg.classList.add('hidden');
+
+        if (textInput) textInput.value = '';
+        selectedFiles = [];
+        renderFileList();
+        currentMode = null;
+    }
+
+    function showQuestionModeSelector() {
+        const containerEl = document.getElementById('viantryp-copilot-container');
+        if (containerEl && containerEl.dataset.aiLimitReached === '1') {
+            showLimitReachedUi();
+            return;
+        }
+        loopUxEl.classList.add('hidden');
+        if (chatQuestionMsg) chatQuestionMsg.classList.remove('hidden');
+        userChoiceMsg.classList.add('hidden');
+        assistantPromptMsg.classList.add('hidden');
+        sectionFile.classList.add('hidden');
+        sectionText.classList.add('hidden');
+        actionRow.classList.add('hidden');
+        currentMode = null;
+
+        const thread = document.getElementById('trypai-chat-thread');
+        if (thread) thread.scrollTop = thread.scrollHeight;
+    }
+
+    function closeConversationWithFarewell() {
+        conversationEnded = true;
+        hideAllInputPanels();
+        showLoopUx('✨ ¡Entendido! Tus reservas han quedado listas. Si necesitas agregar más actividades, vuelos o itinerarios más adelante, aquí estaré. ¡Que disfrutes tu viaje! ✈️🌍', [
+            {
+                label: '👋 Cerrar asistente',
+                action: () => closeDrawer()
+            }
+        ]);
+
+        if (farewellTimeout) clearTimeout(farewellTimeout);
+        farewellTimeout = setTimeout(() => {
+            closeDrawer();
+        }, 2500);
+    }
 
     if (triggerBtn) {
         triggerBtn.addEventListener('click', (e) => {
@@ -1040,13 +1157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetMode() {
-        currentMode = null;
-        userChoiceMsg.classList.add('hidden');
-        assistantPromptMsg.classList.add('hidden');
-        sectionFile.classList.add('hidden');
-        sectionText.classList.add('hidden');
-        actionRow.classList.add('hidden');
-        loopUxEl.classList.add('hidden');
+        showQuestionModeSelector();
     }
 
     if (modeBtnFile) modeBtnFile.addEventListener('click', () => selectMode('file'));
@@ -1126,6 +1237,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // UI Loading state
             actionRow.classList.add('hidden');
+            sectionFile.classList.add('hidden');
+            sectionText.classList.add('hidden');
             loadingEl.classList.remove('hidden');
             loopUxEl.classList.add('hidden');
             submitBtn.disabled = true;
@@ -1146,31 +1259,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.disabled = false;
 
                 if (!data.success) {
-                    actionRow.classList.remove('hidden');
                     if (data.error_code === 'LIMIT_REACHED' || response.status === 403) {
                         showLimitReachedUi(data.message);
                         if (typeof window.openProUpgradeInlineModal === 'function') {
                             window.openProUpgradeInlineModal(
                                 'Límite de Tryp IA Alcanzado',
-                                data.message || 'Has alcanzado el límite de 5 consultas gratuitas de Tryp IA para este itinerario. Actualiza a Viajero Pro para consultas ilimitadas.'
+                                data.message || 'Has alcanzado el límite de 5 interacciones con Tryp IA (Asistente de Viantryp) para este viaje en el Plan Básico. Actualiza a Viajero Pro para asistencia ilimitada.'
                             );
                         } else if (typeof openUpgradeModal === 'function') {
                             openUpgradeModal(true);
                         }
                         return;
                     }
+
+                    actionRow.classList.remove('hidden');
+                    if (currentMode === 'file') sectionFile.classList.remove('hidden');
+                    else sectionText.classList.remove('hidden');
+
                     alert(data.message || 'Ocurrió un error al analizar tus reservas.');
                     return;
                 }
 
+                if (data.ai_limit_reached) {
+                    const containerEl = document.getElementById('viantryp-copilot-container');
+                    if (containerEl) containerEl.dataset.aiLimitReached = '1';
+                }
+
                 processedItems = data.items || data.actions || [];
                 if (processedItems.length === 0) {
-                    showLoopUx(data.message || 'No se encontraron reservas en el contenido provisto.', [
-                        { label: '📄 Cargar otro Archivo', action: () => selectMode('file') },
-                        { label: '✍️ Pegar Texto', action: () => selectMode('text') }
+                    hideAllInputPanels();
+                    showLoopUx(data.message || 'No se encontraron reservas en el contenido provisto. ¿Deseas agregar alguna otra reserva a tu viaje?', [
+                        { label: '➕ Sí, agregar más', action: () => showQuestionModeSelector() },
+                        { label: '👍 No por ahora', action: () => closeConversationWithFarewell() }
                     ]);
                     return;
                 }
+
+                // Detect if user provided more than 4 items/reservations
+                let hasMore = !!data.has_more_items;
+                if (!hasMore && currentMode === 'text' && textInput) {
+                    const rawText = textInput.value || '';
+                    const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 5);
+                    const markers = lines.filter(l => /^[-*•\d+.]/i.test(l) || /(vuelo|hotel|tour|actividad|reserva|traslado|alojamiento|check-?in)/i.test(l));
+                    if (markers.length > 4 || lines.length >= 5) {
+                        hasMore = true;
+                    }
+                }
+                if (!hasMore && data.message && (data.message.includes('primeros 4') || data.message.includes('más de 4'))) {
+                    hasMore = true;
+                }
+                window.copilotHasMoreItems = hasMore;
+
+                // Hide inputs so only the confirmation message will remain after modal
+                hideAllInputPanels();
 
                 // Open IngestionPreviewModal (Paso 5)
                 openPreviewModal(processedItems);
@@ -1179,34 +1320,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error(err);
                 loadingEl.classList.add('hidden');
                 actionRow.classList.remove('hidden');
+                if (currentMode === 'file') sectionFile.classList.remove('hidden');
+                else sectionText.classList.remove('hidden');
                 submitBtn.disabled = false;
                 alert('Ocurrió un error al procesar tu solicitud. Intenta nuevamente.');
             }
         });
     }
 
-    // Banner / Tarjeta en chat cuando se alcanza el límite de consultas
+    // Bloquear Tryp IA cuando se alcanza el límite de interacciones
     function showLimitReachedUi(customMsg) {
-        const thread = document.getElementById('trypai-chat-thread');
-        if (!thread) return;
+        hideAllInputPanels();
 
-        if (document.getElementById('trypai-limit-card')) return;
+        const containerEl = document.getElementById('viantryp-copilot-container');
+        if (containerEl) {
+            containerEl.dataset.aiLimitReached = '1';
+        }
 
-        const limitDiv = document.createElement('div');
-        limitDiv.id = 'trypai-limit-card';
-        limitDiv.className = 'chat-msg assistant';
-        limitDiv.innerHTML = `
-            <div class="chat-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706) !important;">👑</div>
-            <div class="chat-bubble" style="border: 1px solid rgba(245, 158, 11, 0.4); background: rgba(15, 23, 42, 0.95) !important;">
-                <strong>⚠️ Límite de consultas alcanzado</strong><br><br>
-                ${customMsg || 'Has alcanzado el límite de 5 consultas gratuitas de Tryp IA para este itinerario en el Plan Básico.'}<br><br>
-                <button type="button" onclick="if(typeof window.openProUpgradeInlineModal === 'function'){ window.openProUpgradeInlineModal('Límite de Tryp IA Alcanzado', 'Has alcanzado el límite de 5 consultas de Tryp IA por itinerario para el Plan Básico. Actualiza a Viajero Pro para asistencia ilimitada.'); } else if(typeof openUpgradeModal === 'function'){ openUpgradeModal(true); }" style="background: linear-gradient(135deg, #1eaace 0%, #0e7aad 100%) !important; color: white !important; font-weight: 700; border: none; width: 100%; text-align: center; padding: 10px; cursor: pointer; border-radius: 10px; box-shadow: 0 4px 12px rgba(30, 170, 206, 0.35); font-size: 13px;">
-                    ✨ Actualizar a Viajero Pro (Ilimitado) →
-                </button>
-            </div>
-        `;
-        thread.appendChild(limitDiv);
-        thread.scrollTop = thread.scrollHeight;
+        const chatThread = document.getElementById('trypai-chat-thread');
+        const lockedView = document.getElementById('trypai-limit-locked-view');
+        const limitText = document.getElementById('trypai-limit-card-text');
+
+        if (chatThread) {
+            chatThread.classList.add('hidden');
+            chatThread.style.display = 'none';
+        }
+
+        if (limitText && customMsg) {
+            limitText.innerText = customMsg;
+        }
+
+        if (lockedView) {
+            lockedView.classList.remove('hidden');
+            lockedView.style.display = 'flex';
+        }
     }
 
     // Modal IngestionPreviewModal logic
@@ -1217,6 +1364,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closePreviewModal() {
         modal.classList.add('hidden');
+        window.copilotHasMoreItems = false;
     }
 
     if (modalCloseBtn) modalCloseBtn.addEventListener('click', () => {
@@ -1227,6 +1375,14 @@ document.addEventListener('DOMContentLoaded', () => {
         closePreviewModal();
         triggerLoopScenarioB();
     });
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closePreviewModal();
+                triggerLoopScenarioB();
+            }
+        });
+    }
 
     function extractTimeFromItem(item) {
         if (item.start_time) return item.start_time;
@@ -1262,6 +1418,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         let html = '';
+
+        if (window.copilotHasMoreItems) {
+            html += `
+                <div class="ingestion-more-alert">
+                    <div class="ingestion-more-icon">ℹ️</div>
+                    <div class="ingestion-more-content">
+                        <span class="ingestion-more-title">Has agregado más de 4 elementos</span>
+                        <p class="ingestion-more-desc">Añadimos los primeros 4 a esta previsualización. Si quieres agregar más, puedes hacerlo en una nueva consulta con Tryp IA.</p>
+                    </div>
+                </div>
+            `;
+        }
+
         Object.keys(groups).forEach(dateStr => {
             let titleDate = dateStr;
             if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
@@ -1411,11 +1580,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedItems.forEach(item => window.ViantrypCopilot.onApplyAction(item));
             }
 
-            // Reset inputs
-            selectedFiles = [];
-            renderFileList();
-            textInput.value = '';
-
             // Trigger Loop UX Scenario A
             triggerLoopScenarioA(selectedItems.length);
         });
@@ -1423,36 +1587,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Loop UX Handlers (Paso 7)
     function triggerLoopScenarioA(count) {
-        showLoopUx(`¡Listo! ${count} elementos agregados con éxito al lienzo. ¿Deseas agregar alguna otra reserva?`, [
+        hideAllInputPanels();
+        const containerEl = document.getElementById('viantryp-copilot-container');
+        if (containerEl && containerEl.dataset.aiLimitReached === '1') {
+            showLimitReachedUi(`¡Listo! Se agregaron ${count} elemento(s) con éxito al lienzo. Has alcanzado el límite de 5 interacciones con Tryp IA (Asistente de Viantryp) para este viaje en el Plan Básico.`);
+            return;
+        }
+        showLoopUx(`¡Listo! Se agregaron ${count} elemento(s) con éxito al lienzo. ¿Deseas agregar alguna otra reserva?`, [
             {
                 label: '➕ Sí, agregar más',
-                action: () => {
-                    loopUxEl.classList.add('hidden');
-                    resetMode();
-                }
+                action: () => showQuestionModeSelector()
             },
             {
                 label: '👍 No por ahora',
-                action: () => closeDrawer()
+                action: () => closeConversationWithFarewell()
             }
         ]);
     }
 
     function triggerLoopScenarioB() {
-        showLoopUx('Entendido, descartamos esa información. ¿Quieres probar cargando otro archivo o texto?', [
+        hideAllInputPanels();
+        const containerEl = document.getElementById('viantryp-copilot-container');
+        if (containerEl && containerEl.dataset.aiLimitReached === '1') {
+            showLimitReachedUi('Entendido, descartamos esa información. Has alcanzado el límite de 5 interacciones con Tryp IA (Asistente de Viantryp) para este viaje en el Plan Básico.');
+            return;
+        }
+        showLoopUx('Entendido, descartamos esa información. ¿Deseas agregar alguna otra reserva a tu viaje?', [
             {
-                label: '📄 Cargar Archivo',
-                action: () => {
-                    loopUxEl.classList.add('hidden');
-                    selectMode('file');
-                }
+                label: '➕ Sí, agregar más',
+                action: () => showQuestionModeSelector()
             },
             {
-                label: '✍️ Pegar Texto',
-                action: () => {
-                    loopUxEl.classList.add('hidden');
-                    selectMode('text');
-                }
+                label: '👍 No por ahora',
+                action: () => closeConversationWithFarewell()
             }
         ]);
     }

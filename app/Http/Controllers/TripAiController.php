@@ -43,8 +43,8 @@ class TripAiController extends Controller
             return response()->json([
                 'success' => false,
                 'error_code' => 'LIMIT_REACHED',
-                'message' => 'Has alcanzado el límite de 5 consultas gratuitas de Tryp IA (Beta) para este itinerario. Actualiza al Plan Viajero Pro para consultas ilimitadas.',
-                'response_text' => 'Has alcanzado el límite de 5 consultas gratuitas de Tryp IA (Beta) para este itinerario. Actualiza tu plan a Viajero Pro para disfrutar de asistencia IA ilimitada.',
+                'message' => 'Has alcanzado el límite de 5 interacciones con Tryp IA (Asistente de Viantryp) para este viaje en el Plan Básico. Actualiza a Viajero Pro para asistencia ilimitada.',
+                'response_text' => 'Has alcanzado el límite de 5 interacciones con Tryp IA (Asistente de Viantryp) para este viaje en el Plan Básico. Actualiza tu plan a Viajero Pro para disfrutar de asistencia IA ilimitada.',
                 'suggested_actions' => []
             ], 403);
         }
@@ -148,19 +148,26 @@ class TripAiController extends Controller
 
         $respText = $aiResult['response_text'] ?? ($aiResult['message'] ?? 'He procesado tu información.');
         $actions = $aiResult['actions'] ?? ($aiResult['suggested_actions'] ?? []);
-        if (count($actions) > 2) {
-            $actions = array_slice($actions, 0, 2);
+        $hasMoreItems = !empty($aiResult['has_more_items']) || (count($actions) > 4);
+        if (count($actions) > 4) {
+            $actions = array_slice($actions, 0, 4);
         }
+
+        $trip->refresh();
+        $isLimitReached = $trip->hasReachedAiLimit(Auth::user());
 
         return response()->json([
             'success' => $aiResult['success'] ?? true,
             'message' => $respText,
             'response_text' => $respText,
+            'has_more_items' => $hasMoreItems,
             'items' => $actions,
             'actions' => $actions,
             'suggested_actions' => $actions,
             'suggestions' => $aiResult['suggestions'] ?? [],
-            'documents' => $createdDocuments
+            'documents' => $createdDocuments,
+            'ai_limit_reached' => $isLimitReached,
+            'ai_queries_count' => $trip->ai_queries_count,
         ]);
     }
 }

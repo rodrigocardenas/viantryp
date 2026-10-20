@@ -130,6 +130,8 @@ class TripAiService
             $rawItems = $parsedJson['items'] ?? ($parsedJson['actions'] ?? []);
             $normalizedItems = $this->normalizeActions($rawItems, $trip);
 
+            $hasMoreItems = !empty($parsedJson['has_more_items']) || (count($rawItems) > 4) || (count($normalizedItems) > 4);
+
             // Regla estricta para todos los planes: Máximo 4 elementos por prompt para garantizar respuestas rápidas y precisas
             if (count($normalizedItems) > 4) {
                 $normalizedItems = array_slice($normalizedItems, 0, 4);
@@ -139,6 +141,7 @@ class TripAiService
                 'success' => true,
                 'response_text' => $respMsg,
                 'message' => $respMsg,
+                'has_more_items' => $hasMoreItems,
                 'items' => $normalizedItems,
                 'actions' => $normalizedItems,
                 'suggested_actions' => $normalizedItems,
@@ -228,7 +231,8 @@ CONTEXTO DEL VIAJE ACTUAL
 4. REGLA ESTRICTA DE VELOCIDAD: MÁXIMO 4 ELEMENTOS
 ==================================================
 - DEBES EXTRAER Y RETORNAR COMO MÁXIMO 4 ELEMENTOS / ACCIONES en el arreglo "items".
-- Si el usuario proporciona 5 o más reservas, actividades, vuelos o elementos (ya sea en texto o en archivos adjuntos), PROCESA ÚNICAMENTE LOS CUATRO PRIMEROS (los cronológicamente iniciales o más relevantes) e IGNORA POR COMPLETO LOS DEMÁS.
+- Si el usuario proporciona 5 o más reservas, actividades, vuelos o elementos (ya sea en texto o en archivos adjuntos), PROCESA ÚNICAMENTE LOS CUATRO PRIMEROS (los cronológicamente iniciales o más relevantes) e IGNORA POR COMPLETO LOS DEMÁS. Además, DEBES colocar el campo "has_more_items": true en el JSON de respuesta.
+- Si el usuario incluyó 4 o menos elementos, coloca "has_more_items": false.
 - Esto es fundamental para reducir el tiempo de razonamiento y garantizar una respuesta rápida y precisa.
 - Si el usuario incluyó más de 4 elementos, incluye una breve aclaración en "message" como: "He procesado los 4 primeros elementos para responder con la mayor rapidez. Puedes agregar los demás en otra consulta."
 
@@ -239,6 +243,7 @@ Debes responder SIEMPRE con un único objeto JSON válido con esta estructura ex
 
 {
   "message": "Analicé tus reservas y encontré N elementos para tu viaje.",
+  "has_more_items": true,
   "items": [
     {
       "type": "flight" | "hotel" | "activity" | "transport" | "note",
