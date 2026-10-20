@@ -146,7 +146,12 @@
             <div class="sheet-user-meta">
                 <div class="sheet-name-row">
                     <h3 id="profileSheetTitle" class="sheet-user-name">{{ $currentUser->name }}</h3>
-                    <span class="sheet-plan-badge">{{ $currentUser->plan_display_name ?? 'Básico' }}</span>
+                    <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                        <span class="sheet-plan-badge">{{ mb_strtoupper($currentUser->plan_display_name ?? 'BÁSICO') }}</span>
+                        @if(isset($currentUser) && method_exists($currentUser, 'isTrialActive') && $currentUser->isTrialActive())
+                            <span class="sheet-trial-badge">Prueba Gratuita</span>
+                        @endif
+                    </div>
                 </div>
                 <p class="sheet-user-email">{{ $currentUser->email }}</p>
             </div>
@@ -719,11 +724,29 @@
     background: #e0f2fe;
     color: #0369a1;
     font-size: 10.5px;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.4px;
     padding: 2px 8px;
     border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.sheet-trial-badge {
+    background: #fef9c3;
+    color: #854d0e;
+    font-size: 9.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    border: 1px solid #fde047;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
 }
 
 .sheet-user-email {

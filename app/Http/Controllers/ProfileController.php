@@ -465,30 +465,27 @@ class ProfileController extends Controller
         }
 
         $validated = $request->validate([
-            'plan' => 'required|string|in:básico,avanzado,colaborativo,corporativo',
+            'plan' => 'nullable|string|in:básico,avanzado,colaborativo,corporativo',
             'account_type' => 'required|string|in:personal,agency',
         ]);
 
-        $plan = $validated['plan'];
         $accountType = $validated['account_type'];
+        // Asignación automática del Plan Viajero Pro con 1 mes gratis por lanzamiento oficial
+        $plan = User::PLAN_AVANZADO;
 
         $updateData = [
             'plan' => $plan,
             'account_type' => $accountType,
             'display_name_type' => $accountType,
             'initial_plan_chosen_at' => now(),
+            'trial_ends_at' => now()->addDays(30), // 1 mes gratis de prueba
         ];
-
-        // Advanced and Colaborativo get 7-day trial
-        if (in_array($plan, [User::PLAN_AVANZADO, User::PLAN_COLABORATIVO])) {
-            $updateData['trial_ends_at'] = now()->addDays(7);
-        }
 
         $user->update($updateData);
 
         return response()->json([
             'success' => true, 
-            'message' => 'Plan y tipo de cuenta seleccionados correctamente. ¡Disfruta de Viantryp!',
+            'message' => '¡Bienvenido a la comunidad Viantryp! Tu mes gratis de Viajero Pro ha sido activado.',
             'plan' => $plan
         ]);
     }

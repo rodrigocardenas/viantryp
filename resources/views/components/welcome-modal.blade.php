@@ -1,182 +1,40 @@
 @php
     $user = auth()->user();
-    if (!$user || $user->initial_plan_chosen_at)
+    if (!$user || $user->initial_plan_chosen_at) {
         return;
-
-    $planData = [
-        'básico' => [
-            'name' => 'Básico',
-            'price_monthly' => 0,
-            'price_annual' => 0,
-            'is_custom' => false,
-            'limit_trips' => 1,
-            'limit_editors' => 0,
-            'benefits' => [
-                '1 itinerario activo',
-                'Fotos Unsplash & GIFs ilimitados',
-                '5 consultas en Google Places activas',
-                '5 interacciones con Tryp IA (Asistente de Viantryp)',
-                '5 archivos adjuntos por viaje',
-                'Personalización de colores y temas'
-            ],
-            'accent' => '#64748b'
-        ],
-        'avanzado' => [
-            'name' => 'Viajero Pro',
-            'price_monthly' => 6.99,
-            'price_annual' => 5.59,
-            'is_custom' => false,
-            'limit_trips' => 20,
-            'limit_editors' => 2,
-            'benefits' => [
-                '20 itinerarios activos',
-                '2 colaboradores de edición de viaje',
-                '50 consultas en Google Places activas',
-                '20 archivos adjuntos por itinerario',
-                'Tryp IA (Asistente de Viantryp) Ilimitado',
-                'Exportación de PDF'
-            ],
-            'accent' => '#1EAACE',
-            'popular' => true
-        ],
-        'colaborativo' => [
-            'name' => 'Negocios',
-            'price_monthly' => 24.99,
-            'price_annual' => 19.99,
-            'is_custom' => false,
-            'limit_trips' => 1000000,
-            'limit_editors' => 1000000,
-            'benefits' => [
-                'Itinerarios activos ilimitados',
-                'Colaboradores y editores ilimitados',
-                'Consultas en Google Places ilimitadas',
-                'Archivos adjuntos ilimitados',
-                'Marca Blanca con Logo de Agencia',
-                'Soporte prioritario dedicado'
-            ],
-            'accent' => '#0e5a6a'
-        ]
-    ];
-
-    foreach ($planData as $key => &$data) {
-        if (!$data['is_custom'] && $data['price_monthly'] > 0) {
-            $data['savings'] = round(($data['price_monthly'] - $data['price_annual']) * 12, 2);
-        }
     }
-    unset($data);
 @endphp
 
 <div id="welcomePlanModal" class="modal upgrade-premium-modal" style="display: flex; z-index: 10002;">
-    <div class="modal-content modal-wide" style="transition: max-width 0.3s ease;">
+    <div class="modal-content modal-welcome-onboarding" style="position: relative;">
+        <!-- Canvas Confetti Overlay -->
+        <canvas id="welcomeConfettiCanvas" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50;"></canvas>
+
         <div class="modal-body">
 
-            <!-- STEP 1: PLANS SELECTION -->
-            <div id="welcomeStepPlans">
-                <!-- HEADER: USER INFO -->
-                <div class="modal-user-header">
-                    <div class="user-info">
-                        <div class="avatar user-avatar">
-                            @if($user->avatar)
-                                <img src="{{ str_starts_with($user->avatar, 'http') ? $user->avatar : asset('storage/' . $user->avatar) }}"
-                                    alt="">
-                            @else
-                                {{ $user->display_initials }}
-                            @endif
-                        </div>
-                        <div class="user-details">
-                            <div class="user-name">¡Hola, {{ $user->display_name ?? $user->name }}!</div>
-                            <div class="user-email">¡Tu registro en Viantryp ha sido exitoso!</div>
-                        </div>
+            <!-- HEADER: USER INFO -->
+            <div class="modal-user-header">
+                <div class="user-info">
+                    <div class="avatar user-avatar">
+                        @if($user->avatar)
+                            <img src="{{ str_starts_with($user->avatar, 'http') ? $user->avatar : asset('storage/' . $user->avatar) }}" alt="">
+                        @else
+                            {{ $user->display_initials }}
+                        @endif
                     </div>
-                </div>
-
-                <!-- WELCOME TEXT -->
-                <div class="welcome-heading">
-                    <h2 class="welcome-main-title">Elige tu plan de inicio</h2>
-                    <p class="welcome-main-desc">
-                        Selecciona el plan que mejor se adapte a tus necesidades.
-                    </p>
-                </div>
-
-                <!-- PRICING TOGGLE -->
-                <div class="pricing-toggle-wrap">
-                    <span class="toggle-label active" id="welcomeLabelMonthly">Mensual</span>
-                    <div class="toggle-switch" id="welcomePriceToggle"></div>
-                    <span class="toggle-label" id="welcomeLabelAnnual">Anual <span
-                            class="annual-discount-pill">-20%</span></span>
-                </div>
-
-                <!-- PLANS GRID -->
-                <div class="p-grid-container">
-                    @foreach($planData as $key => $data)
-                        <div class="p-card {{ isset($data['popular']) ? 'active' : '' }}">
-                            @if(isset($data['popular']))
-                                <div class="p-popular">RECOMENDADO</div>
-                            @endif
-
-                            <div>
-                                <div class="p-name">{{ $data['name'] }}</div>
-                                <div class="p-price"
-                                    style="{{ !is_numeric($data['price_monthly']) ? 'font-size: 18px;' : '' }}">
-                                    @if(is_numeric($data['price_monthly']))<span class="currency">$</span>@endif<span
-                                        class="p-price-val"
-                                        data-monthly="{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}"
-                                        data-annual="{{ is_numeric($data['price_annual']) ? number_format($data['price_annual'], 2, '.', '') : $data['price_annual'] }}">{{ is_numeric($data['price_monthly']) ? number_format($data['price_monthly'], 2, '.', '') : $data['price_monthly'] }}</span>@if(!$data['is_custom'])<small>/mes</small>@endif
-                                </div>
-
-                                @if(isset($data['savings']) && $data['savings'] > 0)
-                                    <div class="plan-savings-hint">Ahorras ${{ $data['savings'] }} al año</div>
-                                @endif
-
-                                <div class="p-benefits">
-                                    @foreach($data['benefits'] as $b)
-                                        <div class="p-benefit">
-                                            <i class="fas fa-check"></i> {{ $b }}
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                            @if($key === 'básico')
-                                <button onclick="confirmInitialPlan('{{ $key }}')" class="p-btn">
-                                    Elegir Plan
-                                </button>
-                            @elseif($key === 'avanzado')
-                                <button onclick="confirmInitialPlan('{{ $key }}')" class="p-btn current">
-                                    Probar 7 Días Gratis →
-                                </button>
-                            @elseif($key === 'colaborativo')
-                                <button onclick="confirmInitialPlan('{{ $key }}')" class="p-btn">
-                                    Probar 7 Días Gratis →
-                                </button>
-                            @else
-                                <button onclick="checkInitialPlanGate('{{ $key }}')" class="p-btn">
-                                    Elegir Plan
-                                </button>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="pricing-disclaimer">
-                    * Todos los precios están expresados en USD (Dólares Estadounidenses)
-                </div>
-
-                <div class="modal-footer-links">
-                    <span>¿Tienes dudas? <a href="{{ route('contact') }}" target="_blank">Contáctanos &rarr;</a></span>
+                    <div class="user-details">
+                        <div class="user-name">¡Hola, {{ $user->display_name ?? $user->name }}!</div>
+                        <div class="user-email">¡Tu registro en Viantryp ha sido exitoso!</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- STEP 2: ACCOUNT USE SELECTOR -->
-            <div id="welcomeStepUseType" style="display: none;">
-                <!-- HEADER -->
+            <!-- STEP 1: ACCOUNT USE SELECTOR -->
+            <div id="welcomeStepUseType">
                 <div class="welcome-heading">
-                    <h2 class="welcome-main-title">
-                        ¿Cómo vas a usar Viantryp?
-                    </h2>
+                    <h2 class="welcome-main-title">¡Bienvenido a la comunidad Viantryp!</h2>
                     <p class="welcome-main-desc">
-                        Personalizaremos tu panel y tus herramientas según tu respuesta. Podrás cambiar esto en
-                        cualquier momento desde tu perfil.
+                        Personalizaremos tu panel y tus herramientas según el uso que quieras darle a la plataforma. Podrás cambiar esto en cualquier momento desde tu perfil.
                     </p>
                 </div>
 
@@ -187,11 +45,12 @@
                         <div class="use-case-icon-wrapper">
                             <i class="fas fa-plane-departure"></i>
                         </div>
-                        <h3 class="use-case-title">Viajes Personales</h3>
-                        <p class="use-case-desc">
-                            Para planificar mis propias vacaciones, escapadas de fin de semana y aventuras con amigos o
-                            familia de forma visual e inteligente.
-                        </p>
+                        <div class="use-case-text-group">
+                            <h3 class="use-case-title">Viajes Personales</h3>
+                            <p class="use-case-desc">
+                                Para planificar mis propias vacaciones, escapadas de fin de semana y aventuras con amigos o familia de forma visual e inteligente.
+                            </p>
+                        </div>
                     </div>
 
                     <!-- Option 2: Agency -->
@@ -199,23 +58,90 @@
                         <div class="use-case-icon-wrapper">
                             <i class="fas fa-briefcase"></i>
                         </div>
-                        <h3 class="use-case-title">Negocio o Agencia</h3>
-                        <p class="use-case-desc">
-                            Para crear itinerarios profesionales de gran impacto, gestionados en equipo y con un flujo
-                            de trabajo más ágil.
-                        </p>
+                        <div class="use-case-text-group">
+                            <h3 class="use-case-title">Negocio o Agencia</h3>
+                            <p class="use-case-desc">
+                                Para crear itinerarios profesionales de gran impacto, gestionados en equipo y con un flujo de trabajo más ágil.
+                            </p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- ACTION BUTTONS -->
+                <!-- ACTION BUTTON -->
                 <div class="use-case-actions">
-                    <button onclick="goBackToPlans()" class="p-btn btn-secondary-back">
-                        ← Volver a planes
+                    <button type="button" onclick="goToProBanner()" id="btnGoToBanner" class="p-btn current btn-submit-step" disabled style="opacity: 0.5; cursor: not-allowed;">
+                        Continuar &rarr;
                     </button>
-                    <button onclick="submitInitialConfig()" id="btnSubmitConfig" class="p-btn current btn-submit-step"
-                        disabled>
-                        Comenzar ahora →
-                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: CELEBRATION & PRO 1-MONTH TRIAL BANNER -->
+            <div id="welcomeStepProBanner" style="display: none;">
+                <div class="pro-launch-container">
+                    
+                    <div class="pro-launch-message-box">
+                        <p class="pro-launch-message-text">
+                            Por motivo de nuestro lanzamiento oficial, hemos activado <strong>1 mes gratis del Plan Viajero Pro</strong> en tu cuenta. Explora Tryp IA, gestiona itinerarios ilimitados y diseña tus viajes sin restricciones.
+                        </p>
+                    </div>
+
+                    <div class="pro-benefits-section">
+                        <h4 class="pro-benefits-heading">
+                            Lo que podrás hacer con el Plan Viajero Pro durante este mes:
+                        </h4>
+
+                        <ul class="pro-launch-benefits-list">
+                            <li class="benefit-item">
+                                <span class="benefit-bullet">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" width="15" height="15">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </span>
+                                <div class="benefit-text">
+                                    <strong>Tryp IA (Beta) Ilimitado</strong>: Asistencia inteligente continua para estructurar y organizar vuelos, hoteles y actividades.
+                                </div>
+                            </li>
+                            <li class="benefit-item">
+                                <span class="benefit-bullet">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" width="15" height="15">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </span>
+                                <div class="benefit-text">
+                                    <strong>Hasta 20 Itinerarios Activos</strong>: Planificación completa de múltiples viajes en lienzos interactivos y mapas.
+                                </div>
+                            </li>
+                            <li class="benefit-item">
+                                <span class="benefit-bullet">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" width="15" height="15">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </span>
+                                <div class="benefit-text">
+                                    <strong>Colaboradores de Edición en Tiempo Real</strong>: Comparte tus itinerarios e invita a acompañantes para editar juntos.
+                                </div>
+                            </li>
+                            <li class="benefit-item">
+                                <span class="benefit-bullet">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" width="15" height="15">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </span>
+                                <div class="benefit-text">
+                                    <strong>Exportación a PDF y Archivos Adjuntos</strong>: Descarga tus itinerarios y adjunta hasta 20 comprobantes y billetes por viaje.
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="pro-launch-more-hint">
+                            ... y mucho más.
+                        </div>
+                    </div>
+
+                    <div class="pro-launch-actions">
+                        <button type="button" onclick="submitInitialConfig()" id="btnSubmitConfig" class="pro-launch-submit-btn">
+                            <span>Comenzar a explorar Viantryp &rarr;</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -224,9 +150,8 @@
         <!-- LOADING OVERLAY -->
         <div id="welcomeLoadingOverlay" class="welcome-loading-overlay">
             <div style="padding: 20px; text-align:center;">
-                <i class="fas fa-circle-notch fa-spin"
-                    style="font-size:32px; color:#1EAACE; margin-bottom:10px; display:block;"></i>
-                <span style="font-size:14px; font-weight:700; color:#0f172a;">Configurando tu cuenta...</span>
+                <i class="fas fa-circle-notch fa-spin" style="font-size:32px; color:#1EAACE; margin-bottom:10px; display:block;"></i>
+                <span style="font-size:14px; font-weight:700; color:#0f172a;">Activando tu mes gratis de Viajero Pro...</span>
             </div>
         </div>
     </div>
@@ -242,50 +167,48 @@
         max-width: 100vw !important;
         max-height: 100vh !important;
         max-height: 100dvh !important;
-        background: rgba(15, 23, 42, 0.75) !important;
+        background: rgba(15, 23, 42, 0.78) !important;
         backdrop-filter: blur(8px) !important;
         -webkit-backdrop-filter: blur(8px) !important;
         z-index: 10002 !important;
-        font-family: 'Manrope', sans-serif !important;
+        font-family: 'Manrope', system-ui, -apple-system, sans-serif !important;
         border: none !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         transform: none !important;
+        display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 20px 12px !important;
+        padding: 20px 14px !important;
         box-sizing: border-box !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch;
     }
 
-    #welcomePlanModal .modal-content {
+    #welcomePlanModal .modal-content.modal-welcome-onboarding {
         background: #ffffff !important;
         border-radius: 28px !important;
         position: relative !important;
         box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.4) !important;
-        animation: welcomeModalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) !important;
+        animation: welcomeModalPop 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
         overflow: hidden !important;
         margin: auto !important;
-        max-height: calc(100vh - 40px) !important;
-        max-height: calc(100dvh - 40px) !important;
+        max-height: calc(100vh - 36px) !important;
+        max-height: calc(100dvh - 36px) !important;
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
+        max-width: 660px !important;
         border: none !important;
-    }
-
-    #welcomePlanModal .modal-wide {
-        width: 100% !important;
-        max-width: 820px !important;
+        transition: max-width 0.3s ease;
+        box-sizing: border-box !important;
     }
 
     @keyframes welcomeModalPop {
         from {
-            transform: scale(0.97) translateY(20px);
+            transform: scale(0.96) translateY(14px);
             opacity: 0;
         }
-
         to {
             transform: scale(1) translateY(0);
             opacity: 1;
@@ -295,12 +218,14 @@
     #welcomePlanModal .modal-body {
         padding: 28px;
         overflow-y: auto !important;
-        max-height: calc(100vh - 80px) !important;
-        max-height: calc(100dvh - 80px) !important;
+        max-height: calc(100vh - 70px) !important;
+        max-height: calc(100dvh - 70px) !important;
         -webkit-overflow-scrolling: touch;
-        font-family: 'Manrope', sans-serif !important;
+        overscroll-behavior: contain;
+        font-family: 'Manrope', system-ui, -apple-system, sans-serif !important;
         scrollbar-width: thin;
         scrollbar-color: #cbd5e1 transparent;
+        box-sizing: border-box !important;
     }
 
     #welcomePlanModal .modal-body::-webkit-scrollbar {
@@ -317,7 +242,8 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
-        padding-top: 2px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid #f1f5f9;
     }
 
     #welcomePlanModal .user-info {
@@ -329,7 +255,7 @@
     #welcomePlanModal .user-avatar {
         width: 44px;
         height: 44px;
-        background: #1EAACE;
+        background: linear-gradient(135deg, #1EAACE 0%, #0e7aad 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -339,6 +265,7 @@
         font-size: 15px;
         overflow: hidden;
         flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(30, 170, 206, 0.3);
     }
 
     #welcomePlanModal .user-avatar img {
@@ -348,17 +275,17 @@
     }
 
     #welcomePlanModal .user-name {
-        font-weight: 700;
-        color: #0f172a;
         font-size: 16px;
-        margin-bottom: 2px;
+        font-weight: 800;
+        color: #0f172a;
         line-height: 1.2;
     }
 
     #welcomePlanModal .user-email {
-        font-size: 13px;
-        color: #64748b;
-        line-height: 1.3;
+        font-size: 12px;
+        color: #0284c7;
+        font-weight: 600;
+        margin-top: 2px;
     }
 
     #welcomePlanModal .welcome-heading {
@@ -368,283 +295,45 @@
 
     #welcomePlanModal .welcome-main-title {
         font-size: 24px;
-        font-weight: 900;
+        font-weight: 800;
         color: #0f172a;
-        margin: 0 0 6px;
+        margin-bottom: 8px;
         letter-spacing: -0.02em;
         line-height: 1.25;
     }
 
     #welcomePlanModal .welcome-main-desc {
-        font-size: 13.5px;
+        font-size: 13px;
         color: #64748b;
-        max-width: 600px;
+        max-width: 520px;
         margin: 0 auto;
         line-height: 1.5;
-        font-weight: 500;
     }
 
-    /* PRICING TOGGLE STYLES */
-    #welcomePlanModal .pricing-toggle-wrap {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        margin: 0 auto 24px;
-        background: #f8fafc;
-        padding: 8px 16px;
-        border-radius: 100px;
-        width: fit-content;
-        border: 1px solid #e2e8f0;
-        user-select: none;
-    }
-
-    #welcomePlanModal .toggle-label {
-        font-size: 11px;
-        font-weight: 700;
-        color: #94a3b8;
-        transition: 0.3s;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    #welcomePlanModal .toggle-label.active {
-        color: #1EAACE;
-    }
-
-    #welcomePlanModal .toggle-switch {
-        position: relative;
-        width: 44px;
-        height: 24px;
-        background: #e2e8f0;
-        border-radius: 100px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    #welcomePlanModal .toggle-switch::after {
-        content: '';
-        position: absolute;
-        top: 3px;
-        left: 3px;
-        width: 18px;
-        height: 18px;
-        background: white;
-        border-radius: 50%;
-        transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    #welcomePlanModal .toggle-switch.annual {
-        background: #1EAACE;
-    }
-
-    #welcomePlanModal .toggle-switch.annual::after {
-        transform: translateX(20px);
-    }
-
-    #welcomePlanModal .annual-discount-pill {
-        background: #ecfdf5;
-        color: #1eaace;
-        font-size: 9px;
-        font-weight: 800;
-        padding: 2px 8px;
-        border-radius: 100px;
-        margin-left: 4px;
-        border: 1px solid #d1fae5;
-    }
-
-    #welcomePlanModal .plan-savings-hint {
-        font-size: 10px;
-        color: #1eaace;
-        font-weight: 700;
-        margin-top: 4px;
-        opacity: 0;
-        transform: translateY(5px);
-        transition: 0.3s;
-        height: 0;
-        overflow: hidden;
-    }
-
-    #welcomePlanModal.annual-view .plan-savings-hint,
-    #welcomePlanModal .toggle-switch.annual~.plan-savings-hint {
-        opacity: 1;
-        transform: translateY(0);
-        height: auto;
-        margin-top: 4px;
-    }
-
-    /* GRID & CARDS */
-    #welcomePlanModal .p-grid-container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        align-items: stretch;
-        margin-bottom: 20px;
-    }
-
-    #welcomePlanModal .p-card {
-        background: #ffffff;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 20px;
-        padding: 22px 18px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: all 0.25s ease;
-        position: relative;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-    }
-
-    #welcomePlanModal .p-card.active {
-        border: 2.5px solid #1EAACE;
-        background: #f0fdff;
-        box-shadow: 0 10px 30px -5px rgba(30, 170, 206, 0.2);
-    }
-
-    #welcomePlanModal .p-popular {
-        position: absolute;
-        top: -12px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #1EAACE;
-        color: white;
-        font-size: 10px;
-        font-weight: 800;
-        padding: 3px 14px;
-        border-radius: 100px;
-        letter-spacing: 0.5px;
-        box-shadow: 0 4px 10px rgba(30, 170, 206, 0.3);
-        z-index: 2;
-        white-space: nowrap;
-    }
-
-    #welcomePlanModal .p-name {
-        font-size: 14px;
-        font-weight: 900;
-        color: #0f172a;
-        margin-bottom: 6px;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-    }
-
-    #welcomePlanModal .p-price {
-        font-size: 26px;
-        font-weight: 900;
-        color: #0f172a;
-        margin-bottom: 14px;
-        display: flex;
-        align-items: baseline;
-        gap: 2px;
-    }
-
-    #welcomePlanModal .p-price small {
-        font-size: 11px;
-        color: #64748b;
-        font-weight: 600;
-    }
-
-    #welcomePlanModal .p-benefits {
-        flex-grow: 1;
-        margin-bottom: 18px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    #welcomePlanModal .p-benefit {
-        font-size: 11.5px;
-        color: #475569;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        line-height: 1.3;
-    }
-
-    #welcomePlanModal .p-benefit i {
-        color: #1eaace;
-        font-size: 11px;
-        flex-shrink: 0;
-    }
-
-    #welcomePlanModal .p-btn {
-        width: 100%;
-        min-height: 44px;
-        padding: 10px 14px;
-        border-radius: 12px;
-        border: 1.5px solid #e2e8f0;
-        background: #ffffff;
-        color: #0f172a;
-        font-size: 12.5px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-family: 'Manrope', sans-serif;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        box-sizing: border-box;
-    }
-
-    #welcomePlanModal .p-btn:hover {
-        border-color: #cbd5e1;
-        transform: translateY(-1px);
-    }
-
-    #welcomePlanModal .p-btn.current {
-        background: #1EAACE;
-        color: white;
-        border-color: #1EAACE;
-        box-shadow: 0 4px 12px rgba(30, 170, 206, 0.25);
-    }
-
-    #welcomePlanModal .pricing-disclaimer {
-        text-align: center;
-        margin-top: 18px;
-        margin-bottom: 6px;
-        font-size: 11px;
-        color: #94a3b8;
-        font-weight: 500;
-    }
-
-    #welcomePlanModal .modal-footer-links {
-        text-align: center;
-        margin-top: 10px;
-        font-size: 12px;
-        color: #94a3b8;
-        font-weight: 600;
-    }
-
-    #welcomePlanModal .modal-footer-links a {
-        color: #1EAACE;
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    /* STEP 2 USE CASES */
+    /* USE CASES GRID */
     #welcomePlanModal .use-case-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        max-width: 640px;
-        margin: 0 auto 30px;
+        gap: 16px;
+        max-width: 600px;
+        margin: 0 auto 20px;
     }
 
     #welcomePlanModal .use-case-card {
         background: #ffffff;
-        border: 1.5px solid #e2e8f0;
+        border: 2px solid #e2e8f0;
         border-radius: 20px;
-        padding: 28px 20px;
+        padding: 24px 18px;
         cursor: pointer;
-        transition: all 0.25s ease;
+        transition: all 0.22s ease;
         text-align: center;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
     }
 
     #welcomePlanModal .use-case-card:hover {
@@ -653,200 +342,334 @@
         box-shadow: 0 12px 28px rgba(30, 170, 206, 0.12);
     }
 
+    #welcomePlanModal .use-case-card:active {
+        transform: scale(0.98);
+    }
+
     #welcomePlanModal .use-case-card.active {
-        border: 2.5px solid #1EAACE !important;
+        border-color: #1EAACE !important;
         background: #f0fdff !important;
-        box-shadow: 0 10px 30px -5px rgba(30, 170, 206, 0.2) !important;
+        box-shadow: 0 10px 30px -5px rgba(30, 170, 206, 0.25) !important;
     }
 
     #welcomePlanModal .use-case-icon-wrapper {
-        width: 48px;
-        height: 48px;
+        width: 52px;
+        height: 52px;
         border-radius: 50%;
         background: #f0fdff;
         border: 1px solid #cffafe;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 16px;
-        transition: all 0.25s ease;
-    }
-
-    #welcomePlanModal .use-case-icon-wrapper i {
-        font-size: 20px;
-        color: #1EAACE;
-        transition: all 0.25s ease;
+        margin-bottom: 14px;
+        transition: all 0.22s ease;
+        flex-shrink: 0;
     }
 
     #welcomePlanModal .use-case-card.active .use-case-icon-wrapper {
-        background: #1EAACE !important;
-        border-color: #1EAACE !important;
+        background: #1EAACE;
+        border-color: #1EAACE;
+    }
+
+    #welcomePlanModal .use-case-icon-wrapper i {
+        font-size: 22px;
+        color: #1EAACE;
+        transition: all 0.22s ease;
     }
 
     #welcomePlanModal .use-case-card.active .use-case-icon-wrapper i {
-        color: #ffffff !important;
+        color: #ffffff;
+    }
+
+    #welcomePlanModal .use-case-text-group {
+        display: flex;
+        flex-direction: column;
     }
 
     #welcomePlanModal .use-case-title {
         font-size: 16px;
         font-weight: 800;
         color: #0f172a;
-        margin: 0 0 8px;
-        letter-spacing: -0.01em;
+        margin-bottom: 6px;
     }
 
     #welcomePlanModal .use-case-desc {
-        font-size: 12.5px;
+        font-size: 12px;
         color: #64748b;
+        line-height: 1.45;
         margin: 0;
-        line-height: 1.5;
-        font-weight: 500;
     }
 
     #welcomePlanModal .use-case-actions {
         display: flex;
-        gap: 12px;
-        justify-content: center;
-        max-width: 440px;
-        margin: 0 auto;
-    }
-
-    #welcomePlanModal .btn-secondary-back {
-        flex: 1;
-        border-color: #e2e8f0;
-        color: #475569;
-        margin: 0;
-    }
-
-    #welcomePlanModal .btn-submit-step {
-        flex: 2;
-        margin: 0;
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-
-    #welcomePlanModal .welcome-loading-overlay {
-        display: none;
-        position: absolute;
-        top: 0;
-        left: 0;
+        justify-content: flex-end;
         width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.85);
-        z-index: 10003;
+        margin-top: 14px;
+    }
+
+    #welcomePlanModal .p-btn {
+        padding: 13px 28px;
+        border-radius: 14px;
+        font-size: 14.5px;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        border-radius: 28px;
+        gap: 8px;
+        -webkit-tap-highlight-color: transparent;
     }
 
-    /* RESPONSIVE & MOBILE / APP OPTIMIZATION */
-    @media (max-width: 768px) {
+    #welcomePlanModal .p-btn.current {
+        background: linear-gradient(135deg, #1EAACE 0%, #0e7aad 100%) !important;
+        color: white !important;
+        box-shadow: 0 4px 14px rgba(30, 170, 206, 0.35);
+    }
+
+    #welcomePlanModal .p-btn.current:not(:disabled):hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(30, 170, 206, 0.5);
+    }
+
+    #welcomePlanModal .p-btn.current:not(:disabled):active {
+        transform: scale(0.98);
+    }
+
+    /* STEP 2: CELEBRATION & PRO LAUNCH BANNER */
+    .pro-launch-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: fadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+        width: 100%;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .pro-launch-message-box {
+        background: linear-gradient(135deg, rgba(30, 170, 206, 0.08) 0%, rgba(14, 122, 173, 0.05) 100%);
+        border: 1.5px solid rgba(30, 170, 206, 0.3);
+        border-radius: 18px;
+        padding: 18px 22px;
+        margin-bottom: 20px;
+        width: 100%;
+        box-sizing: border-box;
+        box-shadow: 0 10px 25px -10px rgba(30, 170, 206, 0.15);
+        text-align: center;
+    }
+
+    .pro-launch-message-text {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .pro-launch-message-text strong {
+        color: #0284c7;
+        font-weight: 800;
+    }
+
+    .pro-benefits-section {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .pro-benefits-heading {
+        font-size: 14px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0 0 12px 0;
+        text-align: left;
+        letter-spacing: -0.01em;
+    }
+
+    .pro-launch-benefits-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 10px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .benefit-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 6px 2px;
+        background: transparent !important;
+        border: none !important;
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: #334155;
+    }
+
+    .benefit-bullet {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: rgba(30, 170, 206, 0.14);
+        color: #0284c7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .benefit-text {
+        flex: 1;
+    }
+
+    .benefit-text strong {
+        color: #0f172a;
+        font-weight: 700;
+    }
+
+    .pro-launch-more-hint {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #0284c7;
+        padding-left: 34px;
+        margin-top: 6px;
+        letter-spacing: 0.2px;
+        font-style: italic;
+    }
+
+    .pro-launch-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid #f1f5f9;
+        box-sizing: border-box;
+    }
+
+    .pro-launch-submit-btn {
+        width: 100% !important;
+        background: linear-gradient(135deg, #1EAACE 0%, #0e7aad 100%) !important;
+        color: #ffffff !important;
+        font-size: 15px !important;
+        font-weight: 800 !important;
+        border: none !important;
+        border-radius: 14px !important;
+        padding: 14px 24px !important;
+        cursor: pointer !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        box-shadow: 0 8px 22px -4px rgba(30, 170, 206, 0.45) !important;
+        transition: all 0.22s ease !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .pro-launch-submit-btn:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 12px 26px -4px rgba(30, 170, 206, 0.6) !important;
+    }
+
+    .pro-launch-submit-btn:active {
+        transform: scale(0.98) !important;
+    }
+
+    /* LOADING OVERLAY */
+    .welcome-loading-overlay {
+        display: none;
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(4px);
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+    }
+
+    /* ========================================================
+       RESPONSIVE & MOBILE DESIGN (<= 640px)
+       ======================================================== */
+    @media (max-width: 640px) {
         #welcomePlanModal {
-            padding: max(12px, env(safe-area-inset-top, 12px)) max(10px, env(safe-area-inset-right, 10px)) max(14px, env(safe-area-inset-bottom, 14px)) max(10px, env(safe-area-inset-left, 10px)) !important;
+            padding: max(10px, env(safe-area-inset-top, 10px)) max(10px, env(safe-area-inset-right, 10px)) max(14px, env(safe-area-inset-bottom, 14px)) max(10px, env(safe-area-inset-left, 10px)) !important;
             align-items: center !important;
         }
 
-        #welcomePlanModal .modal-content {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: auto !important;
-            max-height: calc(100dvh - 24px) !important;
-            max-height: calc(100vh - 24px) !important;
+        #welcomePlanModal .modal-content.modal-welcome-onboarding {
             border-radius: 22px !important;
+            max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 20px) !important;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.35) !important;
         }
 
         #welcomePlanModal .modal-body {
-            padding: 20px 16px !important;
-            max-height: calc(100dvh - 36px) !important;
-            max-height: calc(100vh - 36px) !important;
-        }
-
-        #welcomePlanModal .modal-wide {
-            max-width: 100% !important;
-            width: 100% !important;
+            padding: 16px 14px 18px !important;
+            max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 36px) !important;
         }
 
         #welcomePlanModal .modal-user-header {
-            margin-bottom: 16px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
         }
 
         #welcomePlanModal .user-avatar {
-            width: 40px;
-            height: 40px;
-            font-size: 14px;
+            width: 38px;
+            height: 38px;
+            font-size: 13px;
         }
 
         #welcomePlanModal .user-name {
-            font-size: 15px;
+            font-size: 14.5px;
         }
 
         #welcomePlanModal .user-email {
-            font-size: 12px;
+            font-size: 11.5px;
         }
 
         #welcomePlanModal .welcome-heading {
-            margin-bottom: 16px;
-        }
-
-        #welcomePlanModal .welcome-main-title {
-            font-size: 20px;
-        }
-
-        #welcomePlanModal .welcome-main-desc {
-            font-size: 12.5px;
-            line-height: 1.45;
-        }
-
-        #welcomePlanModal .pricing-toggle-wrap {
-            padding: 6px 14px;
-            gap: 10px;
-            margin-bottom: 18px;
-            width: auto;
-            max-width: 100%;
-        }
-
-        #welcomePlanModal .p-grid-container {
-            grid-template-columns: 1fr;
-            gap: 14px;
-            margin-bottom: 16px;
-        }
-
-        #welcomePlanModal .p-card {
-            padding: 18px 16px;
-            border-radius: 18px;
-        }
-
-        #welcomePlanModal .p-popular {
-            top: -10px;
-            font-size: 9px;
-            padding: 2px 10px;
-        }
-
-        #welcomePlanModal .p-price {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        #welcomePlanModal .p-benefits {
-            gap: 7px;
             margin-bottom: 14px;
         }
 
+        #welcomePlanModal .welcome-main-title {
+            font-size: 19px;
+            margin-bottom: 6px;
+            line-height: 1.25;
+        }
+
+        #welcomePlanModal .welcome-main-desc {
+            font-size: 11.5px;
+            line-height: 1.4;
+        }
+
+        /* Horizontal Card Layout on Mobile for Better Ergonomics */
         #welcomePlanModal .use-case-grid {
             grid-template-columns: 1fr;
-            gap: 12px;
-            margin: 0 auto 20px;
+            gap: 10px;
+            margin-bottom: 14px;
         }
 
         #welcomePlanModal .use-case-card {
-            padding: 20px 16px;
-            border-radius: 18px;
+            flex-direction: row;
+            text-align: left;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 16px;
         }
 
         #welcomePlanModal .use-case-icon-wrapper {
-            width: 44px;
-            height: 44px;
-            margin-bottom: 12px;
+            width: 42px;
+            height: 42px;
+            margin-bottom: 0;
+            flex-shrink: 0;
         }
 
         #welcomePlanModal .use-case-icon-wrapper i {
@@ -854,160 +677,117 @@
         }
 
         #welcomePlanModal .use-case-title {
-            font-size: 15px;
-            margin-bottom: 4px;
+            font-size: 14px;
+            margin-bottom: 2px;
         }
 
         #welcomePlanModal .use-case-desc {
-            font-size: 12px;
-            line-height: 1.4;
-        }
-    }
-
-    @media (max-width: 480px) {
-        #welcomePlanModal {
-            padding: max(8px, env(safe-area-inset-top, 8px)) max(8px, env(safe-area-inset-right, 8px)) max(12px, env(safe-area-inset-bottom, 12px)) max(8px, env(safe-area-inset-left, 8px)) !important;
-        }
-
-        #welcomePlanModal .modal-content {
-            border-radius: 18px !important;
-            max-height: calc(100dvh - 16px) !important;
-            max-height: calc(100vh - 16px) !important;
-        }
-
-        #welcomePlanModal .modal-body {
-            padding: 16px 12px !important;
-            max-height: calc(100dvh - 24px) !important;
-            max-height: calc(100vh - 24px) !important;
-        }
-
-        #welcomePlanModal .welcome-main-title {
-            font-size: 18px;
-        }
-
-        #welcomePlanModal .welcome-main-desc {
-            font-size: 12px;
+            font-size: 11px;
+            line-height: 1.35;
         }
 
         #welcomePlanModal .use-case-actions {
-            flex-direction: column-reverse;
-            gap: 8px;
-            width: 100%;
+            margin-top: 10px;
         }
 
-        #welcomePlanModal .btn-secondary-back,
-        #welcomePlanModal .btn-submit-step {
-            width: 100%;
-            flex: none;
+        #welcomePlanModal .p-btn.btn-submit-step {
+            width: 100% !important;
+            padding: 13px 20px !important;
+            font-size: 14.5px !important;
+            border-radius: 12px !important;
+            min-height: 46px !important;
+        }
+
+        /* Step 2 Mobile */
+        .pro-launch-message-box {
+            padding: 12px 14px;
+            border-radius: 14px;
+            margin-bottom: 14px;
+        }
+
+        .pro-launch-message-text {
+            font-size: 12.5px;
+            line-height: 1.5;
+        }
+
+        .pro-benefits-heading {
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .pro-launch-more-hint {
+            font-size: 12px;
+            padding-left: 29px;
+            margin-top: 4px;
+        }
+
+        .pro-launch-benefits-list {
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .benefit-item {
+            font-size: 12px;
+            line-height: 1.4;
+            padding: 4px 0;
+            gap: 10px;
+        }
+
+        .benefit-bullet {
+            width: 19px;
+            height: 19px;
+            margin-top: 1px;
+        }
+
+        .benefit-bullet svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .pro-launch-actions {
+            margin-top: 14px;
+            padding-top: 12px;
+        }
+
+        .pro-launch-submit-btn {
+            width: 100% !important;
+            padding: 13px 20px !important;
+            font-size: 14.5px !important;
+            border-radius: 12px !important;
+            min-height: 46px !important;
         }
     }
 
-    /* PWA & NATIVE APP MODE ADJUSTMENTS */
+    /* ========================================================
+       NATIVE APP & PWA MODE (is-viantryp-app)
+       ======================================================== */
     .is-viantryp-app #welcomePlanModal,
     body.is-viantryp-app #welcomePlanModal {
-        padding-top: max(16px, env(safe-area-inset-top, 16px)) !important;
-        padding-bottom: max(24px, env(safe-area-inset-bottom, 24px)) !important;
+        padding-top: max(14px, env(safe-area-inset-top, 14px)) !important;
+        padding-bottom: max(18px, env(safe-area-inset-bottom, 18px)) !important;
         padding-left: max(10px, env(safe-area-inset-left, 10px)) !important;
         padding-right: max(10px, env(safe-area-inset-right, 10px)) !important;
         height: 100dvh !important;
         max-height: 100dvh !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
-    .is-viantryp-app #welcomePlanModal .modal-content,
-    body.is-viantryp-app #welcomePlanModal .modal-content {
+    .is-viantryp-app #welcomePlanModal .modal-content.modal-welcome-onboarding,
+    body.is-viantryp-app #welcomePlanModal .modal-content.modal-welcome-onboarding {
         max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 20px) !important;
+        border-radius: 22px !important;
     }
 
     .is-viantryp-app #welcomePlanModal .modal-body,
     body.is-viantryp-app #welcomePlanModal .modal-body {
-        max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 30px) !important;
+        max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 36px) !important;
+        padding: 16px 14px 18px !important;
     }
 </style>
 
 <script>
-    window.selectedPlan = null;
     window.selectedUseCase = null;
-
-    // Toggle logic for Welcome Modal
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggle = document.getElementById('welcomePriceToggle');
-        const modal = document.getElementById('welcomePlanModal');
-        const labelMonthly = document.getElementById('welcomeLabelMonthly');
-        const labelAnnual = document.getElementById('welcomeLabelAnnual');
-        if (!toggle || !modal) return;
-
-        const priceVals = modal.querySelectorAll('.p-price-val');
-        const savingsHints = modal.querySelectorAll('.plan-savings-hint');
-
-        toggle.addEventListener('click', () => {
-            const isAnnual = toggle.classList.toggle('annual');
-            modal.classList.toggle('annual-view', isAnnual);
-            if (labelAnnual) labelAnnual.classList.toggle('active', isAnnual);
-            if (labelMonthly) labelMonthly.classList.toggle('active', !isAnnual);
-
-            priceVals.forEach(v => {
-                const target = isAnnual ? v.dataset.annual : v.dataset.monthly;
-                if (target && target !== 'Ventas') {
-                    v.style.opacity = '0';
-                    setTimeout(() => {
-                        v.textContent = target;
-                        v.style.opacity = '1';
-                    }, 150);
-                }
-            });
-
-            savingsHints.forEach(hint => {
-                if (isAnnual) {
-                    hint.style.opacity = '1';
-                    hint.style.transform = 'translateY(0)';
-                    hint.style.height = 'auto';
-                    hint.style.marginTop = '4px';
-                } else {
-                    hint.style.opacity = '0';
-                    hint.style.transform = 'translateY(5px)';
-                    hint.style.height = '0';
-                    hint.style.marginTop = '0';
-                }
-            });
-        });
-
-        priceVals.forEach(v => v.style.transition = 'opacity 0.2s');
-    });
-
-    function confirmInitialPlan(plan) {
-        let msg = `Has seleccionado el plan ${plan.toUpperCase()}. ¿Deseas continuar?`;
-        if (plan === 'avanzado') msg = "Has seleccionado el plan VIAJERO PRO. Se activarán tus 7 días de prueba gratuita. ¿Deseas continuar?";
-        if (plan === 'colaborativo') msg = "Has seleccionado el plan NEGOCIOS. Se activarán tus 7 días de prueba gratuita. ¿Deseas continuar?";
-
-        if (!confirm(msg)) return;
-
-        window.selectedPlan = plan;
-        showStep2();
-    }
-
-    function showStep2() {
-        const step1 = document.getElementById('welcomeStepPlans');
-        const step2 = document.getElementById('welcomeStepUseType');
-        if (step1) step1.style.display = 'none';
-        if (step2) step2.style.display = 'block';
-
-        const modalContent = document.querySelector('#welcomePlanModal .modal-content');
-        if (modalContent) {
-            modalContent.style.maxWidth = '720px';
-        }
-    }
-
-    function goBackToPlans() {
-        const step1 = document.getElementById('welcomeStepPlans');
-        const step2 = document.getElementById('welcomeStepUseType');
-        if (step2) step2.style.display = 'none';
-        if (step1) step1.style.display = 'block';
-
-        const modalContent = document.querySelector('#welcomePlanModal .modal-content');
-        if (modalContent) {
-            modalContent.style.maxWidth = '820px';
-        }
-    }
 
     function selectUseCase(type) {
         window.selectedUseCase = type;
@@ -1017,7 +797,7 @@
         if (pCard) pCard.classList.toggle('active', type === 'personal');
         if (aCard) aCard.classList.toggle('active', type === 'agency');
 
-        const btn = document.getElementById('btnSubmitConfig');
+        const btn = document.getElementById('btnGoToBanner');
         if (btn) {
             btn.disabled = false;
             btn.style.opacity = '1';
@@ -1025,8 +805,96 @@
         }
     }
 
+    function goToProBanner() {
+        if (!window.selectedUseCase) return;
+
+        const step1 = document.getElementById('welcomeStepUseType');
+        const step2 = document.getElementById('welcomeStepProBanner');
+        if (step1) step1.style.display = 'none';
+        if (step2) step2.style.display = 'block';
+
+        // Disparar animación de confetti festiva en alta definición
+        fireWelcomeConfetti();
+    }
+
+    // Animación de Confetti de Alto Rendimiento en Canvas (Ultra Smooth & Retina Ready)
+    function fireWelcomeConfetti() {
+        const canvas = document.getElementById('welcomeConfettiCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const modalContent = document.querySelector('#welcomePlanModal .modal-content');
+
+        const rect = modalContent ? modalContent.getBoundingClientRect() : { width: window.innerWidth, height: window.innerHeight };
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+        ctx.scale(dpr, dpr);
+
+        const colors = ['#1EAACE', '#38bdf8', '#0284c7', '#f59e0b', '#fbbf24', '#10b981', '#6366f1', '#ec4899'];
+        const particles = [];
+        const particleCount = rect.width < 500 ? 55 : 80;
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: rect.width / 2 + (Math.random() - 0.5) * (rect.width * 0.4),
+                y: rect.height * 0.32,
+                w: Math.random() * 7 + 5,
+                h: Math.random() * 5 + 3,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                vx: (Math.random() - 0.5) * 10,
+                vy: (Math.random() * -8) - 3,
+                rotation: Math.random() * 360,
+                rotationSpeed: (Math.random() - 0.5) * 14,
+                opacity: 1,
+                gravity: 0.30 + Math.random() * 0.12
+            });
+        }
+
+        const startTime = Date.now();
+
+        function render() {
+            const elapsed = Date.now() - startTime;
+            ctx.clearRect(0, 0, rect.width, rect.height);
+
+            let activeCount = 0;
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += p.gravity;
+                p.rotation += p.rotationSpeed;
+                p.vx *= 0.985;
+
+                if (elapsed > 1300) {
+                    p.opacity = Math.max(0, 1 - (elapsed - 1300) / 900);
+                }
+
+                if (p.opacity > 0 && p.y < rect.height + 30) {
+                    activeCount++;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.globalAlpha = p.opacity;
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                }
+            });
+
+            if (activeCount > 0 && elapsed < 2300) {
+                requestAnimationFrame(render);
+            } else {
+                ctx.clearRect(0, 0, rect.width, rect.height);
+            }
+        }
+
+        render();
+    }
+
     async function submitInitialConfig() {
-        if (!window.selectedPlan || !window.selectedUseCase) return;
+        if (!window.selectedUseCase) return;
 
         const overlay = document.getElementById('welcomeLoadingOverlay');
         if (overlay) overlay.style.display = 'flex';
@@ -1040,7 +908,7 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
-                    plan: window.selectedPlan,
+                    plan: 'avanzado',
                     account_type: window.selectedUseCase
                 })
             });
@@ -1056,37 +924,6 @@
             console.error('Error:', error);
             alert('Ocurrió un error inesperado al guardar tu configuración.');
             if (overlay) overlay.style.display = 'none';
-        }
-    }
-
-    function checkInitialPlanGate(plan) {
-        if (plan === 'básico') {
-            confirmInitialPlan('básico');
-            return;
-        }
-
-        if (typeof updateUserPlan === 'function') {
-            const welcomeModal = document.getElementById('welcomePlanModal');
-            if (welcomeModal) welcomeModal.style.display = 'none';
-
-            window.planGateSuccessCallback = (verifiedPlan) => {
-                window.selectedPlan = verifiedPlan || plan;
-                if (welcomeModal) {
-                    welcomeModal.style.display = 'flex';
-                    showStep2();
-                }
-            };
-
-            const originalClosePlanGate = window.closePlanGateModal;
-            window.closePlanGateModal = function () {
-                if (typeof originalClosePlanGate === 'function') originalClosePlanGate();
-                if (welcomeModal) welcomeModal.style.display = 'flex';
-                window.closePlanGateModal = originalClosePlanGate;
-            };
-
-            updateUserPlan(plan);
-        } else {
-            alert('El sistema de validación no está listo. Por favor intenta de nuevo.');
         }
     }
 </script>

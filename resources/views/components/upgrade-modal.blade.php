@@ -206,6 +206,12 @@
                         <div class="user-email">{{ $user->email }}</div>
                     </div>
                 </div>
+                <div class="modal-user-plan-badge-wrap" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                    <span class="plan-badge-pill">{{ mb_strtoupper($user->plan_display_name) }}</span>
+                    @if($user->isTrialActive())
+                        <span class="plan-trial-pill">Prueba Gratuita</span>
+                    @endif
+                </div>
             </div>
 
             <!-- WARNING ALERT -->
@@ -590,11 +596,32 @@
     .plan-badge-pill {
         background: #f1f5f9;
         color: #475569;
-        padding: 6px 14px;
+        padding: 4px 12px;
         border-radius: 100px;
-        font-size: 12px;
-        font-weight: 700;
+        font-size: 11px;
+        font-weight: 800;
         border: 1px solid #e2e8f0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .plan-trial-pill {
+        display: inline-flex;
+        align-items: center;
+        font-size: 9.5px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        padding: 3px 8px;
+        border-radius: 9999px;
+        background: #fef08a;
+        color: #854d0e;
+        border: 1px solid #fde047;
+        white-space: nowrap;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .upgrade-alert {
@@ -1047,20 +1074,24 @@
 
     @media (max-width: 768px) {
         .upgrade-premium-modal {
-            padding: 10px 8px !important;
-            align-items: flex-start !important;
+            padding: 12px 10px !important;
+            padding-bottom: max(16px, env(safe-area-inset-bottom)) !important;
+            align-items: center !important;
         }
 
         .upgrade-premium-modal .modal-content {
             width: 100% !important;
-            margin: 10px auto !important;
-            max-height: calc(100vh - 20px) !important;
-            border-radius: 20px !important;
+            margin: auto !important;
+            max-height: min(calc(100dvh - 24px), calc(100vh - 24px)) !important;
+            border-radius: 22px !important;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.35) !important;
         }
 
         .upgrade-premium-modal .modal-body {
             padding: 20px 16px !important;
-            max-height: calc(100vh - 40px) !important;
+            max-height: min(calc(100dvh - 60px), calc(100vh - 60px)) !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: contain !important;
         }
 
         .modal-wide,
@@ -1069,55 +1100,156 @@
             width: 100% !important;
         }
 
+        .upgrade-premium-modal .close-btn {
+            top: 12px !important;
+            right: 12px !important;
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 20px !important;
+            background: #f1f5f9 !important;
+        }
+
+        .modal-user-header {
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            flex-wrap: wrap !important;
+            gap: 10px !important;
+            margin-bottom: 16px !important;
+            padding-right: 36px !important;
+        }
+
+        .modal-user-header .user-name {
+            font-size: 15px !important;
+        }
+
+        .modal-user-header .user-email {
+            font-size: 12px !important;
+        }
+
+        .pricing-toggle-wrap {
+            margin: 0 auto 16px !important;
+            padding: 6px 14px !important;
+        }
+
         .p-grid-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding: 0;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 14px !important;
+            padding: 0 !important;
         }
 
         .p-card {
             width: 100% !important;
-            box-sizing: border-box;
+            box-sizing: border-box !important;
+            padding: 18px 16px !important;
+            border-radius: 16px !important;
+        }
+
+        .p-card.active {
+            border-width: 2px !important;
+        }
+
+        .p-popular {
+            top: -11px !important;
+            font-size: 9.5px !important;
+            padding: 2.5px 12px !important;
+        }
+
+        .p-name {
+            font-size: 13.5px !important;
+        }
+
+        .p-price {
+            font-size: 24px !important;
+            margin-bottom: 12px !important;
+        }
+
+        .p-benefits {
+            margin-bottom: 16px !important;
+            gap: 7px !important;
+        }
+
+        .p-benefit {
+            font-size: 12px !important;
+        }
+
+        .p-btn {
+            min-height: 44px !important;
+            font-size: 13.5px !important;
+            border-radius: 12px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .next-step-card {
+            padding: 20px 16px !important;
+            border-radius: 18px !important;
+        }
+
+        .next-step-card .ns-plan-name {
+            font-size: 20px !important;
+        }
+
+        .next-step-card .ns-price .amount {
+            font-size: 26px !important;
+        }
+
+        .next-step-card .benefits-list {
+            grid-template-columns: 1fr !important;
+            gap: 8px !important;
+            margin-bottom: 18px !important;
+        }
+
+        .next-step-card .benefit-item {
+            font-size: 12.5px !important;
+        }
+
+        .btn-upgrade-main {
+            min-height: 48px !important;
+            font-size: 14.5px !important;
+            border-radius: 14px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
 
         .usage-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .modal-user-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .benefits-list {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
         }
 
         .ns-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 8px;
+            flex-direction: row !important;
+            align-items: flex-start !important;
+            justify-content: space-between !important;
+            gap: 8px !important;
         }
     }
 
     @media (max-width: 480px) {
         .upgrade-premium-modal {
-            padding: 5px !important;
+            padding: 8px 6px !important;
+            padding-bottom: max(14px, env(safe-area-inset-bottom)) !important;
         }
 
         .upgrade-premium-modal .modal-content {
-            border-radius: 16px !important;
-        }
-
-        .p-card {
-            width: 100% !important;
+            border-radius: 18px !important;
         }
 
         .upgrade-premium-modal .modal-body {
-            padding: 16px 12px !important;
+            padding: 16px 14px !important;
         }
+    }
+
+    /* VIANTRYP APP MODE REFINEMENTS */
+    html.is-viantryp-app .upgrade-premium-modal {
+        padding-top: max(14px, env(safe-area-inset-top)) !important;
+        padding-bottom: max(18px, env(safe-area-inset-bottom)) !important;
+    }
+    html.is-viantryp-app .upgrade-premium-modal .modal-content {
+        border-radius: 20px !important;
     }
 
     /* Dynamic toggle logic for all plans vs next step */

@@ -10,83 +10,88 @@
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
   <style>
-  /* Driver.js Custom Styles (Consistent with Edit Pro) */
-  .driver-popover {
-    background-color: #ffffff;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    border: 1px solid #e2e8ef;
-    font-family: 'Manrope', sans-serif;
-  }
-
-  .driver-popover-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: 20px;
-    color: #1a2e2c;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .driver-popover-description {
-    font-size: 14px;
-    color: #64748b;
-    line-height: 1.5;
-    margin-top: 8px;
-  }
-
-  .driver-popover-btn {
-    background: #1ebdb1;
-    color: white;
-    text-shadow: none;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 12px;
-    transition: all 0.2s;
-  }
-
-  .driver-popover-btn:hover {
-    background: #16a69b;
-  }
-
-  .driver-popover-close-btn {
-    color: #8f9db0;
-  }
-
-  .driver-popover-arrow {
-    border-color: #ffffff;
-  }
-
-  @media (max-width: 768px) {
+    /* Driver.js Custom Styles (Consistent with Edit Pro) */
     .driver-popover {
-      max-width: min(calc(100vw - 32px), 360px) !important;
-      padding: 16px 18px !important;
-      border-radius: 14px !important;
-      box-sizing: border-box !important;
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      border: 1px solid #e2e8ef;
+      font-family: 'Manrope', sans-serif;
     }
+
     .driver-popover-title {
-      font-size: 18px !important;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: #1a2e2c;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
+
     .driver-popover-description {
-      font-size: 13px !important;
-      line-height: 1.4 !important;
+      font-size: 14px;
+      color: #64748b;
+      line-height: 1.5;
+      margin-top: 8px;
     }
-    .driver-popover-footer {
-      margin-top: 12px !important;
-      gap: 6px !important;
-    }
+
     .driver-popover-btn {
-      padding: 7px 12px !important;
-      font-size: 11.5px !important;
-      min-height: 34px !important;
+      background: #1ebdb1;
+      color: white;
+      text-shadow: none;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.2s;
     }
-    .driver-popover-progress-text {
-      font-size: 11px !important;
+
+    .driver-popover-btn:hover {
+      background: #16a69b;
     }
-  }
+
+    .driver-popover-close-btn {
+      color: #8f9db0;
+    }
+
+    .driver-popover-arrow {
+      border-color: #ffffff;
+    }
+
+    @media (max-width: 768px) {
+      .driver-popover {
+        max-width: min(calc(100vw - 32px), 360px) !important;
+        padding: 16px 18px !important;
+        border-radius: 14px !important;
+        box-sizing: border-box !important;
+      }
+
+      .driver-popover-title {
+        font-size: 18px !important;
+      }
+
+      .driver-popover-description {
+        font-size: 13px !important;
+        line-height: 1.4 !important;
+      }
+
+      .driver-popover-footer {
+        margin-top: 12px !important;
+        gap: 6px !important;
+      }
+
+      .driver-popover-btn {
+        padding: 7px 12px !important;
+        font-size: 11.5px !important;
+        min-height: 34px !important;
+      }
+
+      .driver-popover-progress-text {
+        font-size: 11px !important;
+      }
+    }
 
     :root {
       --accent-light: #e6f4f3;
@@ -210,36 +215,223 @@
       margin-bottom: 0px;
     }
 
-    /* SUBSCRIPTION CARD RESPONSIVE STYLES */
+    /* ==========================================================================
+         SUBSCRIPTION CARD & PROFILE RESPONSIVE STYLES
+         ========================================================================== */
     .subscription-card-box {
       border: 1px solid #e2e8f0;
-      border-radius: 16px;
+      border-radius: 20px;
       overflow: hidden;
       margin-bottom: 24px;
-      box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
       background: #ffffff;
+      position: relative;
     }
+
+    .subscription-accent-top {
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, #1eaace 100%);
+      width: 100%;
+    }
+
     .subscription-card-grid {
       display: grid;
-      grid-template-columns: 1fr 1px 1fr;
-      min-height: 130px;
+      grid-template-columns: 1.15fr 1px 0.85fr;
+      min-height: 140px;
     }
+
     .sub-card-left {
       padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
-    .sub-card-divider {
+
+    .sub-plan-status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .sub-status-caption {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .sub-status-pill {
+      border-radius: 9999px;
+      padding: 3px 10px;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .sub-status-pill.trial {
+      background: #fef9c3;
+      color: #854d0e;
+      border: 1px solid #fde047;
+    }
+
+    .sub-status-pill.active {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    .sub-status-pill.free {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+
+    .sub-plan-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #0f172a;
+      font-family: 'Manrope', sans-serif;
+      letter-spacing: -0.3px;
+      margin-bottom: 14px;
+    }
+
+    .trial-days-notice {
+      background: #fffdf5;
+      border: 1px solid #fef08a;
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .trial-days-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #fef9c3;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .trial-days-text {
+      font-size: 12px;
+      color: #78350f;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .sub-usage-cards-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sub-usage-card {
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+    }
+
+    .sub-usage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .sub-usage-name {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sub-usage-val {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .sub-usage-track {
+      height: 6px;
       background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
     }
+
+    .sub-usage-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent) 0%, #1eaace 100%);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    .sub-card-divider {
+      background: #f1f5f9;
+    }
+
     .sub-card-right {
       display: flex;
       flex-direction: column;
     }
+
     .sub-card-right-box {
-      padding: 20px 28px;
+      padding: 22px 28px;
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
+
+    .sub-card-right-box.border-bottom {
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .sub-meta-caption {
+      font-size: 11.5px;
+      color: #94a3b8;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .sub-meta-date,
+    .sub-meta-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0f172a;
+      font-family: 'Manrope', sans-serif;
+      margin-bottom: 4px;
+    }
+
+    .sub-meta-hint {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
     .subscription-card-footer {
-      padding: 14px 28px;
+      padding: 16px 28px;
       border-top: 1px solid #f1f5f9;
       background: #fafbfc;
       display: flex;
@@ -248,14 +440,16 @@
       gap: 16px;
       flex-wrap: wrap;
     }
+
     .sub-footer-text {
-      font-size: 11.5px;
+      font-size: 12px;
       color: #64748b;
       font-weight: 600;
       display: flex;
       align-items: center;
       gap: 6px;
     }
+
     .sub-footer-btn {
       display: inline-flex;
       align-items: center;
@@ -264,70 +458,165 @@
       background: var(--accent);
       color: #ffffff;
       border: none;
-      padding: 9px 20px;
-      border-radius: 8px;
+      padding: 11px 22px;
+      border-radius: 10px;
       font-weight: 700;
-      font-size: 13px;
+      font-size: 13.5px;
       font-family: 'Manrope', sans-serif;
       cursor: pointer;
       transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
+
     .sub-footer-btn:hover {
-      opacity: 0.9;
+      opacity: 0.94;
       transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
-    .receipt-title-mobile {
-      display: none;
-    }
-    .receipt-title-desktop {
-      display: inline;
-    }
+
+    /* RESPONSIVE OVERRIDES FOR PROFILE & SUBSCRIPTION (MOBILE & APP) */
     @media (max-width: 768px) {
       .subscription-card-grid {
         grid-template-columns: 1fr !important;
       }
+
       .sub-card-divider {
         height: 1px !important;
         width: 100% !important;
       }
-      .sub-card-left, .sub-card-right-box {
-        padding: 18px 20px !important;
+
+      .sub-card-left,
+      .sub-card-right-box {
+        padding: 20px 18px !important;
       }
+
+      .sub-plan-title {
+        font-size: 20px !important;
+      }
+
+      .sub-meta-date,
+      .sub-meta-price {
+        font-size: 18px !important;
+      }
+
       .subscription-card-footer {
-        padding: 16px 20px !important;
+        padding: 16px 18px !important;
         flex-direction: column !important;
         align-items: stretch !important;
         gap: 12px !important;
       }
+
       .sub-footer-text {
         justify-content: center !important;
         text-align: center !important;
+        font-size: 11.5px !important;
       }
+
       .sub-footer-btn {
         width: 100% !important;
+        min-height: 46px !important;
+        font-size: 14px !important;
         justify-content: center !important;
       }
-      .receipt-item-row {
+    }
+
+    @media (max-width: 640px) {
+      .tab-section.card .card-body {
+        padding: 18px 16px !important;
+      }
+
+      .avatar-finpay-section,
+      .logo-finpay-section {
         flex-direction: column !important;
-        align-items: flex-start !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 14px !important;
+        padding-bottom: 20px !important;
+      }
+
+      .avatar-actions-col,
+      .logo-actions-col {
+        width: 100% !important;
+        align-items: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+
+      .avatar-actions-col button,
+      .logo-actions-col button {
+        width: 100% !important;
+        min-height: 44px !important;
+        justify-content: center !important;
+      }
+
+      .presentation-options-grid,
+      .agency-form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+
+      .presentation-option-label {
+        padding: 12px 14px !important;
+      }
+
+      .account-switch-banner {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 14px !important;
+        padding: 16px !important;
+      }
+
+      .account-switch-banner button {
+        width: 100% !important;
+        min-height: 44px !important;
+        justify-content: center !important;
+      }
+
+      .btn-row {
+        flex-direction: column !important;
         gap: 10px !important;
       }
-      .receipt-item-right {
-        text-align: left !important;
+
+      .btn-row .btn-save,
+      .btn-row .btn-secondary,
+      .btn-row button {
         width: 100% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
+        min-height: 46px !important;
+        justify-content: center !important;
       }
-      .receipt-icon-box {
-        display: none !important;
+
+      .tab-section.card input[type="text"],
+      .tab-section.card input[type="email"],
+      .tab-section.card input[type="tel"],
+      .tab-section.card input[type="password"],
+      .tab-section.card select,
+      .tab-section.card textarea {
+        font-size: 15px !important;
+        /* Prevents auto-zoom in mobile Safari / iOS WebView */
+        min-height: 44px !important;
       }
-      .receipt-title-desktop {
-        display: none !important;
-      }
-      .receipt-title-mobile {
-        display: inline !important;
-      }
+    }
+
+    /* VIANTRYP APP MODE REFINEMENTS */
+    html.is-viantryp-app .tab-section.card {
+      border-radius: 18px !important;
+      margin-bottom: 16px !important;
+    }
+
+    html.is-viantryp-app .tab-section.card .card-body {
+      padding: 18px 16px !important;
+    }
+
+    html.is-viantryp-app .subscription-card-box {
+      border-radius: 18px !important;
+    }
+
+    html.is-viantryp-app input,
+    html.is-viantryp-app select,
+    html.is-viantryp-app textarea {
+      font-size: 15px !important;
+      min-height: 44px !important;
     }
 
     .avatar-big {
@@ -435,11 +724,13 @@
       color: var(--accent);
       border-radius: 20px;
       padding: 5px 14px;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 800;
       margin-bottom: 20px;
       border: 1px solid var(--accent);
       transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .plan-dot {
@@ -899,8 +1190,8 @@
 
 
     /* ==========================================================================
-               NUEVO DISEÑO DASHBOARD (Mismo estilo que Mis Viajes)
-               ========================================================================== */
+                 NUEVO DISEÑO DASHBOARD (Mismo estilo que Mis Viajes)
+                 ========================================================================== */
 
     /* Contenedor principal que envuelve todo el Dashboard (100% de la pantalla) */
     .dashboard-wrapper {
@@ -1153,6 +1444,8 @@
       justify-content: space-between;
       align-items: center;
       margin-top: 20px;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .dashboard-sidebar .sidebar-footer .plan-badge {
@@ -1162,9 +1455,29 @@
       padding: 4px 10px;
       border-radius: 12px;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.5px;
       margin-bottom: 0px;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .plan-trial-pill {
+      display: inline-flex;
+      align-items: center;
+      font-size: 9.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      background: #fef08a;
+      color: #854d0e;
+      border: 1px solid #fde047;
+      white-space: nowrap;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     }
 
     .dashboard-sidebar .sidebar-footer .btn-upgrade-link {
@@ -1654,8 +1967,8 @@
     }
 
     /* ==========================================================================
-               ESTILOS DE CONFIGURACIÓN ESTILO FINPAY
-               ========================================================================== */
+                 ESTILOS DE CONFIGURACIÓN ESTILO FINPAY
+                 ========================================================================== */
     .settings-grid {
       display: block;
       width: 100%;
@@ -1819,11 +2132,11 @@
   @php
     $rawSection = request('section', request('tab', ($user->account_type === 'agency' ? 'agencia' : 'info')));
     if ($rawSection === 'agency' || $rawSection === 'agencia') {
-        $currentSection = ($user->account_type === 'agency') ? 'agencia' : 'info';
+      $currentSection = ($user->account_type === 'agency') ? 'agencia' : 'info';
     } elseif ($rawSection === 'info' || $rawSection === 'personal') {
-        $currentSection = ($user->account_type === 'personal') ? 'info' : 'agencia';
+      $currentSection = ($user->account_type === 'personal') ? 'info' : 'agencia';
     } else {
-        $currentSection = $rawSection;
+      $currentSection = $rawSection;
     }
   @endphp
   <div class="dashboard-wrapper">
@@ -1867,20 +2180,25 @@
                 style="margin-left: auto; font-size: 11px; transition: transform 0.2s ease;"></i>
             </a>
             <div class="sidebar-submenu" id="sidebarProfileSubmenu">
-              <button type="button" class="sidebar-sublink nav-item {{ in_array($currentSection, ['info', 'agencia']) ? 'active' : '' }}"
+              <button type="button"
+                class="sidebar-sublink nav-item {{ in_array($currentSection, ['info', 'agencia']) ? 'active' : '' }}"
                 data-section="{{ $user->account_type === 'agency' ? 'agencia' : 'info' }}">
                 <i class="{{ $user->account_type === 'agency' ? 'fas fa-briefcase' : 'fas fa-user-circle' }}"></i>
                 <span>Ajustes de Cuenta</span>
               </button>
-              <button type="button" class="sidebar-sublink nav-item {{ $currentSection === 'tema' ? 'active' : '' }}" data-section="tema">
+              <button type="button" class="sidebar-sublink nav-item {{ $currentSection === 'tema' ? 'active' : '' }}"
+                data-section="tema">
                 <i class="fas fa-palette"></i>
                 <span>Tema e Identidad Visual</span>
               </button>
-              <button type="button" class="sidebar-sublink nav-item {{ $currentSection === 'subscription' ? 'active' : '' }}" data-section="subscription">
+              <button type="button"
+                class="sidebar-sublink nav-item {{ $currentSection === 'subscription' ? 'active' : '' }}"
+                data-section="subscription">
                 <i class="fas fa-credit-card"></i>
                 <span>Planes y Suscripción</span>
               </button>
-              <button type="button" class="sidebar-sublink nav-item {{ $currentSection === 'seguridad' ? 'active' : '' }}" data-section="seguridad">
+              <button type="button" class="sidebar-sublink nav-item {{ $currentSection === 'seguridad' ? 'active' : '' }}"
+                data-section="seguridad">
                 <i class="fas fa-shield-alt"></i>
                 <span>Seguridad de la Cuenta</span>
               </button>
@@ -1895,11 +2213,11 @@
         @php
           $tripCount = \App\Models\Trip::where('user_id', $user->id)->count();
           $editorCount = \DB::table('trip_collaborators')
-              ->join('trips', 'trip_collaborators.trip_id', '=', 'trips.id')
-              ->where('trips.user_id', $user->id)
-              ->where('trip_collaborators.role', 'editor')
-              ->distinct('trip_collaborators.email')
-              ->count();
+            ->join('trips', 'trip_collaborators.trip_id', '=', 'trips.id')
+            ->where('trips.user_id', $user->id)
+            ->where('trip_collaborators.role', 'editor')
+            ->distinct('trip_collaborators.email')
+            ->count();
           $limits = $user->getPlanLimits();
           $maxTrips = $limits['max_trips'] ?? 5;
           $maxEditors = $limits['max_editors'] ?? 0;
@@ -1927,7 +2245,12 @@
             </div>
           </div>
           <div class="usage-upgrade-row">
-            <span class="plan-badge">{{ $user->plan_display_name }}</span>
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+              <span class="plan-badge">{{ mb_strtoupper($user->plan_display_name) }}</span>
+              @if($user->isTrialActive())
+                <span class="plan-trial-pill">Prueba Gratuita</span>
+              @endif
+            </div>
             <a href="javascript:void(0)" onclick="openUpgradeModal(true)" class="btn-upgrade-link">
               Mejorar plan <i class="fas fa-arrow-up-right-from-square"></i>
             </a>
@@ -1950,7 +2273,8 @@
 
           <div class="topbar-actions">
             <!-- Tutorial / Ayuda -->
-            <button type="button" onclick="initProfileTour(true)" class="btn-topbar-icon" title="Ver tutorial y ayuda" id="btnHelpTour">
+            <button type="button" onclick="initProfileTour(true)" class="btn-topbar-icon" title="Ver tutorial y ayuda"
+              id="btnHelpTour">
               <i class="fas fa-circle-question" style="font-size: 16px;"></i>
             </button>
 
@@ -2013,8 +2337,8 @@
                       <div class="avatar-finpay-section"
                         style="display: flex; align-items: center; gap: 24px; margin-bottom: 12px; border-bottom: 1px solid #f1f5f9; padding-bottom: 24px;">
                         <div class="avatar-wrapper" style="position: relative; display: inline-block;">
-                          <div class="avatar-big" id="avatarBig"
-                            onclick="document.getElementById('avatarUpload').click();" title="Haz clic para cambiar foto"
+                          <div class="avatar-big" id="avatarBig" onclick="document.getElementById('avatarUpload').click();"
+                            title="Haz clic para cambiar foto"
                             style="width: 100px; height: 100px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-size: 32px; font-weight: 700; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; transition: opacity 0.2s;">
                             <span id="avatarInitial"
                               style="{{ $user->avatar ? 'display:none' : '' }}; color: #ffffff;">{{ $user->display_initials }}</span>
@@ -2023,8 +2347,7 @@
                               alt=""
                               style="{{ $user->avatar ? '' : 'display:none' }}; width: 100%; height: 100%; object-fit: cover;">
                           </div>
-                          <input type="file" id="avatarUpload" accept="image/*"
-                            style="display:none">
+                          <input type="file" id="avatarUpload" accept="image/*" style="display:none">
                         </div>
                         <div class="avatar-actions-col" style="display: flex; gap: 12px; align-items: center;">
                           <button type="button" onclick="document.getElementById('avatarUpload').click();"
@@ -2081,7 +2404,7 @@
 
                       <div style="border-top: 1px solid #f0f2f5; margin: 30px 0 20px; padding-top: 24px;"></div>
 
-                      <div
+                      <div class="account-switch-banner"
                         style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0; flex-wrap: wrap; gap: 16px;">
                         <div style="flex: 1; min-width: 250px;">
                           <h3
@@ -2112,11 +2435,11 @@
                           style="font-size: 14px; font-weight: 700; color: #0f172a; text-transform: none; margin-bottom: 4px; display: block; letter-spacing: normal; font-family: 'Manrope', sans-serif;">
                           ¿Cómo quieres presentarte?
                         </label>
-                        <p
-                          style="font-size: 12.5px; color: #64748b; margin: 0 0 16px; line-height: 1.4; font-weight: 500;">
+                        <p style="font-size: 12.5px; color: #64748b; margin: 0 0 16px; line-height: 1.4; font-weight: 500;">
                           Elige la identidad visual que verán tus viajeros en sus itinerarios.
                         </p>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="presentation-options-grid"
+                          style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
                           <!-- Option Agent -->
                           <label class="presentation-option-label" id="label-present-agent"
                             style="display: flex; flex-direction: column; padding: 14px 16px; background: white; border: 1.5px solid {{ $user->display_name_type === 'personal' ? 'var(--accent)' : '#e2e8f0' }}; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.02); text-transform: none; letter-spacing: normal;">
@@ -2147,8 +2470,10 @@
                       </div>
 
                       <!-- 2. BLOQUE: DATOS DEL AGENTE (Visible solo si 'personal') -->
-                      <div id="block-identity-agent" style="{{ $user->display_name_type === 'personal' ? '' : 'display: none;' }}">
-                        <div class="section-label" style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">
+                      <div id="block-identity-agent"
+                        style="{{ $user->display_name_type === 'personal' ? '' : 'display: none;' }}">
+                        <div class="section-label"
+                          style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">
                           Datos del Agente
                         </div>
 
@@ -2159,7 +2484,8 @@
                             <div class="avatar-big" id="avatarBig"
                               style="width: 80px; height: 80px; border-radius: 14px; background: var(--accent-light); color: var(--accent); font-size: 26px; font-weight: 700; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1.5px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer;"
                               onclick="document.getElementById('avatarUpload').click();" title="Haz clic para subir foto">
-                              <span id="avatarInitial" style="{{ $user->avatar ? 'display:none;' : '' }} color: var(--accent);">
+                              <span id="avatarInitial"
+                                style="{{ $user->avatar ? 'display:none;' : '' }} color: var(--accent);">
                                 {{ $user->display_initials }}
                               </span>
                               <img id="avatarImg"
@@ -2169,7 +2495,8 @@
                             </div>
                             <input type="file" id="avatarUpload" accept="image/*" style="display:none">
                           </div>
-                          <div class="avatar-actions-col" style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+                          <div class="avatar-actions-col"
+                            style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
                             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                               <button type="button" onclick="document.getElementById('avatarUpload').click();"
                                 class="btn-upload-new avatar-btn-trigger"
@@ -2178,34 +2505,47 @@
                               </button>
                               <button type="button" id="avatarDeleteBtn"
                                 style="{{ $user->avatar ? '' : 'display:none;' }} background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s;"
-                                onmouseover="this.style.background='#f1f5f9';" onmouseout="this.style.background='#f8fafc';">
+                                onmouseover="this.style.background='#f1f5f9';"
+                                onmouseout="this.style.background='#f8fafc';">
                                 Eliminar foto
                               </button>
                             </div>
-                            <span style="font-size: 11.5px; color: #94a3b8;">JPG, PNG o WEBP · Optimización automática</span>
+                            <span style="font-size: 11.5px; color: #94a3b8;">JPG, PNG o WEBP · Optimización
+                              automática</span>
                           </div>
                         </div>
 
                         <!-- Grid de 2 columnas (gap-4 / 16px) -->
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="agency-form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                           <div class="form-group" style="margin-bottom: 0;">
-                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Nombre completo</label>
-                            <input type="text" id="inputNombre" value="{{ trim($user->name . ' ' . $user->last_name) }}" placeholder="Tu nombre">
+                            <label
+                              style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Nombre
+                              completo</label>
+                            <input type="text" id="inputNombre" value="{{ trim($user->name . ' ' . $user->last_name) }}"
+                              placeholder="Tu nombre">
                           </div>
                           <div class="form-group" style="margin-bottom: 0;">
-                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Correo Electrónico</label>
-                            <input type="email" value="{{ auth()->user()->email }}" disabled style="background: #f8fafc; cursor: not-allowed; color: #94a3b8;">
+                            <label
+                              style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Correo
+                              Electrónico</label>
+                            <input type="email" value="{{ auth()->user()->email }}" disabled
+                              style="background: #f8fafc; cursor: not-allowed; color: #94a3b8;">
                           </div>
                           <div class="form-group" style="margin-bottom: 0;">
-                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Teléfono del Agente</label>
+                            <label
+                              style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Teléfono
+                              del Agente</label>
                             <input type="tel" id="inputPhone" value="{{ $user->phone }}" placeholder="+57 300 000 0000">
                           </div>
                           <div class="form-group" style="margin-bottom: 0;">
-                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">País del Agente</label>
+                            <label
+                              style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">País
+                              del Agente</label>
                             <select id="inputCountry">
                               <option value="Colombia" {{ $user->country == 'Colombia' ? 'selected' : '' }}>Colombia</option>
                               <option value="México" {{ $user->country == 'México' ? 'selected' : '' }}>México</option>
-                              <option value="Argentina" {{ $user->country == 'Argentina' ? 'selected' : '' }}>Argentina</option>
+                              <option value="Argentina" {{ $user->country == 'Argentina' ? 'selected' : '' }}>Argentina
+                              </option>
                               <option value="España" {{ $user->country == 'España' ? 'selected' : '' }}>España</option>
                               <option value="Chile" {{ $user->country == 'Chile' ? 'selected' : '' }}>Chile</option>
                               <option value="Perú" {{ $user->country == 'Perú' ? 'selected' : '' }}>Perú</option>
@@ -2215,11 +2555,14 @@
                       </div>
 
                       <!-- 3. BLOQUE: DATOS DE LA AGENCIA (Visible solo si 'agency') -->
-                      <div id="block-identity-agency" style="{{ $user->display_name_type === 'agency' ? '' : 'display: none;' }}">
-                        <div class="section-label" style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+                      <div id="block-identity-agency"
+                        style="{{ $user->display_name_type === 'agency' ? '' : 'display: none;' }}">
+                        <div class="section-label"
+                          style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
                           <span>Datos de la Agencia</span>
                           @if(!in_array(strtolower($user->plan ?? 'básico'), ['colaborativo', 'corporativo']))
-                            <span style="font-size:11px; font-weight:700; color:#0e5a6a; background:#e0f2fe; padding:3px 10px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;">
+                            <span
+                              style="font-size:11px; font-weight:700; color:#0e5a6a; background:#e0f2fe; padding:3px 10px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;">
                               <i class="fa-solid fa-lock" style="font-size:10px;"></i> Exclusivo Plan Negocios
                             </span>
                           @endif
@@ -2231,8 +2574,10 @@
                           <div class="logo-wrapper" style="position: relative; display: inline-block;">
                             <div id="agencyLogoBox"
                               style="width: 80px; height: 80px; border-radius: 14px; background: #f8fafc; border: 1.5px solid #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer;"
-                              onclick="document.getElementById('agencyLogoFileInput').click();" title="Haz clic para subir logo">
-                              <div id="logoPlaceholder" style="{{ $user->agency_logo ? 'display:none;' : '' }} display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8;">
+                              onclick="document.getElementById('agencyLogoFileInput').click();"
+                              title="Haz clic para subir logo">
+                              <div id="logoPlaceholder"
+                                style="{{ $user->agency_logo ? 'display:none;' : '' }} display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8;">
                                 <i class="fas fa-building" style="font-size: 26px; color: #94a3b8;"></i>
                               </div>
                               <img id="logoPreview" class="logo-preview"
@@ -2242,7 +2587,8 @@
                             </div>
                             <input type="file" id="agencyLogoFileInput" accept="image/*" style="display:none">
                           </div>
-                          <div class="logo-actions-col" style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+                          <div class="logo-actions-col"
+                            style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
                             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                               <button type="button" onclick="document.getElementById('agencyLogoFileInput').click();"
                                 class="btn-upload-new"
@@ -2250,27 +2596,38 @@
                                 {{ $user->agency_logo ? 'Cambiar logo' : 'Subir logo' }}
                               </button>
                             </div>
-                            <span style="font-size: 11.5px; color: #94a3b8;">PNG, SVG o JPG · Máx. 2MB · Recomendado 200×200px</span>
+                            <span style="font-size: 11.5px; color: #94a3b8;">PNG, SVG o JPG · Máx. 2MB · Recomendado
+                              200×200px</span>
                           </div>
                         </div>
 
                         <!-- Grid de 2 columnas (gap-4 / 16px) -->
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="agency-form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                           <div class="form-group" style="margin-bottom: 0;">
-                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Nombre de la Agencia</label>
-                            <input type="text" id="inputAgencia" value="{{ $user->agency_name }}" placeholder="Nombre de tu empresa">
+                            <label
+                              style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Nombre
+                              de la Agencia</label>
+                            <input type="text" id="inputAgencia" value="{{ $user->agency_name }}"
+                              placeholder="Nombre de tu empresa">
                           </div>
                           <div class="form-group" style="margin-bottom: 0;">
-                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Eslogan</label>
-                            <input type="text" id="inputSlogan" value="{{ $user->agency_slogan }}" placeholder="Tu agencia de confianza">
+                            <label
+                              style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Eslogan</label>
+                            <input type="text" id="inputSlogan" value="{{ $user->agency_slogan }}"
+                              placeholder="Tu agencia de confianza">
                           </div>
                           <div class="form-group" style="margin-bottom: 0;">
-                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Sitio Web</label>
-                            <input type="text" id="inputWebsite" value="{{ $user->agency_website }}" placeholder="https://miagencia.com">
+                            <label
+                              style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Sitio
+                              Web</label>
+                            <input type="text" id="inputWebsite" value="{{ $user->agency_website }}"
+                              placeholder="https://miagencia.com">
                           </div>
                           <div class="form-group" style="margin-bottom: 0;">
-                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">WhatsApp</label>
-                            <input type="tel" id="inputWhatsapp" value="{{ $user->agency_whatsapp }}" placeholder="+57 300 000 0000">
+                            <label
+                              style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">WhatsApp</label>
+                            <input type="tel" id="inputWhatsapp" value="{{ $user->agency_whatsapp }}"
+                              placeholder="+57 300 000 0000">
                           </div>
                         </div>
                       </div>
@@ -2278,7 +2635,8 @@
                       <!-- BOTÓN GUARDAR INFORMACIÓN (Alineado a la derecha) -->
                       <div class="btn-row" style="margin-top: 24px; display: flex; justify-content: flex-end;">
                         <button class="btn-save" id="saveAgencyInfo" style="padding: 11px 28px; font-size: 14px;">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
                             <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
                             <polyline points="17 21 17 13 7 13 7 21" />
                             <polyline points="7 3 7 8 15 8" />
@@ -2290,7 +2648,7 @@
                       <div style="border-top: 1px solid #f0f2f5; margin: 24px 0 20px; padding-top: 0;"></div>
 
                       <!-- Switch to Personal Profile Footer -->
-                      <div
+                      <div class="account-switch-banner"
                         style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; flex-wrap: wrap; gap: 12px;">
                         <div style="flex: 1; min-width: 200px;">
                           <h3
@@ -2327,7 +2685,8 @@
                         <div class="theme-swatch" style="background:#1a5f8f"></div>
                         <span class="theme-name">Ocean</span>
                       </div>
-                      <div class="theme-option {{ ($user->theme_color ?? 'gold') == 'gold' ? 'selected' : '' }}" data-theme="gold">
+                      <div class="theme-option {{ ($user->theme_color ?? 'gold') == 'gold' ? 'selected' : '' }}"
+                        data-theme="gold">
                         <div class="theme-swatch" style="background:#b08000"></div>
                         <span class="theme-name">Gold</span>
                       </div>
@@ -2393,7 +2752,8 @@
                 </div>
 
                 <!-- SEGURIDAD -->
-                <div class="card tab-section {{ $currentSection === 'seguridad' ? 'active' : '' }}" id="section-seguridad">
+                <div class="card tab-section {{ $currentSection === 'seguridad' ? 'active' : '' }}"
+                  id="section-seguridad">
                   <div class="card-body">
                     <div class="section-label">Cambiar Contraseña</div>
                     <div class="form-group">
@@ -2423,7 +2783,8 @@
                 </div>
 
                 <!-- SUSCRIPCIÓN -->
-                <div class="card tab-section {{ $currentSection === 'subscription' ? 'active' : '' }}" id="section-subscription">
+                <div class="card tab-section {{ $currentSection === 'subscription' ? 'active' : '' }}"
+                  id="section-subscription">
                   <div class="card-body">
                     <div class="section-label">Planes y Suscripción</div>
 
@@ -2477,62 +2838,68 @@
 
                     <!-- Ficha plan: 2 columnas sincronizada con Paddle -->
                     <div class="subscription-card-box">
+                      <div class="subscription-accent-top"></div>
 
                       <div class="subscription-card-grid">
 
                         <!-- Izquierda: plan y uso -->
                         <div class="sub-card-left">
-                          <div
-                            style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                            <span>ESTADO DEL PLAN</span>
+                          <div>
+                            <div class="sub-plan-status-row">
+                              <span class="sub-status-caption">ESTADO DEL PLAN</span>
+                              @if($isTrial)
+                                <span class="sub-status-pill trial"><i class="fas fa-sparkles"></i> PRUEBA GRATUITA
+                                  ACTIVA</span>
+                              @elseif($isPaidPlan)
+                                <span class="sub-status-pill active"><i class="fas fa-check-circle"></i> ACTIVO</span>
+                              @else
+                                <span class="sub-status-pill free">PLAN GRATUITO</span>
+                              @endif
+                            </div>
+                            <div class="sub-plan-title">
+                              {{ $planLabel }}
+                            </div>
+
                             @if($isTrial)
-                              <span
-                                style="background:#fef9c3;color:#854d0e;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;">PRUEBA
-                                ACTIVA</span>
-                            @elseif($isPaidPlan)
-                              <span
-                                style="background:#dcfce7;color:#15803d;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;"><i
-                                  class="fas fa-check-circle"></i> ACTIVO</span>
-                            @else
-                              <span
-                                style="background:#f1f5f9;color:#64748b;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800;letter-spacing:0.5px;">PLAN
-                                GRATUITO</span>
+                              <div class="trial-days-notice">
+                                <div class="trial-days-icon"><i class="fas fa-clock"></i></div>
+                                <div class="trial-days-text">
+                                  Disfrutas de <strong>{{ $user->getTrialDaysRemaining() }} días restantes</strong> de tu
+                                  prueba gratuita del Plan Viajero PRO
+                                </div>
+                              </div>
                             @endif
-                          </div>
-                          <div
-                            style="font-size: 24px; font-weight: 600; color: #0f172a; font-family: 'Manrope', sans-serif; text-transform: none; letter-spacing: -0.3px; margin-bottom: 16px;">
-                            {{ $planLabel }}
                           </div>
 
                           <!-- Cuadros de uso del plan (Itinerarios y Colaboradores) -->
-                          <div style="display: flex; flex-direction: column; gap: 10px;">
+                          <div class="sub-usage-cards-wrap">
                             <!-- Box 1: Itinerarios -->
-                            <div style="padding: 12px 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
-                              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                                <div style="font-size: 12px; color: #94a3b8; font-weight: 600; letter-spacing: 0.3px;">
-                                  Itinerarios
+                            <div class="sub-usage-card">
+                              <div class="sub-usage-header">
+                                <div class="sub-usage-name">
+                                  <i class="fas fa-route" style="color: var(--accent);"></i> Itinerarios
                                 </div>
-                                <div style="font-size: 18px; font-weight: 600; color: #0f172a; font-family: 'Manrope', sans-serif;">
+                                <div class="sub-usage-val">
                                   {{ $tripCount }} / {{ $maxTrips >= 1000000 ? '∞' : $maxTrips }}
                                 </div>
                               </div>
-                              <div class="usage-progress-bar" style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                <div class="usage-progress-fill" style="width: {{ $tripPercent }}%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+                              <div class="sub-usage-track">
+                                <div class="sub-usage-fill" style="width: {{ $tripPercent }}%;"></div>
                               </div>
                             </div>
 
                             <!-- Box 2: Colaboradores -->
-                            <div style="padding: 12px 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
-                              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                                <div style="font-size: 12px; color: #94a3b8; font-weight: 600; letter-spacing: 0.3px;">
-                                  Colaboradores
+                            <div class="sub-usage-card">
+                              <div class="sub-usage-header">
+                                <div class="sub-usage-name">
+                                  <i class="fas fa-users" style="color: var(--accent);"></i> Colaboradores
                                 </div>
-                                <div style="font-size: 18px; font-weight: 600; color: #0f172a; font-family: 'Manrope', sans-serif;">
+                                <div class="sub-usage-val">
                                   {{ $editorCount }} / {{ $maxEditors >= 1000000 ? '∞' : $maxEditors }}
                                 </div>
                               </div>
-                              <div class="usage-progress-bar" style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                <div class="usage-progress-fill" style="width: {{ $editorPercent }}%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+                              <div class="sub-usage-track">
+                                <div class="sub-usage-fill" style="width: {{ $editorPercent }}%;"></div>
                               </div>
                             </div>
                           </div>
@@ -2545,18 +2912,16 @@
                         <div class="sub-card-right">
 
                           <!-- Próximo pago / fin de prueba -->
-                          <div class="sub-card-right-box" style="border-bottom: 1px solid #e2e8f0;">
-                            <div
-                              style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.3px;">
+                          <div class="sub-card-right-box border-bottom">
+                            <div class="sub-meta-caption">
                               @if($isTrial) Fin de prueba gratuita @else Próxima fecha de facturación @endif
                             </div>
-                            <div
-                              style="font-size: 18px; font-weight: 600; color: #0f172a; font-family: 'Manrope', sans-serif; margin-bottom: 4px;">
+                            <div class="sub-meta-date">
                               {{ $endDate }}
                             </div>
-                            <div style="font-size: 11.5px; color: #94a3b8; font-weight: 500;">
+                            <div class="sub-meta-hint">
                               @if($isTrial)
-                                Se requiere activar suscripción al finalizar la prueba
+                                Se requiere activar suscripción al finalizar el mes de prueba
                               @elseif($isPaidPlan)
                                 Renovación automática gestionada de forma segura por Paddle
                               @else
@@ -2567,16 +2932,13 @@
 
                           <!-- Costo mensual -->
                           <div class="sub-card-right-box">
-                            <div
-                              style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.3px;">
-                              Costo recurrente</div>
-                            <div
-                              style="font-size: 18px; font-weight: 600; color: #0f172a; font-family: 'Manrope', sans-serif; margin-bottom: 4px;">
+                            <div class="sub-meta-caption">Costo recurrente</div>
+                            <div class="sub-meta-price">
                               {{ $planPrice }}
                             </div>
-                            <div style="font-size: 11.5px; color: #94a3b8; font-weight: 500;">
+                            <div class="sub-meta-hint">
                               @if($currentPlanKey === 'básico' || $isTrial)
-                                Sin cobro en modo de prueba / básico
+                                Sin cobros durante el periodo de prueba activa
                               @else
                                 Facturación recurrente en Dólares Estadounidenses (USD)
                               @endif
@@ -2589,54 +2951,14 @@
                       <!-- Pie: botón administrar -->
                       <div class="subscription-card-footer">
                         <div class="sub-footer-text">
-                          <i class="fas fa-lock" style="color: #1eaace;"></i> Facturación respaldada por <strong>Paddle
-                            Merchant of Record</strong>
+                          <i class="fas fa-shield-alt" style="color: #1eaace;"></i> Facturación respaldada por
+                          <strong>Paddle Merchant of Record</strong>
                         </div>
-                        <button onclick="openUpgradeModal()" class="sub-footer-btn">
-                          <i class="fas fa-layer-group" style="font-size:12px;"></i>
-                          Cambiar o Gestionar Plan
+                        <button onclick="openUpgradeModal(true)" class="sub-footer-btn">
+                          <i class="fas fa-layer-group"></i>
+                          <span>Cambiar o Gestionar Plan</span>
                         </button>
                       </div>
-                    </div>
-
-                    <!-- Historial de Facturación -->
-                    <div class="form-group">
-                      <label style="font-weight: 700; color: #334155; font-size: 13px;">Historial de Recibos y
-                        Facturas</label>
-                      @if($isPaidPlan)
-                        <div style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: white;">
-                          <div class="receipt-item-row"
-                            style="padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9; flex-wrap: wrap; gap: 12px;">
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                              <div class="receipt-icon-box"
-                                style="width: 36px; height: 36px; border-radius: 8px; background: rgba(30, 170, 206, 0.1); display: flex; align-items: center; justify-content: center; color: #1eaace;">
-                                <i class="fas fa-check-circle"></i>
-                              </div>
-                              <div>
-                                <div style="font-weight: 700; font-size: 13.5px; color: #0f172a;">
-                                  <span class="receipt-title-desktop">Suscripción Viantryp {{ $planLabel }}</span>
-                                  <span class="receipt-title-mobile">{{ str_starts_with(strtolower($planLabel), 'plan') ? $planLabel : 'Plan ' . $planLabel }}</span>
-                                </div>
-                                <div style="font-size: 11.5px; color: #94a3b8;">Factura electrónica emitida en USD ·
-                                  Pasarela Paddle</div>
-                              </div>
-                            </div>
-                            <div class="receipt-item-right" style="text-align: right;">
-                              <div style="font-weight: 800; font-size: 14px; color: #0f172a;">{{ $planPrice }}</div>
-                              <span
-                                style="font-size: 10px; font-weight: 800; background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 20px;">PAGADO</span>
-                            </div>
-                          </div>
-                        </div>
-                      @else
-                        <div
-                          style="padding: 20px; background: var(--bg); border: 1px dashed var(--border); border-radius: 12px; text-align: center; color: var(--muted); font-size: 13px;">
-                          <i class="fas fa-file-invoice-dollar"
-                            style="font-size: 22px; margin-bottom: 10px; display: block; opacity: 0.4;"></i>
-                          No hay facturas pendientes. Al mejorar a un plan de pago, tus recibos aparecerán aquí
-                          automáticamente.
-                        </div>
-                      @endif
                     </div>
                   </div>
                 </div>
@@ -2816,11 +3138,11 @@
                   list.innerHTML = '<div style="padding: 20px; text-align: center; color: #94a3b8; font-size: 12px;">No tienes notificaciones nuevas</div>';
                 } else {
                   list.innerHTML = d.notifications.map(n => `
-                                    <div style="padding: 12px 16px; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: background 0.2s; ${n.read_at ? '' : 'background: var(--accent-light);'}" onclick="handleNotiClick('${n.id}', '${n.data.invite_url}')">
-                                        <div style="font-size: 13px; color: #1e293b; font-weight: ${n.read_at ? '400' : '600'}; margin-bottom: 2px;">${n.data.message}</div>
-                                        <div style="font-size: 11px; color: #94a3b8;">${new Date(n.created_at).toLocaleString()}</div>
-                                    </div>
-                                `).join('');
+                                      <div style="padding: 12px 16px; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: background 0.2s; ${n.read_at ? '' : 'background: var(--accent-light);'}" onclick="handleNotiClick('${n.id}', '${n.data.invite_url}')">
+                                          <div style="font-size: 13px; color: #1e293b; font-weight: ${n.read_at ? '400' : '600'}; margin-bottom: 2px;">${n.data.message}</div>
+                                          <div style="font-size: 11px; color: #94a3b8;">${new Date(n.created_at).toLocaleString()}</div>
+                                      </div>
+                                  `).join('');
                 }
               });
           };
@@ -3248,7 +3570,7 @@
 
           fetch('{{ route('profile.upload.logo') }}', {
             method: 'POST',
-            headers: { 
+            headers: {
               'X-CSRF-TOKEN': csrfToken,
               'Accept': 'application/json'
             },
@@ -3516,8 +3838,8 @@
       const isMobile = window.innerWidth <= 768;
       const hasMobileNav = isMobile && document.getElementById('viantrypBottomNav');
       const stepFinishEl = (hasMobileNav && document.getElementById('tabMisViajes'))
-          ? '#tabMisViajes'
-          : (isMobile ? '.app-topbar-logo' : '.sidebar-link[href*="trips"]');
+        ? '#tabMisViajes'
+        : (isMobile ? '.app-topbar-logo' : '.sidebar-link[href*="trips"]');
 
       const driverObj = driver({
         showProgress: true,
@@ -3582,11 +3904,11 @@
           if (driverObj.isLastStep()) {
             const btns = popover.wrapper.querySelectorAll('button');
             btns.forEach(btn => {
-              if (btn.classList.contains('driver-popover-next-btn') || 
-                  btn.classList.contains('driver-popover-done-btn') || 
-                  btn.textContent.includes('Finalizar') || 
-                  btn.textContent.includes('Mis Viajes') ||
-                  btn.textContent.includes('Ir a')) {
+              if (btn.classList.contains('driver-popover-next-btn') ||
+                btn.classList.contains('driver-popover-done-btn') ||
+                btn.textContent.includes('Finalizar') ||
+                btn.textContent.includes('Mis Viajes') ||
+                btn.textContent.includes('Ir a')) {
                 btn.onclick = (e) => {
                   e.preventDefault();
                   e.stopPropagation();

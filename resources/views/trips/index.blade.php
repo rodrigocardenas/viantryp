@@ -2298,6 +2298,8 @@
             align-items: center;
             justify-content: space-between;
             margin-top: 15px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .plan-badge {
@@ -2309,6 +2311,25 @@
             border-radius: 6px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .plan-trial-pill {
+            display: inline-flex;
+            align-items: center;
+            font-size: 9.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            background: #fef08a;
+            color: #854d0e;
+            border: 1px solid #fde047;
+            white-space: nowrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
         }
 
         .btn-upgrade-link {
@@ -3149,7 +3170,12 @@
                         </div>
                     </div>
                     <div class="usage-upgrade-row">
-                        <span class="plan-badge">{{ $user->plan_display_name }}</span>
+                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                            <span class="plan-badge">{{ mb_strtoupper($user->plan_display_name) }}</span>
+                            @if($user->isTrialActive())
+                                <span class="plan-trial-pill">Prueba Gratuita</span>
+                            @endif
+                        </div>
                         <a href="javascript:void(0)" onclick="openUpgradeModal(true)" class="btn-upgrade-link">
                             Mejorar plan <i class="fas fa-arrow-up-right-from-square"></i>
                         </a>
