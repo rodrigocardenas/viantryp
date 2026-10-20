@@ -130,9 +130,9 @@ class TripAiService
             $rawItems = $parsedJson['items'] ?? ($parsedJson['actions'] ?? []);
             $normalizedItems = $this->normalizeActions($rawItems, $trip);
 
-            // Regla estricta para todos los planes: Máximo 2 elementos por prompt para garantizar respuestas ultra rápidas
-            if (count($normalizedItems) > 2) {
-                $normalizedItems = array_slice($normalizedItems, 0, 2);
+            // Regla estricta para todos los planes: Máximo 4 elementos por prompt para garantizar respuestas rápidas y precisas
+            if (count($normalizedItems) > 4) {
+                $normalizedItems = array_slice($normalizedItems, 0, 4);
             }
 
             return [
@@ -189,7 +189,7 @@ class TripAiService
         $datesMapping = !empty($dayDatesInfo) ? implode(', ', $dayDatesInfo) : 'Fecha inicial: ' . $startDate;
 
         return <<<PROMPT
-Eres **Tryp AI**, el Asistente de Carga e Ingesta Automática de la plataforma Viantryp.
+Eres **Tryp IA (Beta)**, el Asistente de Carga e Ingesta Automática de la plataforma Viantryp.
 
 ==================================================
 1. RESTRICCIÓN DE ALCANCE ESTRICTA (STRICT INGESTION MODE)
@@ -225,12 +225,12 @@ CONTEXTO DEL VIAJE ACTUAL
 - ORDENA TODOS LOS ELEMENTOS CRONOLÓGICAMENTE por `start_date` y luego por `start_time`.
 
 ==================================================
-4. REGLA ESTRICTA DE VELOCIDAD: MÁXIMO 2 ELEMENTOS
+4. REGLA ESTRICTA DE VELOCIDAD: MÁXIMO 4 ELEMENTOS
 ==================================================
-- DEBES EXTRAER Y RETORNAR COMO MÁXIMO 2 ELEMENTOS / ACCIONES en el arreglo "items".
-- Si el usuario proporciona 3 o más reservas, actividades, vuelos o elementos (ya sea en texto o en archivos adjuntos), PROCESA ÚNICAMENTE LOS DOS PRIMEROS (los cronológicamente iniciales o más relevantes) e IGNORA POR COMPLETO LOS DEMÁS.
-- Esto es fundamental para reducir el tiempo de razonamiento y garantizar una respuesta ultra rápida e instantánea.
-- Si el usuario incluyó más de 2 elementos, incluye una breve aclaración en "message" como: "He procesado los 2 primeros elementos para responder con la mayor rapidez. Puedes agregar los demás en otra consulta."
+- DEBES EXTRAER Y RETORNAR COMO MÁXIMO 4 ELEMENTOS / ACCIONES en el arreglo "items".
+- Si el usuario proporciona 5 o más reservas, actividades, vuelos o elementos (ya sea en texto o en archivos adjuntos), PROCESA ÚNICAMENTE LOS CUATRO PRIMEROS (los cronológicamente iniciales o más relevantes) e IGNORA POR COMPLETO LOS DEMÁS.
+- Esto es fundamental para reducir el tiempo de razonamiento y garantizar una respuesta rápida y precisa.
+- Si el usuario incluyó más de 4 elementos, incluye una breve aclaración en "message" como: "He procesado los 4 primeros elementos para responder con la mayor rapidez. Puedes agregar los demás en otra consulta."
 
 ==================================================
 5. FORMATO DE RESPUESTA (JSON SCHEMA PURO OBLIGATORIO)
@@ -636,11 +636,11 @@ PROMPT;
                 }
             }
 
-            $actions = array_slice($actions, 0, 2);
+            $actions = array_slice($actions, 0, 4);
 
             return [
                 'success' => true,
-                'message' => "He recibido y analizado **{$fileCount} documento(s)**. He generado las tarjetas correspondientes (hasta 2 elementos) para que puedas agregarlas al lienzo.",
+                'message' => "He recibido y analizado **{$fileCount} documento(s)**. He generado las tarjetas correspondientes (hasta 4 elementos) para que puedas agregarlas al lienzo.",
                 'actions' => $actions
             ];
         }

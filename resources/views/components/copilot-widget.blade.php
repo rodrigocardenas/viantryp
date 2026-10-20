@@ -9,7 +9,7 @@
 <!-- Viantryp Copilot Container -->
 <div id="viantryp-copilot-container" data-trip-id="{{ $tripId }}" data-ai-limit-reached="{{ $hasReachedAiLimit ? '1' : '0' }}" data-ai-queries="{{ $aiQueriesCount }}">
     <!-- Floating Trigger Button -->
-    <button type="button" id="copilot-trigger-btn" class="copilot-trigger" aria-label="Abrir Tryp AI Assistant" title="Tryp AI - Asistente de Ingesta">
+    <button type="button" id="copilot-trigger-btn" class="copilot-trigger" aria-label="Abrir Tryp IA (Beta)" title="Tryp IA (Beta) - Asistente de Ingesta">
         <div class="copilot-trigger-glow"></div>
         <div class="copilot-trigger-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sparkles-icon">
@@ -20,7 +20,7 @@
                 <path d="M17 19h4" />
             </svg>
         </div>
-        <span class="copilot-trigger-label">Tryp AI</span>
+        <span class="copilot-trigger-label">Tryp IA (Beta)</span>
     </button>
 
     <!-- Slide-over Drawer / Panel -->
@@ -36,7 +36,7 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="trypai-title-text">Tryp AI</h3>
+                        <h3 class="trypai-title-text" style="display:inline-flex; align-items:center; gap:6px;">Tryp IA <span style="font-size:11px; font-weight:700; color:#38bdf8; background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.3); border-radius:9999px; padding:1px 7px; vertical-align:middle; letter-spacing:0.3px;">(Beta)</span></h3>
                         <span class="trypai-sub-badge">Asistente de Itinerarios</span>
                     </div>
                 </div>
@@ -49,10 +49,10 @@
                 <div class="chat-msg assistant">
                     <div class="chat-avatar">✨</div>
                     <div class="chat-bubble">
-                        👋 ¡Hola! Soy <strong>Tryp AI</strong>, tu asistente para estructurar tu viaje en Viantryp.<br><br>
+                        👋 ¡Hola! Soy <strong>Tryp IA (Beta)</strong>, tu asistente para estructurar tu viaje en Viantryp.<br><br>
                         Mi objetivo es ayudarte a agregar tus vuelos, hospedajes, actividades y reservas directamente al lienzo de tu itinerario.<br><br>
                         <div style="font-size:11px; line-height: 1.45; background: rgba(30, 170, 206, 0.12); border: 1px solid rgba(30, 170, 206, 0.28); border-radius: 8px; padding: 7px 10px; color: #fdfdfd;">
-                            ⚡ <strong>Importante:</strong> Puedes ingresar hasta <strong>2 elementos por consulta</strong> (archivos o texto). Si incluyes más, la IA procesará los 2 primeros para responderte al instante.
+                            ⚡ <strong>Importante:</strong> Puedes ingresar hasta <strong>4 elementos por consulta</strong> (archivos o texto). Si incluyes más, la IA procesará los 4 primeros para responderte al instante.
                         </div>
                     </div>
                 </div>
@@ -95,8 +95,8 @@
                         <input type="file" id="trypai-file-input" multiple accept=".pdf,.png,.jpg,.jpeg,.webp" class="trypai-file-input" />
                         <div class="trypai-dropzone-content">
                             <div class="trypai-upload-icon">📁</div>
-                            <p class="trypai-drop-title">Arrastra hasta 2 archivos aquí o haz clic</p>
-                            <p class="trypai-drop-hint">Documentos PDF o imágenes (PNG, JPG, WEBP). Máximo 2 archivos o comprobantes por consulta para un análisis ágil.</p>
+                            <p class="trypai-drop-title">Arrastra hasta 4 archivos aquí o haz clic</p>
+                            <p class="trypai-drop-hint">Documentos PDF o imágenes (PNG, JPG, WEBP). Máximo 4 archivos o comprobantes por consulta para un análisis ágil.</p>
                         </div>
                     </div>
                     <div id="trypai-file-list" class="trypai-file-list"></div>
@@ -104,8 +104,8 @@
 
                 <!-- Input Section: Free Text -->
                 <div id="trypai-section-text" class="trypai-input-section hidden">
-                    <textarea id="trypai-text-input" class="trypai-textarea" rows="5" placeholder="Pega aquí el correo de confirmación, WhatsApp o notas (máximo 2 reservas o elementos)..."></textarea>
-                    <p class="trypai-text-hint">⚡ <em>Para una respuesta rápida y precisa, Tryp AI procesa hasta 2 elementos por consulta (ej: 1 vuelo y 1 hotel, o 2 actividades). Si incluyes más, la IA generará los dos primeros.</em></p>
+                    <textarea id="trypai-text-input" class="trypai-textarea" rows="5" placeholder="Pega aquí el correo de confirmación, WhatsApp o notas (máximo 4 reservas o elementos)..."></textarea>
+                    <p class="trypai-text-hint">⚡ <em>Para una respuesta rápida y precisa, Tryp IA (Beta) procesa hasta 4 elementos por consulta (ej: vuelos, hoteles o actividades). Si incluyes más, la IA generará los cuatro primeros.</em></p>
                 </div>
 
                 <!-- Action Button -->
@@ -137,10 +137,10 @@
                 </div>
             </div>
 
-            <!-- Tryp AI Disclaimer -->
+            <!-- Tryp IA Disclaimer -->
             <div class="trypai-disclaimer">
                 <i class="fa-solid fa-circle-info" style="font-size:11px; opacity:0.8; margin-right:4px;"></i>
-                <em>Tryp AI puede cometer errores. Por favor, verifica la información importante antes de confirmar tu itinerario.</em>
+                <em>Tryp IA (Beta) puede cometer errores. Por favor, verifica la información importante antes de confirmar tu itinerario.</em>
             </div>
         </div>
     </div>
@@ -165,7 +165,7 @@
             <!-- Modal Footer -->
             <div class="ingestion-modal-footer">
                 <div class="ingestion-footer-disclaimer">
-                    <em>Tryp AI puede cometer errores. Revisa las fechas y detalles antes de agregar.</em>
+                    <em>Tryp IA (Beta) puede cometer errores. Revisa las fechas y detalles antes de agregar.</em>
                 </div>
                 <div style="display:flex; gap:10px; align-items:center;">
                     <button type="button" id="btn-preview-cancel" class="ingestion-btn-secondary">
@@ -1017,13 +1017,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (mode === 'file') {
             userChoiceText.innerText = 'Quiero cargar un archivo (PDF o Imagen) 📄';
-            promptText.innerHTML = '¡Perfecto! Arrastra o sube hasta 2 archivos de confirmación en PDF o imagen (PNG/JPG/WEBP):';
+            promptText.innerHTML = '¡Perfecto! Arrastra o sube hasta 4 archivos de confirmación en PDF o imagen (PNG/JPG/WEBP):';
             
             sectionFile.classList.remove('hidden');
             sectionText.classList.add('hidden');
         } else {
             userChoiceText.innerText = 'Quiero pegar la información en texto ✍️';
-            promptText.innerHTML = '¡Genial! Pega el texto o correo de tus reservas aquí abajo (máximo 2 elementos por consulta):';
+            promptText.innerHTML = '¡Genial! Pega el texto o correo de tus reservas aquí abajo (máximo 4 elementos por consulta):';
 
             sectionText.classList.remove('hidden');
             sectionFile.classList.add('hidden');
@@ -1073,9 +1073,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addFiles(files) {
-        if (selectedFiles.length + files.length > 2) {
-            alert('Solo puedes adjuntar un máximo de 2 archivos por consulta. Se procesarán los 2 primeros.');
-            const remaining = Math.max(0, 2 - selectedFiles.length);
+        if (selectedFiles.length + files.length > 4) {
+            alert('Solo puedes adjuntar un máximo de 4 archivos por consulta. Se procesarán los 4 primeros.');
+            const remaining = Math.max(0, 4 - selectedFiles.length);
             files = files.slice(0, remaining);
         }
         if (files.length > 0) {
@@ -1111,8 +1111,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert('Por favor selecciona o arrastra al menos un archivo.');
                     return;
                 }
-                if (selectedFiles.length > 2) {
-                    selectedFiles = selectedFiles.slice(0, 2);
+                if (selectedFiles.length > 4) {
+                    selectedFiles = selectedFiles.slice(0, 4);
                 }
                 selectedFiles.forEach(f => formData.append('files[]', f));
             } else {

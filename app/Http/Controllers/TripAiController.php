@@ -43,8 +43,8 @@ class TripAiController extends Controller
             return response()->json([
                 'success' => false,
                 'error_code' => 'LIMIT_REACHED',
-                'message' => 'Has alcanzado el límite de 5 consultas gratuitas de Tryp IA para este itinerario. Actualiza al Plan Viajero Pro para consultas ilimitadas.',
-                'response_text' => 'Has alcanzado el límite de 5 consultas gratuitas de Tryp IA para este itinerario. Actualiza tu plan a Viajero Pro para disfrutar de asistencia IA ilimitada.',
+                'message' => 'Has alcanzado el límite de 5 consultas gratuitas de Tryp IA (Beta) para este itinerario. Actualiza al Plan Viajero Pro para consultas ilimitadas.',
+                'response_text' => 'Has alcanzado el límite de 5 consultas gratuitas de Tryp IA (Beta) para este itinerario. Actualiza tu plan a Viajero Pro para disfrutar de asistencia IA ilimitada.',
                 'suggested_actions' => []
             ], 403);
         }
@@ -63,8 +63,8 @@ class TripAiController extends Controller
             if (!is_array($files)) {
                 $files = [$files];
             }
-            if (count($files) > 2) {
-                $files = array_slice($files, 0, 2);
+            if (count($files) > 4) {
+                $files = array_slice($files, 0, 4);
             }
 
             DB::transaction(function () use ($files, $trip, &$uploadedFilesInfo, &$createdDocuments) {

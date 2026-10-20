@@ -36,7 +36,7 @@ class StoreCopilotRequest extends FormRequest
     {
         return [
             'message' => 'nullable|string|max:1000',
-            'files' => 'nullable|array|max:2',
+            'files' => 'nullable|array|max:4',
             'files.*' => 'file|mimes:pdf,png,jpg,jpeg,webp|max:10240',
         ];
     }
@@ -47,7 +47,7 @@ class StoreCopilotRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'files.max' => 'Solo puedes adjuntar un máximo de 2 archivos por mensaje.',
+            'files.max' => 'Solo puedes adjuntar un máximo de 4 archivos por mensaje.',
             'files.*.mimes' => 'Formato no válido. Solo se permiten archivos PDF o imágenes (PNG, JPG, WEBP).',
             'files.*.max' => 'El archivo es demasiado grande (máximo 10MB).',
             'message.max' => 'El mensaje no puede superar los 1000 caracteres.',
