@@ -259,36 +259,16 @@ function buildPreviewHTML(data) {
 
     const resolved = fixUrl(trimmed);
 
-    // Unsplash Direct Optimization (WebP / Auto format, compressed)
-    if (resolved.includes('images.unsplash.com')) {
-      try {
-        const u = new URL(resolved);
-        u.searchParams.set('w', Math.min(width, 1200));
-        u.searchParams.set('auto', 'format');
-        u.searchParams.set('fit', 'max');
-        u.searchParams.set('q', '75');
-        return u.toString();
-      } catch {
-        return resolved;
-      }
-    }
-
-    // Cloudinary Direct Optimization
-    if (resolved.includes('res.cloudinary.com')) {
-      try {
-        return resolved.replace('/upload/', `/upload/w_${Math.min(width, 1200)},f_auto,q_auto/`);
-      } catch {
-        return resolved;
-      }
-    }
-
-    // Never proxy internal domain uploads, storage paths, local domains or localhost via wsrv.nl
+    const baseOrigin = (typeof origin !== 'undefined' && origin) ? origin : (typeof window !== 'undefined' && window.location ? window.location.origin : '');
     const hostname = (typeof window !== 'undefined' && window.location && window.location.hostname) ? window.location.hostname : '';
+
+    // Never proxy internal domain uploads, storage paths, local domains, localhost or already proxied
     if (
       (hostname && resolved.includes(hostname)) ||
       resolved.includes('viantryp.com') ||
       resolved.includes('/storage/') ||
       resolved.includes('/documents/') ||
+      resolved.includes('/api/image-proxy') ||
       resolved.includes('localhost') ||
       resolved.includes('127.0.0.1') ||
       resolved.includes('.test') ||
@@ -297,10 +277,11 @@ function buildPreviewHTML(data) {
       return resolved;
     }
 
-    // External third-party web images -> wsrv.nl Cloudflare WebP Proxy
-    if (resolved.startsWith('http://') || resolved.startsWith('https://')) {
-      if (resolved.includes('wsrv.nl')) return resolved;
-      return `https://wsrv.nl/?url=${encodeURIComponent(resolved)}&w=${width}&output=webp&q=80`;
+    // External third-party images (Unsplash, etc.) -> Route via internal Viantryp image proxy.
+    // This serves images under viantryp.com domain, bypassing corporate/private firewalls and
+    // guaranteeing 100% universal format (JPEG) and device compatibility.
+    if (baseOrigin && (resolved.startsWith('http://') || resolved.startsWith('https://'))) {
+      return `${baseOrigin}/api/image-proxy?url=${encodeURIComponent(resolved)}&w=${width}`;
     }
 
     return resolved;
@@ -383,12 +364,13 @@ function buildPreviewHTML(data) {
         }
 
         const rawUrl = photos[0];
-        const u = fixUrl(optimizeImageUrl(rawUrl, targetW));
-        const singleJson = JSON.stringify([u]).replace(/"/g, '&quot;');
+        const rawUrlClean = fixUrl(rawUrl);
+        const u = fixUrl(optimizeImageUrl(rawUrlClean, targetW));
+        const singleJson = JSON.stringify([rawUrlClean]).replace(/"/g, '&quot;');
 
         return `<div class="pv-imagen pv-size-${sz} pv-smart-frame" style="position:relative;overflow:hidden;border-radius:12px;box-shadow:var(--shadow);background:#0f172a;box-sizing:border-box;cursor:zoom-in;" onclick="openGalleryLightbox(${singleJson}, 0); event.stopPropagation();">
           <div class="pv-blur-backdrop" style="position:absolute;inset:-20px;background-image:url('${u}');background-size:cover;background-position:center;filter:blur(22px) brightness(0.6);opacity:0.85;transform:scale(1.2);pointer-events:none;"></div>
-          <img src="${u}" alt="" loading="lazy" decoding="async" class="pv-sharp-img" style="position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:1;">
+          <img src="${u}" alt="" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='${rawUrlClean}';const b=this.previousElementSibling;if(b&&b.classList.contains('pv-blur-backdrop')){b.style.backgroundImage='url('+this.src+')';}}" loading="lazy" decoding="async" class="pv-sharp-img" style="position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:1;">
           <div class="pv-expand-hint" style="position:absolute;top:12px;right:12px;background:rgba(15,23,42,0.6);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;z-index:2;backdrop-filter:blur(4px);pointer-events:none;"><i class="fa-solid fa-expand"></i></div>
         </div>`;
       }
@@ -426,11 +408,12 @@ function buildPreviewHTML(data) {
           return '';
         }
         if (photos.length === 1) {
+          const rawUrlClean = fixUrl(photos[0]);
           const u = fixUrl(optimizeImageUrl(photos[0], targetW));
-          const singleJson = JSON.stringify([u]).replace(/"/g, '&quot;');
+          const singleJson = JSON.stringify([rawUrlClean]).replace(/"/g, '&quot;');
           return `<div class="pv-imagen pv-size-${sz} pv-smart-frame" style="position:relative;overflow:hidden;border-radius:12px;box-shadow:var(--shadow);background:#0f172a;box-sizing:border-box;cursor:zoom-in;" onclick="openGalleryLightbox(${singleJson}, 0); event.stopPropagation();">
             <div class="pv-blur-backdrop" style="position:absolute;inset:-20px;background-image:url('${u}');background-size:cover;background-position:center;filter:blur(22px) brightness(0.6);opacity:0.85;transform:scale(1.2);pointer-events:none;"></div>
-            <img src="${u}" alt="" loading="lazy" decoding="async" class="pv-sharp-img" style="position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:1;">
+            <img src="${u}" alt="" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='${rawUrlClean}';const b=this.previousElementSibling;if(b&&b.classList.contains('pv-blur-backdrop')){b.style.backgroundImage='url('+this.src+')';}}" loading="lazy" decoding="async" class="pv-sharp-img" style="position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:1;">
             <div class="pv-expand-hint" style="position:absolute;top:12px;right:12px;background:rgba(15,23,42,0.6);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;z-index:2;backdrop-filter:blur(4px);pointer-events:none;"><i class="fa-solid fa-expand"></i></div>
           </div>`;
         }
@@ -439,10 +422,11 @@ function buildPreviewHTML(data) {
         const photosJson = JSON.stringify(photosFullList).replace(/"/g, '&quot;');
 
         const slides = photos.map((rawU, i) => {
+          const rawUrlClean = fixUrl(rawU);
           const u = fixUrl(optimizeImageUrl(rawU, targetW));
           return `<div class="pv-carousel-slide" style="display:${i === 0 ? 'block' : 'none'};position:relative;width:100%;height:100%;overflow:hidden;background:#0f172a;cursor:zoom-in;" onclick="openGalleryLightbox(${photosJson}, ${i}); event.stopPropagation();">
             <div class="pv-blur-backdrop" style="position:absolute;inset:-20px;background-image:url('${u}');background-size:cover;background-position:center;filter:blur(22px) brightness(0.6);opacity:0.85;transform:scale(1.2);pointer-events:none;"></div>
-            <img src="${u}" style="position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:1;" loading="lazy" decoding="async" />
+            <img src="${u}" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='${rawUrlClean}';const b=this.previousElementSibling;if(b&&b.classList.contains('pv-blur-backdrop')){b.style.backgroundImage='url('+this.src+')';}}" style="position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:1;" loading="lazy" decoding="async" />
             <div class="pv-expand-hint" style="position:absolute;top:12px;right:12px;background:rgba(15,23,42,0.6);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;z-index:2;backdrop-filter:blur(4px);pointer-events:none;"><i class="fa-solid fa-expand"></i></div>
           </div>`;
         }).join('');
@@ -1744,7 +1728,7 @@ ${hasPortada ? `
   <div class="pv-portada-card">
     <div class="pv-portada-hero">
       ${portadaPhotoUrl
-        ? `<img class="pv-portada-img" src="${fixUrl(portadaPhotoUrl)}" alt="${title}">`
+        ? `<img class="pv-portada-img" src="${fixUrl(optimizeImageUrl(portadaPhotoUrl, 1400))}" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='${fixUrl(portadaPhotoUrl)}';}" alt="${title}">`
         : `<div class="pv-portada-img-placeholder"><i class="fa-solid fa-earth-americas"></i></div>`
       }
       <div class="pv-portada-hero-overlay"></div>

@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\AirportController;
 use App\Http\Controllers\TripAiController;
 use App\Http\Controllers\FlightLookupController;
+use App\Http\Controllers\ImageProxyController;
 
 // Authentication routes
 Route::middleware('guest')->group(function () {
@@ -94,6 +95,7 @@ Route::get('/.well-known/assetlinks.json', function () {
     ]);
 });
 Route::get('/api/places/photo', [GooglePlacesController::class, 'getPlacePhoto'])->name('places.photo')->middleware('throttle:60,1');
+Route::get('/api/image-proxy', [ImageProxyController::class, 'proxy'])->name('image.proxy');
 
 // Planes redirect from landing page
 Route::middleware('auth')->get('/planes-redirect', function () {
