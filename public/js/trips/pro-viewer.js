@@ -277,7 +277,33 @@ function buildPreviewHTML(data) {
       return resolved;
     }
 
-    // External third-party images (Unsplash, etc.) -> Route via internal Viantryp image proxy.
+    // Direct Unsplash Optimization:
+    // Unsplash global CDN (Fastly/Imgix) natively supports resizing and universal JPEG format.
+    // It is NEVER blocked on private/corporate networks and serves in <50ms without hitting our server.
+    if (resolved.includes('images.unsplash.com')) {
+      try {
+        const u = new URL(resolved);
+        u.searchParams.set('w', Math.min(width, 1400));
+        u.searchParams.set('fit', 'max');
+        u.searchParams.set('q', '80');
+        u.searchParams.set('fm', 'jpg');
+        u.searchParams.delete('auto');
+        return u.toString();
+      } catch {
+        return resolved;
+      }
+    }
+
+    // Direct Cloudinary Optimization:
+    if (resolved.includes('res.cloudinary.com')) {
+      try {
+        return resolved.replace('/upload/', `/upload/w_${Math.min(width, 1200)},f_auto,q_auto/`);
+      } catch {
+        return resolved;
+      }
+    }
+
+    // External third-party images (other domains) -> Route via internal Viantryp image proxy.
     // This serves images under viantryp.com domain, bypassing corporate/private firewalls and
     // guaranteeing 100% universal format (JPEG) and device compatibility.
     if (baseOrigin && (resolved.startsWith('http://') || resolved.startsWith('https://'))) {

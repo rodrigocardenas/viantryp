@@ -54,7 +54,7 @@ class ImageProxyController extends Controller
 
         // If already cached locally, redirect directly to static asset (Cloudflare & web server cache it)
         if ($disk->exists($path)) {
-            return redirect(asset("storage/{$path}"), 301, [
+            return redirect(secure_asset("storage/{$path}"), 301, [
                 'Cache-Control' => 'public, max-age=31536000, immutable'
             ]);
         }
@@ -87,7 +87,7 @@ class ImageProxyController extends Controller
             if ($response->successful() && strlen($response->body()) > 500) {
                 $disk->put($path, $response->body());
 
-                return redirect(asset("storage/{$path}"), 301, [
+                return redirect(secure_asset("storage/{$path}"), 301, [
                     'Cache-Control' => 'public, max-age=31536000, immutable'
                 ]);
             }
