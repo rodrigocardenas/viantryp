@@ -1,0 +1,2965 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador Financiero & Proyecciones — Viantryp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #070d19;
+      --bg-card: rgba(15, 23, 42, 0.85);
+      --bg-card-hover: rgba(26, 38, 66, 0.9);
+      --bg-input: #0b1324;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-focus: #1EAACE;
+      --primary: #1EAACE;
+      --primary-glow: rgba(30, 170, 206, 0.25);
+      --accent: #38bdf8;
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.2);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.2);
+      --purple: #a855f7;
+      --purple-glow: rgba(168, 85, 247, 0.25);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-main: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 12% 8%, rgba(30, 170, 206, 0.14) 0%, transparent 40%),
+        radial-gradient(circle at 88% 88%, rgba(16, 185, 129, 0.09) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      font-family: var(--font-main);
+      line-height: 1.5;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+
+    /* TOP HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 22px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-badge {
+      width: 46px;
+      height: 46px;
+      background: linear-gradient(135deg, #1EAACE, #0284c7);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #fff;
+      box-shadow: 0 4px 18px var(--primary-glow);
+    }
+
+    .title-area h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-area p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: #1EAACE;
+      color: #fff;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .btn-primary:hover {
+      background: #1995b5;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-color);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* PRESETS BAR */
+    .presets-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+
+    .presets-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    .preset-chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .preset-chip:hover {
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .preset-chip.active {
+      background: var(--primary-glow);
+      border-color: var(--primary);
+      color: #38bdf8;
+    }
+
+    /* MAIN GRID LAYOUT */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 490px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1140px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* CARD STYLES */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title i {
+      color: var(--primary);
+    }
+
+    /* FORM GROUPS & SLIDERS */
+    .form-section {
+      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .form-section.investment-section {
+      background: rgba(168, 85, 247, 0.035);
+      border-color: rgba(168, 85, 247, 0.2);
+    }
+
+    .form-section.rampup-section {
+      background: rgba(30, 170, 206, 0.04);
+      border-color: rgba(30, 170, 206, 0.2);
+    }
+
+    .section-subtitle {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--primary);
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-subtitle.purple { color: #c084fc; }
+    .section-subtitle.teal { color: #38bdf8; }
+
+    .input-row {
+      margin-bottom: 15px;
+    }
+    .input-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .input-label-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .val-badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--bg-input);
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+    .val-badge.highlight-teal { color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); }
+    .val-badge.highlight-green { color: #34d399; border-color: rgba(52, 211, 153, 0.4); }
+    .val-badge.highlight-purple { color: #c084fc; border-color: rgba(192, 132, 252, 0.4); }
+    .val-badge.highlight-amber { color: #fbbf24; border-color: rgba(251, 191, 36, 0.4); }
+
+    .range-input {
+      width: 100%;
+      height: 6px;
+      background: #1e293b;
+      border-radius: 4px;
+      outline: none;
+      -webkit-appearance: none;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #1EAACE;
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--primary-glow);
+      transition: transform 0.1s;
+    }
+    .range-input::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+    }
+
+    .range-purple { accent-color: #a855f7; }
+    .range-purple::-webkit-slider-thumb {
+      background: #a855f7;
+      box-shadow: 0 0 10px var(--purple-glow);
+    }
+
+    .range-amber { accent-color: #f59e0b; }
+    .range-amber::-webkit-slider-thumb {
+      background: #f59e0b;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+    }
+
+    .help-tooltip {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+
+    /* SPLIT VISUALIZER BAR (Pro vs Negocios: 30% vs 70%) */
+    .split-bar-wrap {
+      margin-top: 8px;
+      margin-bottom: 12px;
+      background: #1e293b;
+      height: 10px;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+    }
+    .split-part-pro {
+      background: linear-gradient(90deg, #1EAACE, #0284c7);
+      transition: width 0.2s ease;
+    }
+    .split-part-biz {
+      background: linear-gradient(90deg, #10b981, #059669);
+      transition: width 0.2s ease;
+    }
+
+    .split-legend {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .dot-pro { background: #1EAACE; }
+    .dot-biz { background: #10b981; }
+
+    /* KPIS CARDS ROW */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 550px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--primary);
+    }
+
+    .kpi-card.success::before { background: var(--success); }
+    .kpi-card.warning::before { background: var(--warning); }
+    .kpi-card.danger::before { background: var(--danger); }
+    .kpi-card.purple::before { background: var(--purple); }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kpi-value {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* BREAK-EVEN THERMOMETER / GAUGE CARD */
+    .breakeven-banner {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .breakeven-info {
+      flex: 1;
+      min-width: 260px;
+    }
+    .breakeven-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .breakeven-metric {
+      font-size: 20px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #fff;
+    }
+    .breakeven-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 10px;
+    }
+    .status-profitable {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .status-deficit {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .breakeven-bar-container {
+      width: 100%;
+      height: 8px;
+      background: #1e293b;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .breakeven-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1EAACE, #10b981);
+      transition: width 0.3s ease;
+    }
+
+    /* INVESTMENT TABS & PILLS */
+    .invest-mode-pills {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .invest-mode-pill {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .invest-mode-pill:hover {
+      color: #fff;
+    }
+    .invest-mode-pill.active {
+      background: rgba(168, 85, 247, 0.2);
+      border-color: rgba(168, 85, 247, 0.4);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(168, 85, 247, 0.25);
+    }
+
+    .investment-kpis-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(168, 85, 247, 0.2);
+    }
+    @media (max-width: 600px) {
+      .investment-kpis-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .inv-kpi-item {
+      background: rgba(11, 19, 36, 0.7);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+    .inv-kpi-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .inv-kpi-val {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 800;
+      color: #c084fc;
+      margin-top: 2px;
+    }
+
+    .fff-info-banner {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--text-main);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      line-height: 1.4;
+    }
+
+    /* RAMP-UP HIGHLIGHT CARDS */
+    .rampup-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 768px) {
+      .rampup-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .rampup-item {
+      background: rgba(11, 19, 36, 0.8);
+      border: 1px solid rgba(30, 170, 206, 0.25);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .rampup-item-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .rampup-item-val {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 800;
+      color: #38bdf8;
+      margin-top: 2px;
+    }
+
+    /* CHARTS ROW */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 1000px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-container {
+      position: relative;
+      height: 270px;
+      width: 100%;
+    }
+
+    /* TABLE SECTION */
+    .table-card {
+      margin-top: 24px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 10px 12px;
+      color: var(--text-dim);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-fixed { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+    .badge-var { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .badge-free { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .badge-peak { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    /* SWITCH TOGGLE */
+    .switch-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .switch-label input {
+      display: none;
+    }
+    .switch-slider {
+      width: 32px;
+      height: 18px;
+      background: #1e293b;
+      border-radius: 20px;
+      position: relative;
+      transition: background 0.2s;
+    }
+    .switch-slider::before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+    }
+    .switch-label input:checked + .switch-slider {
+      background: #a855f7;
+    }
+    /* SEGMENTED BUTTONS (API TIERS) */
+    .segmented-group {
+      display: flex;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .segmented-btn {
+      flex: 1;
+      padding: 7px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .segmented-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .segmented-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+    .segmented-btn.active.purple {
+      background: var(--purple);
+      box-shadow: 0 2px 8px var(--purple-glow);
+    }
+    .segmented-btn.active.amber {
+      background: var(--warning);
+      color: #000;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+
+    /* CREDIT METER PROGRESS */
+    .credit-meter-wrap {
+      margin-top: 6px;
+    }
+    .credit-meter-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .credit-meter-fill {
+      height: 100%;
+      background: #10b981;
+      border-radius: 4px;
+      transition: width 0.3s, background 0.3s;
+    }
+    .credit-meter-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+    }
+
+    /* CUSTOM PRESETS & DIVIDER */
+    .presets-divider {
+      width: 1px;
+      height: 22px;
+      background: var(--border-color);
+      margin: 0 6px;
+      flex-shrink: 0;
+    }
+    .presets-label.custom {
+      color: #a855f7;
+    }
+    .preset-chip.custom {
+      background: rgba(168, 85, 247, 0.12);
+      border-color: rgba(168, 85, 247, 0.3);
+      color: #c084fc;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .preset-chip.custom:hover {
+      background: rgba(168, 85, 247, 0.25);
+      border-color: #a855f7;
+      color: #fff;
+    }
+    .preset-chip.custom.active {
+      background: #a855f7;
+      color: #fff;
+      box-shadow: 0 2px 10px var(--purple-glow);
+    }
+    .chip-delete {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.3);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .chip-delete:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* BUTTON EXTENSIONS */
+    .btn-success {
+      background: #10b981;
+      color: #fff;
+      box-shadow: 0 4px 12px var(--success-glow);
+    }
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-1px);
+    }
+
+    /* MODAL STYLES */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-box {
+      background: #0d1527;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 480px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      animation: slideUp 0.25s ease;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .modal-close:hover {
+      color: #fff;
+    }
+    .modal-input, .modal-textarea {
+      width: 100%;
+      background: #070d19;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      font-family: var(--font-main);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .modal-input:focus, .modal-textarea:focus {
+      border-color: var(--primary);
+    }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    /* TOAST NOTIFICATIONS */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 10000;
+      pointer-events: none;
+    }
+    .toast {
+      background: #0f172a;
+      border: 1px solid rgba(30, 170, 206, 0.35);
+      border-radius: 10px;
+      padding: 12px 18px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      animation: slideInRight 0.3s ease;
+      pointer-events: auto;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* PRINT STYLES */
+    @media print {
+      body {
+        background: #fff;
+        color: #000;
+        padding: 0;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #ddd;
+        box-shadow: none;
+        color: #000;
+      }
+      .presets-bar, .header-actions { display: none !important; }
+      .main-grid { display: block; }
+      .range-input { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- TOP HEADER -->
+    <header>
+      <div class="brand-wrap">
+        <div class="logo-badge">
+          <i class="fa-solid fa-plane-departure"></i>
+        </div>
+        <div class="title-area">
+          <h1>Simulador Financiero Viantryp</h1>
+          <p>Modelo B2B & B2C — Enfoque 70% Negocios / 30% Pro · Ramp-Up de 0 a 12 Meses con Churn & Flywheel de Pauta</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn btn-success" onclick="openSaveScenarioModal()">
+          <i class="fa-solid fa-floppy-disk"></i> Guardar Escenario
+        </button>
+        <button class="btn btn-secondary" onclick="exportScenariosJSON()" title="Descargar copia de seguridad en archivo JSON">
+          <i class="fa-solid fa-download"></i> Exportar JSON
+        </button>
+        <button class="btn btn-secondary" onclick="document.getElementById('import_scenarios_input').click()" title="Cargar escenarios guardados desde archivo JSON">
+          <i class="fa-solid fa-upload"></i> Cargar JSON
+        </button>
+        <input type="file" id="import_scenarios_input" style="display:none;" accept=".json" onchange="importScenariosJSON(event)">
+        <button class="btn btn-secondary" onclick="resetDefaults()">
+          <i class="fa-solid fa-arrow-rotate-left"></i> Restablecer
+        </button>
+        <button class="btn btn-secondary" onclick="exportToCSV()">
+          <i class="fa-solid fa-file-csv"></i> Exportar CSV
+        </button>
+        <button class="btn btn-primary" onclick="window.print()">
+          <i class="fa-solid fa-print"></i> Imprimir / PDF
+        </button>
+      </div>
+    </header>
+
+    <!-- PRESETS BAR -->
+    <div class="presets-bar" id="presets_bar">
+      <span class="presets-label"><i class="fa-solid fa-sliders"></i> Base:</span>
+      <button class="preset-chip active" id="chip_bootstrapping" onclick="loadPreset('bootstrapping', this)">
+        🌱 Micro-Semilla FFF ($2,000 USD)
+      </button>
+      <button class="preset-chip" id="chip_traccion" onclick="loadPreset('traccion', this)">
+        🚀 Capital FFF Moderado ($5,000 USD)
+      </button>
+      <button class="preset-chip" id="chip_crecimiento" onclick="loadPreset('crecimiento', this)">
+        📈 Tracción Intermedia ($15,000 USD)
+      </button>
+      <button class="preset-chip" id="chip_agencia" onclick="loadPreset('agencia', this)">
+        🏆 Ronda Ángel / VC ($50,000 USD)
+      </button>
+
+      <!-- Custom Saved Scenarios rendered dynamically here -->
+      <div class="presets-divider"></div>
+      <span class="presets-label custom"><i class="fa-solid fa-bookmark"></i> Mis Escenarios:</span>
+      <div id="custom_presets_container" style="display:flex; gap:8px; align-items:center;">
+        <span style="font-size:11px; color:var(--text-dim); font-style:italic;" id="no_custom_scenarios_msg">Sin escenarios guardados</span>
+      </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE GRID -->
+    <div class="main-grid">
+
+      <!-- LEFT COLUMN: CONTROLS & INPUTS -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-sliders"></i> Variables de Entrada & Barras
+          </div>
+          <span style="font-size:11px; color:var(--text-dim); font-family:var(--font-mono);">EN VIVO</span>
+        </div>
+
+        <!-- SECCIÓN 1: BASE TOTAL DE USUARIOS -->
+        <div class="form-section">
+          <div class="section-subtitle">
+            <span><i class="fa-solid fa-users"></i> 1. Base Total de Usuarios</span>
+          </div>
+
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Usuarios Registrados Totales</span>
+              <span class="val-badge highlight-teal" id="lbl_total_users">1,000 usuarios</span>
+            </div>
+            <input type="range" class="range-input" id="inp_total_users" min="100" max="25000" step="100" value="1000" oninput="calculate()">
+            <div class="help-tooltip">Base total de cuentas registradas (Básico gratis + Clientes de pago).</div>
+          </div>
+
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Tasa de Churn Mensual (% de bajas)</span>
+              <span class="val-badge" id="lbl_churn">4.0%</span>
+            </div>
+            <input type="range" class="range-input" id="inp_churn" min="1.0" max="10.0" step="0.5" value="4.0" oninput="calculate()">
+            <div class="help-tooltip">Porcentaje de clientes que cancelan su suscripción al mes.</div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 2: CONVERSIÓN & MIX DE PLANES (ENFOQUE 70% NEGOCIOS B2B) -->
+        <div class="form-section">
+          <div class="section-subtitle">
+            <span><i class="fa-solid fa-layer-group"></i> 2. Conversión & Mix de Planes (B2B Focus)</span>
+          </div>
+
+          <!-- Cuántos llegan a pagar -->
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>% de Usuarios que llegan a pagar</span>
+              <span class="val-badge highlight-green" id="lbl_conv_rate">5.0% (50 clientes de pago)</span>
+            </div>
+            <input type="range" class="range-input" id="inp_conv_rate" min="0.5" max="20.0" step="0.5" value="5.0" oninput="calculate()">
+            <div class="help-tooltip">Porcentaje de la base total que contrata un plan pago.</div>
+          </div>
+
+          <!-- De los que pagan: 30% Viajero Pro vs 70% Negocios -->
+          <div class="input-row" style="margin-top:14px;">
+            <div class="input-label-wrap">
+              <span>Distribución de Clientes de Pago</span>
+              <span class="val-badge highlight-teal" id="lbl_mix_summary">30% Pro / 70% Negocios</span>
+            </div>
+
+            <!-- Visual Bar (30% Pro vs 70% Negocios) -->
+            <div class="split-legend">
+              <span class="legend-item"><span class="dot dot-pro"></span> <strong id="lbl_pro_count">15 Pro ($6.99)</strong></span>
+              <span class="legend-item"><span class="dot dot-biz"></span> <strong id="lbl_biz_count">35 Negocios ($24.99)</strong></span>
+            </div>
+            <div class="split-bar-wrap">
+              <div class="split-part-pro" id="bar_pro" style="width: 30%;"></div>
+              <div class="split-part-biz" id="bar_biz" style="width: 70%;"></div>
+            </div>
+
+            <input type="range" class="range-input" id="inp_mix_pro" min="0" max="100" step="5" value="30" oninput="calculate()">
+            <div class="help-tooltip">Configurado en <strong>70% Negocios ($24.99)</strong> para maximizar el ARPU apuntando a agencias, DMCs y asesores.</div>
+          </div>
+
+          <!-- Facturación Anual vs Mensual -->
+          <div class="input-row" style="margin-top:14px;">
+            <div class="input-label-wrap">
+              <span>% Facturación Anual (20% Descuento)</span>
+              <span class="val-badge highlight-amber" id="lbl_annual_mix">30% Anual / 70% Mensual</span>
+            </div>
+            <input type="range" class="range-input range-amber" id="inp_annual_mix" min="0" max="80" step="5" value="30" oninput="calculate()">
+            <div class="help-tooltip">Anual Pro: $5.59/mo ($67.08/año) · Negocios: $19.99/mo ($239.88/año).</div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 3: MÉTRICAS DE USO DE APIS & UMBRALES DE COMPRA -->
+        <div class="form-section">
+          <div class="section-subtitle">
+            <span><i class="fa-solid fa-microchip"></i> 3. Métricas de Uso de APIs & Umbrales de Compra</span>
+          </div>
+
+          <!-- A. Consultas IA Gemini -->
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Consultas IA (Tryp IA) / cliente / mes</span>
+              <span class="val-badge highlight-teal" id="lbl_ai_queries">8 chats</span>
+            </div>
+            <input type="range" class="range-input" id="inp_ai_queries" min="1" max="40" step="1" value="8" oninput="calculate()">
+            <div class="help-tooltip">Google Gemini Flash (~$0.0003 USD/chat). Tier gratuito de 15 RPM.</div>
+          </div>
+
+          <!-- B. Google Places con Crédito $200 USD -->
+          <div class="input-row" style="margin-top:14px;">
+            <div class="input-label-wrap">
+              <span>Lugares Google Places / usuario / mes</span>
+              <span class="val-badge highlight-green" id="lbl_places_queries">6 lugares</span>
+            </div>
+            <input type="range" class="range-input" id="inp_places_queries" min="1" max="30" step="1" value="6" oninput="calculate()">
+            <div class="credit-meter-wrap">
+              <div class="credit-meter-label">
+                <span>Crédito Gratis Google: $200 USD/mes</span>
+                <span id="lbl_places_status" style="color:#10b981; font-weight:700;">$0.00 facturable</span>
+              </div>
+              <div class="credit-meter-bar">
+                <div class="credit-meter-fill" id="bar_places_credit" style="width: 15%;"></div>
+              </div>
+            </div>
+            <div class="help-tooltip">Fotos cacheadas en disco local (`storage/places/`). Solo se factura si el consumo supera los $200 USD/mes de crédito.</div>
+          </div>
+
+          <!-- C. Búsqueda de Vuelos (AeroDataBox) con botones interactivos de compra -->
+          <div class="input-row" style="margin-top:14px;">
+            <div class="input-label-wrap">
+              <span>Vuelos en Tiempo Real (AeroDataBox)</span>
+              <span class="val-badge highlight-amber" id="lbl_flight_badge">Salvaguarda 380 ($0)</span>
+            </div>
+            <div class="segmented-group">
+              <button type="button" class="segmented-btn active" id="btn_flight_free" onclick="setFlightPlan('free')">
+                <i class="fa-solid fa-shield"></i> Salvaguarda ($0)
+              </button>
+              <button type="button" class="segmented-btn" id="btn_flight_pro" onclick="setFlightPlan('pro')">
+                <i class="fa-solid fa-plane"></i> Plan Pro ($15)
+              </button>
+              <button type="button" class="segmented-btn" id="btn_flight_ultra" onclick="setFlightPlan('ultra')">
+                <i class="fa-solid fa-rocket"></i> Plan Ultra ($30)
+              </button>
+            </div>
+            <div class="help-tooltip">En código hay tope de 380 req/mes ($0). Al pasar a 5k o 10k búsquedas, se activa el plan pago correspondiente.</div>
+          </div>
+
+          <!-- D. Servidor & Base de Datos (Hostinger) con botones de planes -->
+          <div class="input-row" style="margin-top:14px;">
+            <div class="input-label-wrap">
+              <span>Infraestructura Servidor (Hostinger VPS)</span>
+              <span class="val-badge highlight-purple" id="lbl_server_badge">Starter VPS ($10)</span>
+            </div>
+            <div class="segmented-group">
+              <button type="button" class="segmented-btn active" id="btn_server_auto" onclick="setServerTier('auto')">
+                <i class="fa-solid fa-bolt"></i> Auto
+              </button>
+              <button type="button" class="segmented-btn" id="btn_server_starter" onclick="setServerTier('starter')">
+                VPS 1 ($10)
+              </button>
+              <button type="button" class="segmented-btn" id="btn_server_biz" onclick="setServerTier('biz')">
+                VPS 2 ($24)
+              </button>
+              <button type="button" class="segmented-btn" id="btn_server_cloud" onclick="setServerTier('cloud')">
+                Cloud ($55)
+              </button>
+            </div>
+            <div class="help-tooltip">El modo Auto escala automáticamente según la cantidad de usuarios (VPS 1 hasta 2k, VPS 2 hasta 10k, Cloud >10k).</div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 4: GASTOS OPERATIVOS (OPEX) -->
+        <div class="form-section">
+          <div class="section-subtitle">
+            <span><i class="fa-solid fa-money-bill-transfer"></i> 4. Gastos Operativos (OPEX)</span>
+            <span class="val-badge" id="lbl_total_opex">$120 / mes</span>
+          </div>
+
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Pauta Digital Inicial / Base (CAC)</span>
+              <span class="val-badge" id="lbl_mkt">$100 USD/mes</span>
+            </div>
+            <input type="range" class="range-input" id="inp_mkt" min="0" max="2000" step="25" value="100" oninput="calculate()">
+            <div class="help-tooltip">Inversión mensual base en Meta Ads / Google Ads para adquirir usuarios.</div>
+          </div>
+
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Herramientas SaaS & Software</span>
+              <span class="val-badge" id="lbl_tools">$20 USD/mes</span>
+            </div>
+            <input type="range" class="range-input" id="inp_tools" min="0" max="300" step="5" value="20" oninput="calculate()">
+            <div class="help-tooltip">GitHub, Notion, soporte y hosting email.</div>
+          </div>
+
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Nómina Fundadores (En Fase Inicial)</span>
+              <span class="val-badge" id="lbl_salaries">$0 USD/mes</span>
+            </div>
+            <input type="range" class="range-input" id="inp_salaries" min="0" max="4000" step="100" value="0" oninput="calculate()">
+            <div class="help-tooltip">En etapa de $2,000 FFF, los fundadores reinvierten para acelerar la tracción.</div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 5: PARÁMETROS DEL RAMP-UP Y FLYWHEEL DE MARKETING -->
+        <div class="form-section rampup-section">
+          <div class="section-subtitle teal">
+            <span><i class="fa-solid fa-rocket"></i> 5. Motores de Crecimiento & Flywheel</span>
+          </div>
+
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Costo de Adquisición Estimado (CAC)</span>
+              <span class="val-badge highlight-teal" id="lbl_rampup_cac">$18 USD / cliente</span>
+            </div>
+            <input type="range" class="range-input" id="inp_rampup_cac" min="10" max="35" step="1" value="18" oninput="calculate()">
+            <div class="help-tooltip">Costo promedio de pauta para convertir 1 cliente de pago.</div>
+          </div>
+
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Reinversión del MRR en Pauta (% Flywheel)</span>
+              <span class="val-badge highlight-amber" id="lbl_rampup_reinvest">20% del MRR</span>
+            </div>
+            <input type="range" class="range-input range-amber" id="inp_rampup_reinvest" min="0" max="40" step="5" value="20" oninput="calculate()">
+            <div class="help-tooltip">A medida que entran ventas, se reinvierte este % en pauta para que los clientes crezcan mes a mes en vez de estancarse.</div>
+          </div>
+
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Efecto Viral Orgánico (Itinerarios Compartidos)</span>
+              <span class="val-badge highlight-green" id="lbl_rampup_viral">+25% clientes gratis</span>
+            </div>
+            <input type="range" class="range-input" id="inp_rampup_viral" min="0" max="50" step="5" value="25" oninput="calculate()">
+            <div class="help-tooltip">Clientes extra que llegan sin pagar pauta al ver itinerarios públicos compartidos.</div>
+          </div>
+
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Picos de Estacionalidad Turística</span>
+              <label class="switch-label">
+                <input type="checkbox" id="chk_seasonality" checked onchange="calculate()">
+                <span class="switch-slider"></span>
+                <span id="lbl_seasonality_status">Activa (+35% en Julio y Dic)</span>
+              </label>
+            </div>
+            <div class="help-tooltip">Aplica incrementos en los meses pico de vacaciones turísticas (mitad y fin de año).</div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 6: SOLICITUD DE INVERSIÓN (MODO FFF REALISTA $2k - $5k vs ÁNGEL) -->
+        <div class="form-section investment-section">
+          <div class="section-subtitle purple">
+            <span><i class="fa-solid fa-hand-holding-dollar"></i> 6. Solicitud de Inversión FFF / Ángel</span>
+            <label class="switch-label">
+              <input type="checkbox" id="chk_investment" checked onchange="calculate()">
+              <span class="switch-slider"></span>
+              <span>Activar</span>
+            </label>
+          </div>
+
+          <div id="investment_controls">
+            <!-- Tabs Selector: FFF vs Ángel -->
+            <div class="invest-mode-pills">
+              <button type="button" class="invest-mode-pill active" id="btn_mode_fff" onclick="setInvestMode('fff')">
+                <i class="fa-solid fa-users"></i> Modo FFF (Revenue Share $2k - $5k)
+              </button>
+              <button type="button" class="invest-mode-pill" id="btn_mode_angel" onclick="setInvestMode('angel')">
+                <i class="fa-solid fa-briefcase"></i> Modo Ángel (Equity)
+              </button>
+            </div>
+
+            <!-- CONTROLES MODO FFF (REVENUE SHARE) -->
+            <div id="panel_mode_fff">
+              <div class="input-row">
+                <div class="input-label-wrap">
+                  <span>Capital FFF Aportado (Semilla)</span>
+                  <span class="val-badge highlight-purple" id="lbl_fff_amount">$2,000 USD</span>
+                </div>
+                <input type="range" class="range-input range-purple" id="inp_fff_amount" min="1000" max="10000" step="250" value="2000" oninput="calculate()">
+                <div class="help-tooltip">Inyección realista de familiares o amigos para financiar el lanzamiento.</div>
+              </div>
+
+              <div class="input-row">
+                <div class="input-label-wrap">
+                  <span>Múltiplo de Retorno Acordado (Cap)</span>
+                  <span class="val-badge highlight-green" id="lbl_fff_multiple">1.35x (Devolver $2,700 USD)</span>
+                </div>
+                <input type="range" class="range-input" id="inp_fff_multiple" min="1.15" max="1.50" step="0.05" value="1.35" oninput="calculate()">
+                <div class="help-tooltip">Ganancia neta para el FFF (ej. 1.35x = 35% de rendimiento pactado).</div>
+              </div>
+
+              <div class="input-row">
+                <div class="input-label-wrap">
+                  <span>% de Ventas (MRR) destinado a Pagos</span>
+                  <span class="val-badge highlight-amber" id="lbl_fff_rev_pct">7.0% del MRR</span>
+                </div>
+                <input type="range" class="range-input range-amber" id="inp_fff_rev_pct" min="3.0" max="12.0" step="0.5" value="7.0" oninput="calculate()">
+                <div class="help-tooltip">Porcentaje de las ventas mensuales con el que se va reembolsando.</div>
+              </div>
+
+              <!-- FFF Result Cards -->
+              <div class="investment-kpis-grid">
+                <div class="inv-kpi-item">
+                  <div class="inv-kpi-label">Total a Devolver</div>
+                  <div class="inv-kpi-val" id="fff_total_return">$2,700</div>
+                  <div style="font-size:10px; color:#34d399;" id="fff_profit_label">+$700 ganancia</div>
+                </div>
+                <div class="inv-kpi-item">
+                  <div class="inv-kpi-label">Cuota Inicial / Mes</div>
+                  <div class="inv-kpi-val" id="fff_first_payment">$8 / mes</div>
+                  <div style="font-size:10px; color:var(--text-dim);" id="fff_pct_note">7% del MRR</div>
+                </div>
+                <div class="inv-kpi-item">
+                  <div class="inv-kpi-label">Recuperación 1.0x</div>
+                  <div class="inv-kpi-val" id="fff_payback_month">Mes 10</div>
+                  <div style="font-size:10px; color:var(--text-dim);">Recupera $2,000</div>
+                </div>
+                <div class="inv-kpi-item">
+                  <div class="inv-kpi-label">Liquidación Total</div>
+                  <div class="inv-kpi-val" id="fff_payoff_month">Mes 13</div>
+                  <div style="font-size:10px; color:#c084fc;" id="fff_irr_label">~31% TIR anual</div>
+                </div>
+              </div>
+
+              <div class="fff-info-banner">
+                <i class="fa-solid fa-shield-halved" style="color:#10b981; font-size:14px;"></i>
+                <div>
+                  <strong>0% de Dilución:</strong> Conservas el 100% de Viantryp. Con el enfoque 70% Negocios, el alto ARPU acelera el repago al FFF (<span id="fff_banner_cap">$2,700 USD</span>) sin estrés de caja.
+                </div>
+              </div>
+            </div>
+
+            <!-- CONTROLES MODO ÁNGEL (EQUITY) -->
+            <div id="panel_mode_angel" style="display:none;">
+              <div class="input-row">
+                <div class="input-label-wrap">
+                  <span>Capital Solicitado (Ticket Ángel)</span>
+                  <span class="val-badge highlight-purple" id="lbl_investment_amount">$25,000 USD</span>
+                </div>
+                <input type="range" class="range-input range-purple" id="inp_investment_amount" min="5000" max="100000" step="5000" value="25000" oninput="calculate()">
+              </div>
+
+              <div class="input-row">
+                <div class="input-label-wrap">
+                  <span>Equity Ofrecido (%)</span>
+                  <span class="val-badge" id="lbl_equity">10.0%</span>
+                </div>
+                <input type="range" class="range-input range-purple" id="inp_equity" min="2.0" max="25.0" step="0.5" value="10.0" oninput="calculate()">
+              </div>
+
+              <div class="investment-kpis-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="inv-kpi-item">
+                  <div class="inv-kpi-label">Valuación Post-Money</div>
+                  <div class="inv-kpi-val" id="inv_postmoney">$250,000</div>
+                </div>
+                <div class="inv-kpi-item">
+                  <div class="inv-kpi-label">Runway Comprado</div>
+                  <div class="inv-kpi-val" id="inv_runway">24+ Meses</div>
+                </div>
+                <div class="inv-kpi-item">
+                  <div class="inv-kpi-label">Caja Mes 12</div>
+                  <div class="inv-kpi-val" id="inv_endcash">$28,400</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: RESULTS, KPIS, RAMP-UP & BREAK-EVEN -->
+      <div>
+
+        <!-- BREAK-EVEN THERMOMETER -->
+        <div class="breakeven-banner">
+          <div class="breakeven-info">
+            <div class="breakeven-title">
+              <i class="fa-solid fa-scale-balanced" style="color:var(--primary);"></i> Punto de Equilibrio Operativo (Break-Even)
+              <span id="breakeven_badge" class="breakeven-status-pill status-profitable">
+                <i class="fa-solid fa-circle-check"></i> Superávit Financiero
+              </span>
+            </div>
+            <div class="breakeven-metric" id="breakeven_text">
+              Necesitas 9 clientes de pago <span style="font-size:13px; font-weight:500; color:var(--text-muted);">para cubrir tus $145 USD de gastos operativos</span>
+            </div>
+            <div class="breakeven-bar-container">
+              <div class="breakeven-progress-fill" id="breakeven_bar" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px; color:var(--text-dim); text-transform:uppercase; font-weight:700;">Cobertura Actual</div>
+            <div style="font-size:24px; font-weight:800; font-family:var(--font-mono); color:#38bdf8;" id="breakeven_coverage_pct">555%</div>
+          </div>
+        </div>
+
+        <!-- KPI SUMMARY ROW -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">
+              <span>MRR Proyectado</span>
+              <i class="fa-solid fa-money-bill-wave" style="color:var(--primary);"></i>
+            </div>
+            <div class="kpi-value" id="kpi_mrr">$920</div>
+            <div class="kpi-sub" id="kpi_arr">ARR: $11,040 USD</div>
+          </div>
+
+          <div class="kpi-card warning">
+            <div class="kpi-label">
+              <span>Costos Tech (COGS)</span>
+              <i class="fa-solid fa-server" style="color:var(--warning);"></i>
+            </div>
+            <div class="kpi-value" id="kpi_cogs">$78</div>
+            <div class="kpi-sub" id="kpi_margin">Margen Bruto: 91.5%</div>
+          </div>
+
+          <div class="kpi-card success" id="kpi_profit_card">
+            <div class="kpi-label">
+              <span>Beneficio Neto (EBITDA)</span>
+              <i class="fa-solid fa-chart-line" style="color:var(--success);"></i>
+            </div>
+            <div class="kpi-value" id="kpi_ebitda">$722</div>
+            <div class="kpi-sub" id="kpi_ebitda_pct">Margen Neto: 78.5%</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">
+              <span>Clientes de Pago</span>
+              <i class="fa-solid fa-user-check" style="color:var(--accent);"></i>
+            </div>
+            <div class="kpi-value" id="kpi_paid_users">50</div>
+            <div class="kpi-sub" id="kpi_arpu">ARPU: $18.41 USD / usuario</div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN DESTACADA: PLAN DE LANZAMIENTO RAMP-UP REALISTA (0 A 12 MESES) -->
+        <div class="card" style="margin-bottom: 24px; border: 1px solid rgba(30, 170, 206, 0.35);">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fa-solid fa-timeline" style="color:#38bdf8;"></i> Plan de Lanzamiento Realista Mes a Mes (De 0 a 12 Meses con $2,000 USD)
+            </div>
+            <span class="badge" style="background:rgba(30,170,206,0.15); color:#38bdf8; font-weight:700;">ARRANQUE DESDE CERO</span>
+          </div>
+
+          <!-- Unit Economics Metrics Grid (B2B SaaS Power) -->
+          <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; margin-bottom:18px; background:rgba(0,0,0,0.3); padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.06);">
+            <div style="text-align:center;">
+              <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; font-weight:700;">ARPU Mix (70% B2B)</div>
+              <div style="font-size:16px; font-weight:800; font-family:var(--font-mono); color:#38bdf8;" id="ue_arpu">$18.41</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; font-weight:700;">CAC Promedio</div>
+              <div style="font-size:16px; font-weight:800; font-family:var(--font-mono); color:#fbbf24;" id="ue_cac">$18.00</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; font-weight:700;">LTV (Valor de Vida)</div>
+              <div style="font-size:16px; font-weight:800; font-family:var(--font-mono); color:#34d399;" id="ue_ltv">$460.00</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; font-weight:700;">Ratio LTV / CAC</div>
+              <div style="font-size:16px; font-weight:800; font-family:var(--font-mono); color:#a855f7;" id="ue_ltv_cac">25.5x</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; font-weight:700;">Payback de CAC</div>
+              <div style="font-size:16px; font-weight:800; font-family:var(--font-mono); color:#38bdf8;" id="ue_payback">1.0 Mes</div>
+            </div>
+          </div>
+
+          <!-- Ramp-Up Highlights Grid -->
+          <div class="rampup-summary-grid">
+            <div class="rampup-item">
+              <div class="rampup-item-label">Inversión FFF Inicial</div>
+              <div class="rampup-item-val" id="ru_initial_cash" style="color:#c084fc;">$2,000</div>
+              <div style="font-size:10px; color:var(--text-dim);">Capital en banco Mes 1</div>
+            </div>
+            <div class="rampup-item">
+              <div class="rampup-item-label">Caja Mínima (Quema Máx.)</div>
+              <div class="rampup-item-val" id="ru_min_cash" style="color:#fbbf24;">$1,968</div>
+              <div style="font-size:10px; color:#34d399;" id="ru_burn_label">Solo se queman $32</div>
+            </div>
+            <div class="rampup-item">
+              <div class="rampup-item-label">Mes de Break-Even</div>
+              <div class="rampup-item-val" id="ru_breakeven_month" style="color:#34d399;">Mes 2</div>
+              <div style="font-size:10px; color:var(--text-dim);">Flujo de caja positivo</div>
+            </div>
+            <div class="rampup-item">
+              <div class="rampup-item-label">Caja en Banco Mes 12</div>
+              <div class="rampup-item-val" id="ru_final_cash" style="color:#38bdf8;">$7,840</div>
+              <div style="font-size:10px; color:#34d399;">Multiplicó x3.9 la caja</div>
+            </div>
+          </div>
+
+          <!-- Ramp-Up Chart (Cash Evolution vs Paying Users) -->
+          <div class="chart-container" style="height: 250px; margin-bottom: 20px;">
+            <canvas id="rampUpChart"></canvas>
+          </div>
+
+          <!-- Full Ramp-Up Month by Month Table with Churn & Growth Breakdown -->
+          <div style="overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mes</th>
+                  <th>Temporada</th>
+                  <th>Pauta ($)</th>
+                  <th>Nuevos (+)</th>
+                  <th>Churn (-)</th>
+                  <th>Clientes Tot.</th>
+                  <th>Crec. MoM</th>
+                  <th>MRR ($)</th>
+                  <th>Costos Tot.</th>
+                  <th>Flujo Neto</th>
+                  <th>Cuota FFF (7%)</th>
+                  <th>Saldo Banco</th>
+                </tr>
+              </thead>
+              <tbody id="rampup_tbody">
+              </tbody>
+            </table>
+          </div>
+          <div class="help-tooltip" style="margin-top:10px; font-size:11px;">
+            * <strong>Dinámica de Campaña:</strong> El modelo parte con <strong>0 clientes en el Mes 1</strong>. Cada mes la pauta adquiere clientes vía Meta/Google Ads y se suman clientes orgánicos por los itinerarios compartidos. Se deduce explícitamente el <strong>Churn Rate del 4%</strong> mensual sobre la base activa. El 20% del MRR se reinvierte en pauta (Flywheel), haciendo que la captación escale mes a mes.
+          </div>
+        </div>
+
+        <!-- CHARTS SECTION (DONUT & TECH) -->
+        <div class="charts-grid">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-chart-line"></i> Curva de Crecimiento Compuesto a Largo Plazo
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="projectionChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-pie-chart"></i> Desglose Costos Tech
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="costBreakdownChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- DETAILED MARKETING STRATEGY & CHANNELS TABLE -->
+        <div class="card table-card" style="margin-top: 24px; border: 1px solid rgba(245, 158, 11, 0.35);">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fa-solid fa-bullhorn" style="color:var(--warning);"></i> Desglose Detallado de Estrategia de Marketing, Canales & Pauta
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span class="badge" style="background:rgba(245, 158, 11, 0.15); color:#fbbf24; font-weight:700;" id="mkt_summary_budget">Presupuesto Pauta: $100 USD/mes</span>
+              <span style="font-size:11px; color:var(--text-dim);">5 Canales B2B & B2C</span>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Canal / Campaña</th>
+                <th>Enfoque Estratégico</th>
+                <th>% Mix Pauta</th>
+                <th>Gasto Mensual ($)</th>
+                <th>CAC Canal</th>
+                <th>Nuevos Clientes/mes</th>
+                <th>MRR Generado</th>
+                <th>Ratio LTV / CAC</th>
+              </tr>
+            </thead>
+            <tbody id="marketing_tbody">
+            </tbody>
+          </table>
+          <div class="help-tooltip" style="margin-top:10px; font-size:11px;">
+            * <strong>Estrategia Omnicanal B2B (70/30):</strong> Se prioriza la captación de <strong>Agencias de Viajes y Asesores</strong> a través de Meta Ads, Google Ads de alta intención y prospección directa B2B en LinkedIn. Los itinerarios compartidos orgánicamente por clientes activos reducen el CAC global de forma progresiva.
+          </div>
+        </div>
+
+        <!-- DETAILED BREAKDOWN TABLE -->
+        <div class="card table-card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fa-solid fa-table-list"></i> Desglose Detallado de Servicios, APIs e Infraestructura
+            </div>
+            <span style="font-size:12px; color:var(--text-muted);" id="table_summary_count">Servicios Activos: 8</span>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Servicio / Proveedor</th>
+                <th>Tipo</th>
+                <th>Volumen Estimado</th>
+                <th>Crédito / Límite Gratuito</th>
+                <th>Costo Mensual</th>
+                <th>% del Gasto Tech</th>
+              </tr>
+            </thead>
+            <tbody id="services_tbody">
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- MODAL GUARDAR ESCENARIO -->
+  <div class="modal-backdrop" id="modal_save_scenario" style="display:none;" onclick="if(event.target === this) closeSaveScenarioModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-floppy-disk" style="color:var(--success);"></i> Guardar Escenario Personalizado
+        </div>
+        <button class="modal-close" onclick="closeSaveScenarioModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">
+          Guarda la configuración actual de todos los sliders, consumo de APIs, presupuesto de pauta y condiciones de inversión para recuperarla en cualquier momento.
+        </p>
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-dim); margin-bottom:6px;">
+            Nombre del Escenario
+          </label>
+          <input type="text" id="inp_scenario_name" class="modal-input" placeholder="Ej. Ronda FFF $3k - 70% Agencias" maxlength="40">
+        </div>
+        <div style="margin-bottom:18px;">
+          <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-dim); margin-bottom:6px;">
+            Notas o Descripción (Opcional)
+          </label>
+          <textarea id="inp_scenario_notes" class="modal-textarea" rows="2" placeholder="Ej. Presupuesto enfocado en Meta Ads y LinkedIn para DMCs."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeSaveScenarioModal()">Cancelar</button>
+        <button class="btn btn-success" onclick="confirmSaveScenario()">
+          <i class="fa-solid fa-check"></i> Guardar Escenario
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toast_container"></div>
+
+  <script>
+    // State & Variables
+    let projectionChart = null;
+    let costBreakdownChart = null;
+    let rampUpChart = null;
+    let currentInvestMode = 'fff'; // 'fff' or 'angel'
+    let currentFlightPlan = 'free'; // 'free', 'pro', or 'ultra'
+    let currentServerTier = 'auto'; // 'auto', 'starter', 'biz', or 'cloud'
+    const SCENARIOS_STORAGE_KEY = 'viantryp_custom_scenarios_v1';
+
+    // Presets with updated structure tailored for real bootstrapping ($2,000 USD), 70% B2B Focus and API usage
+    const PRESETS = {
+      bootstrapping: {
+        total_users: 1000,
+        conv_rate: 5.0,
+        mix_pro: 30, // 30% Pro / 70% Negocios
+        annual_mix: 30,
+        churn: 4.0,
+        ai_queries: 8,
+        places_queries: 6,
+        flight_plan: 'free',
+        server_tier: 'auto',
+        mkt: 100,
+        salaries: 0,
+        tools: 20,
+        cac: 18,
+        reinvest: 20,
+        viral: 25,
+        seasonality: true,
+        has_invest: true,
+        invest_mode: 'fff',
+        fff_amount: 2000,
+        fff_multiple: 1.35,
+        fff_rev_pct: 7.0,
+        invest_amount: 25000,
+        equity: 10.0
+      },
+      traccion: {
+        total_users: 3000,
+        conv_rate: 5.0,
+        mix_pro: 30, // 30% Pro / 70% Negocios
+        annual_mix: 35,
+        churn: 3.5,
+        ai_queries: 10,
+        places_queries: 8,
+        flight_plan: 'pro',
+        server_tier: 'starter',
+        mkt: 200,
+        salaries: 0,
+        tools: 30,
+        cac: 18,
+        reinvest: 25,
+        viral: 30,
+        seasonality: true,
+        has_invest: true,
+        invest_mode: 'fff',
+        fff_amount: 5000,
+        fff_multiple: 1.30,
+        fff_rev_pct: 7.0,
+        invest_amount: 45000,
+        equity: 10.0
+      },
+      crecimiento: {
+        total_users: 10000,
+        conv_rate: 5.0,
+        mix_pro: 25, // 25% Pro / 75% Negocios
+        annual_mix: 40,
+        churn: 3.0,
+        ai_queries: 12,
+        places_queries: 10,
+        flight_plan: 'pro',
+        server_tier: 'biz',
+        mkt: 500,
+        salaries: 800,
+        tools: 60,
+        cac: 16,
+        reinvest: 25,
+        viral: 35,
+        seasonality: true,
+        has_invest: true,
+        invest_mode: 'angel',
+        fff_amount: 15000,
+        fff_multiple: 1.25,
+        fff_rev_pct: 7.0,
+        invest_amount: 80000,
+        equity: 12.0
+      },
+      agencia: {
+        total_users: 25000,
+        conv_rate: 6.0,
+        mix_pro: 20, // 20% Pro / 80% Negocios
+        annual_mix: 45,
+        churn: 2.5,
+        ai_queries: 15,
+        places_queries: 12,
+        flight_plan: 'ultra',
+        server_tier: 'cloud',
+        mkt: 1200,
+        salaries: 2500,
+        tools: 150,
+        cac: 15,
+        reinvest: 30,
+        viral: 40,
+        seasonality: true,
+        has_invest: true,
+        invest_mode: 'angel',
+        fff_amount: 30000,
+        fff_multiple: 1.25,
+        fff_rev_pct: 8.0,
+        invest_amount: 150000,
+        equity: 15.0
+      }
+    };
+
+    function setFlightPlan(plan, triggerCalc = true) {
+      currentFlightPlan = plan;
+      const bFree = document.getElementById('btn_flight_free');
+      const bPro = document.getElementById('btn_flight_pro');
+      const bUltra = document.getElementById('btn_flight_ultra');
+      if (bFree) bFree.classList.toggle('active', plan === 'free');
+      if (bPro) bPro.classList.toggle('active', plan === 'pro');
+      if (bUltra) bUltra.classList.toggle('active', plan === 'ultra');
+      
+      const badge = document.getElementById('lbl_flight_badge');
+      if (badge) {
+        if (plan === 'free') badge.innerText = 'Salvaguarda 380 ($0)';
+        else if (plan === 'pro') badge.innerText = 'Plan Pro ($15 USD)';
+        else if (plan === 'ultra') badge.innerText = 'Plan Ultra ($30 USD)';
+      }
+
+      if (triggerCalc) calculate();
+    }
+
+    function setServerTier(tier, triggerCalc = true) {
+      currentServerTier = tier;
+      const bAuto = document.getElementById('btn_server_auto');
+      const bStarter = document.getElementById('btn_server_starter');
+      const bBiz = document.getElementById('btn_server_biz');
+      const bCloud = document.getElementById('btn_server_cloud');
+      if (bAuto) bAuto.classList.toggle('active', tier === 'auto');
+      if (bStarter) bStarter.classList.toggle('active', tier === 'starter');
+      if (bBiz) bBiz.classList.toggle('active', tier === 'biz');
+      if (bCloud) bCloud.classList.toggle('active', tier === 'cloud');
+
+      const badge = document.getElementById('lbl_server_badge');
+      if (badge) {
+        if (tier === 'auto') badge.innerText = 'Escala Automática';
+        else if (tier === 'starter') badge.innerText = 'Starter VPS ($10)';
+        else if (tier === 'biz') badge.innerText = 'VPS Business ($24)';
+        else if (tier === 'cloud') badge.innerText = 'Cloud Enterprise ($55)';
+      }
+
+      if (triggerCalc) calculate();
+    }
+
+    function setInvestMode(mode) {
+      currentInvestMode = mode;
+      document.getElementById('btn_mode_fff').classList.toggle('active', mode === 'fff');
+      document.getElementById('btn_mode_angel').classList.toggle('active', mode === 'angel');
+      document.getElementById('panel_mode_fff').style.display = mode === 'fff' ? 'block' : 'none';
+      document.getElementById('panel_mode_angel').style.display = mode === 'angel' ? 'block' : 'none';
+      calculate();
+    }
+
+    function loadPreset(name, btn) {
+      document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      const p = PRESETS[name];
+      if (!p) return;
+
+      document.getElementById('inp_total_users').value = p.total_users;
+      document.getElementById('inp_conv_rate').value = p.conv_rate;
+      document.getElementById('inp_mix_pro').value = p.mix_pro;
+      document.getElementById('inp_annual_mix').value = p.annual_mix;
+      document.getElementById('inp_churn').value = p.churn;
+
+      const aiInp = document.getElementById('inp_ai_queries');
+      if (aiInp) aiInp.value = p.ai_queries || 8;
+      const plInp = document.getElementById('inp_places_queries');
+      if (plInp) plInp.value = p.places_queries || 6;
+
+      setFlightPlan(p.flight_plan || 'free', false);
+      setServerTier(p.server_tier || 'auto', false);
+
+      document.getElementById('inp_mkt').value = p.mkt;
+      document.getElementById('inp_salaries').value = p.salaries;
+      document.getElementById('inp_tools').value = p.tools;
+
+      document.getElementById('inp_rampup_cac').value = p.cac;
+      document.getElementById('inp_rampup_reinvest').value = p.reinvest;
+      document.getElementById('inp_rampup_viral').value = p.viral;
+      document.getElementById('chk_seasonality').checked = p.seasonality;
+
+      const chkInvest = document.getElementById('chk_investment');
+      chkInvest.checked = p.has_invest;
+
+      document.getElementById('inp_fff_amount').value = p.fff_amount;
+      document.getElementById('inp_fff_multiple').value = p.fff_multiple;
+      document.getElementById('inp_fff_rev_pct').value = p.fff_rev_pct;
+
+      document.getElementById('inp_investment_amount').value = p.invest_amount;
+      document.getElementById('inp_equity').value = p.equity;
+
+      setInvestMode(p.invest_mode || 'fff');
+    }
+
+    function resetDefaults() {
+      const chip = document.getElementById('chip_bootstrapping') || document.querySelector('.preset-chip');
+      loadPreset('bootstrapping', chip);
+    }
+
+    function calculate() {
+      // 1. Read Inputs
+      const totalUsers = parseInt(document.getElementById('inp_total_users').value);
+      const convRate = parseFloat(document.getElementById('inp_conv_rate').value) / 100;
+      const churnRate = parseFloat(document.getElementById('inp_churn').value) / 100;
+
+      // Mix de Planes (Pro vs Negocios sincronizados a 100%)
+      const pctPro = parseInt(document.getElementById('inp_mix_pro').value);
+      const pctBiz = 100 - pctPro;
+      const annualMix = parseFloat(document.getElementById('inp_annual_mix').value) / 100;
+
+      // OPEX Sliders
+      const mktOpex = parseFloat(document.getElementById('inp_mkt').value) || 0;
+      const salariesOpex = parseFloat(document.getElementById('inp_salaries').value) || 0;
+      const toolsOpex = parseFloat(document.getElementById('inp_tools').value) || 0;
+      const totalOpex = mktOpex + salariesOpex + toolsOpex;
+
+      // Ramp-Up Parameters & Flywheel
+      const rampUpCAC = parseFloat(document.getElementById('inp_rampup_cac').value) || 18;
+      const rampUpReinvestPct = (parseFloat(document.getElementById('inp_rampup_reinvest').value) || 20) / 100;
+      const rampUpViralPct = (parseFloat(document.getElementById('inp_rampup_viral').value) || 25) / 100;
+      const hasSeasonality = document.getElementById('chk_seasonality').checked;
+
+      // Investment fields
+      const hasInvestment = document.getElementById('chk_investment').checked;
+      const investContainer = document.getElementById('investment_controls');
+      investContainer.style.display = hasInvestment ? 'block' : 'none';
+
+      // 2. Compute Users & Pricing
+      const paidUsers = Math.max(1, Math.round(totalUsers * convRate));
+      const freeUsers = Math.max(0, totalUsers - paidUsers);
+
+      const proUsers = Math.round(paidUsers * (pctPro / 100));
+      const bizUsers = Math.max(0, paidUsers - proUsers);
+
+      // Labels
+      document.getElementById('lbl_total_users').innerText = totalUsers.toLocaleString() + ' usuarios';
+      document.getElementById('lbl_conv_rate').innerText = (convRate * 100).toFixed(1) + `% (${paidUsers.toLocaleString()} de pago)`;
+      document.getElementById('lbl_churn').innerText = (churnRate * 100).toFixed(1) + '%';
+
+      document.getElementById('lbl_mix_summary').innerText = `${pctPro}% Pro / ${pctBiz}% Negocios`;
+      document.getElementById('lbl_pro_count').innerText = `${proUsers.toLocaleString()} Pro ($6.99)`;
+      document.getElementById('lbl_biz_count').innerText = `${bizUsers.toLocaleString()} Negocios ($24.99)`;
+      document.getElementById('bar_pro').style.width = pctPro + '%';
+      document.getElementById('bar_biz').style.width = pctBiz + '%';
+
+      document.getElementById('lbl_annual_mix').innerText = `${(annualMix * 100).toFixed(0)}% Anual / ${(100 - (annualMix * 100)).toFixed(0)}% Mensual`;
+
+      document.getElementById('lbl_mkt').innerText = '$' + mktOpex.toLocaleString() + ' USD/mes';
+      document.getElementById('lbl_salaries').innerText = '$' + salariesOpex.toLocaleString() + ' USD/mes';
+      document.getElementById('lbl_tools').innerText = '$' + toolsOpex.toLocaleString() + ' USD/mes';
+      document.getElementById('lbl_total_opex').innerText = '$' + totalOpex.toLocaleString() + ' / mes';
+
+      document.getElementById('lbl_rampup_cac').innerText = '$' + rampUpCAC + ' USD / cliente';
+      document.getElementById('lbl_rampup_reinvest').innerText = Math.round(rampUpReinvestPct * 100) + '% del MRR';
+      document.getElementById('lbl_rampup_viral').innerText = '+' + Math.round(rampUpViralPct * 100) + '% clientes gratis';
+      document.getElementById('lbl_seasonality_status').innerText = hasSeasonality ? 'Activa (+35% en Julio y Dic)' : 'Inactiva (Lineal)';
+
+      // Pricing logic:
+      // Pro: Monthly = $6.99, Annual = $5.59/mo ($67.08/año)
+      // Negocios: Monthly = $24.99, Annual = $19.99/mo ($239.88/año)
+      const proPrice = (1 - annualMix) * 6.99 + (annualMix * 5.59);
+      const bizPrice = (1 - annualMix) * 24.99 + (annualMix * 19.99);
+
+      const mrrPro = proUsers * proPrice;
+      const mrrBiz = bizUsers * bizPrice;
+      const totalMRR = mrrPro + mrrBiz;
+      const totalARR = totalMRR * 12;
+      const arpu = paidUsers > 0 ? totalMRR / paidUsers : ((pctPro / 100) * proPrice + (pctBiz / 100) * bizPrice);
+
+      // Unit Economics Calculation
+      const ltv = churnRate > 0 ? (arpu / churnRate) : (arpu * 24);
+      const ltvCacRatio = rampUpCAC > 0 ? (ltv / rampUpCAC) : 10;
+      const cacPaybackMonths = arpu > 0 ? (rampUpCAC / arpu).toFixed(1) : '1.0';
+
+      document.getElementById('ue_arpu').innerText = '$' + arpu.toFixed(2);
+      document.getElementById('ue_cac').innerText = '$' + rampUpCAC.toFixed(2);
+      document.getElementById('ue_ltv').innerText = '$' + ltv.toFixed(2);
+      document.getElementById('ue_ltv_cac').innerText = ltvCacRatio.toFixed(1) + 'x';
+      document.getElementById('ue_payback').innerText = cacPaybackMonths + ' Mes';
+
+      // 3. Compute Base Technology Costs (COGS)
+      const avgFixedFee = (1 - annualMix) * 0.50 + annualMix * (0.50 / 12);
+      const costPaddle = (totalMRR * 0.05) + (paidUsers * avgFixedFee);
+
+      // Usage metrics
+      const aiQueries = parseInt(document.getElementById('inp_ai_queries').value) || 8;
+      const placesQueries = parseInt(document.getElementById('inp_places_queries').value) || 6;
+      document.getElementById('lbl_ai_queries').innerText = aiQueries + ' chats';
+      document.getElementById('lbl_places_queries').innerText = placesQueries + ' lugares';
+
+      const totalAIChats = Math.round((freeUsers * 2) + (paidUsers * aiQueries));
+      const costGemini = totalAIChats * 0.0003;
+
+      const totalPlacesQueries = Math.round((freeUsers * 1.5) + (paidUsers * placesQueries));
+      const rawPlacesCost = (totalPlacesQueries / 1000) * 17.0;
+      const costGooglePlaces = Math.max(0, rawPlacesCost - 200);
+
+      // Update Places Credit Meter DOM
+      const creditBar = document.getElementById('bar_places_credit');
+      const creditLabel = document.getElementById('lbl_places_status');
+      if (creditBar && creditLabel) {
+        const creditPct = Math.min(100, Math.round((rawPlacesCost / 200) * 100));
+        creditBar.style.width = Math.max(5, creditPct) + '%';
+        if (rawPlacesCost <= 200) {
+          creditBar.style.background = '#10b981';
+          creditLabel.innerText = `$${rawPlacesCost.toFixed(2)} / $200 USD ($0 facturable)`;
+          creditLabel.style.color = '#10b981';
+        } else {
+          creditBar.style.background = '#ef4444';
+          creditLabel.innerText = `+$${costGooglePlaces.toFixed(2)} USD facturable`;
+          creditLabel.style.color = '#f87171';
+        }
+      }
+
+      // AeroDataBox (Vuelos)
+      let costFlights = 0;
+      if (currentFlightPlan === 'pro') costFlights = 15;
+      else if (currentFlightPlan === 'ultra') costFlights = 30;
+      else costFlights = 0; // Salvaguarda capada en 380
+
+      // Servidor Hostinger VPS
+      let costHosting = 10;
+      if (currentServerTier === 'auto') {
+        if (totalUsers > 2000 && totalUsers <= 10000) costHosting = 24;
+        else if (totalUsers > 10000 && totalUsers <= 30000) costHosting = 55;
+        else if (totalUsers > 30000) costHosting = 110;
+        else costHosting = 10;
+      } else if (currentServerTier === 'starter') costHosting = 10;
+      else if (currentServerTier === 'biz') costHosting = 24;
+      else if (currentServerTier === 'cloud') costHosting = 55;
+
+      const costDomainEmail = 1.25;
+      const estStorageGB = (paidUsers * 0.15) + (freeUsers * 0.02);
+      const costStorage = Math.max(0, (estStorageGB - 10) * 0.015);
+
+      const totalCOGS = costPaddle + costGemini + costGooglePlaces + costFlights + costHosting + costDomainEmail + costStorage;
+      const grossProfit = totalMRR - totalCOGS;
+      const grossMarginPct = totalMRR > 0 ? (grossProfit / totalMRR) * 100 : 0;
+      const ebitda = grossProfit - totalOpex;
+      const ebitdaMarginPct = totalMRR > 0 ? (ebitda / totalMRR) * 100 : 0;
+
+      // 4. Break-Even Calculations
+      const fixedMonthlyCosts = costHosting + costDomainEmail + costFlights + totalOpex;
+      const varCostPerUser = paidUsers > 0 ? (costPaddle + costGemini + costGooglePlaces + costStorage) / paidUsers : 1.2;
+      const contributionMarginPerUser = Math.max(1, arpu - varCostPerUser);
+      const breakEvenUsers = Math.ceil(fixedMonthlyCosts / contributionMarginPerUser);
+      const breakEvenMRR = Math.round(breakEvenUsers * arpu);
+
+      const coveragePct = breakEvenUsers > 0 ? Math.round((paidUsers / breakEvenUsers) * 100) : 100;
+      document.getElementById('breakeven_coverage_pct').innerText = coveragePct + '%';
+
+      const breakevenBadge = document.getElementById('breakeven_badge');
+      const breakevenBar = document.getElementById('breakeven_bar');
+      const breakevenText = document.getElementById('breakeven_text');
+
+      if (paidUsers >= breakEvenUsers) {
+        breakevenBadge.className = 'breakeven-status-pill status-profitable';
+        breakevenBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Superávit Financiero';
+        breakevenBar.style.width = '100%';
+        breakevenBar.style.background = 'linear-gradient(90deg, #1EAACE, #10b981)';
+        breakevenText.innerHTML = `Rentable · Necesitas solo <strong style="color:#38bdf8;">${breakEvenUsers} clientes</strong> para cubrir tus $${Math.round(fixedMonthlyCosts).toLocaleString()} USD de gastos fijos.`;
+      } else {
+        const usersMissing = breakEvenUsers - paidUsers;
+        breakevenBadge.className = 'breakeven-status-pill status-deficit';
+        breakevenBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Déficit Operativo';
+        breakevenBar.style.width = Math.min(100, Math.max(5, coveragePct)) + '%';
+        breakevenBar.style.background = 'linear-gradient(90deg, #ef4444, #f59e0b)';
+        breakevenText.innerHTML = `Faltan <strong style="color:#f87171;">${usersMissing} clientes de pago</strong> para alcanzar el punto de equilibrio ($${breakEvenMRR.toLocaleString()} USD MRR).`;
+      }
+
+      // 5. Investment Controls (FFF vs Ángel)
+      const fffAmount = parseFloat(document.getElementById('inp_fff_amount').value) || 2000;
+      const fffMultiple = parseFloat(document.getElementById('inp_fff_multiple').value) || 1.35;
+      const fffRevPct = (parseFloat(document.getElementById('inp_fff_rev_pct').value) || 7.0) / 100;
+
+      const fffTotalCap = Math.round(fffAmount * fffMultiple);
+      const fffNetProfit = fffTotalCap - fffAmount;
+
+      document.getElementById('lbl_fff_amount').innerText = '$' + fffAmount.toLocaleString() + ' USD';
+      document.getElementById('lbl_fff_multiple').innerText = `${fffMultiple.toFixed(2)}x (Devolver $${fffTotalCap.toLocaleString()} USD)`;
+      document.getElementById('lbl_fff_rev_pct').innerText = `${(fffRevPct * 100).toFixed(1)}% del MRR`;
+
+      document.getElementById('fff_total_return').innerText = '$' + fffTotalCap.toLocaleString();
+      document.getElementById('fff_profit_label').innerText = `+$${fffNetProfit.toLocaleString()} (+${Math.round((fffMultiple - 1) * 100)}%)`;
+      const bannerCapEl = document.getElementById('fff_banner_cap');
+      if (bannerCapEl) bannerCapEl.innerText = '$' + fffTotalCap.toLocaleString() + ' USD';
+
+      // 6. DETAILED REALISTIC RAMP-UP (MONTH 1 TO 12 STARTING FROM 0 CLIENTS WITH FLYWHEEL & VISIBLE CHURN)
+      const rampUpData = [];
+      let currentBankCash = hasInvestment ? (currentInvestMode === 'fff' ? fffAmount : parseFloat(document.getElementById('inp_investment_amount').value) || 2000) : 1000;
+      const initialBankStarting = currentBankCash;
+      let minBankCash = currentBankCash;
+      let breakevenMonthFound = null;
+
+      let prevActivePaying = 0;
+      let prevMonthMRR = 0;
+      let remainingFffToPay = fffTotalCap;
+      let remainingFffPrincipal = fffAmount;
+      let fffPaybackMonth = null;
+      let fffPayoffMonth = null;
+
+      const monthNames = ['Mes 1', 'Mes 2', 'Mes 3', 'Mes 4', 'Mes 5', 'Mes 6', 'Mes 7', 'Mes 8', 'Mes 9', 'Mes 10', 'Mes 11', 'Mes 12'];
+      const seasons = [
+        'Arranque', 'Ordinaria', 'Semana Santa', 'Ordinaria', 
+        'Prep. Verano', 'Verano Alta 🔥', 'Verano Alta 🔥', 'Valle', 
+        'Ordinaria', 'Prep. Fin Año', 'Navidad Alta 🔥', 'Navidad Alta 🔥'
+      ];
+
+      for (let m = 1; m <= 12; m++) {
+        // Base ad spend + Flywheel Reinvestment from previous month MRR
+        const baseAdSpend = mktOpex > 0 ? mktOpex : 100;
+        const reinvestmentAmount = prevMonthMRR * rampUpReinvestPct;
+        const totalMonthlyAdSpend = Math.round(baseAdSpend + reinvestmentAmount);
+
+        // Seasonality multiplier
+        let seasonMultiplier = 1.0;
+        if (hasSeasonality) {
+          if (m === 6 || m === 7) seasonMultiplier = 1.35; // Verano / Mitad de año
+          else if (m === 11 || m === 12) seasonMultiplier = 1.40; // Fin de año
+          else if (m === 3) seasonMultiplier = 1.20; // Semana Santa
+        }
+
+        // Ad acquisitions
+        const acquiredFromAds = (totalMonthlyAdSpend / rampUpCAC) * seasonMultiplier;
+        // Organic viral acquisition: combination of ad campaigns + viral loop of existing active clients sharing itineraries
+        const viralFromBase = prevActivePaying * 0.05; // 1 cliente gratis por cada 20 activos que comparten itinerarios
+        const viralFromAds = acquiredFromAds * rampUpViralPct;
+        const totalNewClients = Math.max(1, Math.round(acquiredFromAds + viralFromAds + viralFromBase));
+
+        // Visible Churn calculation
+        const churnedClients = Math.round(prevActivePaying * churnRate);
+
+        // Active paying users at end of month
+        const activePayingUsers = Math.max(1, prevActivePaying - churnedClients + totalNewClients);
+
+        // Month-over-month growth rate (%)
+        let momGrowthPct = prevActivePaying > 0 ? Math.round(((activePayingUsers - prevActivePaying) / prevActivePaying) * 100) : 100;
+
+        // Cohort MRR
+        const monthMRR = activePayingUsers * arpu;
+        prevMonthMRR = monthMRR;
+        prevActivePaying = activePayingUsers;
+
+        // Tech costs & OPEX
+        const monthCOGS = Math.max(12, (costHosting + costDomainEmail + (monthMRR * 0.05) + (activePayingUsers * 0.60)));
+        const monthOPEX = totalMonthlyAdSpend + toolsOpex;
+        const monthTotalCosts = monthCOGS + monthOPEX;
+
+        // Net Operating Cashflow
+        const netCashflow = monthMRR - monthTotalCosts;
+
+        // FFF Quota
+        let fffQuota = 0;
+        if (hasInvestment && currentInvestMode === 'fff' && remainingFffToPay > 0) {
+          fffQuota = Math.min(monthMRR * fffRevPct, remainingFffToPay);
+          remainingFffToPay -= fffQuota;
+          remainingFffPrincipal -= fffQuota;
+
+          if (remainingFffPrincipal <= 0 && fffPaybackMonth === null) fffPaybackMonth = m;
+          if (remainingFffToPay <= 0.01 && fffPayoffMonth === null) fffPayoffMonth = m;
+        }
+
+        // Cash in Bank
+        currentBankCash = currentBankCash + netCashflow - fffQuota;
+        if (currentBankCash < minBankCash) {
+          minBankCash = currentBankCash;
+        }
+
+        if (netCashflow >= 0 && breakevenMonthFound === null) {
+          breakevenMonthFound = m;
+        }
+
+        rampUpData.push({
+          month: m,
+          monthName: monthNames[m - 1],
+          season: seasons[m - 1],
+          isPeak: seasons[m - 1].includes('🔥'),
+          adSpend: totalMonthlyAdSpend,
+          newClients: totalNewClients,
+          churned: churnedClients,
+          totalClients: activePayingUsers,
+          momGrowth: momGrowthPct,
+          mrr: monthMRR,
+          totalCosts: monthTotalCosts,
+          netFlow: netCashflow,
+          fffQuota: fffQuota,
+          bankCash: currentBankCash
+        });
+      }
+
+      // Background projection for FFF full payoff if beyond 12 months
+      if (hasInvestment && currentInvestMode === 'fff' && fffPayoffMonth === null) {
+        let simMrr = rampUpData[11].mrr;
+        let simRemaining = remainingFffToPay;
+        let simPrincipal = remainingFffPrincipal;
+        for (let extraM = 13; extraM <= 36; extraM++) {
+          simMrr *= 1.06;
+          const pmt = Math.min(simMrr * fffRevPct, simRemaining);
+          simRemaining -= pmt;
+          simPrincipal -= pmt;
+          if (simPrincipal <= 0 && fffPaybackMonth === null) fffPaybackMonth = extraM;
+          if (simRemaining <= 0.01 && fffPayoffMonth === null) {
+            fffPayoffMonth = extraM;
+            break;
+          }
+        }
+      }
+
+      // Update Ramp-Up Summary Cards
+      document.getElementById('ru_initial_cash').innerText = '$' + Math.round(initialBankStarting).toLocaleString() + ' USD';
+      document.getElementById('ru_min_cash').innerText = '$' + Math.round(minBankCash).toLocaleString() + ' USD';
+      
+      const maxBurn = Math.max(0, initialBankStarting - minBankCash);
+      document.getElementById('ru_burn_label').innerText = maxBurn > 0 ? `Quema máx. -$${Math.round(maxBurn).toLocaleString()} USD` : 'Sin quema de capital';
+      
+      document.getElementById('ru_breakeven_month').innerText = breakevenMonthFound ? `Mes ${breakevenMonthFound}` : 'Mes 2';
+      
+      const finalBank = rampUpData[11].bankCash;
+      const finalCashEl = document.getElementById('ru_final_cash');
+      finalCashEl.innerText = (finalBank >= 0 ? '$' : '-$') + Math.round(Math.abs(finalBank)).toLocaleString() + ' USD';
+      finalCashEl.style.color = finalBank < 0 ? '#f87171' : '#34d399';
+
+      // Update FFF Cards
+      document.getElementById('fff_payback_month').innerText = fffPaybackMonth ? `Mes ${fffPaybackMonth}` : 'Mes 10';
+      document.getElementById('fff_payoff_month').innerText = fffPayoffMonth ? `Mes ${fffPayoffMonth}` : 'Mes 13';
+
+      const initialMonthQuota = rampUpData[0].fffQuota > 0 ? rampUpData[0].fffQuota : (rampUpData[0].mrr * fffRevPct);
+      document.getElementById('fff_first_payment').innerText = '$' + Math.round(initialMonthQuota).toLocaleString() + ' / mes';
+      document.getElementById('fff_pct_note').innerText = `${(fffRevPct * 100).toFixed(1)}% de $${Math.round(rampUpData[0].mrr)} MRR`;
+
+      const finalPayoffM = fffPayoffMonth || 13;
+      const annIrr = Math.round((Math.pow(fffTotalCap / fffAmount, 12 / finalPayoffM) - 1) * 100);
+      document.getElementById('fff_irr_label').innerText = `~${annIrr}% TIR anual`;
+
+      // Render Detailed Ramp-Up Table with Churn & Growth
+      const rampupTbody = document.getElementById('rampup_tbody');
+      rampupTbody.innerHTML = '';
+      rampUpData.forEach(row => {
+        const tr = document.createElement('tr');
+        const netColor = row.netFlow >= 0 ? '#34d399' : '#f87171';
+        const netSign = row.netFlow >= 0 ? '+' : '';
+        const seasonBadge = row.isPeak ? `<span class="badge badge-peak">${row.season}</span>` : `<span style="color:var(--text-dim);">${row.season}</span>`;
+
+        tr.innerHTML = `
+          <td><strong>${row.monthName}</strong></td>
+          <td>${seasonBadge}</td>
+          <td style="font-family:var(--font-mono);">$${Math.round(row.adSpend)}</td>
+          <td style="font-family:var(--font-mono); color:#38bdf8; font-weight:700;">+${row.newClients}</td>
+          <td style="font-family:var(--font-mono); color:#f87171;">-${row.churned}</td>
+          <td style="font-family:var(--font-mono); font-weight:800; color:#fff;">${row.totalClients}</td>
+          <td style="font-family:var(--font-mono); color:#34d399; font-weight:700;">+${row.momGrowth}%</td>
+          <td style="font-family:var(--font-mono); font-weight:700; color:#fff;">$${Math.round(row.mrr).toLocaleString()}</td>
+          <td style="font-family:var(--font-mono); color:var(--text-dim);">$${Math.round(row.totalCosts).toLocaleString()}</td>
+          <td style="font-family:var(--font-mono); font-weight:700; color:${netColor};">${netSign}$${Math.round(row.netFlow).toLocaleString()}</td>
+          <td style="font-family:var(--font-mono); color:#c084fc;">$${Math.round(row.fffQuota).toLocaleString()}</td>
+          <td style="font-family:var(--font-mono); font-weight:800; color:${row.bankCash >= 0 ? '#34d399' : '#f87171'};">$${Math.round(row.bankCash).toLocaleString()}</td>
+        `;
+        rampupTbody.appendChild(tr);
+      });
+
+      // Angel Mode Calculations
+      if (hasInvestment && currentInvestMode === 'angel') {
+        const investmentAmount = parseFloat(document.getElementById('inp_investment_amount').value) || 25000;
+        const equityPct = (parseFloat(document.getElementById('inp_equity').value) || 10.0) / 100;
+        document.getElementById('lbl_investment_amount').innerText = '$' + investmentAmount.toLocaleString() + ' USD';
+        document.getElementById('lbl_equity').innerText = (equityPct * 100).toFixed(1) + '%';
+
+        if (equityPct > 0) {
+          const postMoneyVal = Math.round(investmentAmount / equityPct);
+          document.getElementById('inv_postmoney').innerText = '$' + postMoneyVal.toLocaleString();
+          document.getElementById('inv_runway').innerText = '24+ Meses';
+          document.getElementById('inv_endcash').innerText = '$' + Math.round(rampUpData[11].bankCash).toLocaleString();
+        }
+      }
+
+      // Update Top KPI Cards
+      document.getElementById('kpi_mrr').innerText = '$' + Math.round(totalMRR).toLocaleString() + ' USD';
+      document.getElementById('kpi_arr').innerText = 'ARR: $' + Math.round(totalARR).toLocaleString() + ' USD';
+      document.getElementById('kpi_cogs').innerText = '$' + Math.round(totalCOGS).toLocaleString() + ' USD';
+      document.getElementById('kpi_margin').innerText = 'Margen Bruto: ' + grossMarginPct.toFixed(1) + '%';
+
+      const ebitdaEl = document.getElementById('kpi_ebitda');
+      ebitdaEl.innerText = (ebitda >= 0 ? '$' : '-$') + Math.round(Math.abs(ebitda)).toLocaleString() + ' USD';
+      document.getElementById('kpi_ebitda_pct').innerText = 'Margen Neto: ' + ebitdaMarginPct.toFixed(1) + '%';
+      
+      const profitCard = document.getElementById('kpi_profit_card');
+      if (ebitda < 0) {
+        profitCard.classList.remove('success');
+        profitCard.classList.add('danger');
+      } else {
+        profitCard.classList.remove('danger');
+        profitCard.classList.add('success');
+      }
+
+      document.getElementById('kpi_paid_users').innerText = paidUsers.toLocaleString();
+      document.getElementById('kpi_arpu').innerText = 'ARPU: $' + arpu.toFixed(2) + ' USD / usuario';
+
+      // 7. Render Breakdown Table
+      renderTable([
+        {
+          name: 'Paddle Billing (Merchant of Record)',
+          type: 'Variable',
+          vol: `${paidUsers} pagos procesados`,
+          free: '$0 cuota mensual (5% + $0.50)',
+          cost: costPaddle
+        },
+        {
+          name: 'Google Gemini AI (Tryp IA)',
+          type: 'Variable',
+          vol: `${totalAIChats.toLocaleString()} chats interactivos`,
+          free: 'Tier Free 15 RPM',
+          cost: costGemini
+        },
+        {
+          name: 'Google Places API & Photos',
+          type: 'Variable',
+          vol: `${totalPlacesQueries.toLocaleString()} consultas`,
+          free: '$200 USD/mes de crédito Google',
+          cost: costGooglePlaces
+        },
+        {
+          name: `Hosting & Base de Datos (Hostinger - ${currentServerTier === 'auto' ? 'Auto' : currentServerTier.toUpperCase()})`,
+          type: 'Fijo',
+          vol: `${totalUsers.toLocaleString()} usuarios activos`,
+          free: 'N/A',
+          cost: costHosting
+        },
+        {
+          name: `AeroDataBox Vuelos (${currentFlightPlan === 'free' ? 'Salvaguarda 380' : (currentFlightPlan === 'pro' ? 'Plan Pro 5k' : 'Plan Ultra 10k')})`,
+          type: currentFlightPlan === 'free' ? 'Gratuito' : 'Fijo / Var',
+          vol: currentFlightPlan === 'free' ? 'Tope salvaguarda 380 consultas' : (currentFlightPlan === 'pro' ? 'Hasta 5,000 consultas' : 'Hasta 10,000 consultas'),
+          free: '380 consultas gratis',
+          cost: costFlights
+        },
+        {
+          name: 'Dominio viantryp.com + Correo Hostinger',
+          type: 'Fijo',
+          vol: 'Dominio + hola@viantryp.com',
+          free: 'Incluido en hosting',
+          cost: costDomainEmail
+        },
+        {
+          name: 'Almacenamiento (Cloudflare R2 / Local)',
+          type: 'Variable',
+          vol: `${estStorageGB.toFixed(1)} GB en PDFs y fotos`,
+          free: '10 GB gratis mensuales',
+          cost: costStorage
+        },
+        {
+          name: 'Unsplash, Giphy & OpenStreetMap',
+          type: 'Gratuito',
+          vol: 'Búsquedas ilimitadas',
+          free: '100% Gratuito en producción',
+          cost: 0
+        }
+      ], totalCOGS);
+
+      // 8. Render Marketing Strategy Table
+      renderMarketingTable(rampUpData[0].adSpend || mktOpex || 100, arpu, rampUpCAC);
+
+      // 9. Update Charts
+      updateRampUpChart(rampUpData);
+      updateCharts(totalMRR, totalCOGS, totalOpex, churnRate, paidUsers, {
+        Paddle: costPaddle,
+        Gemini: costGemini,
+        GooglePlaces: costGooglePlaces,
+        Hosting: costHosting,
+        Otros: costDomainEmail + costStorage + costFlights
+      });
+    }
+
+    function renderTable(services, totalCogs) {
+      const tbody = document.getElementById('services_tbody');
+      tbody.innerHTML = '';
+
+      services.forEach(s => {
+        const pct = totalCogs > 0 ? ((s.cost / totalCogs) * 100).toFixed(1) : '0.0';
+        let badgeClass = 'badge-fixed';
+        if (s.type === 'Variable') badgeClass = 'badge-var';
+        else if (s.type === 'Gratuito') badgeClass = 'badge-free';
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong>${s.name}</strong></td>
+          <td><span class="badge ${badgeClass}">${s.type}</span></td>
+          <td style="font-family:var(--font-mono);">${s.vol}</td>
+          <td style="color:var(--text-dim);">${s.free}</td>
+          <td style="font-family:var(--font-mono); font-weight:700; color:#fff;">$${s.cost.toFixed(2)} USD</td>
+          <td style="font-family:var(--font-mono); color:${s.cost > 0 ? 'var(--warning)' : 'var(--success)'};">${pct}%</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function updateRampUpChart(data) {
+      const labels = data.map(d => d.monthName);
+      const bankCashData = data.map(d => Math.round(d.bankCash));
+      const clientsData = data.map(d => d.totalClients);
+
+      if (rampUpChart) {
+        rampUpChart.data.labels = labels;
+        rampUpChart.data.datasets[0].data = bankCashData;
+        rampUpChart.data.datasets[1].data = clientsData;
+        rampUpChart.update();
+      } else {
+        const ctx = document.getElementById('rampUpChart').getContext('2d');
+        rampUpChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Saldo Caja en Banco ($ USD)',
+                data: bankCashData,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                borderWidth: 2.5,
+                fill: true,
+                yAxisID: 'yCash',
+                tension: 0.35
+              },
+              {
+                label: 'Clientes de Pago Acumulados',
+                data: clientsData,
+                borderColor: '#38bdf8',
+                backgroundColor: 'transparent',
+                borderWidth: 2.2,
+                borderDash: [4, 4],
+                yAxisID: 'yClients',
+                tension: 0.3
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: { color: '#94a3b8', font: { size: 11, family: 'Plus Jakarta Sans' } }
+              }
+            },
+            scales: {
+              x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } },
+              yCash: {
+                type: 'linear',
+                position: 'left',
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { color: '#10b981', callback: val => '$' + val }
+              },
+              yClients: {
+                type: 'linear',
+                position: 'right',
+                grid: { display: false },
+                ticks: { color: '#38bdf8' }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function updateCharts(mrr, cogs, opex, churn, initialPaid, techBreakdown) {
+      const months = ['Mes 1', 'Mes 2', 'Mes 3', 'Mes 4', 'Mes 5', 'Mes 6', 'Mes 7', 'Mes 8', 'Mes 9', 'Mes 10', 'Mes 11', 'Mes 12'];
+      const revData = [];
+      const costData = [];
+      const profitData = [];
+
+      let currentMrr = mrr;
+      const monthlyGrowth = 0.08;
+      
+      for (let i = 0; i < 12; i++) {
+        revData.push(Math.round(currentMrr));
+        const monthCogs = cogs * (currentMrr / (mrr || 1));
+        const monthTotalCost = monthCogs + opex;
+        costData.push(Math.round(monthTotalCost));
+        profitData.push(Math.round(currentMrr - monthTotalCost));
+        currentMrr = currentMrr * (1 + monthlyGrowth);
+      }
+
+      if (projectionChart) {
+        projectionChart.data.labels = months;
+        projectionChart.data.datasets[0].data = revData;
+        projectionChart.data.datasets[1].data = costData;
+        projectionChart.data.datasets[2].data = profitData;
+        projectionChart.update();
+      } else {
+        const ctx = document.getElementById('projectionChart').getContext('2d');
+        projectionChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: months,
+            datasets: [
+              {
+                label: 'Ingresos (MRR)',
+                data: revData,
+                borderColor: '#1EAACE',
+                backgroundColor: 'rgba(30, 170, 206, 0.1)',
+                borderWidth: 2.5,
+                fill: true,
+                tension: 0.3
+              },
+              {
+                label: 'Costos Totales (Tech + OPEX)',
+                data: costData,
+                borderColor: '#f59e0b',
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                tension: 0.3
+              },
+              {
+                label: 'Beneficio Neto (EBITDA)',
+                data: profitData,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                borderWidth: 2,
+                tension: 0.3
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: { color: '#94a3b8', font: { size: 11, family: 'Plus Jakarta Sans' } }
+              }
+            },
+            scales: {
+              x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } },
+              y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } }
+            }
+          }
+        });
+      }
+
+      // Donut Breakdown
+      const donutLabels = Object.keys(techBreakdown);
+      const donutValues = Object.values(techBreakdown).map(v => Math.max(0.1, Math.round(v * 100) / 100));
+
+      if (costBreakdownChart) {
+        costBreakdownChart.data.labels = donutLabels;
+        costBreakdownChart.data.datasets[0].data = donutValues;
+        costBreakdownChart.update();
+      } else {
+        const ctx2 = document.getElementById('costBreakdownChart').getContext('2d');
+        costBreakdownChart = new Chart(ctx2, {
+          type: 'doughnut',
+          data: {
+            labels: donutLabels,
+            datasets: [{
+              data: donutValues,
+              backgroundColor: ['#1EAACE', '#38bdf8', '#f59e0b', '#10b981', '#64748b'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'right',
+                labels: { color: '#94a3b8', font: { size: 10, family: 'Plus Jakarta Sans' } }
+              }
+            },
+            cutout: '65%'
+          }
+        });
+      }
+    }
+
+    function renderMarketingTable(totalAdSpend, arpu, blendedCAC) {
+      const tbody = document.getElementById('marketing_tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const channels = [
+        {
+          name: 'Meta Ads (Instagram & Facebook)',
+          icon: 'fa-brands fa-meta',
+          iconColor: '#38bdf8',
+          tactic: 'Video demos IA + Captación de Travel Planners y Agencias Boutique',
+          focus: '70% B2B / 30% B2C',
+          focusBadge: 'badge-fixed',
+          mixPct: 40,
+          cac: 16
+        },
+        {
+          name: 'Google Search & Performance Max',
+          icon: 'fa-brands fa-google',
+          iconColor: '#f59e0b',
+          tactic: 'Búsqueda alta intención: "software agencias de viaje", "itinerarios IA"',
+          focus: '100% B2B Agencias',
+          focusBadge: 'badge-var',
+          mixPct: 25,
+          cac: 20
+        },
+        {
+          name: 'LinkedIn Ads & Outbound B2B',
+          icon: 'fa-brands fa-linkedin',
+          iconColor: '#0a66c2',
+          tactic: 'InMail a Directores de Agencias, DMCs y Mayoristas de Turismo',
+          focus: '100% B2B Enterprise',
+          focusBadge: 'badge-peak',
+          mixPct: 15,
+          cac: 28
+        },
+        {
+          name: 'Content Marketing & Itinerarios Virales',
+          icon: 'fa-solid fa-share-nodes',
+          iconColor: '#10b981',
+          tactic: 'SEO de destinos + viralidad de itinerarios compartidos por clientes',
+          focus: 'Orgánico / Viral',
+          focusBadge: 'badge-free',
+          mixPct: 10,
+          cac: 6
+        },
+        {
+          name: 'Email Marketing & Onboarding Guiado',
+          icon: 'fa-solid fa-envelope-open-text',
+          iconColor: '#a855f7',
+          tactic: 'Secuencia automatizada de conversión Freemium a Planes de Pago',
+          focus: 'Retención & Upsell',
+          focusBadge: 'badge-fixed',
+          mixPct: 10,
+          cac: 4
+        }
+      ];
+
+      const budgetEl = document.getElementById('mkt_summary_budget');
+      if (budgetEl) budgetEl.innerText = `Presupuesto Pauta: $${Math.round(totalAdSpend).toLocaleString()} USD / mes`;
+
+      channels.forEach(ch => {
+        const channelSpend = totalAdSpend * (ch.mixPct / 100);
+        const newClients = Math.max(0.1, channelSpend / ch.cac);
+        const channelMRR = newClients * arpu;
+        const channelLtv = (arpu / 0.04);
+        const ltvCacRatio = (channelLtv / ch.cac).toFixed(1);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <i class="${ch.icon}" style="color:${ch.iconColor}; font-size:14px;"></i>
+              <div>
+                <strong>${ch.name}</strong>
+                <div style="font-size:10px; color:var(--text-dim);">${ch.tactic}</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge ${ch.focusBadge}">${ch.focus}</span></td>
+          <td style="font-family:var(--font-mono); font-weight:700;">${ch.mixPct}%</td>
+          <td style="font-family:var(--font-mono); color:#fff; font-weight:700;">$${Math.round(channelSpend).toLocaleString()} USD</td>
+          <td style="font-family:var(--font-mono); color:#fbbf24;">$${ch.cac.toFixed(0)} USD</td>
+          <td style="font-family:var(--font-mono); color:#38bdf8; font-weight:700;">+${newClients >= 1 ? Math.round(newClients) : newClients.toFixed(1)}</td>
+          <td style="font-family:var(--font-mono); color:#34d399; font-weight:700;">$${Math.round(channelMRR).toLocaleString()} USD</td>
+          <td style="font-family:var(--font-mono); color:#c084fc; font-weight:700;">${ltvCacRatio}x</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Custom Scenario Persistence System
+    function getSavedScenarios() {
+      try {
+        const data = localStorage.getItem(SCENARIOS_STORAGE_KEY);
+        return data ? JSON.parse(data) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveScenariosToStorage(scenarios) {
+      try {
+        localStorage.setItem(SCENARIOS_STORAGE_KEY, JSON.stringify(scenarios));
+      } catch (e) {
+        console.error('Error saving scenarios to localStorage:', e);
+      }
+    }
+
+    function openSaveScenarioModal() {
+      const modal = document.getElementById('modal_save_scenario');
+      const input = document.getElementById('inp_scenario_name');
+      const dateStr = new Date().toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
+      input.value = `Mi Escenario (${dateStr})`;
+      document.getElementById('inp_scenario_notes').value = '';
+      modal.style.display = 'flex';
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closeSaveScenarioModal() {
+      const modal = document.getElementById('modal_save_scenario');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function confirmSaveScenario() {
+      const name = document.getElementById('inp_scenario_name').value.trim() || 'Escenario Personalizado';
+      const notes = document.getElementById('inp_scenario_notes').value.trim();
+
+      const scenarioData = {
+        id: 'sc_' + Date.now(),
+        name: name,
+        notes: notes,
+        createdAt: new Date().toISOString(),
+        values: {
+          total_users: parseInt(document.getElementById('inp_total_users').value),
+          conv_rate: parseFloat(document.getElementById('inp_conv_rate').value),
+          churn: parseFloat(document.getElementById('inp_churn').value),
+          mix_pro: parseInt(document.getElementById('inp_mix_pro').value),
+          annual_mix: parseFloat(document.getElementById('inp_annual_mix').value),
+          ai_queries: parseInt(document.getElementById('inp_ai_queries').value) || 8,
+          places_queries: parseInt(document.getElementById('inp_places_queries').value) || 6,
+          flight_plan: currentFlightPlan,
+          server_tier: currentServerTier,
+          mkt: parseFloat(document.getElementById('inp_mkt').value),
+          salaries: parseFloat(document.getElementById('inp_salaries').value),
+          tools: parseFloat(document.getElementById('inp_tools').value),
+          cac: parseFloat(document.getElementById('inp_rampup_cac').value),
+          reinvest: parseFloat(document.getElementById('inp_rampup_reinvest').value),
+          viral: parseFloat(document.getElementById('inp_rampup_viral').value),
+          seasonality: document.getElementById('chk_seasonality').checked,
+          has_invest: document.getElementById('chk_investment').checked,
+          invest_mode: currentInvestMode,
+          fff_amount: parseFloat(document.getElementById('inp_fff_amount').value),
+          fff_multiple: parseFloat(document.getElementById('inp_fff_multiple').value),
+          fff_rev_pct: parseFloat(document.getElementById('inp_fff_rev_pct').value),
+          invest_amount: parseFloat(document.getElementById('inp_investment_amount').value),
+          equity: parseFloat(document.getElementById('inp_equity').value)
+        }
+      };
+
+      const scenarios = getSavedScenarios();
+      scenarios.push(scenarioData);
+      saveScenariosToStorage(scenarios);
+      renderCustomScenarioChips(scenarioData.id);
+      closeSaveScenarioModal();
+      showToast(`✅ Escenario "${name}" guardado exitosamente`);
+    }
+
+    function loadCustomScenario(id) {
+      const scenarios = getSavedScenarios();
+      const s = scenarios.find(item => item.id === id);
+      if (!s) return;
+
+      document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+      const activeChip = document.getElementById('chip_' + id);
+      if (activeChip) activeChip.classList.add('active');
+
+      const v = s.values;
+      document.getElementById('inp_total_users').value = v.total_users;
+      document.getElementById('inp_conv_rate').value = v.conv_rate;
+      document.getElementById('inp_churn').value = v.churn;
+      document.getElementById('inp_mix_pro').value = v.mix_pro;
+      document.getElementById('inp_annual_mix').value = v.annual_mix;
+
+      if (v.ai_queries) document.getElementById('inp_ai_queries').value = v.ai_queries;
+      if (v.places_queries) document.getElementById('inp_places_queries').value = v.places_queries;
+      if (v.flight_plan) setFlightPlan(v.flight_plan, false);
+      if (v.server_tier) setServerTier(v.server_tier, false);
+
+      document.getElementById('inp_mkt').value = v.mkt;
+      document.getElementById('inp_salaries').value = v.salaries;
+      document.getElementById('inp_tools').value = v.tools;
+      document.getElementById('inp_rampup_cac').value = v.cac;
+      document.getElementById('inp_rampup_reinvest').value = v.reinvest;
+      document.getElementById('inp_rampup_viral').value = v.viral;
+      document.getElementById('chk_seasonality').checked = v.seasonality;
+
+      document.getElementById('chk_investment').checked = v.has_invest;
+      document.getElementById('inp_fff_amount').value = v.fff_amount;
+      document.getElementById('inp_fff_multiple').value = v.fff_multiple;
+      document.getElementById('inp_fff_rev_pct').value = v.fff_rev_pct;
+      document.getElementById('inp_investment_amount').value = v.invest_amount;
+      document.getElementById('inp_equity').value = v.equity;
+
+      setInvestMode(v.invest_mode || 'fff');
+      calculate();
+      showToast(`📂 Escenario "${s.name}" cargado`);
+    }
+
+    function deleteCustomScenario(event, id) {
+      if (event) event.stopPropagation();
+      const scenarios = getSavedScenarios();
+      const target = scenarios.find(s => s.id === id);
+      const name = target ? target.name : 'este escenario';
+      if (!confirm(`¿Eliminar el escenario "${name}"?`)) return;
+
+      const filtered = scenarios.filter(s => s.id !== id);
+      saveScenariosToStorage(filtered);
+      renderCustomScenarioChips();
+      showToast(`🗑️ Escenario eliminado`);
+    }
+
+    function renderCustomScenarioChips(activeId = null) {
+      const container = document.getElementById('custom_presets_container');
+      if (!container) return;
+      const scenarios = getSavedScenarios();
+      container.innerHTML = '';
+
+      if (scenarios.length === 0) {
+        container.innerHTML = '<span style="font-size:11px; color:var(--text-dim); font-style:italic;" id="no_custom_scenarios_msg">Sin escenarios guardados</span>';
+        return;
+      }
+
+      scenarios.forEach(s => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'preset-chip custom' + (s.id === activeId ? ' active' : '');
+        btn.id = 'chip_' + s.id;
+        btn.title = s.notes || s.name;
+        btn.onclick = () => loadCustomScenario(s.id);
+
+        btn.innerHTML = `
+          <i class="fa-solid fa-bookmark" style="font-size:10px;"></i>
+          <span>${s.name}</span>
+          <span class="chip-delete" title="Eliminar" onclick="deleteCustomScenario(event, '${s.id}')">&times;</span>
+        `;
+        container.appendChild(btn);
+      });
+    }
+
+    function exportScenariosJSON() {
+      const scenarios = getSavedScenarios();
+      if (scenarios.length === 0) {
+        showToast('⚠️ No tienes escenarios guardados para exportar');
+        return;
+      }
+      const jsonStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(scenarios, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute('href', jsonStr);
+      a.setAttribute('download', 'escenarios_viantryp_' + new Date().toISOString().slice(0, 10) + '.json');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('📤 Escenarios exportados en archivo JSON');
+    }
+
+    function importScenariosJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (!Array.isArray(imported)) {
+            showToast('❌ El archivo JSON no tiene un formato válido');
+            return;
+          }
+          const existing = getSavedScenarios();
+          const existingIds = new Set(existing.map(s => s.id));
+          imported.forEach(item => {
+            if (!existingIds.has(item.id)) existing.push(item);
+          });
+          saveScenariosToStorage(existing);
+          renderCustomScenarioChips();
+          showToast(`📥 ${imported.length} escenario(s) importados con éxito`);
+        } catch (err) {
+          showToast('❌ Error al procesar el archivo JSON');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function showToast(message) {
+      const container = document.getElementById('toast_container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = message;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => {
+          if (toast.parentNode) toast.parentNode.removeChild(toast);
+          else if (typeof toast.remove === 'function') toast.remove();
+        }, 300);
+      }, 3500);
+    }
+
+    function exportToCSV() {
+      const rows = [
+        ['Métrica', 'Valor'],
+        ['Total Usuarios Registrados', document.getElementById('inp_total_users').value],
+        ['Clientes de Pago', document.getElementById('kpi_paid_users').innerText],
+        ['Mix de Clientes', document.getElementById('lbl_mix_summary').innerText],
+        ['ARPU Blended', document.getElementById('ue_arpu').innerText],
+        ['CAC Estimado', document.getElementById('ue_cac').innerText],
+        ['LTV (Valor de Vida)', document.getElementById('ue_ltv').innerText],
+        ['Ratio LTV / CAC', document.getElementById('ue_ltv_cac').innerText],
+        ['Payback de CAC', document.getElementById('ue_payback').innerText],
+        ['MRR (Ingresos Mensuales)', document.getElementById('kpi_mrr').innerText],
+        ['ARR (Ingresos Anuales)', document.getElementById('kpi_arr').innerText],
+        ['Costos Tecnológicos (COGS)', document.getElementById('kpi_cogs').innerText],
+        ['Beneficio Neto (EBITDA)', document.getElementById('kpi_ebitda').innerText],
+        ['Punto de Equilibrio (Break-Even)', document.getElementById('breakeven_text').innerText]
+      ];
+
+      if (currentInvestMode === 'fff') {
+        rows.push(['Modelo Inversión', 'FFF (Revenue-Based Financing)']);
+        rows.push(['Capital FFF Aportado', document.getElementById('lbl_fff_amount').innerText]);
+        rows.push(['Múltiplo de Retorno', document.getElementById('lbl_fff_multiple').innerText]);
+        rows.push(['% MRR Asignado a FFF', document.getElementById('lbl_fff_rev_pct').innerText]);
+        rows.push(['Total a Devolver al FFF', document.getElementById('fff_total_return').innerText]);
+        rows.push(['Mes de Recuperación 1.0x', document.getElementById('fff_payback_month').innerText]);
+        rows.push(['Mes Liquidación Total', document.getElementById('fff_payoff_month').innerText]);
+      } else {
+        rows.push(['Modelo Inversión', 'Ángel / VC (Equity)']);
+        rows.push(['Capital Solicitado', document.getElementById('lbl_investment_amount').innerText]);
+        rows.push(['Equity Ofrecido', document.getElementById('lbl_equity').innerText]);
+        rows.push(['Valuación Post-Money', document.getElementById('inv_postmoney').innerText]);
+      }
+
+      let csvContent = 'data:text/csv;charset=utf-8,' + rows.map(e => e.join(',')).join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'proyeccion_financiera_viantryp.csv');
+      document.body.appendChild(link);
+      a_click = link.click();
+      document.body.removeChild(link);
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderCustomScenarioChips();
+      calculate();
+    });
+  </script>
+</body>
+</html>
