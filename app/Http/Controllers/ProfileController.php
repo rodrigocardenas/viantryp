@@ -224,6 +224,18 @@ class ProfileController extends Controller
         ]);
 
         $newPlan = strtolower($validated['plan']);
+        if ($newPlan === 'basico') {
+            $newPlan = 'básico';
+        }
+
+        // Security check: Only allow voluntary downgrade to 'básico' via direct endpoint.
+        // Upgrades to paid plans must go through verified Paddle checkout or promotion codes.
+        if ($newPlan !== User::PLAN_BASICO) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Para actualizar a un plan superior, debes suscribirte a través de la pasarela de pago o canjear un código válido.'
+            ], 403);
+        }
         
         // Define limits for validation
         $planLimits = [
@@ -244,8 +256,6 @@ class ProfileController extends Controller
                     'message' => "No puedes bajar al plan ".ucfirst($newPlan)." porque tienes {$tripCount} itinerarios y el plan solo permite {$targetLimits['trips']}."
                 ], 422);
             }
-
-
 
             // Check Current Editors
             $editorCount = \DB::table('trip_collaborators')
@@ -292,8 +302,16 @@ class ProfileController extends Controller
             }
         }
 
-        if (!$matchedPlan && in_array($planKey, ['básico', 'basico', 'esencial', 'avanzado', 'colaborativo'])) {
-            $matchedPlan = ($planKey === 'basico') ? 'básico' : $planKey;
+        // Allow explicit downgrade to 'básico' without price_id
+        if (!$matchedPlan && in_array($planKey, ['básico', 'basico'])) {
+            $matchedPlan = 'básico';
+        }
+
+        if (!$matchedPlan) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo verificar el identificador de precio del plan seleccionado.'
+            ], 422);
         }
 
         if ($matchedPlan) {
