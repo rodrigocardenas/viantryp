@@ -41,6 +41,11 @@
       padding: 0;
     }
 
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
     body {
       background-color: var(--bg-dark);
       background-image: 
@@ -51,13 +56,16 @@
       color: var(--text-main);
       font-family: var(--font-main);
       line-height: 1.5;
-      padding: 24px;
+      padding: 16px 20px;
       min-height: 100vh;
+      width: 100%;
     }
 
     .container {
-      max-width: 1500px;
-      margin: 0 auto;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
     }
 
     /* TOP HEADER */
@@ -197,9 +205,14 @@
     /* MAIN GRID LAYOUT */
     .main-grid {
       display: grid;
-      grid-template-columns: 490px 1fr;
-      gap: 24px;
+      grid-template-columns: 410px 1fr;
+      gap: 20px;
       align-items: start;
+      width: 100%;
+    }
+
+    .main-grid > * {
+      min-width: 0;
     }
 
     @media (max-width: 1140px) {
@@ -565,35 +578,46 @@
 
     .investment-kpis-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
       margin-top: 14px;
       padding-top: 14px;
       border-top: 1px solid rgba(168, 85, 247, 0.2);
     }
-    @media (max-width: 600px) {
+    @media (max-width: 480px) {
       .investment-kpis-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
       }
     }
     .inv-kpi-item {
-      background: rgba(11, 19, 36, 0.7);
-      border: 1px solid rgba(168, 85, 247, 0.2);
-      padding: 10px 12px;
-      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      padding: 12px 14px;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .inv-kpi-item:hover {
+      border-color: rgba(168, 85, 247, 0.45);
+      background: rgba(22, 33, 62, 0.85);
+      transform: translateY(-1px);
     }
     .inv-kpi-label {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      color: var(--text-dim);
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
     }
     .inv-kpi-val {
       font-family: var(--font-mono);
-      font-size: 16px;
+      font-size: 20px;
       font-weight: 800;
       color: #c084fc;
-      margin-top: 2px;
+      margin: 4px 0 2px 0;
     }
 
     .fff-info-banner {
@@ -645,12 +669,17 @@
     /* CHARTS ROW */
     .charts-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: 1.35fr 1fr;
       gap: 20px;
       margin-bottom: 24px;
+      width: 100%;
     }
 
-    @media (max-width: 1000px) {
+    .charts-grid > * {
+      min-width: 0;
+    }
+
+    @media (max-width: 1100px) {
       .charts-grid {
         grid-template-columns: 1fr;
       }
@@ -989,6 +1018,88 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
+    /* LEVERAGE COMPARISON BANNER */
+    .leverage-banner {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(30, 170, 206, 0.05) 50%, rgba(168, 85, 247, 0.08) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    .leverage-banner.no-invest {
+      background: rgba(15, 23, 42, 0.6);
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+    .leverage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .leverage-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .leverage-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 900px) {
+      .leverage-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .leverage-item {
+      background: rgba(7, 13, 25, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .leverage-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .leverage-vals {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .val-with {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 800;
+      color: #34d399;
+    }
+    .val-sep {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+    .val-without {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #94a3b8;
+      text-decoration: line-through;
+    }
+    .leverage-sub {
+      font-size: 10px;
+      font-weight: 600;
+      color: #38bdf8;
+      margin-top: 2px;
+    }
+
     /* PRINT STYLES */
     @media print {
       body {
@@ -1152,6 +1263,7 @@
               <span class="val-badge highlight-amber" id="lbl_annual_mix">30% Anual / 70% Mensual</span>
             </div>
             <input type="range" class="range-input range-amber" id="inp_annual_mix" min="0" max="80" step="5" value="30" oninput="calculate()">
+            <!-- min="0" permite 0% = sin facturación anual, solo mensual -->
             <div class="help-tooltip">Anual Pro: $5.59/mo ($67.08/año) · Negocios: $19.99/mo ($239.88/año).</div>
           </div>
         </div>
@@ -1165,20 +1277,20 @@
           <!-- A. Consultas IA Gemini -->
           <div class="input-row">
             <div class="input-label-wrap">
-              <span>Consultas IA (Tryp IA) / cliente / mes</span>
-              <span class="val-badge highlight-teal" id="lbl_ai_queries">8 chats</span>
+              <span>Consultas IA (Tryp IA) / cliente pago / mes</span>
+              <span class="val-badge highlight-teal" id="lbl_ai_queries">40 chats · Total: <span id="lbl_ai_total">0</span></span>
             </div>
-            <input type="range" class="range-input" id="inp_ai_queries" min="1" max="40" step="1" value="8" oninput="calculate()">
-            <div class="help-tooltip">Google Gemini Flash (~$0.0003 USD/chat). Tier gratuito de 15 RPM.</div>
+            <input type="range" class="range-input" id="inp_ai_queries" min="1" max="60" step="1" value="40" oninput="calculate()">
+            <div class="help-tooltip">Google Gemini Flash (~$0.0003 USD/chat). Escala automáticamente con los clientes de pago de la simulación. Tier gratuito 15 RPM.</div>
           </div>
 
           <!-- B. Google Places con Crédito $200 USD -->
           <div class="input-row" style="margin-top:14px;">
             <div class="input-label-wrap">
-              <span>Lugares Google Places / usuario / mes</span>
-              <span class="val-badge highlight-green" id="lbl_places_queries">6 lugares</span>
+              <span>Lugares Google Places / cliente pago / mes</span>
+              <span class="val-badge highlight-green" id="lbl_places_queries">30 lugares · Total: <span id="lbl_places_total">0</span></span>
             </div>
-            <input type="range" class="range-input" id="inp_places_queries" min="1" max="30" step="1" value="6" oninput="calculate()">
+            <input type="range" class="range-input" id="inp_places_queries" min="1" max="60" step="1" value="30" oninput="calculate()">
             <div class="credit-meter-wrap">
               <div class="credit-meter-label">
                 <span>Crédito Gratis Google: $200 USD/mes</span>
@@ -1265,8 +1377,35 @@
               <span>Nómina Fundadores (En Fase Inicial)</span>
               <span class="val-badge" id="lbl_salaries">$0 USD/mes</span>
             </div>
-            <input type="range" class="range-input" id="inp_salaries" min="0" max="4000" step="100" value="0" oninput="calculate()">
+            <input type="range" class="range-input" id="inp_salaries" min="0" max="15000" step="100" value="0" oninput="calculate()">
             <div class="help-tooltip">En etapa de $2,000 FFF, los fundadores reinvierten para acelerar la tracción.</div>
+          </div>
+
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Reservas Operativas Herramientas SaaS</span>
+              <span class="val-badge" id="lbl_reserve_saas">$0 USD/mes</span>
+            </div>
+            <input type="range" class="range-input" id="inp_reserve_saas" min="0" max="1000" step="25" value="0" oninput="calculate()">
+            <div class="help-tooltip">Reserva para suscripciones SaaS adicionales, licencias o upgrades de herramientas (Figma, Notion, Slack, etc.).</div>
+          </div>
+
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Reservas Operativas Admin &amp; Legal</span>
+              <span class="val-badge" id="lbl_reserve_admin">$0 USD/mes</span>
+            </div>
+            <input type="range" class="range-input" id="inp_reserve_admin" min="0" max="1000" step="25" value="0" oninput="calculate()">
+            <div class="help-tooltip">Reserva mensual para gastos administrativos, contabilidad, legales y registros corporativos.</div>
+          </div>
+
+          <div class="input-row">
+            <div class="input-label-wrap">
+              <span>Reservas de Contingencia</span>
+              <span class="val-badge" id="lbl_reserve_contingency">$0 USD/mes</span>
+            </div>
+            <input type="range" class="range-input" id="inp_reserve_contingency" min="0" max="2000" step="50" value="0" oninput="calculate()">
+            <div class="help-tooltip">Colchón de seguridad para imprevistos, fallas técnicas, picos de tráfico u otros gastos no planificados.</div>
           </div>
         </div>
 
@@ -1367,27 +1506,27 @@
                 <div class="help-tooltip">Porcentaje de las ventas mensuales con el que se va reembolsando.</div>
               </div>
 
-              <!-- FFF Result Cards -->
+              <!-- FFF Result Cards (2 arriba / 2 abajo) -->
               <div class="investment-kpis-grid">
                 <div class="inv-kpi-item">
                   <div class="inv-kpi-label">Total a Devolver</div>
                   <div class="inv-kpi-val" id="fff_total_return">$2,700</div>
-                  <div style="font-size:10px; color:#34d399;" id="fff_profit_label">+$700 ganancia</div>
+                  <div style="font-size:11px; color:#34d399; font-weight:600;" id="fff_profit_label">+$700 ganancia</div>
                 </div>
                 <div class="inv-kpi-item">
                   <div class="inv-kpi-label">Cuota Inicial / Mes</div>
                   <div class="inv-kpi-val" id="fff_first_payment">$8 / mes</div>
-                  <div style="font-size:10px; color:var(--text-dim);" id="fff_pct_note">7% del MRR</div>
+                  <div style="font-size:11px; color:var(--text-dim);" id="fff_pct_note">7% del MRR</div>
                 </div>
                 <div class="inv-kpi-item">
                   <div class="inv-kpi-label">Recuperación 1.0x</div>
                   <div class="inv-kpi-val" id="fff_payback_month">Mes 10</div>
-                  <div style="font-size:10px; color:var(--text-dim);">Recupera $2,000</div>
+                  <div style="font-size:11px; color:var(--text-dim);">Recupera $2,000</div>
                 </div>
                 <div class="inv-kpi-item">
                   <div class="inv-kpi-label">Liquidación Total</div>
                   <div class="inv-kpi-val" id="fff_payoff_month">Mes 13</div>
-                  <div style="font-size:10px; color:#c084fc;" id="fff_irr_label">~31% TIR anual</div>
+                  <div style="font-size:11px; color:#c084fc; font-weight:600;" id="fff_irr_label">~31% TIR anual</div>
                 </div>
               </div>
 
@@ -1537,9 +1676,9 @@
           <!-- Ramp-Up Highlights Grid -->
           <div class="rampup-summary-grid">
             <div class="rampup-item">
-              <div class="rampup-item-label">Inversión FFF Inicial</div>
+              <div class="rampup-item-label" id="ru_initial_cash_label">Inversión FFF Inicial</div>
               <div class="rampup-item-val" id="ru_initial_cash" style="color:#c084fc;">$2,000</div>
-              <div style="font-size:10px; color:var(--text-dim);">Capital en banco Mes 1</div>
+              <div style="font-size:10px; color:var(--text-dim);" id="ru_initial_cash_sub">Capital en banco Mes 1</div>
             </div>
             <div class="rampup-item">
               <div class="rampup-item-label">Caja Mínima (Quema Máx.)</div>
@@ -1558,13 +1697,62 @@
             </div>
           </div>
 
+          <!-- Executive Leverage Comparison Banner (Con Inversión vs Sin Inversión) -->
+          <div class="leverage-banner" id="leverage_comparison_banner" style="margin-bottom: 18px;">
+            <div class="leverage-header">
+              <div class="leverage-title">
+                <i class="fa-solid fa-bolt" style="color:#fbbf24;"></i> Apalancamiento de Capital: Con Inversión vs. Sin Inversión (Bootstrapping Puro)
+              </div>
+              <div id="leverage_status_badge" class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; font-weight:700;">
+                <i class="fa-solid fa-circle-check"></i> Capital Apalancado
+              </div>
+            </div>
+            <div class="leverage-grid">
+              <div class="leverage-item">
+                <div class="leverage-label">Clientes de Pago Mes 12</div>
+                <div class="leverage-vals">
+                  <span class="val-with" id="lev_clients_with">597</span>
+                  <span class="val-sep">vs</span>
+                  <span class="val-without" id="lev_clients_without">27</span>
+                </div>
+                <div class="leverage-sub" id="lev_clients_sub">+22.1x Más Clientes</div>
+              </div>
+              <div class="leverage-item">
+                <div class="leverage-label">MRR Facturación Mes 12</div>
+                <div class="leverage-vals">
+                  <span class="val-with" id="lev_mrr_with">$10,993</span>
+                  <span class="val-sep">vs</span>
+                  <span class="val-without" id="lev_mrr_without">$497</span>
+                </div>
+                <div class="leverage-sub" id="lev_mrr_sub">+22.1x Facturación</div>
+              </div>
+              <div class="leverage-item">
+                <div class="leverage-label">Caja Acumulada Mes 12</div>
+                <div class="leverage-vals">
+                  <span class="val-with" id="lev_cash_with">$28,167</span>
+                  <span class="val-sep">vs</span>
+                  <span class="val-without" id="lev_cash_without">$2,253</span>
+                </div>
+                <div class="leverage-sub" id="lev_cash_sub" style="color:#34d399;">+12.5x Colchón de Caja</div>
+              </div>
+              <div class="leverage-item">
+                <div class="leverage-label">Aceleración Temporal</div>
+                <div class="leverage-vals">
+                  <span class="val-with" id="lev_multiplier" style="color:#c084fc;">~10 Meses</span>
+                  <span class="val-sep">adelanto</span>
+                </div>
+                <div class="leverage-sub" id="lev_speed_sub" style="color:#c084fc;">Apalancamiento VC/FFF</div>
+              </div>
+            </div>
+          </div>
+
           <!-- Ramp-Up Chart (Cash Evolution vs Paying Users) -->
-          <div class="chart-container" style="height: 250px; margin-bottom: 20px;">
+          <div class="chart-container" style="height: 260px; margin-bottom: 20px;">
             <canvas id="rampUpChart"></canvas>
           </div>
 
           <!-- Full Ramp-Up Month by Month Table with Churn & Growth Breakdown -->
-          <div style="overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px;">
+          <div style="overflow-x: auto; width: 100%; max-width: 100%; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px;">
             <table>
               <thead>
                 <tr>
@@ -1594,9 +1782,17 @@
         <!-- CHARTS SECTION (DONUT & TECH) -->
         <div class="charts-grid">
           <div class="card">
-            <div class="card-header">
-              <div class="card-title">
-                <i class="fa-solid fa-chart-line"></i> Curva de Crecimiento Compuesto a Largo Plazo
+            <div class="card-header" style="flex-wrap:wrap; gap:8px;">
+              <div>
+                <div class="card-title">
+                  <i class="fa-solid fa-chart-line"></i> Curva de Crecimiento, Ventas & Inyección de Capital
+                </div>
+                <div style="font-size:11px; color:var(--text-dim); margin-top:2px;">
+                  Diferencia ventas recurrentes (MRR), inyección de capital en Mes 1 y saldo de caja.
+                </div>
+              </div>
+              <div id="badge_capital_status" class="badge" style="background:rgba(192,132,252,0.15); color:#c084fc; font-weight:700;">
+                Inyección $2,000 USD (Mes 1)
               </div>
             </div>
             <div class="chart-container">
@@ -1605,9 +1801,13 @@
           </div>
 
           <div class="card">
-            <div class="card-header">
+            <div class="card-header" style="flex-wrap:wrap; gap:8px;">
               <div class="card-title">
-                <i class="fa-solid fa-pie-chart"></i> Desglose Costos Tech
+                <i class="fa-solid fa-chart-pie" style="color:var(--primary);"></i> Torta de Costos Totales de la Operación
+              </div>
+              <div style="display:inline-flex; background:rgba(255,255,255,0.06); padding:3px; border-radius:8px; gap:4px;">
+                <button type="button" id="btn_donut_total" class="btn btn-secondary active" style="padding:4px 9px; font-size:10px; font-weight:700;" onclick="setDonutMode('total')">Operación Total</button>
+                <button type="button" id="btn_donut_tech" class="btn btn-secondary" style="padding:4px 9px; font-size:10px; font-weight:700;" onclick="setDonutMode('tech')">Solo Tech / APIs</button>
               </div>
             </div>
             <div class="chart-container">
@@ -1726,6 +1926,9 @@
     let currentInvestMode = 'fff'; // 'fff' or 'angel'
     let currentFlightPlan = 'free'; // 'free', 'pro', or 'ultra'
     let currentServerTier = 'auto'; // 'auto', 'starter', 'biz', or 'cloud'
+    let currentDonutMode = 'total'; // 'total' or 'tech'
+    let cachedTotalBreakdown = null;
+    let cachedTechBreakdown = null;
     const SCENARIOS_STORAGE_KEY = 'viantryp_custom_scenarios_v1';
 
     // Presets with updated structure tailored for real bootstrapping ($2,000 USD), 70% B2B Focus and API usage
@@ -1736,13 +1939,16 @@
         mix_pro: 30, // 30% Pro / 70% Negocios
         annual_mix: 30,
         churn: 4.0,
-        ai_queries: 8,
-        places_queries: 6,
+        ai_queries: 40,
+        places_queries: 30,
         flight_plan: 'free',
         server_tier: 'auto',
         mkt: 100,
         salaries: 0,
         tools: 20,
+        reserve_saas: 0,
+        reserve_admin: 0,
+        reserve_contingency: 0,
         cac: 18,
         reinvest: 20,
         viral: 25,
@@ -1761,13 +1967,16 @@
         mix_pro: 30, // 30% Pro / 70% Negocios
         annual_mix: 35,
         churn: 3.5,
-        ai_queries: 10,
-        places_queries: 8,
+        ai_queries: 40,
+        places_queries: 30,
         flight_plan: 'pro',
         server_tier: 'starter',
         mkt: 200,
         salaries: 0,
         tools: 30,
+        reserve_saas: 0,
+        reserve_admin: 0,
+        reserve_contingency: 0,
         cac: 18,
         reinvest: 25,
         viral: 30,
@@ -1786,13 +1995,16 @@
         mix_pro: 25, // 25% Pro / 75% Negocios
         annual_mix: 40,
         churn: 3.0,
-        ai_queries: 12,
-        places_queries: 10,
+        ai_queries: 40,
+        places_queries: 30,
         flight_plan: 'pro',
         server_tier: 'biz',
         mkt: 500,
         salaries: 800,
         tools: 60,
+        reserve_saas: 50,
+        reserve_admin: 100,
+        reserve_contingency: 200,
         cac: 16,
         reinvest: 25,
         viral: 35,
@@ -1811,13 +2023,16 @@
         mix_pro: 20, // 20% Pro / 80% Negocios
         annual_mix: 45,
         churn: 2.5,
-        ai_queries: 15,
-        places_queries: 12,
+        ai_queries: 40,
+        places_queries: 30,
         flight_plan: 'ultra',
         server_tier: 'cloud',
         mkt: 1200,
         salaries: 2500,
         tools: 150,
+        reserve_saas: 150,
+        reserve_admin: 200,
+        reserve_contingency: 500,
         cac: 15,
         reinvest: 30,
         viral: 40,
@@ -1907,6 +2122,13 @@
       document.getElementById('inp_salaries').value = p.salaries;
       document.getElementById('inp_tools').value = p.tools;
 
+      const rSaas = document.getElementById('inp_reserve_saas');
+      if (rSaas) rSaas.value = p.reserve_saas || 0;
+      const rAdmin = document.getElementById('inp_reserve_admin');
+      if (rAdmin) rAdmin.value = p.reserve_admin || 0;
+      const rConting = document.getElementById('inp_reserve_contingency');
+      if (rConting) rConting.value = p.reserve_contingency || 0;
+
       document.getElementById('inp_rampup_cac').value = p.cac;
       document.getElementById('inp_rampup_reinvest').value = p.reinvest;
       document.getElementById('inp_rampup_viral').value = p.viral;
@@ -1945,7 +2167,10 @@
       const mktOpex = parseFloat(document.getElementById('inp_mkt').value) || 0;
       const salariesOpex = parseFloat(document.getElementById('inp_salaries').value) || 0;
       const toolsOpex = parseFloat(document.getElementById('inp_tools').value) || 0;
-      const totalOpex = mktOpex + salariesOpex + toolsOpex;
+      const reserveSaas = parseFloat(document.getElementById('inp_reserve_saas').value) || 0;
+      const reserveAdmin = parseFloat(document.getElementById('inp_reserve_admin').value) || 0;
+      const reserveContingency = parseFloat(document.getElementById('inp_reserve_contingency').value) || 0;
+      const totalOpex = mktOpex + salariesOpex + toolsOpex + reserveSaas + reserveAdmin + reserveContingency;
 
       // Ramp-Up Parameters & Flywheel
       const rampUpCAC = parseFloat(document.getElementById('inp_rampup_cac').value) || 18;
@@ -1981,6 +2206,9 @@
       document.getElementById('lbl_mkt').innerText = '$' + mktOpex.toLocaleString() + ' USD/mes';
       document.getElementById('lbl_salaries').innerText = '$' + salariesOpex.toLocaleString() + ' USD/mes';
       document.getElementById('lbl_tools').innerText = '$' + toolsOpex.toLocaleString() + ' USD/mes';
+      document.getElementById('lbl_reserve_saas').innerText = '$' + reserveSaas.toLocaleString() + ' USD/mes';
+      document.getElementById('lbl_reserve_admin').innerText = '$' + reserveAdmin.toLocaleString() + ' USD/mes';
+      document.getElementById('lbl_reserve_contingency').innerText = '$' + reserveContingency.toLocaleString() + ' USD/mes';
       document.getElementById('lbl_total_opex').innerText = '$' + totalOpex.toLocaleString() + ' / mes';
 
       document.getElementById('lbl_rampup_cac').innerText = '$' + rampUpCAC + ' USD / cliente';
@@ -2015,17 +2243,21 @@
       const avgFixedFee = (1 - annualMix) * 0.50 + annualMix * (0.50 / 12);
       const costPaddle = (totalMRR * 0.05) + (paidUsers * avgFixedFee);
 
-      // Usage metrics
-      const aiQueries = parseInt(document.getElementById('inp_ai_queries').value) || 8;
-      const placesQueries = parseInt(document.getElementById('inp_places_queries').value) || 6;
-      document.getElementById('lbl_ai_queries').innerText = aiQueries + ' chats';
-      document.getElementById('lbl_places_queries').innerText = placesQueries + ' lugares';
+      // Usage metrics — escalan con clientes de PAGO de la simulación
+      const aiQueries = parseInt(document.getElementById('inp_ai_queries').value) || 40;
+      const placesQueries = parseInt(document.getElementById('inp_places_queries').value) || 30;
 
+      // Total consultas: clientes de pago × consultas/mes + usuarios gratis con uso reducido
       const totalAIChats = Math.round((freeUsers * 2) + (paidUsers * aiQueries));
+      const totalPlacesQueriesCount = Math.round((freeUsers * 1.5) + (paidUsers * placesQueries));
+
+      // Actualizar labels con totales calculados
+      document.getElementById('lbl_ai_queries').innerHTML = `${aiQueries} chats · Total: <span id="lbl_ai_total">${totalAIChats.toLocaleString()}</span>`;
+      document.getElementById('lbl_places_queries').innerHTML = `${placesQueries} lugares · Total: <span id="lbl_places_total">${totalPlacesQueriesCount.toLocaleString()}</span>`;
+
       const costGemini = totalAIChats * 0.0003;
 
-      const totalPlacesQueries = Math.round((freeUsers * 1.5) + (paidUsers * placesQueries));
-      const rawPlacesCost = (totalPlacesQueries / 1000) * 17.0;
+      const rawPlacesCost = (totalPlacesQueriesCount / 1000) * 17.0;
       const costGooglePlaces = Math.max(0, rawPlacesCost - 200);
 
       // Update Places Credit Meter DOM
@@ -2120,7 +2352,7 @@
 
       // 6. DETAILED REALISTIC RAMP-UP (MONTH 1 TO 12 STARTING FROM 0 CLIENTS WITH FLYWHEEL & VISIBLE CHURN)
       const rampUpData = [];
-      let currentBankCash = hasInvestment ? (currentInvestMode === 'fff' ? fffAmount : parseFloat(document.getElementById('inp_investment_amount').value) || 2000) : 1000;
+      let currentBankCash = hasInvestment ? (currentInvestMode === 'fff' ? fffAmount : parseFloat(document.getElementById('inp_investment_amount').value) || 2000) : 0;
       const initialBankStarting = currentBankCash;
       let minBankCash = currentBankCash;
       let breakevenMonthFound = null;
@@ -2174,9 +2406,17 @@
         prevMonthMRR = monthMRR;
         prevActivePaying = activePayingUsers;
 
-        // Tech costs & OPEX
-        const monthCOGS = Math.max(12, (costHosting + costDomainEmail + (monthMRR * 0.05) + (activePayingUsers * 0.60)));
-        const monthOPEX = totalMonthlyAdSpend + toolsOpex;
+        // Tech costs — escalan con clientes activos del mes (fórmula real, no hardcodeada)
+        const monthPaddleFee = (monthMRR * 0.05) + (activePayingUsers * ((1 - annualMix) * 0.50 + annualMix * (0.50 / 12)));
+        const monthGeminiCost = activePayingUsers * aiQueries * 0.0003;
+        const monthPlacesRaw = (activePayingUsers * placesQueries / 1000) * 17.0;
+        const monthPlacesCost = Math.max(0, monthPlacesRaw - 200); // crédito Google $200/mes fijo
+        const monthStorageCost = Math.max(0, ((activePayingUsers * 0.15) - 10) * 0.015);
+        const monthCOGS = costHosting + costDomainEmail + costFlights
+                        + monthPaddleFee + monthGeminiCost + monthPlacesCost + monthStorageCost;
+
+        // OPEX COMPLETO: pauta flywheel + herramientas + nómina + reservas operativas
+        const monthOPEX = totalMonthlyAdSpend + toolsOpex + salariesOpex + reserveSaas + reserveAdmin + reserveContingency;
         const monthTotalCosts = monthCOGS + monthOPEX;
 
         // Net Operating Cashflow
@@ -2240,13 +2480,34 @@
       }
 
       // Update Ramp-Up Summary Cards
-      document.getElementById('ru_initial_cash').innerText = '$' + Math.round(initialBankStarting).toLocaleString() + ' USD';
-      document.getElementById('ru_min_cash').innerText = '$' + Math.round(minBankCash).toLocaleString() + ' USD';
+      const initialCashEl = document.getElementById('ru_initial_cash');
+      const initialCashLabelEl = document.getElementById('ru_initial_cash_label');
+      const initialCashSubEl = document.getElementById('ru_initial_cash_sub');
+
+      if (hasInvestment) {
+        if (initialCashLabelEl) initialCashLabelEl.innerText = currentInvestMode === 'fff' ? 'Inversión FFF Inicial' : 'Inversión Ángel / VC';
+        if (initialCashEl) {
+          initialCashEl.innerText = '$' + Math.round(initialBankStarting).toLocaleString() + ' USD';
+          initialCashEl.style.color = '#c084fc';
+        }
+        if (initialCashSubEl) initialCashSubEl.innerText = 'Capital en banco Mes 1';
+      } else {
+        if (initialCashLabelEl) initialCashLabelEl.innerText = 'Inversión Inicial';
+        if (initialCashEl) {
+          initialCashEl.innerText = '$0 USD';
+          initialCashEl.style.color = '#94a3b8';
+        }
+        if (initialCashSubEl) initialCashSubEl.innerText = 'Modo Bootstrapping ($0)';
+      }
+
+      document.getElementById('ru_min_cash').innerText = (minBankCash >= 0 ? '$' : '-$') + Math.round(Math.abs(minBankCash)).toLocaleString() + ' USD';
       
       const maxBurn = Math.max(0, initialBankStarting - minBankCash);
-      document.getElementById('ru_burn_label').innerText = maxBurn > 0 ? `Quema máx. -$${Math.round(maxBurn).toLocaleString()} USD` : 'Sin quema de capital';
+      document.getElementById('ru_burn_label').innerText = hasInvestment
+        ? (maxBurn > 0 ? `Quema máx. -$${Math.round(maxBurn).toLocaleString()} USD` : 'Sin quema de capital')
+        : (minBankCash < 0 ? `Déficit máx. -$${Math.round(Math.abs(minBankCash)).toLocaleString()} USD` : 'Flujo positivo');
       
-      document.getElementById('ru_breakeven_month').innerText = breakevenMonthFound ? `Mes ${breakevenMonthFound}` : 'Mes 2';
+      document.getElementById('ru_breakeven_month').innerText = breakevenMonthFound ? `Mes ${breakevenMonthFound}` : (hasInvestment ? 'Mes 2' : 'Mes 1');
       
       const finalBank = rampUpData[11].bankCash;
       const finalCashEl = document.getElementById('ru_final_cash');
@@ -2264,6 +2525,120 @@
       const finalPayoffM = fffPayoffMonth || 13;
       const annIrr = Math.round((Math.pow(fffTotalCap / fffAmount, 12 / finalPayoffM) - 1) * 100);
       document.getElementById('fff_irr_label').innerText = `~${annIrr}% TIR anual`;
+
+      // 6.1 Baseline simulation WITHOUT outside investment (Bootstrapping a pulmón)
+      const baselineNoInvestData = [];
+      let baseCash = 0;
+      let basePrevPaying = 0;
+      let basePrevMRR = 0;
+
+      for (let m = 1; m <= 12; m++) {
+        // Sin capital externo, pauta reducida ($25/mes) financiada con flujo austero
+        const baseAdSpend = 25;
+        const reinvest = basePrevMRR * 0.10;
+        const monthlyAd = Math.round(baseAdSpend + reinvest);
+
+        let seasonMultiplier = 1.0;
+        if (hasSeasonality) {
+          if (m === 6 || m === 7) seasonMultiplier = 1.25;
+          else if (m === 11 || m === 12) seasonMultiplier = 1.30;
+          else if (m === 3) seasonMultiplier = 1.15;
+        }
+
+        const acquiredFromAds = (monthlyAd / (rampUpCAC * 1.15)) * seasonMultiplier;
+        const viralFromBase = basePrevPaying * 0.03;
+        const totalNew = Math.max(1, Math.round(acquiredFromAds + viralFromBase));
+        const churned = Math.round(basePrevPaying * churnRate);
+        const active = Math.max(1, basePrevPaying - churned + totalNew);
+        const monthMRR = active * arpu;
+        basePrevMRR = monthMRR;
+        basePrevPaying = active;
+
+        const baseGeminiCost = active * aiQueries * 0.0003;
+        const basePlacesCost = Math.max(0, (active * placesQueries / 1000) * 17.0 - 200);
+        const basePaddleFee = (monthMRR * 0.05) + (active * ((1 - annualMix) * 0.50 + annualMix * (0.50 / 12)));
+        const baseStorageCost = Math.max(0, ((active * 0.15) - 10) * 0.015);
+        const monthCOGS = costHosting + costDomainEmail + basePaddleFee + baseGeminiCost + basePlacesCost + baseStorageCost;
+        // Baseline: sin nómina completa (fundadores sin sueldo en modo bootstrapping puro), solo tools al 50%
+        const monthCosts = monthCOGS + monthlyAd + (toolsOpex * 0.5);
+        const netFlow = monthMRR - monthCosts;
+        baseCash += netFlow;
+
+        baselineNoInvestData.push({
+          month: m,
+          totalClients: active,
+          mrr: monthMRR,
+          bankCash: baseCash
+        });
+      }
+
+      // Update Leverage Comparison Banner in DOM
+      const levBanner = document.getElementById('leverage_comparison_banner');
+      const levBadge = document.getElementById('leverage_status_badge');
+      const capBadge = document.getElementById('badge_capital_status');
+
+      const finalWithClients = rampUpData[11].totalClients;
+      const finalWithoutClients = baselineNoInvestData[11].totalClients;
+      const finalWithMRR = rampUpData[11].mrr;
+      const finalWithoutMRR = baselineNoInvestData[11].mrr;
+      const finalWithCash = rampUpData[11].bankCash;
+      const finalWithoutCash = baselineNoInvestData[11].bankCash;
+
+      if (hasInvestment) {
+        if (levBanner) levBanner.classList.remove('no-invest');
+        if (levBadge) {
+          levBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+          levBadge.style.color = '#34d399';
+          levBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Capital Apalancado';
+        }
+        if (capBadge) {
+          const capAmount = currentInvestMode === 'fff' ? fffAmount : (parseFloat(document.getElementById('inp_investment_amount').value) || 25000);
+          capBadge.innerText = `Inyección $${capAmount.toLocaleString()} USD (Mes 1)`;
+          capBadge.style.display = 'inline-block';
+        }
+
+        document.getElementById('lev_clients_with').innerText = finalWithClients;
+        document.getElementById('lev_clients_without').innerText = finalWithoutClients;
+        const clientMult = (finalWithClients / Math.max(1, finalWithoutClients)).toFixed(1);
+        document.getElementById('lev_clients_sub').innerText = `+${clientMult}x Más Clientes`;
+
+        document.getElementById('lev_mrr_with').innerText = '$' + Math.round(finalWithMRR).toLocaleString();
+        document.getElementById('lev_mrr_without').innerText = '$' + Math.round(finalWithoutMRR).toLocaleString();
+        const mrrMult = (finalWithMRR / Math.max(1, finalWithoutMRR)).toFixed(1);
+        document.getElementById('lev_mrr_sub').innerText = `+${mrrMult}x Facturación`;
+
+        document.getElementById('lev_cash_with').innerText = '$' + Math.round(finalWithCash).toLocaleString();
+        document.getElementById('lev_cash_without').innerText = '$' + Math.round(finalWithoutCash).toLocaleString();
+        const cashMult = (finalWithCash / Math.max(1, finalWithoutCash)).toFixed(1);
+        document.getElementById('lev_cash_sub').innerText = `+${cashMult}x Colchón de Caja`;
+
+        document.getElementById('lev_multiplier').innerText = `+${mrrMult}x`;
+        document.getElementById('lev_speed_sub').innerText = 'Adelanta ~10 meses';
+      } else {
+        if (levBanner) levBanner.classList.add('no-invest');
+        if (levBadge) {
+          levBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+          levBadge.style.color = '#fbbf24';
+          levBadge.innerHTML = '<i class="fa-solid fa-person-running"></i> Bootstrapping Puro (Sin Inversión)';
+        }
+        if (capBadge) {
+          capBadge.style.display = 'none';
+        }
+        document.getElementById('lev_clients_with').innerText = finalWithoutClients;
+        document.getElementById('lev_clients_without').innerText = '-';
+        document.getElementById('lev_clients_sub').innerText = 'Orgánico a pulmón';
+
+        document.getElementById('lev_mrr_with').innerText = '$' + Math.round(finalWithoutMRR).toLocaleString();
+        document.getElementById('lev_mrr_without').innerText = '-';
+        document.getElementById('lev_mrr_sub').innerText = 'Sin pauta de escala';
+
+        document.getElementById('lev_cash_with').innerText = '$' + Math.round(finalWithoutCash).toLocaleString();
+        document.getElementById('lev_cash_without').innerText = '-';
+        document.getElementById('lev_cash_sub').innerText = 'Riesgo de iliquidez';
+
+        document.getElementById('lev_multiplier').innerText = '1.0x';
+        document.getElementById('lev_speed_sub').innerText = 'Ritmo orgánico base';
+      }
 
       // Render Detailed Ramp-Up Table with Churn & Growth
       const rampupTbody = document.getElementById('rampup_tbody');
@@ -2347,7 +2722,7 @@
         {
           name: 'Google Places API & Photos',
           type: 'Variable',
-          vol: `${totalPlacesQueries.toLocaleString()} consultas`,
+          vol: `${totalPlacesQueriesCount.toLocaleString()} consultas`,
           free: '$200 USD/mes de crédito Google',
           cost: costGooglePlaces
         },
@@ -2392,14 +2767,34 @@
       renderMarketingTable(rampUpData[0].adSpend || mktOpex || 100, arpu, rampUpCAC);
 
       // 9. Update Charts
-      updateRampUpChart(rampUpData);
-      updateCharts(totalMRR, totalCOGS, totalOpex, churnRate, paidUsers, {
-        Paddle: costPaddle,
-        Gemini: costGemini,
-        GooglePlaces: costGooglePlaces,
-        Hosting: costHosting,
-        Otros: costDomainEmail + costStorage + costFlights
-      });
+      updateRampUpChart(rampUpData, baselineNoInvestData, hasInvestment);
+
+      const capitalInjectionAmount = hasInvestment 
+        ? (currentInvestMode === 'fff' ? fffAmount : (parseFloat(document.getElementById('inp_investment_amount').value) || 25000)) 
+        : 0;
+
+      const techBreakdown = {
+        'Paddle Billing': costPaddle,
+        'Google Gemini AI': costGemini,
+        'Google Places API': costGooglePlaces,
+        'Hosting VPS': costHosting,
+        'Dominio & Storage': costDomainEmail + costStorage + costFlights
+      };
+
+      const totalBreakdown = {};
+      const adSpendVal = rampUpData[0].adSpend || mktOpex || 100;
+      if (adSpendVal > 0) totalBreakdown['Pauta & Marketing'] = adSpendVal;
+      if (totalCOGS > 0) totalBreakdown['Infraestructura Tech & APIs'] = Math.round(totalCOGS * 100) / 100;
+      if (toolsOpex > 0) totalBreakdown['Herramientas SaaS'] = toolsOpex;
+      if (salariesOpex > 0) totalBreakdown['Nómina & Equipo'] = salariesOpex;
+      if (reserveSaas > 0) totalBreakdown['Reserva SaaS'] = reserveSaas;
+      if (reserveAdmin > 0) totalBreakdown['Reserva Admin & Legal'] = reserveAdmin;
+      if (reserveContingency > 0) totalBreakdown['Reserva Contingencia'] = reserveContingency;
+      if (hasInvestment && initialMonthQuota > 0) totalBreakdown['Retorno Inversión FFF'] = Math.round(initialMonthQuota * 100) / 100;
+
+      const cashBalanceArray = rampUpData.map(d => Math.round(d.bankCash));
+
+      updateCharts(totalMRR, totalCOGS, totalOpex, churnRate, paidUsers, techBreakdown, totalBreakdown, hasInvestment, capitalInjectionAmount, cashBalanceArray);
     }
 
     function renderTable(services, totalCogs) {
@@ -2425,78 +2820,151 @@
       });
     }
 
-    function updateRampUpChart(data) {
+    function updateRampUpChart(data, baselineData, hasInvestment) {
       const labels = data.map(d => d.monthName);
       const bankCashData = data.map(d => Math.round(d.bankCash));
       const clientsData = data.map(d => d.totalClients);
 
+      const baseCashData = (baselineData && baselineData.length) ? baselineData.map(d => Math.round(d.bankCash)) : [];
+      const baseClientsData = (baselineData && baselineData.length) ? baselineData.map(d => d.totalClients) : [];
+
       if (rampUpChart) {
-        rampUpChart.data.labels = labels;
-        rampUpChart.data.datasets[0].data = bankCashData;
-        rampUpChart.data.datasets[1].data = clientsData;
-        rampUpChart.update();
+        rampUpChart.destroy();
+      }
+
+      const datasets = [];
+
+      if (hasInvestment) {
+        datasets.push({
+          label: 'Saldo Caja CON Inversión ($ USD)',
+          data: bankCashData,
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.08)',
+          borderWidth: 2.5,
+          fill: true,
+          yAxisID: 'yCash',
+          tension: 0.35,
+          order: 1
+        });
+        datasets.push({
+          label: 'Saldo Caja SIN Inversión (Bootstrapping)',
+          data: baseCashData,
+          borderColor: '#f59e0b',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderDash: [5, 5],
+          yAxisID: 'yCash',
+          tension: 0.35,
+          order: 2
+        });
+        datasets.push({
+          label: 'Clientes CON Inversión',
+          data: clientsData,
+          borderColor: '#38bdf8',
+          backgroundColor: 'transparent',
+          borderWidth: 2.2,
+          yAxisID: 'yClients',
+          tension: 0.3,
+          order: 3
+        });
+        datasets.push({
+          label: 'Clientes SIN Inversión',
+          data: baseClientsData,
+          borderColor: '#94a3b8',
+          backgroundColor: 'transparent',
+          borderWidth: 1.8,
+          borderDash: [2, 3],
+          yAxisID: 'yClients',
+          tension: 0.3,
+          order: 4
+        });
       } else {
-        const ctx = document.getElementById('rampUpChart').getContext('2d');
-        rampUpChart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: 'Saldo Caja en Banco ($ USD)',
-                data: bankCashData,
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.08)',
-                borderWidth: 2.5,
-                fill: true,
-                yAxisID: 'yCash',
-                tension: 0.35
-              },
-              {
-                label: 'Clientes de Pago Acumulados',
-                data: clientsData,
-                borderColor: '#38bdf8',
-                backgroundColor: 'transparent',
-                borderWidth: 2.2,
-                borderDash: [4, 4],
-                yAxisID: 'yClients',
-                tension: 0.3
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                labels: { color: '#94a3b8', font: { size: 11, family: 'Plus Jakarta Sans' } }
-              }
-            },
-            scales: {
-              x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } },
-              yCash: {
-                type: 'linear',
-                position: 'left',
-                grid: { color: 'rgba(255,255,255,0.05)' },
-                ticks: { color: '#10b981', callback: val => '$' + val }
-              },
-              yClients: {
-                type: 'linear',
-                position: 'right',
-                grid: { display: false },
-                ticks: { color: '#38bdf8' }
-              }
-            }
-          }
+        datasets.push({
+          label: 'Saldo Caja en Banco ($ USD)',
+          data: bankCashData,
+          borderColor: '#f59e0b',
+          backgroundColor: 'rgba(245, 158, 11, 0.08)',
+          borderWidth: 2.5,
+          fill: true,
+          yAxisID: 'yCash',
+          tension: 0.35
+        });
+        datasets.push({
+          label: 'Clientes de Pago Acumulados',
+          data: clientsData,
+          borderColor: '#38bdf8',
+          backgroundColor: 'transparent',
+          borderWidth: 2.2,
+          borderDash: [4, 4],
+          yAxisID: 'yClients',
+          tension: 0.3
         });
       }
+
+      const ctx = document.getElementById('rampUpChart').getContext('2d');
+      rampUpChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              labels: { 
+                color: '#94a3b8', 
+                font: { size: 10.5, family: 'Plus Jakarta Sans' },
+                boxWidth: 12,
+                padding: 10
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  if (context.dataset.yAxisID === 'yCash') {
+                    return ` ${context.dataset.label}: $${context.parsed.y.toLocaleString()} USD`;
+                  }
+                  return ` ${context.dataset.label}: ${context.parsed.y} clientes`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } },
+            yCash: {
+              type: 'linear',
+              position: 'left',
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { 
+                color: '#10b981', 
+                callback: val => '$' + (Math.abs(val) >= 1000 ? (val / 1000).toFixed(0) + 'k' : val) 
+              }
+            },
+            yClients: {
+              type: 'linear',
+              position: 'right',
+              grid: { display: false },
+              ticks: { color: '#38bdf8' }
+            }
+          }
+        }
+      });
     }
 
-    function updateCharts(mrr, cogs, opex, churn, initialPaid, techBreakdown) {
+    function updateCharts(mrr, cogs, opex, churn, initialPaid, techBreakdown, totalBreakdown, hasInvestment, capitalInjection, cashBalanceArray) {
+      cachedTechBreakdown = techBreakdown;
+      cachedTotalBreakdown = totalBreakdown;
+
       const months = ['Mes 1', 'Mes 2', 'Mes 3', 'Mes 4', 'Mes 5', 'Mes 6', 'Mes 7', 'Mes 8', 'Mes 9', 'Mes 10', 'Mes 11', 'Mes 12'];
       const revData = [];
       const costData = [];
-      const profitData = [];
+      const capitalData = [hasInvestment ? capitalInjection : 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       let currentMrr = mrr;
       const monthlyGrowth = 0.08;
@@ -2506,100 +2974,183 @@
         const monthCogs = cogs * (currentMrr / (mrr || 1));
         const monthTotalCost = monthCogs + opex;
         costData.push(Math.round(monthTotalCost));
-        profitData.push(Math.round(currentMrr - monthTotalCost));
         currentMrr = currentMrr * (1 + monthlyGrowth);
       }
 
+      const cashData = (cashBalanceArray && cashBalanceArray.length === 12) 
+        ? cashBalanceArray 
+        : revData.map((r, i) => Math.round((capitalInjection || 0) + (r * (i + 1) * 0.7)));
+
       if (projectionChart) {
-        projectionChart.data.labels = months;
-        projectionChart.data.datasets[0].data = revData;
-        projectionChart.data.datasets[1].data = costData;
-        projectionChart.data.datasets[2].data = profitData;
-        projectionChart.update();
-      } else {
-        const ctx = document.getElementById('projectionChart').getContext('2d');
-        projectionChart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: months,
-            datasets: [
-              {
-                label: 'Ingresos (MRR)',
-                data: revData,
-                borderColor: '#1EAACE',
-                backgroundColor: 'rgba(30, 170, 206, 0.1)',
-                borderWidth: 2.5,
-                fill: true,
-                tension: 0.3
-              },
-              {
-                label: 'Costos Totales (Tech + OPEX)',
-                data: costData,
-                borderColor: '#f59e0b',
-                backgroundColor: 'transparent',
-                borderWidth: 2,
-                borderDash: [5, 5],
-                tension: 0.3
-              },
-              {
-                label: 'Beneficio Neto (EBITDA)',
-                data: profitData,
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.05)',
-                borderWidth: 2,
-                tension: 0.3
-              }
-            ]
+        projectionChart.destroy();
+      }
+
+      const ctx = document.getElementById('projectionChart').getContext('2d');
+      projectionChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: months,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'Inyección de Capital (Mes 1)',
+              data: capitalData,
+              backgroundColor: 'rgba(192, 132, 252, 0.45)',
+              borderColor: '#c084fc',
+              borderWidth: 1.5,
+              borderRadius: 6,
+              barPercentage: 0.5,
+              order: 4
+            },
+            {
+              type: 'line',
+              label: 'Ventas Recurrentes (MRR)',
+              data: revData,
+              borderColor: '#1EAACE',
+              backgroundColor: 'rgba(30, 170, 206, 0.12)',
+              borderWidth: 2.5,
+              fill: true,
+              tension: 0.35,
+              order: 2
+            },
+            {
+              type: 'line',
+              label: 'Costos Totales Operación',
+              data: costData,
+              borderColor: '#f59e0b',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              borderDash: [5, 5],
+              tension: 0.3,
+              order: 3
+            },
+            {
+              type: 'line',
+              label: 'Saldo Acumulado en Caja ($)',
+              data: cashData,
+              borderColor: '#10b981',
+              backgroundColor: 'transparent',
+              borderWidth: 2.2,
+              tension: 0.35,
+              order: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                labels: { color: '#94a3b8', font: { size: 11, family: 'Plus Jakarta Sans' } }
+          plugins: {
+            legend: {
+              labels: { 
+                color: '#94a3b8', 
+                font: { size: 10.5, family: 'Plus Jakarta Sans' },
+                boxWidth: 12,
+                padding: 10
               }
             },
-            scales: {
-              x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } },
-              y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } }
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return ` ${context.dataset.label}: $${context.parsed.y.toLocaleString()} USD`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } },
+            y: { 
+              grid: { color: 'rgba(255,255,255,0.05)' }, 
+              ticks: { 
+                color: '#64748b',
+                callback: val => '$' + (Math.abs(val) >= 1000 ? (val / 1000).toFixed(0) + 'k' : val)
+              } 
             }
           }
-        });
+        }
+      });
+
+      renderDonutChart();
+    }
+
+    function setDonutMode(mode) {
+      currentDonutMode = mode;
+      const btnTotal = document.getElementById('btn_donut_total');
+      const btnTech = document.getElementById('btn_donut_tech');
+      if (btnTotal && btnTech) {
+        if (mode === 'total') {
+          btnTotal.classList.add('active');
+          btnTech.classList.remove('active');
+        } else {
+          btnTotal.classList.remove('active');
+          btnTech.classList.add('active');
+        }
+      }
+      renderDonutChart();
+    }
+
+    function renderDonutChart() {
+      const isTotal = currentDonutMode === 'total';
+      const breakdown = (isTotal ? cachedTotalBreakdown : cachedTechBreakdown) || {};
+      
+      const filteredLabels = [];
+      const filteredValues = [];
+      for (const [key, val] of Object.entries(breakdown)) {
+        if (val > 0) {
+          filteredLabels.push(key);
+          filteredValues.push(Math.round(val * 100) / 100);
+        }
       }
 
-      // Donut Breakdown
-      const donutLabels = Object.keys(techBreakdown);
-      const donutValues = Object.values(techBreakdown).map(v => Math.max(0.1, Math.round(v * 100) / 100));
+      const colors = isTotal 
+        ? ['#38bdf8', '#1EAACE', '#f59e0b', '#a855f7', '#10b981', '#64748b']
+        : ['#1EAACE', '#38bdf8', '#f59e0b', '#10b981', '#c084fc', '#64748b'];
 
       if (costBreakdownChart) {
-        costBreakdownChart.data.labels = donutLabels;
-        costBreakdownChart.data.datasets[0].data = donutValues;
-        costBreakdownChart.update();
-      } else {
-        const ctx2 = document.getElementById('costBreakdownChart').getContext('2d');
-        costBreakdownChart = new Chart(ctx2, {
-          type: 'doughnut',
-          data: {
-            labels: donutLabels,
-            datasets: [{
-              data: donutValues,
-              backgroundColor: ['#1EAACE', '#38bdf8', '#f59e0b', '#10b981', '#64748b'],
-              borderWidth: 0
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: 'right',
-                labels: { color: '#94a3b8', font: { size: 10, family: 'Plus Jakarta Sans' } }
+        costBreakdownChart.destroy();
+      }
+
+      const ctx2 = document.getElementById('costBreakdownChart').getContext('2d');
+      costBreakdownChart = new Chart(ctx2, {
+        type: 'pie', // Torta Clásica Sólida
+        data: {
+          labels: filteredLabels,
+          datasets: [{
+            data: filteredValues,
+            backgroundColor: colors.slice(0, filteredLabels.length),
+            borderColor: '#0b1324',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: { 
+                color: '#94a3b8', 
+                font: { size: 10.5, family: 'Plus Jakarta Sans' },
+                boxWidth: 12,
+                padding: 10
               }
             },
-            cutout: '65%'
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const val = context.parsed;
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const pct = total > 0 ? ((val / total) * 100).toFixed(1) : '0';
+                  return ` ${context.label}: $${val.toLocaleString()} USD (${pct}%)`;
+                }
+              }
+            }
           }
-        });
-      }
+        }
+      });
     }
 
     function renderMarketingTable(totalAdSpend, arpu, blendedCAC) {
@@ -2741,13 +3292,16 @@
           churn: parseFloat(document.getElementById('inp_churn').value),
           mix_pro: parseInt(document.getElementById('inp_mix_pro').value),
           annual_mix: parseFloat(document.getElementById('inp_annual_mix').value),
-          ai_queries: parseInt(document.getElementById('inp_ai_queries').value) || 8,
-          places_queries: parseInt(document.getElementById('inp_places_queries').value) || 6,
+          ai_queries: parseInt(document.getElementById('inp_ai_queries').value) || 40,
+          places_queries: parseInt(document.getElementById('inp_places_queries').value) || 30,
           flight_plan: currentFlightPlan,
           server_tier: currentServerTier,
           mkt: parseFloat(document.getElementById('inp_mkt').value),
           salaries: parseFloat(document.getElementById('inp_salaries').value),
           tools: parseFloat(document.getElementById('inp_tools').value),
+          reserve_saas: parseFloat(document.getElementById('inp_reserve_saas').value) || 0,
+          reserve_admin: parseFloat(document.getElementById('inp_reserve_admin').value) || 0,
+          reserve_contingency: parseFloat(document.getElementById('inp_reserve_contingency').value) || 0,
           cac: parseFloat(document.getElementById('inp_rampup_cac').value),
           reinvest: parseFloat(document.getElementById('inp_rampup_reinvest').value),
           viral: parseFloat(document.getElementById('inp_rampup_viral').value),
@@ -2794,6 +3348,12 @@
       document.getElementById('inp_mkt').value = v.mkt;
       document.getElementById('inp_salaries').value = v.salaries;
       document.getElementById('inp_tools').value = v.tools;
+      const rSaasL = document.getElementById('inp_reserve_saas');
+      if (rSaasL) rSaasL.value = v.reserve_saas || 0;
+      const rAdminL = document.getElementById('inp_reserve_admin');
+      if (rAdminL) rAdminL.value = v.reserve_admin || 0;
+      const rContingL = document.getElementById('inp_reserve_contingency');
+      if (rContingL) rContingL.value = v.reserve_contingency || 0;
       document.getElementById('inp_rampup_cac').value = v.cac;
       document.getElementById('inp_rampup_reinvest').value = v.reinvest;
       document.getElementById('inp_rampup_viral').value = v.viral;
