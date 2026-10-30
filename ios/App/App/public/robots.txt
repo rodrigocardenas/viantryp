@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /trips
+Disallow: /profile
+Disallow: /persons
+Disallow: /persons-agents
+Disallow: /airlines
+Disallow: /documents/
+Disallow: /api/
+
+Sitemap: https://viantryp.com/sitemap.xml

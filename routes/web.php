@@ -39,6 +39,7 @@ Route::middleware('guest')->group(function () {
 // after GoogleAuth.signOut() on the client, because the server session may not
 // have been cleared yet when the user taps an account in the account picker.
 Route::post('auth/google/native', [GoogleAuthController::class , 'handleNativeGoogleAuth'])->name('auth.google.native')->middleware('throttle:15,1');
+Route::post('auth/apple/native', [GoogleAuthController::class , 'handleNativeAppleAuth'])->name('auth.apple.native')->middleware('throttle:15,1');
 Route::get('auth/native-login', [GoogleAuthController::class , 'handleNativeTokenLogin'])->name('auth.native.token');
 
 // Logout route (authenticated users only)

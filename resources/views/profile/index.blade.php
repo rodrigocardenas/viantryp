@@ -2935,13 +2935,15 @@
                           <!-- Próximo pago / fin de prueba -->
                           <div class="sub-card-right-box border-bottom">
                             <div class="sub-meta-caption">
-                              @if($isTrial) Fin de prueba gratuita @else Próxima fecha de facturación @endif
+                              @if($isTrial) Fin de prueba gratuita @else Vigencia del plan @endif
                             </div>
                             <div class="sub-meta-date">
                               {{ $endDate }}
                             </div>
                             <div class="sub-meta-hint">
-                              @if($isTrial)
+                              @if($isAppMode)
+                                Estado sincronizado con tu cuenta de Viantryp
+                              @elseif($isTrial)
                                 Se requiere activar suscripción al finalizar el mes de prueba
                               @elseif($isPaidPlan)
                                 Renovación automática gestionada de forma segura por Paddle
@@ -2951,19 +2953,29 @@
                             </div>
                           </div>
 
-                          <!-- Costo mensual -->
+                          <!-- Costo mensual (Oculto en modo App para cumplir Apple 3.1.3(b)) -->
                           <div class="sub-card-right-box">
-                            <div class="sub-meta-caption">Costo recurrente</div>
-                            <div class="sub-meta-price">
-                              {{ $planPrice }}
-                            </div>
-                            <div class="sub-meta-hint">
-                              @if($currentPlanKey === 'básico' || $isTrial)
-                                Sin cobros durante el periodo de prueba activa
-                              @else
-                                Facturación recurrente en Dólares Estadounidenses (USD)
-                              @endif
-                            </div>
+                            @if($isAppMode)
+                              <div class="sub-meta-caption">Modalidad en la App</div>
+                              <div class="sub-meta-date" style="font-size: 15px;">
+                                Acceso Multidispositivo
+                              </div>
+                              <div class="sub-meta-hint">
+                                Sin cobros dentro de la aplicación móvil
+                              </div>
+                            @else
+                              <div class="sub-meta-caption">Costo recurrente</div>
+                              <div class="sub-meta-price">
+                                {{ $planPrice }}
+                              </div>
+                              <div class="sub-meta-hint">
+                                @if($currentPlanKey === 'básico' || $isTrial)
+                                  Sin cobros durante el periodo de prueba activa
+                                @else
+                                  Facturación recurrente en Dólares Estadounidenses (USD)
+                                @endif
+                              </div>
+                            @endif
                           </div>
 
                         </div>
@@ -2974,12 +2986,12 @@
                         @if($isAppMode)
                           <div class="sub-footer-text app-only-billing-footer" style="width: 100%; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; color: #475569;">
                             <i class="fas fa-info-circle" style="color: #1eaace; margin-top: 3px; flex-shrink: 0;"></i>
-                            <span>La gestión de suscripciones y facturación no está disponible desde la aplicación. Para consultar y gestionar tu cuenta de facturación, accede a Viantryp desde un navegador web.</span>
+                            <span>Aquí puedes consultar el estado y los límites actuales de tu cuenta en Viantryp. La modificación de planes no está disponible dentro de la aplicación móvil.</span>
                           </div>
                         @else
                           <div class="sub-footer-text app-only-billing-footer" style="display: none; width: 100%; align-items: flex-start; gap: 10px; line-height: 1.5; color: #475569;">
                             <i class="fas fa-info-circle" style="color: #1eaace; margin-top: 3px; flex-shrink: 0;"></i>
-                            <span>La gestión de suscripciones y facturación no está disponible desde la aplicación. Para consultar y gestionar tu cuenta de facturación, accede a Viantryp desde un navegador web.</span>
+                            <span>Aquí puedes consultar el estado y los límites actuales de tu cuenta en Viantryp. La modificación de planes no está disponible dentro de la aplicación móvil.</span>
                           </div>
                           <div class="sub-footer-text web-only-billing-footer">
                             <i class="fas fa-shield-alt" style="color: #1eaace;"></i> Facturación respaldada por
@@ -3003,10 +3015,10 @@
                     @if($isAppMode)
                       <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 28px 24px; text-align: center; margin-bottom: 24px;">
                         <div style="width: 50px; height: 50px; background: #e0f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; color: #0284c7;">
-                          <i class="fas fa-desktop" style="font-size: 20px;"></i>
+                          <i class="fas fa-user-check" style="font-size: 20px;"></i>
                         </div>
                         <p style="font-size: 13.5px; color: #475569; margin: 0 auto; max-width: 460px; line-height: 1.6; font-weight: 500;">
-                          La gestión de suscripciones y facturación no está disponible desde la aplicación. Para consultar y gestionar tu cuenta de facturación, accede a Viantryp desde un navegador web.
+                          Aquí puedes consultar el estado actual de tu cuenta en Viantryp. La modificación o contratación de planes no está disponible dentro de la aplicación móvil.
                         </p>
                       </div>
                     @elseif($isPaidPlan)
@@ -3094,6 +3106,7 @@
                       </div>
                     @endif
 
+                    @if(!$isAppMode)
                     <div
                       style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px 18px; display: flex; align-items: flex-start; gap: 12px;">
                       <i class="fas fa-shield-check" style="font-size: 18px; color: #16a34a; margin-top: 2px;"></i>
@@ -3104,6 +3117,7 @@
                         tus tarjetas.
                       </div>
                     </div>
+                    @endif
                   </div>
                 </div>
 

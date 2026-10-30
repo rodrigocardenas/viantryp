@@ -1,0 +1,5 @@
+Contact: mailto:hola@viantryp.com
+Expires: 2027-12-31T23:59:00.000Z
+Preferred-Languages: es, en
+Canonical: https://viantryp.com/.well-known/security.txt
+Policy: https://viantryp.com/privacidad

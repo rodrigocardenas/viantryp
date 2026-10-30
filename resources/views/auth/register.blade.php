@@ -284,6 +284,47 @@
       transform: translateY(-1px);
     }
 
+    .btn-apple {
+      width: 100%; height: 43px; background: #000000;
+      text-decoration: none;
+      border: 1.5px solid #000000; border-radius: 50px;
+      font-size: 14.5px; font-weight: 600;
+      font-family: 'Manrope', 'Barlow', sans-serif;
+      color: #ffffff; cursor: pointer;
+      display: none; align-items: center; justify-content: center; gap: 10px;
+      margin-bottom: 10px;
+      transition: opacity 0.18s, box-shadow 0.18s, transform 0.14s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .btn-apple:hover {
+      opacity: 0.9;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+      transform: translateY(-1px);
+    }
+
+    html.is-viantryp-ios .google-btn-container {
+      display: none !important;
+    }
+
+    /* Exclusivo iOS: Safe areas y prevención de auto-zoom en WKWebView (sin afectar Android ni Web) */
+    @media (max-width: 768px) {
+      html.is-viantryp-ios {
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: transparent;
+      }
+      html.is-viantryp-ios nav {
+        padding-top: calc(1rem + env(safe-area-inset-top, 0px)) !important;
+      }
+      html.is-viantryp-ios .right-panel {
+        padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      html.is-viantryp-ios input:not([type="checkbox"]):not([type="radio"]),
+      html.is-viantryp-ios select,
+      html.is-viantryp-ios textarea {
+        font-size: max(16px, 1em) !important;
+      }
+    }
+
     .divider {
       display: flex; align-items: center; gap: 12px;
       margin: 10px 0; color: #b0bec5; font-size: 12.5px; font-weight: 500;
@@ -538,7 +579,14 @@
           <h2>Crea tu cuenta <span>ahora</span></h2>
         </div>
 
-        <!-- Google first (conversion best practice) -->
+        <!-- Apple / Google first (conversion best practice) -->
+        <button type="button" id="btnAppleAuthRegister" class="btn-apple" onclick="doNativeCapacitorAppleAuth()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+          </svg>
+          <span>Registrarse con Apple</span>
+        </button>
+
         <div class="google-btn-container" style="position: relative; width: 100%;">
           <a href="{{ route('auth.google', ['app' => request('app', '1')]) }}" class="btn-google" id="btnGoogleAuthRegister">
             <svg width="19" height="19" viewBox="0 0 24 24">
@@ -818,9 +866,98 @@
       }
     }
 
+    // Manejador nativo de Sign in with Apple para la App Capacitor en iOS
+    async function doNativeCapacitorAppleAuth() {
+      const appleBtn = document.getElementById('btnAppleAuthRegister');
+      if (appleBtn) {
+        appleBtn.style.opacity = '0.6';
+        appleBtn.style.pointerEvents = 'none';
+      }
+
+      try {
+        let SignInWithApple = window.Capacitor?.Plugins?.SignInWithApple;
+        if (!SignInWithApple && window.Capacitor?.registerPlugin) {
+          SignInWithApple = window.Capacitor.registerPlugin('SignInWithApple');
+        }
+
+        if (!SignInWithApple) {
+          alert('El registro nativo con Apple solo está disponible desde la app de iOS.');
+          return;
+        }
+
+        const result = await SignInWithApple.authorize({
+          clientId: 'com.viantryp.app',
+          redirectURI: 'https://viantryp.com/register',
+          scopes: 'email name'
+        });
+
+        const response = result && result.response ? result.response : result;
+        if (!response || !response.identityToken) {
+          return;
+        }
+
+        const res = await fetch('/auth/apple/native', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          },
+          body: JSON.stringify({
+            identityToken: response.identityToken,
+            user: response.user || null,
+            email: response.email || null,
+            givenName: response.givenName || null,
+            familyName: response.familyName || null
+          })
+        });
+
+        if (!res.ok) {
+          alert('Error en el servidor al registrarse con Apple.');
+          return;
+        }
+
+        const resData = await res.json();
+        if (resData.success && resData.redirect) {
+          try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) {}
+          window.location.href = resData.redirect;
+          return;
+        } else {
+          alert(resData.message || 'Error al registrarse con Apple.');
+        }
+      } catch (err) {
+        const errMsg = (err && (err.message || err.errorMessage || String(err))) || '';
+        const isCancel = errMsg.toLowerCase().includes('cancel') || errMsg.includes('1001');
+        if (!isCancel) {
+          console.error('Apple Auth error:', err);
+          alert('Error al registrarse con Apple. Por favor, intenta de nuevo.');
+        }
+      } finally {
+        if (appleBtn) {
+          appleBtn.style.opacity = '1';
+          appleBtn.style.pointerEvents = 'auto';
+        }
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       const googleBtn = document.getElementById('btnGoogleAuthRegister') || document.querySelector('.btn-google');
+      const appleBtn = document.getElementById('btnAppleAuthRegister');
       const isNativeApp = Boolean(window.Capacitor && (window.Capacitor.isNativePlatform || window.Capacitor.Plugins));
+      const isIosPlatform = (window.Capacitor && typeof window.Capacitor.getPlatform === 'function' && window.Capacitor.getPlatform() === 'ios')
+        || (isNativeApp && /iPad|iPhone|iPod/.test(navigator.userAgent))
+        || new URLSearchParams(window.location.search).get('ios') === '1';
+
+      if (isIosPlatform) {
+        document.documentElement.classList.add('is-viantryp-ios');
+        if (document.body) document.body.classList.add('is-viantryp-ios');
+        const vp = document.querySelector('meta[name="viewport"]');
+        if (vp && !vp.content.includes('viewport-fit')) {
+          vp.setAttribute('content', vp.content + ', viewport-fit=cover');
+        }
+        if (appleBtn) appleBtn.style.display = 'flex';
+      }
 
       if (isNativeApp) {
         // En la App Nativa: Ocultamos la capa GSI web para que el toque siempre vaya al plugin nativo de Android

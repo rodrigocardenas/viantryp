@@ -28,6 +28,7 @@ Homestead.yaml
 *.apk
 *.aab
 *.idsig
+/releases/*.zip
 /android-twa/.gradle/
 /android-twa/build/
 /android-twa/app/build/

@@ -20,15 +20,55 @@
         }
 
         var isAppMode = isCapacitor || hasAppParam || (isStandalone && !hasWebParam);
+        var isIosApp = (isCapacitor && (
+            (window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ||
+            /iPad|iPhone|iPod/.test(navigator.userAgent)
+        )) || urlParams.get('ios') === '1';
 
         if (isAppMode) {
             document.documentElement.classList.add('is-viantryp-app');
             if (document.body) document.body.classList.add('is-viantryp-app');
             else document.addEventListener('DOMContentLoaded', function() { if(document.body) document.body.classList.add('is-viantryp-app'); });
         }
+
+        if (isIosApp) {
+            document.documentElement.classList.add('is-viantryp-app', 'is-viantryp-ios');
+            document.addEventListener('DOMContentLoaded', function() {
+                if (document.body) document.body.classList.add('is-viantryp-app', 'is-viantryp-ios');
+                var vp = document.querySelector('meta[name="viewport"]');
+                if (vp && vp.content.indexOf('viewport-fit') === -1) {
+                    vp.setAttribute('content', vp.content + ', viewport-fit=cover');
+                }
+            });
+        }
     })();
     </script>
     <style>
+        /* CRITICAL iOS ONLY STYLES (Safe Areas & WKWebView fixes - Does not affect Android or Web) */
+        @media (max-width: 768px) {
+            html.is-viantryp-ios {
+                -webkit-text-size-adjust: 100%;
+                -webkit-tap-highlight-color: transparent;
+            }
+            html.is-viantryp-ios .dashboard-topbar,
+            body.is-viantryp-ios .dashboard-topbar {
+                padding-top: env(safe-area-inset-top, 0px) !important;
+                height: calc(60px + env(safe-area-inset-top, 0px)) !important;
+            }
+            html.is-viantryp-ios body,
+            body.is-viantryp-ios {
+                padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px)) !important;
+            }
+            html.is-viantryp-ios .page-wrapper,
+            body.is-viantryp-ios .page-wrapper {
+                padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+            }
+            html.is-viantryp-ios input:not([type="checkbox"]):not([type="radio"]),
+            html.is-viantryp-ios select,
+            html.is-viantryp-ios textarea {
+                font-size: max(16px, 1em) !important;
+            }
+        }
         /* CRITICAL APP STYLES - Prevents FOUC (Flash of Unstyled Web Content) in App mode */
         @media (max-width: 768px) {
             html.is-viantryp-app .viantryp-bottom-nav { display: block !important; }

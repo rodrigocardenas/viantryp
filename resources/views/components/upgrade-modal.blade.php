@@ -247,7 +247,7 @@
                     Información sobre tu cuenta
                 </div>
                 <p style="font-size: 13.5px; color: #475569; line-height: 1.6; margin: 0 auto 18px; max-width: 440px; font-weight: 500;">
-                    La gestión de suscripciones y facturación no está disponible desde la aplicación. Para consultar y gestionar tu cuenta de facturación, accede a Viantryp desde un navegador web.
+                    Aquí puedes consultar el estado actual de tu cuenta en Viantryp. La modificación o contratación de planes no está disponible dentro de la aplicación móvil.
                 </p>
                 <button type="button" onclick="closeUpgradeModal()" style="background: #0f2a3a; color: #ffffff; border: none; border-radius: 12px; padding: 11px 28px; font-size: 13.5px; font-weight: 700; cursor: pointer;">
                     Entendido

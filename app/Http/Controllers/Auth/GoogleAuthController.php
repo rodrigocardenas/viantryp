@@ -111,11 +111,15 @@ class GoogleAuthController extends Controller
             $lastName = $request->input('last_name') ?? $request->input('familyName') ?? '';
             $avatar = $request->input('avatar') ?? $request->input('imageUrl');
 
-            // Verificar criptográficamente el token de Google
+            // Verificar criptográficamente el token de Google (soporta Web/Server Client ID e iOS Client ID)
             if ($idToken) {
                 try {
                     $googleClient = new \Google\Client(['client_id' => config('services.google.client_id')]);
                     $verifiedPayload = $googleClient->verifyIdToken($idToken);
+                    if (!$verifiedPayload && config('services.google.ios_client_id')) {
+                        $iosGoogleClient = new \Google\Client(['client_id' => config('services.google.ios_client_id')]);
+                        $verifiedPayload = $iosGoogleClient->verifyIdToken($idToken);
+                    }
                     if ($verifiedPayload) {
                         $email = $verifiedPayload['email'] ?? $email;
                         $googleId = $verifiedPayload['sub'] ?? $googleId;
@@ -324,6 +328,131 @@ class GoogleAuthController extends Controller
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('GSI auth error: ' . $e->getMessage());
             return redirect()->route('login')->with('error', 'Error al procesar el inicio de sesión con Google.');
+        }
+    }
+
+    /**
+     * Handle Native Sign in with Apple from Capacitor iOS App
+     */
+    public function handleNativeAppleAuth(Request $request)
+    {
+        try {
+            $identityToken = $request->input('identityToken') ?? $request->input('id_token');
+            $appleId = $request->input('apple_id') ?? $request->input('user');
+            $email = $request->input('email');
+            $name = trim((string) ($request->input('givenName') ?? $request->input('name') ?? ''));
+            $lastName = trim((string) ($request->input('familyName') ?? $request->input('last_name') ?? ''));
+
+            if (!$identityToken) {
+                return response()->json(['success' => false, 'message' => 'Token de Apple no proporcionado.'], 400);
+            }
+
+            // Verificar criptográficamente el identityToken contra las llaves públicas de Apple (JWKS)
+            try {
+                $appleJwks = \Illuminate\Support\Facades\Cache::remember('apple_auth_jwks', 86400, function () {
+                    $response = \Illuminate\Support\Facades\Http::timeout(10)->get('https://appleid.apple.com/auth/keys');
+                    return $response->successful() ? $response->json() : null;
+                });
+
+                if (!$appleJwks || empty($appleJwks['keys'])) {
+                    \Illuminate\Support\Facades\Cache::forget('apple_auth_jwks');
+                    return response()->json(['success' => false, 'message' => 'No se pudieron obtener las llaves de verificación de Apple.'], 503);
+                }
+
+                $publicKeys = \Firebase\JWT\JWK::parseKeySet($appleJwks, 'RS256');
+                $decoded = \Firebase\JWT\JWT::decode($identityToken, $publicKeys);
+
+                $allowedAudiences = array_filter([
+                    'com.viantryp.app',
+                    config('services.apple.client_id'),
+                ]);
+
+                if (($decoded->iss ?? '') !== 'https://appleid.apple.com' || !in_array($decoded->aud ?? '', $allowedAudiences, true)) {
+                    \Illuminate\Support\Facades\Log::warning('Token de Apple con iss/aud inválido.', [
+                        'iss' => $decoded->iss ?? null,
+                        'aud' => $decoded->aud ?? null,
+                    ]);
+                    return response()->json(['success' => false, 'message' => 'Token de autenticación de Apple inválido.'], 401);
+                }
+
+                $appleId = $decoded->sub ?? $appleId;
+                $email = $decoded->email ?? $email;
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Cache::forget('apple_auth_jwks');
+                \Illuminate\Support\Facades\Log::warning('Excepción al verificar token de Apple: ' . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'Error al validar credenciales con Apple.'], 401);
+            }
+
+            if (!$appleId) {
+                return response()->json(['success' => false, 'message' => 'Identificador de Apple no válido.'], 400);
+            }
+
+            // 1. Buscar primero por apple_id (Apple solo envía el email en el primer inicio de sesión)
+            $user = User::where('apple_id', $appleId)->first();
+
+            // 2. Si no existe por apple_id y tenemos email, buscar por email para vincular la cuenta existente
+            if (!$user && $email) {
+                $user = User::where('email', $email)->first();
+            }
+
+            if ($user) {
+                $updateData = [
+                    'email_verified_at' => $user->email_verified_at ?? now(),
+                ];
+                if (!$user->apple_id) {
+                    $updateData['apple_id'] = $appleId;
+                    if (is_null($user->email_verified_at)) {
+                        $updateData['password'] = bcrypt(\Illuminate\Support\Str::random(32));
+                    }
+                }
+                if ($name && (empty($user->name) || $user->name === 'Viajero')) {
+                    $updateData['name'] = $name;
+                }
+                if ($lastName && empty($user->last_name)) {
+                    $updateData['last_name'] = $lastName;
+                }
+                $user->update($updateData);
+            } else {
+                // Crear nuevo usuario (si Apple ocultó el email en un re-login sin registro previo, generamos relay)
+                if (!$email) {
+                    $email = strtolower(substr(preg_replace('/[^a-zA-Z0-9]/', '', $appleId), 0, 20)) . '@privaterelay.appleid.com';
+                }
+                if (!$name) {
+                    $parts = explode('@', $email);
+                    $name = (!empty($parts[0]) && !str_contains($email, 'privaterelay.appleid.com')) ? ucfirst($parts[0]) : 'Viajero';
+                }
+
+                $user = User::create([
+                    'name' => $name,
+                    'last_name' => $lastName,
+                    'email' => $email,
+                    'email_verified_at' => now(),
+                    'apple_id' => $appleId,
+                    'password' => bcrypt(\Illuminate\Support\Str::random(32)),
+                    'plan' => User::PLAN_BASICO,
+                    'theme_color' => 'gold',
+                    'country' => $request->header('cf-ipcountry') ?? null,
+                ]);
+
+                $user->notify(new \App\Notifications\WelcomeNotification($user));
+            }
+
+            Auth::login($user, true);
+            $request->session()->put('viantryp_app_mode', '1');
+            $request->session()->regenerate();
+
+            $cookie = cookie('viantryp_app_mode', '1', 525600);
+            $targetRoute = $user->wasRecentlyCreated ? route('profile.index', ['app' => '1']) : route('trips.index', ['app' => '1']);
+
+            return response()->json([
+                'success' => true,
+                'redirect' => $targetRoute,
+                'message' => '¡Bienvenido! Has iniciado sesión con Apple.'
+            ])->withCookie($cookie);
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Native Apple auth error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Error al autenticar con Apple. Por favor, inténtalo de nuevo.'], 500);
         }
     }
 

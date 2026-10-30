@@ -35,6 +35,7 @@ class User extends Authenticatable
         'email_verified_at',
         'password',
         'google_id',
+        'apple_id',
         'avatar',
         'last_name',
         'phone',

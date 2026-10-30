@@ -1,0 +1,118 @@
+================================================================================
+              VIANTRYP - GUIA OFICIAL DE LANZAMIENTO EN iOS (APP STORE)
+================================================================================
+
+Version: 1.0.9 (Build 1)
+Bundle ID: com.viantryp.app
+Paquete listo para llevar al Mac: releases/Viantryp-iOS-Mac-Ready.zip
+
+--------------------------------------------------------------------------------
+PARTE 1: DESPLEGAR CAMBIOS WEB A PRODUCCION (DESDE WINDOWS)
+--------------------------------------------------------------------------------
+Como la app carga desde https://viantryp.com, asegurate de subir a tu servidor
+en produccion los cambios realizados en Fase 1 y Fase 2 y ejecutar:
+   php artisan migrate --force
+   php artisan view:clear
+
+--------------------------------------------------------------------------------
+PARTE 2: REGISTRAR EL IDENTIFICADOR Y LA APP EN APPLE (DESDE TU NAVEGADOR WINDOWS)
+--------------------------------------------------------------------------------
+1. Ingresa a https://developer.apple.com/account/resources/identifiers/list
+2. Haz clic en el boton "+" junto a "Identifiers" -> Selecciona "App IDs" -> Continue.
+3. Selecciona "App" -> Continue.
+4. Completa:
+   - Description: Viantryp
+   - Bundle ID (Explicit): com.viantryp.app
+5. En la lista de "Capabilities" abajo, marca la casilla:
+   [x] Sign In with Apple
+6. Haz clic en "Continue" y luego en "Register".
+
+7. Ahora entra a https://appstoreconnect.apple.com -> "Apps" -> Boton "+" -> "Nueva app":
+   - Plataformas: [x] iOS
+   - Nombre: Viantryp
+   - Idioma principal: Espanol (Espana) o Espanol (Latinoamerica)
+   - ID del paquete (Bundle ID): Selecciona "com.viantryp.app"
+   - SKU: VIANTRYP001
+   - Acceso de usuarios: Acceso completo
+
+--------------------------------------------------------------------------------
+PARTE 3: TEXTOS LISTOS PARA COPIAR Y PEGAR EN APP STORE CONNECT (DESDE WINDOWS)
+--------------------------------------------------------------------------------
+* Nombre (30 caracteres max):
+Viantryp
+
+* Subtitulo (30 caracteres max):
+Itinerarios y planes de viaje
+
+* Texto promocional (170 caracteres max):
+Disena, organiza y comparte itinerarios de viaje interactivos en minutos. Sincroniza vuelos, hoteles, actividades y mapas en un solo lugar.
+
+* Palabras clave / Keywords (100 caracteres max, sin espacios despues de la coma):
+viajes,itinerario,planificador,vuelos,hoteles,turismo,agencia,vacaciones,mapa,rutas,agenda,organizar
+
+* URL de soporte:
+https://viantryp.com/contacto
+
+* URL de marketing:
+https://viantryp.com
+
+* URL de la politica de privacidad:
+https://viantryp.com/privacidad
+
+* Categoria principal:
+Viajes (Travel)
+
+* Categoria secundaria:
+Productividad (Productivity)
+
+* Clasificacion por edades (Age Rating):
+Marca "Ninguno / No" en todas las opciones de contenido sensible -> Quedara en "4+".
+
+* Descripcion completa:
+Viantryp es la plataforma moderna para viajeros y organizadores de viajes que transforma la forma de planificar, estructurar y compartir itinerarios.
+
+Reune todos los detalles de tu proximo viaje en un lienzo visual, interactivo y siempre accesible desde tu iPhone o iPad:
+
+• Diseno de Itinerarios dia a dia: Organiza vuelos, alojamientos, traslados y actividades en una linea de tiempo clara y atractiva.
+• Mapas y Ubicaciones integradas: Visualiza tus paradas y lugares de interes directamente en el itinerario.
+• Asistente Inteligente Tryp IA: Obten sugerencias e ideas para complementar tus rutas en segundos.
+• Documentos y Soportes en un solo lugar: Adjunta reservas, vouchers y archivos importantes a cada actividad.
+• Colaboracion y Enlaces en Tiempo Real: Comparte tus itinerarios con acompanantes o clientes mediante enlaces interactivos siempre actualizados.
+
+*Informacion para el Revisor de Apple (App Review Information -> Notes):
+(Copia y pega este texto en el recuadro "Notas" para el revisor, junto con un usuario y contrasena de prueba en los campos de "Inicio de sesion"):
+
+"Viantryp is a multiplatform travel itinerary planning SaaS application (operating under Guideline 3.1.3(b) Multiplatform Services). Users can log in using Sign in with Apple or their email/password credentials provided above. There are no in-app purchases or external payment links inside the iOS app. Account deletion is available directly inside the app under: Perfil (bottom navigation bar) -> Seguridad de la Cuenta -> Eliminar mi cuenta."
+
+--------------------------------------------------------------------------------
+PARTE 4: COMPILAR Y SUBIR DESDE EL MAC (15 MINUTOS EN XCODE)
+--------------------------------------------------------------------------------
+No necesitas instalar PHP, ni MySQL, ni clonar todo el proyecto web en el Mac.
+
+1. Lleva al Mac (por USB, Google Drive o AirDrop) el archivo:
+   releases/Viantryp-iOS-Mac-Ready.zip
+2. Descomprimelo en el Escritorio del Mac (por ejemplo en una carpeta "viantryp-ios").
+3. Abre la aplicacion "Terminal" en el Mac, entra a esa carpeta e instala las
+   dependencias de Node (tarda unos 10 segundos):
+   cd ~/Desktop/viantryp-ios
+   npm install
+4. Abre el proyecto en Xcode ejecutando:
+   open ios/App/App.xcodeproj
+   (Espera unos segundos a que Xcode descargue automaticamente los paquetes Swift en la barra superior).
+5. Configura tu cuenta en Xcode:
+   - En el menu superior de Xcode ve a: Xcode -> Settings (o Preferences) -> Accounts.
+   - Haz clic en "+" abajo a la izquierda -> Apple ID -> Inicia sesion con tu cuenta de Apple Developer.
+6. Activa la firma automatica:
+   - En la columna izquierda de Xcode, haz clic en el icono azul "App" (arriba del todo).
+   - En el panel central, entra a la pestana "Signing & Capabilities".
+   - Marca la casilla [x] "Automatically manage signing".
+   - En el desplegable "Team", selecciona tu nombre / equipo de Apple Developer.
+7. Empaqueta y sube a App Store Connect:
+   - En la barra superior central de Xcode, junto a "App >", selecciona "Any iOS Device (arm64)".
+   - En el menu superior de la pantalla del Mac, haz clic en: Product -> Archive.
+   - Cuando termine de compilar (2-3 minutos), se abrira la ventana "Organizer".
+   - Haz clic en el boton azul "Distribute App" -> "App Store Connect" -> "Upload" -> "Next" -> "Upload".
+8. ¡Listo! Ya puedes apagar el Mac, volver a tu PC Windows, refrescar App Store Connect
+   en unos 10 minutos, elegir el compilado subido y darle a "Enviar para revision".
+================================================================================
+

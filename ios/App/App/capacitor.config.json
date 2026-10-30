@@ -1,0 +1,47 @@
+{
+	"appId": "com.viantryp.app",
+	"appName": "Viantryp",
+	"webDir": "public",
+	"bundledWebRuntime": false,
+	"server": {
+		"url": "https://viantryp.com",
+		"cleartext": false,
+		"allowNavigation": [
+			"viantryp.com",
+			"*.viantryp.com",
+			"accounts.google.com",
+			"*.google.com",
+			"*.googleusercontent.com",
+			"appleid.apple.com"
+		]
+	},
+	"plugins": {
+		"GoogleAuth": {
+			"scopes": [
+				"profile",
+				"email"
+			],
+			"serverClientId": "68250907387-5t11umbj4m0h0qr9p013l48uqof74orn.apps.googleusercontent.com",
+			"forceCodeForRefreshToken": false
+		},
+		"SplashScreen": {
+			"launchShowDuration": 3000,
+			"launchAutoHide": true,
+			"backgroundColor": "#0d2b3e",
+			"androidScaleType": "CENTER_CROP",
+			"showSpinner": false,
+			"splashFullScreen": true,
+			"splashImmersive": true
+		},
+		"StatusBar": {
+			"style": "DARK",
+			"backgroundColor": "#0d2b3e"
+		}
+	},
+	"packageClassList": [
+		"SignInWithApple",
+		"AppPlugin",
+		"SplashScreenPlugin",
+		"StatusBarPlugin"
+	]
+}

@@ -46,11 +46,21 @@
     }
 
     const isAppMode = isCapacitor || hasAppParam || (isStandalone && !hasWebParam);
+    const isIosApp = (isCapacitor && (
+        (window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ||
+        /iPad|iPhone|iPod/.test(navigator.userAgent)
+    )) || urlParams.get('ios') === '1';
 
     if (isAppMode) {
         document.documentElement.classList.add('is-viantryp-app');
         if (document.body) document.body.classList.add('is-viantryp-app');
         else document.addEventListener('DOMContentLoaded', () => { if(document.body) document.body.classList.add('is-viantryp-app'); });
+    }
+
+    if (isIosApp) {
+        document.documentElement.classList.add('is-viantryp-app', 'is-viantryp-ios');
+        if (document.body) document.body.classList.add('is-viantryp-app', 'is-viantryp-ios');
+        else document.addEventListener('DOMContentLoaded', () => { if(document.body) document.body.classList.add('is-viantryp-app', 'is-viantryp-ios'); });
     }
 })();
 </script>
@@ -373,6 +383,13 @@
         position: sticky !important;
         top: 0 !important;
         z-index: 200 !important;
+    }
+
+    /* Exclusivo iOS: Safe area superior (Notch / Dynamic Island) sin tocar Android ni Web */
+    html.is-viantryp-ios .dashboard-topbar,
+    body.is-viantryp-ios .dashboard-topbar {
+        padding-top: env(safe-area-inset-top, 0px) !important;
+        height: calc(60px + env(safe-area-inset-top, 0px)) !important;
     }
 
     .is-viantryp-app .app-topbar-logo,

@@ -11,7 +11,8 @@
       "*.viantryp.com",
       "accounts.google.com",
       "*.google.com",
-      "*.googleusercontent.com"
+      "*.googleusercontent.com",
+      "appleid.apple.com"
     ]
   },
   "plugins": {
