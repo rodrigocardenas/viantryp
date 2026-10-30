@@ -22,6 +22,23 @@ return new class extends Migration
             });
         }
 
+        // Replace global unique index on email with composite unique (user_id, email) BEFORE cloning shared records
+        try {
+            Schema::table('persons', function (Blueprint $table) {
+                $table->dropUnique('persons_email_unique');
+            });
+        } catch (\Throwable $e) {
+            // Index may already have been dropped
+        }
+
+        try {
+            Schema::table('persons', function (Blueprint $table) {
+                $table->unique(['user_id', 'email'], 'persons_user_id_email_unique');
+            });
+        } catch (\Throwable $e) {
+            // Composite index may already exist
+        }
+
         // Backfill user_id from person_trip -> trips.user_id and deduplicate shared person records across agencies
         $links = DB::table('person_trip')
             ->join('trips', 'person_trip.trip_id', '=', 'trips.id')
@@ -83,16 +100,6 @@ return new class extends Migration
                     ->update(['person_id' => $newPersonId]);
             }
         }
-
-        // Replace global unique index on email with composite unique (user_id, email)
-        Schema::table('persons', function (Blueprint $table) {
-            try {
-                $table->dropUnique('persons_email_unique');
-            } catch (\Throwable $e) {
-                // Index may already have been dropped in some environments
-            }
-            $table->unique(['user_id', 'email'], 'persons_user_id_email_unique');
-        });
     }
 
     /**
