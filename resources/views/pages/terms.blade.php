@@ -62,7 +62,7 @@
           </ul>
 
           <div style="margin-top:2rem; padding:1rem 1.2rem; background:var(--teal-light); border-radius:12px; font-size:0.82rem; color:var(--teal);">
-            <i class="fas fa-clock" style="margin-right:0.4rem;"></i><strong>Última actualización:</strong><br>Enero 2026
+            <i class="fas fa-clock" style="margin-right:0.4rem;"></i><strong>Última actualización:</strong><br>Octubre 2026
           </div>
         </div>
 

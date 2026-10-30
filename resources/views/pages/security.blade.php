@@ -51,7 +51,7 @@
           ['fa-cloud','var(--lime)','Infraestructura en la nube','Desplegado en AWS EU-West (Irlanda) con VPC privada, grupos de seguridad estrictos y acceso SSH restringido a IPs autorizadas.'],
           ['fa-database','#6366f1','Backups y recuperación','Copias de seguridad automáticas diarias con retención de 30 días. Plan de recuperación ante desastres con RTO &lt; 4h y RPO &lt; 1h.'],
           ['fa-shield-alt','#f59e0b','Protección de aplicaciones web','Mitigación de OWASP Top 10 (XSS, CSRF, SQL Injection), WAF, rate limiting y detección de bots.'],
-          ['fa-user-shield','var(--teal)','Control de acceso','Autenticación con 2FA opcional, OAuth 2.0 (Google), roles y permisos granulares, y cierre de sesión automático por inactividad.'],
+          ['fa-user-shield','var(--teal)','Control de acceso','Autenticación segura con OAuth 2.0 (Google Sign-In con 2FA de Google), roles y permisos granulares por itinerario, y expiración automática de sesión por inactividad.'],
           ['fa-search','#22c55e','Auditoría y monitoreo','Logs inmutables de acciones críticas, alertas automáticas ante anomalías y revisiones de seguridad periódicas.'],
         ] as [$icon,$color,$name,$desc])
         <div class="card">

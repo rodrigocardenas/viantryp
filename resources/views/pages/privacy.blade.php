@@ -47,7 +47,7 @@
           @endforeach
         </ul>
         <div style="margin-top:2rem; padding:1rem 1.2rem; background:var(--teal-light); border-radius:12px; font-size:0.82rem; color:var(--teal);">
-          <i class="fas fa-clock" style="margin-right:0.4rem;"></i><strong>Última actualización:</strong><br>Enero 2026
+          <i class="fas fa-clock" style="margin-right:0.4rem;"></i><strong>Última actualización:</strong><br>Octubre 2026
         </div>
       </div>
 
@@ -87,7 +87,7 @@
 
         <div id="cookies" style="margin-bottom:2.5rem;">
           <h2 style="font-family:'Inter',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy); margin-bottom:0.85rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">Cookies</h2>
-          <p class="section-text" style="margin-bottom:0;">Usamos cookies de sesión (esenciales, no se pueden desactivar) y cookies analíticas anónimas con Google Analytics (IP anonimizada). Puedes rechazar las analíticas desde la configuración de tu navegador o el panel de consentimiento dentro de la app.</p>
+          <p class="section-text" style="margin-bottom:0;">Usamos cookies estrictamente esenciales de sesión y seguridad (protección CSRF) necesarias para autenticar tu cuenta, además de métricas técnicas anónimas de rendimiento (Cloudflare). Puedes gestionar o bloquear las cookies no esenciales desde la configuración de tu navegador.</p>
         </div>
 
         <div id="derechos" style="margin-bottom:2.5rem;">

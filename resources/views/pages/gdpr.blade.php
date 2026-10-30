@@ -83,10 +83,10 @@
       <h2 style="font-family:'Inter',sans-serif; font-size:1.25rem; font-weight:800; color:var(--navy); margin-bottom:1.2rem; padding-bottom:0.65rem; border-bottom:1.5px solid var(--mid-gray);">Tus derechos bajo el RGPD</h2>
       <div class="card-grid-3" style="gap:1rem;">
         @foreach([
-          ['fa-eye','Acceso','Solicita una copia completa de tus datos en formato JSON.'],
+          ['fa-eye','Acceso','Solicita una copia completa de tus datos personales registrados.'],
           ['fa-edit','Rectificación','Corrige cualquier dato incorrecto directamente desde tu perfil.'],
-          ['fa-trash-alt','Supresión','Elimina tu cuenta y todos tus datos en un máximo de 30 días.'],
-          ['fa-download','Portabilidad','Exporta tus itinerarios y datos en JSON o CSV cuando quieras.'],
+          ['fa-trash-alt','Supresión','Elimina tu cuenta y todos tus datos de forma inmediata desde Mi Cuenta.'],
+          ['fa-download','Portabilidad','Exporta tus itinerarios en PDF o solicita copia portable de tus datos.'],
           ['fa-pause-circle','Limitación','Solicita que pausemos el tratamiento durante una reclamación.'],
           ['fa-ban','Oposición','Oponte al tratamiento basado en interés legítimo o marketing.'],
         ] as [$icon,$name,$desc])
