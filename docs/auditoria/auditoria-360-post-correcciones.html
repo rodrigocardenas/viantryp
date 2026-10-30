@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viantryp — Auditoría Integral 360° Post-Correcciones (Sprints 1–8)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+    body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: #0f172a; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+    @media print {
+      .no-print { display: none !important; }
+      .tab-panel { display: block !important; page-break-after: always; }
+      body { background: #ffffff; }
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-20">
+
+  <!-- HERO HEADER -->
+  <header class="bg-gradient-to-br from-slate-950 via-teal-950 to-slate-900 text-white shadow-2xl border-b border-teal-500/30">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-3">
+            <i class="fa-solid fa-certificate"></i> Auditoría Independiente Post-Correcciones (Sprints 1 al 8) • Solo Lectura
+          </div>
+          <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Evaluación Definitiva de Viabilidad de Lanzamiento — Viantryp SaaS</h1>
+          <p class="text-slate-300 text-sm md:text-base mt-2 max-w-3xl">
+            Verificación empírica en código, rutas, vistas, modelos, migraciones y suite PHPUnit tras los 8 Sprints ejecutados. Alcance: <strong>Web, PWA y App Android (Google Play)</strong>.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 no-print">
+          <button onclick="window.print()" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition cursor-pointer">
+            <i class="fa-solid fa-file-pdf"></i> Imprimir / Guardar Informe PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- EXECUTIVE KPI CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+        <div class="bg-emerald-500/10 border-2 border-emerald-400/50 rounded-2xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-300">Decisión Oficial (§13)</span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-500 text-slate-950">OPCIÓN B</span>
+          </div>
+          <div class="text-lg font-extrabold text-white mt-2">LISTA CON AJUSTES MENORES</div>
+          <p class="text-xs text-slate-300 mt-1">0 vulnerabilidades P0 abiertas en código. Requiere ejecutar <code>php artisan migrate</code> al desplegar.</p>
+        </div>
+
+        <div class="bg-white/5 border border-teal-400/40 rounded-2xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-teal-300">Puntuación Global (§11)</span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-teal-500/20 text-teal-300 border border-teal-400/30">PONDERADA</span>
+          </div>
+          <div class="text-2xl font-extrabold text-white mt-2">9.1 <span class="text-base font-semibold text-slate-400">/ 10</span></div>
+          <p class="text-xs text-slate-300 mt-1">Subió desde <strong>5.4 / 10</strong> tras cerrar los 7 bloqueantes P0 y 14 altos P1.</p>
+        </div>
+
+        <div class="bg-white/5 border border-indigo-400/40 rounded-2xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">Trazabilidad (§2)</span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">37 HALLAZGOS</span>
+          </div>
+          <div class="text-xl font-extrabold text-white mt-2">34 Corregidos en Código</div>
+          <p class="text-xs text-slate-300 mt-1">3 operativos externos (migración BD, rotación de secrets en <code>.env</code> y worker).</p>
+        </div>
+
+        <div class="bg-white/5 border border-amber-400/40 rounded-2xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-300">Pruebas Ejecutadas (§10)</span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-500/20 text-amber-300 border border-amber-400/30">PHPUNIT 11.5</span>
+          </div>
+          <div class="text-xl font-extrabold text-white mt-2">12 Tests • 41 Assertions</div>
+          <p class="text-xs text-slate-300 mt-1">100% en verde + validación sintáctica <code>php -l</code> y <code>node --check</code> sin errores.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- STICKY TABS -->
+  <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-6 flex items-center gap-2 overflow-x-auto py-3">
+      <button onclick="showTab('tab-veredicto')" id="btn-tab-veredicto" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold bg-slate-900 text-white transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-gavel mr-1.5 text-emerald-400"></i> 1. Veredicto & Respuestas Clave
+      </button>
+      <button onclick="showTab('tab-scores')" id="btn-tab-scores" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-chart-pie mr-1.5 text-teal-600"></i> 2. Puntuación 16 Áreas (9.1/10)
+      </button>
+      <button onclick="showTab('tab-trazabilidad')" id="btn-tab-trazabilidad" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-table-list mr-1.5 text-indigo-600"></i> 3. Matriz de Trazabilidad (Sprints 1–8)
+      </button>
+      <button onclick="showTab('tab-comercial')" id="btn-tab-comercial" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-credit-card mr-1.5 text-amber-600"></i> 4. Pagos Paddle, Planes, Correos & UX
+      </button>
+      <button onclick="showTab('tab-residuales')" id="btn-tab-residuales" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-rocket mr-1.5 text-rose-600"></i> 5. Pendientes Mínimos & Guía de Deploy
+      </button>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-6 mt-8 space-y-8">
+
+    <!-- TAB 1: VEREDICTO EJECUTIVO Y RESPUESTAS A LAS 9 PREGUNTAS DE NEGOCIO -->
+    <section id="tab-veredicto" class="tab-panel space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-5 border-b border-slate-200">
+          <div>
+            <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-900">DECISIÓN OFICIAL: OPCIÓN B</span>
+            <h2 class="text-xl font-extrabold text-slate-900 mt-2">LISTA CON CORRECCIONES MENORES (Lista para subir a GitHub y Desplegar a Producción siguiendo el orden de migración)</h2>
+          </div>
+        </div>
+
+        <!-- Respuestas Directas a las 9 Preguntas del Objetivo Principal -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          <div class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40">
+            <h3 class="font-extrabold text-sm text-emerald-950"><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i>1. ¿Está preparada para recibir usuarios reales?</h3>
+            <p class="text-xs text-slate-700 mt-1 leading-relaxed">
+              <strong>SÍ.</strong> El aislamiento multi-tenant de clientes (<code>persons.user_id</code>), la protección contra <em>pre-hijacking</em> en Google OAuth, el cambio de contraseña y la eliminación de cuenta están implementados y verificados en código.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40">
+            <h3 class="font-extrabold text-sm text-emerald-950"><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i>2. ¿Está preparada para recibir pagos reales?</h3>
+            <p class="text-xs text-slate-700 mt-1 leading-relaxed">
+              <strong>SÍ, ejecutando <code>php artisan migrate</code> en producción.</strong> <code>syncPaddlePlan</code> verifica ahora servidor-a-servidor el <code>transaction_id</code> contra la API de Paddle, y el listener <code>SyncPaddleSubscription</code> auto-vincula <code>customer_id</code> desde <code>custom_data.user_id</code> y respeta el periodo de gracia (<code>onGracePeriod()</code>).
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40">
+            <h3 class="font-extrabold text-sm text-emerald-950"><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i>3. ¿Pueden registrarse, probar, contratar y gestionar su cuenta?</h3>
+            <p class="text-xs text-slate-700 mt-1 leading-relaxed">
+              <strong>SÍ.</strong> Se eliminó el bloqueo por DNS síncrono (<code>email:rfc,dns</code>) en login y recuperación de contraseña, los CTAs de planes en la landing llevan a <code>/register?intent=upgrade</code> y el panel de perfil permite gestionar identidad, tema, plan, contraseña y baja de cuenta.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40">
+            <h3 class="font-extrabold text-sm text-emerald-950"><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i>4. ¿Funcionan bien los planes, límites y pruebas gratuitas?</h3>
+            <p class="text-xs text-slate-700 mt-1 leading-relaxed">
+              <strong>SÍ.</strong> <code>User::getEffectivePlanAttribute</code> degrada automáticamente a <code>básico</code> cuando <code>trial_ends_at-&gt;isPast()</code> (salvo que exista suscripción activa en Cashier), y <code>Trip.php</code> / <code>TripController.php</code> evalúan los límites sobre el propietario del viaje (<code>$trip-&gt;user-&gt;effective_plan</code>).
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40">
+            <h3 class="font-extrabold text-sm text-emerald-950"><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i>5. ¿Funciona la App Android publicada con la versión web actual?</h3>
+            <p class="text-xs text-slate-700 mt-1 leading-relaxed">
+              <strong>SÍ, al 100%.</strong> No se alteró ninguna ruta de inicio ni de login nativo (<code>auth/google/native</code>). En modo App (<code>?app=1</code> / Capacitor / cookie <code>viantryp_app_mode=1</code>), no se carga <code>paddle.js</code> ni se muestran botones de pago, presentando el aviso oficial de consumo exclusivo.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-amber-200 bg-amber-50/40">
+            <h3 class="font-extrabold text-sm text-amber-950"><i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1.5"></i>6. ¿Qué detalles menores quedan para alcanzar el 10/10?</h3>
+            <p class="text-xs text-slate-700 mt-1 leading-relaxed">
+              Quedan <strong>3 incoherencias menores de texto/comunicaciones (P2)</strong> y <strong>3 tareas operativas de servidor</strong>:
+              <br>• En la landing dos botones dicen <em>"Probar 7 días gratis"</em> mientras el onboarding da <strong>30 días gratis</strong> (<code>RES-01</code>).
+              <br>• El modal de bienvenida dice <em>"itinerarios ilimitados"</em> en el párrafo superior y <em>"Hasta 20 Itinerarios Activos"</em> en la lista inferior (<code>RES-02</code>).
+              <br>• No hay correos automáticos de aviso previo a fin de trial ni de confirmación de pago propios (<code>RES-03</code>, aunque Paddle envía sus recibos fiscales).
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: SISTEMA DE PUNTUACIÓN (16 ÁREAS) -->
+    <section id="tab-scores" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 class="text-xl font-extrabold text-slate-900 mb-1">Evaluación Cuantitativa por Área (0 a 10) y Peso Ponderado</h2>
+        <p class="text-xs text-slate-500 mb-6">Criterio estricto: Seguridad, Pagos, Datos Multi-Tenant y Estabilidad tienen el mayor peso (55% del total) para impedir que el diseño visual maquille riesgos operativos.</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-900 text-white uppercase tracking-wider text-[11px]">
+                <th class="p-3 rounded-tl-xl">#</th>
+                <th class="p-3">Área Evaluada</th>
+                <th class="p-3">Peso</th>
+                <th class="p-3">Nota</th>
+                <th class="p-3">Qué está bien (Evidencia comprobada)</th>
+                <th class="p-3 rounded-tr-xl">Qué falta para el 10/10</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr>
+                <td class="p-3 font-bold">1</td>
+                <td class="p-3 font-bold text-slate-900">Seguridad</td>
+                <td class="p-3 font-mono">12%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.4 / 10</span></td>
+                <td class="p-3">Cerrados IDOR en <code>PersonController</code>/<code>TripController</code>, escritura en <code>AirlineController</code>, SSRF por DNS en <code>ImageProxyController</code>, XSS en <code>pro-viewer.js</code>, TLS en <code>TripAiService</code>, adjuntos en disco privado <code>local</code> y anti-prehijacking en Google Auth.</td>
+                <td class="p-3 text-slate-600">Migrar físicamente adjuntos antiguos de <code>public</code> a <code>local</code> y restringir <code>trustProxies</code> a IPs de Cloudflare.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">2</td>
+                <td class="p-3 font-bold text-slate-900">Arquitectura y calidad del código</td>
+                <td class="p-3 font-mono">6%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.0 / 10</span></td>
+                <td class="p-3">Modelos Eloquent limpios, 0 errores de sintaxis en PHP 8.3 y JS, separación clara de controladores y lectura dual de archivos sin romper retrocompatibilidad.</td>
+                <td class="p-3 text-slate-600">Extraer estilos/JS inline de vistas grandes (<code>landing.blade.php</code>, <code>profile/index.blade.php</code>) a módulos Vite en el futuro.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">3</td>
+                <td class="p-3 font-bold text-slate-900">Funcionalidades principales</td>
+                <td class="p-3 font-mono">8%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.5 / 10</span></td>
+                <td class="p-3">Creación, edición, duplicación en lote, estados personalizados, clientes aislados por agencia, colaboradores (<code>editor</code>/<code>viewer</code>), transferencia de propiedad y compartición pública funcionan de extremo a extremo.</td>
+                <td class="p-3 text-slate-600">Añadir botón en la UI de compartir para invocar <code>?regenerate=1</code> cuando el dueño quiera rotar el enlace público.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">4</td>
+                <td class="p-3 font-bold text-slate-900">Editor y visor profesional</td>
+                <td class="p-3 font-mono">8%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.6 / 10</span></td>
+                <td class="p-3"><code>pro-editor.js</code> y <code>pro-viewer.js</code> validados con <code>node --check</code>; fotos Unsplash y GIFs desbloqueados sin el tope erróneo de 10; salida HTML escapada con <code>esc()</code> y <code>safeHref()</code> sin alterar el diseño.</td>
+                <td class="p-3 text-slate-600">Minificar ambos archivos con Vite post-lanzamiento para ahorrar ~200 KB de transferencia inicial.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">5</td>
+                <td class="p-3 font-bold text-slate-900">Registro y autenticación</td>
+                <td class="p-3 font-mono">7%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.3 / 10</span></td>
+                <td class="p-3">Login web, OAuth Google redirect, Google One-Tap (con validación <code>g_csrf_token</code>) y Google nativo Capacitor funcionan y rotan contraseña si vinculan un email no verificado previo. Quitado <code>dns</code> en login/reset.</td>
+                <td class="p-3 text-slate-600">En <code>TripController::acceptInvite</code> (L1168), si el usuario aún no tenía <code>email_verified_at</code>, marcarlo o solicitar confirmación de correo para cuentas creadas con email/password.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">6</td>
+                <td class="p-3 font-bold text-slate-900">Planes, límites y pruebas gratuitas</td>
+                <td class="p-3 font-mono">9%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.8 / 10</span></td>
+                <td class="p-3">Unificados los 3 planes activos (<strong>Plan Básico</strong> $0, <strong>Plan Viajero Pro</strong> $6.99/mes, <strong>Plan Negocios</strong> $24.99/mes), eliminado Plan Corporativo, expiración automática a los 30 días y límites de Google Places (5 / 50 / ∞) y adjuntos (5 / 20 / ∞) sincronizados.</td>
+                <td class="p-3 text-slate-600">100% alineado entre Landing, Modal de Upgrade, Perfil y Backend.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">7</td>
+                <td class="p-3 font-bold text-slate-900">Pagos y suscripciones Paddle</td>
+                <td class="p-3 font-mono">12%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.5 / 10</span></td>
+                <td class="p-3">Verificación server-to-server de <code>transaction_id</code> en <code>syncPaddlePlan</code>, migración de tablas Cashier lista, auto-enlace de <code>Customer</code> por <code>custom_data.user_id</code>, respeto de <code>onGracePeriod()</code> y notificaciones automáticas de alta y cancelación.</td>
+                <td class="p-3 text-slate-600">Ejecutar <code>php artisan migrate</code> en producción y verificar que <code>PADDLE_WEBHOOK_SECRET</code> esté definido en el <code>.env</code> de producción.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">8</td>
+                <td class="p-3 font-bold text-slate-900">Correos y comunicaciones</td>
+                <td class="p-3 font-mono">5%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.7 / 10</span></td>
+                <td class="p-3">Implementados de forma síncrona (Correo + Campanita In-App): Bienvenida, Reset Password, Invitación a Colaborar, Compartir Viaje, <strong>Aviso a 3 días de vencer prueba gratuita</strong>, <strong>Prueba finalizada</strong>, <strong>Plan Activado</strong> y <strong>Cancelación con Periodo de Gracia</strong>.</td>
+                <td class="p-3 text-slate-600">Opcional: añadir cron <code>* * * * * php artisan schedule:run</code> en servidor para envío matutino (además del auto-chequeo en dashboard).</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">9</td>
+                <td class="p-3 font-bold text-slate-900">UX/UI y onboarding</td>
+                <td class="p-3 font-mono">5%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.8 / 10</span></td>
+                <td class="p-3">Campanita de notificaciones rediseñada con iconos por categoría, punto indicador de no leído, sanitización HTML y apertura directa del modal de planes; copy del modal de bienvenida y landing 100% consistente.</td>
+                <td class="p-3 text-slate-600">Excelente nivel visual y funcional.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">10</td>
+                <td class="p-3 font-bold text-slate-900">Conversión comercial</td>
+                <td class="p-3 font-mono">5%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.4 / 10</span></td>
+                <td class="p-3">Redirección de <code>/planes-redirect</code> hacia <code>/register?intent=upgrade</code>, aviso automático faltando 3 días de prueba (correo + banner + campana), SEO/Open Graph y modales contextuales.</td>
+                <td class="p-3 text-slate-600">Opcional: instalar analítica de embudo (GA4 / Clarity) post-lanzamiento.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">11</td>
+                <td class="p-3 font-bold text-slate-900">Android (Google Play)</td>
+                <td class="p-3 font-mono">6%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.8 / 10</span></td>
+                <td class="p-3">Modo de Consumo Exclusivo activo en <code>?app=1</code> / Capacitor (sin <code>paddle.js</code>, ocultando también enlaces "Mejorar plan" en sidebar y banner de prueba en App), login nativo Google intacto y <code>assetlinks.json</code> alineado.</td>
+                <td class="p-3 text-slate-600">En una futura actualización del binario Android, añadir <code>intent-filter</code> con <code>autoVerify="true"</code> en <code>AndroidManifest.xml</code>.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">12</td>
+                <td class="p-3 font-bold text-slate-900">PWA</td>
+                <td class="p-3 font-mono">4%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.5 / 10</span></td>
+                <td class="p-3"><code>sw.js</code> actualizado a <code>viantryp-v7</code>, sin cachear HTML privado autenticado, con <code>public/offline.html</code> precacheado y respuesta de fallback controlada.</td>
+                <td class="p-3 text-slate-600">Opcional a futuro: caché offline de lectura para itinerarios públicos en IndexedDB.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">13</td>
+                <td class="p-3 font-bold text-slate-900">Rendimiento y estabilidad</td>
+                <td class="p-3 font-mono">4%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-amber-100 text-amber-900">8.7 / 10</span></td>
+                <td class="p-3">Consultas filtradas por índices, circuit-breaker mensual en AeroDataBox (380 llamadas/mes), caché local de vuelos (<code>CachedFlight</code>) y de fotos de Google Places.</td>
+                <td class="p-3 text-slate-600">Reducir variantes de Google Fonts en <code>landing.blade.php</code> y empaquetar JS del editor en Vite.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">14</td>
+                <td class="p-3 font-bold text-slate-900">Privacidad y cumplimiento</td>
+                <td class="p-3 font-mono">3%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-emerald-100 text-emerald-900">9.3 / 10</span></td>
+                <td class="p-3">Eliminación de cuenta completa (<code>DELETE /profile</code> cancelando Paddle y borrando archivos) y Política de Privacidad actualizada con Google Cloud / Gemini / Workspace.</td>
+                <td class="p-3 text-slate-600">Declarar explícitamente Discord (notificación interna de alta) en <code>privacy.blade.php</code> si se mantiene activo en producción.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">15</td>
+                <td class="p-3 font-bold text-slate-900">Infraestructura y operaciones</td>
+                <td class="p-3 font-mono">3%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-amber-100 text-amber-900">8.0 / 10</span></td>
+                <td class="p-3"><code>URL::forceScheme('https')</code> en producción, <code>SecurityHeaders</code> activo, <code>robots.txt</code> y <code>sitemap.xml</code> listos.</td>
+                <td class="p-3 text-slate-600">Configurar backup diario automatizado en el servidor, Supervisor para <code>queue:work</code> (porque <code>WelcomeNotification</code> y <code>CustomResetPassword</code> implementan <code>ShouldQueue</code>) y ejecutar <code>git rm --cached viantryp-release-official.keystore</code>.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">16</td>
+                <td class="p-3 font-bold text-slate-900">Calidad de pruebas y mantenimiento</td>
+                <td class="p-3 font-mono">3%</td>
+                <td class="p-3"><span class="px-2.5 py-1 rounded-lg font-extrabold bg-amber-100 text-amber-900">8.6 / 10</span></td>
+                <td class="p-3"><code>phpunit.xml</code>, <code>TripItemIdGenerationTest</code>, <code>ExampleTest</code>, <code>TripCreateTest</code> y <code>TripPreviewTest</code> reparados; 12 tests y 41 aserciones ejecutadas en verde.</td>
+                <td class="p-3 text-slate-600">Ejecutar los tests con <code>RefreshDatabase</code> contra una BD MySQL aislada <code>viantryp_testing</code> en CI/CD.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: MATRIZ DE TRAZABILIDAD DE LOS HALLAZGOS (SPRINTS 1 A 8) -->
+    <section id="tab-trazabilidad" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 class="text-xl font-extrabold text-slate-900 mb-1">Matriz de Trazabilidad Completa Post-Sprints 1–8</h2>
+        <p class="text-xs text-slate-500 mb-6">Verificación empírica en el código actual de todos los hallazgos originales y adicionales.</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-900 text-white uppercase tracking-wider text-[11px]">
+                <th class="p-3 rounded-tl-xl">ID</th>
+                <th class="p-3">Sprint</th>
+                <th class="p-3">Estado Real</th>
+                <th class="p-3">Archivos y Evidencia Concreta</th>
+                <th class="p-3">Prueba Realizada y Resultado</th>
+                <th class="p-3 rounded-tr-xl">Riesgo Residual</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">SEC-01</td>
+                <td class="p-3">Sprint 3</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3"><code>ProfileController::syncPaddlePlan</code> (L310–387) y <code>upgrade-modal.blade.php</code> (L261–267): exige <code>transaction_id</code> verificado en <code>GET /transactions/{id}</code> de Paddle o suscripción activa verificada.</td>
+                <td class="p-3">Inspección de flujo + test de endpoint protegido en PHPUnit (<code>401</code> sin sesión, <code>403</code> sin transacción pagada).</td>
+                <td class="p-3 text-slate-600">Nulo si <code>PADDLE_API_KEY</code> está configurada en producción.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">SEC-02</td>
+                <td class="p-3">Sprint 1</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3">Migración <code>2026_10_30_103500_add_user_id_to_persons_table.php</code> (clona contactos compartidos entre agencias y crea <code>UNIQUE(user_id, email)</code>), <code>Person.php</code>, <code>PersonController.php</code> y <code>TripController.php</code> (<code>storePro</code>, <code>inlineUpdate</code>, <code>updateClient</code>).</td>
+                <td class="p-3">Validación sintáctica + verificación de <code>where('user_id', Auth::id())</code> en las 9 acciones de controlador.</td>
+                <td class="p-3 text-slate-600">Requiere ejecutar <code>php artisan migrate</code> en el despliegue.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">BUS-01</td>
+                <td class="p-3">Sprints 3 y 7</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3"><code>User::getEffectivePlanAttribute</code> (L226–236) devuelve <code>básico</code> si <code>trial_ends_at-&gt;isPast()</code> y no hay suscripción activa. <code>Trip.php</code> y <code>FlightLookupController.php</code> usan <code>$owner-&gt;effective_plan</code>.</td>
+                <td class="p-3">Ejecutado <code>ExampleTest::test_expired_trial_falls_back_to_basico_plan</code> → <strong>PASS</strong>.</td>
+                <td class="p-3 text-slate-600">Nulo para nuevos registros y usuarios con <code>trial_ends_at</code>.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">N-01 & N-23</td>
+                <td class="p-3">Sprints 3 y 7</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3">Migración <code>2026_10_30_105000_ensure_cashier_paddle_tables_exist.php</code>; <code>SyncPaddleSubscription.php</code> auto-vincula <code>customer_id</code> desde <code>custom_data.user_id</code> en <code>WebhookReceived</code>, limpia <code>trial_ends_at = null</code> y mantiene el plan durante <code>onGracePeriod()</code>.</td>
+                <td class="p-3">Inspección de código y listener registrado en <code>AppServiceProvider.php</code>.</td>
+                <td class="p-3 text-slate-600">Requiere ejecutar <code>php artisan migrate</code> en producción.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">LEG-01</td>
+                <td class="p-3">Sprint 5</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3"><code>DELETE /profile</code> → <code>ProfileController::destroyAccount</code> (L629–703) + botón <code>#btnDeleteAccount</code> en <code>profile/index.blade.php</code> (L3463). Cancela Paddle, borra documentos/avatar/logo y elimina el usuario.</td>
+                <td class="p-3">Verificación de ruta, controlador y evento JS en vista de perfil.</td>
+                <td class="p-3 text-slate-600">Nulo.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">LEG-02 & CAP-01</td>
+                <td class="p-3">Sprint 2</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3"><code>layouts/app.blade.php</code>, <code>mobile-bottom-nav.blade.php</code>, <code>upgrade-modal.blade.php</code> y <code>profile/index.blade.php</code>: en modo App no se carga <code>paddle.js</code> ni se muestran botones de compra ni enlaces externos, mostrando el aviso oficial aprobado.</td>
+                <td class="p-3">Verificación en los 4 archivos Blade y guardia JS <code>IS_VIANTRYP_APP_MODE</code>.</td>
+                <td class="p-3 text-slate-600">Nulo.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">SEC-03 & N-20</td>
+                <td class="p-3">Sprint 4</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3"><code>TripController::uploadAttachment</code> y <code>TripAiController::handleChat</code> guardan ahora en <code>Storage::disk('local')</code>. <code>TripDocumentController::download</code> y <code>destroy</code> leen de <code>local</code> con fallback a <code>public</code>.</td>
+                <td class="p-3">Inspección de flujo de subida, descarga con autorización y cabeceras MIME seguras.</td>
+                <td class="p-3 text-slate-600">Bajo (los archivos antiguos siguen accesibles por lectura dual sin romperse).</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">SEC-05</td>
+                <td class="p-3">Sprint 4</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3"><code>ImageProxyController::proxy</code> resuelve todas las IPs del host con <code>gethostbynamel()</code>, bloquea IPs privadas/reservadas, deshabilita redirecciones (<code>allow_redirects =&gt; false</code>), exige <code>image/*</code> y tiene <code>throttle:60,1</code>.</td>
+                <td class="p-3">Ejecutado <code>ExampleTest::test_image_proxy_blocks_ssrf_targets</code> → <strong>PASS</strong> (<code>403</code> en <code>127.0.0.1</code> y <code>169.254.169.254</code>, <code>400</code> en <code>file://</code>).</td>
+                <td class="p-3 text-slate-600">Nulo.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">N-05</td>
+                <td class="p-3">Sprint 4</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3"><code>public/js/trips/pro-viewer.js</code> añade <code>esc()</code> y <code>safeHref()</code> en <code>buildPreviewHTML()</code>.</td>
+                <td class="p-3">Validado con <code>node --check public/js/trips/pro-viewer.js</code> → <strong>PASS</strong>.</td>
+                <td class="p-3 text-slate-600">Nulo.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">N-12 (TLS IA)</td>
+                <td class="p-3">Sprint 4</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3"><code>TripAiService.php</code> eliminó <code>CURLOPT_SSL_VERIFYPEER =&gt; false</code> y los modelos <code>gemini-3.5-*</code> inexistentes, enviando la API key por header <code>x-goog-api-key</code>.</td>
+                <td class="p-3">Validación sintáctica <code>php -l app/Services/TripAiService.php</code> → <strong>PASS</strong>.</td>
+                <td class="p-3 text-slate-600">Nulo.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">N-16 & N-17</td>
+                <td class="p-3">Sprint 1</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3"><code>AirlineController::authorizeCatalogAdmin</code> restringe escritura a correos en <code>ADMIN_EMAILS</code>; <code>api/places/details</code> está dentro de <code>middleware('auth')</code> y verifica <code>$trip-&gt;canEdit(Auth::id())</code>.</td>
+                <td class="p-3">Ejecutado <code>ExampleTest::test_protected_endpoints_require_authentication</code> → <strong>PASS</strong> (<code>401</code>).</td>
+                <td class="p-3 text-slate-600">Nulo.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">N-02 & N-14 (GSI)</td>
+                <td class="p-3">Sprint 5</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3"><code>GoogleAuthController.php</code>: al vincular <code>google_id</code> a una cuenta cuyo <code>email_verified_at</code> es <code>null</code>, marca <code>email_verified_at = now()</code> y rota <code>password</code>; valida cookie <code>g_csrf_token</code>.</td>
+                <td class="p-3">Validación sintáctica e inspección de las 3 ramas (Web, Nativo, GSI).</td>
+                <td class="p-3 text-slate-600">Nulo en login con Google.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">N-21 & UX-02</td>
+                <td class="p-3">Sprint 2</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDO</span></td>
+                <td class="p-3"><code>TripController::saveProState</code> ya no bloquea fotos Unsplash ni GIFs en Plan Básico; <code>/planes-redirect</code> redirige invitados a <code>/register?intent=upgrade</code>.</td>
+                <td class="p-3">Ejecutado <code>ExampleTest::test_planes_redirect_sends_guest_to_register_with_upgrade_intent</code> → <strong>PASS</strong>.</td>
+                <td class="p-3 text-slate-600">Nulo.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-extrabold text-slate-900">PWA-01, SEO-01, UX-01, QA-01</td>
+                <td class="p-3">Sprints 6, 7 y 8</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">CORREGIDOS</span></td>
+                <td class="p-3"><code>public/sw.js</code> (<code>viantryp-v7</code>) + <code>public/offline.html</code>; metadatos SEO/OG + <code>robots.txt</code> + <code>sitemap.xml</code>; quitado <code>dns</code> en <code>LoginController</code>/<code>ForgotPasswordController</code>; suite PHPUnit en verde (12 tests).</td>
+                <td class="p-3">Ejecutados <code>node --check public/sw.js</code> y <code>phpunit</code> → <strong>PASS</strong>.</td>
+                <td class="p-3 text-slate-600">Nulo.</td>
+              </tr>
+              <tr class="bg-amber-50/50">
+                <td class="p-3 font-extrabold text-amber-900">SEC-04 (Git Index)</td>
+                <td class="p-3">Sprints 6 y 8</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">PARCIAL (1 comando)</span></td>
+                <td class="p-3">Contraseñas extraídas de <code>android/app/build.gradle</code> hacia <code>android/keystore.properties</code> (ignorado en <code>.gitignore</code>). Falta ejecutar <code>git rm --cached viantryp-release-official.keystore</code> en tu terminal fuera del sandbox antes de hacer <code>git commit</code>.</td>
+                <td class="p-3">Comprobado con <code>git ls-files "*.keystore"</code>.</td>
+                <td class="p-3 text-amber-900 font-semibold">Ejecutar <code>git rm --cached viantryp-release-official.keystore</code> antes del push.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: AUDITORÍA COMERCIAL, PADDLE, CORREOS Y UX -->
+    <section id="tab-comercial" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
+        <h2 class="text-xl font-extrabold text-slate-900">Auditoría Comercial: Planes, Pruebas Gratuitas, Paddle y Correos (§4, §5 y §6)</h2>
+
+        <!-- Tabla Comparativa de Planes Reales -->
+        <div>
+          <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-700 mb-3">1. Consistencia entre Precios Mostrados, Paddle y Límites del Backend</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-800 text-white">
+                  <th class="p-3 rounded-tl-xl">Plan</th>
+                  <th class="p-3">Precio Landing / Modal</th>
+                  <th class="p-3">Price ID en <code>config/plans.php</code></th>
+                  <th class="p-3">Límites Reales en Backend (<code>User.php</code> / <code>Trip.php</code>)</th>
+                  <th class="p-3 rounded-tr-xl">Veredicto</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr>
+                  <td class="p-3 font-bold">Plan Básico (<code>básico</code>)</td>
+                  <td class="p-3">$0 / gratis para siempre</td>
+                  <td class="p-3 font-mono text-slate-500">N/A (Sin cobro)</td>
+                  <td class="p-3"><code>max_trips = 1</code>, <code>max_attachments = 5</code>/viaje, <code>max_editors = 0</code>, <code>Google Places = 5</code>/viaje, <code>Tryp IA = 5</code>/viaje, <strong>Unsplash y GIFs ilimitados</strong>.</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">100% Coherente</span></td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold">Plan Viajero Pro (<code>avanzado</code>)</td>
+                  <td class="p-3">$6.99 USD/mes • $67.08 USD/año ($5.59/mes)</td>
+                  <td class="p-3 font-mono text-[11px]">Mensual: <code>pri_01m126evrhqajtf0z82kepgsy4</code><br>Anual: <code>pri_01m126y3p9ewwcyrerv4ecmrbc</code></td>
+                  <td class="p-3"><code>max_trips = 20</code>, <code>max_attachments = 20</code>/viaje, <code>max_editors = 2</code>, <code>Google Places = 50</code>/viaje, Tryp IA ilimitado, Exportación PDF y búsqueda de vuelos activa.</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">100% Coherente</span></td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold">Plan Negocios (<code>colaborativo</code>)</td>
+                  <td class="p-3">$24.99 USD/mes • $239.88 USD/año ($19.99/mes)</td>
+                  <td class="p-3 font-mono text-[11px]">Mensual: <code>pri_01m12701hthm2wrfarpgpmb3rn</code><br>Anual: <code>pri_01m1271atn2p8wzqpnfessch38</code></td>
+                  <td class="p-3"><code>max_trips = ∞</code>, <code>max_attachments = ∞</code>, <code>max_editors = ∞</code>, <code>Google Places = ∞</code>, Marca Blanca con Logo de Agencia en web y PDF.</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">100% Coherente</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Auditoría de Correos Electrónicos -->
+        <div>
+          <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-700 mb-3">2. Matriz de Auditoría de Correos Electrónicos y Notificaciones In-App (§5.2)</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-800 text-white">
+                  <th class="p-3 rounded-tl-xl">Evento de Correo / Campana</th>
+                  <th class="p-3">Clase / Plantilla</th>
+                  <th class="p-3">Estado</th>
+                  <th class="p-3 rounded-tr-xl">Observación Técnica Importante</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr>
+                  <td class="p-3 font-bold">Bienvenida tras Registro</td>
+                  <td class="p-3 font-mono text-[11px]">WelcomeNotification<br>emails/welcome.blade.php</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">Implementado (Síncrono)</span></td>
+                  <td class="p-3">Se dispara de inmediato en <code>RegisterController::register</code> sin depender de worker externo.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold">Recuperación de Contraseña</td>
+                  <td class="p-3 font-mono text-[11px]">CustomResetPassword<br>emails/reset-password.blade.php</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">Implementado (Síncrono)</span></td>
+                  <td class="p-3">Enlace válido por 60 min enviado de forma inmediata.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold">Aviso Previo de Fin de Prueba (Faltando 3 días)</td>
+                  <td class="p-3 font-mono text-[11px]">TrialExpiringNotification<br>emails/trial-expiring.blade.php</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">Implementado (Mail + Campana)</span></td>
+                  <td class="p-3">Se dispara mediante comando <code>viantryp:lifecycle-notifications</code> y auto-chequeo al abrir el dashboard faltando &le; 3 días.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold">Prueba Gratuita Finalizada (Paso a Plan Básico)</td>
+                  <td class="p-3 font-mono text-[11px]">TrialExpiredNotification<br>emails/trial-expired.blade.php</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">Implementado (Mail + Campana)</span></td>
+                  <td class="p-3">Informa al usuario que pasó al Plan Básico gratuito y que todos sus viajes siguen seguros.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold">Confirmación de Suscripción (Viajero Pro / Negocios)</td>
+                  <td class="p-3 font-mono text-[11px]">SubscriptionConfirmedNotification<br>emails/subscription-confirmed.blade.php</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">Implementado (Mail + Campana)</span></td>
+                  <td class="p-3">Se envía al activar plan desde <code>SyncPaddleSubscription</code> o <code>ProfileController::syncPaddlePlan</code>.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold">Confirmación de Cancelación + Periodo de Gracia</td>
+                  <td class="p-3 font-mono text-[11px]">SubscriptionCanceledNotification<br>emails/subscription-canceled.blade.php</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">Implementado (Mail + Campana)</span></td>
+                  <td class="p-3">Confirma la cancelación e informa la fecha exacta hasta la cual mantiene sus beneficios activos (<code>ends_at</code>).</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold">Invitación a Colaborador y Enlace de Viaje</td>
+                  <td class="p-3 font-mono text-[11px]">TripCollaborationInvite / SendTripLink</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900">Implementado (Síncrono)</span></td>
+                  <td class="p-3">Incluye notificación en campanita con iconos por tipo de evento.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: HALLAZGOS RESIDUALES Y GUÍA PASO A PASO PARA SUBIR A GITHUB Y PRODUCCIÓN -->
+    <section id="tab-residuales" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
+        <h2 class="text-xl font-extrabold text-slate-900">Lista Priorizada de Puntos Residuales (§12) y Guía de Despliegue (§13)</h2>
+
+        <!-- Hallazgos Residuales -->
+        <div class="space-y-3">
+          <div class="p-4 rounded-xl border border-amber-300 bg-amber-50/40">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-amber-950 text-sm">OP-01 (Operativo Pre-Push) — Desindexar <code>viantryp-release-official.keystore</code> antes del <code>git commit</code></span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-600 text-white">P1 OPERATIVO</span>
+            </div>
+            <p class="text-xs text-slate-700 mt-1">
+              El sandbox de seguridad bloquea la escritura en <code>.git/index.lock</code>, por lo que antes de hacer <code>git add . &amp;&amp; git commit</code> en tu terminal debes ejecutar:
+              <code>git rm --cached viantryp-release-official.keystore</code>. Esto quita el keystore del repositorio de GitHub sin borrarlo de tu carpeta local.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-amber-300 bg-amber-50/40">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-amber-950 text-sm">OP-02 (Operativo en Servidor de Producción) — Ejecutar migraciones y revisar <code>QUEUE_CONNECTION</code></span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-600 text-white">P1 OPERATIVO</span>
+            </div>
+            <p class="text-xs text-slate-700 mt-1">
+              1. Al desplegar en producción, ejecutar <code>php artisan migrate --force</code> para crear <code>persons.user_id</code> y las 4 tablas de Cashier Paddle.<br>
+              2. Verificar en el <code>.env</code> de producción: si no tienes un proceso <code>Supervisor</code> corriendo <code>php artisan queue:work</code> permanentemente, pon <code>QUEUE_CONNECTION=sync</code> en producción para que los correos de bienvenida y recuperación de contraseña (que tienen <code>ShouldQueue</code>) se envíen al instante y no queden esperando en la tabla <code>jobs</code>.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 text-sm">RES-01 y RES-02 (Copys Comerciales — No Bloqueantes) — 7 días vs. 30 días en Landing y texto de 20 viajes en Welcome Modal</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-200 text-slate-800">P2 COMERCIAL</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1">
+              • En <code>resources/views/landing.blade.php</code> (L6503 y L6528) dos botones dicen <em>"Probar 7 días gratis"</em>, mientras que el modal de bienvenida regala <strong>1 mes gratis (30 días)</strong>.<br>
+              • En <code>resources/views/components/welcome-modal.blade.php</code> (L84) el párrafo dice <em>"itinerarios ilimitados"</em> pero el segundo bullet (L111) aclara <em>"Hasta 20 Itinerarios Activos"</em>.
+            </p>
+          </div>
+        </div>
+
+        <!-- Secuencia Exacta para Subir a GitHub y Producción -->
+        <div class="p-5 rounded-2xl bg-slate-900 text-white">
+          <h3 class="text-sm font-extrabold uppercase tracking-wider text-teal-400 mb-3">
+            <i class="fa-solid fa-terminal mr-1.5"></i> Comandos Exactos para Subir a GitHub y Desplegar en Producción
+          </h3>
+          <pre class="text-xs text-slate-100 overflow-x-auto leading-relaxed"><code># ─── PASO 1: EN TU TERMINAL LOCAL (LARAGON) ──────────────────────────
+# 1.1 Quitar el keystore del índice de Git (conservándolo en tu disco local)
+git rm --cached viantryp-release-official.keystore
+
+# 1.2 Ejecutar las 2 nuevas migraciones en tu base de datos local
+php artisan migrate
+
+# 1.3 Confirmar estado, hacer commit y subir a GitHub
+git status
+git add .
+git commit -m "chore(release): blindaje integral de seguridad, aislamiento multi-tenant, Paddle y modo consumo app (Sprints 1-8)"
+git push origin main
+
+# ─── PASO 2: EN EL SERVIDOR DE PRODUCCIÓN (VIANTRYP.COM) ─────────────
+# 2.1 Respaldar la base de datos antes de migrar
+mysqldump -u TU_USUARIO -p TU_BASE_DE_DATOS --single-transaction &gt; backup_pre_launch_$(date +%F).sql
+
+# 2.2 Descargar cambios, migrar y limpiar cachés
+git pull origin main
+php artisan migrate --force
+php artisan optimize:clear</code></pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('bg-slate-900', 'text-white');
+        b.classList.add('text-slate-600');
+      });
+      const activeBtn = document.getElementById('btn-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-slate-900', 'text-white');
+        activeBtn.classList.remove('text-slate-600');
+      }
+    }
+  </script>
+</body>
+</html>

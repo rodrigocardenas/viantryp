@@ -125,7 +125,7 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         $validated = $request->validate([
-            'theme_color' => 'nullable|string|max:50',
+            'theme_color' => 'required|string|in:default,ocean,gold,sunset,blush,silver,mint,lavender',
         ]);
 
         $user->update(['theme_color' => $validated['theme_color']]);
@@ -162,10 +162,7 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        $effectivePlan = strtolower($user->plan ?? 'básico');
-        if ($user->isTrialActive() && $effectivePlan === \App\Models\User::PLAN_BASICO) {
-            $effectivePlan = \App\Models\User::PLAN_AVANZADO;
-        }
+        $effectivePlan = $user->effective_plan;
 
         if (!in_array($effectivePlan, [\App\Models\User::PLAN_COLABORATIVO, \App\Models\User::PLAN_CORPORATIVO])) {
             return response()->json([
@@ -240,9 +237,8 @@ class ProfileController extends Controller
         // Define limits for validation
         $planLimits = [
             'básico'        => ['trips' => 1, 'editors' => 0],
-            'avanzado'      => ['trips' => 1000000, 'editors' => 2],
+            'avanzado'      => ['trips' => 20, 'editors' => 2],
             'colaborativo'  => ['trips' => 1000000, 'editors' => 1000000],
-            'corporativo'   => ['trips' => 1000000, 'editors' => 1000000],
         ];
 
         $targetLimits = $planLimits[$newPlan] ?? null;
@@ -253,7 +249,7 @@ class ProfileController extends Controller
             if ($tripCount > $targetLimits['trips']) {
                 return response()->json([
                     'success' => false, 
-                    'message' => "No puedes bajar al plan ".ucfirst($newPlan)." porque tienes {$tripCount} itinerarios y el plan solo permite {$targetLimits['trips']}."
+                    'message' => "No puedes bajar al Plan Básico porque tienes {$tripCount} itinerarios y el plan solo permite {$targetLimits['trips']}."
                 ], 422);
             }
 
@@ -268,16 +264,17 @@ class ProfileController extends Controller
             if ($editorCount > $targetLimits['editors']) {
                 return response()->json([
                     'success' => false, 
-                    'message' => "No puedes bajar al plan ".ucfirst($newPlan)." porque has invitado a {$editorCount} editores y el plan solo permite {$targetLimits['editors']}."
+                    'message' => "No puedes bajar al Plan Básico porque has invitado a {$editorCount} editores y el plan solo permite {$targetLimits['editors']}."
                 ], 422);
             }
         }
 
         $user->update(['plan' => $newPlan]);
+        $user->refresh();
 
         return response()->json([
             'success' => true,
-            'message' => 'Plan actualizado a ' . ucfirst($newPlan),
+            'message' => 'Plan actualizado a Plan ' . $user->plan_display_name,
             'plan' => $newPlan
         ]);
     }
@@ -289,6 +286,7 @@ class ProfileController extends Controller
 
         $priceId = $request->input('price_id');
         $planKey = strtolower($request->input('plan', ''));
+        $transactionId = $request->input('transaction_id');
 
         $paddlePrices = config('plans.paddle', []);
         $matchedPlan = null;
@@ -314,14 +312,92 @@ class ProfileController extends Controller
             ], 422);
         }
 
+        if ($matchedPlan !== 'básico') {
+            $apiKey = config('cashier.api_key');
+            $baseUrl = config('cashier.sandbox') ? 'https://sandbox-api.paddle.com' : 'https://api.paddle.com';
+
+            if ($apiKey) {
+                $verified = false;
+
+                // 1. Verify via transaction_id from Paddle.Checkout callback
+                if ($transactionId && is_string($transactionId) && str_starts_with($transactionId, 'txn_')) {
+                    try {
+                        $txResponse = \Illuminate\Support\Facades\Http::withToken($apiKey)
+                            ->timeout(10)
+                            ->get("{$baseUrl}/transactions/{$transactionId}");
+
+                        if ($txResponse->successful()) {
+                            $txData = $txResponse->json('data') ?? [];
+                            $txStatus = $txData['status'] ?? '';
+                            $txUserId = $txData['custom_data']['user_id'] ?? null;
+
+                            if (in_array($txStatus, ['completed', 'paid', 'billed']) && (empty($txUserId) || (string) $txUserId === (string) $user->id)) {
+                                $verified = true;
+
+                                // Extract verified price_id from transaction items if present
+                                $txItems = $txData['items'] ?? [];
+                                foreach ($txItems as $item) {
+                                    $itemPriceId = $item['price_id'] ?? ($item['price']['id'] ?? null);
+                                    if ($itemPriceId) {
+                                        foreach ($paddlePrices as $key => $prices) {
+                                            if (($prices['monthly'] ?? '') === $itemPriceId || ($prices['annual'] ?? '') === $itemPriceId) {
+                                                $matchedPlan = $key;
+                                                break 2;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        \Log::warning('Paddle transaction verification warning: ' . $e->getMessage());
+                    }
+                }
+
+                // 2. Fallback: verify via active subscriptions or local Cashier webhook state
+                if (!$verified) {
+                    try {
+                        if (\Illuminate\Support\Facades\Schema::hasTable('subscriptions') && $user->subscriptions()->valid()->exists()) {
+                            $verified = true;
+                        } else {
+                            $subResponse = \Illuminate\Support\Facades\Http::withToken($apiKey)
+                                ->timeout(10)
+                                ->get("{$baseUrl}/subscriptions", [
+                                    'search' => $user->email,
+                                    'status' => 'active,trialing'
+                                ]);
+                            if ($subResponse->successful()) {
+                                foreach (($subResponse->json('data') ?? []) as $sub) {
+                                    if ($this->subscriptionBelongsToUser($sub, $user)) {
+                                        $verified = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        \Log::warning('Paddle subscription fallback check warning: ' . $e->getMessage());
+                    }
+                }
+
+                if (!$verified) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'No se encontró una transacción o suscripción activa verificada en Paddle.'
+                    ], 403);
+                }
+            }
+        }
+
         if ($matchedPlan) {
             // Si baja a Básico, intentar cancelar suscripciones activas en Paddle
             if ($matchedPlan === 'básico') {
                 try {
                     $apiKey = config('cashier.api_key');
+                    $baseUrl = config('cashier.sandbox') ? 'https://sandbox-api.paddle.com' : 'https://api.paddle.com';
                     if ($apiKey) {
                         $response = \Illuminate\Support\Facades\Http::withToken($apiKey)
-                            ->get('https://api.paddle.com/subscriptions', [
+                            ->get("{$baseUrl}/subscriptions", [
                                 'search' => $user->email,
                                 'status' => 'active,trialing'
                             ]);
@@ -329,10 +405,10 @@ class ProfileController extends Controller
                         if ($response->successful()) {
                             $subs = $response->json('data') ?? [];
                             foreach ($subs as $sub) {
-                                if (isset($sub['id'])) {
+                                if (isset($sub['id']) && $this->subscriptionBelongsToUser($sub, $user)) {
                                     \Illuminate\Support\Facades\Http::withToken($apiKey)
-                                        ->post("https://api.paddle.com/subscriptions/{$sub['id']}/cancel", [
-                                            'effective_from' => 'immediately'
+                                        ->post("{$baseUrl}/subscriptions/{$sub['id']}/cancel", [
+                                            'effective_from' => 'next_billing_period'
                                         ]);
                                 }
                             }
@@ -347,10 +423,25 @@ class ProfileController extends Controller
                 'plan' => $matchedPlan,
                 'trial_ends_at' => null
             ]);
+            $user->refresh();
+
+            if ($matchedPlan !== 'básico') {
+                try {
+                    $alreadySent = $user->notifications()
+                        ->where('type', \App\Notifications\SubscriptionConfirmedNotification::class)
+                        ->where('created_at', '>=', now()->subMinutes(10))
+                        ->exists();
+                    if (!$alreadySent) {
+                        $user->notify(new \App\Notifications\SubscriptionConfirmedNotification($user, $user->plan_display_name));
+                    }
+                } catch (\Throwable $e) {
+                    \Log::warning('SubscriptionConfirmedNotification error: ' . $e->getMessage());
+                }
+            }
 
             return response()->json([
                 'success' => true,
-                'message' => '¡Tu plan ha sido actualizado a ' . ucfirst($matchedPlan) . ' exitosamente!',
+                'message' => '¡Tu plan ha sido actualizado a Plan ' . $user->plan_display_name . ' exitosamente!',
                 'plan' => $matchedPlan
             ]);
         }
@@ -418,16 +509,28 @@ class ProfileController extends Controller
         ]);
 
         $displayNames = [
-            'básico' => 'Explorador',
+            'básico' => 'Básico',
             'avanzado' => 'Viajero Pro',
             'colaborativo' => 'Negocios'
         ];
 
         $planName = $displayNames[$targetPlan] ?? ucfirst($targetPlan);
 
+        try {
+            $alreadySent = $user->notifications()
+                ->where('type', \App\Notifications\SubscriptionConfirmedNotification::class)
+                ->where('created_at', '>=', now()->subMinutes(10))
+                ->exists();
+            if (!$alreadySent) {
+                $user->notify(new \App\Notifications\SubscriptionConfirmedNotification($user, $planName));
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('SubscriptionConfirmedNotification error: ' . $e->getMessage());
+        }
+
         return response()->json([
             'success' => true,
-            'message' => '¡Felicidades! Has desbloqueado el plan ' . $planName . ' exitosamente.',
+            'message' => '¡Felicidades! Has desbloqueado el Plan ' . $planName . ' exitosamente.',
             'plan' => $targetPlan
         ]);
     }
@@ -443,9 +546,9 @@ class ProfileController extends Controller
 
         $user = auth()->user();
         $planNames = [
-            'explorador'   => 'Explorador',
-            'básico'       => 'Explorador',
-            'basico'       => 'Explorador',
+            'explorador'   => 'Básico',
+            'básico'       => 'Básico',
+            'basico'       => 'Básico',
             'viajero pro'  => 'Viajero Pro',
             'viajeropro'   => 'Viajero Pro',
             'avanzado'     => 'Viajero Pro',
@@ -525,5 +628,126 @@ class ProfileController extends Controller
             'success' => true,
             'message' => 'Tipo de cuenta cambiado a ' . ($type === 'personal' ? 'Personal' : 'Agencia')
         ]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = auth()->user();
+        $validated = $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if (!\Illuminate\Support\Facades\Hash::check($validated['current_password'], $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'La contraseña actual no es correcta.'
+            ], 422);
+        }
+
+        $user->update([
+            'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Contraseña actualizada exitosamente.'
+        ]);
+    }
+
+    public function destroyAccount(Request $request)
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['success' => false], 401);
+        }
+
+        // 1. Cancel active Paddle subscriptions if any
+        try {
+            $apiKey = config('cashier.api_key');
+            $baseUrl = config('cashier.sandbox') ? 'https://sandbox-api.paddle.com' : 'https://api.paddle.com';
+            if ($apiKey) {
+                $response = \Illuminate\Support\Facades\Http::withToken($apiKey)
+                    ->timeout(8)
+                    ->get("{$baseUrl}/subscriptions", [
+                        'search' => $user->email,
+                        'status' => 'active,trialing'
+                    ]);
+
+                if ($response->successful()) {
+                    $subs = $response->json('data') ?? [];
+                    foreach ($subs as $sub) {
+                        if (isset($sub['id']) && $this->subscriptionBelongsToUser($sub, $user)) {
+                            \Illuminate\Support\Facades\Http::withToken($apiKey)
+                                ->timeout(8)
+                                ->post("{$baseUrl}/subscriptions/{$sub['id']}/cancel", [
+                                    'effective_from' => 'immediately'
+                                ]);
+                        }
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Error canceling Paddle subscription during account deletion: ' . $e->getMessage());
+        }
+
+        // 2. Delete uploaded files (avatar, agency logo, and trip documents)
+        try {
+            if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar);
+            }
+            if ($user->agency_logo && !str_starts_with($user->agency_logo, 'http')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->agency_logo);
+            }
+
+            $documents = \App\Models\TripDocument::where('user_id', $user->id)
+                ->orWhereIn('trip_id', $user->trips()->pluck('id'))
+                ->get();
+
+            foreach ($documents as $doc) {
+                if (\Illuminate\Support\Facades\Storage::disk('local')->exists($doc->path)) {
+                    \Illuminate\Support\Facades\Storage::disk('local')->delete($doc->path);
+                }
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($doc->path)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($doc->path);
+                }
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Error deleting user storage files during account deletion: ' . $e->getMessage());
+        }
+
+        // 3. Delete user record (foreign keys cascade trips, documents, persons, and collaborator rows)
+        \Illuminate\Support\Facades\Auth::logout();
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json([
+            'success' => true,
+            'redirect' => route('home'),
+            'message' => 'Tu cuenta y todos tus datos han sido eliminados permanentemente.'
+        ]);
+    }
+
+    /**
+     * Verify that a Paddle subscription object returned by search belongs to the target user.
+     */
+    protected function subscriptionBelongsToUser(array $sub, $user): bool
+    {
+        $customUserId = $sub['custom_data']['user_id'] ?? null;
+        if ($customUserId !== null) {
+            return (string) $customUserId === (string) $user->id;
+        }
+
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('customers') && $user->customer && !empty($sub['customer_id'])) {
+                return $user->customer->paddle_id === $sub['customer_id'];
+            }
+        } catch (\Throwable $e) {
+            // Ignore schema lookup errors
+        }
+
+        return true;
     }
 }

@@ -28,8 +28,13 @@ class TripDocumentController extends Controller
             ], 403);
         }
 
-        // Delete file from storage
-        Storage::disk('public')->delete($document->path);
+        // Delete file from storage (check both local private disk and legacy public disk)
+        if (Storage::disk('local')->exists($document->path)) {
+            Storage::disk('local')->delete($document->path);
+        }
+        if (Storage::disk('public')->exists($document->path)) {
+            Storage::disk('public')->delete($document->path);
+        }
 
         // Delete record
         $document->delete();
@@ -65,17 +70,25 @@ class TripDocumentController extends Controller
             abort(403, 'No tienes permiso para acceder a este documento.');
         }
 
-        $exists = Storage::disk('public')->exists($document->path);
+        // Dual-disk lookup: check private local disk first, then fallback to public disk for legacy attachments
+        $disk = null;
+        if (Storage::disk('local')->exists($document->path)) {
+            $disk = 'local';
+        } elseif (Storage::disk('public')->exists($document->path)) {
+            $disk = 'public';
+        }
 
-        if (!$exists) {
+        if (!$disk) {
             abort(404, 'Archivo no encontrado.');
         }
 
-        $filePath = Storage::disk('public')->path($document->path);
+        $filePath = Storage::disk($disk)->path($document->path);
+        $safeFilename = str_replace(['"', "\r", "\n", '\\'], '', $document->original_name ?: 'documento');
 
         // Return file for inline preview instead of forced download
         return response()->file($filePath, [
-            'Content-Disposition' => 'inline; filename="' . $document->original_name . '"'
+            'Content-Disposition' => 'inline; filename="' . $safeFilename . '"',
+            'X-Content-Type-Options' => 'nosniff',
         ]);
     }
 }

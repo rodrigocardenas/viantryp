@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viantryp — Auditoría Etapa 2: Customer Journey & Monetización</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #ffffff !important; color: #111827 !important; padding: 0 !important; }
+      .card { break-inside: avoid; border: 1px solid #e5e7eb !important; box-shadow: none !important; }
+      #tab-hallazgos, #tab-journey, #tab-comms, #tab-plan { display: block !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased font-sans">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center font-bold text-teal-400">V</div>
+        <div>
+          <h1 class="text-sm font-semibold text-white tracking-wide">VIANTRYP AUDIT ENGINE</h1>
+          <p class="text-xs text-slate-400">Etapa 2: Customer Journey, Pagos & Comunicaciones</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-950/80 text-amber-300 border border-amber-800">
+          <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+          Embudo de Conversión Roto
+        </span>
+        <button onclick="window.print()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 flex items-center gap-1.5 transition">
+          <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+          Exportar / Imprimir PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- Executive Summary Card -->
+    <section class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-xl">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+        <div class="space-y-3 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md text-xs font-semibold bg-teal-950/80 text-teal-300 border border-teal-800">
+            DIAGNÓSTICO DE EXPERIENCIA & MONETIZACIÓN
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Auditoría del Funnel de Conversión y Pagos</h2>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Se reconstruyó el recorrido completo del usuario desde su aterrizaje en la web hasta la creación de itinerarios y cobro. Mientras que la experiencia de diseño de viajes es excelente, existen <strong class="text-amber-400 font-semibold">tres fallos estructurales de monetización y cumplimiento</strong>: el Plan Pro queda activado de por vida sin degradar al vencer el trial, la app Android viola las políticas de Google Play Billing y los botones de compra en la landing desvían a los visitantes al login.
+          </p>
+        </div>
+
+        <!-- Scorecard Widget -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-950/70 border border-slate-800 p-4 rounded-xl min-w-[320px]">
+          <div class="text-center p-3 rounded-lg bg-red-950/30 border border-red-900/50">
+            <div class="text-2xl font-black text-red-400">3</div>
+            <div class="text-xs font-semibold text-red-300">Críticos (P0)</div>
+            <div class="text-[10px] text-red-400/80">Monetización/Tiendas</div>
+          </div>
+          <div class="text-center p-3 rounded-lg bg-orange-950/30 border border-orange-900/50">
+            <div class="text-2xl font-black text-orange-400">1</div>
+            <div class="text-xs font-semibold text-orange-300">Alto (P1)</div>
+            <div class="text-[10px] text-orange-400/80">Fricción Landing</div>
+          </div>
+          <div class="text-center p-3 rounded-lg bg-yellow-950/30 border border-yellow-900/50">
+            <div class="text-2xl font-black text-yellow-400">2</div>
+            <div class="text-xs font-semibold text-yellow-300">Medios (P2)</div>
+            <div class="text-[10px] text-yellow-400/80">Emails & Billing</div>
+          </div>
+          <div class="text-center p-3 rounded-lg bg-teal-950/30 border border-teal-900/50">
+            <div class="text-2xl font-black text-teal-400">1</div>
+            <div class="text-xs font-semibold text-teal-300">Momento Aha!</div>
+            <div class="text-[10px] text-teal-400/80">Visor Público 10/10</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs & Search -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b border-slate-800 pb-4 no-print">
+      <div class="flex items-center gap-2 overflow-x-auto">
+        <button onclick="switchTab('hallazgos')" id="tab-btn-hallazgos" class="px-4 py-2 rounded-lg text-xs font-semibold bg-teal-500 text-slate-950 transition">
+          Hallazgos Valorados (6)
+        </button>
+        <button onclick="switchTab('journey')" id="tab-btn-journey" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          Customer Journey Detallado
+        </button>
+        <button onclick="switchTab('comms')" id="tab-btn-comms" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          Auditoría de Emails & Notificaciones
+        </button>
+        <button onclick="switchTab('plan')" id="tab-btn-plan" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          Plan de Corrección Funnel
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <select id="severityFilter" onchange="filterFindings()" class="bg-slate-900 border border-slate-700 text-xs text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-teal-500">
+          <option value="all">Todas las Severidades</option>
+          <option value="P0">P0 — Crítico</option>
+          <option value="P1">P1 — Alto</option>
+          <option value="P2">P2 — Medio</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- TAB 1: HALLAZGOS VALORADOS -->
+    <div id="tab-hallazgos" class="space-y-6">
+
+      <!-- Item 1: P0 Trial Perpetual -->
+      <div class="finding-card card bg-slate-900 border border-red-900/60 rounded-xl p-6 space-y-4 hover:border-red-600 transition" data-severity="P0">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded text-xs font-black bg-red-950 text-red-400 border border-red-700">P0 CRÍTICO</span>
+            <span class="text-xs text-slate-400 font-mono">BUS-01 · Lógica Comercial & Facturación</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span>Esfuerzo: <strong class="text-teal-400">Bajo</strong></span>
+            <span>Impacto: <strong class="text-red-400">Pérdida 100% de Conversión a Pago</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Plan Viajero Pro Vitalicio por Omisión de Degradación tras Expiración de Prueba</h3>
+          <p class="text-xs text-slate-400 mt-1">Ubicación: <code class="text-teal-300 font-mono">app/Http/Controllers/ProfileController.php</code> (Línea 492) y <code class="text-teal-300 font-mono">app/Models/User.php</code> (Línea 156)</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Diagnóstico Técnico</span>
+            <p class="text-slate-300">
+              En <code class="text-slate-200">chooseInitialPlan()</code> se actualiza <code class="text-red-300">'plan' => 'avanzado'</code> y <code class="text-slate-300">'trial_ends_at' => now()->addDays(30)</code>. No existe ningún proceso en segundo plano (Cron/Scheduler) ni chequeo en <code class="text-slate-200">getPlanLimits()</code> que revierta el plan a 'básico' cuando <code class="text-slate-200">now() > trial_ends_at</code>.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Impacto de Negocio</span>
+            <p class="text-red-300 font-medium">
+              Todo usuario que se registre recibe el Plan Pro para siempre. Nadie llegará al modal de cobro por límites porque siempre conservará 20 viajes, 2 editores y herramientas ilimitadas.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Solución Recomendada</span>
+            <p class="text-teal-300">
+              Mantener al usuario en <code class="text-slate-300">plan = 'básico'</code> con <code class="text-slate-300">trial_ends_at = +30 días</code>. El método <code class="text-slate-300">User::getEffectivePlanAttribute()</code> ya otorga límites avanzados <em>únicamente mientras el trial esté vigente</em>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 2: P0 Google Play Billing -->
+      <div class="finding-card card bg-slate-900 border border-red-900/60 rounded-xl p-6 space-y-4 hover:border-red-600 transition" data-severity="P0">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded text-xs font-black bg-red-950 text-red-400 border border-red-700">P0 CRÍTICO</span>
+            <span class="text-xs text-slate-400 font-mono">LEG-02 · Cumplimiento Google Play</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span>Esfuerzo: <strong class="text-teal-400">Medio</strong></span>
+            <span>Impacto: <strong class="text-red-400">Suspensión de App en Google Play</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Violación de Políticas de Pagos de Google Play (Paddle en WebView Móvil)</h3>
+          <p class="text-xs text-slate-400 mt-1">Ubicación: <code class="text-teal-300 font-mono">resources/views/components/upgrade-modal.blade.php</code> y <code class="text-teal-300 font-mono">capacitor.config.json</code></p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Diagnóstico Técnico</span>
+            <p class="text-slate-300">
+              La app Android abre el modal de Paddle.js solicitando tarjeta de crédito/PayPal directamente dentro de la aplicación móvil para adquirir una suscripción digital SaaS.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Riesgo en Google Play</span>
+            <p class="text-red-300 font-medium">
+              Google Play prohíbe taxativamente cobrar suscripciones digitales en Android sin usar su sistema de facturación oficial (Google Play Billing). La app puede ser suspendida fulminantemente en la próxima revisión.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Solución Recomendada</span>
+            <p class="text-teal-300">
+              Detectar el entorno de la app móvil (<code class="text-slate-300">window.Capacitor?.isNativePlatform()</code>) y ocultar el botón de compra directa dentro de la app Android, orientando la suscripción exclusivamente a la web de escritorio, o implementar el plugin de Google Play Billing.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 3: P0 Account Deletion -->
+      <div class="finding-card card bg-slate-900 border border-red-900/60 rounded-xl p-6 space-y-4 hover:border-red-600 transition" data-severity="P0">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded text-xs font-black bg-red-950 text-red-400 border border-red-700">P0 CRÍTICO</span>
+            <span class="text-xs text-slate-400 font-mono">LEG-01 · Políticas de Tiendas & GDPR</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span>Esfuerzo: <strong class="text-teal-400">Bajo</strong></span>
+            <span>Impacto: <strong class="text-red-400">Rechazo en Apple Store & Sanción GDPR</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Inexistencia de Función para Eliminar Cuenta (Account Deletion)</h3>
+          <p class="text-xs text-slate-400 mt-1">Ubicación: <code class="text-teal-300 font-mono">routes/web.php</code> y <code class="text-teal-300 font-mono">app/Http/Controllers/ProfileController.php</code></p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Diagnóstico Técnico</span>
+            <p class="text-slate-300">
+              No existe ninguna ruta, controlador ni botón en la interfaz de usuario para que una persona pueda borrar su cuenta, cancelar sus datos ni ejercer su derecho de supresión.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Riesgo Regulatorio</span>
+            <p class="text-red-300 font-medium">
+              Apple App Store rechaza el 100% de las aplicaciones que permiten crear cuenta pero no borrarla desde la app (Guideline 5.1.1 v). Google Play sanciona a partir de su nueva directiva de mayo 2024.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Solución Recomendada</span>
+            <p class="text-teal-300">
+              Implementar endpoint <code class="text-slate-300">POST /profile/delete-account</code> con confirmación de contraseña, cancelación de suscripciones asociadas y borrado en cascada (trips, documentos, persona).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 4: P1 Landing Fricción -->
+      <div class="finding-card card bg-slate-900 border border-orange-900/60 rounded-xl p-6 space-y-4 hover:border-orange-600 transition" data-severity="P1">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded text-xs font-black bg-orange-950 text-orange-400 border border-orange-700">P1 ALTO</span>
+            <span class="text-xs text-slate-400 font-mono">UX-02 · Embudo de Adquisición</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span>Esfuerzo: <strong class="text-teal-400">Muy Bajo</strong></span>
+            <span>Impacto: <strong class="text-orange-400">Abandono Masivo de Visitantes</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Botones "Probar Gratis" en Landing Envían a Visitantes al Formulario de Login</h3>
+          <p class="text-xs text-slate-400 mt-1">Ubicación: <code class="text-teal-300 font-mono">resources/views/landing.blade.php</code> (Líneas 6492 y 6516) y <code class="text-teal-300 font-mono">routes/web.php</code> (Línea 101)</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Diagnóstico Técnico</span>
+            <p class="text-slate-300">
+              Los botones enlazan a <code class="text-slate-200">route('plans.redirect')</code>, la cual exige autenticación (<code class="text-slate-300">middleware('auth')</code>). El visitante no autenticado es redirigido a <code class="text-red-300">/login</code> en vez de <code class="text-teal-300">/register</code>.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Fricción en Conversión</span>
+            <p class="text-orange-300 font-medium">
+              Una persona interesada que quiere registrarse ve un formulario que le pide email y contraseña para "Iniciar Sesión". La mayoría asumirá un error o abandonará por confusión.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Solución Recomendada</span>
+            <p class="text-teal-300">
+              Redirigir a <code class="text-slate-300">route('register', ['plan' => 'pro'])</code> si el usuario no tiene sesión iniciada, guardando el plan deseado para el onboarding posterior.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: CUSTOMER JOURNEY DETALLADO -->
+    <div id="tab-journey" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6">
+        <h3 class="text-lg font-bold text-white">Recorrido del Cliente Evaluado Pantalla a Pantalla</h3>
+
+        <div class="relative border-l-2 border-slate-800 ml-4 space-y-8 pl-6 text-xs">
+          <!-- Step 1 -->
+          <div class="relative">
+            <span class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-teal-500 border-2 border-slate-950"></span>
+            <h4 class="font-bold text-sm text-teal-300">1. Aterrizaje en Landing Page (Visitante)</h4>
+            <p class="text-slate-300 mt-1">El visitante comprende qué es Viantryp gracias a la demo interactiva y los titulares. La tabla de precios es clara, pero existe discrepancia: la web dice 7 días gratis y el onboarding da 30 días.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="relative">
+            <span class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-teal-500 border-2 border-slate-950"></span>
+            <h4 class="font-bold text-sm text-teal-300">2. Registro & Entrada Inmediata</h4>
+            <p class="text-slate-300 mt-1">Formulario fluido con Rate Limiting. No exige validar email antes de entrar (bueno para activación rápida, pero riesgoso para calidad de base de datos). Inicia sesión automáticamente.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="relative">
+            <span class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-amber-500 border-2 border-slate-950"></span>
+            <h4 class="font-bold text-sm text-amber-300">3. Onboarding & Modal de Bienvenida</h4>
+            <p class="text-slate-300 mt-1">Modal con confeti muy pulido. El usuario elige "Personal" o "Agencia". Aquí se activa el fallo comercial: el usuario recibe Plan Pro de por vida.</p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="relative">
+            <span class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-emerald-500 border-2 border-slate-950"></span>
+            <h4 class="font-bold text-sm text-emerald-300">4. Creación del 1er Itinerario (Momento 'Aha!')</h4>
+            <p class="text-slate-300 mt-1">Modal de creación ultra rápido (solo título obligatorio). El editor Pro en <code class="text-slate-200">pro-editor.js</code> ofrece excelente usabilidad, autoguardado continuo, inserción de fotos Unsplash y mapas. El visor en <code class="text-slate-200">/trips/share/{token}</code> es el punto máximo de valor del producto.</p>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="relative">
+            <span class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-red-500 border-2 border-slate-950"></span>
+            <h4 class="font-bold text-sm text-red-300">5. Conversión a Pago & Cancelación</h4>
+            <p class="text-slate-300 mt-1">Paddle integrado. Si el usuario cancela, se le expulsa de inmediato sin respetar el tiempo pagado restante. En la app móvil de Google Play, Paddle viola las políticas de cobro nativo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: COMUNICACIONES -->
+    <div id="tab-comms" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+        <h3 class="text-lg font-bold text-white">Inventario de Notificaciones por Correo Electrónico</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 font-semibold border-b border-slate-800">
+              <tr>
+                <th class="p-3">Evento / Comunicación</th>
+                <th class="p-3">Destinatario</th>
+                <th class="p-3">Estado</th>
+                <th class="p-3">Canal / Prioridad</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 font-mono">
+              <tr>
+                <td class="p-3 font-sans font-medium text-white">Bienvenida al registrarse</td>
+                <td class="p-3">Usuario</td>
+                <td class="p-3 text-emerald-400">Implementado</td>
+                <td class="p-3">Email (Cola)</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-sans font-medium text-white">Recuperación de contraseña</td>
+                <td class="p-3">Usuario</td>
+                <td class="p-3 text-emerald-400">Implementado</td>
+                <td class="p-3">Email (Firmado)</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-sans font-medium text-white">Compartir viaje por email</td>
+                <td class="p-3">Cliente final</td>
+                <td class="p-3 text-emerald-400">Implementado</td>
+                <td class="p-3">Email</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-sans font-medium text-white">Invitación a colaborar</td>
+                <td class="p-3">Colaborador</td>
+                <td class="p-3 text-emerald-400">Implementado</td>
+                <td class="p-3">Email</td>
+              </tr>
+              <tr class="bg-red-950/20">
+                <td class="p-3 font-sans font-medium text-red-200">Confirmación de Pago y Factura</td>
+                <td class="p-3">Suscriptor</td>
+                <td class="p-3 text-red-400">Ausente</td>
+                <td class="p-3">P1 · Crítico para Soporte</td>
+              </tr>
+              <tr class="bg-red-950/20">
+                <td class="p-3 font-sans font-medium text-red-200">Aviso 3 días antes de fin de prueba</td>
+                <td class="p-3">Usuario en Trial</td>
+                <td class="p-3 text-red-400">Ausente</td>
+                <td class="p-3">P1 · Crítico para Conversión</td>
+              </tr>
+              <tr class="bg-red-950/20">
+                <td class="p-3 font-sans font-medium text-red-200">Aviso de cobro fallido / Tarjeta vencida</td>
+                <td class="p-3">Suscriptor</td>
+                <td class="p-3 text-red-400">Ausente</td>
+                <td class="p-3">P2 · Retención</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: PLAN DE ACCIÓN FUNNEL -->
+    <div id="tab-plan" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+        <h3 class="text-lg font-bold text-white">Acciones Inmediatas para Desbloquear la Monetización</h3>
+
+        <div class="space-y-3 text-xs">
+          <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-950 text-red-400 border border-red-800">P0</span>
+              <strong class="text-white">Corregir el flujo de Trial en <code class="text-teal-300">ProfileController::chooseInitialPlan</code></strong>
+            </div>
+            <p class="text-slate-300">Guardar al usuario con <code class="text-slate-200">plan = 'básico'</code> y <code class="text-slate-200">trial_ends_at = now()->addDays(30)</code>. De esta forma, al día 31 la plataforma automáticamente exigirá la suscripción de pago.</p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-950 text-red-400 border border-red-800">P0</span>
+              <strong class="text-white">Añadir Endpoint de Eliminación de Cuenta</strong>
+            </div>
+            <p class="text-slate-300">Crear ruta <code class="text-slate-200">POST /profile/account/delete</code> para cumplir las normativas obligatorias de Google Play, Apple Store y el RGPD.</p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-950 text-orange-400 border border-orange-800">P1</span>
+              <strong class="text-white">Reparar enlaces CTA de la Landing Page</strong>
+            </div>
+            <p class="text-slate-300">Cambiar los enlaces "Probar 7 días gratis" de <code class="text-slate-200">route('plans.redirect')</code> hacia <code class="text-slate-200">route('register')</code> para que los prospectos nuevos no sean rebotados a la pantalla de Login.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function switchTab(tabName) {
+      document.getElementById('tab-hallazgos').classList.add('hidden');
+      document.getElementById('tab-journey').classList.add('hidden');
+      document.getElementById('tab-comms').classList.add('hidden');
+      document.getElementById('tab-plan').classList.add('hidden');
+
+      const tabs = ['hallazgos', 'journey', 'comms', 'plan'];
+      tabs.forEach(t => {
+        document.getElementById('tab-btn-' + t).className = "px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition";
+      });
+
+      document.getElementById('tab-' + tabName).classList.remove('hidden');
+      document.getElementById('tab-btn-' + tabName).className = "px-4 py-2 rounded-lg text-xs font-semibold bg-teal-500 text-slate-950 transition";
+    }
+
+    function filterFindings() {
+      const selected = document.getElementById('severityFilter').value;
+      const cards = document.querySelectorAll('.finding-card');
+      cards.forEach(card => {
+        if (selected === 'all' || card.getAttribute('data-severity') === selected) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+

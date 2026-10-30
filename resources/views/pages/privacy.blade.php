@@ -79,6 +79,7 @@
           <ul class="icon-list">
             <li><i class="fas fa-server"></i><div><strong style="color:var(--navy);">AWS (Irlanda):</strong> Infraestructura y almacenamiento.</div></li>
             <li><i class="fas fa-credit-card"></i><div><strong style="color:var(--navy);">Paddle.com (Reino Unido / UE):</strong> Procesamiento seguro de pagos, facturación e impuestos como Merchant of Record oficial.</div></li>
+            <li><i class="fas fa-cloud"></i><div><strong style="color:var(--navy);">Google Cloud &amp; Google Workspace (EE. UU. / UE):</strong> Autenticación OAuth (Google Sign-In), autocompletado de destinos (Google Places API), procesamiento de sugerencias del asistente Tryp IA (Google Gemini API) y sincronización interna de soporte.</div></li>
             <li><i class="fas fa-envelope"></i><div><strong style="color:var(--navy);">Hostinger Mail:</strong> Email transaccional (confirmaciones, notificaciones).</div></li>
           </ul>
           <p class="section-text" style="margin-top:1rem; margin-bottom:0;">No compartimos ningún dato personal identificable con otros terceros sin tu consentimiento explícito, salvo requerimiento legal.</p>

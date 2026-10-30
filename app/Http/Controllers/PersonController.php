@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Person;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class PersonController extends Controller
 {
@@ -12,7 +14,7 @@ class PersonController extends Controller
      */
     public function index()
     {
-        $persons = Person::all();
+        $persons = Person::where('user_id', Auth::id())->orderBy('name')->get();
         return view('persons.index', compact('persons'));
     }
 
@@ -29,14 +31,19 @@ class PersonController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:persons',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('persons', 'email')->where(fn ($query) => $query->where('user_id', Auth::id())),
+            ],
             'phone' => 'nullable|string|max:20',
             'type' => 'required|in:client,agent',
         ]);
 
-        Person::create($request->all());
+        $validated['user_id'] = Auth::id();
+        Person::create($validated);
 
         return redirect()->route('persons.index')->with('success', 'Person created successfully.');
     }
@@ -46,7 +53,7 @@ class PersonController extends Controller
      */
     public function show(string $id)
     {
-        $person = Person::findOrFail($id);
+        $person = Person::where('user_id', Auth::id())->findOrFail($id);
         return view('persons.show', compact('person'));
     }
 
@@ -55,7 +62,7 @@ class PersonController extends Controller
      */
     public function edit(string $id)
     {
-        $person = Person::findOrFail($id);
+        $person = Person::where('user_id', Auth::id())->findOrFail($id);
         return view('persons.edit', compact('person'));
     }
 
@@ -64,16 +71,22 @@ class PersonController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $person = Person::findOrFail($id);
+        $person = Person::where('user_id', Auth::id())->findOrFail($id);
 
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:persons,email,' . $person->id,
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('persons', 'email')
+                    ->where(fn ($query) => $query->where('user_id', Auth::id()))
+                    ->ignore($person->id),
+            ],
             'phone' => 'nullable|string|max:20',
             'type' => 'required|in:client,agent',
         ]);
 
-        $person->update($request->all());
+        $person->update($validated);
 
         return redirect()->route('persons.index')->with('success', 'Person updated successfully.');
     }
@@ -83,7 +96,7 @@ class PersonController extends Controller
      */
     public function destroy(string $id)
     {
-        $person = Person::findOrFail($id);
+        $person = Person::where('user_id', Auth::id())->findOrFail($id);
         $person->delete();
 
         return redirect()->route('persons.index')->with('success', 'Person deleted successfully.');
@@ -94,7 +107,9 @@ class PersonController extends Controller
      */
     public function getAgents()
     {
-        $agents = Person::where('type', 'agent')->get(['id', 'name']);
+        $agents = Person::where('user_id', Auth::id())
+            ->where('type', 'agent')
+            ->get(['id', 'name']);
         return response()->json($agents);
     }
 }

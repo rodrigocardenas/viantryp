@@ -19,14 +19,34 @@ class GooglePlacesController extends Controller
         $placeId = $request->input('place_id');
         $tripId = $request->input('trip_id');
         $user = auth()->user() ?: $request->user();
-        if ($tripId && $user) {
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'error_code' => 'UNAUTHENTICATED',
+                'message' => 'Debes iniciar sesión para consultar detalles de lugares.'
+            ], 401);
+        }
+
+        if ($tripId) {
             $trip = \App\Models\Trip::find($tripId);
+            if ($trip && !$trip->canView($user->id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No tienes permiso para acceder a este viaje.'
+                ], 403);
+            }
             if ($trip && $trip->hasReachedGooglePlacesLimit($user)) {
+                $owner = $trip->user ?: $user;
+                $effectivePlan = $owner ? $owner->effective_plan : 'básico';
+                $msg = ($effectivePlan === \App\Models\User::PLAN_AVANZADO)
+                    ? 'Has alcanzado el límite de 50 consultas de Google Places por itinerario para el Plan Viajero Pro. Actualiza al Plan Negocios para consultas ilimitadas.'
+                    : 'Has alcanzado el límite de 5 consultas de Google Places por itinerario para el Plan Básico. Actualiza al Plan Viajero Pro para hasta 50 consultas.';
+
                 return response()->json([
                     'success' => false,
                     'error_code' => 'LIMIT_REACHED',
                     'limit_type' => 'google_places',
-                    'message' => 'Has alcanzado el límite de 10 búsquedas de Google Places por itinerario para el Plan Básico. Actualiza a Viajero Pro para búsquedas ilimitadas.'
+                    'message' => $msg
                 ], 403);
             }
         }

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viantryp — Auditoría Etapa 3: Seguridad, PWA, Android & iOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #ffffff !important; color: #111827 !important; padding: 0 !important; }
+      .card { break-inside: avoid; border: 1px solid #e5e7eb !important; box-shadow: none !important; }
+      #tab-seguridad, #tab-pwa, #tab-android, #tab-ios { display: block !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased font-sans">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center font-bold text-teal-400">V</div>
+        <div>
+          <h1 class="text-sm font-semibold text-white tracking-wide">VIANTRYP AUDIT ENGINE</h1>
+          <p class="text-xs text-slate-400">Etapa 3: Seguridad Profunda, PWA, Android & iOS</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-950/80 text-red-300 border border-red-800">
+          <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+          Blindaje & Tiendas Pendientes
+        </span>
+        <button onclick="window.print()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 flex items-center gap-1.5 transition">
+          <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+          Exportar / Imprimir PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- Executive Summary Card -->
+    <section class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-xl">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+        <div class="space-y-3 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md text-xs font-semibold bg-teal-950/80 text-teal-300 border border-teal-800">
+            DIAGNÓSTICO TÉCNICO OWASP & PLATAFORMAS
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Auditoría de Seguridad, PWA y Móvil</h2>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Se inspeccionaron los vectores de ataque OWASP Top 10, la arquitectura de la PWA, la app Android publicada en Google Play y la viabilidad de lanzamiento en Apple App Store. La base de datos y consultas Eloquent son seguras contra inyección SQL, pero se identificaron <strong class="text-red-400 font-semibold">riesgos de SSRF en el proxy de imágenes</strong>, fragilidad en la protección de archivos si se usa Nginx, y la necesidad de integrar <strong class="text-teal-300 font-semibold">Sign in with Apple</strong> e IAP para aspirar a la App Store.
+          </p>
+        </div>
+
+        <!-- Scorecard Widget -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-950/70 border border-slate-800 p-4 rounded-xl min-w-[320px]">
+          <div class="text-center p-3 rounded-lg bg-red-950/30 border border-red-900/50">
+            <div class="text-2xl font-black text-red-400">0%</div>
+            <div class="text-xs font-semibold text-red-300">iOS Ready</div>
+            <div class="text-[10px] text-red-400/80">Falta Capacitor iOS</div>
+          </div>
+          <div class="text-center p-3 rounded-lg bg-orange-950/30 border border-orange-900/50">
+            <div class="text-2xl font-black text-orange-400">2</div>
+            <div class="text-xs font-semibold text-orange-300">Altos (P1)</div>
+            <div class="text-[10px] text-orange-400/80">SSRF & Claves Repo</div>
+          </div>
+          <div class="text-center p-3 rounded-lg bg-yellow-950/30 border border-yellow-900/50">
+            <div class="text-2xl font-black text-yellow-400">3</div>
+            <div class="text-xs font-semibold text-yellow-300">Medios (P2)</div>
+            <div class="text-[10px] text-yellow-400/80">Back Button & PWA</div>
+          </div>
+          <div class="text-center p-3 rounded-lg bg-emerald-950/30 border border-emerald-900/50">
+            <div class="text-2xl font-black text-emerald-400">SDK 36</div>
+            <div class="text-xs font-semibold text-emerald-300">Android Target</div>
+            <div class="text-[10px] text-emerald-400/80">Google Play Aprobada</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b border-slate-800 pb-4 no-print">
+      <div class="flex items-center gap-2 overflow-x-auto">
+        <button onclick="switchTab('seguridad')" id="tab-btn-seguridad" class="px-4 py-2 rounded-lg text-xs font-semibold bg-teal-500 text-slate-950 transition">
+          Seguridad OWASP (4)
+        </button>
+        <button onclick="switchTab('pwa')" id="tab-btn-pwa" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          PWA & Offline
+        </button>
+        <button onclick="switchTab('android')" id="tab-btn-android" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          Capacitor & Android Google Play
+        </button>
+        <button onclick="switchTab('ios')" id="tab-btn-ios" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          Preparación Apple App Store
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <select id="severityFilter" onchange="filterFindings()" class="bg-slate-900 border border-slate-700 text-xs text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-teal-500">
+          <option value="all">Todas las Severidades</option>
+          <option value="P1">P1 — Alto</option>
+          <option value="P2">P2 — Medio</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- TAB 1: SEGURIDAD OWASP -->
+    <div id="tab-seguridad" class="space-y-6">
+
+      <!-- Item 1: SSRF Proxy -->
+      <div class="finding-card card bg-slate-900 border border-orange-900/60 rounded-xl p-6 space-y-4 hover:border-orange-600 transition" data-severity="P1">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded text-xs font-black bg-orange-950 text-orange-400 border border-orange-700">P1 ALTO</span>
+            <span class="text-xs text-slate-400 font-mono">SEC-05 · OWASP A10: SSRF</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span>Esfuerzo: <strong class="text-teal-400">Bajo</strong></span>
+            <span>Riesgo: <strong class="text-orange-400">Filtro Bypasseable & Open Proxy</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Vulnerabilidad de SSRF y Proxy Abierto sin Throttling en ImageProxyController</h3>
+          <p class="text-xs text-slate-400 mt-1">Ubicación: <code class="text-teal-300 font-mono">app/Http/Controllers/ImageProxyController.php</code> y <code class="text-teal-300 font-mono">routes/web.php</code> (Línea 98)</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Diagnóstico Técnico</span>
+            <p class="text-slate-300">
+              La comprobación de IP en <code class="text-slate-200">filter_var($host, FILTER_VALIDATE_IP)</code> solo actúa si el host es una IP literal. Un dominio que resuelva internamente a <code class="text-red-300">169.254.169.254</code> (metadatos AWS/GCP) o dominios tipo <code class="text-red-300">127.0.0.1.nip.io</code> elude el filtro y ejecuta peticiones internas desde el servidor.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Riesgo en Producción</span>
+            <p class="text-orange-300 font-medium">
+              Al no tener <code class="text-slate-200">throttle</code> en la ruta pública, atacantes pueden usar a Viantryp como reflector para descargar archivos masivos, saturar el ancho de banda y llenar el disco con archivos caché en <code class="text-slate-200">img-cache/</code>.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Solución Recomendada</span>
+            <p class="text-teal-300">
+              1. Aplicar <code class="text-slate-300">middleware('throttle:60,1')</code> en la ruta.<br>
+              2. Resolver el host a IP mediante <code class="text-slate-300">gethostbyname()</code> antes de conectar y bloquear cualquier rango privado/reservado.<br>
+              3. Restringir descargas solo a dominios de confianza (Unsplash, Google, Cloudinary).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 2: Nginx Document Bypass -->
+      <div class="finding-card card bg-slate-900 border border-orange-900/60 rounded-xl p-6 space-y-4 hover:border-orange-600 transition" data-severity="P1">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded text-xs font-black bg-orange-950 text-orange-400 border border-orange-700">P1 ALTO</span>
+            <span class="text-xs text-slate-400 font-mono">SEC-06 · OWASP A01: Broken Access Control</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span>Esfuerzo: <strong class="text-teal-400">Bajo</strong></span>
+            <span>Riesgo: <strong class="text-orange-400">Exposición en Servidores Nginx</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Regla de Bloqueo de Documentos Vulnerable en Servidores Nginx</h3>
+          <p class="text-xs text-slate-400 mt-1">Ubicación: <code class="text-teal-300 font-mono">public/.htaccess</code> (Línea 25)</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Diagnóstico Técnico</span>
+            <p class="text-slate-300">
+              Existe una regla <code class="text-slate-200">RewriteRule ^storage/documents/.*$ - [F,L]</code> en <code class="text-slate-200">.htaccess</code>. Esto protege únicamente en servidores Apache. Si producción utiliza Nginx o Docker, Nginx sirve estáticamente cualquier archivo de <code class="text-red-300">/storage/documents/</code> sin evaluar <code class="text-slate-200">.htaccess</code>.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Solución Definitiva</span>
+            <p class="text-teal-300">
+              Nunca almacenar documentos privados en <code class="text-slate-300">storage/app/public/</code>. Guardarlos en <code class="text-slate-300">storage/app/private/</code> y servirlos exclusivamente a través de <code class="text-slate-300">TripDocumentController::download</code> con autorización verificada.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Impacto</span>
+            <p class="text-slate-300">
+              Elimina al 100% la dependencia de la configuración específica del servidor web, garantizando privacidad absoluta en Nginx, Apache, LiteSpeed o Cloudflare.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: PWA & OFFLINE -->
+    <div id="tab-pwa" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6">
+        <h3 class="text-lg font-bold text-white">Evaluación de Preparación PWA</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
+            <span class="font-bold text-teal-400 flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              Puntos Fuertes del Manifiesto
+            </span>
+            <ul class="space-y-1 text-slate-300 list-disc list-inside">
+              <li>Web App Manifest completamente válido (<code class="text-slate-200">manifest.json</code>).</li>
+              <li>Modo <code class="text-slate-200">standalone</code> para experiencia similar a app nativa.</li>
+              <li>8 iconos de resolución completa desde 72px hasta 512px existentes en disco.</li>
+              <li>Service Worker con estrategia Network-First para contenido fresco.</li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
+            <span class="font-bold text-amber-400 flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+              Cosas que Faltan para PWA Excelente
+            </span>
+            <ul class="space-y-1 text-slate-300 list-disc list-inside">
+              <li><strong>Falta página de contingencia offline:</strong> Si el usuario no tiene red, se muestra el dinosaurio del navegador.</li>
+              <li><strong>Sin caché de itinerarios creados:</strong> Un viajero en modo avión no puede consultar su itinerario en la PWA.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: CAPACITOR & ANDROID -->
+    <div id="tab-android" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+        <h3 class="text-lg font-bold text-white">Análisis de la Versión Android en Google Play</h3>
+
+        <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg text-xs space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-white">Versión Publicada Oficial:</span>
+            <span class="font-mono text-teal-400">v1.0.10 (Build 22) · Target SDK 36</span>
+          </div>
+          <p class="text-slate-300">
+            La aplicación Android ya está aprobada y disponible en la tienda. Su configuración en <code class="text-slate-200">capacitor.config.json</code> la conecta de forma remota a <code class="text-teal-300">https://viantryp.com</code>.
+          </p>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div class="p-4 bg-slate-950 border border-yellow-900/40 rounded-lg space-y-1">
+            <strong class="text-yellow-400 font-bold block">1. Problema de Usabilidad: Botón Atrás de Android cierra la app</strong>
+            <p class="text-slate-300">
+              Al no existir el listener <code class="text-slate-200">App.addListener('backButton')</code>, cuando un usuario pulsa retroceder en su móvil, la app se cierra inmediatamente en vez de volver a la pantalla anterior o cerrar modales.
+            </p>
+          </div>
+
+          <div class="p-4 bg-slate-950 border border-yellow-900/40 rounded-lg space-y-1">
+            <strong class="text-yellow-400 font-bold block">2. Deep Links Rotos (AssetLinks Mismatch)</strong>
+            <p class="text-slate-300">
+              La ruta <code class="text-slate-200">.well-known/assetlinks.json</code> declara <code class="text-red-300">com.viantryp.www.twa</code> en lugar de <code class="text-teal-300">com.viantryp.app</code>, impidiendo la apertura directa de la app desde enlaces web.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: PREPARACIÓN PARA APPLE APP STORE -->
+    <div id="tab-ios" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+        <h3 class="text-lg font-bold text-white">Roadmap de Preparación para iOS (Apple App Store)</h3>
+        <p class="text-slate-300 text-xs">
+          Actualmente Viantryp <strong>no cuenta con soporte compilable para iOS</strong>. Este es el checklist exacto para preparar la aplicación para revisión en App Store Connect sin riesgo de rechazo:
+        </p>
+
+        <div class="space-y-3 text-xs">
+          <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+            <div>
+              <strong class="text-white block">1. Instalar Capacitor iOS</strong>
+              <span class="text-slate-400 font-mono text-[11px]">npm install @capacitor/ios && npx cap add ios</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-red-950 text-red-400 border border-red-800">Pendiente</span>
+          </div>
+
+          <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+            <div>
+              <strong class="text-white block">2. Implementar "Sign in with Apple"</strong>
+              <span class="text-slate-400 text-[11px]">Requisito obligatorio (Guideline 4.8) al ofrecer Google Sign-In.</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-red-950 text-red-400 border border-red-800">Bloqueante</span>
+          </div>
+
+          <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+            <div>
+              <strong class="text-white block">3. In-App Purchases (StoreKit) vs Ocultar Paddle</strong>
+              <span class="text-slate-400 text-[11px]">Apple prohíbe terminantemente enlaces web de cobro para suscripciones digitales.</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-red-950 text-red-400 border border-red-800">Bloqueante</span>
+          </div>
+
+          <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+            <div>
+              <strong class="text-white block">4. Función de Eliminación de Cuenta</strong>
+              <span class="text-slate-400 text-[11px]">Requisito estricto (Guideline 5.1.1 v) para apps que permiten registro.</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-red-950 text-red-400 border border-red-800">Bloqueante</span>
+          </div>
+
+          <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+            <div>
+              <strong class="text-white block">5. Safe Area Insets & 100dvh para Safari WebKit</strong>
+              <span class="text-slate-400 text-[11px]">Evitar que el notch o la barra inferior de iPhone tapen botones de acción.</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-yellow-950 text-yellow-400 border border-yellow-800">Técnico</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function switchTab(tabName) {
+      document.getElementById('tab-seguridad').classList.add('hidden');
+      document.getElementById('tab-pwa').classList.add('hidden');
+      document.getElementById('tab-android').classList.add('hidden');
+      document.getElementById('tab-ios').classList.add('hidden');
+
+      const tabs = ['seguridad', 'pwa', 'android', 'ios'];
+      tabs.forEach(t => {
+        document.getElementById('tab-btn-' + t).className = "px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition";
+      });
+
+      document.getElementById('tab-' + tabName).classList.remove('hidden');
+      document.getElementById('tab-btn-' + tabName).className = "px-4 py-2 rounded-lg text-xs font-semibold bg-teal-500 text-slate-950 transition";
+    }
+
+    function filterFindings() {
+      const selected = document.getElementById('severityFilter').value;
+      const cards = document.querySelectorAll('.finding-card');
+      cards.forEach(card => {
+        if (selected === 'all' || card.getAttribute('data-severity') === selected) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+

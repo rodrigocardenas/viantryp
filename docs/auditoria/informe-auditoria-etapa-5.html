@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viantryp — Etapa 5: Validación Crítica y Plan de Implementación Seguro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+    @media print {
+      .no-print { display: none !important; }
+      .tab-section { display: block !important; page-break-after: always; }
+      body { background: #fff; }
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-16">
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-teal-900 text-white shadow-xl border-b border-slate-700/60">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-200 text-xs font-semibold uppercase tracking-wider mb-3">
+            <i class="fa-solid fa-microscope"></i> Auditoría Etapa 5 • Contra-Auditoría y Plan de Ejecución
+          </div>
+          <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Validación Crítica de Hallazgos y Plan de Implementación Seguro</h1>
+          <p class="text-slate-300 text-sm mt-1">Verificación empírica en código fuente (Laravel 12 / Paddle / PWA / Capacitor 8), rectificaciones técnicas y secuencia de remediación sin regresiones.</p>
+        </div>
+        <div class="flex items-center gap-3 no-print">
+          <button onclick="window.print()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-semibold transition cursor-pointer">
+            <i class="fa-solid fa-file-pdf text-rose-400"></i> Exportar / Imprimir PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Strip -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-6">
+        <div class="bg-white/5 border border-white/10 rounded-xl p-3.5">
+          <div class="text-xs text-slate-400 uppercase font-semibold">Hallazgos Previos</div>
+          <div class="text-2xl font-extrabold text-white mt-0.5">16</div>
+          <div class="text-[11px] text-emerald-300 mt-0.5">11 Confirmados • 5 Matizados</div>
+        </div>
+        <div class="bg-rose-500/15 border border-rose-400/30 rounded-xl p-3.5">
+          <div class="text-xs text-rose-200 uppercase font-semibold">Nuevos Hallazgos</div>
+          <div class="text-2xl font-extrabold text-rose-300 mt-0.5">+15</div>
+          <div class="text-[11px] text-rose-200 mt-0.5">N-01 a N-15 en código</div>
+        </div>
+        <div class="bg-amber-500/15 border border-amber-400/30 rounded-xl p-3.5">
+          <div class="text-xs text-amber-200 uppercase font-semibold">Alerta Crítica</div>
+          <div class="text-lg font-extrabold text-amber-300 mt-0.5">N-01 Paddle</div>
+          <div class="text-[11px] text-amber-200 mt-0.5">No apagar sync sin B1</div>
+        </div>
+        <div class="bg-teal-500/15 border border-teal-400/30 rounded-xl p-3.5">
+          <div class="text-xs text-teal-200 uppercase font-semibold">Bloques de Acción</div>
+          <div class="text-2xl font-extrabold text-teal-300 mt-0.5">10 (A–J)</div>
+          <div class="text-[11px] text-teal-200 mt-0.5">Secuencia anti-regresión</div>
+        </div>
+        <div class="bg-indigo-500/15 border border-indigo-400/30 rounded-xl p-3.5">
+          <div class="text-xs text-indigo-200 uppercase font-semibold">Suite de Pruebas</div>
+          <div class="text-2xl font-extrabold text-indigo-300 mt-0.5">23 Tests</div>
+          <div class="text-[11px] text-indigo-200 mt-0.5">T-01 a T-23 aceptación</div>
+        </div>
+        <div class="bg-purple-500/15 border border-purple-400/30 rounded-xl p-3.5">
+          <div class="text-xs text-purple-200 uppercase font-semibold">Decisiones</div>
+          <div class="text-2xl font-extrabold text-purple-300 mt-0.5">15</div>
+          <div class="text-[11px] text-purple-200 mt-0.5">Propietario del producto</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-6 flex items-center gap-2 overflow-x-auto py-2.5">
+      <button onclick="switchTab('tab-validacion')" id="btn-tab-validacion" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold bg-slate-900 text-white transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-check-double mr-1.5"></i> 1. Verificación & Rectificaciones
+      </button>
+      <button onclick="switchTab('tab-nuevos')" id="btn-tab-nuevos" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-bug mr-1.5 text-rose-600"></i> 2. Nuevos Hallazgos (N-01 a N-15)
+      </button>
+      <button onclick="switchTab('tab-bloques')" id="btn-tab-bloques" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-layer-group mr-1.5 text-teal-600"></i> 3. Plan por Bloques (A–J) & Conflictos
+      </button>
+      <button onclick="switchTab('tab-pruebas')" id="btn-tab-pruebas" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-vial-circle-check mr-1.5 text-indigo-600"></i> 4. Pruebas (T-01 a T-23) & Decisiones
+      </button>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-6 mt-8 space-y-8">
+
+    <!-- TAB 1: VERIFICACIÓN Y RECTIFICACIONES -->
+    <section id="tab-validacion" class="tab-section space-y-6">
+      <div class="bg-amber-50 border-l-4 border-amber-500 p-5 rounded-r-xl shadow-sm">
+        <div class="flex items-start gap-3">
+          <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl mt-0.5"></i>
+          <div>
+            <h2 class="text-base font-bold text-amber-950">Por qué fue indispensable esta Validación Crítica antes de tocar el código</h2>
+            <p class="text-sm text-amber-900 mt-1">
+              Si hubiéramos ejecutado directamente la recomendación del informe anterior de eliminar/bloquear <code class="bg-amber-100 px-1.5 py-0.5 rounded font-semibold">POST /profile/plan/paddle-sync</code> confiando en el webhook de Paddle, <strong>habríamos roto el 100% de las activaciones de compras reales</strong>. La inspección del motor <code class="bg-amber-100 px-1.5 py-0.5 rounded">laravel/cashier-paddle</code> demostró que las tablas <code class="bg-amber-100 px-1.5 py-0.5 rounded">customers</code> y <code class="bg-amber-100 px-1.5 py-0.5 rounded">subscriptions</code> no están migradas y el checkout nunca vincula el <code class="bg-amber-100 px-1.5 py-0.5 rounded">customer_id</code> de Paddle con el usuario local.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rectifications Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+          <div>
+            <h3 class="font-bold text-base"><i class="fa-solid fa-scale-balanced mr-2 text-amber-400"></i>Rectificaciones y Matices a los Informes 01–04</h3>
+            <p class="text-xs text-slate-300 mt-0.5">Correcciones de diagnóstico basadas en inspección línea por línea del código fuente y Git.</p>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-semibold">
+                <th class="p-4">ID / Tema</th>
+                <th class="p-4">Diagnóstico Previo (Etapas 1–4)</th>
+                <th class="p-4">Realidad Verificada en Código (Etapa 5)</th>
+                <th class="p-4">Impacto en el Plan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr class="hover:bg-slate-50/80">
+                <td class="p-4 font-bold text-rose-700 whitespace-nowrap">SEC-01 + N-01<br><span class="text-xs font-normal text-slate-500">Paddle Sync & Webhooks</span></td>
+                <td class="p-4 text-slate-600">Se asumía que el listener <code class="text-xs bg-slate-100 px-1 rounded">PaddleEventListener</code> recibía los webhooks y que <code class="text-xs bg-slate-100 px-1 rounded">syncPaddlePlan</code> podía deshabilitarse de inmediato.</td>
+                <td class="p-4 text-slate-800"><strong>Falso supuesto de webhook:</strong> <code class="text-xs bg-rose-50 text-rose-800 px-1 rounded">WebhookController::handleSubscriptionCreated</code> busca al usuario en la tabla <code class="text-xs bg-slate-100 px-1 rounded">customers</code> de Cashier (que no existe en migraciones y nunca se puebla). Hoy el webhook se ignora silenciosamente y <code class="text-xs bg-slate-100 px-1 rounded">syncPaddlePlan</code> es el único canal que activa planes.</td>
+                <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800">Orden Invertido: B1 antes que B2</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="p-4 font-bold text-rose-700 whitespace-nowrap">SEC-02<br><span class="text-xs font-normal text-slate-500">Fuga de Clientes</span></td>
+                <td class="p-4 text-slate-600">Se reportó que <code class="text-xs bg-slate-100 px-1 rounded">PersonController</code> expone <code class="text-xs bg-slate-100 px-1 rounded">Person::all()</code>.</td>
+                <td class="p-4 text-slate-800"><strong>Más grave de lo reportado:</strong> <code class="text-xs bg-slate-100 px-1 rounded">TripController::storePro</code> (L594), <code class="text-xs bg-slate-100 px-1 rounded">inlineUpdate</code> (L1093) y <code class="text-xs bg-slate-100 px-1 rounded">updateClient</code> (L1127) buscan por <code class="text-xs bg-slate-100 px-1 rounded">email</code> globalmente y sobrescriben el nombre del cliente en viajes de otras agencias.</td>
+                <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800">Migración debe desduplicar registros</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="p-4 font-bold text-amber-700 whitespace-nowrap">SEC-03<br><span class="text-xs font-normal text-slate-500">Documentos Privados</span></td>
+                <td class="p-4 text-slate-600">Se indicó que <code class="text-xs bg-slate-100 px-1 rounded">public/documents/</code> estaba expuesto directamente.</td>
+                <td class="p-4 text-slate-800"><strong>Matizado:</strong> En Apache, <code class="text-xs bg-slate-100 px-1 rounded">public/.htaccess</code> (L16) bloquea <code class="text-xs bg-slate-100 px-1 rounded">^documents/</code>, pero NO funciona en Nginx. Además, <code class="text-xs bg-rose-50 text-rose-800 px-1 rounded">TripAiController::handleChat</code> guarda PDFs en <code class="text-xs bg-rose-50 text-rose-800 px-1 rounded">public/trip-documents/</code>, carpeta que NO está bloqueada ni siquiera en <code class="text-xs bg-slate-100 px-1 rounded">.htaccess</code>.</td>
+                <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Unificar ambos en disco local privado</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="p-4 font-bold text-emerald-700 whitespace-nowrap">Cabeceras HTTP<br><span class="text-xs font-normal text-slate-500">Informe 03 Sec. 1.7</span></td>
+                <td class="p-4 text-slate-600">Se afirmó que faltaban HSTS, X-Frame-Options, nosniff y CSP en la aplicación.</td>
+                <td class="p-4 text-slate-800"><strong>Rectificado:</strong> Sí existe <code class="text-xs bg-emerald-50 text-emerald-800 px-1 rounded">app/Http/Middleware/SecurityHeaders.php</code> registrado globalmente en <code class="text-xs bg-slate-100 px-1 rounded">bootstrap/app.php</code>. Lo que requiere mejora es que su CSP permite <code class="text-xs bg-slate-100 px-1 rounded">'unsafe-inline'</code> y <code class="text-xs bg-slate-100 px-1 rounded">'unsafe-eval'</code>.</td>
+                <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">No duplicar middleware</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="p-4 font-bold text-indigo-700 whitespace-nowrap">Assetlinks & App<br><span class="text-xs font-normal text-slate-500">Informe 03 Sec. 3.3</span></td>
+                <td class="p-4 text-slate-600">Se pensó que solo existía la ruta de <code class="text-xs bg-slate-100 px-1 rounded">routes/web.php</code> con el package <code class="text-xs bg-slate-100 px-1 rounded">xyz.appmaker.jmfpcn</code>.</td>
+                <td class="p-4 text-slate-800"><strong>Matizado:</strong> Existe el archivo estático <code class="text-xs bg-slate-100 px-1 rounded">public/.well-known/assetlinks.json</code> que sí incluye <code class="text-xs bg-slate-100 px-1 rounded">com.viantryp.app</code> con 5 huellas SHA-256. El fallo real es que <code class="text-xs bg-slate-100 px-1 rounded">AndroidManifest.xml</code> no declara <code class="text-xs bg-slate-100 px-1 rounded">android:autoVerify="true"</code> para <code class="text-xs bg-slate-100 px-1 rounded">https://viantryp.com</code>.</td>
+                <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800">Sincronizar web.php + Manifest</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Complete Status of the 16 Original Findings -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h3 class="font-bold text-base text-slate-900 mb-4"><i class="fa-solid fa-clipboard-check mr-2 text-teal-600"></i>Estado de Verificación de los 16 Hallazgos Originales</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-slate-900">SEC-01: Escalada de plan vía syncPaddlePlan</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-800">CONFIRMADO (P0)</span>
+            </div>
+            <p class="text-xs text-slate-600"><code>ProfileController.php:285-359</code> acepta cualquier <code>price_id</code> configurado en <code>config/plans.php</code> sin consultar la API de Paddle.</p>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-slate-900">SEC-02: Fuga y contaminación de clientes (Person)</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-800">CONFIRMADO + AMPLIADO (P0)</span>
+            </div>
+            <p class="text-xs text-slate-600"><code>PersonController.php:14-126</code> y <code>TripController.php:594,1093,1127</code> operan sobre una tabla global sin <code>user_id</code>.</p>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-slate-900">BUS-01: Plan Avanzado perpetuo tras prueba de 30 días</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-800">CONFIRMADO (P0 Comercial)</span>
+            </div>
+            <p class="text-xs text-slate-600"><code>chooseInitialPlan</code> asigna <code>plan = 'avanzado'</code> y <code>getPlanLimits()</code> solo evalúa <code>isTrialActive()</code> si el plan es <code>básico</code>.</p>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-slate-900">LEG-01 & LEG-02: Eliminación de cuenta y Google Play Billing</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">CONFIRMADO (P0 Stores)</span>
+            </div>
+            <p class="text-xs text-slate-600">No existe borrado de cuenta en <code>ProfileController</code> y el modal de Paddle se abre dentro del WebView Android (<code>?app=1</code>).</p>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-slate-900">SEC-04: Keystore y credenciales en Git</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-800">CONFIRMADO EN GIT (P1)</span>
+            </div>
+            <p class="text-xs text-slate-600"><code>viantryp-release-official.keystore</code> sigue indexado en Git (upload key en Play Console) y <code>build.gradle</code> tiene <code>viantryp2026</code>.</p>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-slate-900">SEC-05: SSRF por DNS/Redirección en ImageProxy</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-800">CONFIRMADO (P1)</span>
+            </div>
+            <p class="text-xs text-slate-600"><code>ImageProxyController.php:27-68</code> valida <code>filter_var($host, FILTER_VALIDATE_IP)</code> sin resolver DNS ni bloquear redirecciones.</p>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-slate-900">PWA-01 & CAP-01: Service Worker cachea HTML privado y App remota</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">CONFIRMADO (P1)</span>
+            </div>
+            <p class="text-xs text-slate-600"><code>public/sw.js:58-70</code> guarda documentos HTML autenticados en <code>viantryp-v2</code> y no se limpia al cerrar sesión.</p>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-slate-900">UX-01, UX-02, DATA-01, DATA-02, QA-01</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-teal-100 text-teal-800">CONFIRMADOS (P1/P2)</span>
+            </div>
+            <p class="text-xs text-slate-600">CTAs de planes en landing redirigen a <code>/</code>; <code>max_collaborators</code> no se valida en <code>inviteCollaborator</code>; <code>days_data</code> muerto; tests rotos.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: NUEVOS HALLAZGOS N-01 A N-15 -->
+    <section id="tab-nuevos" class="tab-section hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900"><i class="fa-solid fa-magnifying-glass-chart mr-2 text-rose-600"></i>15 Nuevos Hallazgos Descubiertos en la Inspección Profunda</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Vulnerabilidades y errores lógicos que no figuraban en los informes iniciales, verificados con ruta y línea exacta.</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <!-- N-01 -->
+          <div class="p-5 rounded-xl border-2 border-rose-200 bg-rose-50/40">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <span class="font-extrabold text-rose-900 text-base">N-01: Desconexión total entre Checkout de Paddle y Webhooks de Cashier</span>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-600 text-white">P0 CRÍTICO • FACTURACIÓN</span>
+            </div>
+            <p class="text-sm text-slate-700 mb-2">
+              En <code>vendor/laravel/cashier-paddle/src/Http/Controllers/WebhookController.php:154</code>, Cashier busca al usuario mediante <code>$this->findBillable($data['customer_id'])</code> consultando la tabla <code>customers</code>. Sin embargo: (1) las migraciones de Cashier (<code>customers</code>, <code>subscriptions</code>, <code>transactions</code>) no existen en <code>database/migrations/</code>, y (2) <code>resources/views/profile/index.blade.php:1084</code> abre <code>Paddle.Checkout.open</code> pasando solo <code>customer: { email }</code> y <code>customData: { user_id }</code>. Como resultado, el webhook nunca encuentra al usuario y retorna vacío.
+            </p>
+            <div class="text-xs font-mono bg-slate-900 text-slate-100 p-3 rounded-lg overflow-x-auto">
+              // WebhookController.php:154 (Cashier)<br>
+              if (! $billable = $this->findBillable($data['customer_id'] ?? null)) { return; } // Siempre sale aquí si no existe fila en `customers`
+            </div>
+          </div>
+
+          <!-- N-02 -->
+          <div class="p-5 rounded-xl border border-rose-200 bg-white">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <span class="font-bold text-slate-900 text-base">N-02: Pre-secuestro de cuenta (Account Pre-Hijacking) y aceptación de invitación sin verificar email</span>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800">P1 ALTO • AUTENTICACIÓN</span>
+            </div>
+            <p class="text-sm text-slate-600">
+              <code>RegisterController::register</code> no verifica correo electrónico (<code>MustVerifyEmail</code> está comentado en <code>User.php</code>). Cuando la víctima inicia sesión con Google (<code>GoogleAuthController.php:78, 255</code>), el sistema vincula el <code>google_id</code> a la cuenta pre-creada por el atacante mediante <code>User::where('email', $email)->first()</code> sin invalidar la contraseña que el atacante definió ni exigir <code>email_verified_at</code>. Asimismo, <code>TripController::acceptInvite</code> (L1458) solo compara <code>$collaborator->email === Auth::user()->email</code> sin verificar propiedad del correo.
+            </p>
+          </div>
+
+          <!-- N-05 -->
+          <div class="p-5 rounded-xl border border-rose-200 bg-white">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <span class="font-bold text-slate-900 text-base">N-05: Stored DOM XSS confirmado en <code>public/js/trips/pro-viewer.js</code></span>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800">P1 ALTO • SEGURIDAD XSS</span>
+            </div>
+            <p class="text-sm text-slate-600 mb-2">
+              Confirmado en las líneas 361, 365, 369, 407 y 490–495 de <code>public/js/trips/pro-viewer.js</code>: <code>buildPreviewHTML()</code> interpola directamente en HTML sin ningún escape los campos <code>d.etiqueta</code>, <code>d.texto</code>, <code>d.subtitulo</code>, <code>d.contenido</code>, <code>d.titulo</code>, <code>d.nombre</code>, <code>d.direccion</code>, <code>d.nota</code> y <code>d.maps_url</code>, e inyecta el resultado vía <code>innerHTML</code>. Un colaborador malicioso o un documento PDF con prompt injection procesado por <code>TripAiService</code> puede ejecutar JavaScript arbitrario en la sesión del dueño o en el enlace público <code>/t/{token}</code>.
+            </p>
+            <div class="text-xs font-mono bg-slate-900 text-slate-100 p-3 rounded-lg overflow-x-auto">
+              // public/js/trips/pro-viewer.js:369 & 495<br>
+              if (item.type === 'texto') return `&lt;div class="pv-texto" ...&gt;${d.contenido || ''}&lt;/div&gt;`;<br>
+              &lt;a href="${mapsUrl}" target="_blank"&gt;Ver en Maps&lt;/a&gt; // Permite javascript: URI o inyección de atributos
+            </div>
+          </div>
+
+          <!-- Grid of remaining N findings -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-900 text-sm">N-03: Códigos promocionales vitalicios en historial Git</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">P1</span>
+              </div>
+              <p class="text-xs text-slate-600">El commit <code>f302a7f</code> quitó los códigos hardcoded de <code>config/plans.php</code>, pero siguen visibles en <code>git log -S</code> y otorgan plan gratuito perpetuo sin rate limit en <code>POST /profile/plan/verify-code</code>.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-900 text-sm">N-04: Carto API token en historial Git y expuesto en HTML</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">P2</span>
+              </div>
+              <p class="text-xs text-slate-600">El token JWT de Carto estuvo hardcoded antes del commit <code>f302a7f</code>. Debe restringirse por HTTP Referrer (<code>https://viantryp.com/*</code>) en el panel de Carto.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-900 text-sm">N-06: Doble incremento de cuota IA en el mismo viaje</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">P2</span>
+              </div>
+              <p class="text-xs text-slate-600"><code>TripController::storePro</code> (L663) incrementa <code>ai_trips_used_this_month</code> al guardar un viaje con flag IA, y <code>TripAiController::handleChat</code> (L108) vuelve a incrementarlo si <code>!ai_generated</code>.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-900 text-sm">N-07: Inyección de CSS vía <code>theme_color</code></span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">P2</span>
+              </div>
+              <p class="text-xs text-slate-600"><code>ProfileController::updateProfile</code> (L86) valida <code>theme_color</code> como <code>string|max:20</code> sin regex hexadecimal, inyectándolo en bloques <code>&lt;style&gt;</code> de vistas públicas.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-900 text-sm">N-08: 10 endpoints costosos sin Rate Limiting (Throttle)</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-800">P1</span>
+              </div>
+              <p class="text-xs text-slate-600">Rutas como <code>/api/flights/lookup</code> (AeroDataBox), <code>/trips/{trip}/ai-chat</code> (Gemini), <code>/api/image-proxy</code>, <code>/contact</code> y <code>/profile/plan/verify-code</code> no tienen middleware <code>throttle</code>.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-900 text-sm">N-09: Subida de avatares/logos valida MIME pero usa extensión original</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">P2</span>
+              </div>
+              <p class="text-xs text-slate-600"><code>ProfileController::uploadAvatar</code> y <code>uploadAgencyLogo</code> usan <code>getClientOriginalExtension()</code> en vez de <code>extension()</code> derivado del MIME real.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-900 text-sm">N-10: Colaborador viewer vs editor en adjuntos y falta de UI de revocación</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">P2</span>
+              </div>
+              <p class="text-xs text-slate-600">No existe endpoint para que el dueño revoque o cambie el rol de un colaborador invitado una vez agregado.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-900 text-sm">N-11: Desfase de zona horaria en búsquedas de vuelos</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-200 text-slate-800">P3</span>
+              </div>
+              <p class="text-xs text-slate-600"><code>FlightLookupController.php:52</code> usa <code>date('Y-m-d')</code> en UTC cuando no se envía fecha, fallando en noches de Latinoamérica.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-900 text-sm">N-12: <code>CURLOPT_SSL_VERIFYPEER => false</code> en <code>TripAiService</code></span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-800">P1</span>
+              </div>
+              <p class="text-xs text-slate-600">Confirmado en <code>app/Services/TripAiService.php:79</code>: desactiva la validación SSL al enviar documentos privados y la <code>GEMINI_API_KEY</code> a Google, e intenta modelos inexistentes (<code>gemini-3.5-flash</code>) antes de caer en <code>3.1</code>.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-900 text-sm">N-13, N-14 & N-15: TrustProxies <code>*</code>, Login CSRF GSI y llave PEM en raíz</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">P2</span>
+              </div>
+              <p class="text-xs text-slate-600"><code>bootstrap/app.php:14</code> confía en <code>trustProxies(at: '*')</code> (permite falsificar <code>X-Forwarded-For</code> para evadir rate-limits si no se filtra fuera de Cloudflare); <code>auth/google/*</code> omite CSRF; <code>voyager_key.pem</code> reside en la raíz del proyecto.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: PLAN DE IMPLEMENTACIÓN POR BLOQUES (A-J) -->
+    <section id="tab-bloques" class="tab-section hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 class="text-lg font-bold text-slate-900 mb-1"><i class="fa-solid fa-sitemap mr-2 text-teal-600"></i>Secuencia de Ejecución Segura por Bloques (A → J)</h2>
+        <p class="text-xs text-slate-500 mb-6">Cada bloque está diseñado como un PR o despliegue atómico con plan de rollback inmediato.</p>
+
+        <div class="space-y-4">
+          <div class="p-5 rounded-xl border-l-4 border-rose-600 bg-slate-50">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-slate-900">BLOQUE A — Aislamiento Multi-Tenant de Clientes (SEC-02)</h3>
+              <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-800">Prioridad 1 • Base de Datos + Controladores</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1">
+              <strong>Archivos:</strong> Nueva migración <code>add_user_id_to_persons_table</code>, <code>app/Models/Person.php</code>, <code>app/Http/Controllers/PersonController.php</code>, <code>app/Http/Controllers/TripController.php</code> (L594, L1093, L1127).<br>
+              <strong>Acción clave:</strong> Agregar <code>user_id</code> a <code>persons</code>, backfillear desde <code>trips.user_id</code> (duplicando el registro <code>Person</code> si dos agencias distintas compartían el mismo cliente por email), cambiar el índice único de <code>email</code> global a compuesto <code>UNIQUE(user_id, email)</code> y aplicar scope <code>where('user_id', Auth::id())</code> en todas las consultas.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-xl border-l-4 border-rose-600 bg-slate-50">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-slate-900">BLOQUE B — Blindaje de Pagos Paddle, Trials y Códigos Promo (N-01, SEC-01, BUS-01, N-03)</h3>
+              <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-800">Prioridad 2 • ¡Ejecutar B1 antes que B2!</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1">
+              <strong>Sub-etapa B1 (Primero):</strong> Publicar y migrar tablas de Cashier Paddle; actualizar <code>PaddleEventListener.php</code> para hacer fallback a <code>data.custom_data.user_id</code> o <code>customer_email</code> si <code>findBillable</code> no halla fila; modificar <code>ProfileController::syncPaddlePlan</code> para recibir <code>transaction_id</code> y verificarlo servidor-a-servidor contra <code>GET https://api.paddle.com/transactions/{id}</code> validando <code>status === 'completed'</code> y <code>custom_data.user_id == Auth::id()</code>.<br>
+              <strong>Sub-etapa B2 (Después de verificar B1):</strong> Eliminar cualquier actualización de plan en navegador que no traiga <code>transaction_id</code> verificado por API.<br>
+              <strong>Sub-etapa B3:</strong> Corregir <code>User::getPlanLimits()</code> para que si <code>trial_ends_at</code> expiró y el usuario no tiene suscripción activa en Paddle, retorne los límites de <code>básico</code>. Rotar códigos promocionales en <code>.env</code> y añadir <code>throttle:5,10</code>.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-xl border-l-4 border-amber-500 bg-slate-50">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-slate-900">BLOQUE C — Seguridad de Documentos Privados, Proxy SSRF, XSS y TLS IA (SEC-03, SEC-05, N-05, N-12)</h3>
+              <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">Prioridad 3 • Seguridad de Aplicación</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1">
+              <strong>Acción clave:</strong> (1) Mover <code>public/documents/</code> y <code>public/trip-documents/</code> a <code>storage/app/private/documents/</code> manteniendo lectura retrocompatible en <code>downloadDocument</code>. (2) En <code>ImageProxyController</code>, resolver IP con <code>dns_get_record</code>, prohibir rangos privados/reservados, deshabilitar redirects (<code>max_redirects => 0</code>) y añadir <code>throttle:60,1</code>. (3) Añadir helper <code>escHtml()</code> y validación de protocolo <code>https?:</code> en <code>public/js/trips/pro-viewer.js</code>. (4) Quitar <code>CURLOPT_SSL_VERIFYPEER => false</code> en <code>TripAiService.php:79</code>.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-xl border-l-4 border-amber-500 bg-slate-50">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-slate-900">BLOQUE D — Autenticación, Verificación de Email y Anti-Hijacking (N-02, N-08, N-13, N-14)</h3>
+              <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">Prioridad 4 • Identidad y Rate Limiting</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1">
+              <strong>Acción clave:</strong> En <code>GoogleAuthController</code>, al vincular un <code>google_id</code> por primera vez a una cuenta cuyo <code>email_verified_at</code> sea <code>null</code>, marcar <code>email_verified_at = now()</code> y regenerar <code>password</code> aleatoria para expulsar cualquier pre-registro malicioso. Exigir email verificado en <code>acceptInvite</code> y aplicar <code>throttle</code> a las 10 rutas desprotegidas.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+              <h4 class="font-bold text-sm text-slate-900">BLOQUE E — Eliminación de Cuenta (LEG-01)</h4>
+              <p class="text-xs text-slate-600 mt-1">Implementar <code>DELETE /profile</code> con confirmación, cancelación de suscripción activa en Paddle, borrado de archivos en disco y limpieza de sesión.</p>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+              <h4 class="font-bold text-sm text-slate-900">BLOQUE F — Cumplimiento Google Play / iOS (LEG-02, CAP-01)</h4>
+              <p class="text-xs text-slate-600 mt-1">Ocultar checkout web de Paddle cuando <code>isAppMode</code> esté activo (modo <em>Reader</em> B2B) e incluir página offline local en el bundle de Capacitor.</p>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+              <h4 class="font-bold text-sm text-slate-900">BLOQUE G — Service Worker y Caché PWA (PWA-01)</h4>
+              <p class="text-xs text-slate-600 mt-1">Actualizar a <code>viantryp-v3</code> en <code>public/sw.js</code>: cachear solo assets estáticos (CSS/JS/fuentes), nunca HTML autenticado, y limpiar caché en logout.</p>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+              <h4 class="font-bold text-sm text-slate-900">BLOQUES H, I, J — Conversión, Datos, Higiene Git y Tests</h4>
+              <p class="text-xs text-slate-600 mt-1">Arreglar redirección de <code>plans.redirect</code> hacia <code>/register</code>, validar <code>max_collaborators</code>, sacar keystore de Git y reparar suite PHPUnit.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conflict Matrix -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h3 class="font-bold text-base text-slate-900 mb-3"><i class="fa-solid fa-code-merge mr-2 text-rose-600"></i>Reglas de No-Paralelismo (Cambios que NO deben ejecutarse a la vez)</h3>
+        <ul class="space-y-2 text-sm text-slate-700 list-disc pl-5">
+          <li><strong>B2 (Bloquear syncPaddlePlan sin verificación) NUNCA antes de B1 (Verificación por API de Transacción + Tablas Cashier):</strong> Dejaría a los compradores reales sin activación de plan tras pagar.</li>
+          <li><strong>Limpieza de archivos físicos de documentos NUNCA en el mismo despliegue que el cambio de código (Bloque C):</strong> Primero desplegar lectura dual (<code>Storage::disk('local')</code> + fallback a <code>public_path('documents')</code>) y luego migrar los archivos físicos.</li>
+          <li><strong>Índice <code>UNIQUE(user_id, email)</code> en <code>persons</code> NUNCA antes del script de desduplicación (Bloque A):</strong> Si hay registros con <code>user_id = NULL</code> o compartidos entre dos agencias, la migración SQL fallaría a mitad de camino en MySQL.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TAB 4: SUITE DE PRUEBAS Y DECISIONES -->
+    <section id="tab-pruebas" class="tab-section hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 class="text-lg font-bold text-slate-900 mb-1"><i class="fa-solid fa-vial-circle-check mr-2 text-indigo-600"></i>Matriz de 23 Pruebas de Aceptación (T-01 a T-23)</h2>
+        <p class="text-xs text-slate-500 mb-4">Criterios de verificación objetiva para dar por cerrado cada bloque en entorno de staging antes de producción.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+          <div class="p-3 rounded-lg border border-slate-200 bg-slate-50"><strong>T-01 (SEC-02):</strong> Usuario A crea cliente; Usuario B consulta <code>/persons</code> y no ve ni puede editar el cliente de A (403/404).</div>
+          <div class="p-3 rounded-lg border border-slate-200 bg-slate-50"><strong>T-02 (SEC-02):</strong> Usuario B guarda viaje en editor Pro con el mismo email de un cliente de A; se crea fila propia en <code>persons</code> sin alterar el viaje de A.</div>
+          <div class="p-3 rounded-lg border border-slate-200 bg-slate-50"><strong>T-03 (SEC-01):</strong> Petición manual a <code>POST /profile/plan/paddle-sync</code> con <code>price_id</code> sin <code>transaction_id</code> válido devuelve 422/403.</div>
+          <div class="p-3 rounded-lg border border-slate-200 bg-slate-50"><strong>T-04 (N-01):</strong> Compra en Paddle Sandbox con <code>transaction_id</code> real activa el plan y registra la suscripción en base de datos.</div>
+          <div class="p-3 rounded-lg border border-slate-200 bg-slate-50"><strong>T-05 (N-01):</strong> Webhook <code>subscription.created</code> y <code>subscription.canceled</code> actualiza correctamente el estado del usuario.</div>
+          <div class="p-3 rounded-lg border border-slate-200 bg-slate-50"><strong>T-06 (BUS-01):</strong> Usuario con <code>trial_ends_at = now()->subDay()</code> sin suscripción recibe límites de plan Básico en <code>getPlanLimits()</code>.</div>
+          <div class="p-3 rounded-lg border border-slate-200 bg-slate-50"><strong>T-07 (N-03):</strong> Intento 6 de <code>POST /profile/plan/verify-code</code> recibe HTTP 429; códigos antiguos del historial Git son rechazados.</div>
+          <div class="p-3 rounded-lg border border-slate-200 bg-slate-50"><strong>T-08 (SEC-03):</strong> Subida en editor y en Tryp IA guarda archivos fuera de <code>public/</code>; acceso directo por URL estática da 404.</div>
+          <div class="p-3 rounded-lg border border-slate-200 bg-slate-50"><strong>T-09 (SEC-03):</strong> Enlace público <code>/t/{token}</code> descarga adjuntos autorizados vía <code>/documents/{id}/download?token={token}</code>.</div>
+          <div class="p-3 rounded-lg border border-slate-200 bg-slate-50"><strong>T-10 (SEC-05):</strong> <code>/api/image-proxy?url=http://169.254.169.254/</code> o dominio que resuelva a <code>127.0.0.1</code> es bloqueado con HTTP 400/403.</div>
+          <div class="p-3 rounded-lg border border-slate-200 bg-slate-50"><strong>T-11 (N-05):</strong> Ítem con <code>&lt;img src=x onerror=alert(1)&gt;</code> en título o nota se renderiza como texto literal en <code>pro-viewer.js</code>.</div>
+          <div class="p-3 rounded-lg border border-slate-200 bg-slate-50"><strong>T-12 (N-02):</strong> Cuenta creada sin verificar email y luego autenticada con Google regenera su password y marca <code>email_verified_at</code>.</div>
+        </div>
+      </div>
+
+      <!-- 15 Owner Decisions -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 class="text-lg font-bold text-slate-900 mb-1"><i class="fa-solid fa-gavel mr-2 text-purple-600"></i>Las 15 Decisiones de Negocio y Producto para Autorizar la Ejecución</h2>
+        <p class="text-xs text-slate-500 mb-4">Cada decisión incluye la recomendación del equipo sénior para no retrasar el lanzamiento web.</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase font-semibold">
+                <th class="p-3">#</th>
+                <th class="p-3">Decisión Requerida</th>
+                <th class="p-3">Recomendación del Equipo Sénior</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr><td class="p-3 font-bold">D-01</td><td class="p-3">Duración real de la prueba gratuita (Landing dice 7 días, código da 30 días).</td><td class="p-3 text-teal-800 font-medium">Unificar en 14 días (o 7 días) en código y textos sin pedir tarjeta inicial.</td></tr>
+              <tr><td class="p-3 font-bold">D-02</td><td class="p-3">Qué ocurre con los viajes creados cuando vence el trial y el usuario pasa a Básico (límite 1 viaje).</td><td class="p-3 text-teal-800 font-medium">Modo solo-lectura para los viajes excedentes (no borrarlos ni ocultarlos) y bloquear la creación de nuevos hasta subir de plan.</td></tr>
+              <tr><td class="p-3 font-bold">D-03</td><td class="p-3">Estrategia de cobro en la app Android (Google Play) y futura app iOS.</td><td class="p-3 text-teal-800 font-medium">Modo "Reader" en app móvil (ocultar botones de pago y precios cuando <code>isAppMode</code> es true; contratación solo vía navegador web).</td></tr>
+              <tr><td class="p-3 font-bold">D-04</td><td class="p-3">Política para los usuarios actuales en BD que ya tienen <code>plan = 'avanzado'</code> por el bug del trial.</td><td class="p-3 text-teal-800 font-medium">Respetar su fecha <code>trial_ends_at</code> si está en el futuro; si ya venció, darles 7 días de gracia con aviso por correo antes de pasar a Básico.</td></tr>
+              <tr><td class="p-3 font-bold">D-05</td><td class="p-3">Vigencia de los códigos promocionales actuales (<code>PROMO_CODE_*</code>).</td><td class="p-3 text-teal-800 font-medium">Rotar inmediatamente en <code>.env</code> y asignarles una duración definida (ej. 30 o 90 días en <code>trial_ends_at</code> en vez de vitalicio).</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-slate-900', 'text-white');
+        btn.classList.add('text-slate-600');
+      });
+      const activeBtn = document.getElementById('btn-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-slate-900', 'text-white');
+        activeBtn.classList.remove('text-slate-600');
+      }
+    }
+  </script>
+</body>
+</html>

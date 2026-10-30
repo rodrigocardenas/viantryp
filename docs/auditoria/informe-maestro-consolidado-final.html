@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viantryp — Informe Maestro Consolidado Final & Barrido 360° Pre-Lanzamiento</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+    body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: #0f172a; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+    @media print {
+      .no-print { display: none !important; }
+      .tab-panel { display: block !important; page-break-after: always; }
+      body { background: #ffffff; }
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-20">
+
+  <!-- Master Hero Header -->
+  <header class="bg-gradient-to-br from-slate-950 via-slate-900 to-teal-950 text-white shadow-2xl border-b border-teal-500/30">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/20 border border-teal-400/40 text-teal-300 text-xs font-bold uppercase tracking-wider mb-3">
+            <i class="fa-solid fa-shield-halved"></i> Documento Maestro Definitivo • Barrido 360° (10 Áreas Críticas) + Modelo Web/App Aprobado
+          </div>
+          <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Centro de Control de Lanzamiento — Viantryp SaaS</h1>
+          <p class="text-slate-300 text-sm md:text-base mt-2 max-w-3xl">
+            Incluye el <strong>Diseño Aprobado de Separación Web vs. App (Modo Consumo sin Paddle en Android)</strong>, el <strong>Barrido Final de las 10 Áreas Críticas (37 hallazgos verificados)</strong> y el <strong>Plan de Acción en 10 Bloques (A–J)</strong>.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 no-print">
+          <button onclick="window.print()" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-sm shadow-lg shadow-teal-500/20 transition cursor-pointer">
+            <i class="fa-solid fa-file-pdf"></i> Guardar / Imprimir PDF Maestro
+          </button>
+        </div>
+      </div>
+
+      <!-- Executive Verdict Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+        <div class="bg-white/5 border border-amber-400/40 rounded-2xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-300">1. Plataforma Web</span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-500/20 text-amber-300 border border-amber-400/30">PADDLE HABILITADO</span>
+          </div>
+          <div class="text-xl font-extrabold text-white mt-2">4 a 6 días hábiles</div>
+          <p class="text-xs text-slate-300 mt-1">Contratación, cambios de plan, facturas y gestión de pagos activa tras Bloques A–E.</p>
+        </div>
+
+        <div class="bg-white/5 border border-teal-400/40 rounded-2xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-teal-300">2. App Android (Google Play)</span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-teal-500/20 text-teal-300 border border-teal-400/30">MODO CONSUMO (SIN PADDLE)</span>
+          </div>
+          <div class="text-xl font-extrabold text-white mt-2">Diseño Aprobado</div>
+          <p class="text-xs text-slate-300 mt-1">Sin checkout Paddle ni enlaces externos; muestra aviso informativo limpio (Bloque F).</p>
+        </div>
+
+        <div class="bg-white/5 border border-rose-400/40 rounded-2xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-300">3. Total Hallazgos</span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-500/20 text-rose-300 border border-rose-400/30">37 VERIFICADOS</span>
+          </div>
+          <div class="text-xl font-extrabold text-white mt-2">7 P0 • 14 P1 • 16 P2/P3</div>
+          <p class="text-xs text-slate-300 mt-1">Incluye los 6 nuevos hallazgos del barrido final (<code>N-16</code> a <code>N-24</code>).</p>
+        </div>
+
+        <div class="bg-white/5 border border-emerald-400/40 rounded-2xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-300">4. Plan de Ejecución</span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">10 BLOQUES (A–J)</span>
+          </div>
+          <div class="text-xl font-extrabold text-white mt-2">Cero Regresiones</div>
+          <p class="text-xs text-slate-300 mt-1">Secuencia validada con respaldo previo de BD y archivos.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sticky Navigation Bar -->
+  <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-6 flex items-center gap-2 overflow-x-auto py-3">
+      <button onclick="showMasterTab('panel-paddle-app')" id="mbtn-panel-paddle-app" class="mtab-btn px-4 py-2 rounded-xl text-sm font-bold bg-slate-900 text-white transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-mobile-screen-button mr-1.5 text-teal-400"></i> 1. Modelo Web vs. App (Sin Paddle en App)
+      </button>
+      <button onclick="showMasterTab('panel-10-areas')" id="mbtn-panel-10-areas" class="mtab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-radar mr-1.5 text-indigo-600"></i> 2. Barrido Final (10 Áreas Críticas)
+      </button>
+      <button onclick="showMasterTab('panel-catalogo')" id="mbtn-panel-catalogo" class="mtab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-list-check mr-1.5 text-rose-600"></i> 3. Catálogo Maestro (37 Hallazgos)
+      </button>
+      <button onclick="showMasterTab('panel-plan')" id="mbtn-panel-plan" class="mtab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-hammer mr-1.5 text-amber-600"></i> 4. Plan de Acción (Bloques A–J) & Checklist
+      </button>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-6 mt-8 space-y-8">
+
+    <!-- PANEL 1: MODELO APROBADO WEB VS APP (MODO CONSUMO) -->
+    <section id="panel-paddle-app" class="tab-panel space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-lg font-bold">
+            <i class="fa-solid fa-check-circle"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Arquitectura Aprobada: Separación de Facturación Web vs. App Móvil</h2>
+            <p class="text-xs text-slate-500">Cumplimiento estricto del modelo de "Aplicación de Consumo Exclusivo" en Google Play y Apple App Store (Bloque F).</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <!-- Web Card -->
+          <div class="rounded-2xl border-2 border-emerald-200 bg-emerald-50/30 p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-extrabold text-emerald-950 text-base"><i class="fa-solid fa-globe mr-2 text-emerald-600"></i>Viantryp en Navegador Web</span>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white">Paddle Habilitado</span>
+            </div>
+            <ul class="space-y-2 text-sm text-slate-700">
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-600"></i> Contratar planes (Viajero Pro y Negocios).</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-600"></i> Cambiar de plan (mensual / anual) y canjear códigos promo.</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-600"></i> Actualizar métodos de pago en el portal de Paddle.</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-600"></i> Consultar historial de facturas.</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-600"></i> Cancelar o renovar suscripciones.</li>
+            </ul>
+          </div>
+
+          <!-- Android / iOS App Card -->
+          <div class="rounded-2xl border-2 border-indigo-200 bg-indigo-50/30 p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-extrabold text-indigo-950 text-base"><i class="fa-brands fa-android mr-2 text-indigo-600"></i>Viantryp en App Android / iOS</span>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white">Sin Checkout Paddle</span>
+            </div>
+            <ul class="space-y-2 text-sm text-slate-700">
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-indigo-600"></i> Iniciar sesión y utilizar el plan ya contratado.</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-indigo-600"></i> Consultar el nombre del plan activo y sus medidores de uso.</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-indigo-600"></i> Acceder a todas las funciones correspondientes al plan.</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-ban text-rose-600"></i> <strong>No cargar <code>paddle.js</code> ni abrir <code>Paddle.Checkout</code> en el WebView.</strong></li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-ban text-rose-600"></i> <strong>No incluir botones de pago ni enlaces externos (<code>&lt;a href&gt;</code>) a la web de compra.</strong></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Preview of the In-App Notice -->
+        <div class="mt-6 p-5 rounded-2xl bg-slate-900 text-white">
+          <div class="text-xs font-bold uppercase tracking-wider text-teal-400 mb-2">
+            <i class="fa-solid fa-eye mr-1.5"></i> Vista Previa del Aviso Oficial en la App (Sin enlaces externos)
+          </div>
+          <div class="p-4 rounded-xl bg-slate-800 border border-slate-700 flex items-start gap-3">
+            <i class="fa-solid fa-circle-info text-teal-400 text-lg mt-0.5"></i>
+            <p class="text-sm text-slate-100 leading-relaxed">
+              "La gestión de suscripciones y facturación no está disponible desde la aplicación. Para consultar y gestionar tu cuenta de facturación, accede a Viantryp desde un navegador web."
+            </p>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-2">
+            Se mostrará automáticamente en <code>resources/views/profile/index.blade.php</code> y <code>resources/views/components/upgrade-modal.blade.php</code> cuando <code>request()-&gt;boolean('app') || request()-&gt;cookie('viantryp_app_mode') === '1'</code>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 2: BARRIDO FINAL DE LAS 10 ÁREAS CRÍTICAS -->
+    <section id="panel-10-areas" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 class="text-xl font-extrabold text-slate-900 mb-1">Resultado del Barrido Final en las 10 Áreas Críticas</h2>
+        <p class="text-xs text-slate-500 mb-6">Inspección completa de todos los controladores, listeners, vistas legales, almacenamiento y configuración.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- 1. Autorización -->
+          <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/30">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-extrabold text-rose-950 text-sm">1. Autorización (Todos los Controladores)</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-600 text-white">CRÍTICA</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              Además de <code>PersonController</code> (<code>SEC-02</code>) y la relación pivote <code>person_trip</code> en <code>TripController</code>, se descubrió:
+              <br>• <strong><code>N-16</code> (<code>AirlineController.php</code>):</strong> <code>Route::resource('airlines')</code> está abierto a cualquier usuario autenticado. Cualquier usuario puede editar o borrar aerolíneas del catálogo global de Viantryp.
+              <br>• <strong><code>N-17</code> (<code>GooglePlacesController.php</code>):</strong> La ruta <code>api/places/details</code> está fuera del middleware <code>auth</code>, permitiendo consumir la API pagada de Google Places sin sesión o sin enviar <code>trip_id</code>.
+            </p>
+          </div>
+
+          <!-- 2. Credenciales -->
+          <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/30">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-extrabold text-rose-950 text-sm">2. Credenciales y Keystore</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-600 text-white">CRÍTICA</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              • <code>viantryp-release-official.keystore</code> (Upload Key de Google Play) y su clave <code>viantryp2026</code> están en Git (<code>SEC-04</code>).
+              <br>• <code>voyager_key.pem</code> reside en la raíz del proyecto (<code>N-15</code>).
+              <br>• Los 4 códigos promocionales y el token de Carto están en el historial de commits previos a <code>f302a7f</code> (<code>N-03</code>, <code>N-04</code>). Deben rotarse en <code>.env</code> y restringirse por Referrer antes del lanzamiento.
+            </p>
+          </div>
+
+          <!-- 3. Autenticación -->
+          <div class="p-5 rounded-xl border border-amber-200 bg-amber-50/30">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-extrabold text-amber-950 text-sm">3. Autenticación, OAuth, Sesiones y Fuerza Bruta</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-600 text-white">ALTA</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              • <strong>Pre-Hijacking (<code>N-02</code>):</strong> Al vincular Google a una cuenta existente no verificada, no se invalida la contraseña previa.
+              <br>• <strong>Reset Password (<code>N-22</code>):</strong> <code>POST /reset-password</code> no tiene middleware <code>throttle</code> y usa validación DNS síncrona (<code>email:rfc,dns</code>).
+              <br>• <strong>GSI Callback (<code>N-14</code>):</strong> <code>auth/google/*</code> está excluido de CSRF en <code>bootstrap/app.php</code> sin verificar la cookie <code>g_csrf_token</code>.
+            </p>
+          </div>
+
+          <!-- 4. Infraestructura -->
+          <div class="p-5 rounded-xl border border-amber-200 bg-amber-50/30">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-extrabold text-amber-950 text-sm">4. Infraestructura, Backups y Rollback</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-600 text-white">ALTA</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              • No hay backups automatizados configurados en el repositorio.
+              <br>• <strong>Acción obligatoria:</strong> Tomar snapshot de MySQL (<code>mysqldump --single-transaction</code>) y de <code>storage/</code> inmediatamente antes de ejecutar el Bloque A, y programar backup diario a las 03:00 AM hacia almacenamiento externo con prueba de restauración en staging.
+            </p>
+          </div>
+
+          <!-- 5. Archivos -->
+          <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/30">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-extrabold text-rose-950 text-sm">5. Archivos (MIME, Extensión y Descargas)</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-600 text-white">ALTA</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              • <strong>Hallazgo crítico confirmado (<code>SEC-03</code> / <code>N-20</code>):</strong> <code>TripController::uploadAttachment</code> (L827) guarda en <code>Storage::disk('public')-&gt;put('documents/...')</code>, cuya URL real es <code>/storage/documents/{uuid}.ext</code>. La regla <code>RewriteRule ^documents/</code> de <code>.htaccess</code> <strong>no bloquea <code>/storage/documents/</code> ni siquiera en Apache</strong>.
+              <br>• <code>TripDocumentController::download</code> sirve todo como <code>Content-Disposition: inline</code> y las subidas usan <code>getClientOriginalExtension()</code>.
+            </p>
+          </div>
+
+          <!-- 6. Webhooks -->
+          <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/30">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-extrabold text-rose-950 text-sm">6. Webhooks de Paddle (Duplicados, Cancelaciones y Fallos)</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-600 text-white">ALTA</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              • El listener real es <code>App\Listeners\SyncPaddleSubscription</code> (registrado en <code>AppServiceProvider.php:39</code>).
+              <br>• <strong>Bug de cancelación inmediata (<code>N-23</code>):</strong> En la línea 23, <code>if ($event instanceof SubscriptionCanceled || !$subscription-&gt;active())</code> degrada al usuario a Básico <strong>en el mismo segundo en que cancela</strong>, quitándole los días ya pagados de su periodo de gracia (<code>$subscription-&gt;onGracePeriod()</code>).
+            </p>
+          </div>
+
+          <!-- 7. Producción -->
+          <div class="p-5 rounded-xl border border-amber-200 bg-amber-50/30">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-extrabold text-amber-950 text-sm">7. Configuración de Producción, TLS y Excepciones</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-600 text-white">ALTA</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              • <code>URL::forceScheme('https')</code> y <code>SecurityHeaders.php</code> están activos y no hay herramientas de debug expuestas.
+              <br>• <strong>Fuga de errores (<code>N-24</code>):</strong> <code>TripController.php</code> (líneas 937, 982 y 1061) devuelve <code>'exception' =&gt; $e-&gt;getMessage()</code> al navegador en respuestas JSON 500.
+            </p>
+          </div>
+
+          <!-- 8. Operación -->
+          <div class="p-5 rounded-xl border border-slate-200 bg-slate-50">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-extrabold text-slate-900 text-sm">8. Operación, Colas, Scheduler y Correo</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-700 text-white">MEDIA-ALTA</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              • <code>SyncUserRegistration</code> (que sincroniza cada nuevo usuario con Discord y Google Sheets vía <code>UserObserver</code>) usa la cola <code>database</code> (<code>N-19</code>). Requiere <code>Supervisor</code> corriendo <code>php artisan queue:work</code> en producción.
+              <br>• <code>routes/console.php</code> no tiene tareas programadas de limpieza ni de expiración de trials.
+            </p>
+          </div>
+
+          <!-- 9. Privacidad -->
+          <div class="p-5 rounded-xl border border-amber-200 bg-amber-50/30">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-extrabold text-amber-950 text-sm">9. Privacidad y Sub-encargados de Datos</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-600 text-white">ALTA</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              • <strong>Brecha en <code>resources/views/pages/privacy.blade.php:76-85</code> (<code>N-18</code>):</strong> La política solo menciona a AWS, Paddle y Hostinger Mail, omitiendo que <strong>Google Gemini API</strong> procesa los documentos subidos a Tryp IA y que <strong>Google Sheets / Discord</strong> reciben los datos de registro en <code>SyncUserRegistration</code>.
+            </p>
+          </div>
+
+          <!-- 10. Calidad -->
+          <div class="p-5 rounded-xl border border-amber-200 bg-amber-50/30">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-extrabold text-amber-950 text-sm">10. Calidad y Consistencia de Planes</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-600 text-white">ALTA</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              • <strong>Contradicción detectada (<code>N-21</code>):</strong> La tabla de planes promete <em>"Fotos Unsplash &amp; GIFs ilimitados"</em> en el Plan Básico y <code>Trip::hasReachedUnsplashLimit()</code> devuelve <code>false</code>, pero <code>TripController::saveProState</code> (L722–738) sigue bloqueando con error 403 si el viaje tiene más de 10 fotos Unsplash o 10 GIFs.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 3: CATÁLOGO MAESTRO DE LOS 37 ERRORES -->
+    <section id="panel-catalogo" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Catálogo Completo de los 37 Hallazgos Confirmados</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Incluye los hallazgos de las Etapas 1–5 más los 6 nuevos hallazgos del barrido final (<code>N-16</code> a <code>N-24</code>).</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 no-print">
+            <input type="text" id="finding-search" oninput="filterFindings()" placeholder="Buscar archivo, ID, Paddle, XSS..." class="px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-slate-900 w-60" />
+            <select id="finding-sev" onchange="filterFindings()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold bg-white">
+              <option value="ALL">Todas las severidades (37)</option>
+              <option value="P0">P0 — Bloqueante Crítico (7)</option>
+              <option value="P1">P1 — Alto / Pre-Lanzamiento (14)</option>
+              <option value="P2">P2 — Medio / Integridad (14)</option>
+              <option value="P3">P3 — Bajo / Mejora (2)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-900 text-white uppercase tracking-wider text-[11px]">
+                <th class="p-3 rounded-tl-xl">ID</th>
+                <th class="p-3">Sev.</th>
+                <th class="p-3">Hallazgo y Causa Raíz Verificada</th>
+                <th class="p-3">Archivo y Línea Exacta</th>
+                <th class="p-3">Solución Específica</th>
+                <th class="p-3 rounded-tr-xl">Bloque</th>
+              </tr>
+            </thead>
+            <tbody id="findings-tbody" class="divide-y divide-slate-200">
+              <tr class="finding-row bg-rose-50/40" data-sev="P0">
+                <td class="p-3 font-extrabold text-rose-900">SEC-02</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-rose-600 text-white">P0</span></td>
+                <td class="p-3"><strong>Fuga y contaminación cruzada de clientes entre agencias:</strong> <code>persons</code> carece de <code>user_id</code> y se vincula vía pivote <code>person_trip</code>. <code>PersonController</code> expone todos los clientes y <code>TripController</code> sobrescribe el nombre en viajes ajenos.</td>
+                <td class="p-3 font-mono text-[11px]">PersonController.php:14-126<br>TripController.php:230,398,473</td>
+                <td class="p-3">Añadir <code>user_id</code> a <code>persons</code>, desduplicar desde <code>person_trip</code>, índice <code>UNIQUE(user_id, email)</code> y filtrar por <code>Auth::id()</code>.</td>
+                <td class="p-3 font-bold text-rose-800">Bloque A</td>
+              </tr>
+              <tr class="finding-row bg-rose-50/40" data-sev="P0">
+                <td class="p-3 font-extrabold text-rose-900">N-16</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-rose-600 text-white">P0</span></td>
+                <td class="p-3"><strong>Catálogo global de aerolíneas editable y borrable por cualquier usuario:</strong> <code>Route::resource('airlines', AirlineController::class)</code> no tiene control de rol admin.</td>
+                <td class="p-3 font-mono text-[11px]">AirlineController.php:14-142<br>routes/web.php:117</td>
+                <td class="p-3">Eliminar las rutas de escritura de <code>airlines</code> para usuarios normales, dejando solo <code>GET api/airlines</code>.</td>
+                <td class="p-3 font-bold text-rose-800">Bloque A</td>
+              </tr>
+              <tr class="finding-row bg-rose-50/40" data-sev="P0">
+                <td class="p-3 font-extrabold text-rose-900">N-01</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-rose-600 text-white">P0</span></td>
+                <td class="p-3"><strong>Webhooks de Cashier Paddle nunca encuentran al usuario:</strong> Las tablas <code>customers</code> y <code>subscriptions</code> no están migradas; <code>WebhookController::findBillable</code> retorna <code>null</code> y nunca dispara <code>SyncPaddleSubscription</code>.</td>
+                <td class="p-3 font-mono text-[11px]">WebhookController.php:154<br>SyncPaddleSubscription.php:15</td>
+                <td class="p-3">Publicar migraciones de Cashier y verificar <code>transaction_id</code> contra la API de Paddle en <code>syncPaddlePlan</code> (B1).</td>
+                <td class="p-3 font-bold text-rose-800">Bloque B (B1)</td>
+              </tr>
+              <tr class="finding-row bg-rose-50/40" data-sev="P0">
+                <td class="p-3 font-extrabold text-rose-900">SEC-01</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-rose-600 text-white">P0</span></td>
+                <td class="p-3"><strong>Escalada gratuita de plan vía navegador:</strong> <code>POST /profile/plan/paddle-sync</code> acepta cualquier <code>price_id</code> sin comprobar transacción pagada en Paddle.</td>
+                <td class="p-3 font-mono text-[11px]">ProfileController.php:285-359<br>routes/web.php:160</td>
+                <td class="p-3">Exigir <code>transaction_id</code> verificado en <code>GET /transactions/{id}</code> de Paddle antes de cambiar el plan (B2).</td>
+                <td class="p-3 font-bold text-rose-800">Bloque B (B2)</td>
+              </tr>
+              <tr class="finding-row bg-rose-50/40" data-sev="P0">
+                <td class="p-3 font-extrabold text-rose-900">BUS-01</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-rose-600 text-white">P0</span></td>
+                <td class="p-3"><strong>Plan Avanzado perpetuo tras vencimiento de prueba gratuita:</strong> <code>chooseInitialPlan</code> guarda <code>plan = 'avanzado'</code> y <code>getPlanLimits()</code> no evalúa <code>isTrialActive()</code> para planes distintos de <code>básico</code>.</td>
+                <td class="p-3 font-mono text-[11px]">ProfileController.php:133-155<br>User.php:212-270</td>
+                <td class="p-3">Si <code>trial_ends_at</code> expiró y no hay suscripción activa en Paddle, devolver límites de Básico (B3).</td>
+                <td class="p-3 font-bold text-rose-800">Bloque B (B3)</td>
+              </tr>
+              <tr class="finding-row bg-rose-50/40" data-sev="P0">
+                <td class="p-3 font-extrabold text-rose-900">LEG-01</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-rose-600 text-white">P0</span></td>
+                <td class="p-3"><strong>Ausencia de flujo de eliminación de cuenta:</strong> Requerido por Google Play, App Store y la propia Política de Privacidad de Viantryp (<code>privacy.blade.php:94</code>).</td>
+                <td class="p-3 font-mono text-[11px]">ProfileController.php<br>profile/index.blade.php</td>
+                <td class="p-3">Implementar <code>DELETE /profile</code> con cancelación en Paddle y borrado de datos.</td>
+                <td class="p-3 font-bold text-rose-800">Bloque E</td>
+              </tr>
+              <tr class="finding-row bg-rose-50/40" data-sev="P0">
+                <td class="p-3 font-extrabold text-rose-900">LEG-02</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-rose-600 text-white">P0</span></td>
+                <td class="p-3"><strong>Checkout de Paddle expuesto en la app Android:</strong> Incumple la política de pagos de Google Play si se abre dentro del WebView.</td>
+                <td class="p-3 font-mono text-[11px]">profile/index.blade.php:1045<br>upgrade-modal.blade.php:117</td>
+                <td class="p-3">Desactivar Paddle en modo app y mostrar el mensaje informativo aprobado sin enlaces externos.</td>
+                <td class="p-3 font-bold text-rose-800">Bloque F</td>
+              </tr>
+
+              <!-- P1 (14 items) -->
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">SEC-03 / N-20</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong>Documentos en <code>/storage/documents/</code> y <code>/trip-documents/</code> accesibles públicamente:</strong> <code>.htaccess</code> bloquea <code>^documents/</code> pero los archivos están en <code>/storage/documents/</code> y se sirven con <code>Content-Disposition: inline</code>.</td>
+                <td class="p-3 font-mono text-[11px]">TripController.php:827<br>TripDocumentController.php:77<br>TripAiController.php:90</td>
+                <td class="p-3">Mover a <code>Storage::disk('local')</code> (<code>storage/app/private/documents</code>) y sanitizar cabeceras de descarga.</td>
+                <td class="p-3 font-bold">Bloque C</td>
+              </tr>
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">SEC-05</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong>SSRF por DNS/Redirección y falta de throttle en <code>ImageProxyController</code>:</strong> Permite dominios que resuelvan o redirijan a IPs internas.</td>
+                <td class="p-3 font-mono text-[11px]">ImageProxyController.php:27-88<br>routes/web.php:98</td>
+                <td class="p-3">Resolver IP con <code>gethostbynamel</code>, bloquear rangos privados, <code>allow_redirects => false</code> y <code>throttle:60,1</code>.</td>
+                <td class="p-3 font-bold">Bloque C</td>
+              </tr>
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">N-05</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong>Stored DOM XSS en <code>pro-viewer.js</code>:</strong> Interpola campos de texto libre y <code>maps_url</code> sin escapar en <code>innerHTML</code>.</td>
+                <td class="p-3 font-mono text-[11px]">public/js/trips/pro-viewer.js:361-495</td>
+                <td class="p-3">Aplicar helper <code>esc()</code> y <code>safeHref()</code> en <code>buildPreviewHTML()</code>.</td>
+                <td class="p-3 font-bold">Bloque C</td>
+              </tr>
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">N-12</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong><code>CURLOPT_SSL_VERIFYPEER => false</code> y modelos inexistentes en <code>TripAiService</code>:</strong> Desactiva verificación TLS hacia Gemini e intenta modelos <code>gemini-3.5-*</code> que dan 404.</td>
+                <td class="p-3 font-mono text-[11px]">app/Services/TripAiService.php:61-83</td>
+                <td class="p-3">Activar verificación SSL, pasar API key por header y depurar lista de modelos.</td>
+                <td class="p-3 font-bold">Bloque C</td>
+              </tr>
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">N-17</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong>Endpoint <code>api/places/details</code> fuera del middleware <code>auth</code>:</strong> Permite consumir cuota pagada de Google Places sin sesión o sin <code>trip_id</code>.</td>
+                <td class="p-3 font-mono text-[11px]">routes/web.php:185<br>GooglePlacesController.php:13</td>
+                <td class="p-3">Mover dentro del grupo <code>middleware('auth')</code> y exigir <code>trip_id</code> válido del usuario.</td>
+                <td class="p-3 font-bold">Bloque A</td>
+              </tr>
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">N-23</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong>Degradación inmediata en <code>SyncPaddleSubscription</code> al cancelar:</strong> Quita el plan Pro de inmediato aunque el usuario tenga días pagados vigentes (<code>onGracePeriod()</code>).</td>
+                <td class="p-3 font-mono text-[11px]">SyncPaddleSubscription.php:23</td>
+                <td class="p-3">Mantener el plan activo mientras <code>$subscription->active()</code> (incluye <code>onGracePeriod()</code>) sea verdadero.</td>
+                <td class="p-3 font-bold">Bloque B</td>
+              </tr>
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">N-02</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong>Pre-secuestro de cuenta (Account Pre-Hijacking) al vincular Google:</strong> No invalida la contraseña previa de una cuenta cuyo email no estaba verificado.</td>
+                <td class="p-3 font-mono text-[11px]">GoogleAuthController.php:78,255</td>
+                <td class="p-3">Rotar contraseña aleatoria y marcar <code>email_verified_at = now()</code> al vincular <code>google_id</code> por primera vez.</td>
+                <td class="p-3 font-bold">Bloque D</td>
+              </tr>
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">N-03 & N-08</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong>Códigos promo en historial Git y rutas sensibles sin <code>throttle</code>:</strong> <code>/profile/plan/verify-code</code>, <code>/profile/plan/paddle-sync</code>, <code>/api/image-proxy</code> y <code>/reset-password</code> no tienen límite de intentos.</td>
+                <td class="p-3 font-mono text-[11px]">routes/web.php:28,98,160,161</td>
+                <td class="p-3">Rotar códigos en <code>.env</code> y añadir middleware <code>throttle</code> a todas las rutas sensibles.</td>
+                <td class="p-3 font-bold">Bloque B / D</td>
+              </tr>
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">N-18</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong>Política de Privacidad omite a Google Gemini, Google Sheets y Discord:</strong> <code>privacy.blade.php:76-85</code> solo declara AWS, Paddle y Hostinger Mail.</td>
+                <td class="p-3 font-mono text-[11px]">resources/views/pages/privacy.blade.php:76-85</td>
+                <td class="p-3">Actualizar listado de sub-encargados en <code>privacy.blade.php</code>.</td>
+                <td class="p-3 font-bold">Bloque E</td>
+              </tr>
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">N-21</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong>Bloqueo erróneo de &gt;10 fotos Unsplash y GIFs en Plan Básico:</strong> Contradice la tabla de precios que promete Unsplash y GIFs ilimitados.</td>
+                <td class="p-3 font-mono text-[11px]">TripController.php:722-739</td>
+                <td class="p-3">Eliminar la restricción hardcoded de 10 fotos/GIFs en <code>saveProState</code>.</td>
+                <td class="p-3 font-bold">Bloque H</td>
+              </tr>
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">PWA-01</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong>Service Worker cachea HTML privado autenticado:</strong> Almacena vistas con datos personales en <code>viantryp-v2</code>.</td>
+                <td class="p-3 font-mono text-[11px]">public/sw.js:58-70</td>
+                <td class="p-3">Actualizar a <code>viantryp-v3</code> cacheando solo assets estáticos.</td>
+                <td class="p-3 font-bold">Bloque G</td>
+              </tr>
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">UX-01 & UX-02</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong>CTAs de planes en landing redirigen a <code>/</code> y límite de colaboradores viewers sin control:</strong> Invitados en <code>/planes-redirect</code> vuelven al inicio.</td>
+                <td class="p-3 font-mono text-[11px]">routes/web.php:101<br>TripController.php:1089</td>
+                <td class="p-3">Redirigir invitados en <code>/planes-redirect</code> a <code>/register</code>.</td>
+                <td class="p-3 font-bold">Bloque H</td>
+              </tr>
+              <tr class="finding-row" data-sev="P1">
+                <td class="p-3 font-bold text-amber-900">SEC-04</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">P1</span></td>
+                <td class="p-3"><strong>Keystore oficial Android y clave en texto plano en Git:</strong> Expone la Upload Key de Google Play.</td>
+                <td class="p-3 font-mono text-[11px]">viantryp-release-official.keystore<br>android/app/build.gradle:38</td>
+                <td class="p-3">Desindexar de Git y mover contraseñas a <code>keystore.properties</code>.</td>
+                <td class="p-3 font-bold">Bloque I</td>
+              </tr>
+
+              <!-- P2 / P3 Summary Rows -->
+              <tr class="finding-row" data-sev="P2">
+                <td class="p-3 font-bold text-slate-700">N-19, N-22, N-24</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-slate-200 text-slate-800">P2</span></td>
+                <td class="p-3"><strong>Colas <code>database</code> sin worker garantizado, <code>/reset-password</code> sin throttle y fuga de <code>$e-&gt;getMessage()</code> en JSON:</strong> Detectados en el barrido operativo y de producción.</td>
+                <td class="p-3 font-mono text-[11px]">SyncUserRegistration.php<br>TripController.php:937,982,1061</td>
+                <td class="p-3">Configurar worker/cron, ocultar <code>$e-&gt;getMessage()</code> en JSON y añadir throttle.</td>
+                <td class="p-3 font-bold">Bloques C, D, I</td>
+              </tr>
+              <tr class="finding-row" data-sev="P2">
+                <td class="p-3 font-bold text-slate-700">CAP-01, N-04, N-06, N-07, N-09, N-13, N-14, N-15, DATA-01, DATA-02, QA-01</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded font-bold bg-slate-200 text-slate-800">P2/P3</span></td>
+                <td class="p-3"><strong>Resto de hallazgos de integridad e higiene técnica:</strong> Token Carto, doble conteo IA, regex <code>theme_color</code>, extensión MIME en avatar/logo, <code>trustProxies</code>, CSRF GSI, <code>voyager_key.pem</code>, TTL de vuelos y tests PHPUnit.</td>
+                <td class="p-3 font-mono text-[11px]">Ver detalle por bloque en Pestaña 4</td>
+                <td class="p-3">Incluidos íntegramente en los Bloques C, D, F, H, I y J.</td>
+                <td class="p-3 font-bold">Bloques C–J</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 4: PLAN DE ACCIÓN Y CHECKLIST -->
+    <section id="panel-plan" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Checklist Definitivo de Ejecución por Bloques (A → J)</h2>
+            <p class="text-xs text-slate-500">Cada bloque está listo para ejecutarse en orden. Marca cada etapa conforme la completemos.</p>
+          </div>
+          <div id="checklist-counter" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-extrabold text-sm">0 / 10 Bloques</div>
+        </div>
+
+        <div class="space-y-3 text-sm" id="launch-checklist">
+          <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-rose-200 bg-rose-50/30 hover:bg-rose-50/60 cursor-pointer">
+            <input type="checkbox" onchange="updateChecklist()" class="mt-1 w-4 h-4 accent-rose-600" />
+            <div>
+              <span class="font-extrabold text-rose-950">BLOQUE A — Aislamiento Multi-Tenant de Clientes, Catálogo de Aerolíneas y Google Places (SEC-02, N-16, N-17):</span>
+              <p class="text-xs text-slate-700 mt-1">Respaldar BD → Crear migración <code>add_user_id_to_persons_table</code> poblando desde <code>person_trip</code> y clonando clientes compartidos → Filtrar <code>PersonController</code> y <code>TripController</code> por <code>user_id</code> → Cerrar escritura pública en <code>AirlineController</code> y proteger <code>api/places/details</code> con <code>auth</code>.</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-rose-200 bg-rose-50/30 hover:bg-rose-50/60 cursor-pointer">
+            <input type="checkbox" onchange="updateChecklist()" class="mt-1 w-4 h-4 accent-rose-600" />
+            <div>
+              <span class="font-extrabold text-rose-950">BLOQUE B — Blindaje de Pagos Paddle, Webhooks, Periodo de Gracia y Trials (N-01, SEC-01, BUS-01, N-03, N-23):</span>
+              <p class="text-xs text-slate-700 mt-1">Publicar migraciones de Cashier Paddle → Verificar <code>transaction_id</code> contra la API de Paddle en <code>syncPaddlePlan</code> (B1 antes que B2) → Respetar <code>$subscription-&gt;onGracePeriod()</code> en <code>SyncPaddleSubscription</code> → Expirar trials vencidos en <code>User::getPlanLimits()</code> y rotar <code>PROMO_CODE_*</code>.</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border border-amber-300 bg-amber-50/30 hover:bg-amber-50/60 cursor-pointer">
+            <input type="checkbox" onchange="updateChecklist()" class="mt-1 w-4 h-4 accent-amber-600" />
+            <div>
+              <span class="font-extrabold text-amber-950">BLOQUE C — Documentos Privados, Proxy SSRF, Sanitización XSS y TLS IA (SEC-03, SEC-05, N-05, N-12, N-20, N-24):</span>
+              <p class="text-xs text-slate-700 mt-1">Guardar adjuntos en <code>Storage::disk('local')</code> (fuera de <code>/storage/documents/</code>) con lectura dual en <code>TripDocumentController::download</code> → Bloquear IPs privadas y redirecciones en <code>ImageProxyController</code> → Escapar HTML en <code>pro-viewer.js</code> → Activar SSL en <code>TripAiService</code> y ocultar <code>$e-&gt;getMessage()</code>.</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border border-amber-300 bg-amber-50/30 hover:bg-amber-50/60 cursor-pointer">
+            <input type="checkbox" onchange="updateChecklist()" class="mt-1 w-4 h-4 accent-amber-600" />
+            <div>
+              <span class="font-extrabold text-amber-950">BLOQUE D — Anti-Hijacking en Google Auth, CSRF GSI y Rate Limiting (N-02, N-08, N-13, N-14, N-22):</span>
+              <p class="text-xs text-slate-700 mt-1">Al vincular <code>google_id</code> a una cuenta no verificada, rotar contraseña aleatoria y marcar email verificado → Validar cookie <code>g_csrf_token</code> → Añadir <code>throttle</code> a <code>/reset-password</code>, <code>/api/image-proxy</code>, <code>/profile/plan/verify-code</code> y <code>/profile/plan/paddle-sync</code>.</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border border-teal-300 bg-teal-50/30 hover:bg-teal-50/60 cursor-pointer">
+            <input type="checkbox" onchange="updateChecklist()" class="mt-1 w-4 h-4 accent-teal-600" />
+            <div>
+              <span class="font-extrabold text-teal-950">BLOQUE E — Eliminación de Cuenta y Actualización de Política de Privacidad (LEG-01, N-18):</span>
+              <p class="text-xs text-slate-700 mt-1">Crear <code>DELETE /profile</code> con cancelación en Paddle y borrado de archivos → Declarar Google Gemini API, Google Workspace y Discord en <code>resources/views/pages/privacy.blade.php</code>.</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-teal-400 bg-teal-50/50 hover:bg-teal-50 cursor-pointer">
+            <input type="checkbox" onchange="updateChecklist()" class="mt-1 w-4 h-4 accent-teal-600" />
+            <div>
+              <span class="font-extrabold text-teal-950">BLOQUE F — Modo Consumo Exclusivo en App Android/iOS sin Paddle (LEG-02, CAP-01):</span>
+              <p class="text-xs text-slate-700 mt-1">En modo app (<code>?app=1</code> / cookie <code>viantryp_app_mode</code>), no cargar <code>paddle.js</code>, ocultar botones de compra y mostrar el mensaje oficial aprobado: <em>"La gestión de suscripciones y facturación no está disponible desde la aplicación. Para consultar y gestionar tu cuenta de facturación, accede a Viantryp desde un navegador web."</em></p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+            <input type="checkbox" onchange="updateChecklist()" class="mt-1 w-4 h-4 accent-teal-600" />
+            <div>
+              <span class="font-bold text-slate-900">BLOQUE G — Service Worker v3 sin Caché de HTML Privado (PWA-01):</span>
+              <p class="text-xs text-slate-600 mt-1">Actualizar <code>public/sw.js</code> a <code>viantryp-v3</code> para cachear únicamente assets estáticos y limpiar caché en logout.</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+            <input type="checkbox" onchange="updateChecklist()" class="mt-1 w-4 h-4 accent-teal-600" />
+            <div>
+              <span class="font-bold text-slate-900">BLOQUE H — Conversión Landing y Desbloqueo de Unsplash/GIFs Ilimitados en Básico (UX-01, N-21, N-06, DATA-02):</span>
+              <p class="text-xs text-slate-600 mt-1">Redirigir invitados en <code>/planes-redirect</code> a <code>/register</code> y eliminar el bloqueo erróneo de 10 fotos Unsplash / GIFs en <code>TripController::saveProState</code> (L722–739).</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+            <input type="checkbox" onchange="updateChecklist()" class="mt-1 w-4 h-4 accent-teal-600" />
+            <div>
+              <span class="font-bold text-slate-900">BLOQUE I — Higiene de Git, Keystore, Llave PEM y Tareas Programadas (SEC-04, N-04, N-15, N-19):</span>
+              <p class="text-xs text-slate-600 mt-1">Sacar <code>viantryp-release-official.keystore</code> y <code>voyager_key.pem</code> de Git y configurar comando diario de mantenimiento en <code>routes/console.php</code>.</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+            <input type="checkbox" onchange="updateChecklist()" class="mt-1 w-4 h-4 accent-teal-600" />
+            <div>
+              <span class="font-bold text-slate-900">BLOQUE J — Suite de Pruebas Automatizadas Web, PWA y Modo App (QA-01):</span>
+              <p class="text-xs text-slate-600 mt-1">Ejecutar pruebas de regresión verificando aislamiento de agencias, pagos Paddle, descargas privadas y ocultación de Paddle en <code>?app=1</code>.</p>
+            </div>
+          </label>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function showMasterTab(panelId) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById(panelId).classList.remove('hidden');
+      document.querySelectorAll('.mtab-btn').forEach(b => {
+        b.classList.remove('bg-slate-900', 'text-white');
+        b.classList.add('text-slate-600');
+      });
+      const btn = document.getElementById('mbtn-' + panelId);
+      if (btn) {
+        btn.classList.add('bg-slate-900', 'text-white');
+        btn.classList.remove('text-slate-600');
+      }
+    }
+
+    function filterFindings() {
+      const q = (document.getElementById('finding-search').value || '').toLowerCase();
+      const sev = document.getElementById('finding-sev').value;
+      document.querySelectorAll('.finding-row').forEach(row => {
+        const rowSev = row.getAttribute('data-sev');
+        const text = row.innerText.toLowerCase();
+        const matchesSev = (sev === 'ALL' || rowSev === sev);
+        const matchesQ = (!q || text.includes(q));
+        row.style.display = (matchesSev && matchesQ) ? '' : 'none';
+      });
+    }
+
+    function updateChecklist() {
+      const boxes = document.querySelectorAll('#launch-checklist input[type="checkbox"]');
+      let checked = 0;
+      const state = [];
+      boxes.forEach((b) => {
+        if (b.checked) checked++;
+        state.push(b.checked);
+      });
+      const counter = document.getElementById('checklist-counter');
+      counter.textContent = `${checked} / ${boxes.length} Bloques`;
+      counter.className = checked === boxes.length
+        ? 'px-4 py-2 rounded-xl bg-emerald-600 text-white font-extrabold text-sm'
+        : 'px-4 py-2 rounded-xl bg-slate-900 text-white font-extrabold text-sm';
+      try { localStorage.setItem('viantryp_master_checklist_v2', JSON.stringify(state)); } catch(e) {}
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        const saved = JSON.parse(localStorage.getItem('viantryp_master_checklist_v2') || '[]');
+        const boxes = document.querySelectorAll('#launch-checklist input[type="checkbox"]');
+        boxes.forEach((b, i) => { if (saved[i]) b.checked = true; });
+        updateChecklist();
+      } catch(e) {}
+    });
+  </script>
+</body>
+</html>

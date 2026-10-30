@@ -28,7 +28,7 @@ class ImageProxyController extends Controller
         $parsed = parse_url($url);
         $host = strtolower($parsed['host'] ?? '');
 
-        // SSRF protection: block private/internal addresses
+        // SSRF protection: block private/internal addresses and resolve DNS to prevent DNS rebinding / NIP.IO bypass
         if (
             empty($host) ||
             $host === 'localhost' ||
@@ -36,9 +36,22 @@ class ImageProxyController extends Controller
             $host === '::1' ||
             str_ends_with($host, '.local') ||
             str_ends_with($host, '.test') ||
+            str_ends_with($host, '.internal') ||
             (filter_var($host, FILTER_VALIDATE_IP) && filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false)
         ) {
             abort(403, 'Forbidden host.');
+        }
+
+        if (!filter_var($host, FILTER_VALIDATE_IP)) {
+            $resolvedIps = @gethostbynamel($host);
+            if (empty($resolvedIps) || !is_array($resolvedIps)) {
+                abort(403, 'Unresolvable host.');
+            }
+            foreach ($resolvedIps as $ip) {
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+                    abort(403, 'Forbidden resolved IP address.');
+                }
+            }
         }
 
         // Target width
@@ -78,14 +91,25 @@ class ImageProxyController extends Controller
 
         try {
             $response = Http::timeout(8)
+                ->withOptions([
+                    'allow_redirects' => false,
+                ])
                 ->withHeaders([
                     'User-Agent' => 'Mozilla/5.0 (compatible; ViantrypImageProxy/1.0; +https://viantryp.com)',
                     'Accept' => 'image/jpeg,image/webp,image/*,*/*;q=0.8'
                 ])
                 ->get($fetchUrl);
 
-            if ($response->successful() && strlen($response->body()) > 500) {
-                $disk->put($path, $response->body());
+            $contentType = strtolower($response->header('Content-Type') ?? '');
+            $body = $response->body();
+
+            if (
+                $response->successful() &&
+                str_starts_with($contentType, 'image/') &&
+                strlen($body) > 500 &&
+                strlen($body) <= 8 * 1024 * 1024
+            ) {
+                $disk->put($path, $body);
 
                 return redirect(secure_asset("storage/{$path}"), 301, [
                     'Cache-Control' => 'public, max-age=31536000, immutable'

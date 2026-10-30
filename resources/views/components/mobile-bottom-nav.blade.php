@@ -39,8 +39,10 @@
     // Si estamos en un navegador web normal (no Capacitor ni Standalone ni ?app=1), limpiamos cualquier residuo antiguo
     if (hasWebParam || (!isCapacitor && !isStandalone && !hasAppParam)) {
         try { localStorage.removeItem('viantryp_app_mode'); } catch(e){}
+        try { document.cookie = 'viantryp_app_mode=; path=/; max-age=0; SameSite=Lax'; } catch(e){}
     } else if (hasAppParam || isCapacitor) {
         try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
+        try { document.cookie = 'viantryp_app_mode=1; path=/; max-age=31536000; SameSite=Lax'; } catch(e){}
     }
 
     const isAppMode = isCapacitor || hasAppParam || (isStandalone && !hasWebParam);
@@ -170,8 +172,8 @@
         <div class="sheet-usage-card">
             <div class="sheet-usage-header">
                 <span class="sheet-usage-title">USO DEL PLAN</span>
-                <a href="{{ route('profile.index', ['upgrade' => 'true']) }}" onclick="handleSheetUpgrade(event)" class="sheet-upgrade-link">
-                    Mejorar plan <i class="fas fa-arrow-up-right-from-square" style="font-size: 11px; margin-left: 2px;"></i>
+                <a href="{{ route('profile.index', ['section' => 'subscription']) }}" onclick="handleSheetUpgrade(event)" class="sheet-upgrade-link">
+                    Ver mi plan <i class="fas fa-chevron-right" style="font-size: 10px; margin-left: 2px;"></i>
                 </a>
             </div>
 

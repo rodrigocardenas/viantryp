@@ -39,6 +39,8 @@ class CollaboratorLeftTripNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
+            'type' => 'collaborator_left',
+            'icon' => 'fa-user-minus',
             'trip_id' => $this->trip->id,
             'trip_title' => $this->trip->title,
             'collaborator_id' => $this->collaborator->id,

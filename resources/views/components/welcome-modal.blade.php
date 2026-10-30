@@ -81,7 +81,7 @@
                     
                     <div class="pro-launch-message-box">
                         <p class="pro-launch-message-text">
-                            Por motivo de nuestro lanzamiento oficial, hemos activado <strong>1 mes gratis del Plan Viajero Pro</strong> en tu cuenta. Explora Tryp IA, gestiona itinerarios ilimitados y diseña tus viajes sin restricciones.
+                            Por motivo de nuestro lanzamiento oficial, hemos activado <strong>1 mes gratis del Plan Viajero Pro</strong> en tu cuenta. Explora Tryp IA, gestiona hasta 20 itinerarios activos y diseña tus viajes sin restricciones.
                         </p>
                     </div>
 

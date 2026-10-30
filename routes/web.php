@@ -25,7 +25,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/forgot-password', [ForgotPasswordController::class , 'showForgotForm'])->name('password.request');
     Route::post('/forgot-password', [ForgotPasswordController::class , 'sendResetLink'])->name('password.email')->middleware('throttle:5,1');
     Route::get('/reset-password/{token}', [ForgotPasswordController::class , 'showResetForm'])->name('password.reset');
-    Route::post('/reset-password', [ForgotPasswordController::class , 'resetPassword'])->name('password.update');
+    Route::post('/reset-password', [ForgotPasswordController::class , 'resetPassword'])->name('password.update')->middleware('throttle:5,1');
 });
 
 // Google OAuth routes (guest only - browser flow)
@@ -88,18 +88,27 @@ Route::get('/.well-known/assetlinks.json', function () {
             'relation' => ['delegate_permission/common.handle_all_urls'],
             'target' => [
                 'namespace' => 'android_app',
-                'package_name' => 'com.viantryp.www.twa',
-                'sha256_cert_fingerprints' => ['F8:F8:A6:66:CD:A6:0E:46:9E:85:03:DD:B6:39:E3:FF:B1:C7:27:40:B6:06:9F:A0:BB:1A:81:68:64:F9:51:FB']
+                'package_name' => 'com.viantryp.app',
+                'sha256_cert_fingerprints' => [
+                    '07:0A:5A:84:A1:68:76:FD:FA:3E:8C:58:41:BF:4E:DA:6A:BC:09:CA:BD:94:08:E3:E2:3E:28:94:0A:3C:B5:7C',
+                    '2D:D3:DC:36:25:23:7E:FB:E9:0D:E3:D2:46:D2:E4:D1:C1:BA:62:F2:10:CC:4C:73:FA:93:F5:AC:30:22:AB:9E',
+                    'A8:67:D4:CB:2E:3D:A3:1D:D2:FF:86:2E:3A:09:72:DE:7E:06:10:17:7B:72:5C:F7:70:2F:A2:6F:AA:9D:97:0A',
+                    '54:FA:5F:6B:7A:39:28:C2:A3:B1:02:A1:D9:92:5D:28:1E:88:44:0A:44:51:89:17:92:5B:BF:93:B2:4F:A0:ED',
+                    '92:A1:99:58:49:71:B6:6B:4A:FC:12:FA:6F:A7:F7:47:9C:7A:3B:50:6C:4A:93:BA:75:DA:7E:4B:41:72:5C:72'
+                ]
             ]
         ]
     ]);
 });
 Route::get('/api/places/photo', [GooglePlacesController::class, 'getPlacePhoto'])->name('places.photo')->middleware('throttle:60,1');
-Route::get('/api/image-proxy', [ImageProxyController::class, 'proxy'])->name('image.proxy');
+Route::get('/api/image-proxy', [ImageProxyController::class, 'proxy'])->name('image.proxy')->middleware('throttle:60,1');
 
 // Planes redirect from landing page
-Route::middleware('auth')->get('/planes-redirect', function () {
-    return redirect()->route('profile.index', ['upgrade' => 'true']);
+Route::get('/planes-redirect', function () {
+    if (auth()->check()) {
+        return redirect()->route('profile.index', ['upgrade' => 'true']);
+    }
+    return redirect()->route('register', ['intent' => 'upgrade']);
 })->name('plans.redirect');
 
 // Protected routes (require authentication)
@@ -157,16 +166,49 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/avatar/delete', [\App\Http\Controllers\ProfileController::class, 'deleteAvatar'])->name('profile.delete.avatar');
     Route::post('/profile/logo', [\App\Http\Controllers\ProfileController::class, 'uploadLogo'])->name('profile.upload.logo');
     Route::post('/profile/plan', [\App\Http\Controllers\ProfileController::class, 'updatePlan'])->name('profile.update.plan');
-    Route::post('/profile/plan/paddle-sync', [\App\Http\Controllers\ProfileController::class, 'syncPaddlePlan'])->name('profile.plan.paddle-sync');
-    Route::post('/profile/plan/verify-code', [\App\Http\Controllers\ProfileController::class, 'verifyPlanCode'])->name('profile.plan.verify-code');
-    Route::post('/profile/plan/request', [\App\Http\Controllers\ProfileController::class, 'requestPlanUpgrade'])->name('profile.plan.request');
+    Route::post('/profile/plan/paddle-sync', [\App\Http\Controllers\ProfileController::class, 'syncPaddlePlan'])->name('profile.plan.paddle-sync')->middleware('throttle:10,1');
+    Route::post('/profile/plan/verify-code', [\App\Http\Controllers\ProfileController::class, 'verifyPlanCode'])->name('profile.plan.verify-code')->middleware('throttle:5,10');
+    Route::post('/profile/plan/request', [\App\Http\Controllers\ProfileController::class, 'requestPlanUpgrade'])->name('profile.plan.request')->middleware('throttle:5,10');
     Route::post('/profile/choose-initial-plan', [\App\Http\Controllers\ProfileController::class, 'chooseInitialPlan'])->name('profile.choose-initial-plan');
     Route::post('/profile/change-account-type', [\App\Http\Controllers\ProfileController::class, 'changeAccountType'])->name('profile.change-account-type');
+    Route::post('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.update.password')->middleware('throttle:5,1');
+    Route::delete('/profile', [\App\Http\Controllers\ProfileController::class, 'destroyAccount'])->name('profile.destroy');
 
     Route::get('/notifications', function() {
+        $user = auth()->user();
+
+        if ($user && $user->trial_ends_at !== null) {
+            try {
+                $hasValidSub = \Illuminate\Support\Facades\Schema::hasTable('subscriptions') && $user->subscriptions()->valid()->exists();
+                if (!$hasValidSub) {
+                    if ($user->isTrialActive() && $user->getTrialDaysRemaining() <= 3) {
+                        $alreadySent = $user->notifications()
+                            ->where('type', \App\Notifications\TrialExpiringNotification::class)
+                            ->where('created_at', '>=', now()->subDays(15))
+                            ->exists();
+                        if (!$alreadySent) {
+                            $user->notify(new \App\Notifications\TrialExpiringNotification($user, max(1, $user->getTrialDaysRemaining())));
+                        }
+                    } elseif ($user->trial_ends_at->isPast()) {
+                        if ($user->plan !== \App\Models\User::PLAN_BASICO) {
+                            $user->update(['plan' => \App\Models\User::PLAN_BASICO]);
+                        }
+                        $alreadyExpiredSent = $user->notifications()
+                            ->where('type', \App\Notifications\TrialExpiredNotification::class)
+                            ->exists();
+                        if (!$alreadyExpiredSent) {
+                            $user->notify(new \App\Notifications\TrialExpiredNotification($user));
+                        }
+                    }
+                }
+            } catch (\Throwable $e) {
+                \Log::warning('Lifecycle notification auto-check warning: ' . $e->getMessage());
+            }
+        }
+
         return response()->json([
-            'notifications' => auth()->user()->notifications()->latest()->take(10)->get(),
-            'unread_count' => auth()->user()->unreadNotifications->count()
+            'notifications' => $user->notifications()->latest()->take(10)->get(),
+            'unread_count' => $user->unreadNotifications()->count()
         ]);
     })->name('notifications.get');
 
@@ -179,10 +221,10 @@ Route::middleware('auth')->group(function () {
         auth()->user()->unreadNotifications->markAsRead();
         return response()->json(['success' => true]);
     })->name('notifications.mark-read');
-});
 
-// Google Places API routes (outside auth middleware for AJAX requests)
-Route::match(['get', 'post'], 'api/places/details', [GooglePlacesController::class , 'getPlaceDetails'])->name('places.details')->middleware('throttle:30,1');
+    // Google Places API details route (requires authenticated editor session)
+    Route::match(['get', 'post'], 'api/places/details', [GooglePlacesController::class , 'getPlaceDetails'])->name('places.details')->middleware('throttle:30,1');
+});
 
 // Shared trip preview route (no authentication required)
 Route::get('trips/share/{token}', [TripController::class , 'share'])->name('trips.share');

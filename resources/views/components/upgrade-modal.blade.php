@@ -3,7 +3,7 @@
     if (!$user)
         return;
 
-    $currentPlan = strtolower($user->plan ?? 'básico');
+    $currentPlan = strtolower($user->effective_plan ?? 'básico');
     $tripCount = \App\Models\Trip::where('user_id', $user->id)->count();
 
 
@@ -112,10 +112,27 @@
     $progression = ['básico' => 'avanzado', 'avanzado' => 'colaborativo', 'colaborativo' => null];
     $nextKey = $progression[$currentPlan] ?? null;
     $nextData = $nextKey ? $planData[$nextKey] : null;
+
+    $isAppMode = request()->boolean('app')
+        || request()->input('mode') === 'app'
+        || request()->cookie('viantryp_app_mode') === '1'
+        || session('viantryp_app_mode') === '1';
+
+    if ($isAppMode && !request()->boolean('web') && request()->input('mode') !== 'web') {
+        session(['viantryp_app_mode' => '1']);
+    } elseif (request()->boolean('web') || request()->input('mode') === 'web') {
+        session()->forget('viantryp_app_mode');
+        $isAppMode = false;
+    }
 @endphp
 
+@if(!$isAppMode)
 <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+@endif
 <script>
+    const IS_VIANTRYP_APP_MODE = @json($isAppMode)
+        || document.documentElement.classList.contains('is-viantryp-app')
+        || Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
     const PADDLE_PRICES = @json(config('plans.paddle'));
     const PADDLE_CLIENT_TOKEN = "{{ config('cashier.client_side_token') }}";
     const PADDLE_SANDBOX = {{ config('cashier.sandbox') ? 'true' : 'false' }};
@@ -125,9 +142,13 @@
 
     function handlePaddleCheckoutCompleted(data) {
         let priceId = _currentCheckoutPriceId;
+        let transactionId = null;
         try {
-            if (data && data.data && data.data.items && data.data.items[0]) {
-                priceId = data.data.items[0].price_id || data.data.items[0].price?.id || priceId;
+            if (data && data.data) {
+                transactionId = data.data.transaction_id || data.data.id || null;
+                if (data.data.items && data.data.items[0]) {
+                    priceId = data.data.items[0].price_id || data.data.items[0].price?.id || priceId;
+                }
             }
         } catch (e) { }
 
@@ -143,7 +164,8 @@
             },
             body: JSON.stringify({
                 price_id: priceId,
-                plan: _currentCheckoutPlan
+                plan: _currentCheckoutPlan,
+                transaction_id: transactionId
             })
         }).then(r => r.json()).then(res => {
             if (typeof closeUpgradeModal === 'function') closeUpgradeModal();
@@ -155,7 +177,7 @@
     }
 
     function initPaddle() {
-        if (_paddleInitialized) return;
+        if (IS_VIANTRYP_APP_MODE || _paddleInitialized) return;
         if (typeof Paddle !== 'undefined' && PADDLE_CLIENT_TOKEN) {
             try {
                 if (PADDLE_SANDBOX) {
@@ -178,10 +200,12 @@
         }
     }
 
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        initPaddle();
-    } else {
-        document.addEventListener('DOMContentLoaded', initPaddle);
+    if (!IS_VIANTRYP_APP_MODE) {
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            initPaddle();
+        } else {
+            document.addEventListener('DOMContentLoaded', initPaddle);
+        }
     }
 </script>
 
@@ -214,6 +238,24 @@
                 </div>
             </div>
 
+            <!-- APP MODE CONSUMPTION-ONLY NOTICE -->
+            <div class="app-billing-notice-card" style="{{ $isAppMode ? 'display: block;' : 'display: none;' }} background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 18px; padding: 24px 20px; text-align: center; margin-top: 8px;">
+                <div style="width: 48px; height: 48px; background: #e0f2fe; color: #0284c7; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 20px;">
+                    <i class="fas fa-desktop"></i>
+                </div>
+                <div style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 8px; font-family: 'Manrope', sans-serif;">
+                    Información sobre tu cuenta
+                </div>
+                <p style="font-size: 13.5px; color: #475569; line-height: 1.6; margin: 0 auto 18px; max-width: 440px; font-weight: 500;">
+                    La gestión de suscripciones y facturación no está disponible desde la aplicación. Para consultar y gestionar tu cuenta de facturación, accede a Viantryp desde un navegador web.
+                </p>
+                <button type="button" onclick="closeUpgradeModal()" style="background: #0f2a3a; color: #ffffff; border: none; border-radius: 12px; padding: 11px 28px; font-size: 13.5px; font-weight: 700; cursor: pointer;">
+                    Entendido
+                </button>
+            </div>
+
+            @if(!$isAppMode)
+            <div class="web-only-billing-controls">
             <!-- WARNING ALERT -->
             @if(!request()->routeIs('profile.index'))
                 <div class="upgrade-alert">
@@ -266,10 +308,10 @@
                                 </div>
                             </div>
                             <button
-                                onclick="{{ $data['name'] === 'Corp.' ? 'window.location.href=\'' . route('contact') . '\'' : 'updateUserPlan(\'' . $key . '\')' }}"
+                                onclick="updateUserPlan('{{ $key }}')"
                                 class="p-btn {{ $currentPlan === $key ? 'current' : '' }} {{ $isBlocked ? 'blocked' : '' }}"
                                 {{ $currentPlan === $key ? 'disabled' : '' }}>
-                                {{ $currentPlan === $key ? 'Actual' : ($isBlocked ? 'Bloqueado' : ($data['name'] === 'Corp.' ? 'Contactar' : 'Elegir')) }}
+                                {{ $currentPlan === $key ? 'Actual' : ($isBlocked ? 'Bloqueado' : 'Elegir') }}
                             </button>
                         </div>
                     @endforeach
@@ -332,6 +374,8 @@
                         style="color: #1a7a8a; font-weight: 600; text-decoration: underline;">¿Tienes un código
                         promocional? &rarr;</a></span>
             </div>
+            </div>
+            @endif
         </div>
 
         <!-- LOADING OVERLAY -->
@@ -1250,6 +1294,13 @@
     }
     html.is-viantryp-app .upgrade-premium-modal .modal-content {
         border-radius: 20px !important;
+        max-width: 480px !important;
+    }
+    html.is-viantryp-app .upgrade-premium-modal .web-only-billing-controls {
+        display: none !important;
+    }
+    html.is-viantryp-app .upgrade-premium-modal .app-billing-notice-card {
+        display: block !important;
     }
 
     /* Dynamic toggle logic for all plans vs next step */
@@ -1412,6 +1463,7 @@
     })();
 
     function ensurePaddleReady(callback) {
+        if (IS_VIANTRYP_APP_MODE) return;
         if (typeof Paddle !== 'undefined') {
             initPaddle();
             callback();
@@ -1450,14 +1502,12 @@
     let _pendingPlanKey = null;
 
     function updateUserPlan(planKey) {
-        const target = planLimits[planKey];
-        if (!target) return;
-
-        // Corporativo → redireccionar a Contáctanos directamente
-        if (planKey === 'corporativo') {
-            window.location.href = '{{ route("contact") }}';
+        if (IS_VIANTRYP_APP_MODE) {
+            alert('La gestión de suscripciones y facturación no está disponible desde la aplicación. Para consultar y gestionar tu cuenta de facturación, accede a Viantryp desde un navegador web.');
             return;
         }
+        const target = planLimits[planKey];
+        if (!target) return;
 
         // Usage limit checks (downgrade guard)
         if (currentUsage.trips > target.trips) {

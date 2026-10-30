@@ -2125,6 +2125,16 @@
     .tab-section.card .btn-secondary:hover {
       background: #e2e8f0 !important;
     }
+
+    html.is-viantryp-app .web-only-billing-footer,
+    body.is-viantryp-app .web-only-billing-footer {
+      display: none !important;
+    }
+
+    html.is-viantryp-app .app-only-billing-footer,
+    body.is-viantryp-app .app-only-billing-footer {
+      display: flex !important;
+    }
   </style>
 @endpush
 
@@ -2758,27 +2768,27 @@
                     <div class="section-label">Cambiar Contraseña</div>
                     <div class="form-group">
                       <label>Contraseña Actual</label>
-                      <input type="password" placeholder="••••••••">
+                      <input type="password" id="inputCurrentPassword" placeholder="••••••••">
                     </div>
                     <div class="form-row">
                       <div class="form-group">
                         <label>Nueva Contraseña</label>
-                        <input type="password" placeholder="••••••••">
+                        <input type="password" id="inputNewPassword" placeholder="••••••••">
                       </div>
                       <div class="form-group">
                         <label>Confirmar Contraseña</label>
-                        <input type="password" placeholder="••••••••">
+                        <input type="password" id="inputConfirmPassword" placeholder="••••••••">
                       </div>
                     </div>
                     <div class="btn-row" style="margin-bottom:32px">
-                      <button class="btn-save">Actualizar Contraseña</button>
+                      <button type="button" class="btn-save" id="btnUpdatePassword">Actualizar Contraseña</button>
                     </div>
 
                     <div class="divider" style="margin-bottom:28px"></div>
                     <div class="section-label" style="color:#c0392b">Zona de Peligro</div>
                     <p class="danger-text">Eliminar tu cuenta borrará permanentemente todos tus itinerarios, datos y
                       configuración. Esta acción no se puede deshacer.</p>
-                    <button class="btn-danger-profile">Eliminar mi cuenta</button>
+                    <button type="button" class="btn-danger-profile" id="btnDeleteAccount">Eliminar mi cuenta</button>
                   </div>
                 </div>
 
@@ -2803,19 +2813,21 @@
                       $tripPercent = min(100, ($tripCount / max(1, $maxTrips)) * 100);
                       $editorPercent = $maxEditors > 0 ? min(100, ($editorCount / $maxEditors) * 100) : 0;
 
-                      $currentPlanKey = strtolower($planUser->plan ?? $user->plan);
+                      $currentPlanKey = strtolower($planUser->effective_plan ?? $user->effective_plan);
+                      if ($currentPlanKey === 'corporativo') {
+                        $currentPlanKey = 'colaborativo';
+                      }
                       $planLabels = [
                         'básico' => 'Plan Básico',
                         'avanzado' => 'Plan Viajero Pro',
                         'colaborativo' => 'Plan Negocios',
-                        'corporativo' => 'Plan Corporativo',
                       ];
                       $planLabel = $planLabels[$currentPlanKey] ?? ucfirst($currentPlanKey);
                       $isTrial = $user->isTrialActive();
                       $trialEnd = $isTrial ? $user->trial_ends_at : null;
                       $subStart = isset($user->subscription_starts_at) ? \Carbon\Carbon::parse($user->subscription_starts_at) : null;
                       $subEnd = isset($user->subscription_ends_at) ? \Carbon\Carbon::parse($user->subscription_ends_at) : null;
-                      $isPaidPlan = in_array($currentPlanKey, ['avanzado', 'colaborativo']);
+                      $isPaidPlan = !$isTrial && in_array($currentPlanKey, ['avanzado', 'colaborativo']);
 
                       if ($isTrial && $trialEnd) {
                         $endDate = \Carbon\Carbon::parse($trialEnd)->format('d M, Y');
@@ -2831,9 +2843,18 @@
                         'básico' => '$0.00 USD / mes',
                         'avanzado' => '$6.99 USD / mes',
                         'colaborativo' => '$24.99 USD / mes',
-                        'corporativo' => 'A medida / Ventas',
                       ];
                       $planPrice = $planPrices[$currentPlanKey] ?? '$0.00 USD / mes';
+                      $isAppMode = request()->boolean('app')
+                        || request()->input('mode') === 'app'
+                        || request()->cookie('viantryp_app_mode') === '1'
+                        || session('viantryp_app_mode') === '1';
+                      if ($isAppMode && !request()->boolean('web') && request()->input('mode') !== 'web') {
+                        session(['viantryp_app_mode' => '1']);
+                      } elseif (request()->boolean('web') || request()->input('mode') === 'web') {
+                        session()->forget('viantryp_app_mode');
+                        $isAppMode = false;
+                      }
                     @endphp
 
                     <!-- Ficha plan: 2 columnas sincronizada con Paddle -->
@@ -2948,16 +2969,27 @@
                         </div>
                       </div>
 
-                      <!-- Pie: botón administrar -->
+                      <!-- Pie: botón administrar (Web) vs aviso informativo (App) -->
                       <div class="subscription-card-footer">
-                        <div class="sub-footer-text">
-                          <i class="fas fa-shield-alt" style="color: #1eaace;"></i> Facturación respaldada por
-                          <strong>Paddle Merchant of Record</strong>
-                        </div>
-                        <button onclick="openUpgradeModal(true)" class="sub-footer-btn">
-                          <i class="fas fa-layer-group"></i>
-                          <span>Cambiar o Gestionar Plan</span>
-                        </button>
+                        @if($isAppMode)
+                          <div class="sub-footer-text app-only-billing-footer" style="width: 100%; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; color: #475569;">
+                            <i class="fas fa-info-circle" style="color: #1eaace; margin-top: 3px; flex-shrink: 0;"></i>
+                            <span>La gestión de suscripciones y facturación no está disponible desde la aplicación. Para consultar y gestionar tu cuenta de facturación, accede a Viantryp desde un navegador web.</span>
+                          </div>
+                        @else
+                          <div class="sub-footer-text app-only-billing-footer" style="display: none; width: 100%; align-items: flex-start; gap: 10px; line-height: 1.5; color: #475569;">
+                            <i class="fas fa-info-circle" style="color: #1eaace; margin-top: 3px; flex-shrink: 0;"></i>
+                            <span>La gestión de suscripciones y facturación no está disponible desde la aplicación. Para consultar y gestionar tu cuenta de facturación, accede a Viantryp desde un navegador web.</span>
+                          </div>
+                          <div class="sub-footer-text web-only-billing-footer">
+                            <i class="fas fa-shield-alt" style="color: #1eaace;"></i> Facturación respaldada por
+                            <strong>Paddle Merchant of Record</strong>
+                          </div>
+                          <button onclick="openUpgradeModal(true)" class="sub-footer-btn web-only-billing-footer">
+                            <i class="fas fa-layer-group"></i>
+                            <span>Cambiar o Gestionar Plan</span>
+                          </button>
+                        @endif
                       </div>
                     </div>
                   </div>
@@ -2968,7 +3000,16 @@
                   <div class="card-body">
                     <div class="section-label">Métodos de Pago & Facturación</div>
 
-                    @if($isPaidPlan)
+                    @if($isAppMode)
+                      <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 28px 24px; text-align: center; margin-bottom: 24px;">
+                        <div style="width: 50px; height: 50px; background: #e0f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; color: #0284c7;">
+                          <i class="fas fa-desktop" style="font-size: 20px;"></i>
+                        </div>
+                        <p style="font-size: 13.5px; color: #475569; margin: 0 auto; max-width: 460px; line-height: 1.6; font-weight: 500;">
+                          La gestión de suscripciones y facturación no está disponible desde la aplicación. Para consultar y gestionar tu cuenta de facturación, accede a Viantryp desde un navegador web.
+                        </p>
+                      </div>
+                    @elseif($isPaidPlan)
                       <!-- Tarjeta activa sincronizada con Paddle -->
                       <div
                         style="background: linear-gradient(135deg, #0f2a3a, #1a7a8a); border-radius: 18px; padding: 26px 28px; color: white; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(26, 122, 138, 0.25); position: relative; overflow: hidden;">
@@ -3368,6 +3409,93 @@
             }
           });
       });
+
+      // UPDATE PASSWORD
+      const btnUpdatePassword = document.getElementById('btnUpdatePassword');
+      if (btnUpdatePassword) {
+        btnUpdatePassword.addEventListener('click', function () {
+          const currentPassword = (document.getElementById('inputCurrentPassword') || {}).value || '';
+          const newPassword = (document.getElementById('inputNewPassword') || {}).value || '';
+          const confirmPassword = (document.getElementById('inputConfirmPassword') || {}).value || '';
+
+          if (!currentPassword || !newPassword) {
+            alert('Por favor completa tu contraseña actual y la nueva contraseña.');
+            return;
+          }
+          if (newPassword.length < 8) {
+            alert('La nueva contraseña debe tener al menos 8 caracteres.');
+            return;
+          }
+          if (newPassword !== confirmPassword) {
+            alert('La confirmación de la contraseña no coincide.');
+            return;
+          }
+
+          btnUpdatePassword.disabled = true;
+          fetch('{{ route("profile.update.password") }}', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrfToken,
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              current_password: currentPassword,
+              password: newPassword,
+              password_confirmation: confirmPassword
+            })
+          })
+            .then(r => r.json())
+            .then(res => {
+              if (res.success) {
+                showToast(res.message || 'Contraseña actualizada');
+                document.getElementById('inputCurrentPassword').value = '';
+                document.getElementById('inputNewPassword').value = '';
+                document.getElementById('inputConfirmPassword').value = '';
+              } else {
+                alert(res.message || 'No se pudo actualizar la contraseña.');
+              }
+            })
+            .catch(() => alert('Error de conexión al actualizar la contraseña.'))
+            .finally(() => { btnUpdatePassword.disabled = false; });
+        });
+      }
+
+      // DELETE ACCOUNT
+      const btnDeleteAccount = document.getElementById('btnDeleteAccount');
+      if (btnDeleteAccount) {
+        btnDeleteAccount.addEventListener('click', function () {
+          const confirmed = confirm('¿Estás completamente seguro de que deseas eliminar tu cuenta? Esta acción borrará permanentemente todos tus itinerarios, clientes, archivos y configuración, y no se puede deshacer.');
+          if (!confirmed) return;
+
+          btnDeleteAccount.disabled = true;
+          btnDeleteAccount.textContent = 'Eliminando cuenta...';
+
+          fetch('{{ route("profile.destroy") }}', {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrfToken,
+              'Accept': 'application/json'
+            }
+          })
+            .then(r => r.json())
+            .then(res => {
+              if (res.success) {
+                window.location.href = res.redirect || '{{ route("home") }}';
+              } else {
+                alert(res.message || 'No se pudo eliminar la cuenta.');
+                btnDeleteAccount.disabled = false;
+                btnDeleteAccount.textContent = 'Eliminar mi cuenta';
+              }
+            })
+            .catch(() => {
+              alert('Error de conexión al intentar eliminar la cuenta.');
+              btnDeleteAccount.disabled = false;
+              btnDeleteAccount.textContent = 'Eliminar mi cuenta';
+            });
+        });
+      }
 
       // THEME OPTIONS - Preview only
       document.querySelectorAll('.theme-option[data-theme]').forEach(function (el) {

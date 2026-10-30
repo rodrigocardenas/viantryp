@@ -1,4 +1,19 @@
 function buildPreviewHTML(data) {
+  const esc = v => {
+    if (v === null || v === undefined) return '';
+    return String(v)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  };
+  const safeHref = u => {
+    if (!u || typeof u !== 'string') return '#';
+    const t = u.trim();
+    if (/^(javascript|vbscript|data:text\/html):/i.test(t)) return '#';
+    return esc(t);
+  };
   const { title, destination, portadaSubtitle, hidePriceInPublic, hideTravelersInPublic, fechaInicio, fechaFin, precio, moneda, totalViajeros, hasPortada, hasCierre, showDefaultCierre, totalItems, numericTabs, days, dayDates, portadaAdultos, portadaNinos, portadaPhotoUrl, portadaItems, cierreItems, isPublicLink, csrfToken, tripId, userName, status, origin, themeColor, displayNameType, agencyLogo, agencyName, userFullName, googleClientId, userPlan, isTrialActive, cartoApiKey } = data;
   const activeNumericTabs = (numericTabs && Array.isArray(numericTabs) && numericTabs.length > 0) ? numericTabs : (days ? (Array.isArray(days) ? days.map((_, idx) => ({ idx, label: 'Día ' + (idx + 1) })) : Object.keys(days).map(idx => ({ idx: parseInt(idx), label: 'Día ' + (parseInt(idx) + 1) }))) : []);
 
@@ -358,11 +373,11 @@ function buildPreviewHTML(data) {
 
       // ── SEPARADOR ──
       if (item.type === 'separador')
-        return `<div class="pv-sep"><div class="pvs-line"></div>${d.etiqueta ? `<span class="pvs-label">${d.etiqueta}</span>` : ''}<div class="pvs-line"></div></div>`;
+        return `<div class="pv-sep"><div class="pvs-line"></div>${d.etiqueta ? `<span class="pvs-label">${esc(d.etiqueta)}</span>` : ''}<div class="pvs-line"></div></div>`;
 
       // ── TÍTULO ──
       if (item.type === 'titulo')
-        return `<div class="pv-titulo"><div class="pvt-text">${d.emoji ? d.emoji + ' ' : ''}${d.texto || 'Título'}</div>${d.subtitulo ? `<div class="pvt-sub">${d.subtitulo}</div>` : ''}</div>`;
+        return `<div class="pv-titulo"><div class="pvt-text">${d.emoji ? esc(d.emoji) + ' ' : ''}${esc(d.texto || 'Título')}</div>${d.subtitulo ? `<div class="pvt-sub">${esc(d.subtitulo)}</div>` : ''}</div>`;
 
       // ── TEXTO ──
       if (item.type === 'texto')
@@ -475,11 +490,11 @@ function buildPreviewHTML(data) {
 
       // ── UBICACIÓN ──
       if (item.type === 'ubicacion') {
-        const name = d.nombre || 'Ubicación';
-        const addr = d.direccion || '';
-        const note = d.nota || '';
-        const q = (addr && addr.trim()) ? addr.trim() : (name && name.trim() ? name.trim() : '');
-        const mapsUrl = d.maps_url || (q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` : 'https://maps.google.com');
+        const name = esc(d.nombre || 'Ubicación');
+        const addr = esc(d.direccion || '');
+        const note = esc(d.nota || '');
+        const q = (d.direccion && d.direccion.trim()) ? d.direccion.trim() : (d.nombre && d.nombre.trim() ? d.nombre.trim() : '');
+        const mapsUrl = d.maps_url ? safeHref(d.maps_url) : (q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` : 'https://maps.google.com');
 
         return `<div class="pv-card pv-ubicacion-card" style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 20px;border:1px solid #e2e8f0;border-radius:14px;background:#f8fafc;box-shadow:var(--shadow);transition:all 0.2s;box-sizing:border-box;">
           <div style="display:flex;align-items:center;gap:14px;min-width:0;flex:1;">
@@ -878,8 +893,8 @@ function buildPreviewHTML(data) {
                 ` : ''}
               </div>
               <div class="pv-hotel-btns">
-                ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn" style="text-decoration:none"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
-                ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn" style="text-decoration:none"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
+                ${d.website ? `<a href="${safeHref(d.website)}" target="_blank" class="pv-action-btn" style="text-decoration:none"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
+                ${d.phone ? `<a href="tel:${esc(d.phone)}" class="pv-action-btn" style="text-decoration:none"><i class="fa-solid fa-phone"></i> ${esc(d.phone)}</a>` : ''}
                 ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-coins"></i> $${formatNumber(d.precio)} USD</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
@@ -962,8 +977,8 @@ function buildPreviewHTML(data) {
               ${timeRange ? `<div class="pv-media-time"><i class="fa-solid fa-clock"></i> ${timeRange.replace(' - ', ' - Duración : ')}</div>` : ''}
               ${d.descripcion ? `<div class="pv-media-desc">${d.descripcion}</div>` : ''}
               <div class="pv-hotel-btns" style="margin-top:10px">
-                ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
-                ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
+                ${d.website ? `<a href="${safeHref(d.website)}" target="_blank" class="pv-action-btn"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
+                ${d.phone ? `<a href="tel:${esc(d.phone)}" class="pv-action-btn"><i class="fa-solid fa-phone"></i> ${esc(d.phone)}</a>` : ''}
                 ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-coins"></i> $${formatNumber(d.precio)} USD</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
@@ -998,10 +1013,10 @@ function buildPreviewHTML(data) {
               ${d.direccion || d.ciudad ? `<div class="pv-media-addr"><i class="fa-solid fa-location-dot" style="color:var(--muted)"></i> ${d.direccion || d.ciudad}</div>` : ''}
               ${dt.day ? `<div class="pv-media-time"><i class="fa-solid fa-clock"></i> ${dt.day}${dt.time ? ' · ' + dt.time : ''}</div>` : ''}
               <div class="pv-hotel-btns" style="margin-top:10px">
-                ${d.website ? `<a href="${d.website}" target="_blank" class="pv-action-btn"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
-                ${d.phone ? `<a href="tel:${d.phone}" class="pv-action-btn"><i class="fa-solid fa-phone"></i> ${d.phone}</a>` : ''}
+                ${d.website ? `<a href="${safeHref(d.website)}" target="_blank" class="pv-action-btn"><i class="fa-solid fa-globe"></i> Sitio web</a>` : ''}
+                ${d.phone ? `<a href="tel:${esc(d.phone)}" class="pv-action-btn"><i class="fa-solid fa-phone"></i> ${esc(d.phone)}</a>` : ''}
                 ${d.precio ? `<span class="pv-action-btn"><i class="fa-solid fa-coins"></i> $${formatNumber(d.precio)} USD</span>` : ''}
-                ${d.estado_reserva && d.estado_reserva !== 'No aplica' ? `<span class="pv-action-btn"><i class="fa-solid fa-calendar-check"></i> ${d.estado_reserva}</span>` : ''}
+                ${d.estado_reserva && d.estado_reserva !== 'No aplica' ? `<span class="pv-action-btn"><i class="fa-solid fa-calendar-check"></i> ${esc(d.estado_reserva)}</span>` : ''}
               </div>
               ${d.reserva ? `<div class="pv-notes-row" style="border-top:none; padding:10px 0; margin-top:8px;"><i class="fa-solid fa-ticket" style="margin-right:2px"></i> <b>Código de Reserva:</b> ${d.reserva}</div>` : ''}
               ${d.notas ? `<div class="pv-notes-row" style="color:#64748b;"><i class="fa-solid fa-circle-info"></i> ${d.notas}</div>` : ''}
@@ -1074,19 +1089,19 @@ function buildPreviewHTML(data) {
         }
 
         return `<div class="pv-card">
-          <div class="pvc-section-label" style="color:var(--accent)"><i class="fa-solid fa-folder-open"></i> ${d.documents_title || 'Documentos'}</div>
-          ${d.documents_description ? `<div class="pv-media-desc" style="margin-bottom:12px">${d.documents_description}</div>` : ''}
+          <div class="pvc-section-label" style="color:var(--accent)"><i class="fa-solid fa-folder-open"></i> ${esc(d.documents_title || 'Documentos')}</div>
+          ${d.documents_description ? `<div class="pv-media-desc" style="margin-bottom:12px">${esc(d.documents_description)}</div>` : ''}
           <div class="pv-docs-list" style="display:flex; flex-direction:column; gap:8px;">
             ${docList.map(doc => {
           const isObj = typeof doc === 'object' && doc !== null;
           const docId = isObj ? doc.id : doc;
-          const docName = isObj ? (doc.original_name || doc.name) : 'Documento';
+          const docName = esc(isObj ? (doc.original_name || doc.name) : 'Documento');
           const docUrl = (isObj && doc.url) ? doc.url : (origin + '/documents/' + docId + '/download');
 
           if (!docId && !isObj) return '';
 
           return `
-                <a href="${fixUrl(docUrl)}" target="_blank" style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; color:#1e293b; text-decoration:none; font-size:13px; transition:all 0.2s;">
+                <a href="${safeHref(fixUrl(docUrl))}" target="_blank" style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; color:#1e293b; text-decoration:none; font-size:13px; transition:all 0.2s;">
                   <div style="display:flex; align-items:center; gap:10px;">
                     <i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:16px;"></i>
                     <span style="font-weight:600;">${docName}</span>
@@ -1148,7 +1163,7 @@ function buildPreviewHTML(data) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <base href="${origin || window.location.origin}/">
-<title>Vista Previa | ${title}</title>
+<title>Vista Previa | ${esc(title)}</title>
 <link rel="icon" type="image/png" href="${origin || window.location.origin}/favicon.png">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1723,10 +1738,10 @@ ${(function () {
         return `<div class="public-preview-header">
       ${(displayNameType === 'agency' && (validLogo || agencyName))
             ? `<div style="display:flex;align-items:center;gap:12px;">
-             ${validLogo ? `<img src="${validLogo}" alt="${agencyName}" class="gps-logo-img">` : ''}
-             ${agencyName ? `<span class="gps-logo-text" style="font-size:13px;">${agencyName}</span>` : ''}
+             ${validLogo ? `<img src="${safeHref(validLogo)}" alt="${esc(agencyName)}" class="gps-logo-img">` : ''}
+             ${agencyName ? `<span class="gps-logo-text" style="font-size:13px;">${esc(agencyName)}</span>` : ''}
            </div>`
-            : `<span class="gps-logo-text">${userFullName || userName}</span>`
+            : `<span class="gps-logo-text">${esc(userFullName || userName)}</span>`
           }
       <img src="${origin || ''}/images/logo-viantryp.png" alt="Viantryp Logo" class="viantryp-logo" style="width:80px;height:auto;filter:brightness(0) invert(1);object-fit:contain;">
     </div>`;
@@ -1735,10 +1750,10 @@ ${(function () {
       <div class="pv-logo" style="display:flex;align-items:center;">
         ${(displayNameType === 'agency' && (validLogo || agencyName))
             ? `<div style="display:flex;align-items:center;gap:12px;">
-               ${validLogo ? `<img src="${validLogo}" alt="${agencyName}" class="gps-logo-img" style="max-height:30px;">` : ''}
-               ${agencyName ? `<span class="gps-logo-text" style="font-size:13px;">${agencyName}</span>` : ''}
+               ${validLogo ? `<img src="${safeHref(validLogo)}" alt="${esc(agencyName)}" class="gps-logo-img" style="max-height:30px;">` : ''}
+               ${agencyName ? `<span class="gps-logo-text" style="font-size:13px;">${esc(agencyName)}</span>` : ''}
              </div>`
-            : `<span class="gps-logo-text">${userFullName || userName}</span>`
+            : `<span class="gps-logo-text">${esc(userFullName || userName)}</span>`
           }
       </div>
       <div style="flex:1"></div>
@@ -1762,7 +1777,7 @@ ${hasPortada ? `
         ${destination ? `
           <div class="pv-portada-tag-badge">
             <i class="fa-solid fa-location-dot" style="color:#fff;"></i>
-            <span>${destination}</span>
+            <span>${esc(destination)}</span>
             ${fechaInicio && fechaFin ? `<span class="pv-tag-sep">•</span><span>${(() => {
           const d1 = new Date(fechaInicio + 'T00:00:00');
           const d2 = new Date(fechaFin + 'T00:00:00');
@@ -1772,9 +1787,9 @@ ${hasPortada ? `
           </div>
         ` : ''}
         <div class="pv-portada-title-wrap">
-          <div class="pv-portada-title">${title}</div>
+          <div class="pv-portada-title">${esc(title)}</div>
         </div>
-        ${portadaSubtitle ? `<div class="pv-portada-sub">${portadaSubtitle}</div>` : ''}
+        ${portadaSubtitle ? `<div class="pv-portada-sub">${esc(portadaSubtitle)}</div>` : ''}
       </div>
     </div>
     <div class="pv-portada-meta-row">

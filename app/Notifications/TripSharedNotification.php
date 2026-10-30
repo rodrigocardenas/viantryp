@@ -45,6 +45,8 @@ class TripSharedNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
+            'type' => 'trip_shared',
+            'icon' => 'fa-handshake',
             'trip_id' => $this->trip->id,
             'trip_title' => $this->trip->title,
             'sender_id' => $this->sender->id,

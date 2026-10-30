@@ -128,14 +128,26 @@ class TripController extends Controller
 
         return DB::transaction(function () use ($validated) {
             $clientId = null;
-            if (!empty($validated['client_name']) && !empty($validated['client_email'])) {
-                $client = Person::updateOrCreate(
-                ['email' => $validated['client_email']],
-                [
-                    'name' => $validated['client_name'],
-                    'type' => 'client'
-                ]
-                );
+            if (!empty($validated['client_name']) || !empty($validated['client_email'])) {
+                if (!empty($validated['client_email'])) {
+                    $client = Person::updateOrCreate(
+                        [
+                            'user_id' => Auth::id(),
+                            'email' => $validated['client_email'],
+                        ],
+                        [
+                            'name' => !empty($validated['client_name']) ? $validated['client_name'] : 'Viajero',
+                            'type' => 'client',
+                        ]
+                    );
+                } else {
+                    $client = Person::create([
+                        'user_id' => Auth::id(),
+                        'name' => $validated['client_name'],
+                        'email' => null,
+                        'type' => 'client',
+                    ]);
+                }
                 $clientId = $client->id;
             }
 
@@ -387,26 +399,29 @@ class TripController extends Controller
             $trip->update(['title' => $value]);
         }
         elseif ($field === 'client_email') {
+            $ownerId = $trip->user_id;
             if (empty($value)) {
                 // If clearing email, we can just null it out on the existing client if any
-                $client = $trip->persons()->where('type', 'client')->first();
+                $client = $trip->persons()->where('type', 'client')->where('user_id', $ownerId)->first();
                 if ($client) {
                     $client->update(['email' => null]);
                 }
             } else {
-                // Check if a person with this email already exists
-                $existingPerson = Person::where('email', $value)->first();
+                // Check if a person with this email already exists for this trip owner
+                $existingPerson = Person::where('user_id', $ownerId)->where('email', $value)->first();
                 if ($existingPerson) {
                     // Switch trip to this existing person
                     $trip->persons()->where('type', 'client')->detach();
                     $trip->persons()->attach($existingPerson->id);
                 } else {
-                    // Update current client or create new one
-                    $client = $trip->persons()->where('type', 'client')->first();
+                    // Update current client owned by this user or create new one
+                    $client = $trip->persons()->where('type', 'client')->where('user_id', $ownerId)->first();
                     if ($client) {
                         $client->update(['email' => $value]);
                     } else {
+                        $trip->persons()->where('type', 'client')->detach();
                         $newClient = Person::create([
+                            'user_id' => $ownerId,
                             'name' => 'Viajero',
                             'email' => $value,
                             'type' => 'client'
@@ -417,12 +432,15 @@ class TripController extends Controller
             }
         }
         elseif ($field === 'client_name') {
-            $client = $trip->persons()->where('type', 'client')->first();
+            $ownerId = $trip->user_id;
+            $client = $trip->persons()->where('type', 'client')->where('user_id', $ownerId)->first();
             if ($client) {
                 $client->update(['name' => $value ?: 'Viajero']);
             }
             else if (!empty($value)) {
+                $trip->persons()->where('type', 'client')->detach();
                 $newClient = Person::create([
+                    'user_id' => $ownerId,
                     'name' => $value,
                     'email' => null, // Now allowed after migration
                     'type' => 'client'
@@ -468,9 +486,10 @@ class TripController extends Controller
             ]);
         }
 
+        $ownerId = $trip->user_id;
         $client = null;
         if ($email) {
-            $existingPerson = Person::where('email', $email)->first();
+            $existingPerson = Person::where('user_id', $ownerId)->where('email', $email)->first();
             if ($existingPerson) {
                 if (!empty($name)) {
                     $existingPerson->update(['name' => $name]);
@@ -482,14 +501,16 @@ class TripController extends Controller
         }
 
         if (!$client) {
-            $client = $trip->persons()->where('type', 'client')->first();
+            $client = $trip->persons()->where('type', 'client')->where('user_id', $ownerId)->first();
             if ($client) {
                 $client->update([
                     'name' => !empty($name) ? $name : ($client->name ?: 'Viajero'),
                     'email' => $email
                 ]);
             } else {
+                $trip->persons()->where('type', 'client')->detach();
                 $client = Person::create([
+                    'user_id' => $ownerId,
                     'name' => !empty($name) ? $name : 'Viajero',
                     'email' => $email,
                     'type' => 'client'
@@ -669,9 +690,9 @@ class TripController extends Controller
     }
 
     /**
-     * Generate share token for trip
+     * Generate share token for trip (supports optional regenerate flag to rotate/revoke previous link)
      */
-    public function generateShareToken(Trip $trip): JsonResponse
+    public function generateShareToken(Request $request, Trip $trip): JsonResponse
     {
         // Ensure the trip belongs to the authenticated user
         if ($trip->user_id !== Auth::id()) {
@@ -681,6 +702,9 @@ class TripController extends Controller
             ], 403);
         }
 
+        if ($request->boolean('regenerate')) {
+            $trip->generateShareToken();
+        }
 
         $shareUrl = $trip->getShareUrl();
 
@@ -709,40 +733,25 @@ class TripController extends Controller
             'pro_state' => 'required|array'
         ]);
 
-        $user = Auth::user();
-        $effectivePlan = strtolower($user->plan ?? 'básico');
-        if ($user->isTrialActive() && ($effectivePlan === 'básico' || $effectivePlan === 'basico')) {
-            $effectivePlan = 'avanzado';
-        }
+        // Evaluate plan limits against the trip owner so collaborators inherit the owner's plan limits
+        $owner = $trip->user ?: Auth::user();
+        $effectivePlan = $owner ? $owner->effective_plan : 'básico';
 
-        if ($effectivePlan === 'básico' || $effectivePlan === 'basico') {
+        if (!in_array($effectivePlan, [\App\Models\User::PLAN_COLABORATIVO, \App\Models\User::PLAN_CORPORATIVO])) {
             $tempTrip = clone $trip;
             $tempTrip->pro_state = $validated['pro_state'];
-            
-            if ($tempTrip->countUnsplashPhotos() > 10) {
-                return response()->json([
-                    'success' => false,
-                    'error_code' => 'LIMIT_REACHED',
-                    'limit_type' => 'unsplash',
-                    'message' => 'Has alcanzado el límite de 10 fotos de Unsplash por itinerario para el Plan Básico. Actualiza a Viajero Pro para imágenes ilimitadas.'
-                ], 403);
-            }
+            $maxPlaces = ($effectivePlan === \App\Models\User::PLAN_AVANZADO) ? 50 : 5;
 
-            if ($tempTrip->countGifs() > 10) {
-                return response()->json([
-                    'success' => false,
-                    'error_code' => 'LIMIT_REACHED',
-                    'limit_type' => 'giphy',
-                    'message' => 'Has alcanzado el límite de 10 GIFs por itinerario para el Plan Básico. Actualiza a Viajero Pro para GIFs ilimitados.'
-                ], 403);
-            }
+            if ($tempTrip->countGooglePlacesItems() > $maxPlaces) {
+                $msg = ($effectivePlan === \App\Models\User::PLAN_AVANZADO)
+                    ? 'Has alcanzado el límite de 50 consultas de Google Places por itinerario para el Plan Viajero Pro. Actualiza al Plan Negocios para consultas ilimitadas.'
+                    : 'Has alcanzado el límite de 5 consultas de Google Places por itinerario para el Plan Básico. Actualiza al Plan Viajero Pro para hasta 50 consultas.';
 
-            if ($tempTrip->countGooglePlacesItems() > 5) {
                 return response()->json([
                     'success' => false,
                     'error_code' => 'LIMIT_REACHED',
                     'limit_type' => 'google_places',
-                    'message' => 'Has alcanzado el límite de 5 búsquedas de Google Places por itinerario para el Plan Básico. Actualiza a Viajero Pro para búsquedas ilimitadas.'
+                    'message' => $msg
                 ], 403);
             }
         }
@@ -804,12 +813,18 @@ class TripController extends Controller
             ], 403);
         }
 
-        if ($trip->hasReachedAttachmentLimit($request->user()) || $request->user()->hasReachedAttachmentLimit($trip)) {
+        $owner = $trip->user ?: $request->user();
+        $effectivePlan = $owner ? $owner->effective_plan : 'básico';
+        if ($trip->hasReachedAttachmentLimit($owner) || ($owner && $owner->hasReachedAttachmentLimit($trip))) {
+            $msg = ($effectivePlan === \App\Models\User::PLAN_AVANZADO)
+                ? 'Has alcanzado el límite de 20 archivos adjuntos por itinerario para el Plan Viajero Pro. Actualiza al Plan Negocios para adjuntos ilimitados.'
+                : 'Has alcanzado el límite de 5 archivos adjuntos por itinerario para el Plan Básico. Actualiza al Plan Viajero Pro para hasta 20 adjuntos por viaje.';
+
             return response()->json([
                 'success' => false,
                 'error_code' => 'LIMIT_REACHED',
                 'limit_type' => 'attachments',
-                'message' => 'Has alcanzado el límite de 5 archivos adjuntos por itinerario para el Plan Básico. Actualiza a Viajero Pro para adjuntos ilimitados.'
+                'message' => $msg
             ], 403);
         }
 
@@ -819,12 +834,13 @@ class TripController extends Controller
 
         $file = $request->file('file');
 
-        // Generate a unique filename
-        $filename = \Illuminate\Support\Str::uuid() . '.' . $file->getClientOriginalExtension();
+        // Generate a unique filename using server-detected extension
+        $extension = $file->extension() ?: $file->getClientOriginalExtension() ?: 'bin';
+        $filename = \Illuminate\Support\Str::uuid() . '.' . $extension;
         $path = 'documents/' . $filename;
 
-        // Store file in public disk
-        $stored = \Illuminate\Support\Facades\Storage::disk('public')->put($path, $file->get());
+        // Store file in private local disk (outside public/storage)
+        $stored = \Illuminate\Support\Facades\Storage::disk('local')->put($path, $file->get());
 
         if (!$stored) {
             return response()->json([
@@ -919,9 +935,13 @@ class TripController extends Controller
         if (!$file && $coverDataUrl) {
             try {
                 if (preg_match('/^data:(image\/[^;]+);base64,(.*)$/', $coverDataUrl, $matches)) {
-                    $mime = $matches[1];
+                    $mime = strtolower($matches[1]);
                     $data = base64_decode($matches[2]);
-                    $extension = explode('/', $mime)[1] ?? 'png';
+                    $rawExt = strtolower(explode('/', $mime)[1] ?? 'png');
+                    if ($rawExt === 'jpeg') {
+                        $rawExt = 'jpg';
+                    }
+                    $extension = in_array($rawExt, ['jpg', 'png', 'webp', 'gif'], true) ? $rawExt : 'png';
                     $filename = 'cover_' . $trip->id . '_' . time() . '.' . $extension;
                     $relativePath = 'trip-covers/' . $filename;
                     \Illuminate\Support\Facades\Storage::disk('public')->put($relativePath, $data);
@@ -934,7 +954,7 @@ class TripController extends Controller
             }
             catch (\Exception $e) {
                 Log::error('Cover upload (data URL) exception: ' . $e->getMessage(), ['trip_id' => $trip->id, 'exception' => $e]);
-                return response()->json(['success' => false, 'message' => 'Error al guardar la portada desde data URL.', 'exception' => $e->getMessage()], 500);
+                return response()->json(['success' => false, 'message' => 'Error al guardar la portada desde data URL.'], 500);
             }
         }
         else {
@@ -951,7 +971,8 @@ class TripController extends Controller
                 $altPath = $file->getPathname();
                 if ($altPath && file_exists($altPath)) {
                     try {
-                        $extension = $file->getClientOriginalExtension() ?: pathinfo($altPath, PATHINFO_EXTENSION) ?: 'png';
+                        $rawExt = strtolower($file->extension() ?: $file->getClientOriginalExtension() ?: pathinfo($altPath, PATHINFO_EXTENSION) ?: 'png');
+                        $extension = in_array($rawExt, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true) ? $rawExt : 'png';
                         $filename = 'cover_' . $trip->id . '_' . time() . '.' . $extension;
                         $relativePath = 'trip-covers/' . $filename;
                         \Illuminate\Support\Facades\Storage::disk('public')->put($relativePath, fopen($altPath, 'r'));
@@ -979,7 +1000,7 @@ class TripController extends Controller
                 }
                 catch (\Exception $e) {
                     Log::error('Cover upload exception: ' . $e->getMessage(), ['trip_id' => $trip->id, 'exception' => $e]);
-                    return response()->json(['success' => false, 'message' => 'Error al guardar la portada.', 'exception' => $e->getMessage()], 500);
+                    return response()->json(['success' => false, 'message' => 'Error al guardar la portada.'], 500);
                 }
             }
         }
@@ -1003,7 +1024,13 @@ class TripController extends Controller
         $tripId = $request->input('trip_id');
         if ($tripId) {
             $trip = Trip::find($tripId);
-            if ($trip && $trip->hasReachedUnsplashLimit($request->user())) {
+            if (!$trip || !$trip->canEdit(Auth::id())) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No autorizado para este viaje.'
+                ], 403);
+            }
+            if ($trip->hasReachedUnsplashLimit($request->user())) {
                 return response()->json([
                     'success' => false,
                     'error_code' => 'LIMIT_REACHED',
@@ -1055,10 +1082,10 @@ class TripController extends Controller
                 ]);
             }
 
+            Log::warning('Unsplash API non-200 response', ['status' => $response->status(), 'body' => $response->body()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Error fetching images from Unsplash.',
-                'error' => $response->body()
+                'message' => 'Error fetching images from Unsplash.'
             ], $response->status());
 
         }
@@ -1087,6 +1114,14 @@ class TripController extends Controller
         ]);
 
         if ($validated['role'] === 'editor') {
+            $limits = Auth::user()->getPlanLimits();
+            if (($limits['max_editors'] ?? 0) <= 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tu plan actual no incluye colaboradores de edición. Por favor, mejora tu plan para añadir colaboradores.'
+                ], 403);
+            }
+
             // Check if this email is already a collaborator for ANY trip of this user
             $alreadyCollaborator = \DB::table('trip_collaborators')
                 ->join('trips', 'trip_collaborators.trip_id', '=', 'trips.id')

@@ -3148,6 +3148,16 @@
                     $maxEditors = $limits['max_editors'] ?? 0;
                     $tripPercent = min(100, ($tripCount / max(1, $maxTrips)) * 100);
                     $editorPercent = $maxEditors > 0 ? min(100, ($editorCount / $maxEditors) * 100) : 0;
+                    $isAppMode = request()->boolean('app')
+                        || request()->input('mode') === 'app'
+                        || request()->cookie('viantryp_app_mode') === '1'
+                        || session('viantryp_app_mode') === '1';
+                    if ($isAppMode && !request()->boolean('web') && request()->input('mode') !== 'web') {
+                        session(['viantryp_app_mode' => '1']);
+                    } elseif (request()->boolean('web') || request()->input('mode') === 'web') {
+                        session()->forget('viantryp_app_mode');
+                        $isAppMode = false;
+                    }
                 @endphp
                 <div class="sidebar-footer">
                     <div class="footer-title">USO DEL PLAN</div>
@@ -3176,9 +3186,11 @@
                                 <span class="plan-trial-pill">Prueba Gratuita</span>
                             @endif
                         </div>
+                        @if(!$isAppMode)
                         <a href="javascript:void(0)" onclick="openUpgradeModal(true)" class="btn-upgrade-link">
                             Mejorar plan <i class="fas fa-arrow-up-right-from-square"></i>
                         </a>
+                        @endif
                     </div>
                 </div>
             </aside>
@@ -3273,10 +3285,12 @@
                                         disfrutar de todas las herramientas.</p>
                                 </div>
                             </div>
+                            @if(!$isAppMode)
                             <div class="trial-cta">
                                 <button onclick="openUpgradeModal(true)" class="btn-trial-upgrade">Mejorar mi plan ahora
                                     →</button>
                             </div>
+                            @endif
                         </div>
                     @endif
 
@@ -3950,6 +3964,10 @@
                 }
             };
 
+            const escapeNotiHtml = (str) => String(str || '').replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[m]));
+
             const initNotis = () => {
                 const trigger = document.getElementById('notiTrigger');
                 const menu = document.getElementById('notiMenu');
@@ -3969,25 +3987,44 @@
                                 badge.style.display = 'none';
                             }
 
-                            if (d.notifications.length === 0) {
-                                list.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--gray2); font-size: 12px;">No tienes notificaciones nuevas</div>';
+                            if (!d.notifications || d.notifications.length === 0) {
+                                list.innerHTML = '<div style="padding: 24px 16px; text-align: center; color: var(--gray2); font-size: 12.5px;"><i class="fas fa-bell-slash" style="display:block;font-size:18px;margin-bottom:8px;opacity:0.45;"></i>No tienes notificaciones nuevas</div>';
                             } else {
-                                list.innerHTML = d.notifications.map(n => `
-                                            <div style="padding: 12px 16px; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: background 0.2s; ${n.read_at ? '' : 'background: #f0f9f8;'}" onclick="handleNotiClick('${n.id}', '${n.data.invite_url}')">
-                                                <div style="font-size: 13px; color: var(--dark); font-weight: ${n.read_at ? '400' : '600'}; margin-bottom: 4px;">${n.data.message}</div>
+                                list.innerHTML = d.notifications.map(n => {
+                                    const data = n.data || {};
+                                    const icon = escapeNotiHtml(data.icon || 'fa-bell');
+                                    const msg = escapeNotiHtml(data.message || 'Nueva notificación');
+                                    const url = escapeNotiHtml(data.invite_url || '');
+                                    const actionType = escapeNotiHtml(data.action_type || '');
+                                    const isUnread = !n.read_at;
+                                    return `
+                                        <div style="padding: 13px 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; gap: 12px; align-items: flex-start; transition: background 0.2s; ${isUnread ? 'background: #f0f9f8;' : ''}" onclick="handleNotiClick('${escapeNotiHtml(n.id)}', '${url}', '${actionType}')">
+                                            <div style="width: 32px; height: 32px; border-radius: 9px; background: ${isUnread ? '#dcfce7' : '#f1f5f9'}; color: ${isUnread ? '#0f766e' : '#64748b'}; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; margin-top: 2px;">
+                                                <i class="fas ${icon}"></i>
+                                            </div>
+                                            <div style="flex: 1; min-width: 0;">
+                                                <div style="font-size: 12.5px; line-height: 1.45; color: var(--dark); font-weight: ${isUnread ? '600' : '400'}; margin-bottom: 4px;">${msg}</div>
                                                 <div style="font-size: 11px; color: var(--gray2);">${new Date(n.created_at).toLocaleString()}</div>
                                             </div>
-                                        `).join('');
+                                            ${isUnread ? '<span style="width: 7px; height: 7px; border-radius: 50%; background: #14b8a6; flex-shrink: 0; margin-top: 6px;"></span>' : ''}
+                                        </div>
+                                    `;
+                                }).join('');
                             }
                         });
                 };
 
-                window.handleNotiClick = (id, url) => {
+                window.handleNotiClick = (id, url, actionType) => {
                     fetch(`/notifications/mark-read/${id}`, {
                         method: 'POST',
                         headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
                     }).finally(() => {
-                        window.location.href = url;
+                        if (actionType === 'upgrade_modal' && typeof openUpgradeModal === 'function') {
+                            menu.style.display = 'none';
+                            openUpgradeModal(true);
+                        } else if (url && url !== 'undefined') {
+                            window.location.href = url;
+                        }
                     });
                 };
 

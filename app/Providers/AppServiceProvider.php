@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
         // Register Paddle Subscription Event Listeners
         \Illuminate\Support\Facades\Event::listen(
             [
+                \Laravel\Paddle\Events\WebhookReceived::class,
                 \Laravel\Paddle\Events\SubscriptionCreated::class,
                 \Laravel\Paddle\Events\SubscriptionUpdated::class,
                 \Laravel\Paddle\Events\SubscriptionCanceled::class,

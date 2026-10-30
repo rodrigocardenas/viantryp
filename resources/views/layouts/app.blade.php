@@ -13,8 +13,10 @@
         // Si estamos en un navegador web normal (no Capacitor ni Standalone ni ?app=1), limpiamos cualquier residuo antiguo
         if (hasWebParam || (!isCapacitor && !isStandalone && !hasAppParam)) {
             try { localStorage.removeItem('viantryp_app_mode'); } catch(e){}
+            try { document.cookie = 'viantryp_app_mode=; path=/; max-age=0; SameSite=Lax'; } catch(e){}
         } else if (hasAppParam || isCapacitor) {
             try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
+            try { document.cookie = 'viantryp_app_mode=1; path=/; max-age=31536000; SameSite=Lax'; } catch(e){}
         }
 
         var isAppMode = isCapacitor || hasAppParam || (isStandalone && !hasWebParam);

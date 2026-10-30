@@ -34,10 +34,9 @@ class FlightLookupController extends Controller
             ], 401);
         }
 
-        // 1. Check Plan Authorization
-        $userPlan = strtolower($user->plan ?? 'básico');
-        $isPro = in_array($userPlan, ['avanzado', 'viajero pro', 'colaborativo', 'corporativo', 'negocios'])
-            || ($user->trial_ends_at && $user->trial_ends_at->isFuture());
+        // 1. Check Plan Authorization (using effective_plan to respect trial expiration)
+        $effectivePlan = strtolower($user->effective_plan ?? 'básico');
+        $isPro = in_array($effectivePlan, ['avanzado', 'viajero pro', 'colaborativo', 'corporativo', 'negocios']);
 
         if (!$isPro) {
             return response()->json([
@@ -222,7 +221,7 @@ class FlightLookupController extends Controller
             return response()->json([
                 'success' => false,
                 'error_code' => 'EXCEPTION',
-                'message' => 'Ocurrió un error al consultar el vuelo: ' . $e->getMessage(),
+                'message' => 'Ocurrió un error al consultar el vuelo en este momento.',
             ], 500);
         }
     }

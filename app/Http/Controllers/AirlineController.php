@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Storage;
 class AirlineController extends Controller
 {
     /**
+     * Restrict global catalog mutations to platform administrators
+     */
+    protected function authorizeCatalogAdmin(): void
+    {
+        $user = auth()->user();
+        $isAdmin = $user && str_ends_with(strtolower((string) $user->email), '@viantryp.com');
+        abort_unless($isAdmin, 403, 'Solo los administradores de la plataforma pueden modificar el catálogo global de aerolíneas.');
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -22,6 +32,7 @@ class AirlineController extends Controller
      */
     public function create()
     {
+        $this->authorizeCatalogAdmin();
         return view('airlines.create');
     }
 
@@ -30,6 +41,7 @@ class AirlineController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorizeCatalogAdmin();
         $request->validate([
             'name' => 'required|string|max:255',
             'carrier_code' => 'nullable|string|max:10|unique:airlines',
@@ -74,6 +86,7 @@ class AirlineController extends Controller
      */
     public function edit(string $id)
     {
+        $this->authorizeCatalogAdmin();
         $airline = Airline::findOrFail($id);
         return view('airlines.edit', compact('airline'));
     }
@@ -83,6 +96,7 @@ class AirlineController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $this->authorizeCatalogAdmin();
         $airline = Airline::findOrFail($id);
 
         $request->validate([
@@ -129,6 +143,7 @@ class AirlineController extends Controller
      */
     public function destroy(string $id)
     {
+        $this->authorizeCatalogAdmin();
         $airline = Airline::findOrFail($id);
 
         // Delete logo if exists

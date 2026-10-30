@@ -48,8 +48,10 @@ class TripPreviewTest extends TestCase
             ]
         ]);
 
-        // Make request to preview page
-        $response = $this->get(route('trips.preview', $trip));
+        $trip->generateShareToken();
+
+        // Make request to share preview page
+        $response = $this->get(route('trips.share', ['token' => $trip->share_token]));
 
         // Assert successful response
         $response->assertStatus(200);
@@ -110,7 +112,8 @@ class TripPreviewTest extends TestCase
             ]
         ]);
 
-        $response = $this->get(route('trips.preview', $trip));
+        $trip->generateShareToken();
+        $response = $this->get(route('trips.share', ['token' => $trip->share_token]));
 
         $response->assertStatus(200);
         $response->assertSee('Trip Overview');
@@ -139,7 +142,8 @@ class TripPreviewTest extends TestCase
             'items_data' => []
         ]);
 
-        $response = $this->get(route('trips.preview', $trip));
+        $trip->generateShareToken();
+        $response = $this->get(route('trips.share', ['token' => $trip->share_token]));
 
         $response->assertStatus(200);
         $response->assertSee('Empty Trip');
@@ -168,7 +172,8 @@ class TripPreviewTest extends TestCase
             'items_data' => []
         ]);
 
-        $response = $this->get(route('trips.preview', $trip));
+        $trip->generateShareToken();
+        $response = $this->get(route('trips.share', ['token' => $trip->share_token]));
 
         $response->assertStatus(404);
     }
@@ -192,7 +197,8 @@ class TripPreviewTest extends TestCase
             'items_data' => []
         ]);
 
-        $response = $this->actingAs($user)->get(route('trips.preview', $trip));
+        $trip->generateShareToken();
+        $response = $this->actingAs($user)->get(route('trips.share', ['token' => $trip->share_token]));
 
         $response->assertStatus(200);
         $response->assertSee('Owner Draft Trip');

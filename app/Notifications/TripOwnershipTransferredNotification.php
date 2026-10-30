@@ -39,6 +39,8 @@ class TripOwnershipTransferredNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
+            'type' => 'ownership_transferred',
+            'icon' => 'fa-exchange-alt',
             'trip_id' => $this->trip->id,
             'trip_title' => $this->trip->title,
             'old_owner_id' => $this->oldOwner->id,

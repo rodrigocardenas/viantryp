@@ -41,3 +41,7 @@ Homestead.yaml
 /android/local.properties
 *.keystore
 *.jks
+*.pem
+*.key
+keystore.properties
+/android/keystore.properties

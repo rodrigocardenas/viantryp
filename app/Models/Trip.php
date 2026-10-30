@@ -51,13 +51,10 @@ class Trip extends Model
      */
     public function hasReachedAiLimit(?User $user = null): bool
     {
-        $user = $user ?: \Illuminate\Support\Facades\Auth::user();
-        if (!$user) return false;
+        $owner = $this->user ?: $user ?: \Illuminate\Support\Facades\Auth::user();
+        if (!$owner) return false;
 
-        $effectivePlan = strtolower($user->plan ?? 'básico');
-        if ($user->isTrialActive() && $effectivePlan === User::PLAN_BASICO) {
-            $effectivePlan = User::PLAN_AVANZADO;
-        }
+        $effectivePlan = $owner->effective_plan;
 
         if (in_array($effectivePlan, [User::PLAN_AVANZADO, User::PLAN_COLABORATIVO, User::PLAN_CORPORATIVO])) {
             return false; // Unlimited for Pro, Negocios, Corporativo, or Trial
@@ -171,20 +168,21 @@ class Trip extends Model
     }
 
     /**
-     * Check if trip has reached Google Places items limit (5 for Plan Básico)
+     * Check if trip has reached Google Places items limit (5 for Plan Básico, 50 for Viajero Pro, unlimited for Negocios)
      */
     public function hasReachedGooglePlacesLimit(?User $user = null): bool
     {
-        $user = $user ?: \Illuminate\Support\Facades\Auth::user();
-        if (!$user) return false;
+        $owner = $this->user ?: $user ?: \Illuminate\Support\Facades\Auth::user();
+        if (!$owner) return false;
 
-        $effectivePlan = strtolower($user->plan ?? 'básico');
-        if ($user->isTrialActive() && ($effectivePlan === User::PLAN_BASICO || $effectivePlan === 'basico')) {
-            $effectivePlan = User::PLAN_AVANZADO;
+        $effectivePlan = $owner->effective_plan;
+
+        if (in_array($effectivePlan, [User::PLAN_COLABORATIVO, User::PLAN_CORPORATIVO])) {
+            return false;
         }
 
-        if (in_array($effectivePlan, [User::PLAN_AVANZADO, User::PLAN_COLABORATIVO, User::PLAN_CORPORATIVO])) {
-            return false;
+        if ($effectivePlan === User::PLAN_AVANZADO) {
+            return $this->countGooglePlacesItems() >= 50;
         }
 
         return $this->countGooglePlacesItems() >= 5;
@@ -199,20 +197,21 @@ class Trip extends Model
     }
 
     /**
-     * Check if trip has reached Attachment files limit (5 for Plan Básico)
+     * Check if trip has reached Attachment files limit (5 for Plan Básico, 20 for Viajero Pro, unlimited for Negocios)
      */
     public function hasReachedAttachmentLimit(?User $user = null): bool
     {
-        $user = $user ?: \Illuminate\Support\Facades\Auth::user();
-        if (!$user) return false;
+        $owner = $this->user ?: $user ?: \Illuminate\Support\Facades\Auth::user();
+        if (!$owner) return false;
 
-        $effectivePlan = strtolower($user->plan ?? 'básico');
-        if ($user->isTrialActive() && ($effectivePlan === User::PLAN_BASICO || $effectivePlan === 'basico')) {
-            $effectivePlan = User::PLAN_AVANZADO;
+        $effectivePlan = $owner->effective_plan;
+
+        if (in_array($effectivePlan, [User::PLAN_COLABORATIVO, User::PLAN_CORPORATIVO])) {
+            return false;
         }
 
-        if (in_array($effectivePlan, [User::PLAN_AVANZADO, User::PLAN_COLABORATIVO, User::PLAN_CORPORATIVO])) {
-            return false;
+        if ($effectivePlan === User::PLAN_AVANZADO) {
+            return $this->countAttachments() >= 20;
         }
 
         return $this->countAttachments() >= 5;
@@ -548,7 +547,7 @@ class Trip extends Model
     public function generateShareToken(): string
     {
         do {
-            $token = hash('sha256', $this->id . time() . rand());
+            $token = hash('sha256', $this->id . Str::random(40) . microtime(true));
         } while (self::where('share_token', $token)->exists());
 
         $this->share_token = $token;

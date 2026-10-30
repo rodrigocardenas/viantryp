@@ -25,7 +25,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email:rfc,dns|max:255',
+            'email' => 'required|email|max:255',
             'password' => 'required|string|min:8',
             'remember' => 'boolean'
         ]);

@@ -48,7 +48,13 @@ class GoogleAuthController extends Controller
                 if ($user) {
                     $updateFields = [
                         'google_id' => $googleUser->getId(),
+                        'email_verified_at' => $user->email_verified_at ?? now(),
                     ];
+                    // Anti-pre-hijacking: if the existing email account was never verified or linked to Google,
+                    // rotate its password so a pre-hijacker who registered the victim's email cannot log in via password.
+                    if (is_null($user->email_verified_at) && empty($user->google_id)) {
+                        $updateFields['password'] = bcrypt(\Illuminate\Support\Str::random(32));
+                    }
                     if ($googleUser->getAvatar() && (empty($user->avatar) || str_starts_with($user->avatar, 'http'))) {
                         $updateFields['avatar'] = $googleUser->getAvatar();
                     }
@@ -64,9 +70,10 @@ class GoogleAuthController extends Controller
                         'name' => $name,
                         'last_name' => $lastName,
                         'email' => $googleUser->getEmail(),
+                        'email_verified_at' => now(),
                         'google_id' => $googleUser->getId(),
                         'avatar' => $googleUser->getAvatar(),
-                        'password' => bcrypt(uniqid()), // Random password for OAuth users
+                        'password' => bcrypt(\Illuminate\Support\Str::random(32)), // Random password for OAuth users
                         'plan' => User::PLAN_BASICO,
                         'theme_color' => 'gold',
                         'country' => request()->header('cf-ipcountry') ?? null,
@@ -137,9 +144,14 @@ class GoogleAuthController extends Controller
             })->first();
 
             if ($user) {
-                $updateData = [];
+                $updateData = [
+                    'email_verified_at' => $user->email_verified_at ?? now(),
+                ];
                 if ($googleId && !$user->google_id) {
                     $updateData['google_id'] = $googleId;
+                    if (is_null($user->email_verified_at)) {
+                        $updateData['password'] = bcrypt(\Illuminate\Support\Str::random(32));
+                    }
                 }
                 if ($avatar && (empty($user->avatar) || str_starts_with($user->avatar, 'http'))) {
                     $updateData['avatar'] = $avatar;
@@ -157,9 +169,10 @@ class GoogleAuthController extends Controller
                     'name' => $name,
                     'last_name' => $lastName,
                     'email' => $email,
+                    'email_verified_at' => now(),
                     'google_id' => $googleId,
                     'avatar' => $avatar,
-                    'password' => bcrypt(uniqid()),
+                    'password' => bcrypt(\Illuminate\Support\Str::random(32)),
                     'plan' => User::PLAN_BASICO,
                     'country' => $request->header('cf-ipcountry') ?? null,
                 ]);
@@ -228,6 +241,13 @@ class GoogleAuthController extends Controller
                 return redirect()->route('login')->with('error', 'No se recibió la credencial de Google.');
             }
 
+            // Verify Google Identity Services double-submit CSRF token when provided by browser redirect
+            $gCsrfTokenBody = $request->input('g_csrf_token');
+            $gCsrfTokenCookie = $request->cookie('g_csrf_token');
+            if ($gCsrfTokenBody && $gCsrfTokenCookie && !hash_equals((string) $gCsrfTokenCookie, (string) $gCsrfTokenBody)) {
+                return redirect()->route('login')->with('error', 'Token de seguridad CSRF de Google inválido.');
+            }
+
             // Verificar criptográficamente el token JWT con Google
             try {
                 $googleClient = new \Google\Client(['client_id' => config('services.google.client_id')]);
@@ -257,11 +277,16 @@ class GoogleAuthController extends Controller
             })->first();
 
             if ($user) {
-                $updateData = [];
+                $updateData = [
+                    'email_verified_at' => $user->email_verified_at ?? now(),
+                ];
                 if ($googleId && !$user->google_id) {
                     $updateData['google_id'] = $googleId;
+                    if (is_null($user->email_verified_at)) {
+                        $updateData['password'] = bcrypt(\Illuminate\Support\Str::random(32));
+                    }
                 }
-                if ($avatar) {
+                if ($avatar && (empty($user->avatar) || str_starts_with($user->avatar, 'http'))) {
                     $updateData['avatar'] = $avatar;
                 }
                 if (!empty($updateData)) {
@@ -277,9 +302,10 @@ class GoogleAuthController extends Controller
                     'name' => $name,
                     'last_name' => $lastName,
                     'email' => $email,
+                    'email_verified_at' => now(),
                     'google_id' => $googleId,
                     'avatar' => $avatar,
-                    'password' => bcrypt(uniqid()),
+                    'password' => bcrypt(\Illuminate\Support\Str::random(32)),
                     'plan' => User::PLAN_BASICO,
                     'country' => $request->header('cf-ipcountry') ?? null,
                 ]);

@@ -29,7 +29,19 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Viantryp | Home</title>
+  <title>Viantryp — Crea y Presenta Itinerarios de Viaje Interactivos</title>
+  <meta name="description" content="Diseña, gestiona y comparte propuestas e itinerarios de viaje interactivos con mapas, vuelos automáticos, hoteles y asistente de IA para viajeros y agencias.">
+  <link rel="canonical" href="{{ url('/') }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Viantryp">
+  <meta property="og:title" content="Viantryp — Itinerarios de Viaje Interactivos para Agencias y Viajeros">
+  <meta property="og:description" content="Diseña, gestiona y comparte itinerarios de viaje profesionales en minutos con mapas interactivos, búsqueda de vuelos y asistente con IA.">
+  <meta property="og:url" content="{{ url('/') }}">
+  <meta property="og:image" content="{{ asset('icons/icon-512x512.png') }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Viantryp — Crea y Presenta Itinerarios de Viaje Interactivos">
+  <meta name="twitter:description" content="La plataforma inteligente para planificar, diseñar y presentar itinerarios de viaje inolvidables.">
+  <meta name="twitter:image" content="{{ asset('icons/icon-512x512.png') }}">
   <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
   {{-- Preload Onboarding Images for Instant Clean Rendering --}}
   <link rel="preload" as="image" href="{{ asset('images/onboarding/app1.png') }}" fetchpriority="high">
@@ -6473,8 +6485,8 @@
             <span class="price-val" data-monthly="6.99" data-annual="5.59">6.99</span>
             <span class="period">/mes</span>
           </div>
-          <div class="price-note" data-monthly="Facturado mensualmente · 7 días de prueba gratis"
-            data-annual="Facturado anualmente $67.08 USD · 7 días prueba gratis">Facturado mensualmente</div>
+          <div class="price-note" data-monthly="Facturado mensualmente · 30 días de prueba gratis"
+            data-annual="Facturado anualmente $67.08 USD · 30 días prueba gratis">Facturado mensualmente</div>
           <div class="plan-savings" style="opacity: 0;">Ahorras 20% en plan anual</div>
           <div class="plan-sub" style="color: rgba(255, 255, 255, 0.7);">Todo para tus viajes sin límites:</div>
           <ul class="plan-features">
@@ -6489,7 +6501,7 @@
             <li><i class="fas fa-check" style="color: #1EAACE;"></i> <strong>Exportación de PDF</strong></li>
           </ul>
           <a href="{{ route('plans.redirect') }}" class="plan-btn btn-pro"
-            style="background: #1EAACE; border-color: #1EAACE; color: white;">Probar 7 días gratis</a>
+            style="background: #1EAACE; border-color: #1EAACE; color: white;">Probar 30 días gratis</a>
         </div>
 
         <!-- Negocios -->
@@ -6501,8 +6513,8 @@
             <span class="price-val" data-monthly="24.99" data-annual="19.99">24.99</span>
             <span class="period">/mes</span>
           </div>
-          <div class="price-note" data-monthly="Facturado mensualmente · 7 días de prueba gratis"
-            data-annual="Facturado anualmente $239.88 USD · 7 días prueba gratis">Facturado mensualmente</div>
+          <div class="price-note" data-monthly="Facturado mensualmente · 30 días de prueba gratis"
+            data-annual="Facturado anualmente $239.88 USD · 30 días prueba gratis">Facturado mensualmente</div>
           <div class="plan-savings" style="opacity: 0;">Ahorras 20% en plan anual</div>
           <div class="plan-sub">Todo lo del plan Viajero Pro, más:</div>
           <ul class="plan-features">
@@ -6513,58 +6525,13 @@
             <li><i class="fas fa-check"></i> <strong>Marca Blanca: Logo propio de tu agencia en web y PDF</strong></li>
             <li><i class="fas fa-check"></i> Soporte prioritario dedicado</li>
           </ul>
-          <a href="{{ route('plans.redirect') }}" class="plan-btn btn-outline">Probar 7 días gratis</a>
+          <a href="{{ route('plans.redirect') }}" class="plan-btn btn-outline">Probar 30 días gratis</a>
         </div>
       </div>
 
       <div class="pricing-disclaimer reveal"
         style="text-align: center; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 13px; color: #64748b; font-weight: 500;">
         * Todos los precios están expresados en USD (Dólares Estadounidenses)
-      </div>
-
-      <!-- ENTERPRISE PLAN -->
-      <div class="enterprise-box reveal"
-        style="margin-top: 2rem; background: #0f172a; border-radius: 24px; padding: 2.5rem; color: white; border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;">
-        <div
-          style="position: absolute; top:0; right:0; width: 300px; height: 300px; background: radial-gradient(circle, rgba(26,122,138,0.1) 0%, transparent 70%); pointer-events: none;">
-        </div>
-
-        <div
-          style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 2rem;">
-          <div style="flex: 1; min-width: 300px;">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-              <h3 style="font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800;">Corporativo</h3>
-            </div>
-            <p style="color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 1.5rem;">Grandes agencias · Tour
-              operadores · DMCs con alto volumen</p>
-
-            <div style="display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin-bottom: 1.5rem;">
-              <div
-                style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9);">
-                <i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Dominio personalizado
-              </div>
-              <div
-                style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9);">
-                <i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Soporte dedicado y SLA
-              </div>
-              <div
-                style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9);">
-                <i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Integraciones API avanzadas
-              </div>
-              <div
-                style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9);">
-                <i class="fas fa-check" style="color: var(--teal); font-size: 11px;"></i> Onboarding dedicado
-              </div>
-            </div>
-          </div>
-
-          <div style="flex-shrink: 0;">
-            <a href="{{ route('contact') }}" class="plan-btn"
-              style="border-color: rgba(255,255,255,0.2); color: white; padding: 1rem 2.5rem; border-radius: 12px; display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
-              Hablar con ventas <i class="fas fa-arrow-up-right-from-square" style="font-size: 12px; opacity: 0.7;"></i>
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   </section>

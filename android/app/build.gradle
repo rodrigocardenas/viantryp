@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace = "com.viantryp.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -18,10 +24,10 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("${rootDir}/../viantryp-release-official.keystore")
-            storePassword 'viantryp2026'
-            keyAlias 'viantryp'
-            keyPassword 'viantryp2026'
+            storeFile file(keystoreProperties['storeFile'] ?: System.getenv('KEYSTORE_FILE') ?: "${rootDir}/../viantryp-release-official.keystore")
+            storePassword keystoreProperties['storePassword'] ?: System.getenv('KEYSTORE_PASSWORD') ?: ''
+            keyAlias keystoreProperties['keyAlias'] ?: System.getenv('KEY_ALIAS') ?: 'viantryp'
+            keyPassword keystoreProperties['keyPassword'] ?: System.getenv('KEY_PASSWORD') ?: ''
         }
     }
     buildTypes {

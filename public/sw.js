@@ -1,5 +1,6 @@
-const CACHE_NAME = 'viantryp-v6';
+const CACHE_NAME = 'viantryp-v7';
 const STATIC_ASSETS = [
+    '/offline.html',
     '/manifest.json',
     '/favicon.png',
     '/icons/icon-192x192.png',
@@ -67,9 +68,20 @@ self.addEventListener('fetch', event => {
                 }
                 return response;
             })
-            .catch(() => {
+            .catch(async () => {
                 // Fallback to cache if network fails
-                return caches.match(event.request);
+                const cached = await caches.match(event.request);
+                if (cached) {
+                    return cached;
+                }
+                const accept = event.request.headers.get('accept') || '';
+                if (event.request.mode === 'navigate' || accept.includes('text/html')) {
+                    const offlinePage = await caches.match('/offline.html');
+                    if (offlinePage) {
+                        return offlinePage;
+                    }
+                }
+                return new Response('', { status: 503, statusText: 'Offline' });
             })
     );
 });

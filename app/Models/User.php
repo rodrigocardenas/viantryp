@@ -32,6 +32,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'email_verified_at',
         'password',
         'google_id',
         'avatar',
@@ -153,12 +154,7 @@ class User extends Authenticatable
 
     public function getPlanLimits(): array
     {
-        $effectivePlan = $this->plan;
-
-        // If trial is active, they get Advanced limits
-        if ($this->isTrialActive() && $this->plan === self::PLAN_BASICO) {
-            $effectivePlan = self::PLAN_AVANZADO;
-        }
+        $effectivePlan = $this->effective_plan;
 
         return match ($effectivePlan) {
             self::PLAN_BASICO => [
@@ -222,10 +218,28 @@ class User extends Authenticatable
 
     public function getEffectivePlanAttribute(): string
     {
-        $plan = strtolower($this->plan ?? self::PLAN_BASICO);
-        if ($this->isTrialActive() && ($plan === self::PLAN_BASICO || $plan === 'basico')) {
+        $plan = mb_strtolower($this->plan ?? self::PLAN_BASICO);
+        if ($plan === 'basico') {
+            $plan = self::PLAN_BASICO;
+        }
+
+        // If trial_ends_at is set and has already expired, downgrade to Básico unless an active Cashier subscription exists
+        if ($this->trial_ends_at !== null && $this->trial_ends_at->isPast()) {
+            try {
+                if ($this->exists && \Illuminate\Support\Facades\Schema::hasTable('subscriptions') && $this->subscriptions()->valid()->exists()) {
+                    return $plan;
+                }
+            } catch (\Throwable $e) {
+                // Fallback to Básico if subscription table cannot be queried
+            }
+            return self::PLAN_BASICO;
+        }
+
+        // If trial is active, they get Advanced limits
+        if ($this->isTrialActive() && $plan === self::PLAN_BASICO) {
             return self::PLAN_AVANZADO;
         }
+
         return $plan;
     }
 
@@ -249,16 +263,12 @@ class User extends Authenticatable
 
     public function getPlanDisplayNameAttribute(): string
     {
-        $effectivePlan = $this->plan ?? self::PLAN_BASICO;
-        if ($this->isTrialActive() && $effectivePlan === self::PLAN_BASICO) {
-            $effectivePlan = self::PLAN_AVANZADO;
-        }
+        $effectivePlan = $this->effective_plan;
 
         return match (mb_strtolower($effectivePlan)) {
             self::PLAN_BASICO => 'Básico',
-            self::PLAN_AVANZADO => 'Viajero Pro',
-            self::PLAN_COLABORATIVO => 'Negocios',
-            self::PLAN_CORPORATIVO => 'Corporativo',
+            self::PLAN_AVANZADO, 'viajero pro', 'viajero_pro' => 'Viajero Pro',
+            self::PLAN_COLABORATIVO, self::PLAN_CORPORATIVO, 'negocios' => 'Negocios',
             default => ucfirst($effectivePlan),
         };
     }

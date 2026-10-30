@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viantryp — Informe de Auditoría Técnica (Etapa 1)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #ffffff !important; color: #111827 !important; padding: 0 !important; }
+      .card { break-inside: avoid; border: 1px solid #e5e7eb !important; box-shadow: none !important; }
+      #tab-hallazgos, #tab-arquitectura, #tab-recomendaciones { display: block !important; }
+    }
+    .badge-p0 { background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+    .badge-p1 { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+    .badge-p2 { background-color: #fef9c3; color: #854d0e; border: 1px solid #facc15; }
+    .badge-p3 { background-color: #e0f2fe; color: #075985; border: 1px solid #38bdf8; }
+    pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased font-sans">
+
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center font-bold text-teal-400">V</div>
+        <div>
+          <h1 class="text-sm font-semibold text-white tracking-wide">VIANTRYP AUDIT ENGINE</h1>
+          <p class="text-xs text-slate-400">Etapa 1: Arquitectura, Seguridad & Inventario</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-950/80 text-red-300 border border-red-800">
+          <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+          Estado: Lanzamiento Bloqueado
+        </span>
+        <button onclick="window.print()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 flex items-center gap-1.5 transition">
+          <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+          Exportar / Imprimir PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- Executive Hero Section -->
+    <section class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-xl">
+      <div class="absolute -right-16 -top-16 w-80 h-80 bg-teal-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+        <div class="space-y-3 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md text-xs font-semibold bg-teal-950/80 text-teal-300 border border-teal-800">
+            DIAGNÓSTICO TÉCNICO INICIAL
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Evaluación de Viantryp para Lanzamiento Web</h2>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Se ha realizado la inspección exhaustiva de código en modo solo lectura de la plataforma web, el backend Laravel 12 y el wrapper Capacitor Android en producción. La plataforma posee un editor interactivo maduro, pero existen <strong class="text-red-400 font-semibold">dos fallas críticas de severidad P0</strong> en la pasarela de pagos y en el aislamiento de clientes que impiden un lanzamiento comercial seguro en este momento.
+          </p>
+        </div>
+
+        <!-- Scorecard Widget -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-950/70 border border-slate-800 p-4 rounded-xl min-w-[320px]">
+          <div class="text-center p-3 rounded-lg bg-red-950/30 border border-red-900/50">
+            <div class="text-2xl font-black text-red-400">2</div>
+            <div class="text-xs font-semibold text-red-300">Críticos (P0)</div>
+            <div class="text-[10px] text-red-400/80">Bloquean Launch</div>
+          </div>
+          <div class="text-center p-3 rounded-lg bg-orange-950/30 border border-orange-900/50">
+            <div class="text-2xl font-black text-orange-400">2</div>
+            <div class="text-xs font-semibold text-orange-300">Altos (P1)</div>
+            <div class="text-[10px] text-orange-400/80">Riesgo Alto</div>
+          </div>
+          <div class="text-center p-3 rounded-lg bg-yellow-950/30 border border-yellow-900/50">
+            <div class="text-2xl font-black text-yellow-400">3</div>
+            <div class="text-xs font-semibold text-yellow-300">Medios (P2)</div>
+            <div class="text-[10px] text-yellow-400/80">Degradación UX</div>
+          </div>
+          <div class="text-center p-3 rounded-lg bg-sky-950/30 border border-sky-900/50">
+            <div class="text-2xl font-black text-sky-400">2</div>
+            <div class="text-xs font-semibold text-sky-300">Bajos (P3)</div>
+            <div class="text-[10px] text-sky-400/80">Mejoras / QA</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs & Search -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b border-slate-800 pb-4 no-print">
+      <div class="flex items-center gap-2 overflow-x-auto">
+        <button onclick="switchTab('hallazgos')" id="tab-btn-hallazgos" class="px-4 py-2 rounded-lg text-xs font-semibold bg-teal-500 text-slate-950 transition">
+          Hallazgos Valorados (9)
+        </button>
+        <button onclick="switchTab('arquitectura')" id="tab-btn-arquitectura" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          Mapa de Arquitectura Real
+        </button>
+        <button onclick="switchTab('recomendaciones')" id="tab-btn-recomendaciones" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          Plan de Corrección Inmediato
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <select id="severityFilter" onchange="filterFindings()" class="bg-slate-900 border border-slate-700 text-xs text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-teal-500">
+          <option value="all">Todas las Severidades</option>
+          <option value="P0">P0 — Crítico (Bloqueante)</option>
+          <option value="P1">P1 — Alto</option>
+          <option value="P2">P2 — Medio</option>
+          <option value="P3">P3 — Bajo</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- TAB 1: HALLAZGOS VALORADOS -->
+    <div id="tab-hallazgos" class="space-y-6">
+
+      <!-- Item 1: P0 Pagos -->
+      <div class="finding-card card bg-slate-900 border border-red-900/60 rounded-xl p-6 space-y-4 hover:border-red-600 transition" data-severity="P0">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded text-xs font-black bg-red-950 text-red-400 border border-red-700">P0 CRÍTICO</span>
+            <span class="text-xs text-slate-400 font-mono">SEC-01 · Pagos & Suscripciones</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span>Esfuerzo: <strong class="text-teal-400">Medio</strong></span>
+            <span>Impacto Comercial: <strong class="text-red-400">Pérdida Total de Ingresos</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Escalada Gratuita de Planes sin Verificación de Pago (Paddle Bypass)</h3>
+          <p class="text-xs text-slate-400 mt-1">Ubicación: <code class="text-teal-300 font-mono">app/Http/Controllers/ProfileController.php</code> (Líneas 285-359)</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Diagnóstico & Gravedad</span>
+            <p class="text-slate-300">
+              Cualquier usuario logueado puede enviar una solicitud POST a <code class="text-red-300">/profile/plan/paddle-sync</code> con el identificador de precio de Paddle del plan Corporativo. El servidor actualiza inmediatamente el plan del usuario a nivel ilimitado sin confirmar transacción, webhook ni saldo con Paddle.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Riesgo en Producción</span>
+            <p class="text-red-300 font-medium">
+              Si se lanza la plataforma hoy, cualquier usuario con conocimientos básicos de inspección web obtendrá cuentas de pago ilimitadas gratis. Imposibilidad de monetizar el SaaS.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Solución Recomendada</span>
+            <p class="text-teal-300">
+              Eliminar la actualización del plan desde el cliente. La activación de planes debe ocurrir <strong>exclusivamente vía Webhook verificado de Paddle</strong> (<code class="text-slate-300">subscription.created</code> / <code class="text-slate-300">transaction.completed</code>) validando la firma criptográfica.
+            </p>
+          </div>
+        </div>
+
+        <!-- Evidencia de Código -->
+        <div class="bg-slate-950 rounded-lg p-3 border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
+          <div class="text-[10px] text-slate-500 mb-1">// app/Http/Controllers/ProfileController.php Línea 296 y 346:</div>
+          <span class="text-slate-500">296:</span> if ($priceId) { foreach ($paddlePrices as $key => $prices) { if ($prices['monthly'] === $priceId) { $matchedPlan = $key; } } }<br>
+          <span class="text-slate-500">346:</span> <strong class="text-red-400">$user->update(['plan' => $matchedPlan, 'trial_ends_at' => null]);</strong> // ¡Sin verificar pago!
+        </div>
+      </div>
+
+      <!-- Item 2: P0 Multi-tenant -->
+      <div class="finding-card card bg-slate-900 border border-red-900/60 rounded-xl p-6 space-y-4 hover:border-red-600 transition" data-severity="P0">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded text-xs font-black bg-red-950 text-red-400 border border-red-700">P0 CRÍTICO</span>
+            <span class="text-xs text-slate-400 font-mono">SEC-02 · Privacidad & Multi-tenant</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span>Esfuerzo: <strong class="text-teal-400">Bajo</strong></span>
+            <span>Impacto: <strong class="text-red-400">Fuga Masiva de Datos / Violación GDPR</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Ausencia Total de Aislamiento de Clientes entre Agencias (IDOR Global)</h3>
+          <p class="text-xs text-slate-400 mt-1">Ubicación: <code class="text-teal-300 font-mono">app/Http/Controllers/PersonController.php</code> (Líneas 13-17, 47-51, 84-90) y <code class="text-teal-300 font-mono">app/Models/Person.php</code></p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Diagnóstico & Gravedad</span>
+            <p class="text-slate-300">
+              La tabla <code class="text-slate-200">persons</code> no tiene columna <code class="text-red-300">user_id</code>. El método <code class="text-red-300">Person::all()</code> entrega todos los contactos a cualquier usuario autenticado, y cualquiera puede modificar o borrar clientes de otros.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Riesgo en Producción</span>
+            <p class="text-red-300 font-medium">
+              Una agencia competidora registrada puede entrar a <code class="text-slate-300">/persons</code> y descargar o robar la lista completa de clientes de todas las agencias de viajes usuarias de Viantryp.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Solución Recomendada</span>
+            <p class="text-teal-300">
+              Crear migración para agregar <code class="text-slate-300">user_id</code> a la tabla <code class="text-slate-300">persons</code>. Aplicar un Global Scope o filtrar todas las consultas por <code class="text-slate-300">Auth::id()</code>. Proteger rutas con Policies.
+            </p>
+          </div>
+        </div>
+
+        <!-- Evidencia de Código -->
+        <div class="bg-slate-950 rounded-lg p-3 border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
+          <div class="text-[10px] text-slate-500 mb-1">// app/Http/Controllers/PersonController.php Línea 13:</div>
+          <span class="text-slate-500">13:</span> public function index() {<br>
+          <span class="text-slate-500">14:</span>     <strong class="text-red-400">$persons = Person::all();</strong> // ¡Devuelve todos los clientes de la plataforma!<br>
+          <span class="text-slate-500">15:</span>     return view('persons.index', compact('persons'));<br>
+          <span class="text-slate-500">16:</span> }
+        </div>
+      </div>
+
+      <!-- Item 3: P1 Almacenamiento -->
+      <div class="finding-card card bg-slate-900 border border-orange-900/60 rounded-xl p-6 space-y-4 hover:border-orange-600 transition" data-severity="P1">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded text-xs font-black bg-orange-950 text-orange-400 border border-orange-700">P1 ALTO</span>
+            <span class="text-xs text-slate-400 font-mono">SEC-03 · Almacenamiento & Confidencialidad</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span>Esfuerzo: <strong class="text-teal-400">Bajo</strong></span>
+            <span>Impacto: <strong class="text-orange-400">Exposición de Documentos Sensibles</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Archivos Adjuntos (Pasaportes, Vouchers) Expuestos en Directorio Público</h3>
+          <p class="text-xs text-slate-400 mt-1">Ubicación: <code class="text-teal-300 font-mono">app/Http/Controllers/TripController.php</code> (Líneas 824-827)</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Diagnóstico & Gravedad</span>
+            <p class="text-slate-300">
+              Aunque <code class="text-slate-300">TripDocumentController</code> verifica autorización, los archivos se suben al disco <code class="text-red-300">public</code> (<code class="text-slate-300">storage/app/public/documents/</code>). El servidor web los sirve directamente saltándose a Laravel.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Riesgo en Producción</span>
+            <p class="text-orange-300 font-medium">
+              Si una URL de documento se comparte o se indexa, queda accesible públicamente para cualquier persona sin necesidad de estar autenticada ni tener acceso al viaje.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Solución Recomendada</span>
+            <p class="text-teal-300">
+              Mover el almacenamiento de adjuntos de viajes al disco privado <code class="text-slate-300">local</code> (fuera de <code class="text-slate-300">public/storage</code>) y servirlos exclusivamente a través de la ruta protegida con streaming autenticado.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 4: P1 Keystore Android -->
+      <div class="finding-card card bg-slate-900 border border-orange-900/60 rounded-xl p-6 space-y-4 hover:border-orange-600 transition" data-severity="P1">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded text-xs font-black bg-orange-950 text-orange-400 border border-orange-700">P1 ALTO</span>
+            <span class="text-xs text-slate-400 font-mono">SEC-04 · Seguridad Móvil & Repositorio</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span>Esfuerzo: <strong class="text-teal-400">Bajo</strong></span>
+            <span>Impacto: <strong class="text-orange-400">Compromiso de Identidad en Google Play</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Clave de Firma Oficial de Android (Keystore) y Contraseñas Expuestas en Código</h3>
+          <p class="text-xs text-slate-400 mt-1">Ubicación: <code class="text-teal-300 font-mono">android/app/build.gradle</code> (Líneas 19-26) y archivos en raíz</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Diagnóstico & Gravedad</span>
+            <p class="text-slate-300">
+              El archivo <code class="text-red-300">viantryp-release-official.keystore</code> y <code class="text-red-300">voyager_key.pem</code> residen en la raíz del proyecto. Las contraseñas (<code class="text-red-300">viantryp2026</code>) están escritas en texto plano en <code class="text-slate-300">build.gradle</code>.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Riesgo en Producción</span>
+            <p class="text-orange-300 font-medium">
+              Si el repositorio se aloja en un servidor git externo o se comparte con colaboradores, terceros pueden firmar aplicaciones maliciosas suplantando la versión oficial de Google Play.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Solución Recomendada</span>
+            <p class="text-teal-300">
+              Extraer contraseñas a variables de entorno o archivo <code class="text-slate-300">keystore.properties</code> excluido del git. Mover los archivos de claves fuera del directorio público/web y asegurar el respaldo en almacenamiento seguro cifrado.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 5: P2 Assetlinks -->
+      <div class="finding-card card bg-slate-900 border border-yellow-900/60 rounded-xl p-6 space-y-4 hover:border-yellow-600 transition" data-severity="P2">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded text-xs font-black bg-yellow-950 text-yellow-400 border border-yellow-700">P2 MEDIO</span>
+            <span class="text-xs text-slate-400 font-mono">INT-01 · Deep Linking Android</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span>Esfuerzo: <strong class="text-teal-400">Muy Bajo</strong></span>
+            <span>Impacto: <strong class="text-yellow-400">Pérdida de Retención en App Móvil</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Incoherencia en AssetLinks (Package Name Erróneo) Rompe Deep Links en Android</h3>
+          <p class="text-xs text-slate-400 mt-1">Ubicación: <code class="text-teal-300 font-mono">routes/web.php</code> (Línea 91) vs <code class="text-teal-300 font-mono">capacitor.config.json</code></p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Diagnóstico & Gravedad</span>
+            <p class="text-slate-300">
+              La ruta <code class="text-slate-300">.well-known/assetlinks.json</code> declara el paquete <code class="text-red-300">com.viantryp.www.twa</code>, mientras que la app oficial de Google Play utiliza <code class="text-teal-300">com.viantryp.app</code>.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Riesgo en Producción</span>
+            <p class="text-yellow-300 font-medium">
+              Android no puede verificar la asociación de dominio. Cuando los usuarios hacen clic en itinerarios compartidos o emails en el móvil, siempre se abren en el navegador externo en lugar de abrir la app instalada.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Solución Recomendada</span>
+            <p class="text-teal-300">
+              Actualizar <code class="text-slate-300">routes/web.php</code> y el archivo estático en <code class="text-slate-300">public/.well-known/assetlinks.json</code> para reflejar <code class="text-slate-300">com.viantryp.app</code> con la huella SHA-256 oficial del keystore de release.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 6: P2 Validación Login -->
+      <div class="finding-card card bg-slate-900 border border-yellow-900/60 rounded-xl p-6 space-y-4 hover:border-yellow-600 transition" data-severity="P2">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded text-xs font-black bg-yellow-950 text-yellow-400 border border-yellow-700">P2 MEDIO</span>
+            <span class="text-xs text-slate-400 font-mono">UX-01 · Autenticación</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span>Esfuerzo: <strong class="text-teal-400">Muy Bajo</strong></span>
+            <span>Impacto: <strong class="text-yellow-400">Bloqueo Inesperado de Usuarios Legítimos</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Validación de Registros DNS en Formulario de Login Bloquea Accesos</h3>
+          <p class="text-xs text-slate-400 mt-1">Ubicación: <code class="text-teal-300 font-mono">app/Http/Controllers/Auth/LoginController.php</code> (Línea 28)</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Diagnóstico & Gravedad</span>
+            <p class="text-slate-300">
+              En el método <code class="text-slate-300">login()</code> se aplica la regla de validación <code class="text-red-300">email:rfc,dns</code>. La validación DNS solo debe usarse en registro, nunca en login.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Riesgo en Producción</span>
+            <p class="text-yellow-300 font-medium">
+              Si un servidor DNS local o el proveedor del usuario sufre latencia temporal, el login falla antes de verificar la contraseña, impidiendo que el cliente use la plataforma que pagó.
+            </p>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] block mb-1">Solución Recomendada</span>
+            <p class="text-teal-300">
+              Modificar la regla en <code class="text-slate-300">LoginController</code> a <code class="text-slate-300">'email' => 'required|string|email'</code>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: ARQUITECTURA DETALLADA -->
+    <div id="tab-arquitectura" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+        <h3 class="text-lg font-bold text-white">Análisis de la Arquitectura Multiplataforma</h3>
+        <p class="text-slate-300 text-xs leading-relaxed">
+          La inspección del proyecto confirma que Viantryp opera mediante una arquitectura unificada. Comprender cómo interactúan las tres plataformas (Web, PWA y Android) es crucial para evitar regresiones en la versión ya aprobada de Google Play.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-teal-400">1. Plataforma Web</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-950 text-emerald-300 border border-emerald-800">Prioridad 1</span>
+            </div>
+            <p class="text-xs text-slate-300">
+              Desarrollada con vistas Blade, Tailwind CSS v4, Vite 7 y dos scripts monolíticos de frontend: <code class="text-slate-200">pro-editor.js</code> (248 KB) y <code class="text-slate-200">pro-viewer.js</code> (189 KB). Renderizado server-side con manipulación DOM en cliente.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-sky-400">2. PWA (Web App)</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-sky-950 text-sky-300 border border-sky-800">Parcialmente Lista</span>
+            </div>
+            <p class="text-xs text-slate-300">
+              Service Worker <code class="text-slate-200">sw.js</code> con versión <code class="text-slate-200">viantryp-v6</code>. Aplica Network-First para contenido dinámico y caché para assets estáticos. No permite visualización completa ni guardado de itinerarios sin conexión a internet.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-purple-400">3. Android (Google Play)</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-purple-950 text-purple-300 border border-purple-800">Publicada v1.0.10</span>
+            </div>
+            <p class="text-xs text-slate-300">
+              Generada con Capacitor 8. Carga remotamente <code class="text-slate-200">https://viantryp.com</code>. Inyecta autenticación nativa de Google mediante el plugin <code class="text-slate-200">@codetrix-studio/capacitor-google-auth</code> y valida tokens en el backend.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-lg bg-red-950/20 border border-red-900/50 text-xs text-red-200 space-y-1">
+          <strong class="text-red-400 font-semibold block">Regla de Oro para el Despliegue:</strong>
+          Dado que la aplicación Android carga directamente el frontend de la web en producción, **cualquier error tipográfico, ruptura de script JS o fallo en rutas web romperá de inmediato la experiencia de los usuarios en la app instalada de Android**.
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PLAN DE CORRECCIÓN -->
+    <div id="tab-recomendaciones" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+        <h3 class="text-lg font-bold text-white">Plan de Corrección Inmediato (Pre-Lanzamiento Web)</h3>
+        <p class="text-slate-300 text-xs">
+          Acciones prioritarias requeridas para subsanar los riesgos detectados en esta Etapa 1 antes de abrir la plataforma comercialmente:
+        </p>
+
+        <div class="space-y-3">
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg flex items-start gap-4">
+            <div class="w-7 h-7 rounded-full bg-red-500/20 border border-red-500 text-red-400 flex items-center justify-center font-bold text-xs shrink-0">1</div>
+            <div class="space-y-1 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-white">Blindar la Activación de Suscripciones</span>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-red-950 text-red-400 border border-red-800">P0</span>
+              </div>
+              <p class="text-slate-300">
+                Eliminar la lógica de auto-asignación en <code class="text-slate-200">syncPaddlePlan</code>. Configurar y documentar el Webhook de Paddle verificado criptográficamente para que solo pagos reales activen planes.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg flex items-start gap-4">
+            <div class="w-7 h-7 rounded-full bg-red-500/20 border border-red-500 text-red-400 flex items-center justify-center font-bold text-xs shrink-0">2</div>
+            <div class="space-y-1 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-white">Aislar la Tabla de Personas por Usuario / Agencia</span>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-red-950 text-red-400 border border-red-800">P0</span>
+              </div>
+              <p class="text-slate-300">
+                Añadir migración <code class="text-slate-200">user_id</code> en tabla <code class="text-slate-200">persons</code> y restringir todas las consultas en <code class="text-slate-200">PersonController</code> al usuario en sesión.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg flex items-start gap-4">
+            <div class="w-7 h-7 rounded-full bg-orange-500/20 border border-orange-500 text-orange-400 flex items-center justify-center font-bold text-xs shrink-0">3</div>
+            <div class="space-y-1 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-white">Mover Documentos Privados al Disco Seguro</span>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-orange-950 text-orange-400 border border-orange-800">P1</span>
+              </div>
+              <p class="text-slate-300">
+                Cambiar <code class="text-slate-200">Storage::disk('public')</code> a <code class="text-slate-200">Storage::disk('local')</code> para que los adjuntos solo se sirvan a través del controlador con comprobación de permisos.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg flex items-start gap-4">
+            <div class="w-7 h-7 rounded-full bg-yellow-500/20 border border-yellow-500 text-yellow-400 flex items-center justify-center font-bold text-xs shrink-0">4</div>
+            <div class="space-y-1 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-white">Corregir Validación DNS en Login y Sincronizar AssetLinks</span>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-yellow-950 text-yellow-400 border border-yellow-800">P2</span>
+              </div>
+              <p class="text-slate-300">
+                Eliminar regla DNS en <code class="text-slate-200">LoginController</code> y actualizar <code class="text-slate-200">assetlinks.json</code> a <code class="text-slate-200">com.viantryp.app</code> para activar deep links en Android.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function switchTab(tabName) {
+      document.getElementById('tab-hallazgos').classList.add('hidden');
+      document.getElementById('tab-arquitectura').classList.add('hidden');
+      document.getElementById('tab-recomendaciones').classList.add('hidden');
+
+      document.getElementById('tab-btn-hallazgos').className = "px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition";
+      document.getElementById('tab-btn-arquitectura').className = "px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition";
+      document.getElementById('tab-btn-recomendaciones').className = "px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition";
+
+      document.getElementById('tab-' + tabName).classList.remove('hidden');
+      document.getElementById('tab-btn-' + tabName).className = "px-4 py-2 rounded-lg text-xs font-semibold bg-teal-500 text-slate-950 transition";
+    }
+
+    function filterFindings() {
+      const selected = document.getElementById('severityFilter').value;
+      const cards = document.querySelectorAll('.finding-card');
+      cards.forEach(card => {
+        if (selected === 'all' || card.getAttribute('data-severity') === selected) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+

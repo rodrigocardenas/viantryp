@@ -74,12 +74,12 @@ class TripAiController extends Controller
                     }
 
                     $originalName = $file->getClientOriginalName();
-                    $extension = $file->getClientOriginalExtension() ?: 'bin';
+                    $extension = $file->extension() ?: $file->getClientOriginalExtension() ?: 'bin';
                     $filename = Str::random(40) . '.' . $extension;
-                    $path = $file->storeAs('trip-documents', $filename, 'public');
+                    $path = $file->storeAs('trip-documents', $filename, 'local');
 
                     if ($path) {
-                        $fullDiskPath = Storage::disk('public')->path($path);
+                        $fullDiskPath = Storage::disk('local')->path($path);
 
                         // Create TripDocument record
                         $doc = TripDocument::create([
@@ -99,7 +99,7 @@ class TripAiController extends Controller
                             'original_name' => $originalName,
                             'filename' => $filename,
                             'path' => $fullDiskPath,
-                            'url' => asset('storage/' . $path),
+                            'url' => route('documents.download', $doc->id),
                             'mime_type' => $file->getMimeType(),
                             'size' => $file->getSize()
                         ];

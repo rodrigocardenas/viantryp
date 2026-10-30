@@ -60,8 +60,6 @@ class TripAiService
             // Order candidate models by stability, high multimodal capacity and fast response times
             $candidateModels = array_unique([
                 'gemini-flash-lite-latest',
-                'gemini-3.5-flash-lite',
-                'gemini-3.5-flash',
                 'gemini-3.1-flash-lite',
                 $this->model,
             ]);
@@ -76,7 +74,6 @@ class TripAiService
                         ->withOptions([
                             'curl' => [
                                 CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
-                                CURLOPT_SSL_VERIFYPEER => false
                             ]
                         ])
                         ->withHeaders(['Content-Type' => 'application/json'])
