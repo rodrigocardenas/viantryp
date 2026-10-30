@@ -248,7 +248,7 @@
       border-radius: 10px;
       padding: 0 44px 0 14px;
       font-size: 15px;
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', 'Barlow', sans-serif;
       color: var(--dark);
       background: var(--white);
       outline: none;
@@ -269,22 +269,23 @@
       right: 13px;
       top: 50%;
       transform: translateY(-50%);
-      color: #b0bec5;
+      color: #02b5cb;
+      background: transparent;
       display: flex;
     }
 
     .toggle-pw {
-      background: none;
+      background: transparent;
       border: none;
       cursor: pointer;
       padding: 0;
       display: flex;
-      color: #b0bec5;
+      color: #02b5cb;
       transition: color 0.2s;
     }
 
     .toggle-pw:hover {
-      color: var(--teal);
+      color: var(--teal2);
     }
 
     /* error styling */
@@ -365,7 +366,7 @@
       border-radius: 50px;
       font-size: 16px;
       font-weight: 700;
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', 'Barlow', sans-serif;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -412,7 +413,7 @@
       border-radius: 50px;
       font-size: 15px;
       font-weight: 600;
-      font-family: 'Barlow', sans-serif;
+      font-family: 'Manrope', 'Barlow', sans-serif;
       color: var(--dark);
       cursor: pointer;
       display: flex;
