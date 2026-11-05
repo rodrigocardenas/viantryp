@@ -3143,11 +3143,8 @@
 
     <div class="hero-container">
       <div class="hero-text-side">
-        <h1 class="reveal-left d1">Diseña tus viajes<br>en cuestión<br>de <span class="cyan-highlight">minutos</span>
-        </h1>
-        <p class="reveal-left d2">Organiza rutas, vuelos y estancias en una plataforma simple e intuitiva.<span
-            class="hero-subtext-desktop"> Ya sea para tu próximo viaje o para escalar tu negocio, Viantryp es donde tus
-            itinerarios cobran vida.</span></p>
+        <h1 class="reveal-left d1">Crea, organiza y comparte tu <span class="cyan-highlight">viaje</span></h1>
+        <p class="reveal-left d2">Olvídate del caos de información y de perder tus reservas: Simple, agil y fácil. Todo tu viaje en un solo lugar</p>
         <div class="hero-actions reveal-left d3">
           @auth
             <a href="{{ route('trips.index') }}" class="btn-pill-primary">Ir a mis viajes →</a>
