@@ -45,6 +45,11 @@
     </script>
     <style>
         /* CRITICAL iOS ONLY STYLES (Safe Areas & WKWebView fixes - Does not affect Android or Web) */
+        html.is-viantryp-ios #viantrypInlineCtaBtn,
+        html.is-viantryp-ios #viantrypInlineModalDesc,
+        html.is-viantryp-ios button[onclick*="openProUpgradeInlineModal"] {
+            display: none !important;
+        }
         @media (max-width: 768px) {
             html.is-viantryp-ios {
                 -webkit-text-size-adjust: 100%;

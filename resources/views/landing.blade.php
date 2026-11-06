@@ -20,6 +20,17 @@
 
       var isAppMode = isCapacitor || hasAppParam || (isStandalone && !hasWebParam);
 
+      // Exclusivo iOS (Apple 3.1.1 / 3.1.3(b)): la landing contiene precios y CTAs de compra,
+      // por lo que en la app nativa de iOS se envía directamente al inicio de sesión.
+      var isIosApp = isCapacitor && (
+        (window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ||
+        /iPad|iPhone|iPod/.test(navigator.userAgent)
+      );
+      if (isIosApp) {
+        window.location.replace('/login?app=1');
+        return;
+      }
+
       if (isAppMode) {
         document.documentElement.classList.add('is-viantryp-app');
         if (document.body) document.body.classList.add('is-viantryp-app');

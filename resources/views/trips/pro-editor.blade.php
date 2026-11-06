@@ -286,6 +286,12 @@
     }
 
     /* Exclusivo iOS: Safe areas y prevención de auto-zoom en WKWebView (sin afectar Android ni Web) */
+    /* Exclusivo iOS (Apple 3.1.3(b)): sin llamados a la acción de compra dentro de la app */
+    html.is-viantryp-ios #viantrypInlineCtaBtn,
+    html.is-viantryp-ios #viantrypInlineModalDesc,
+    html.is-viantryp-ios button[onclick*="openProUpgradeInlineModal"] {
+      display: none !important;
+    }
     @media (max-width: 768px) {
       html.is-viantryp-ios {
         -webkit-text-size-adjust: 100%;
