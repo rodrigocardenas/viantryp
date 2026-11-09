@@ -508,9 +508,6 @@
       height: calc(60px + env(safe-area-inset-top, 0px)) !important;
       min-height: calc(60px + env(safe-area-inset-top, 0px)) !important;
     }
-    html.is-viantryp-ios .nav-right .nav-back {
-      display: none !important;
-    }
     html.is-viantryp-ios .btn-apple {
       display: flex !important;
       margin-bottom: 0 !important;

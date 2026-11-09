@@ -467,7 +467,7 @@ class GoogleAuthController extends Controller
         $request->session()->regenerateToken();
 
         if ($request->has('app') || $request->cookie('viantryp_app_mode') === '1') {
-            return redirect()->route('login', ['app' => '1'])->with('success', 'Has cerrado sesión exitosamente.');
+            return redirect()->route('home', ['app' => '1'])->with('success', 'Has cerrado sesión exitosamente.');
         }
 
         return redirect()->route('login')->with('success', 'Has cerrado sesión exitosamente.');

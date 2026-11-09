@@ -499,9 +499,6 @@
       height: calc(60px + env(safe-area-inset-top, 0px)) !important;
       min-height: calc(60px + env(safe-area-inset-top, 0px)) !important;
     }
-    html.is-viantryp-ios .nav-right .nav-back {
-      display: none !important;
-    }
     html.is-viantryp-ios main {
       padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
     }

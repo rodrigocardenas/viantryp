@@ -2,6 +2,8 @@
 <html lang="es">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <script>
     (function () {
       var isCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
@@ -10,36 +12,46 @@
       var urlParams = new URLSearchParams(window.location.search);
       var hasAppParam = urlParams.get('app') === '1' || urlParams.get('mode') === 'app';
       var hasWebParam = urlParams.get('web') === '1' || urlParams.get('mode') === 'web';
+      var storedIos = false;
+      try { storedIos = localStorage.getItem('viantryp_ios_app') === '1'; } catch (e) { }
 
       // Si estamos en un navegador web normal (no Capacitor ni Standalone ni ?app=1), limpiamos cualquier residuo antiguo
-      if (hasWebParam || (!isCapacitor && !isStandalone && !hasAppParam)) {
-        try { localStorage.removeItem('viantryp_app_mode'); } catch (e) { }
+      if (hasWebParam || (!isCapacitor && !isStandalone && !hasAppParam && !storedIos)) {
+        try { localStorage.removeItem('viantryp_app_mode'); localStorage.removeItem('viantryp_ios_app'); } catch (e) { }
       } else if (hasAppParam || isCapacitor) {
         try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
       }
 
-      var isAppMode = isCapacitor || hasAppParam || (isStandalone && !hasWebParam);
-
-      // Exclusivo iOS (Apple 3.1.1 / 3.1.3(b)): la landing contiene precios y CTAs de compra,
-      // por lo que en la app nativa de iOS se envía directamente al inicio de sesión.
-      var isIosApp = isCapacitor && (
+      var isIosApp = (isCapacitor && (
         (window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ||
         /iPad|iPhone|iPod/.test(navigator.userAgent)
-      );
+      )) || urlParams.get('ios') === '1' || (storedIos && /iPad|iPhone|iPod/.test(navigator.userAgent) && !hasWebParam);
+
       if (isIosApp) {
-        window.location.replace('/login?app=1');
-        return;
+        try { localStorage.setItem('viantryp_ios_app', '1'); localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
       }
+
+      var isAppMode = isCapacitor || hasAppParam || isIosApp || (isStandalone && !hasWebParam);
 
       if (isAppMode) {
         document.documentElement.classList.add('is-viantryp-app');
         if (document.body) document.body.classList.add('is-viantryp-app');
         else document.addEventListener('DOMContentLoaded', function () { if (document.body) document.body.classList.add('is-viantryp-app'); });
       }
+
+      if (isIosApp) {
+        document.documentElement.classList.add('is-viantryp-app', 'is-viantryp-ios');
+        if (document.body) document.body.classList.add('is-viantryp-app', 'is-viantryp-ios');
+        else document.addEventListener('DOMContentLoaded', function () { if (document.body) document.body.classList.add('is-viantryp-app', 'is-viantryp-ios'); });
+      }
     })();
   </script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Exclusivo iOS: Mostrar únicamente el carrusel de 4 imágenes de portada y ocultar la landing web de fondo */
+    html.is-viantryp-ios body > *:not(#onboarding-wrapper):not(script):not(style):not(link) {
+      display: none !important;
+    }
+  </style>
   <title>Viantryp — Crea y Presenta Itinerarios de Viaje Interactivos</title>
   <meta name="description" content="Diseña, gestiona y comparte propuestas e itinerarios de viaje interactivos con mapas, vuelos automáticos, hoteles y asistente de IA para viajeros y agencias.">
   <link rel="canonical" href="{{ url('/') }}">

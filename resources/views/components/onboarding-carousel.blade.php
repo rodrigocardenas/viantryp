@@ -337,8 +337,9 @@
                             (window.navigator && window.navigator.standalone === true);
     const isNativeApp = Boolean(window.isNativeApp || (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()));
     const isAppParam = urlParams.has('app') || urlParams.has('pwa') || forceShow;
+    const isAppClass = document.documentElement.classList.contains('is-viantryp-app') || document.documentElement.classList.contains('is-viantryp-ios');
 
-    const isAppEnvironment = (isNativeApp || isAppParam || (isStandalonePWA && !urlParams.has('web'))) && (window.innerWidth <= 768);
+    const isAppEnvironment = (isNativeApp || isAppParam || isAppClass || (isStandalonePWA && !urlParams.has('web'))) && (window.innerWidth <= 768);
 
     // The Onboarding Carousel is ALWAYS displayed for unauthenticated users in APP mode!
     if (isAppEnvironment) {
