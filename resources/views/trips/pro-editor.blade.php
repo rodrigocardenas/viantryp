@@ -2,6 +2,8 @@
 <html lang="es">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <script>
     (function () {
       var isCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
@@ -10,19 +12,26 @@
       var urlParams = new URLSearchParams(window.location.search);
       var hasAppParam = urlParams.get('app') === '1' || urlParams.get('mode') === 'app';
       var hasWebParam = urlParams.get('web') === '1' || urlParams.get('mode') === 'web';
+      var storedIos = false;
+      try { storedIos = localStorage.getItem('viantryp_ios_app') === '1'; } catch (e) { }
 
       // Si estamos en un navegador web normal (no Capacitor ni Standalone ni ?app=1), limpiamos cualquier residuo antiguo
-      if (hasWebParam || (!isCapacitor && !isStandalone && !hasAppParam)) {
-        try { localStorage.removeItem('viantryp_app_mode'); } catch (e) { }
+      if (hasWebParam || (!isCapacitor && !isStandalone && !hasAppParam && !storedIos)) {
+        try { localStorage.removeItem('viantryp_app_mode'); localStorage.removeItem('viantryp_ios_app'); } catch (e) { }
       } else if (hasAppParam || isCapacitor) {
         try { localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
       }
 
-      var isAppMode = isCapacitor || hasAppParam || (isStandalone && !hasWebParam);
       var isIosApp = (isCapacitor && (
         (window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ||
         /iPad|iPhone|iPod/.test(navigator.userAgent)
-      )) || urlParams.get('ios') === '1';
+      )) || urlParams.get('ios') === '1' || (storedIos && /iPad|iPhone|iPod/.test(navigator.userAgent) && !hasWebParam);
+
+      if (isIosApp) {
+        try { localStorage.setItem('viantryp_ios_app', '1'); localStorage.setItem('viantryp_app_mode', '1'); } catch (e) { }
+      }
+
+      var isAppMode = isCapacitor || hasAppParam || isIosApp || (isStandalone && !hasWebParam);
 
       if (isAppMode) {
         document.documentElement.classList.add('is-viantryp-app');
@@ -32,18 +41,13 @@
 
       if (isIosApp) {
         document.documentElement.classList.add('is-viantryp-app', 'is-viantryp-ios');
-        document.addEventListener('DOMContentLoaded', function () {
+        if (document.body) document.body.classList.add('is-viantryp-app', 'is-viantryp-ios');
+        else document.addEventListener('DOMContentLoaded', function () {
           if (document.body) document.body.classList.add('is-viantryp-app', 'is-viantryp-ios');
-          var vp = document.querySelector('meta[name="viewport"]');
-          if (vp && vp.content.indexOf('viewport-fit') === -1) {
-            vp.setAttribute('content', vp.content + ', viewport-fit=cover');
-          }
         });
       }
     })();
   </script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="google-places-api-key"
     content="{{ config('services.google.places_api_key', env('GOOGLE_PLACES_API_KEY')) }}">
@@ -292,7 +296,7 @@
     html.is-viantryp-ios button[onclick*="openProUpgradeInlineModal"] {
       display: none !important;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 991px) {
       html.is-viantryp-ios {
         -webkit-text-size-adjust: 100%;
         -webkit-tap-highlight-color: transparent;
@@ -301,6 +305,26 @@
       body.is-viantryp-ios .topbar {
         padding-top: env(safe-area-inset-top, 0px) !important;
         height: calc(56px + env(safe-area-inset-top, 0px)) !important;
+        min-height: calc(56px + env(safe-area-inset-top, 0px)) !important;
+      }
+      html.is-viantryp-ios .pro-preview-header-bar,
+      body.is-viantryp-ios .pro-preview-header-bar {
+        padding-top: env(safe-area-inset-top, 0px) !important;
+        height: calc(48px + env(safe-area-inset-top, 0px)) !important;
+        min-height: calc(48px + env(safe-area-inset-top, 0px)) !important;
+      }
+      html.is-viantryp-ios .modal-header,
+      body.is-viantryp-ios .modal-header {
+        padding-top: calc(16px + env(safe-area-inset-top, 0px)) !important;
+      }
+      html.is-viantryp-ios .modal-footer,
+      body.is-viantryp-ios .modal-footer {
+        padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      html.is-viantryp-ios .unsplash-overlay,
+      body.is-viantryp-ios .unsplash-overlay {
+        padding-top: calc(12px + env(safe-area-inset-top, 0px)) !important;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
       }
       html.is-viantryp-ios input:not([type="checkbox"]):not([type="radio"]),
       html.is-viantryp-ios select,

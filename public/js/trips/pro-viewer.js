@@ -1161,7 +1161,22 @@ function buildPreviewHTML(data) {
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script>
+(function() {
+  try {
+    var isTop = (window.self === window.top);
+    var isCap = Boolean((window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) || (window.parent && window.parent !== window && window.parent.Capacitor && window.parent.Capacitor.isNativePlatform && window.parent.Capacitor.isNativePlatform()));
+    var storedIos = false;
+    try { storedIos = localStorage.getItem('viantryp_ios_app') === '1' || (window.parent && window.parent.localStorage && window.parent.localStorage.getItem('viantryp_ios_app') === '1'); } catch(e){}
+    var isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && (isCap || storedIos || new URLSearchParams(window.location.search).get('ios') === '1');
+    if (isIos) {
+      document.documentElement.classList.add('is-viantryp-ios');
+      if (isTop) document.documentElement.classList.add('is-viantryp-ios-top');
+    }
+  } catch (e) {}
+})();
+</script>
 <base href="${origin || window.location.origin}/">
 <title>Vista Previa | ${esc(title)}</title>
 <link rel="icon" type="image/png" href="${origin || window.location.origin}/favicon.png">
@@ -1725,6 +1740,25 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
         border-color: var(--accent) !important;
         color: #ffffff !important;
         box-shadow: 0 4px 12px var(--accent-light);
+    }
+
+    /* Exclusivo iOS: Safe Area para Isla Dinámica / Notch cuando la vista previa o sus modales están abiertos */
+    html.is-viantryp-ios-top .pv-topbar,
+    html.is-viantryp-ios-top .public-preview-header {
+        padding-top: env(safe-area-inset-top, 0px) !important;
+        height: calc(52px + env(safe-area-inset-top, 0px)) !important;
+        min-height: calc(52px + env(safe-area-inset-top, 0px)) !important;
+    }
+    html.is-viantryp-ios .pv-lb-topbar {
+        padding-top: calc(18px + env(safe-area-inset-top, 0px)) !important;
+    }
+    html.is-viantryp-ios .pv-lb-bottom {
+        padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    html.is-viantryp-ios #viantrypMapModal,
+    html.is-viantryp-ios #viantrypCalendarModal {
+        padding-top: env(safe-area-inset-top, 0px) !important;
+        padding-bottom: env(safe-area-inset-bottom, 0px) !important;
     }
 </style>
 </head>

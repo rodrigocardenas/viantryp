@@ -994,6 +994,33 @@
             display: none !important;
         }
     }
+
+    /* Exclusivo iOS: Safe Area para Isla Dinámica / Reloj superior y Barra Inferior en Tryp IA */
+    html.is-viantryp-ios .trypai-header,
+    body.is-viantryp-ios .trypai-header {
+        padding-top: calc(14px + env(safe-area-inset-top, 0px)) !important;
+    }
+
+    html.is-viantryp-ios .trypai-disclaimer,
+    body.is-viantryp-ios .trypai-disclaimer {
+        padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    html.is-viantryp-ios #viantryp-copilot-container,
+    body.is-viantryp-ios #viantryp-copilot-container {
+        bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    html.is-viantryp-ios .ingestion-modal-backdrop,
+    body.is-viantryp-ios .ingestion-modal-backdrop {
+        padding-top: calc(16px + env(safe-area-inset-top, 0px)) !important;
+        padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    html.is-viantryp-ios .ingestion-modal-card,
+    body.is-viantryp-ios .ingestion-modal-card {
+        max-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 32px) !important;
+    }
 </style>
 
 <script>

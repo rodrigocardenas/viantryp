@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <script>
     (function() {
         var isCapacitor = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
@@ -9,21 +12,28 @@
         var urlParams = new URLSearchParams(window.location.search);
         var hasAppParam = urlParams.get('app') === '1' || urlParams.get('mode') === 'app';
         var hasWebParam = urlParams.get('web') === '1' || urlParams.get('mode') === 'web';
+        var storedIos = false;
+        try { storedIos = localStorage.getItem('viantryp_ios_app') === '1'; } catch(e){}
 
         // Si estamos en un navegador web normal (no Capacitor ni Standalone ni ?app=1), limpiamos cualquier residuo antiguo
-        if (hasWebParam || (!isCapacitor && !isStandalone && !hasAppParam)) {
-            try { localStorage.removeItem('viantryp_app_mode'); } catch(e){}
+        if (hasWebParam || (!isCapacitor && !isStandalone && !hasAppParam && !storedIos)) {
+            try { localStorage.removeItem('viantryp_app_mode'); localStorage.removeItem('viantryp_ios_app'); } catch(e){}
             try { document.cookie = 'viantryp_app_mode=; path=/; max-age=0; SameSite=Lax'; } catch(e){}
         } else if (hasAppParam || isCapacitor) {
             try { localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
             try { document.cookie = 'viantryp_app_mode=1; path=/; max-age=31536000; SameSite=Lax'; } catch(e){}
         }
 
-        var isAppMode = isCapacitor || hasAppParam || (isStandalone && !hasWebParam);
         var isIosApp = (isCapacitor && (
             (window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ||
             /iPad|iPhone|iPod/.test(navigator.userAgent)
-        )) || urlParams.get('ios') === '1';
+        )) || urlParams.get('ios') === '1' || (storedIos && /iPad|iPhone|iPod/.test(navigator.userAgent) && !hasWebParam);
+
+        if (isIosApp) {
+            try { localStorage.setItem('viantryp_ios_app', '1'); localStorage.setItem('viantryp_app_mode', '1'); } catch(e){}
+        }
+
+        var isAppMode = isCapacitor || hasAppParam || isIosApp || (isStandalone && !hasWebParam);
 
         if (isAppMode) {
             document.documentElement.classList.add('is-viantryp-app');
@@ -33,47 +43,14 @@
 
         if (isIosApp) {
             document.documentElement.classList.add('is-viantryp-app', 'is-viantryp-ios');
-            document.addEventListener('DOMContentLoaded', function() {
+            if (document.body) document.body.classList.add('is-viantryp-app', 'is-viantryp-ios');
+            else document.addEventListener('DOMContentLoaded', function() {
                 if (document.body) document.body.classList.add('is-viantryp-app', 'is-viantryp-ios');
-                var vp = document.querySelector('meta[name="viewport"]');
-                if (vp && vp.content.indexOf('viewport-fit') === -1) {
-                    vp.setAttribute('content', vp.content + ', viewport-fit=cover');
-                }
             });
         }
     })();
     </script>
     <style>
-        /* CRITICAL iOS ONLY STYLES (Safe Areas & WKWebView fixes - Does not affect Android or Web) */
-        html.is-viantryp-ios #viantrypInlineCtaBtn,
-        html.is-viantryp-ios #viantrypInlineModalDesc,
-        html.is-viantryp-ios button[onclick*="openProUpgradeInlineModal"] {
-            display: none !important;
-        }
-        @media (max-width: 768px) {
-            html.is-viantryp-ios {
-                -webkit-text-size-adjust: 100%;
-                -webkit-tap-highlight-color: transparent;
-            }
-            html.is-viantryp-ios .dashboard-topbar,
-            body.is-viantryp-ios .dashboard-topbar {
-                padding-top: env(safe-area-inset-top, 0px) !important;
-                height: calc(60px + env(safe-area-inset-top, 0px)) !important;
-            }
-            html.is-viantryp-ios body,
-            body.is-viantryp-ios {
-                padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px)) !important;
-            }
-            html.is-viantryp-ios .page-wrapper,
-            body.is-viantryp-ios .page-wrapper {
-                padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
-            }
-            html.is-viantryp-ios input:not([type="checkbox"]):not([type="radio"]),
-            html.is-viantryp-ios select,
-            html.is-viantryp-ios textarea {
-                font-size: max(16px, 1em) !important;
-            }
-        }
         /* CRITICAL APP STYLES - Prevents FOUC (Flash of Unstyled Web Content) in App mode */
         @media (max-width: 768px) {
             html.is-viantryp-app .viantryp-bottom-nav { display: block !important; }
@@ -152,6 +129,39 @@
                 width: 100% !important;
             }
         }
+        /* CRITICAL iOS ONLY STYLES (Safe Areas & WKWebView fixes - Placed AFTER .is-viantryp-app so safe-area padding always wins at t=0ms) */
+        html.is-viantryp-ios #viantrypInlineCtaBtn,
+        html.is-viantryp-ios #viantrypInlineModalDesc,
+        html.is-viantryp-ios button[onclick*="openProUpgradeInlineModal"] {
+            display: none !important;
+        }
+        @media (max-width: 768px) {
+            html.is-viantryp-ios {
+                -webkit-text-size-adjust: 100%;
+                -webkit-tap-highlight-color: transparent;
+            }
+            html.is-viantryp-ios .dashboard-topbar,
+            body.is-viantryp-ios .dashboard-topbar,
+            html.is-viantryp-ios .topbar,
+            body.is-viantryp-ios .topbar {
+                padding: env(safe-area-inset-top, 0px) 18px 0 18px !important;
+                height: calc(60px + env(safe-area-inset-top, 0px)) !important;
+                min-height: calc(60px + env(safe-area-inset-top, 0px)) !important;
+            }
+            html.is-viantryp-ios body,
+            body.is-viantryp-ios {
+                padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px)) !important;
+            }
+            html.is-viantryp-ios .page-wrapper,
+            body.is-viantryp-ios .page-wrapper {
+                padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+            }
+            html.is-viantryp-ios input:not([type="checkbox"]):not([type="radio"]),
+            html.is-viantryp-ios select,
+            html.is-viantryp-ios textarea {
+                font-size: max(16px, 1em) !important;
+            }
+        }
         @media (min-width: 769px) {
             .viantryp-bottom-nav,
             html.is-viantryp-app .viantryp-bottom-nav {
@@ -215,9 +225,6 @@
             }
         }
     </style>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="google-places-api-key" content="{{ config('services.google.places_api_key') }}">
     <title>@yield('title', 'Viantryp - Gestión de Viajes')</title>

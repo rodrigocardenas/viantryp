@@ -4086,8 +4086,98 @@
             });
         }
     </script>
+    <!-- FULLSCREEN PRO PREVIEW MODAL (MIS VIAJES) -->
+    <style>
+        .pro-preview-overlay {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999999;
+            background: #0f172a;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .pro-preview-header-bar {
+            height: 48px;
+            background: #0d1e2e;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        .pro-preview-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            font-size: 13.5px;
+            font-weight: 700;
+            font-family: 'Poppins', 'Manrope', sans-serif;
+        }
+        .pro-preview-close-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            background: #ef4444;
+            border: 1px solid #ef4444;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', 'Manrope', sans-serif;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
+        }
+        .pro-preview-iframe {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #ffffff;
+        }
+        html.is-viantryp-ios .pro-preview-header-bar,
+        body.is-viantryp-ios .pro-preview-header-bar {
+            padding-top: env(safe-area-inset-top, 0px) !important;
+            height: calc(48px + env(safe-area-inset-top, 0px)) !important;
+            min-height: calc(48px + env(safe-area-inset-top, 0px)) !important;
+        }
+    </style>
+    <div id="proPreviewModal" class="pro-preview-overlay" style="display:none;">
+        <div class="pro-preview-header-bar">
+            <div class="pro-preview-bar-left">
+                <span class="pro-preview-badge"><i class="fa-solid fa-eye"></i> Vista Previa</span>
+            </div>
+            <div class="pro-preview-bar-actions">
+                <button type="button" class="pro-preview-close-btn" onclick="closeProPreviewModal()" title="Cerrar vista previa">
+                    <i class="fa-solid fa-times"></i> <span>Cerrar</span>
+                </button>
+            </div>
+        </div>
+        <iframe id="proPreviewIframe" class="pro-preview-iframe" title="Vista Previa de Itinerario"></iframe>
+    </div>
+
     <script src="{{ asset('js/trips/pro-viewer.js') }}?v={{ time() }}"></script>
     <script>
+        let _activeProPreviewBlobUrl = null;
+
+        function closeProPreviewModal() {
+            const modal = document.getElementById('proPreviewModal');
+            const iframe = document.getElementById('proPreviewIframe');
+            if (modal) modal.style.display = 'none';
+            if (iframe) iframe.src = 'about:blank';
+            document.body.style.overflow = '';
+            if (_activeProPreviewBlobUrl) {
+                try { URL.revokeObjectURL(_activeProPreviewBlobUrl); } catch (e) {}
+                _activeProPreviewBlobUrl = null;
+            }
+        }
+
         function previewTrip(tripId) {
             openProPreview(tripId);
         }
@@ -4124,8 +4214,21 @@
 
                     const previewHTML = buildPreviewHTML(proState);
                     const blob = new Blob([previewHTML], { type: 'text/html' });
+                    if (_activeProPreviewBlobUrl) {
+                        try { URL.revokeObjectURL(_activeProPreviewBlobUrl); } catch (e) {}
+                    }
                     const url = URL.createObjectURL(blob);
-                    window.open(url, '_blank');
+                    _activeProPreviewBlobUrl = url;
+
+                    const modal = document.getElementById('proPreviewModal');
+                    const iframe = document.getElementById('proPreviewIframe');
+                    if (modal && iframe) {
+                        iframe.src = url;
+                        modal.style.display = 'flex';
+                        document.body.style.overflow = 'hidden';
+                    } else {
+                        window.open(url, '_blank');
+                    }
                 } else {
                     alert(data.message || 'Error desconocido al cargar el viaje PRO');
                 }

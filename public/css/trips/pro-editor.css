@@ -4321,3 +4321,36 @@ body {
   background: rgba(245, 158, 11, 0.22) !important;
   border-color: rgba(245, 158, 11, 0.5) !important;
 }
+
+/* ─── EXCLUSIVO iOS (Safe Area para Isla Dinámica / Notch y Barra Inferior) ─── */
+@media (max-width: 991px) {
+  html.is-viantryp-ios .topbar,
+  body.is-viantryp-ios .topbar {
+    padding-top: env(safe-area-inset-top, 0px) !important;
+    height: calc(56px + env(safe-area-inset-top, 0px)) !important;
+    min-height: calc(56px + env(safe-area-inset-top, 0px)) !important;
+  }
+
+  html.is-viantryp-ios .pro-preview-header-bar,
+  body.is-viantryp-ios .pro-preview-header-bar {
+    padding-top: env(safe-area-inset-top, 0px) !important;
+    height: calc(48px + env(safe-area-inset-top, 0px)) !important;
+    min-height: calc(48px + env(safe-area-inset-top, 0px)) !important;
+  }
+
+  html.is-viantryp-ios .modal-header,
+  body.is-viantryp-ios .modal-header {
+    padding-top: calc(16px + env(safe-area-inset-top, 0px)) !important;
+  }
+
+  html.is-viantryp-ios .modal-footer,
+  body.is-viantryp-ios .modal-footer {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  html.is-viantryp-ios .unsplash-overlay,
+  body.is-viantryp-ios .unsplash-overlay {
+    padding-top: calc(12px + env(safe-area-inset-top, 0px)) !important;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}

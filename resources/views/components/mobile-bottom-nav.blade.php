@@ -387,9 +387,12 @@
 
     /* Exclusivo iOS: Safe area superior (Notch / Dynamic Island) sin tocar Android ni Web */
     html.is-viantryp-ios .dashboard-topbar,
-    body.is-viantryp-ios .dashboard-topbar {
-        padding-top: env(safe-area-inset-top, 0px) !important;
+    body.is-viantryp-ios .dashboard-topbar,
+    html.is-viantryp-ios .topbar,
+    body.is-viantryp-ios .topbar {
+        padding: env(safe-area-inset-top, 0px) 18px 0 18px !important;
         height: calc(60px + env(safe-area-inset-top, 0px)) !important;
+        min-height: calc(60px + env(safe-area-inset-top, 0px)) !important;
     }
 
     .is-viantryp-app .app-topbar-logo,

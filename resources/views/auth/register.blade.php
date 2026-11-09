@@ -2,7 +2,22 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <script>
+    (function () {
+      var isNative = Boolean(window.Capacitor && (window.Capacitor.isNativePlatform || window.Capacitor.Plugins));
+      var storedIos = false;
+      try { storedIos = localStorage.getItem('viantryp_ios_app') === '1'; } catch (e) { }
+      var isIos = (window.Capacitor && typeof window.Capacitor.getPlatform === 'function' && window.Capacitor.getPlatform() === 'ios')
+        || (isNative && /iPad|iPhone|iPod/.test(navigator.userAgent))
+        || new URLSearchParams(window.location.search).get('ios') === '1'
+        || (storedIos && /iPad|iPhone|iPod/.test(navigator.userAgent));
+      if (isIos) {
+        try { localStorage.setItem('viantryp_ios_app', '1'); } catch (e) { }
+        document.documentElement.classList.add('is-viantryp-ios');
+      }
+    })();
+  </script>
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Viantryp | Registro</title>
   <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
@@ -486,6 +501,25 @@
       .page-body { height: auto; overflow: visible; grid-template-columns: 1fr; }
       .left-panel { display: none; }
       .right-panel { height: auto; overflow: visible; padding: 32px 24px; }
+    }
+
+    html.is-viantryp-ios nav {
+      padding-top: env(safe-area-inset-top, 0px) !important;
+      height: calc(60px + env(safe-area-inset-top, 0px)) !important;
+      min-height: calc(60px + env(safe-area-inset-top, 0px)) !important;
+    }
+    html.is-viantryp-ios .nav-right .nav-back {
+      display: none !important;
+    }
+    html.is-viantryp-ios .btn-apple {
+      display: flex !important;
+      margin-bottom: 0 !important;
+    }
+    html.is-viantryp-ios .right-panel {
+      padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    html.is-viantryp-ios input:not([type="checkbox"]):not([type="radio"]) {
+      font-size: max(16px, 1em) !important;
     }
   </style>
 </head>

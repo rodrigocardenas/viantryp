@@ -2,7 +2,22 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script>
+  (function () {
+    var isNative = Boolean(window.Capacitor && (window.Capacitor.isNativePlatform || window.Capacitor.Plugins));
+    var storedIos = false;
+    try { storedIos = localStorage.getItem('viantryp_ios_app') === '1'; } catch (e) { }
+    var isIos = (window.Capacitor && typeof window.Capacitor.getPlatform === 'function' && window.Capacitor.getPlatform() === 'ios')
+      || (isNative && /iPad|iPhone|iPod/.test(navigator.userAgent))
+      || new URLSearchParams(window.location.search).get('ios') === '1'
+      || (storedIos && /iPad|iPhone|iPod/.test(navigator.userAgent));
+    if (isIos) {
+      try { localStorage.setItem('viantryp_ios_app', '1'); } catch (e) { }
+      document.documentElement.classList.add('is-viantryp-ios');
+    }
+  })();
+</script>
 <title>@yield('title') | Viantryp</title>
 <meta name="description" content="@yield('meta_description', 'Viantryp — La plataforma que transforma itinerarios de viaje en experiencias digitales.')">
 <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
@@ -26,6 +41,9 @@
     border-bottom: 1px solid var(--mid-gray);
     display: flex; align-items: center; justify-content: space-between;
     padding: 0.9rem 2rem;
+  }
+  html.is-viantryp-ios .page-nav {
+    padding-top: calc(0.75rem + env(safe-area-inset-top, 0px)) !important;
   }
   .page-nav-logo img { height: 28px; width: auto; }
   .nav-right { display: flex; align-items: center; gap: 0.75rem; margin-left: auto; }
