@@ -1161,7 +1161,7 @@ function buildPreviewHTML(data) {
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
 (function() {
   try {
@@ -1171,6 +1171,8 @@ function buildPreviewHTML(data) {
     try { storedIos = localStorage.getItem('viantryp_ios_app') === '1' || (window.parent && window.parent.localStorage && window.parent.localStorage.getItem('viantryp_ios_app') === '1'); } catch(e){}
     var isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && (isCap || storedIos || new URLSearchParams(window.location.search).get('ios') === '1');
     if (isIos) {
+      var vp = document.querySelector('meta[name="viewport"]');
+      if (vp) vp.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
       document.documentElement.classList.add('is-viantryp-ios');
       if (isTop) document.documentElement.classList.add('is-viantryp-ios-top');
     }

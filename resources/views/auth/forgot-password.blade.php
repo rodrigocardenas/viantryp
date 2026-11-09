@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script>
     (function () {
       var isNative = Boolean(window.Capacitor && (window.Capacitor.isNativePlatform || window.Capacitor.Plugins));
@@ -14,6 +14,8 @@
         || new URLSearchParams(window.location.search).get('ios') === '1'
         || (storedIos && /iPad|iPhone|iPod/.test(navigator.userAgent));
       if (isIos) {
+        var vp = document.querySelector('meta[name="viewport"]');
+        if (vp) vp.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
         try { localStorage.setItem('viantryp_ios_app', '1'); } catch (e) { }
         document.documentElement.classList.add('is-viantryp-ios');
       }
