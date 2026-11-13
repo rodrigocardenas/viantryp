@@ -18,6 +18,12 @@
         if (vp) vp.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
         try { localStorage.setItem('viantryp_ios_app', '1'); } catch (e) { }
         document.documentElement.classList.add('is-viantryp-ios');
+        // Solo mostramos Google en iOS si la app trae el plugin nativo (v1.0.10+)
+        try {
+          if (window.Capacitor && typeof window.Capacitor.isPluginAvailable === 'function' && window.Capacitor.isPluginAvailable('GoogleAuth')) {
+            document.documentElement.classList.add('has-native-google');
+          }
+        } catch (e) { }
       }
     })();
   </script>
@@ -489,7 +495,7 @@
       transform: translateY(-1px);
     }
 
-    html.is-viantryp-ios .google-btn-container {
+    html.is-viantryp-ios:not(.has-native-google) .google-btn-container {
       display: none !important;
     }
     html.is-viantryp-ios .btn-apple {

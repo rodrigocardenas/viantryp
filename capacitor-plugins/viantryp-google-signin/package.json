@@ -1,0 +1,16 @@
+{
+  "name": "viantryp-google-signin",
+  "version": "1.0.0",
+  "description": "Plugin nativo local de Google Sign-In para la app iOS de Viantryp (expuesto como 'GoogleAuth', compatible con la API de @codetrix-studio/capacitor-google-auth). Solo iOS: Android sigue usando @codetrix-studio/capacitor-google-auth.",
+  "private": true,
+  "license": "UNLICENSED",
+  "files": [
+    "ios/",
+    "Package.swift"
+  ],
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    }
+  }
+}

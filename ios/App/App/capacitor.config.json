@@ -42,6 +42,7 @@
 		"SignInWithApple",
 		"AppPlugin",
 		"SplashScreenPlugin",
-		"StatusBarPlugin"
+		"StatusBarPlugin",
+		"ViantrypGoogleSigninPlugin"
 	]
 }
